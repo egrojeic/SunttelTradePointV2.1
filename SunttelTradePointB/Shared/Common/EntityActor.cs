@@ -144,7 +144,7 @@ namespace SunttelTradePointB.Shared.Common
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
-        [DisplayName("Address Key")]
+        [DisplayName("Address ID")]
         public string AddressKey { get; set; }
 
         [DisplayName("Emitter")]
