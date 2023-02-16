@@ -1,0 +1,354 @@
+﻿@page "/Actors/{Id}/{Code}/ShippingPlaces"
+@page "/Actors/{Id}/ShippingPlaces/{addressId}/Edit"
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.DropDowns
+@using SunttelTradePointB.Shared.Common
+@using SunttelTradePointB.Client.Services.MasterTablesServices
+@using SunttelTradePointB.Client.Shared.EntityShareComponents.EntitySubComponents
+@using Syncfusion.Blazor.Cards
+@using Microsoft.AspNetCore.Components;
+
+@inject IJSRuntime JSRuntime
+@inject HttpClient httpClient
+@inject GeographicPlacesService geoPlaces
+@inject NavigationManager navigationManager
+@inject ActorsNodeService actorsNodeServive
+
+<div class="control-section">
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
+            <SfCard>
+                <CardHeader Title="Add a new shipping place" />
+                <CardContent>
+                    <form onsubmit="event.preventDefault();">
+                        <div class="form-group row">
+                            <label class="control-label col-md-12">@lblName: </label>
+                            <div class="col">
+                                <SfTooltip ID="Tooltip" Target="#name" Content="@ContentName">
+                                    <input id="name" type="text" class="form-control" @bind-value="@address.Name" required />
+                                </SfTooltip>
+                            </div>
+                        </div>
+
+                        <div class="form-group row py-2">
+                            <label class="control-label col-md-12">@lblAddressLine1: </label>
+                            <div class="col">
+                                <input id="addres1" type="text" class="form-control" @bind-value="@address.AddressLine1" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group row py-2">
+                            <label class="control-label col-md-12">@lblAddressLine2: </label>
+                            <div class="col">
+                                <SfTooltip ID="Tooltip" Target="#addres2" Content="@ContentAddres2">
+                                    <input id="addres2" type="text" class="form-control" @bind-value="@address.AddressLine2" />
+                                </SfTooltip>
+                            </div>
+                        </div>
+
+                        <div class="form-group row py-2">
+                            <label class="control-label col-md-12">@lblCountry: </label>
+                            <div class="col">
+                                <SfDropDownList TValue="string" TItem="Country" Placeholder="Select a country" AllowFiltering="true" DataSource="@countryList" @bind-Value="country1.Name">
+                                    <DropDownListEvents TItem="Country" TValue="string" ValueChange="@ValueChangeCountry"></DropDownListEvents>
+                                    <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
+                                </SfDropDownList>
+                            </div>
+                        </div>
+
+                        <div class="form-group row py-2">
+                            <label class="control-label col-md-12">@lblRegion: </label>
+                            <div class="col">
+                                <SfDropDownList TValue="string" TItem="GeoRegion" Placeholder="Select a region" AllowFiltering="true" DataSource="@regionsList" @bind-Value="geo.Name">
+                                    <DropDownListEvents TItem="GeoRegion" TValue="string" ValueChange="@ValueChangeRegion"></DropDownListEvents>
+                                    <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
+                                </SfDropDownList>
+                            </div>
+                        </div>
+
+                        <div class="form-group row py-2">
+                            <label class="control-label col-md-12">@lblCity: </label>
+                            <div class="col">
+                                <SfDropDownList TValue="string" TItem="City" Placeholder="Select a city" AllowFiltering="true" DataSource="@citiesList" @bind-Value="city.Name">
+                                    <DropDownListEvents TItem="City" TValue="string" ValueChange="@ValueChangeCity"></DropDownListEvents>
+                                    <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
+                                </SfDropDownList>
+                            </div>
+                        </div>
+
+                        <div class="form-group row py-2">
+                            <label class="control-label col-md-12">@lblZipCode: </label>
+                            <div class="col">
+                                <SfTooltip ID="Tooltip" Target="#zipCode" Content="@ContentZipCode">
+                                    <input id="zipCode" type="text" class="form-control" @bind-value="@address.ZipCode" required />
+                                </SfTooltip>
+                            </div>
+                        </div>
+                        <div class="py-2">
+                            <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveEntityAddres(Id, address))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                            <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
+                        </div>
+                    </form>
+                    
+                </CardContent>
+            </SfCard>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    [Parameter]
+    public string addressId { get; set; }
+    [Parameter]
+    public string Code { get; set; }
+
+    private bool showRegion { get; set; } = false;
+    private bool showCities { get; set; } = false;
+    private string ContentName = "Put the name of the organization";
+    private string ContentAddres2 = "e.g Unit 1, Apartament 201";
+    private string ContentZipCode = "12345";
+
+    //lbltext
+    public string lblName = "";
+    public string lblAddressLine1 = "";
+    public string lblAddressLine2 = "";
+    public string lblCountry = "";
+    public string lblRegion = "";
+    public string lblCity = "";
+    public string lblZipCode = "";
+
+    Address address = new Address();
+    City city = new City();
+    GeoRegion geo = new GeoRegion();
+    Country country1 = new Country();
+    IdentificationEntity identificationEntity = new IdentificationEntity();
+    List<Address> addresList = new List<Address>();
+
+    string ipPrueba = "";
+    string[] region;
+
+    //Geographic Place Definition
+    private List<Country>? countryList;
+
+    private List<GeoRegion>? regionsList;
+
+    private List<City>? citiesList;
+
+
+    private Country? currentCountry;
+    private GeoRegion? currentRegion;
+
+    bool loadingRegions = false;
+
+    string _countriesFilter = "";
+    string _regionsFilter = "";
+    string _citiesFilter = "";
+
+
+
+
+    // Functions for Api GeoPlaces
+    public string countriesFilter
+    {
+        get
+        {
+            return _countriesFilter;
+        }
+        set
+        {
+            _countriesFilter = value;
+            GetFilteredCountries(_countriesFilter);
+        }
+    }
+
+    public string regionsFilter
+    {
+        get
+        {
+            return _regionsFilter;
+        }
+        set
+        {
+            _regionsFilter = value;
+            GetFilteredRegions(currentCountry, _regionsFilter);
+        }
+    }
+
+    public string citiesFilter
+    {
+        get
+        {
+            return _citiesFilter;
+        }
+        set
+        {
+            _citiesFilter = value;
+            GetFilteredCities(currentRegion, _citiesFilter);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        lblName = UICommonFunctions.GetDisplayName(new Address(), "Name");
+        lblAddressLine1 = UICommonFunctions.GetDisplayName(new Address(), "AddressLine1");
+        lblAddressLine2 = UICommonFunctions.GetDisplayName(new Address(), "AddressLine2");
+        lblCountry = UICommonFunctions.GetDisplayName(new Country(), "Name");
+        lblRegion = UICommonFunctions.GetDisplayName(new GeoRegion(), "Name");
+        lblCity = UICommonFunctions.GetDisplayName(new City(), "Name");
+        lblZipCode = UICommonFunctions.GetDisplayName(new Address(), "ZipCode");
+        RefreshMe();
+        await GetFilteredCountries();
+        await GetEntityAddressList(Id);
+    }
+
+    private async Task GetFilteredCountries(string filterCountries = "")
+    {
+        var response = await geoPlaces.GetCountries(filterCountries);
+
+        if (response != null)
+            countryList = response.Where(c => c.Id != "000000000000000000000000").ToList();
+    }
+
+
+    private async Task LoadRegions(Country country)
+    {
+
+        loadingRegions = true;
+        var response = await geoPlaces.GetRegions(country.Id, "", true);
+        currentCountry = country;
+
+        if (response != null)
+            regionsList = response;
+
+        loadingRegions = false;
+
+        StateHasChanged();
+    }
+
+    private async Task GetFilteredRegions(Country country, string filterRegions = "")
+    {
+        regionsList = await geoPlaces.GetRegions(country.Id, filterRegions);
+
+    }
+
+    private async Task SetCurrentRegion(GeoRegion geoRegion)
+    {
+        currentRegion = geoRegion;
+        citiesList = await geoPlaces.GetCities(geoRegion.Id, "", true);
+        StateHasChanged();
+    }
+
+    private async Task GetFilteredCities(GeoRegion geoRegion, string filterRegions = "")
+    {
+        citiesList = await geoPlaces.GetCities(geoRegion.Id, filterRegions);
+    }
+
+    private void ValueChangeCountry(ChangeEventArgs<string, Country> args)
+    {
+        country1 = args.ItemData;
+        LoadRegions(args.ItemData);
+        this.showRegion = true;
+    }
+
+    private void ValueChangeRegion(ChangeEventArgs<string, GeoRegion> args)
+    {
+        geo = args.ItemData;
+        SetCurrentRegion(args.ItemData);
+        this.showCities = true;
+    }
+
+    private void ValueChangeCity(ChangeEventArgs<string, City> args)
+    {
+        city = args.ItemData;
+    }
+
+    public void RefreshMe()
+    {
+        address = new Address();
+        city = new City();
+        geo = new GeoRegion();
+        country1 = new Country();
+        showRegion = false;
+        showCities = false;
+    }
+
+    private async Task SaveEntityAddres(string EntityActorId, Address address)
+    {
+        if (EntityActorId != null && address != null)
+        {
+            if (addresList != null)
+            {
+                address.Id = addressId;
+            }
+            address.Code = Code;
+            address.CityAddressRef = city.Id;
+            address.Code = identificationEntity.Code;
+            await actorsNodeServive.SaveEntityAddress(EntityActorId, address);
+            StateHasChanged();
+        }
+    }
+
+    public async Task GetEntityAddressList(string entityId)
+    {
+        if(addressId != null)
+        {
+            addresList = await actorsNodeServive.GetEntityDetailsAddressList(entityId);
+            foreach(var addressL in addresList)
+            {
+                if(addressL.Id == addressId)
+                {
+                    address.Name = addressL.Name;
+                    address.AddressLine1 = addressL.AddressLine1;
+                    address.AddressLine2 = addressL.AddressLine2;
+                    country1 = addressL.CityAddress.RegionCity.CountryRegion;
+                    geo = addressL.CityAddress.RegionCity;
+                    city = addressL.CityAddress;
+                    address.ZipCode = addressL.ZipCode;
+                }
+            }
+        }
+    }
+
+    private void GoBack()
+    {
+        navigationManager.NavigateTo($"/Actors/{Id}");
+    }
+
+    /*
+    private async Task<string> GetIp()
+    {
+    return await httpClient.GetStringAsync("https://api.ipify.org/");
+    }
+
+    private async Task<Root> GetCountry(string ip)
+    {
+    return await httpClient.GetFromJsonAsync<Root>("https://www.iplocate.io/api/lookup/" + ip);
+    }
+
+
+
+    public class Root
+    {
+        public string ip { get; set; }
+        public string country { get; set; }
+        public string country_code { get; set; }
+        public bool is_eu { get; set; }
+        public string city { get; set; }
+        public string continent { get; set; }
+        public double latitude { get; set; }
+        public double longitude { get; set; }
+        public string time_zone { get; set; }
+        public string postal_code { get; set; }
+        public string subdivision { get; set; }
+        public object subdivision2 { get; set; }
+        public string network { get; set; }
+        public string org { get; set; }
+        public string asn { get; set; }
+        public string asn_network { get; set; }
+    }*/
+
+
+}

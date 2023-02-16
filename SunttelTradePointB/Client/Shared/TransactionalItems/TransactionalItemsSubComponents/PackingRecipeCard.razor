@@ -1,0 +1,738 @@
+﻿@page "/PackingRecipeCard"
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Data
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Navigations
+@inject TransactionalItemsService transactionalService;
+@inject NavigationManager Navigation
+
+<style>
+    label {
+        margin-left: 50px;
+    }
+</style>
+
+@* <Alert @ref="referAlert" ></Alert>*@
+<form>
+    <div class="content-new-packing-recipe" style=' display:@(!addMaterials?"block":"none"); };'>
+        <SfTab @ref="referTag" Height="50px">
+            <TabAnimationSettings>
+                <TabAnimationPrevious Effect=AnimationEffect.None></TabAnimationPrevious>
+                <TabAnimationNext Effect=AnimationEffect.None></TabAnimationNext>
+            </TabAnimationSettings>
+            <TabItems>
+                <TabItem>
+                    <ChildContent>
+                        <TabHeader Text="@GetName("ProductPackingSpecs", new TransactionalItem())"></TabHeader>
+                    </ChildContent>
+                    <ContentTemplate>
+                        <div id="add-recipe">
+                            <div class="grid-columns-4">
+                                <div><label>@GetName( "Customer", new PackingSpecs())</label></div>
+                                <div>
+                                    <div style="position:relative;">
+                                        <div class="item-edit">
+                                            <label>@(Customer != null ? Customer.Name : "")</label>
+                                            <button @onclick='()=>SetViewElemnt("Customer")' class="btn color-btn">+</button>
+                                        </div>
+
+                                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewAddCustomer">
+                                            @{
+                                                if (ListConcept != null)
+                                                {
+                                                    foreach (var customer in ListConcept)
+                                                    {
+                                                        <option value="@customer?.Id">@customer?.Name</option>
+                                                    }
+                                                }
+
+                                            }
+                                        </InputTextSelector>
+                                    </div>
+                                </div>
+                                <div><label>@GetName( "Code", new PackingSpecs())</label></div>
+                                <div> <label>@(Customer != null ? Customer.Code : "")</label></div>
+                                <div>
+                                    <label>
+                                        @GetName( "Season", new PackingSpecs())
+                                    </label>
+                                </div>
+                                <div>
+                                    <div style="position:relative;">
+                                        <div class="item-edit">
+                                            <label>@(Season != null ? Season.Name : "")</label>
+                                            <button @onclick='()=>SetViewElemnt("Season")' class="btn color-btn">edit</button>
+                                        </div>
+
+                                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditSeason">
+                                            @{
+                                                if (GetSeasonView != null)
+                                                {
+                                                    foreach (var season in GetSeasonView)
+                                                    {
+                                                        <option value="@season?.Id">@season?.Name</option>
+                                                    }
+                                                }
+                                            }
+                                        </InputTextSelector>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>
+                                        @GetName("ModelRecipe",new PackingSpecs())
+                                    </label>
+                                </div>
+                                <div>
+                                    <div style="position:relative;">
+                                        <div class="item-edit">
+                                            <label>@(ModelRecipe != null ? ModelRecipe.Name : "")</label>
+                                            <button @onclick='()=>SetViewElemnt("Model")' class="btn color-btn">edit</button>
+                                        </div>
+
+                                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditModel">
+                                            @{
+                                                if (GetModelView != null)
+                                                {
+                                                    foreach (var model in GetModelView)
+                                                    {
+                                                        <option value="@model?.Id">@model?.Name</option>
+                                                    }
+                                                }
+
+                                            }
+                                        </InputTextSelector>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>
+                                        @GetName( "PackLayersToSale", new PackingSpecs())
+                                    </label>
+                                </div>
+                                <div><input type="number" @bind="_PackingSpecs.PackLayersToSale" class="form-control" style="border-color:gray;" autofocus required /></div>
+                                <div><label>@GetName( "PackLayersToBuy",new PackingSpecs())</label></div>
+                                <div><input type="number" @bind="_PackingSpecs.PackLayersToBuy" class="form-control" style="border-color:gray;" required /></div>
+                                <div>
+                                    <label>
+                                        @GetName( "PackingBoxToSale", new PackingSpecs())
+                                    </label>
+                                </div>
+                                <div>
+                                    <div style="position:relative;">
+                                        <div class="item-edit">
+                                            <label>@(BoxToSale != null ? BoxToSale.Name : "")</label>
+                                            <button @onclick='()=>SetViewElemnt("BoxToSale")' class="btn color-btn">edit</button>
+                                        </div>
+
+                                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditBoxToSale">
+                                            @{
+                                                if (GetBoxToSaleView != null)
+                                                {
+                                                    foreach (var Box in GetBoxToSaleView)
+                                                    {
+                                                        <option value="@Box?.Id">@Box?.Name</option>
+                                                    }
+                                                }
+
+                                            }
+                                        </InputTextSelector>
+                                    </div>
+
+                                </div>
+                                <div><label>@GetName( "PackingBoxToBuy", new PackingSpecs())</label></div>
+                                <div>
+                                    <div style="position:relative;">
+                                        <div class="item-edit">
+                                            <label>@(BoxToBuy != null ? BoxToBuy.Name : "")</label>
+                                            <button @onclick='()=>SetViewElemnt("BoxToBuy")' class="btn color-btn">edit</button>
+                                        </div>
+
+                                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditBoxToBuy">
+                                            @{
+                                                if (GetBoxToBuyView != null)
+                                                {
+                                                    foreach (var Box in GetBoxToBuyView)
+                                                    {
+                                                        <option value="@Box?.Id">@Box?.Name</option>
+                                                    }
+                                                }
+                                            }
+                                        </InputTextSelector>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>
+                                        @GetName( "PackPerBoxLayer", new PackingSpecs())
+                                    </label>
+                                </div>
+                                <div><input type="number" @bind="_PackingSpecs.PackPerBoxLayer" class="form-control" style="border-color:gray;" maxlength="4" min="1" /></div>
+                                <div><label> @GetName("UnitPrice", new PriceInfo() )</label></div>
+                                <div><input @bind="PriceInfo.UnitPrice" type="number" class="form-control" style="border-color:gray;" /></div>
+
+                            </div>
+                        </div>
+                    </ContentTemplate>
+                </TabItem>
+                <TabItem>
+                    <ChildContent>
+                        <TabHeader Text="@GetName( "CustomerLabelInstructions", new PackingSpecs())"></TabHeader>
+                    </ChildContent>
+                    <ContentTemplate>
+
+                        <div id="add-recipe">
+                            @*// Control David LabelStyle PalletLabelStyle (Selector PalletLabelStyles)*@
+                            <div class="grid-columns-4">
+                                <div>
+                                    <label>
+                                        @GetName( "PalletLabelStyle", new LabelInstruction())
+                                    </label>
+                                </div>
+                                <div style="position:relative;">
+                                    <div class="item-edit">
+                                        <label>@(palletLabelStyle != null ? palletLabelStyle.Name : "")</label>
+                                        <button @onclick='()=>SetViewElemnt("PalletLabelStyle")' class="btn color-btn">+</button>
+                                    </div>
+                                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditPalletLabelStyle">
+                                        @{
+                                            if (palletLabelStylesView != null)
+                                            {
+                                                foreach (var Element in palletLabelStylesView)
+                                                {
+                                                    <option value="@Element?.Id">@Element?.Name</option>
+                                                }
+                                            }
+                                        }
+                                    </InputTextSelector>
+                                </div>
+                                <div>
+                                    <label>
+                                        @GetName( "BoxLabelStyle", new LabelInstruction())
+                                    </label>
+                                </div>
+                                @*// Control David LabelStyle BoxLabelStyle (Selector BoxLabelStyles)*@
+                                <div style="position:relative;">
+                                    <div class="item-edit">
+                                        <label>@(BoxLabelStyle != null ? BoxLabelStyle.Name : "")</label>
+                                        <button @onclick='()=>SetViewElemnt("BoxLabelStyle")' class="btn color-btn">+</button>
+                                    </div>
+                                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditBoxLabelStyle">
+                                        @{
+                                            if (BoxLabelStylesView != null)
+                                            {
+                                                foreach (var Element in BoxLabelStylesView)
+                                                {
+                                                    <option value="@Element?.Id">@Element?.Name</option>
+                                                }
+                                            }
+                                        }
+                                    </InputTextSelector>
+                                </div>
+                                @* string UPCName*@
+                                <div><label> @GetName("UPCName", new LabelInstruction()) </label></div>
+                                <div><input @bind="labelInstruction.UPCComments" class="form-control" style="border-color:gray;" required /></div>
+
+                                @*// Control David LabelStyle InnerProductLabelStyleByDeafult (Selector UPCLabelStyles)*@
+
+
+                                <div>
+                                    <label>
+                                        @GetName( "InnerProductLabelStyleByDeafult", new LabelInstruction())
+                                    </label>
+                                </div>
+                                @*// Control David LabelStyle BoxLabelStyle (Selector BoxLabelStyles)*@
+                                <div style="position:relative;">
+                                    <div class="item-edit">
+                                        <label>@(InnerProductLabelStyleByDeafult != null ? InnerProductLabelStyleByDeafult.Name : "")</label>
+                                        <button @onclick='()=>SetViewElemnt("InnerProductLabelStyleByDeafult")' class="btn color-btn">+</button>
+                                    </div>
+                                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditBoxLabelStyle">
+                                        @{
+                                            if (InnerProductLabelStyleByDeafultsView != null)
+                                            {
+                                                foreach (var Element in InnerProductLabelStyleByDeafultsView)
+                                                {
+                                                    <option value="@Element?.Id">@Element?.Name</option>
+                                                }
+                                            }
+                                        }
+                                    </InputTextSelector>
+                                </div>
+                                @*// string UPCComments *@
+                                <div><label> @GetName("UPCComments", new LabelInstruction()) </label></div>
+                                <div><input @bind="labelInstruction.UPCComments" class="form-control" style="border-color:gray;" required /></div>
+
+                                @*// string BoxUPCCode *@
+                                <div><label> @GetName("BoxUPCCode", new LabelInstruction()) </label></div>
+                                <div><input @bind="labelInstruction.BoxUPCCode" class="form-control" style="border-color:gray;" required /></div>
+                                @*// string InnerProductUPCCode *@
+                                <div><label> @GetName("InnerProductUPCCode", new LabelInstruction()) </label></div>
+                                <div><input @bind="labelInstruction.InnerProductUPCCode" class="form-control" style="border-color:gray;" required /></div>
+
+                                @*// int UPCDateCodeFormat (Numeric Input)*@
+                                <div><label> @GetName("UPCDateCodeFormat", new LabelInstruction()) </label></div>
+                                <div><input @bind="labelInstruction.UPCDateCodeFormat" type="number" class="form-control" style="border-color:gray;" required /></div>
+
+                                @*// Control David  DatesReferenceType UPCDateCodeBasedOn (Selector DatesReferenceType)*@
+                                <div>
+                                    <label>
+                                        @GetName( "UPCDateCodeBasedOn", new LabelInstruction())
+                                    </label>
+                                </div>
+                                <div style="position:relative;">
+                                    <div class="item-edit">
+                                        <label>@(uPCDateCodeBasedOn != null ? uPCDateCodeBasedOn.Name : "")</label>
+                                        <button @onclick='()=>SetViewElemnt("UPCDateCodeBasedOn")' class="btn color-btn">+</button>
+                                    </div>
+                                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditUPCDateCodeBasedOn">
+                                        @{
+                                            if (UPCDateCodeBasedOnsView != null)
+                                            {
+                                                foreach (var Element in UPCDateCodeBasedOnsView)
+                                                {
+                                                    <option value="@Element?.Id">@Element?.Name</option>
+                                                }
+                                            }
+                                        }
+                                    </InputTextSelector>
+                                </div>
+                                @*// int UPCDateCodeDaysAfterReferenceDate*@
+                                <div><label> @GetName("UPCDateCodeDaysAfterReferenceDate", new LabelInstruction()) </label></div>
+                                <div><input @bind="labelInstruction.UPCDateCodeFormat" type="number" class="form-control" style="border-color:gray;" required /></div>
+
+                                @*// string OriginCountryLegend *@
+                                <div><label> @GetName("OriginCountryLegend", new LabelInstruction()) </label></div>
+                                <div><input @bind="labelInstruction.OriginCountryLegend" class="form-control" style="border-color:gray;" required /></div>
+
+                                @*// string SKU *@
+                                <div><label> @GetName("SKU", new LabelInstruction()) </label></div>
+                                <div><input @bind="labelInstruction.SKU" class="form-control" style="border-color:gray;" required /></div>
+
+                                @* // Stwitch Boolean ShowRetailPriceUPCInfo *@
+                                <div><label> @GetName("ShowRetailPriceUPCInfo", new LabelInstruction()) </label></div>
+                                <div><input @bind="labelInstruction.ShowRetailPriceUPCInfo" class="form-control" style="border-color:gray;" required /></div>
+
+                            </div>
+                        </div>
+
+                    </ContentTemplate>
+                </TabItem>
+                <TabItem>
+                    <ChildContent>
+                        <TabHeader Text="@GetName( "ListOfMaterials",new PackingSpecs())"></TabHeader>
+                    </ChildContent>
+                    <ContentTemplate>
+
+                        <div style="display:flex; flex-direction:column; justify-content:center;">
+                            <div class="content-btn">
+                                <button type="button" @onclick='()=>AddMaterialsControl(true)' class="size-btn color-btn" style=' display:@(btnAddMaterials?"block":"none");'>+</button>
+
+                            </div>
+                            <SfGrid @ref="DataGrid" DataSource="@ListOfMaterialsView" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" AllowResizing="true">
+                                <GridEvents Destroyed="AddMaterialsOff" OnLoad="AddMaterials" TValue="MaterialRecipeItemView"></GridEvents>
+                                <GridFilterSettings Type=" Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+                                <GridColumns>
+                                    <GridColumn Field="@nameof(MaterialRecipeItemView.Name)" HeaderText="@GetName( "Material",new MaterialRecipeItem())" Width="5px"></GridColumn>
+                                    <GridColumn Field="@nameof(MaterialRecipeItemView.Name)" HeaderText="@GetName( "Quantity",new MaterialRecipeItem())" Width="5px"></GridColumn>
+                                </GridColumns>
+                            </SfGrid>
+                        </div>
+                        @*   <h1>Boton add + Pack Materials</h1>
+                        <h1>Grid view con Items de receta Materials</h1>*@
+                        @*List<MaterialRecipeItem> ListOfMaterials { get; set; }*@
+                    </ContentTemplate>
+                </TabItem>
+                <TabItem>
+                    <ChildContent>
+                        <TabHeader Text="@GetName("ItemAssemblyType", new PackingSpecs())"></TabHeader>
+                    </ChildContent>
+                    <ContentTemplate>
+                        <div style="display:flex; flex-direction:column; justify-content:center;">
+                            <div class="content-btn">
+                                <button type="button" @onclick='()=>AddAssemblyControl(true)' class="size-btn color-btn" style=' display:@(btnAddMaterials?"block":"none");'>+</button>
+
+                            </div>
+                            <SfGrid @ref="DataGrid1" DataSource="@assemblyRecipeItemsView" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" AllowResizing="true">
+                              
+                                <GridFilterSettings Type=" Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+                                <GridColumns>
+                                    <GridColumn Field="@nameof(MaterialRecipeItemView.Name)" HeaderText="@GetName( "Material",new MaterialRecipeItem())" Width="5px"></GridColumn>
+                                    <GridColumn Field="@nameof(MaterialRecipeItemView.Name)" HeaderText="@GetName( "Quantity",new MaterialRecipeItem())" Width="5px"></GridColumn>
+                                </GridColumns>
+                            </SfGrid>
+                        </div>
+                        @*  <h1>Boton add + Ir a otra pagina para agregar un Item de Raw Materials</h1>
+                        <h1>Grid view con Items de receta</h1>
+                        List<PackRecipeItem> AssemblyRecipeItems { get; set; }*@
+                    </ContentTemplate>
+                </TabItem>
+            </TabItems>
+        </SfTab>
+        <div class="flex-horizontal-end item">
+            <button type="button" @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+            <button type="button" @onclick="Save" class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
+        </div>
+    </div>
+    <div class="content-new-packing-recipe" style=' display:@(btnAddMaterials?"block":"none"); };'>
+
+        <MaterialRecipeItemCard @ref="addControl" EventClosed="AddMaterialsControl" Page="@Page">
+            </MaterialRecipeItemCard>      
+    </div>
+    
+</form>
+
+@code {
+
+
+    public RenderFragment render { get; set; }
+    [Parameter]
+    public EventCallback<PackingSpecs> save { get; set; }
+    [Parameter]
+    public bool ViewSelect { get; set; } = false;
+    SfTab? referTag;
+    SfGrid<MaterialRecipeItemView>? DataGrid;
+    SfGrid<PackRecipeItemView>? DataGrid1;
+    MaterialRecipeItemCard? addControl;
+
+    public int Page = 0;
+    public string TransactionalItemId { get; set; }
+
+    #region control Input Tex
+    public string SearcherValueMode = "";
+    public bool PopupViewAddCustomer = false;
+    public bool PopupViewEditModel = false;
+    public bool PopupViewEditSeason = false;
+    public bool PopupViewEditBoxToSale = false;
+    public bool PopupViewEditBoxToBuy = false;
+    public bool PopupViewEditPalletLabelStyle = false;
+    public bool PopupViewEditBoxLabelStyle = false;
+    public bool PopupViewEditUPCDateCodeBasedOn { get; set; }
+    public string PopupViewEditInnerProductLabelStyleByDeafult { get; set; }
+
+
+    public int ParamCountResul = 0;
+    #endregion Control Input Tex
+
+    #region Tag 1
+    public List<Concept>? ListConcept = new List<Concept>();
+    public List<ProductModel>? SetModels = new List<ProductModel>();
+    public List<ProductModel>? GetModelView = new List<ProductModel>();
+    public List<SeasonBusiness>? GetSeasonView = new List<SeasonBusiness>();
+    public List<Box>? SetBoxs = new List<Box>();
+    public List<Box>? GetBoxToSaleView = new List<Box>();
+    public List<Box>? GetBoxToBuyView = new List<Box>();
+    List<PackRecipeItem> AssemblyRecipeItems = new List<PackRecipeItem>();
+    PackRecipeItem AssemblyRecipeItem = new PackRecipeItem();
+
+
+    PackingSpecs _PackingSpecs = new PackingSpecs();
+    Concept Customer = new Concept();
+    SeasonBusiness Season = new SeasonBusiness();
+    ProductModel ModelRecipe = new ProductModel();
+    Box BoxToSale = new Box();
+    Box BoxToBuy = new Box();
+    PriceInfo PriceInfo = new PriceInfo();
+    #endregion Tag 1
+
+    #region Tag 2
+    LabelInstruction labelInstruction = new LabelInstruction();
+    List<LabelStyle> palletLabelStylesView = new List<LabelStyle>();
+    LabelStyle palletLabelStyle = new LabelStyle();
+    List<LabelStyle> BoxLabelStylesView = new List<LabelStyle>();
+    LabelStyle BoxLabelStyle = new LabelStyle();
+    List<LabelStyle> InnerProductLabelStyleByDeafultsView = new List<LabelStyle>();
+    LabelStyle InnerProductLabelStyleByDeafult = new LabelStyle();
+    List<LabelStyle> UPCDateCodeBasedOnsView = new List<LabelStyle>();
+    LabelStyle uPCDateCodeBasedOn = new LabelStyle();
+    #endregion Tag 2
+
+    #region Tag 3
+
+    List<MaterialRecipeItem> ListOfMaterials = new List<MaterialRecipeItem>();
+    List<MaterialRecipeItemView> ListOfMaterialsView = new List<MaterialRecipeItemView>();
+    #endregion Tag 3
+
+    #region Tag 4
+    bool addAssembly = false;
+    List<PackRecipeItemView> assemblyRecipeItemsView = new List<PackRecipeItemView>();
+    List<PackRecipeItem> assemblyRecipeItems = new List<PackRecipeItem>();
+    PackRecipeItem assemblyRecipeItem = new PackRecipeItem();
+
+    #endregion Tag 4
+
+
+    #region Add Material
+    public bool addMaterials = false;
+    public bool btnAddMaterials = false;
+    #endregion Add Material
+
+    InputTextSelector? ReferInputTextSelector;
+
+    protected override void OnInitialized()
+    {
+
+        InitializedAsync();
+    }
+
+    protected async void InitializedAsync()
+    {
+        SetBoxs = await transactionalService.GetSelectorListEntityBoxToBuy();
+        if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
+        {
+            TransactionalItemId = transactionalService.transactionalItemId;
+            OnInitializedModel();
+        }
+
+    }
+
+    protected async void OnInitializedModel()
+    {
+        SetModels = await transactionalService.GetSelectorListEntityProductModel(TransactionalItemId);
+    }
+
+    private async void Save()
+    {
+
+        bool status = false;
+        Season.CreationTime = DateTime.UtcNow;
+        BoxToBuy.Id = Guid.NewGuid().ToString();
+        BoxToBuy.CreationTime = DateTime.UtcNow;
+        BoxToSale.Id = Guid.NewGuid().ToString();
+        BoxToSale.CreationTime = DateTime.UtcNow;
+        _PackingSpecs.Id = Guid.NewGuid().ToString();
+
+        _PackingSpecs.Customer = Customer;
+        _PackingSpecs.Season = Season;
+        _PackingSpecs.ModelRecipe = ModelRecipe;
+        _PackingSpecs.Price = PriceInfo;
+        _PackingSpecs.PackingBoxToBuy = BoxToBuy;
+        _PackingSpecs.PackingBoxToSale = BoxToSale;
+
+        try
+        {
+            status = await transactionalService.SaveProductPackingSpec(TransactionalItemId, _PackingSpecs);
+
+        }
+        catch (Exception ex)
+        {
+
+            throw;
+        }
+
+        _PackingSpecs = new PackingSpecs();
+        Closed("control");
+    }
+
+    public async Task Refresh()
+    {
+        if (ReferInputTextSelector != null) await ReferInputTextSelector.Refresh();
+        StateHasChanged();
+    }
+
+    public async Task Closed(string Element)
+    {
+        if (Element == "control") Navigation.NavigateTo("/TransactionalItemCard/0");
+        Reload();
+        await Refresh();
+        StateHasChanged();
+    }
+
+    public void SetViewElemnt(string Element)
+    {
+        ViewSelect = false;
+        SearcherValueMode = Element;
+        Reload();
+        if (Element == "Customer") { PopupViewAddCustomer = true; }
+        if (Element == "Model") { PopupViewEditModel = true; }
+        if (Element == "Season") { PopupViewEditSeason = true; }
+        if (Element == "BoxToSale") { PopupViewEditBoxToSale = true; }
+        if (Element == "BoxToBuy") { PopupViewEditBoxToBuy = true; }
+        if (Element == "PalletLabelStyle") { PopupViewEditPalletLabelStyle = true; }
+        if (Element == "BoxLabelStyle") { PopupViewEditBoxLabelStyle = true; }
+        if (Element == "InnerProductLabelStyleByDeafult") { PopupViewEditBoxLabelStyle = true; }
+        if (Element == "UPCDateCodeBasedOn") { PopupViewEditUPCDateCodeBasedOn = true; }
+
+
+        StateHasChanged();
+    }
+
+    protected async void EventSearcherValue(string value)
+    {
+
+        if (SearcherValueMode == "Customer")
+        {
+            ListConcept = await transactionalService.GetSelectorListEntityActors(value);
+            ParamCountResul = ListConcept != null ? ListConcept.Count() : 0;
+        }
+        if (SearcherValueMode == "Model")
+        {
+            GetModelView = SetModels.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+            ParamCountResul = GetModelView.Count();
+        }
+        if (SearcherValueMode == "Season")
+        {
+            GetSeasonView = await transactionalService.GetSelectorListSeasonBusiness(value);
+            ParamCountResul = GetSeasonView != null ? GetSeasonView.Count() : 0;
+        }
+        if (SearcherValueMode == "BoxToSale")
+        {
+            GetBoxToSaleView = SetBoxs.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+            ParamCountResul = GetBoxToSaleView != null ? GetBoxToSaleView.Count() : 0;
+        }
+        if (SearcherValueMode == "BoxToBuy")
+        {
+            GetBoxToBuyView = SetBoxs.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+            ParamCountResul = GetBoxToBuyView != null ? GetBoxToBuyView.Count() : 0;
+        }
+        if (SearcherValueMode == "PalletLabelStyle")
+        {
+            palletLabelStylesView = palletLabelStylesView.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+            ParamCountResul = palletLabelStylesView != null ? palletLabelStylesView.Count() : 0;
+        }
+        if (SearcherValueMode == "BoxLabelStyle")
+        {
+            BoxLabelStylesView = BoxLabelStylesView.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+            ParamCountResul = BoxLabelStylesView != null ? BoxLabelStylesView.Count() : 0;
+        }
+        if (SearcherValueMode == "InnerProductLabelStyleByDeafult")
+        {
+            InnerProductLabelStyleByDeafultsView = InnerProductLabelStyleByDeafultsView.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+            ParamCountResul = InnerProductLabelStyleByDeafultsView != null ? InnerProductLabelStyleByDeafultsView.Count() : 0;
+        }
+        if (SearcherValueMode == "UPCDateCodeBasedOn")
+        {
+            UPCDateCodeBasedOnsView = UPCDateCodeBasedOnsView.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+            ParamCountResul = InnerProductLabelStyleByDeafultsView != null ? InnerProductLabelStyleByDeafultsView.Count() : 0;
+        }
+
+        if (ParamCountResul > 0) { ViewSelect = true; } else { ViewSelect = false; }
+
+        await Refresh();
+    }
+
+    protected async void EventIdSelectionInput(string selectionId)
+    {
+
+        if (SearcherValueMode == "Customer")
+        {
+            Customer = ListConcept.Where(c => c.Id == selectionId).FirstOrDefault();
+        }
+        if (SearcherValueMode == "Model")
+        {
+            ModelRecipe = GetModelView.Where(c => c.Id == selectionId).FirstOrDefault();
+        }
+        if (SearcherValueMode == "Season")
+        {
+            Season = GetSeasonView.Where(c => c.Id == selectionId).FirstOrDefault();
+        }
+        if (SearcherValueMode == "BoxToSale")
+        {
+            BoxToSale = GetBoxToSaleView.Where(c => c.Id == selectionId).FirstOrDefault();
+        }
+        if (SearcherValueMode == "BoxToBuy")
+        {
+            BoxToBuy = GetBoxToBuyView.Where(c => c.Id == selectionId).FirstOrDefault();
+            ParamCountResul = GetBoxToBuyView.Count();
+        }
+        if (SearcherValueMode == "PalletLabelStyle")
+        {
+            palletLabelStyle = palletLabelStylesView.Where(c => c.Id == selectionId).FirstOrDefault();
+            ParamCountResul = palletLabelStylesView.Count();
+        }
+        if (SearcherValueMode == "BoxLabelStyle")
+        {
+            BoxLabelStyle = BoxLabelStylesView.Where(c => c.Id == selectionId).FirstOrDefault();
+            ParamCountResul = BoxLabelStylesView.Count();
+        }
+        if (SearcherValueMode == "InnerProductLabelStyleByDeafult")
+        {
+            InnerProductLabelStyleByDeafult = InnerProductLabelStyleByDeafultsView.Where(c => c.Id == selectionId).FirstOrDefault();
+            ParamCountResul = InnerProductLabelStyleByDeafultsView.Count();
+        }
+        if (SearcherValueMode == "UPCDateCodeBasedOn")
+        {
+            uPCDateCodeBasedOn = UPCDateCodeBasedOnsView.Where(c => c.Id == selectionId).FirstOrDefault();
+            ParamCountResul = UPCDateCodeBasedOnsView.Count();
+        }
+
+
+        Reload();
+        await Refresh();
+    }
+
+    public void Reload()
+    {
+        PopupViewAddCustomer = false;
+        PopupViewEditModel = false;
+        PopupViewEditSeason = false;
+        PopupViewEditBoxToSale = false;
+        PopupViewEditBoxToBuy = false;
+        ParamCountResul = 0;
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+    void ConverToMaterialToMateriaView(List<MaterialRecipeItem> Materials)
+    {
+        ListOfMaterialsView = new List<MaterialRecipeItemView>();
+        foreach (var Material in Materials)
+        {
+            ListOfMaterialsView.Add(new MaterialRecipeItemView
+                {
+                    Name = Material.Material != null ? Material.Material.Name : "",
+                    Quantity = Material.Quantity != null ? Material.Quantity.ToString() : ""
+                });
+        }
+    }
+
+
+
+    void AddMaterials()
+    {
+
+        btnAddMaterials = true;
+        if (btnAddMaterials) StateHasChanged();
+
+    }
+    void AddMaterialsOff()
+    {       
+        btnAddMaterials = true;
+        StateHasChanged();
+
+    }
+    public void AddMaterialsControl(bool mode)
+    {
+        Page = 1;
+        addMaterials = mode;
+        addControl.Reload();
+        StateHasChanged();
+       
+
+    }
+
+    void AddAssemblyControl(bool mode)
+    {
+        Page = 2;
+        addAssembly = mode;
+        addControl.Reload();
+        StateHasChanged();
+    }
+
+
+
+    class MaterialRecipeItemView
+    {
+        public string Name { get; set; }
+        public string Quantity { get; set; }
+
+    }
+
+    class PackRecipeItemView
+    {
+        public string Name { get; set; }
+        public string Quantity { get; set; }
+    }
+
+}

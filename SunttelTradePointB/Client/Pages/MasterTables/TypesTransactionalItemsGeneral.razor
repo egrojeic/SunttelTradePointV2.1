@@ -1,0 +1,121 @@
+﻿@page "/TypesTransactionalItems"
+@page "/TypesTransactionalItems/{_filterItems}"
+@using SunttelTradePointB.Client.Shared.TransactionalItems
+@using SunttelTradePointB.Shared.Common
+@using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Navigations
+@inject HttpClient Http
+@inject TransactionalItemsService transactItemsService;
+@inject IJSRuntime JSRuntime
+@inject ContextMenuService ContextMenuService
+@inject DialogService DialogService
+@inject NavigationManager Navigation
+
+
+<PageTitleComponent Title="Types of Transactional Items" IconName="TransactionalTypes.png"
+                    Description="Describe how the commercial items could be classified">
+</PageTitleComponent>
+
+<div class="panelMenuContainer">
+    <MenuConcet></MenuConcet>
+    <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
+
+</div>
+
+
+
+
+@if (isLoading)
+{
+
+    <WaitingProcessIndicator loadingTopic="Transactional Items"></WaitingProcessIndicator>
+
+}
+else
+{
+
+    <DataGrid TParameter="TransactionalItemType"
+          EventCallbackMenu="OnContextMenuClick"
+          parameterList="transactionalItemType"
+          GridColumnsList="gridColumnList"
+          EventCallbackOnLoad="Onload">
+    </DataGrid>
+
+}
+
+
+
+@code {
+
+    [Parameter]
+    public string _filterItems { get; set; } = "";
+    public List<TransactionalItemType> transactionalItemType { get; set; }  
+    public List<GridColumn> gridColumnList { get; set; }
+
+    bool isLoading = false;  
+
+    public string? conceptFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+
+
+    protected override void OnInitialized()
+    {
+       
+        gridColumnList = new List<GridColumn>()
+        {
+            new GridColumn() { Field = nameof(TransactionalItemType.Name), HeaderText = GetName("Name", new ConceptGroup())  },
+            new GridColumn() { Field = nameof(TransactionalItemType.Code), HeaderText = GetName("Code", new ConceptGroup()) },
+            new GridColumn() { Field = nameof(TransactionalItemType.HasProductionSpecs), HeaderText = GetName("HasProductionSpecs", new TransactionalItemType()) }
+
+        };
+        if (_filterItems != "" && _filterItems != null)
+        {
+            LoadData();
+        }
+        transactItemsService.Page = "TypesTransactionalItems";
+    }   
+
+
+    private async Task LoadData()
+    {
+        isLoading = true;
+        var data = await transactItemsService.GetTransactionalItemType(_filterItems);
+        transactionalItemType = data; 
+        isLoading = false;
+        StateHasChanged();
+
+    }
+
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemType> args)
+    {
+        TransactionalItemType itemTransactionalItemType = null;
+        itemTransactionalItemType = args.RowInfo.RowData;
+        transactItemsService.ConceptTransactionalItemType = itemTransactionalItemType;
+        if (args.Item.Id == "Edit")
+        {
+            Navigation.NavigateTo($"/TypesTransactionalItemsConcept/TypesTransactionalItems/Edit/{_filterItems}");
+        }
+    }
+    public void Onload(object args)
+    {
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+
+}

@@ -1,0 +1,21 @@
+﻿<div id = "headerContainer">
+
+    <div id="headerTitle">
+        <img src="images/@IconName" id="iconSection"/>
+        <h1>@Title</h1>
+    </div>
+    <hr />
+    <p>@Description</p>
+
+</div>
+
+@code {
+    [Parameter]
+    public string? Title { get; set; }
+    [Parameter]
+    public string? IconName { get; set; }
+    [Parameter]
+    public string? Description { get; set; }
+
+
+}

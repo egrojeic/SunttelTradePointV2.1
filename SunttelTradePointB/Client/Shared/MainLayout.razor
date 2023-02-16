@@ -1,0 +1,116 @@
+﻿@using SunttelTradePointB.Client.Services
+@using SunttelTradePointB.Shared.Squad
+@using System.Globalization
+@using System.Security.Claims
+@inherits LayoutComponentBase
+@inject NavigationManager navigationManager
+@inject CustomStateProvider authStateProvider
+@inject SQuadService squadService;
+@inject IJSRuntime JS;
+
+
+<RadzenContextMenu/>
+<RadzenDialog/>
+
+<AuthorizeView>
+    <Authorized>
+        <div class="top-row">
+
+
+                <div id="tradePointInfoSup">
+                    <div id="TradePointIdentifierDiv">
+                        <img src="/images/logo.png" id="tradePintLogo" />
+                        <a class="sunttelbrand" href="" id="SunttelBrand">Sunttel Software</a>
+
+                    </div>
+                </div>
+
+            <h1 id="helloUser">Hello @context.User.Identity.Name</h1>
+            
+           @* <h1 id="squadName">@squd.Nombre</h1>*@
+
+          @*  <h1 id="currentDate">Date: @currentDate</h1>*@
+
+            <h1 id="currentWeek">Week: @weekDate</h1>
+
+
+            <button type="button" class="btn btn-link ml-md-auto" @onclick="@LogoutClick">Logout</button>
+
+        </div>
+
+
+        <div class="page">
+
+    
+
+            <div class="sidebar">
+                <NavMenu />
+            </div>
+
+
+            <div class="main">
+                @Body
+            </div>
+
+
+        </div>
+
+    </Authorized>
+</AuthorizeView>
+
+@functions{
+
+    [CascadingParameter]
+    Task<AuthenticationState> AuthenticationState { get; set; }
+    Squad squd { get; set; } = new Squad();
+    string currentDate = "";
+    int weekDate = 0;
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var authState = await authStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (!(await AuthenticationState).User.Identity.IsAuthenticated)
+        {
+            navigationManager.NavigateTo("/login");
+        }
+        else {
+            UIClientGlobalVariables.UserId = user.FindFirst(ClaimTypes.NameIdentifier).Value;
+        }
+    }
+
+
+
+    async Task LogoutClick()
+    {
+        await authStateProvider.Logout();
+        navigationManager.NavigateTo("/login");
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        squd = await squadService.SquadInfo();
+        currentDate = DateTime.Now.ToString("MM/d/yyyy");
+        weekDate = GetIso8601WeekOfYear(DateTime.Now);
+        await JS.InvokeVoidAsync("localStorage.setItem", "SquadName", squd.Nombre);
+
+    }
+
+    public static int GetIso8601WeekOfYear(DateTime time)
+{
+    // Seriously cheat.  If its Monday, Tuesday or Wednesday, then it'll 
+    // be the same week# as whatever Thursday, Friday or Saturday are,
+    // and we always get those right
+    DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
+    if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
+    {
+        time = time.AddDays(3);
+    }
+
+    // Return the week of our adjusted day
+    return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+} 
+
+
+}

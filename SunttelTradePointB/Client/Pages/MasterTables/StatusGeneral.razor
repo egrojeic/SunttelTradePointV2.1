@@ -1,0 +1,115 @@
+﻿@page "/Status"
+@page "/Status/{_filterItems}"
+@using SunttelTradePointB.Client.Shared.TransactionalItems
+@using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Navigations
+@inject HttpClient Http
+@inject TransactionalItemsService transactItemsService;
+@inject IJSRuntime JSRuntime
+@inject ContextMenuService ContextMenuService
+@inject DialogService DialogService
+@inject NavigationManager Navigation
+
+
+<PageTitleComponent Title="Status of Transactional Items" IconName="TransactionalTypes.png"
+                    Description="Describe how the commercial items could be classified">
+</PageTitleComponent>
+
+<div class="panelMenuContainer">
+    <MenuConcet></MenuConcet>
+    <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
+
+</div>
+
+
+@if (isLoading)
+{
+
+    <WaitingProcessIndicator loadingTopic="Transactional Items"></WaitingProcessIndicator>
+
+}
+else
+{
+
+    <DataGrid TParameter="TransactionalItemStatus"
+          EventCallbackMenu="OnContextMenuClick"
+          parameterList="transactionalItemStatuss"
+          GridColumnsList="GridColumnList"
+          EventCallbackOnLoad="Onload">
+    </DataGrid>
+
+}
+
+
+@code {
+    [Parameter]
+    public string _filterItems { get; set; } = "";
+    public List<TransactionalItemStatus> transactionalItemStatuss { get; set; }
+    public List<GridColumn> GridColumnList { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        GridColumnList = new List<GridColumn>()
+        {
+            new GridColumn() { Field = nameof(TransactionalItemStatus.Name), HeaderText = GetName("Name", new TransactionalItemStatus())  },
+            new GridColumn() { Field = nameof(TransactionalItemStatus.Code), HeaderText = GetName("Code", new TransactionalItemStatus()), Width="100" },
+            new GridColumn() { Field = nameof(TransactionalItemStatus.Notes), HeaderText = GetName("Notes", new AtomConcept()) }
+           
+        };
+
+        if (_filterItems != "" && _filterItems != null)
+        {
+            LoadData();
+        }
+        transactItemsService.Page = "Status";
+    }
+
+    bool isLoading = false;
+
+    public string? conceptFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }   
+
+    private async Task LoadData()
+    {
+        isLoading = true;
+        transactionalItemStatuss = await transactItemsService.GetTransactionalStatusesTable(_filterItems);
+        isLoading = false;
+        StateHasChanged();
+
+    }
+
+
+    public void Onload(object args)
+    {
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemStatus> args)
+    {
+        TransactionalItemStatus Obj = null;
+        Obj = args.RowInfo.RowData;
+        transactItemsService.ConceptStatusSelectedItems = Obj;
+        if (args.Item.Id == "Edit")
+        {
+            Navigation.NavigateTo($"/StatusConcept/Status/Edit/{_filterItems}");
+        }
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+}

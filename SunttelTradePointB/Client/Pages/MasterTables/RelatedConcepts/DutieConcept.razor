@@ -1,0 +1,73 @@
+﻿@page "/DutieConcept/{Page}/{Mode}/{filterItems}"
+@page "/DutieConcept/{Page}/{Mode}"
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Buttons
+@inject NavigationManager Navigation
+@inject TransactionalItemsService transactionalService;
+
+
+<PageTitleComponent Title=" Dutie " IconName="goods.png"
+                    Description="Here you can add  dutie">
+</PageTitleComponent>
+
+<div class="flex-horizontal-center">
+    <div class="grid-columns-2 box-shadow-mode">
+      ...
+    </div>
+
+
+
+    <div></div>
+    <div class="flex-horizontal-end">
+        <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+        <button @onclick='Save' class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
+    </div>
+
+
+</div>
+
+@code {
+    [Parameter]
+    public string Page { get; set; } = "";
+    [Parameter]
+    public string Mode { get; set; } = "Add";
+    [Parameter]
+    public string filterItems { get; set; } = "";
+    public ConceptGroup conceptGroup = new();
+    public List<ConceptGroup> childrenGroups = new();
+    public ConceptGroup childrenGroup = new();
+
+    protected override void OnInitialized()
+    {
+        if (Mode == "Edit")
+        {
+            conceptGroup = transactionalService.ConceptGroupSelectedItems;
+        }
+        if (Mode == "Add")
+        {
+            conceptGroup = new();
+        }
+        base.OnInitialized();
+    }
+
+
+    public void Closed(string value)
+    {
+        if (value == "control") Navigation.NavigateTo($"/{Page}/{filterItems}");
+    }
+
+    public async void Save()
+    {
+        //conceptGroup.ChildrenGroups = childrenGroups;
+        //await transactionalService.SaveTransactionalItemGroup(null, conceptGroup);
+       
+    }
+   
+
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+}

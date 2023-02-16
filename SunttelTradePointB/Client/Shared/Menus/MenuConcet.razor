@@ -1,0 +1,79 @@
+﻿@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+@inject NavigationManager Navigation
+@inject TransactionalItemsService transactionalService;
+
+<div id="container-menu-general">
+    <nav>
+        <button @onclick='Home' class="general-menu-button" style="text-align:center;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+        <button @onclick="CreateNew" class="general-menu-button"><i class="fa-solid fa-file"></i> Create New...</button>
+
+        <SfSplitButton Content="Import Data" IconCss="fa-solid fa-file-import" CssClass="splitButtonsStyle">
+            <DropDownMenuItems>
+                <DropDownMenuItem Text="Importing from the cloud..." IconCss="fa-solid fa-cloud-arrow-up"></DropDownMenuItem>
+                <DropDownMenuItem Text="Uploading a csv file..." IconCss="fa-solid fa-file-csv"></DropDownMenuItem>
+            </DropDownMenuItems>
+
+        </SfSplitButton>
+
+
+
+    </nav>
+
+</div>
+
+@code {
+    static bool ShowMenu { get; set; } = false;
+    public string commandStyle = "display: 'none';";
+
+    const string PASTE = "e-btn-icons e-paste";
+    const string PASTESPECIAL = "e-btn-icons e-paste-special";
+    const string PASTEASFORMULA = "e-btn-icons e-paste-formula";
+    const string PASTEASHYPERLINK = "e-btn-icons e-paste-hyperlink";
+
+    void ToggleMenu()
+    {
+        ShowMenu = !ShowMenu;
+        commandStyle = $"display: {(ShowMenu ? "block" : "none")}";
+        StateHasChanged();
+
+    }
+
+    void OnClick(RadzenSplitButtonItem item, string buttonName)
+    {
+        if (item != null)
+        {
+            Console.WriteLine($"{buttonName}, item with value {item.Value} clicked");
+        }
+        else
+        {
+            Console.WriteLine($"{buttonName} clicked");
+        }
+    }
+
+    public void CreateNew()
+    {
+        string Page = transactionalService.Page != null ? transactionalService.Page : "";
+
+        if (Page == "TypesTransactionalItems")
+        {
+            Navigation.NavigateTo($"/TypesTransactionalItemsConcept/TypesTransactionalItems/Add");
+        }
+        if (Page == "Groups")
+        {
+            Navigation.NavigateTo($"/GroupConcept/Groups/Add");
+        }
+        if (Page == "Status")
+        {
+            Navigation.NavigateTo($"/StatusConcept/Status/Add");
+        }
+
+    }
+
+    public void Home()
+    {
+        Navigation.NavigateTo($"/Products");
+    }
+
+}
+

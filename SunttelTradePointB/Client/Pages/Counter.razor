@@ -1,0 +1,54 @@
+﻿@page "/counter"
+@using Syncfusion.Blazor.SplitButtons
+
+
+
+@inject DialogService DialogService
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+<button @onclick="OpenOrder">open pop</button>
+
+
+      <SfSplitButton Content="Paste">
+        <DropDownMenuItems>
+            <DropDownMenuItem Text="Cut" ></DropDownMenuItem>
+            <DropDownMenuItem Text="Copy" ></DropDownMenuItem>
+            <DropDownMenuItem Text="Paste"></DropDownMenuItem>
+        </DropDownMenuItems>
+    </SfSplitButton>
+
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+
+
+    public async Task OpenOrder()
+    {
+
+        await DialogService.OpenAsync<Counter>("Test Title", null, new DialogOptions() {
+            Width = "700px", 
+            Height = "512px", 
+            Resizable = true, 
+            Draggable = true,
+            CloseDialogOnOverlayClick = false
+        });
+
+        //await DialogService.OpenAsync<Counter>($"Order {111}",
+        //       new Dictionary<string, object>() { { "OrderID", 1} },
+        //       new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
+    }
+
+
+}

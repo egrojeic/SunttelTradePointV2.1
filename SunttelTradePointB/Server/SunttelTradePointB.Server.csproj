@@ -1,0 +1,85 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="Services\EDIInterface\**" />
+		<Compile Remove="Services\Sales\**" />
+		<Content Remove="Services\EDIInterface\**" />
+		<Content Remove="Services\Sales\**" />
+		<EmbeddedResource Remove="Services\EDIInterface\**" />
+		<EmbeddedResource Remove="Services\Sales\**" />
+		<None Remove="Services\EDIInterface\**" />
+		<None Remove="Services\Sales\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Dapper" Version="2.0.123" />
+		<PackageReference Include="EntityFramework" Version="6.4.4" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.9" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.9" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.9">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
+		<PackageReference Include="MongoDB.Driver" Version="2.17.1" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.4.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.4.0" />
+		<PackageReference Include="Syncfusion.Blazor.Grid" Version="20.4.0.44" />
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.1" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Client\SunttelTradePointB.Client.csproj" />
+		<ProjectReference Include="..\Shared\SunttelTradePointB.Shared.csproj" />
+		
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Controllers\AccountingCtrl\" />
+	  <Folder Include="Controllers\ECommerceCtrl\" />
+	  <Folder Include="Controllers\EDIInterfaceCtrl\" />
+	  <Folder Include="Controllers\InventoryCtrl\" />
+	  <Folder Include="Controllers\MarketingCtrl\" />
+	  <Folder Include="Controllers\ProcurementCtrl\" />
+	  <Folder Include="Controllers\ProductionCtrl\" />
+	  <Folder Include="Controllers\QualityControlCtrl\" />
+	  <Folder Include="Interfaces\AccountingInterfaces\" />
+	  <Folder Include="Interfaces\ECommerceInterfaces\" />
+	  <Folder Include="Interfaces\EDIInterfaceInterfaces\" />
+	  <Folder Include="Interfaces\InventoryInterfaces\" />
+	  <Folder Include="Interfaces\MarketingInterfaces\" />
+	  <Folder Include="Interfaces\ProcurementInterfaces\" />
+	  <Folder Include="Interfaces\ProductionInterfaces\" />
+	  <Folder Include="Interfaces\QualityControlServices\" />
+	  <Folder Include="Interfaces\Sales\" />
+	  <Folder Include="ServicesMigration\" />
+	  <Folder Include="Services\InventoryServices\" />
+	  <Folder Include="Services\AccountingServices\" />
+	  <Folder Include="Services\EDIInterfaceServices\" />
+	  <Folder Include="Services\ECommerceServices\" />
+	  <Folder Include="Services\MarketingServices\" />
+	  <Folder Include="Services\QualityControlServices\" />
+	  <Folder Include="Services\ProcurementServices\" />
+	  <Folder Include="Services\ProductionServices\" />
+	  <Folder Include="Services\ShippingServices\" />
+	  <Folder Include="Services\SalesServices\" />
+	</ItemGroup>
+
+
+</Project>

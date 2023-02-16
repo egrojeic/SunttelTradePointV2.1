@@ -1,0 +1,112 @@
+﻿@page "/GroupsEntities"
+@using SunttelTradePointB.Client.Shared.TransactionalItems
+@using SunttelTradePointB.Shared.Common
+
+@inject IJSRuntime JSRuntime
+@inject ActorsNodeService actorsNodeServive;
+@inject ContextMenuService ContextMenuService
+
+
+<PageTitleComponent Title="Groups of Entities/Actors/Nodes" IconName="EntityGroups.png"
+                    Description="Describe the groups of the entities">
+</PageTitleComponent>
+
+<div class="panelMenuContainer">
+    <GroupsMenu></GroupsMenu>
+    <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
+</div>
+
+<div class="tableBodyContainer">
+    @if (isLoading)
+    {
+        <WaitingProcessIndicator loadingTopic="Groups"></WaitingProcessIndicator>
+    }else{
+        @if(entityGroupList != null)
+        {
+            <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="50"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@entityGroupList"
+                    TItem="EntityGroup"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    @bind-Value=@selectedGroups Class="m-4"
+                    CellContextMenu="@ShowContextMenuWithContent">
+                <Columns>
+                    <RadzenDataGridColumn TItem="EntityGroup" Property="@nameof(EntityGroup.Code)" Title="Code" Frozen="true" Width="120px" />
+                    <RadzenDataGridColumn TItem="EntityGroup" Property="@nameof(EntityGroup.Name)" Title="Name" Frozen="true" Width="auto" />
+                </Columns>
+            </RadzenDataGrid>
+        }
+    }
+</div>
+
+
+@code {
+    string filterText = "";
+    List<EntityGroup>? entityGroupList;
+    IList<EntityGroup> selectedGroups;
+
+
+    bool isLoading = false;
+    string _filterItems = "";
+
+    public string? conceptFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            GetFilteredGroup(_filterItems);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetFilteredGroup();
+    }
+
+    public async Task GetFilteredGroup(string filter = "")
+    {
+        if(filter.Length > 0)
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            var response = await actorsNodeServive.GetListEntityGroups(filter);
+
+            if (response != null)
+                entityGroupList = response;
+
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<EntityGroup> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        AtomConcept argObj = (AtomConcept)args.Value;
+        //Navigate(argObj.Id);
+
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+}

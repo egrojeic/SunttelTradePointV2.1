@@ -1,0 +1,103 @@
+﻿@page "/BoxeConcept/{Page}/{Mode}/{filterItems}"
+@page "/BoxeConcept/{Page}/{Mode}"
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Buttons
+@inject NavigationManager Navigation
+@inject TransactionalItemsService transactionalService;
+
+
+<PageTitleComponent Title=" Box " IconName="boxes.png"
+                    Description="Here you can add box ">
+</PageTitleComponent>
+<div class="flex-horizontal-center">
+    <div class="grid-columns-2 box-shadow-mode">
+        <div><label>@GetName( "Name", new AtomConcept())</label></div>
+        <div><input @bind-value="box.Name" class="form-control" placeholder="Edit value" /></div>
+        <div><label>@GetName( "Code", new AtomConcept())</label></div>
+        <div><input @bind-value="box.Code" class="form-control" placeholder="Edit value" /></div>
+        <div><label>@GetName( "Notes", new AtomConcept())</label></div>
+        <div><input @bind-value="box.Notes" class="form-control" placeholder="Edit value" /></div>
+        <div><label>@GetName( "Length", new Box())</label></div>
+        <div><input @bind-value="box.Length" class="form-control" placeholder="Edit value" /></div>
+        <div><label>@GetName( "Width", new Box())</label></div>
+        <div><input @bind-value="box.Width" class="form-control" placeholder="Edit value" /></div>
+        <div><label>@GetName( "Height", new Box())</label></div>
+        <div><input @bind-value="box.Height" class="form-control" placeholder="Edit value" /></div>
+        <div><label>@GetName( "WeightVolumeRate", new Box())</label></div>
+        <div><input @bind-value="box.WeightVolumeRate" class="form-control" placeholder="Edit value" /></div>
+        <div><label>@GetName( "ContainersNumber", new Box())</label></div>
+        <div><input @bind-value="box.ContainersNumber" class="form-control" placeholder="Edit value" /></div>
+        <div><label>@GetName( "PalletsEquivalent", new Box())</label></div>
+        <div><input @bind-value="box.PalletsEquivalent" class="form-control" placeholder="Edit value" /></div>
+        <div><label>@GetName( "FlagWet", new Box())</label></div>
+        <div>
+            <SfSwitch @bind-Checked="@box.FlagWet"></SfSwitch>
+        </div>
+        <div><label>@GetName( "Enable", new Box())</label></div>
+        <div>
+            <SfSwitch @bind-Checked="@box.Enable"></SfSwitch>
+        </div>
+    </div>
+
+    <div class="grid-columns-2 box-shadow-mode">
+        <div><label>@GetName( "LinkedTransactionalItem", new Box())</label></div>
+        <div></div>
+        <div><label>@GetName( "Name", new AtomConcept())</label></div>
+        <div><input @bind-value="linkedTransactionalItem.Name" class="form-control" placeholder="Edit value" /></div>
+        <div><label>@GetName( "Code", new AtomConcept())</label></div>
+        <div><input @bind-value="linkedTransactionalItem.Code" class="form-control" placeholder="Edit value" /></div>
+    </div>
+    <div class="flex-horizontal-end">
+        <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+        <button @onclick='Save' class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public string Page { get; set; } = "";
+    [Parameter]
+    public string Mode { get; set; } = "Add";
+    [Parameter]
+    public string filterItems { get; set; } = "";
+    public Box box = new();
+    public bool ststus = false;
+
+    public AtomConcept linkedTransactionalItem = new();
+
+    protected override void OnInitialized()
+    {
+        if (Mode == "Edit")
+        {
+            box = transactionalService.BoxSelectedItems;
+        }
+        if (Mode == "Add")
+        {
+            box = new();
+        }
+
+
+
+        base.OnInitialized();
+    }
+
+    public void Closed(string value)
+    {
+        if (value == "control") Navigation.NavigateTo($"/{Page}/{filterItems}");
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    public async void Save()
+    {
+        box.LinkedTransactionalItem = linkedTransactionalItem;
+        string boxId = box.Id;
+        box.CreationTime = DateTime.UtcNow;
+        box.LastModifiedTime = DateTime.UtcNow;
+        var resul = await transactionalService.SaveBox(boxId, box);
+        if (resul) { box = new(); linkedTransactionalItem = new(); };
+    }
+}

@@ -1,0 +1,116 @@
+﻿@page "/Actors/{Id}/Phones"
+@page "/Actors/{Id}/Phones/{phoneId}/Edit"
+@using Syncfusion.Blazor.Popups
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Cards
+
+@inject IJSRuntime JSRuntime
+@inject NavigationManager navigationManager
+@inject ActorsNodeService actorsNodeServive
+
+<div class="control-section">
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
+            <SfCard>
+                <CardHeader Title="Add a new number phone" />
+                <CardContent>
+                    <form onsubmit="event.preventDefault();">
+                        <label class="control-label col-md-12">@lblPhone: </label>
+                        <div class="form-group row">
+                            <div class="form-group col-4">
+                                <SfTooltip Target="#zoneCode" Content="@ContentCode">
+                                    <input id="zoneCode" type="number" class="form-control" min="1" @bind-value="phoneNumber.ZoneCode" required/>
+                                </SfTooltip>
+                            </div>
+
+                            <div class="form-group col-8">
+                                <SfTooltip Target="#phoneNumber" Content="@ContentPhone">
+                                    <input id="phoneNumber" type="number" class="form-control" @bind-value="phoneNumber.Number" required/>
+                                </SfTooltip>
+                            </div>
+                        </div>                        
+
+                        <div class="form-group py-2">
+                            <label class="control-label col-md-12">@lblDescription: </label>
+                            <div class="col">
+                                <SfTooltip Target="#description" Content="@ContentDescription">
+                                    <input id="description" type="text" class="form-control" @bind-value="phoneNumber.Description" required/>
+                                </SfTooltip>
+                            </div>
+                        </div>
+                        <div class="py-2">
+                            <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SavePhone(Id, phoneNumber))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                            <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
+                        </div>
+                    </form>
+
+                </CardContent>
+            </SfCard>
+        </div>
+    </div>
+</div>
+
+
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    [Parameter]
+    public string phoneId { get; set; }
+
+    private string ContentCode = "e.g 57";
+    private string ContentPhone = "955 555 555";
+    private string ContentDescription = "e.g Home/Personal";
+
+    public string lblPhone = "";
+    public string lblDescription = "";
+
+    PhoneNumber phoneNumber = new PhoneNumber();
+    List<PhoneNumber> phoneNumberList = new List<PhoneNumber>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        phoneNumber = new PhoneNumber();
+        lblPhone = UICommonFunctions.GetDisplayName(new PhoneNumber(), "ZoneCode");
+        lblDescription = UICommonFunctions.GetDisplayName(new PhoneNumber(), "Description");
+        await GetEntityDetailsPhone(Id);
+    }
+
+    private async Task SavePhone(string EntityActorId, PhoneNumber phoneNumber)
+    {
+        if (EntityActorId != null && phoneNumber != null)
+        {
+            if(phoneId != null)
+            {
+                phoneNumber.Id = phoneId;
+            }
+            await actorsNodeServive.SavePhone(EntityActorId, phoneNumber);
+            StateHasChanged();
+            await OnInitializedAsync();
+        }
+    }
+
+    public async Task GetEntityDetailsPhone(string entityId)
+    {
+        if(phoneId != null)
+        {
+            phoneNumberList = await actorsNodeServive.GetPhoneNumber(entityId);
+            foreach(var phones in phoneNumberList)
+            {
+                if(phones.Id == phoneId)
+                {
+                    phoneNumber.ZoneCode = phones.ZoneCode;
+                    phoneNumber.Number = phones.Number;
+                    phoneNumber.Description = phones.Description;
+                }
+            }
+        }
+    }
+
+    private void GoBack()
+    {
+        navigationManager.NavigateTo($"/Actors/{Id}/3");
+    }
+
+}

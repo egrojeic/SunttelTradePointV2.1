@@ -1,0 +1,440 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
+using SunttelTradePointB.Shared.Common;
+
+namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
+{
+
+    /// <summary>
+    /// Author: Jorge Isaza
+    /// Description: Controller intended to manage CRUD operations on Entity Nodes Table Maintenance
+    /// </summary>
+    [Tags("Entity Nodes Table Maintenance")]
+    [Route("api/[controller]/[action]")]
+    [ApiController]
+    public class EntityNodesMaintenanceController : ControllerBase
+    {
+
+        private IActorsNodes _entityNodes;
+        private readonly ILogger<EntityNodesMaintenanceController> _logger;
+        IConfiguration config;
+
+        /// <summary>
+        /// Constructor Class 
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="_config"></param>
+        /// <param name="entityNodes"></param>
+        public EntityNodesMaintenanceController(ILogger<EntityNodesMaintenanceController> logger, IConfiguration _config, IActorsNodes entityNodes)
+        {
+            _logger = logger;
+            config = _config;
+            _entityNodes = entityNodes;
+        }
+
+
+        /// <summary>
+        /// Returns a list of entities with a name like the parameter
+        /// </summary>
+        /// <param name="filterName"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetEntityNodes")]
+        public async Task<IActionResult> GetEntityNodes(string? filterName = null)
+        {
+
+            var response = await _entityNodes.GetEntityActorFaceList(filterName);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.ActorsNodesList);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+
+        /// <summary>
+        /// Retrieves the list of shipping address of an Entity
+        /// </summary>
+        /// <param name="EntityId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetEntityDetailsAddressList")]
+        public async Task<IActionResult> GetEntityDetailsAddressList(string EntityId) {
+
+           
+            var response = await _entityNodes.GetEntityDetailsOf<Address>(EntityId,  EntityDetailsSection.AddressList);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.EntityRelatedList);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+
+        }
+
+
+        /// <summary>
+        /// Retrieves the phone numbers list
+        /// </summary>
+        /// <param name="EntityId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetEntityDetailsPhoneDirectory")]
+        public async Task<IActionResult> GetEntityDetailsPhoneDirectory(string EntityId)
+        {
+            var response = await _entityNodes.GetEntityDetailsOf<PhoneNumber>(EntityId,  EntityDetailsSection.PhoneDirectory);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.EntityRelatedList);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Retrieves Identifier list of an Entity
+        /// </summary>
+        /// <param name="EntityId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetEntityDetailsIdentifiersList")]
+        public async Task<IActionResult> GetEntityDetailsIdentifiersList(string EntityId)
+        {
+            var response = await _entityNodes.GetEntityDetailsOf<IdentificationEntity>(EntityId, EntityDetailsSection.IdentifiersList);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.EntityRelatedList);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+
+
+        /// <summary>
+        /// Retrives the possible roles for Entities
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("EntityRolesListSelector")]
+        public async Task<IActionResult> EntityRolesListSelector()
+        {
+            var response = await _entityNodes.EntityRolesListSelector();
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.rolesList);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+
+        /// <summary>
+        /// Retrieves an Entity/Actor object by Id
+        /// </summary>
+        /// <param name="entityActorId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetEntityActorById")]
+        public async Task<IActionResult> GetEntityActorById(string entityActorId)
+        {
+            var response = await _entityNodes.GetEntityActorById(entityActorId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.entityActorResponse);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Retrieves an Entity Group object by Id
+        /// </summary>
+        /// <param name="entityGroupId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetEntityGroup")]
+        public async Task<IActionResult> GetEntityGroup(string entityGroupId)
+        {
+            var response = await _entityNodes.GetEntityGroup(entityGroupId);
+
+            if(response.IsSuccess)
+            {
+                return Ok(response.entityGroup);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Retrieves a list of Entity Groups
+        /// </summary>
+        /// <param name="filterCondition"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetEntityGroups")]
+        public async Task<IActionResult> GetEntityGroups(string? filterCondition = null)
+        {
+            var result = await _entityNodes.GetEntityGroups(filterCondition);
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.entityGroup);
+            }
+            else
+            {
+                return NotFound(result.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Retrieves an Electronic Address filtered by Id
+        /// </summary>
+        /// <param name="electronicAddressId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetElectronicAddressById")]
+        public async Task<IActionResult> GetElectronicAddressById(string electronicAddressId)
+        {
+            var result = await _entityNodes.GetElectronicAddressById(electronicAddressId);
+
+            if(result.IsSuccess)
+            {
+                return Ok(result.electronicAddress);
+            }
+            else
+            {
+                return NotFound(result.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Retrieves Shipping Information filtered by Id
+        /// </summary>
+        /// <param name="shippingInfoId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetShippingSetupById")]
+        public async Task<IActionResult> GetShippingSetupById(string shippingInfoId)
+        {
+            var result = await _entityNodes.GetShippingSetupById(shippingInfoId);
+
+            if(result.IsSuccess)
+            {
+                return Ok(result.shippingInfo);
+            }
+            else
+            {
+                return NotFound(result.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Retrieves Entities Relationships filtered by Id
+        /// </summary>
+        /// <param name="entitiesCommercialRelationShipId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetEntitiesCommercialRelationShipById")]
+        public async Task<IActionResult> GetEntitiesCommercialRelationShipById(string entitiesCommercialRelationShipId)
+        {
+            var result = await _entityNodes.GetEntitiesCommercialRelationShipById(entitiesCommercialRelationShipId);
+
+            if(result.IsSuccess)
+            {
+                return Ok(result.entitiesCommercialRelationShip);
+            }
+            else
+            {
+                return NotFound(result.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Saves an Entity/Actor document. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="entityActorId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveEntity")]
+        public async Task<IActionResult> SaveEntity(EntityActor entity, string entityActorId)
+        {
+            var response = await _entityNodes.SaveEntity(entity, entityActorId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.entityActorResponse);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Saves an address of an entity. If it exists, it'll be updated, otherwise it 'll be inserted in the array
+        /// </summary>
+        /// <param name="entityActorId"></param>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveEntityAddress")]
+        public async Task<IActionResult> SaveEntityAddress(string entityActorId, Address address)
+        {
+            var response = await _entityNodes.SaveEntityAddress(entityActorId, address);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.entityAddress);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Saves a phone number of an entity. If it exists, it'll be updated, otherwise it 'll be inserted in the array
+        /// </summary>
+        /// <param name="entityActorId"></param>
+        /// <param name="phoneNumber"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SavePhone")]
+        public async Task<IActionResult> SavePhone(string entityActorId, PhoneNumber phoneNumber)
+        {
+            var response = await _entityNodes.SavePhone(entityActorId, phoneNumber);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.phoneNumber);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Saves an Identification Code of an entity. If it exists, it'll be updated, otherwise it 'll be inserted in the array
+        /// </summary>
+        /// <param name="entityActorId"></param>
+        /// <param name="identificationEntity"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveIdentificationCode")]
+        public async Task<IActionResult> SaveIdentificationCode(string entityActorId, IdentificationEntity identificationEntity)
+        {
+            var response = await _entityNodes.SaveIdentificationCode(entityActorId, identificationEntity);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.identificationEntity);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+
+        /// <summary>
+        /// Insert / Update an Entity Group
+        /// </summary>
+        /// <param name="entityGroupId"></param>
+        /// <param name="entityGroup"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveEntityGroup")]
+        public async Task<IActionResult> SaveEntityGroup(string entityGroupId, EntityGroup entityGroup)
+        {
+            var response = await _entityNodes.SaveEntityGroup(entityGroupId, entityGroup);
+
+            if(response.IsSuccess)
+            {
+                return Ok(response.entityGroup);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Inserts / Updates Electronic Address in an Entity Actor
+        /// </summary>
+        /// <param name="entityActorId"></param>
+        /// <param name="electronicAddress"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveElectronicAddress")]
+        public async Task<IActionResult> SaveElectronicAddress(string entityActorId, ElectronicAddress electronicAddress)
+        {
+            var response = await _entityNodes.SaveElectronicAddress(entityActorId, electronicAddress);
+
+            if(response.IsSuccess)
+            {
+                return Ok(response.electronicAddress);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Inserts / Updates Shipping Setup in an Entity Actor
+        /// </summary>
+        /// <param name="entityActorId"></param>
+        /// <param name="shippingInfo"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveShippingSetup")]
+        public async Task<IActionResult> SaveShippingSetup(string entityActorId, ShippingInfo shippingInfo)
+        {
+            var response = await _entityNodes.SaveShippingSetup(entityActorId, shippingInfo);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.shippingInfo);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Inserts / Updates Commercial Conditions in an Entity Actor
+        /// </summary>
+        /// <param name="entityActorId"></param>
+        /// <param name="entitiesCommercialRelationShip"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveCommercialConditions")]
+        public async Task<IActionResult> SaveCommercialConditions(string entityActorId, EntitiesCommercialRelationShip entitiesCommercialRelationShip)
+        {
+            var response = await _entityNodes.SaveCommercialConditions(entityActorId, entitiesCommercialRelationShip);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.entitiesCommercialRelationShip);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+    }
+}

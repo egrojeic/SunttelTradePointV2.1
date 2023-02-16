@@ -1,0 +1,110 @@
+﻿@page "/SeasonsGeneral"
+@page "/SeasonsGeneral/{_filterItems}"
+@using SunttelTradePointB.Client.Shared.TransactionalItems
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Navigations
+@inject HttpClient Http
+@inject TransactionalItemsService transactItemsService;
+@inject IJSRuntime JSRuntime
+@inject ContextMenuService ContextMenuService
+@inject DialogService DialogService
+@inject NavigationManager Navigation
+
+<PageTitleComponent Title="Seasons" IconName="seasons.png"
+                    Description="Commercial Seasons">
+</PageTitleComponent>
+
+<div class="panelMenuContainer">
+    <BoxTypesMenu></BoxTypesMenu>
+    <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
+
+</div>
+
+@if (isLoading)
+{
+
+    <WaitingProcessIndicator loadingTopic="Transactional Items"></WaitingProcessIndicator>
+
+}
+else
+{
+    <SfGrid @ref="referDataGrid" DataSource="@seasonBusiness"
+        AllowFiltering="true"
+        AllowTextWrap="false"
+        AllowPaging="true"
+        AllowResizing="true"      
+       
+        ContextMenuItems="@(new List<ContextMenuItemModel>() {
+        new ContextMenuItemModel {
+        Text = "selected",
+        Target = ".e-content",
+        Id = "clipboard"    ,
+        Items = new List<MenuItem>() {
+                                      new MenuItem { Text = "Edit", Id = "Edit",IconCss="/images/edit.png" }
+                                      } } }
+            )">
+
+        <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
+
+        <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="SeasonBusiness"></GridEvents>      
+    </SfGrid>
+}
+
+
+
+@code {
+    [Parameter]
+    public string _filterItems { get; set; } = "";
+    SfGrid<SeasonBusiness>? referDataGrid;
+   List<SeasonBusiness> seasonBusiness = new List<SeasonBusiness>();
+
+    bool isLoading = false;
+   
+
+    public string? conceptFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        if (_filterItems != "" && _filterItems != null)
+        {
+            LoadData();
+        }
+        transactItemsService.Page = "SeasonsGeneral";
+    }
+    private async Task LoadData()
+    {
+        isLoading = true;
+        var data = await transactItemsService.GetSeasonsTable(0, 250, _filterItems);
+        seasonBusiness =  data;
+        //await referDataGrid.Refresh();        
+        isLoading = false;
+        StateHasChanged();
+
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<SeasonBusiness> args)
+    {
+        SeasonBusiness itemSeasonBusiness = null;
+        itemSeasonBusiness = args.RowInfo.RowData;
+        transactItemsService.SeasonBusinessSelectedItems = itemSeasonBusiness;
+        if (args.Item.Id == "Edit")
+        {
+            Navigation.NavigateTo($"/SeasonBusinessConcept/SeasonsGeneral/Edit/{_filterItems}");
+        }
+    }
+}

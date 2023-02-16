@@ -1,0 +1,158 @@
+﻿@page "/Actors"
+
+@using SunttelTradePointB.Client.Shared.EntityShareComponents
+@using SunttelTradePointB.Shared.Common
+@using SunttelTradePointB.Client.Services.MasterTablesServices
+
+@inject IJSRuntime JSRuntime
+@inject ActorsNodeService actorsNodeServive;
+@inject ContextMenuService ContextMenuService
+@inject DialogService DialogService
+@inject NavigationManager navigationManager
+
+
+<PageTitleComponent Title="Actors/Nodes" IconName="ActorsIco.png"
+                    Description="Actors or nodes are those persons, companies, or entities who are involved in the network of your system">
+</PageTitleComponent>
+
+
+<div class="panelMenuContainer">
+    <EntityNodesMenu></EntityNodesMenu>
+    <SearchComponent @bind-FilterTextSet="@entitiesFilter"></SearchComponent>
+
+</div>
+
+
+<div class="tableBodyContainer">
+
+    @if (isLoading)
+    {
+
+        <WaitingProcessIndicator loadingTopic="Entities"></WaitingProcessIndicator>
+
+
+    }
+    else
+    {
+        @if (entityNodesList != null)
+        {
+
+            <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="50"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@entityNodesList"
+                    TItem="EntityActor"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    @bind-Value=@selectedEntities Class="m-4"
+                    CellContextMenu="@ShowContextMenuWithContent">
+
+                <Columns>
+                    <RadzenDataGridColumn TItem="EntityActor" Property="Code" Title="Code" Frozen="true" Width="80px" />
+                    <RadzenDataGridColumn TItem="EntityActor" Property="Name" Filterable="true" Title="Name" Frozen="true" Width="180px" TextAlign="TextAlign.Center" />
+                    <RadzenDataGridColumn TItem="EntityActor" Property="EMailAddress" Title="EMailAddress" Width="160px" />
+                    <RadzenDataGridColumn TItem="EntityActor" Property="InvoicingAddress.CityAddress" Title="Geolocation" Width="200px" />
+                    <RadzenDataGridColumn TItem="EntityActor" Property="GetFirstPhone" Title="Phone" Width="120px" />
+                    <RadzenDataGridColumn TItem="EntityActor" Property="DefaultEntityRole" Title="Default Role" Width="120px" />
+                    <RadzenDataGridColumn TItem="EntityActor" Property="FullClassName" Title="Groups" Width="120px" />
+
+                </Columns>
+            </RadzenDataGrid>
+        }
+    }
+
+
+
+
+</div>
+
+<div id="contextMenu" style="display:none; position:absolute;">
+    <div class="contextMenuItem">Show Card</div>
+    <div class="contextMenuItem">Print</div>
+</div>
+
+
+@code {
+    string filterText = "";
+    List<EntityActor>? entityNodesList;
+    IList<EntityActor> selectedEntities;
+
+    bool isLoading = false;
+
+    string _filterEntities = "";
+
+    public string? entitiesFilter
+    {
+        get { return _filterEntities; }
+        set
+        {
+            _filterEntities = value;
+            GetFilteredEntities(_filterEntities);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetFilteredEntities();
+    }
+
+    private async Task GetFilteredEntities(string stringFilter = "")
+    {
+        if (stringFilter.Length > 0)
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            var response = await actorsNodeServive.GetEntityActorFaceList(stringFilter);
+
+            if (response != null)
+                entityNodesList = response.Where(c => c.Id != "000000000000000000000000").ToList();
+
+            isLoading = false;
+            StateHasChanged();
+
+        }
+    }
+
+    void ShowContextMenu(MouseEventArgs e)
+    {
+
+        if (JSRuntime != null)
+        {
+            JSRuntime.InvokeVoidAsync("ShowContextMenu", e.ClientX, e.ClientY);
+        }
+    }
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<EntityActor> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+
+        </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        EntityActor argObj = (EntityActor)args.Value;
+        Navigate(argObj.Id);
+
+        Console.WriteLine($"Menu item with Value={argObj.Name} clicked");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+    private async Task Navigate(string entityActor)
+    {
+        navigationManager.NavigateTo($"/Actors/{entityActor}");
+    }
+
+}

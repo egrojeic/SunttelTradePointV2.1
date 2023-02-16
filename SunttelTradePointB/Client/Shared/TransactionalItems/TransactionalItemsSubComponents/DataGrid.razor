@@ -1,0 +1,69 @@
+﻿@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Grids
+@typeparam TParameter
+
+@if (parameterList != null)
+{
+    <SfGrid @ref="referDataGrid" DataSource="@parameterList"
+        Height="@Height"
+        Width="@Width"
+        AllowFiltering="true"
+        AllowTextWrap="false"
+        AllowPaging="true"
+        AllowResizing="true"
+        ContextMenuItems="@(new List<ContextMenuItemModel>() {
+        new ContextMenuItemModel {
+        Text = "selected",
+        Target = ".e-content",
+        Id = "clipboard"    ,
+        Items = new List<MenuItem>() {
+                                      new MenuItem { Text = "Edit", Id = "Edit",IconCss="/images/edit.png" }
+                                      } } }
+            )">
+
+        <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
+        <GridColumns>
+            @foreach (var item in GridColumnsList)
+            {
+                <GridColumn Field="@item?.Field" HeaderText="@item?.HeaderText" Width="@item?.Width"></GridColumn>
+            }
+        </GridColumns>
+        <GridEvents OnLoad="EventCallbackOnLoad" ContextMenuItemClicked="EventCallbackMenu" TValue="TParameter"></GridEvents>
+    </SfGrid>
+}
+
+
+
+@code {
+    [Parameter]
+    public List<TParameter> parameterList { get; set; }
+    [Parameter]
+    public EventCallback<ContextMenuClickEventArgs<TParameter>> EventCallbackMenu { get; set; }
+    [Parameter]
+    public EventCallback<object> EventCallbackOnLoad { get; set; }
+    [Parameter]
+    public List<GridColumn> GridColumnsList
+    {
+        get;
+        set;
+    }
+    [Parameter]
+    public string Height { get; set; } = "";
+    [Parameter]
+    public string Width { get; set; } = "100%";
+    SfGrid<TParameter>? referDataGrid;
+
+    protected override void OnParametersSet()
+    {
+        StateHasChanged();
+        if (referDataGrid!=null) referDataGrid.Refresh();
+    }
+
+
+    public void Load()
+    {
+        // referDataGrid.Refresh();
+        //StateHasChanged();
+    }
+
+}

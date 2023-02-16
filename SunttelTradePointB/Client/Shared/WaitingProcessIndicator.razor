@@ -1,0 +1,12 @@
+﻿<div id="loadingContainer">
+
+    <img src="/images/loadingico.gif" id="waitingImg" />
+
+    <label id="labelText">Loading @loadingTopic ...</label>
+</div>
+
+@code {
+    [Parameter]
+    public string? loadingTopic { get; set; }
+
+}

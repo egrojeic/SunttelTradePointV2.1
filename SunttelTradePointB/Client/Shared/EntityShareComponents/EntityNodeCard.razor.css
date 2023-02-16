@@ -1,0 +1,116 @@
+﻿.form-group {
+    display: flex;
+    align-items: center;
+
+    margin-bottom: 5px;
+}
+
+.containerBarMenuForm {
+    width: 100%;
+    background-color: gainsboro;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+#identificationGroup {
+    display: flex;
+    align-items: center;
+}
+
+.lineFormGroup
+{
+    display: flex;
+    align-items: center;
+}
+
+#eMailAddress {
+    width: 320px;
+}
+
+#roleEntity {
+    width: 180px;
+}
+
+#shortcutCode {
+    max-width: 100px;
+}
+
+.form-group label {
+    width: 120px;
+    margin-right: 10px;
+}
+
+    .form-group input[type="text"] {
+        flex: 1;
+        margin-right: 5px;
+        width: 320px;
+    }
+
+
+#legacyIdGroup {
+
+}
+
+    #legacyIdGroup input {
+        max-width: 100px;
+    }
+
+
+
+ .menuOptions {
+    min-width: 180px;
+    max-width: 190px;
+    border-right: 1px solid  #D3D3D3;
+}
+
+.navVerticalOptions ul {
+    display: block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navVerticalOptions li {
+    margin: 5px 0;
+    padding: 2px;
+}
+
+.navVerticalOptions .menu-item {
+    color: #333;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+    .navVerticalOptions .menu-item:hover {
+        color: white;
+        background-color: #00CCFF;
+    }
+
+.navVerticalOptions li:not(.selected) {
+    background-color: #fff;
+    color: #333;
+}
+
+.selected {
+    
+    background-color: #00CCFF;
+}
+
+
+
+#defaultAddres {
+    width: 100%;
+    color: black;
+}
+
+
+.detailsContainer {
+    display: grid;
+    grid-template-columns: 180px 4fr;
+}
+
+.workArea {
+    padding-left: 0px;
+    margin: 0;
+}

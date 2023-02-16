@@ -1,0 +1,185 @@
+﻿@page "/ProductionSpecsCard"
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor
+@using Syncfusion.Blazor.Lists
+@using SunttelTradePointB.Shared.Common
+@inject NavigationManager Navigation
+@inject TransactionalItemsService transactionalService;
+
+
+
+<div id="add-recipe">
+    <SfTab @ref="referTag" Height="250px" CssClass="tab-adaptive">
+        <TabAnimationSettings>
+            <TabAnimationPrevious Effect=AnimationEffect.None></TabAnimationPrevious>
+            <TabAnimationNext Effect=AnimationEffect.None></TabAnimationNext>
+        </TabAnimationSettings>
+        <TabItems>
+            <TabItem>
+                <ChildContent>
+                    <TabHeader Text="@ProductionSpecs"></TabHeader>
+                </ChildContent>
+                <ContentTemplate>
+                    <br />
+                    <br />
+                    <div class="content-production">
+
+                        <div class="item">
+                            <label>@Name</label>
+                            <input @bind-value="_TransactionalItemProcessStep.Name" class="form-control" placeholder="Edit name" />
+                        </div>
+                        <div class="item"><label>@Cost</label><input type="number" @bind-value="_TransactionalItemProcessStep.Cost" class="form-control" /></div>
+                        <div class="item"><label>@Order</label><input type="number" @bind-value="_TransactionalItemProcessStep.Order" class="form-control" /></div>
+
+                    </div>
+                </ContentTemplate>
+            </TabItem>
+            <TabItem>
+                <ChildContent>
+                    <TabHeader Text="@GeneralInstructions"></TabHeader>
+                </ChildContent>
+                <ContentTemplate>
+                    <div class="content-production">
+                        <br />
+                        <textarea placeholder="Edit new instruction " @bind="_TransactionalItemProcessStep.GeneralInstructions" class="form-control" style="width:100%; height:180PX; resize:none; font-size:14px; ">
+                        </textarea>
+                    </div>
+                </ContentTemplate>
+            </TabItem>
+            <TabItem>
+                <ChildContent>
+                    <TabHeader Text="@TransactionalItemProcessTags"></TabHeader>
+                </ChildContent>
+                <ContentTemplate>
+                    <br />
+                    <div class=" content-production-h">
+                        <div id="content-item">
+                            <div class="item">
+                                <label>@Key</label>
+                                <input @bind-value="TransactionalItemTag.Key" class="form-control" placeholder="Edit key" />
+                            </div>
+                            <div class="item">
+                                <label>@Value</label>
+                                <input @bind-value="TransactionalItemTag.Value" class="form-control" placeholder="Edit value" />
+                            </div>
+                            <br />
+                            <div class="item">  <button @onclick='Addtag' class="btn" style="background-color:#00ccff;">add</button></div>
+                        </div>
+                        <div id="contenScroll">
+                            @{
+                                foreach (TransactionalItemTag Elemen in TransactionalItemTagList)
+                                {
+                                    <div id="tag">
+                                        <p><b>@Key:</b> @Elemen.Key</p>
+                                        <p><b>@Value:</b> @Elemen.Value</p>
+
+                                    </div>
+                                    <div id="tagEnd">
+                                    </div>
+                                }
+
+                            }
+                        </div>
+                    </div>
+                </ContentTemplate>
+            </TabItem>
+        </TabItems>
+    </SfTab>
+</div>
+<div class="flex-horizontal-end">
+    <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+    <button @onclick="Save" class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
+</div>
+
+
+
+
+@code {
+
+    TransactionalItemProcessStep _TransactionalItemProcessStep = new TransactionalItemProcessStep();
+    List<TransactionalItemTag> TransactionalItemTagList = new List<TransactionalItemTag>();
+    TransactionalItemTag TransactionalItemTag = new TransactionalItemTag();
+
+    SfListView<TransactionalItemTag>? referTagList;
+    SfTab? referTag;
+
+    public string transactionalItemId { get; set; }
+
+    #region TileName
+    public string ProductionSpecs { get; set; }
+    public string Key { get; set; }
+    public string Value { get; set; }
+    public string Name { get; set; }
+    public string Cost { get; set; }
+    public string Order { get; set; }
+    public string GeneralInstructions { get; set; }
+    public string TransactionalItemProcessTags { get; set; }
+
+
+    #endregion TitleName
+
+    protected override void OnInitialized()
+    {
+        InitializedUICommonFunctions();
+        if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
+        {
+            transactionalItemId = transactionalService.transactionalItemId ;
+        }
+    }
+
+    public async void InitializedUICommonFunctions()
+    {
+        ProductionSpecs = UICommonFunctions.GetDisplayName(new TransactionalItem(), "ProductionSpecs");
+        Key = ValidateName(UICommonFunctions.GetDisplayName(new TransactionalItemTag(), "Key"));
+        Value = ValidateName(UICommonFunctions.GetDisplayName(new TransactionalItemTag(), "Value"));
+        Name = ValidateName(UICommonFunctions.GetDisplayName(new TransactionalItemProcessStep(), "Name"));
+        Cost = ValidateName(UICommonFunctions.GetDisplayName(new TransactionalItemProcessStep(), "Cost"));
+        Order = ValidateName(UICommonFunctions.GetDisplayName(new TransactionalItemProcessStep(), "Order"));
+        GeneralInstructions = ValidateName(UICommonFunctions.GetDisplayName(new TransactionalItemProcessStep(), "GeneralInstructions"));
+        TransactionalItemProcessTags = ValidateName(UICommonFunctions.GetDisplayName(new TransactionalItemProcessStep(), "TransactionalItemProcessTags"));
+
+        StateHasChanged();
+    }
+
+    private string ValidateName(string? Name)
+    {
+        return Name != null ? Name : "-";
+    }
+
+
+    private async void Save()
+    {
+        _TransactionalItemProcessStep.TransactionalItemProcessTags = TransactionalItemTagList;      
+
+        if (transactionalItemId != "" && transactionalItemId != null)
+        {
+            var resual =  await transactionalService.SaveProductionSpecs(transactionalItemId, _TransactionalItemProcessStep);
+        }
+        Closed("control");
+
+    }
+
+    private void Addtag()
+    {
+        TransactionalItemTagList.Add(TransactionalItemTag);
+        TransactionalItemTag = new TransactionalItemTag();
+        referTag.RefreshAsync();
+        StateHasChanged();
+    }
+    
+
+    public async Task Closed(string Element)
+    {
+        if (Element == "control") Navigation.NavigateTo("/TransactionalItemCard/1");       
+        StateHasChanged();
+    }
+
+
+
+
+
+
+
+}

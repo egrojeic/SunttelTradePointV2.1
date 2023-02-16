@@ -1,0 +1,229 @@
+﻿@page "/TransactionalItemCard"
+@page "/TransactionalItemCard/{Page}"
+@using SunttelTradePointB.Client.Shared.ConceptSelectors
+@using SunttelTradePointB.Client.Shared.EntityShareComponents.EntitySubComponents
+@using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+@inject ActorsNodeService actorsNodeServive;
+@inject TransactionalItemsService transactionalService;
+@inject NavigationManager Navigation
+
+
+<Alert @ref="referAlert" backgroundColor="@backgroundColor" AlertOpen="@AlertOpen">
+    <h6>@msg</h6>
+ 
+</Alert>
+
+<form>
+    <div class="panelMenuContainer" style="max-width:95%;">
+        <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+        <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+            <SplitButtonEvents ItemSelected="ItemSelected">
+            </SplitButtonEvents>
+            <DropDownMenuItems>
+                <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+            </DropDownMenuItems>
+
+        </SfSplitButton>
+
+        <SfSplitButton Content="Related Concepts" IconCss="e-icons e-user-defined" CssClass="splitButtonsStyle">
+            <SplitButtonEvents ItemSelected="ItemSelected">
+            </SplitButtonEvents>
+            <DropDownMenuItems>
+                <DropDownMenuItem Text="Boxes" IconCss="fa-solid fa-cloud-arrow-up"></DropDownMenuItem>
+                <DropDownMenuItem Text="Seasons" IconCss="fa-solid fa-file-csv"></DropDownMenuItem>
+                <DropDownMenuItem Text="Types and Groups" IconCss="fa-solid fa-file-csv"></DropDownMenuItem>
+            </DropDownMenuItems>
+
+        </SfSplitButton>
+
+    </div>
+
+
+
+    @if (currentItem != null)
+    {
+        <div id="identificationGroup">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" @bind-value="@currentItem.Name" />
+            </div>
+
+            <div class="form-group" id="shortCutCodeGroup">
+                <label for="shortcutCode">Identifier Code</label>
+                <input type="text" class="form-control" id="shortcutCode" @bind="currentItem.Code" />
+            </div>
+
+            <div class="form-group">
+                <label id="statusConcept">@currentItemStatus</label>
+            </div>
+        </div>
+        <div class="lineFormGroup">
+            <TransactionalItemGroupSelector @ref="referGroup" Groups="@currentItem.Groups" EventAddGroups="AddGroup"></TransactionalItemGroupSelector>
+        </div>
+        <hr />
+        <div class="detailsContainer">
+            <div class="menuOptions">
+                <nav class="navVerticalOptions">
+                    <ul>
+                        <li class="@StyleClassItem(0)" @onclick="@(()=>SetMenuOption(0))">Packing Recipe<span class="arrowhead"></span></li>
+                        <li class="@StyleClassItem(1)" @onclick="@(()=>SetMenuOption(1))">Production Specs<span class="arrowhead"></span></li>
+                        <li class="@StyleClassItem(2)" @onclick="@(()=>SetMenuOption(2))">Quality Parameters<span class="arrowhead"></span></li>                     
+                        <li class="@StyleClassItem(3)" @onclick="@(()=>SetMenuOption(3))">Images<span class="arrowhead"></span></li>
+                        <li class="@StyleClassItem(4)" @onclick="@(()=>SetMenuOption(4))">Tags<span class="arrowhead"></span></li>
+                        <li class="@StyleClassItem(5)" @onclick="@(()=>SetMenuOption(5))">Characteristic<span class="arrowhead"></span></li>
+                        
+                    </ul>
+                </nav>
+            </div>
+            <div class="workArea">
+
+                @switch (verticalMenuOptionSelected)
+                {
+                    case 0:
+                        <TIPackingRecipe />
+                        break;
+
+                    case 1:
+                        <TIProductionSpecs />
+                        break;
+
+                    case 2:
+                        <TIQualityParameters />
+                        break;
+
+                    case 3:
+                        <TIImages />
+                        break;
+
+                    case 4:
+                        <TITags />
+
+                        break;
+                    default:
+                        <TIPackingRecipe />
+                        break;
+                }
+
+            </div>
+        </div>
+    }
+    else
+    {
+        Navigation.NavigateTo("/Products");
+    }
+</form>
+
+
+
+
+@code {
+    [Parameter]
+    public string Page { get; set; } = "0";
+    public string msg = "", backgroundColor = "";
+    public bool AlertOpen = false;
+    Alert? referAlert;
+
+
+    public TransactionalItem? currentItem = new TransactionalItem();
+    List<ConceptGroup> conceptGroups = new List<ConceptGroup>();
+    List<PackingSpecs> productPackingSpecs = new();
+    List<TransactionalItemProcessStep> productionSpecs = new();
+    List<TransactItemImage> pathImages = new();
+    List<TransactionalItemQualityPair> qualityParameters = new();
+    List<TransactionalItemTag> transactionalItemTags = new();
+    TransactionalItemGroupSelector? referGroup;
+    int verticalMenuOptionSelected = 0;
+    public string transactionalItemId { get; set; }
+    public string currentItemStatus { get; set; }
+
+    protected override  void OnInitialized()
+    {
+
+        transactionalItemId = transactionalService.transactionalItemId != null ? transactionalService.transactionalItemId : "";
+        currentItem = transactionalService.TransactionalItems; 
+        if (currentItem != null)
+        {
+            currentItemStatus = currentItem.Status != null ? currentItem.Status.Name : "";           
+        }
+
+        int PageMode = Convert.ToInt32((Page != null ? Page : "0"));
+        SetMenuOption(PageMode);
+
+        StateHasChanged();
+
+    }
+
+    public string StyleClassItem(int item)
+    {
+        return (verticalMenuOptionSelected == item ? "menu-item selected" : "menu-item");
+    }
+
+    public void SetMenuOption(int item)
+    {
+        verticalMenuOptionSelected = item;
+
+
+    }
+
+    public void AddGroup(List<ConceptGroup> conceptGroups)
+    {
+        this.conceptGroups = conceptGroups;
+        SetAlert("requires saving", "orange");        
+    }
+
+    public async void ItemSelected(MenuEventArgs e)
+    {
+        AlertOpen = false;
+
+        StateHasChanged();
+        string tile = e.Item != null ? e.Item.Text : "";
+        if (tile == "Save")
+        {
+            currentItem.Groups = conceptGroups;
+            var resul = await transactionalService.SaveTransactionalItem(transactionalItemId, currentItem);
+            AlertOpen = true;
+            msg = resul ? "save" : "not save"; 
+        }
+        if (tile == "Save as...")
+        {
+            currentItem.Groups = conceptGroups;
+            var resul = await transactionalService.SaveTransactionalItem(null, currentItem);
+            AlertOpen = true;
+            msg = resul ? "save" : "not save";
+        }
+        if (tile == "Boxes")
+        {
+            Navigation.NavigateTo("/BoxeCard");
+        }
+        if (tile == "Seasons")
+        {
+            Navigation.NavigateTo("/SeasonBusinessCard");
+        }
+        backgroundColor = "green";
+        if (referAlert!=null) referAlert.Load();
+        StateHasChanged();
+
+
+    }
+
+    public void Home()
+    {
+        Navigation.NavigateTo("/Products");
+    }
+
+    public void SetAlert(string _msg, string _backgroundColor)
+    {
+        AlertOpen = false;
+        AlertOpen = true;
+        msg = _msg;
+        backgroundColor = _backgroundColor;
+    }
+}

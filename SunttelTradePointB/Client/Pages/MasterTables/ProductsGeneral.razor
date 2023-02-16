@@ -1,0 +1,160 @@
+﻿@page "/Products"
+@using SunttelTradePointB.Client.Shared.TransactionalItems
+@using SunttelTradePointB.Shared.Common
+@inject HttpClient Http
+@inject TransactionalItemsService transactItemsService;
+@inject IJSRuntime JSRuntime
+@inject ContextMenuService ContextMenuService
+@inject DialogService DialogService
+@inject NavigationManager Navigation
+
+
+
+<PageTitleComponent Title="Products, Services & Materials" IconName="goods.png"
+                    Description="Here you'll find every product or service">
+</PageTitleComponent>
+
+<div class="panelMenuContainer">
+    <ProductsGeneralMenu></ProductsGeneralMenu>
+    <SearchComponent @bind-FilterTextSet="@productsFilter"></SearchComponent>
+
+</div>
+
+
+
+<div class="tableBodyContainer">
+
+
+    @if (isLoading)
+    {
+
+        <WaitingProcessIndicator loadingTopic="Transactional Items"></WaitingProcessIndicator>
+
+
+    }
+    else
+    {
+        @if (itemList != null)
+        {
+
+            <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="@itemsPerPage"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@itemList"
+                    TItem="TransactionalItem"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    @bind-Value=@selectedItems Class="m-4"
+                    CellContextMenu="@ShowContextMenuWithContent"
+                    PageNumbersCount="100">
+
+                <Columns>
+                    <RadzenDataGridColumn TItem="TransactionalItem" Property="Code" Title="Code" Frozen="false" Width="80px" />
+                    <RadzenDataGridColumn TItem="TransactionalItem" Property="Name" Filterable="true" Title="Name" Frozen="false" Width="180px" TextAlign="TextAlign.Center" />
+                    <RadzenDataGridColumn TItem="TransactionalItem" Property="FullClassName" Title="Group" Width="160px" />
+                    <RadzenDataGridColumn TItem="TransactionalItem" Property="Status.Name" Title="Status" Width="200px" />
+                    <RadzenDataGridColumn TItem="TransactionalItem" Property="IsGeneric" Title="Is Generic" Width="120px" />
+                    <RadzenDataGridColumn TItem="TransactionalItem" Property="ReferenceCost" Title="Reference Cost" Width="120px" />
+
+
+                </Columns>
+            </RadzenDataGrid>
+        }
+    }
+
+</div>
+
+<div id="contextMenu" style="display:none; position:absolute;">
+    <div class="contextMenuItem">Show Card</div>
+    <div class="contextMenuItem">Print</div>
+</div>
+
+
+
+@code {
+    bool isLoading = false;
+    string _filterItems = "";
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    public string? productsFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+    List<ConceptGroup> groups = new List<ConceptGroup>();
+    private int currentPage = 1;
+    private int itemsPerPage = 25;
+
+    List<TransactionalItem>? itemList;
+    IList<TransactionalItem>? selectedItems;
+
+    private async Task UpdatePage(ChangeEventArgs args)
+    {
+        currentPage = int.Parse(args.Value.ToString());
+        await LoadData();
+    }
+
+    private async void UpdateItemsPerPage(ChangeEventArgs args)
+    {
+        itemsPerPage = int.Parse(args.Value.ToString());
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        isLoading = true;
+        var data = await transactItemsService.GetTransactionalItemsList(currentPage, 250, _filterItems);
+        itemList = data;
+        isLoading = false;
+        StateHasChanged();
+
+    }
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<TransactionalItem> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+
+        </RadzenMenu>
+    );
+
+
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        TransactionalItem argObj = (TransactionalItem)args.Value;
+        OpenOrder(argObj);
+
+        Console.WriteLine($"Menu item with Value={argObj.Name} clicked");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+    public async Task OpenOrder(TransactionalItem itemCard)
+    {
+        transactItemsService.transactionalItemId = itemCard.Id;
+        transactItemsService.TransactionalItems = itemCard;
+        transactItemsService.Page = "TransactionalItemCard";
+        Navigation.NavigateTo("/TransactionalItemCard");      
+    }
+
+
+}

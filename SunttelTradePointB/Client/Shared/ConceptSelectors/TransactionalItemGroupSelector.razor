@@ -1,0 +1,178 @@
+﻿@using SunttelTradePointB.Shared.Common
+@inject TransactionalItemsService transactionalService;
+
+
+<div class="lineFormGroup">
+    <div class="form-group">
+
+        <div style="display:flex; flex-direction:row;">
+            <label for="ComercialGroup" id="ctrlTitle">Group</label>
+            <div class="conten-chip">
+                <SfChip @ref="referChip" EnableDelete="true" CssClass="chip-style" EnableRtl="false">
+                    <ChipEvents Deleted="@onDeleted"></ChipEvents>
+                    <ChipItems>
+                        @{
+                            if (Groups != null)
+                            {
+                                @foreach (var Group in Groups)
+                                {
+                                    if (Group != null && Group.Name != null)
+                                    {
+                                        <ChipItem Text="@Group?.Name" Value="@Group?.Id" LeadingIconCss="anne"></ChipItem>
+                                    }
+
+                                }
+                            }
+                        }
+                    </ChipItems>
+                </SfChip>
+                <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="EventClosed" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewAddGroup">
+                    @{
+                        if (GroupsQuery != null)
+                        {
+                            foreach (var group in GroupsQuery)
+                            {
+                                <option value="@group?.Id">@group?.Name</option>
+                            }
+                        }
+
+                    }
+                </InputTextSelector>
+            </div>
+            <a @onclick='()=> SetViewElemnt("Group")' style="display:@(!PopupViewAddGroup?"block":"none");" class="rounded-button">
+                <i class="fa-solid fa-hand-pointer " id="arrow-icon"></i>
+            </a>
+        </div>
+        @*  <label id="ComercialGroup">@GroupsDescription</label>*@
+
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public EventCallback<List<ConceptGroup>> EventAddGroups { get; set; }
+    [Parameter]
+    public List<ConceptGroup>? Groups { get; set; }
+    public List<ConceptGroup>? GroupsQuery { get; set; }
+    public List<ConceptGroup>? GroupsSearcher { get; set; }
+    public ConceptGroup? Group = new ConceptGroup();
+    public string SearcherValueMode = "";
+    public string GroupsDescription = "";
+    public int ParamCountResul = 0;
+    public bool ViewSelect = false, PopupViewAddGroup = false;
+    InputTextSelector? ReferInputTextSelector;
+    SfChip? referChip;
+    protected override Task OnInitializedAsync()
+    {
+        if (Groups != null)
+        {
+            Groups.ForEach(gr => GroupsDescription += gr.Name + " ");
+
+        }
+        // GroupsSearcherView = Groups;
+        return base.OnInitializedAsync();
+    }
+
+    protected async void EventSearcherValue(string value)
+    {
+        if (SearcherValueMode == "Group")
+        {
+            GroupsQuery = await transactionalService.GetTransactionalItemGroups(value);
+
+            GroupsSearcher = new List<ConceptGroup>();
+            GroupsSearcher.Add(new ConceptGroup { Id = "", Name = "select" });
+            GroupsSearcher.AddRange(GroupsQuery);
+            ParamCountResul = GroupsSearcher != null ? GroupsSearcher.Count() : 0;
+            ViewSelect = ParamCountResul > 0;
+            ReferInputTextSelector.Refresh();
+            StateHasChanged();
+
+        }
+
+    }
+
+
+    protected async void EventIdSelectionInput(string selectionId)
+    {
+
+        if (SearcherValueMode == "Group")
+        {
+            Group = GroupsSearcher.Where(c => c.Id == selectionId).FirstOrDefault();
+            ViewSelect = false;
+            Groups.Add(Group);
+            EventAddGroups.InvokeAsync(Groups);
+            Group = new ConceptGroup();
+        }
+        PopupViewAddGroup = false;
+        ReferInputTextSelector.Refresh();
+        StateHasChanged();
+
+    }
+
+    private void onDeleted(ChipDeletedEventArgs args)
+    {
+        if (args != null && args.Value != null && args.Value!="")
+        {
+            if (SearcherValueMode == "Group")
+            {
+                var groupRemove = Groups.Where(r => r.Id == args.Value).FirstOrDefault();
+                Groups.Remove(groupRemove);
+                EventAddGroups.InvokeAsync(Groups);
+            }
+        }       
+    }
+
+    public void Refresh()
+    {
+        referChip.Chips.Clear();
+        foreach (var Group in Groups)
+        {
+            referChip.Chips.Add(new ChipItem { Text = Group.Name, LeadingIconCss = "anne" });
+        }
+
+        StateHasChanged();
+    }
+
+    public void SetViewElemnt(string Element)
+    {
+        ViewSelect = false;
+        SearcherValueMode = Element;
+        if (Element == "Group" && !PopupViewAddGroup) { PopupViewAddGroup = true; }
+
+        StateHasChanged();
+    }
+
+    public void EventClosed()
+    {
+        PopupViewAddGroup = false;
+        StateHasChanged();
+    }
+
+}
+
+<style>
+    .rounded-button {
+        border-width: 0;
+        margin: auto;
+        border-radius: 50%;
+        padding: 10px;
+        background-color: gray;
+        color: white;
+    }
+
+    .fa {
+        font-size: 10px;
+        margin: 2px;
+    }
+
+    #arrow-icon {
+        transition: transform 0.2s;
+    }
+
+    .rounded-button:hover #arrow-icon {
+        transform: rotate(180deg);
+        color: white;
+    }
+
+</style>

@@ -1,0 +1,124 @@
+﻿@page "/WarehousesGeneral"
+@using SunttelTradePointB.Client.Shared.TransactionalItems
+@using SunttelTradePointB.Shared.Common
+
+@inject IJSRuntime JSRuntime
+@inject HttpClient Http
+@inject TransactionalItemsService transactItemsService;
+@inject ContextMenuService ContextMenuService
+@inject DialogService DialogService
+@inject ActorsNodeService actorsNodeServive
+
+
+<PageTitleComponent Title="Warehouses" IconName="Warehouses.png"
+                    Description="Warehouses">
+</PageTitleComponent>
+
+<div class="panelMenuContainer">
+    <WaarehousesMenu></WaarehousesMenu>
+    <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
+
+</div>
+
+<div class="tableBodyContainer">
+    @if (isLoading)
+    {
+        <WaitingProcessIndicator loadingTopic="Warehouses"></WaitingProcessIndicator>
+    }else{
+        @if(warehouseList != null)
+        {
+            <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="50"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@warehouseList"
+                    TItem="Warehouse"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    @bind-Value=@warehouseSelectList Class="m-4"
+                    CellContextMenu="@ShowContextMenuWithContent">
+                <Columns>
+                    <RadzenDataGridColumn TItem="Warehouse" Property="WareHouseParent" Title="WareHouse Parent" Frozen="true" Width="120px" />
+                    <RadzenDataGridColumn TItem="Warehouse" Property="AssociatedEntity.Name" Title="Associated Entity" Frozen="true" Width="120px" />
+                    <RadzenDataGridColumn TItem="Warehouse" Property="IsExternal" Title="Is External" Frozen="true" Width="120px" />
+                    <RadzenDataGridColumn TItem="Warehouse" Property="ScanSimulated" Title="Scan Simulated" Frozen="true" Width="120px" />
+                    <RadzenDataGridColumn TItem="Warehouse" Property="IsInventoryControlled" Title="Inventory Controlled" Frozen="true" Width="120px" />
+                    <RadzenDataGridColumn TItem="Warehouse" Property="InventoryTransactionalItemType.Name" Title="Inventory Transactional Item Type" Frozen="true" Width="120px" />
+                    <RadzenDataGridColumn TItem="Warehouse" Property="WarehouseAddress.CityAddress" Title="Address" Frozen="true" Width="120px" />
+                    <RadzenDataGridColumn TItem="Warehouse" Property="ContactPerson.Name" Title="Contact Person" Frozen="true" Width="120px" />
+                    <RadzenDataGridColumn TItem="Warehouse" Property="IsActive" Title="Is Active" Frozen="true" Width="120px" />
+                    
+                </Columns>
+            </RadzenDataGrid>
+        }
+    }
+
+</div>
+
+
+@code {
+    string filterText = "";
+    List<Warehouse>? warehouseList;
+    IList<Warehouse> warehouseSelectList;
+
+    bool isLoading = false;
+    string _filterItems = "";
+
+    public string? conceptFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            GetFilterWarehouse(_filterItems);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetFilterWarehouse();
+    }
+
+    public async Task GetFilterWarehouse(string filter = "")
+    {
+        if(filter.Length > 0)
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            var response = await actorsNodeServive.GetWarehouseList(filter);
+
+            if (response != null)
+                warehouseList = response;
+
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<Warehouse> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        Warehouse argObj = (Warehouse)args.Value;
+        //Navigate(argObj.Id);
+
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+}

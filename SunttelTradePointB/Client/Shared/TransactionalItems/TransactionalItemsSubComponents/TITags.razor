@@ -1,0 +1,76 @@
+﻿@using SunttelTradePointB.Client.Shared.TransactionalItems
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Popups
+@inject NavigationManager Navigation
+@inject TransactionalItemsService transactionalService;
+
+<div class="detailsTitleContainer">
+    <h3 class="subTitleDetailForm">Tags</h3>
+    <svg @onclick="@OpenAdd" title="Add new tag" style="margin-left:20px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style" viewBox="0 0 16 16">
+        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+    </svg>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <SfGrid @ref="DataGrid"  DataSource="@TransactionalItemTags" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" EnableStickyHeader="true">
+            <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
+            <GridColumns>
+                <GridColumn Field="@nameof(TransactionalItemTag.Key)" HeaderText="@Key" Width="110"></GridColumn>
+                <GridColumn Field="@nameof(TransactionalItemTag.Value)" HeaderText="@Value" Width="110"></GridColumn>
+            </GridColumns>
+        </SfGrid>
+    </div>
+</div>
+
+@code {
+    List<TransactionalItemTag> TransactionalItemTags = new List<TransactionalItemTag>();
+    SfGrid<TransactionalItemTag>? DataGrid;
+    #region TileName
+    public string transactionalItemId { get; set; }
+    public string Key { get; set; }
+    public string Value { get; set; }
+    #endregion TitleName
+
+    protected override void OnInitialized()
+    {
+        InitializedUICommonFunctions();
+       
+        if (transactionalService.transactionalItemId != null && transactionalService.transactionalItemId != "")
+        {          
+            transactionalItemId = transactionalService.transactionalItemId;
+            OnInitializedTags();
+        }
+    }
+
+    public async void InitializedUICommonFunctions()
+    {
+        Key = UICommonFunctions.GetDisplayName(new PackingSpecs(), "Key");
+        Value = UICommonFunctions.GetDisplayName(new PackingSpecs(), "Value");
+        StateHasChanged();
+    }
+
+    protected async void OnInitializedTags()
+    {
+        if (transactionalItemId != null && transactionalItemId != "")
+        {
+            TransactionalItemTags = await transactionalService.GetSelectorListTag(transactionalItemId);
+            if (TransactionalItemTags != null)
+            {               
+                DataGrid.DataSource = TransactionalItemTags.Where(s => s.Id != "" || s.Id != null).ToList();
+                StateHasChanged();
+                DataGrid.Refresh();
+            }
+
+        }
+    }
+   
+    public void OpenAdd()
+    {
+        Navigation.NavigateTo("/TagCard");
+    }
+}

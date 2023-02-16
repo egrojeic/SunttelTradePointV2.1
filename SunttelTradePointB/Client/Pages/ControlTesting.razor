@@ -1,0 +1,98 @@
+﻿@page "/ControlTesting"
+@using Microsoft.AspNetCore.SignalR.Client
+@using SunttelTradePointB.Client.Shared.EntityShareComponents
+@using SunttelTradePointB.Shared.Common
+@using System.ComponentModel.DataAnnotations
+@using System.ComponentModel
+@using System.Reflection
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+<h3>ControlTesting</h3>
+
+<div class="container">
+    <div class="row">
+        <div class="col-3">Total Views:</div>
+        <div class="col-4">
+            <span id="totalViews">@NumberOfUsers</span>
+        </div>
+    </div>
+</div>
+
+<button class="btn btn-primary" onclick="@(async () => await OpenSecondaryWindow())">Open Secondary Window</button>
+
+
+
+ @*Demo extracting label text from object property decorator*@
+@if (atomConcept != null) {
+    <label for="Name">@lblName</label>
+    <input id="Name" type="text" bind="@atomConcept.Name" />
+
+}
+
+
+
+@code {
+
+    public Concept atomConcept { get; set; }
+    public string lblName = "";
+    private HubConnection? hubConnection;
+    int NumberOfUsers = 0;
+
+    private Type MyBlazorComponent = typeof(EntityNodeCard);
+
+    protected override async Task OnInitializedAsync()
+    {
+        atomConcept = new Concept();
+
+        lblName = UICommonFunctions.GetDisplayName(new Concept(), "CreationTime");
+
+
+        // Initializing hub
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/hubs/userHub"), options =>
+            {
+                options.AccessTokenProvider = () => Task.FromResult(UIClientGlobalVariables.UserId);
+            })
+            .Build();
+
+        hubConnection.On<string>("updateConnectedUsers", (usersConnectedCount) =>
+        {
+            Console.WriteLine(usersConnectedCount);
+
+            NumberOfUsers = int.Parse(usersConnectedCount);
+            StateHasChanged();
+        });
+
+        try
+        {
+            await hubConnection.StartAsync();
+        }
+        catch (Exception e) {
+            Console.WriteLine($"Error connecting: {e.Message}");
+        }
+
+    }
+
+
+    private async Task OpenSecondaryWindow()
+    {
+        
+
+        await JSRuntime.InvokeAsync<object>("openFloatingWindow", "SunttelTradePointB.Client.EntityNodeCard, SunttelTradePointB");
+
+
+        //await JSRuntime.InvokeAsync<object>("openSecondaryWindow", "/Actors");
+    }
+
+
+    [JSInvokable]
+    public async Task RenderComponent(string componentType)
+    {
+        Type type = Type.GetType(componentType);
+        MyBlazorComponent = type;
+        await InvokeAsync(StateHasChanged);
+    }
+
+}
+

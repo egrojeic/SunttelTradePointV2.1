@@ -1,0 +1,50 @@
+﻿@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Navigations
+
+
+<div>
+    <SfGrid DataSource="@ListModel">
+        <GridTemplates>
+            <DetailTemplate Context="Con_3">
+                @ChildContent
+            </DetailTemplate>
+        </GridTemplates>
+        <GridColumns>
+            <GridColumn HeaderText="@Title" Width="100%"> </GridColumn>
+        </GridColumns>
+    </SfGrid>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    public List<ModelList> ListModel = new List<ModelList>();
+
+    protected override void OnInitialized()
+    {
+        ModelEditTitle_1();
+    }
+
+
+    public async void ModelEditTitle_1()
+    {
+        ListModel.Add(new ModelList
+            {
+                Name = Title
+
+            });
+       
+        StateHasChanged();
+
+    }
+
+    public class ModelList
+    {
+        public string Name { get; set; }
+
+    }
+}

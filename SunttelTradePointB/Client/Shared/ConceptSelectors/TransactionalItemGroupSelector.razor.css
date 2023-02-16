@@ -1,0 +1,13 @@
+﻿.lineFormGroup {
+    display: inline-flex;
+    width: 100%;
+}
+
+#ctrlTitle {
+    width: 120px;
+}
+
+#ComercialGroup {
+    width: 180px;
+    background-color: yellow;
+}

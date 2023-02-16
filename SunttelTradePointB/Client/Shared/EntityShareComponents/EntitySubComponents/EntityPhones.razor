@@ -1,0 +1,109 @@
+﻿@using SunttelTradePointB.Shared.Common
+@using SunttelTradePointB.Client.Shared.EntityShareComponents.EntityPopUpComponents
+
+@inject ActorsNodeService actorsNodeServive
+@inject ContextMenuService ContextMenuService
+@inject NavigationManager navigationManager
+
+<div class="detailsTitleContainer">
+    <h3 class="subTitleDetailForm">Phones</h3>
+    <span class="btn" title="Add new shipping to address" @onclick="(() => NavigatePhone())">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+        </svg>
+    </span>
+</div>
+
+
+<div class="tableBodyContainer">
+
+    @if (entityPhonesList != null)
+    {
+        <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="5"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@entityPhonesList"
+                    TItem="PhoneNumber"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    @bind-Value=@selectedPhones Class="m-4"
+                    CellContextMenu="@ShowContextMenuWithContent"
+                    @ref="radzenDataGrid">
+
+            <Columns>
+                <RadzenDataGridColumn TItem="PhoneNumber" Property="ZoneCode" Title="Zone Code" Frozen="true" Width="140px" />
+                <RadzenDataGridColumn TItem="PhoneNumber" Property="Number" Title="Number" Frozen="true" Width="140px" />
+                <RadzenDataGridColumn TItem="PhoneNumber" Property="Description" Title="Value" Frozen="true" Width="140px" />
+            </Columns>
+
+
+        </RadzenDataGrid>
+    }
+
+</div>
+
+
+@code {
+
+
+    [Parameter]
+    public string? EntityId { get; set; }
+    List<PhoneNumber> entityPhonesList;
+    IList<PhoneNumber> selectedPhones;
+    private PhonePopUp? phonePopUp;
+    RadzenDataGrid<PhoneNumber>? radzenDataGrid;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetEntityPhone();
+    }
+
+    private async Task GetEntityPhone()
+    {
+        if (EntityId != null)
+        {
+            var response = await actorsNodeServive.GetPhoneNumber(EntityId);
+            if (response != null)
+                entityPhonesList = response;
+            StateHasChanged();
+        }
+    }
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<PhoneNumber> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+        <RadzenMenuItem Text="Delete" Value=args.Data Icon="delete"></RadzenMenuItem>
+        <RadzenMenuItem Text="Show in Map" Value=args.Data Icon="location_on"></RadzenMenuItem>
+
+        </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        PhoneNumber argObj = (PhoneNumber)args.Value;
+        if(args.Text == "Edit")
+        {
+            navigationManager.NavigateTo($"/Actors/{EntityId}/Phones/{argObj.Id}/Edit");
+        }
+
+        Console.WriteLine($"Menu item with Value={argObj.Number} clicked");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+    private async Task NavigatePhone()
+    {
+        navigationManager.NavigateTo($"/Actors/{EntityId}/Phones");
+    }
+}

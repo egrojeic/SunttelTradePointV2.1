@@ -1,0 +1,141 @@
+﻿
+html {
+    background-color: white;
+}
+
+label{
+    color: black;
+}
+
+#logingDivContainer {
+    width: 320px;
+    margin: auto;
+    margin-top: 20px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 10px 8px 10px #808080;
+}
+
+#imgLogoSplash{
+    width: 300px;
+    border-radius: 10px;
+}
+
+.lblSplash{
+    font-size: 1em;
+    margin: 10px;
+    visibility: visible;
+    
+    margin-top: 10px; 
+}
+
+#SplashButton{
+    font-size: 1em;
+    width: 100%;
+}
+
+#loadingContainer {
+    min-height: 100vw;
+    width: 100vw;
+    background-color: black;
+    margin: 0px;
+    padding: 0;
+    color: white;
+}
+
+#sunttelSoftwareInfo {
+    margin-top: 100px;
+    margin-bottom: 10px;
+    background-color: black;
+    text-align: center;
+    border-radius: 10px;
+}
+
+    #sunttelSoftwareInfo a{
+        color: white;
+        margin-left: 10px;
+    }
+
+    #SunttelLogoInit {
+        width: 80px;
+        
+    }
+
+
+#loadingPanel{
+    background-color:black;
+}
+
+#loadingGif {
+    margin: auto;
+    height: 120px;
+    box-sizing: border-box;
+}
+
+.center {
+   
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+}
+
+.wave {
+    width: 5px;
+    height: 100px;
+    background: linear-gradient(45deg, cyan, #fff);
+    margin: 10px;
+    animation: wave 1s linear infinite;
+    border-radius: 20px;
+}
+
+    .wave:nth-child(2) {
+        animation-delay: 0.1s;
+    }
+
+    .wave:nth-child(3) {
+        animation-delay: 0.2s;
+    }
+
+    .wave:nth-child(4) {
+        animation-delay: 0.3s;
+    }
+
+    .wave:nth-child(5) {
+        animation-delay: 0.4s;
+    }
+
+    .wave:nth-child(6) {
+        animation-delay: 0.5s;
+    }
+
+    .wave:nth-child(7) {
+        animation-delay: 0.6s;
+    }
+
+    .wave:nth-child(8) {
+        animation-delay: 0.7s;
+    }
+
+    .wave:nth-child(9) {
+        animation-delay: 0.8s;
+    }
+
+    .wave:nth-child(10) {
+        animation-delay: 0.9s;
+    }
+
+@keyframes wave {
+    0% {
+        transform: scale(0);
+    }
+
+    50% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(0);
+    }
+}

@@ -1,0 +1,78 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Shared\TransactionalItems\TransactionalItemsSubComponents\NewPackingRecipe.razor~RF19b0e97.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="6.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.9" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
+    <PackageReference Include="Radzen.Blazor" Version="4.4.7" />
+    <PackageReference Include="Syncfusion.Blazor.Buttons" Version="20.4.0.41" />
+    <PackageReference Include="Syncfusion.Blazor.Cards" Version="20.4.0.41" />
+    <PackageReference Include="Syncfusion.Blazor.Charts" Version="20.4.0.41" />
+    <PackageReference Include="Syncfusion.Blazor.Data" Version="20.4.0.41" />
+    <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="20.4.0.41" />
+    <PackageReference Include="Syncfusion.Blazor.Grid" Version="20.4.0.41" />
+    <PackageReference Include="Syncfusion.Blazor.Layouts" Version="20.4.0.41" />
+    <PackageReference Include="Syncfusion.Blazor.SplitButtons" Version="20.4.0.41" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\SunttelTradePointB.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Interfaces\AccountingInterfaces\" />
+    <Folder Include="Interfaces\ECommerceInterfaces\" />
+    <Folder Include="Interfaces\EDIInterfaceInterfaces\" />
+    <Folder Include="Interfaces\InventoryInterfaces\" />
+    <Folder Include="Interfaces\MarketingInterfaces\" />
+    <Folder Include="Interfaces\ProcurementInterfaces\" />
+    <Folder Include="Interfaces\ProductionInterfaces\" />
+    <Folder Include="Interfaces\QualityControlServices\" />
+    <Folder Include="Pages\Accounting\" />
+    <Folder Include="Pages\ECommerce\" />
+    <Folder Include="Pages\EDIInterface\" />
+    <Folder Include="Pages\Inventory\" />
+    <Folder Include="Pages\Marketing\" />
+    <Folder Include="Pages\Procurement\" />
+    <Folder Include="Pages\Production\" />
+    <Folder Include="Pages\QualityControl\" />
+    <Folder Include="Pages\Sales\" />
+    <Folder Include="Pages\UserTools\Chat\" />
+    <Folder Include="Pages\UserTools\UserProfile\" />
+    <Folder Include="Services\AccountingServices\" />
+    <Folder Include="Services\ECommerceServices\" />
+    <Folder Include="Services\EDIInterfaceServices\" />
+    <Folder Include="Services\Hubs\" />
+    <Folder Include="Services\InventoryServices\" />
+    <Folder Include="Services\MarketingServices\" />
+    <Folder Include="Services\ProcurementServices\" />
+    <Folder Include="Services\ProductionServices\" />
+    <Folder Include="Services\QualityControlServices\" />
+    <Folder Include="Shared\Chat\" />
+    <Folder Include="wwwroot\lib\microsoft\signalr\dist\browser\" />
+    <Folder Include="wwwroot\uploads\entityImages\" />
+    <Folder Include="wwwroot\uploads\transactionalItemsImages\" />
+  </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties wwwroot_4css_4bootstrap_4bootstrap_1min_1css_1map__JsonSchema="" /></VisualStudio></ProjectExtensions>
+
+</Project>

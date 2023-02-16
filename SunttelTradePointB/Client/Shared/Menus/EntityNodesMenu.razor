@@ -1,0 +1,76 @@
+﻿@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+@inject NavigationManager Navigation
+
+<div id="container-menu-general">
+    <nav>
+        <button class="general-menu-button"><i class="fa-solid fa-file"></i> Create New</button>
+       
+        <SfSplitButton Content="Import Data" IconCss="fa-solid fa-file-import" CssClass="splitButtonsStyle">
+          
+
+            <DropDownMenuItems>
+                <DropDownMenuItem Text="Importing from the cloud..." IconCss="fa-solid fa-cloud-arrow-up"></DropDownMenuItem>
+                <DropDownMenuItem Text="Uploading a csv file..." IconCss="fa-solid fa-file-csv"></DropDownMenuItem>
+
+            </DropDownMenuItems>
+
+        </SfSplitButton>
+
+        <SfSplitButton Content="Related Concepts" IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
+            <SplitButtonEvents ItemSelected="ItemSelected">
+
+            </SplitButtonEvents>
+            <DropDownMenuItems>
+                <DropDownMenuItem Id="TypesEntities" Text="Types" IconCss="fa-solid fa-group-arrows-rotate"></DropDownMenuItem>
+                <DropDownMenuItem Id="GroupsEntities" Text="Groups" IconCss="fa-solid fa-layer-group"></DropDownMenuItem>
+                <DropDownMenuItem Id="IdentificationTyes" Text="Identification Types" IconCss="fa-solid fa-box"></DropDownMenuItem>
+                <DropDownMenuItem Id="EntityRoles" Text="Roles" IconCss="fa-solid fa-dice-d20"></DropDownMenuItem>
+                <DropDownMenuItem Id="EntityStatus" Text="Status" IconCss="fa-solid fa-signal"></DropDownMenuItem>
+                
+            </DropDownMenuItems>
+
+        </SfSplitButton>
+
+
+    </nav>
+  
+</div>
+
+@code {
+    static bool ShowMenu { get; set; } = false;
+    public string commandStyle = "display: 'none';";
+
+    const string PASTE = "e-btn-icons e-paste";
+    const string PASTESPECIAL = "e-btn-icons e-paste-special";
+    const string PASTEASFORMULA = "e-btn-icons e-paste-formula";
+    const string PASTEASHYPERLINK = "e-btn-icons e-paste-hyperlink";
+
+    void ToggleMenu()
+    {
+        ShowMenu = !ShowMenu;
+        commandStyle = $"display: {(ShowMenu ? "block" : "none")}" ;
+        StateHasChanged();
+
+  }
+
+    void OnClick(RadzenSplitButtonItem item, string buttonName)
+    {
+        if (item != null)
+        {
+            Console.WriteLine($"{buttonName}, item with value {item.Value} clicked");
+        }
+        else
+        {
+            Console.WriteLine($"{buttonName} clicked");
+        }
+    }
+
+    private void ItemSelected(MenuEventArgs args)
+    {
+        var Selected_item = args.Item.Id; 
+        Navigation.NavigateTo(Selected_item);
+    }
+
+}
+

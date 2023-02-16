@@ -1,0 +1,145 @@
+﻿@using SunttelTradePointB.Client.Services
+@using SunttelTradePointB.Shared.Squad
+@inject SQuadService sqService;
+@inject CustomStateProvider authStateProvider;
+@inject IJSRuntime js;
+
+<AuthorizeView>
+    <Authorized>
+
+        <div id="navMenuContainer">
+
+            <div id="companyLogoContainer">
+                @if (@pathLogo != null)
+                {
+                    <img src="@pathLogo" id="imgLogoCompany" />
+                    <h2>@squadName</h2>
+                }
+
+
+            </div>
+
+            <br />
+
+            <div id="MenuContainer">
+                <div class="body">
+                    <ul>
+
+                        <li>
+                            <i class="fa-solid fa-screwdriver-wrench"></i><a @onclick="ToggleNavMenu">User Tools</a>
+                            <ul class="subMenuItem @NavMenuCssClass">
+                                <NavLink class="nav-link" href="/">
+                                    <i class="fa fa-th"></i><span class="innerlink">Dashboard</span>
+                                </NavLink>
+
+                                <NavLink class="nav-link" href="ChatGeneral">
+                                    <i class="fa-solid fa-comments"></i><span class="innerlink">Chat</span>
+                                </NavLink>
+
+                                <NavLink class="nav-link" href="/">
+                                    <i class="fa-solid fa-id-card"></i><span class="innerlink">My Profile</span>
+                                </NavLink>
+
+                                 <NavLink class="nav-link" href="/">
+                                    <i class="fa-solid fa-calendar-days"></i><span class="innerlink">Calendar</span>
+                                </NavLink>
+
+                            </ul>
+
+                        </li>
+
+                       
+
+                        @if (toolSet != null)
+                        {
+                            foreach (var toolSetItem in toolSet)
+                            {
+                                <li>
+                                    <i class="@toolSetItem.IconName"></i> <a onclick="@(()=>ToggleNavMenuLi(toolSetItem))">@toolSetItem.Name</a>
+                                    <ul class="subMenuItem @toolSetItem.collapseState">
+
+                                        @foreach (var tooltem in optionsMenuList.Where(c => c.IDToolSets == toolSetItem.ID))
+                                        {
+
+                                            <NavLink class="nav-link" href=@(tooltem.OptionRef)>
+                                                <span class="innerlink">@tooltem.Name</span>
+                                            </NavLink>
+
+                                        }
+
+                                    </ul>
+
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+
+
+
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    private bool collapseNavMenu = true;
+    List<SystemTool>? optionsMenuList;
+    List<ToolSet>? toolSet;
+    string squadName = "";
+
+    private string pathLogo;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private void ToggleNavMenuLi(ToolSet toolSet)
+    {
+        toolSet.collapseState= toolSet.collapseState == null ? "collapse" : null;
+        toolSet.IconName = toolSet.IconName == "fas fa-minus-circle" ? "fas fa-plus-circle" : "fas fa-minus-circle";
+        StateHasChanged();
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+
+        var user = (await authStateProvider.GetAuthenticationStateAsync()).User;
+        var userId = user.FindFirst(c => c.Type.Contains("nameidentifier"))?.Value;
+
+        var lstOptions = await sqService.SystemToolsByUser(Guid.Parse(userId));
+
+        lstOptions.ForEach(c => c.IconName = "fas fa-plus-circle");
+
+        optionsMenuList = lstOptions;
+
+        pathLogo = await js.InvokeAsync<string>("localStorage.getItem", "IMCL");
+
+        squadName = await js.InvokeAsync<string>("localStorage.getItem", "SquadName");
+
+        var toolSet2 =  lstOptions
+            .Select(m => new { m.ToolSetsNavigation.ID, m.ToolSetsNavigation.Name})
+            .Distinct()
+            .ToList();
+
+        toolSet = toolSet2.Select(opt => new ToolSet { 
+            ID = opt.ID,
+            Name = opt.Name,
+            collapseState = "collapse",
+                IconName = "fas fa-plus-circle"
+            
+            
+        }).ToList();
+
+    }
+}

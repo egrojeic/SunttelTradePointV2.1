@@ -1,0 +1,179 @@
+﻿@page "/Actors/{Id}/ElectronicAddress"
+@page "/Actors/{Id}/ElectronicAddress/{electronicId}/Edit"
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.DropDowns
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Cards
+
+@inject NavigationManager navigationManager
+@inject ActorsNodeService actorsNodeServive
+
+<div class="control-section">
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
+            <SfCard>
+                <CardHeader Title="Add a new electronic address" />
+                <CardContent>
+                    <form onsubmit="event.preventDefault();">
+                        <div class="form-group row">
+                            <div class="form-group row">
+                                <label class="control-label col-md-12">@lblAddresKey: </label>
+                                <div class="col">
+                                    <input type="text" class="form-control" @bind-value="electronicAddress.AddressKey" required/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row py-2">
+                            <div class="form-group row">
+                                <label class="control-label col-md-12">@lblEmitter: </label>
+                                <div class="col">
+                                    <div class="item-edit">
+                                        <label>@(electronic != null ? electronic.Name : "")</label>
+                                        <button type="button" style="float:right" @onclick='()=>SetViewElemnt("Electronic")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                                    </div>
+                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewElectronic">
+                                        @{
+                                            if (electronicAddressesList != null)
+                                            {
+                                                foreach (var entity in electronicAddressesList)
+                                                {
+                                                    <option value="@entity?.Id">@entity?.Name</option>
+                                                }
+                                            }
+
+                                        }
+                                    </InputTextSelector>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="py-2">
+                            <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveElectronicAddress(Id, electronicAddress))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                            <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
+                        </div>
+                    </form>
+
+                </CardContent>
+            </SfCard>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    [Parameter]
+    public string electronicId { get; set; }
+    [Parameter]
+    public bool ViewSelect { get; set; } = false;
+
+    public string lblAddresKey = "";
+    public string lblEmitter = "";
+
+    InputTextSelector? refInputTextSelector;
+
+    public bool PopupViewElectronic = false;
+    public string SearchValueMode = "";
+    public int ParamCountResul = 0;
+
+    private ElectronicAddress electronicAddress = new ElectronicAddress();
+    private EntityActor entityActor = new EntityActor();
+    List<AtomConcept> electronicAddressesList = new List<AtomConcept>();
+    AtomConcept electronic = new AtomConcept();
+    List<ElectronicAddress> eAddresList = new List<ElectronicAddress>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        lblAddresKey = UICommonFunctions.GetDisplayName(new ElectronicAddress(), "AddressKey");
+        lblEmitter = UICommonFunctions.GetDisplayName(new ElectronicAddress(), "EmitterEntity");
+        ElectronicAddressType();
+    }
+
+    private async Task SaveElectronicAddress(string entityId, ElectronicAddress electronicAddress)
+    {
+        if(entityId != null && electronicAddress != null)
+        {
+            if (electronicId != null)
+                electronicAddress.Id = electronicId;
+            electronicAddress.EmitterEntity = entityActor;
+            await actorsNodeServive.SaveElectronicAddress(entityId, electronicAddress);
+            StateHasChanged();
+        }
+    }
+
+    public async Task GetEAddresList(string entityId)
+    {
+        if(electronicId != null)
+        {
+            eAddresList = await actorsNodeServive.GetElectronicAddressList(entityId);
+            foreach(var electronicList in eAddresList)
+            {
+                if (electronicList.Id == electronicId)
+                {
+                    electronicAddress.AddressKey = electronicList.AddressKey;
+                    electronic.Name = electronicList.EmitterEntity.Name;
+                }
+            }
+        }
+    }
+
+
+    public void SetViewElemnt(string Element)
+    {
+        ViewSelect = false;
+        SearchValueMode = Element;
+        if (Element == "Electronic" && !PopupViewElectronic) { PopupViewElectronic = true; }
+        StateHasChanged();
+    }
+
+    protected async void EventSearcherValue(string value)
+    {
+        if (SearchValueMode == "Electronic")
+        {
+            electronicAddressesList = await actorsNodeServive.GetListElectronicAddress();
+            ParamCountResul = electronicAddressesList != null ? electronicAddressesList.Count() : 0;
+        }
+        if (ParamCountResul > 0) { ViewSelect = true; } else { ViewSelect = false; }
+        await Refresh();
+    }
+
+    protected async void EventIdSelectionInput(string selectionId)
+    {
+
+        if (SearchValueMode == "Electronic")
+        {
+            electronic = electronicAddressesList.Where(c => c.Id == selectionId).FirstOrDefault();
+        }
+        PopupViewElectronic = false;
+        await Refresh();
+    }
+
+    public async Task Refresh()
+    {
+        if (refInputTextSelector != null) await refInputTextSelector.Refresh();
+        StateHasChanged();
+    }
+
+    private void RefreshMe()
+    {
+        electronicAddress = new ElectronicAddress();
+        entityActor = new EntityActor();
+    }
+
+    private void GoBack()
+    {
+        navigationManager.NavigateTo($"/Actors/{Id}/2");
+    }
+    private async Task ElectronicAddressType()
+    {
+        electronicAddressesList = await actorsNodeServive.GetListElectronicAddress();
+        StateHasChanged();
+    }
+}

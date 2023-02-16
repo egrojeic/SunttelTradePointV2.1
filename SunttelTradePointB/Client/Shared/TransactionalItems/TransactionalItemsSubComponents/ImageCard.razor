@@ -1,0 +1,135 @@
+﻿@page "/ImageCard"
+@using Syncfusion.Blazor.Popups
+@using SunttelTradePointB.Shared.Common
+@using Microsoft.AspNetCore.Http
+@using System.IO
+@inject TransactionalItemsService transactionalService;
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+
+<br />
+<h6>@Title</h6>
+<br />
+<div class="flex-horizontal-center">
+    <div class="conten-new-imge">
+        <div>
+            <table style="width:300px; border-collapse:collapse; ">
+                <tr>
+                    <td><h5>@Name</h5></td>
+                    <td rowspan="3">
+                        <div>
+                            <img src="@imgUrl" style="height:120px; width:180px; border-radius:10px 10px 0px 0px; margin-left:5px;" @ref="previewImageElem" /><br />
+                            <InputFile @ref="inputFile" OnChange="@LoadFiles" class="btn color-btn" style="color:transparent;width:180px; border-radius:0px 0px 10px 10px;" />
+
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td rowspan="2">
+                        <textarea style="width:350px; height:150px; resize: none;" cols="13" placeholder="Edit description" @bind="PathImagesView.Name">
+                        </textarea>
+                    </td>
+                </tr>
+                <tr><td><br /><br /></td></tr>
+                <tr>
+                    <td colspan="2">
+                        <div style="display:flex; flex-direction:row; align-items:center; justify-content:center; margin-right:10px;"><label style="width:120px;">@PathImage</label><input value="@PathImagesView.PathImage" class="form-control" readonly /> </div>
+
+                    </td>
+
+                </tr>
+            </table>
+        </div>
+        <br />
+        <div class="flex-horizontal-end">
+            <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+            <button @onclick="Save" class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<TransactItemImage> EventCallbackSave { get; set; }
+    private InputFile? inputFile;
+
+    private ElementReference previewImageElem;
+    TransactItemImage PathImagesView = new TransactItemImage();
+    string imgUrl = "/images/defaultImage.png";
+    string imgId = "";
+    public bool PopupViewDialog = false;
+    string urlImageStorage = "";
+    public string transactionalItemId { get; set; }
+
+    #region TileName
+    public string Title { get; set; }
+    public string Name { get; set; }
+    public string PathImage { get; set; }
+    #endregion TitleName
+
+    protected override void OnInitialized()
+    {
+        InitializedUICommonFunctions();
+        if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
+        {
+            transactionalItemId = transactionalService?.transactionalItemId;
+        }
+    }
+
+    public async void InitializedUICommonFunctions()
+    {
+        Title = UICommonFunctions.GetDisplayName(new TransactionalItem(), "PathImages");
+        Name = UICommonFunctions.GetDisplayName(new TransactItemImage(), "Name");
+        PathImage = UICommonFunctions.GetDisplayName(new TransactItemImage(), "PathImage");
+
+
+        StateHasChanged();
+    }
+
+    public void Refresh()
+    {
+        StateHasChanged();
+    }
+
+    public void Closed(string value)
+    {
+        if (value == "control") Navigation.NavigateTo("/TransactionalItemCard/3");
+        Refresh();
+    }
+
+    public async void Save()
+    {
+        var resul = await transactionalService.SaveImage(transactionalItemId, PathImagesView);
+        PathImagesView = new TransactItemImage();
+        imgUrl = "/images/defaultImage.png";
+        Refresh();
+        Closed("control");
+    }
+
+    private async void LoadFiles(InputFileChangeEventArgs e)
+    {
+        var maxFiles = 1;
+        var format = "img/png";
+
+        foreach (var imagefile in e.GetMultipleFiles())
+        {
+            var resizeFile = await imagefile.RequestImageFileAsync(format, 400, 400);
+            var bufer = new byte[resizeFile.Size];
+            await resizeFile.OpenReadStream().ReadAsync(bufer);
+            var img = $"data:{format};base64,{Convert.ToBase64String(bufer)}";
+            imgUrl = img;
+            PathImagesView.PathImage = "/" + Guid.NewGuid().ToString() + ".png";
+            imgId = Guid.NewGuid().ToString(); //"12345f";
+            PathImagesView.Id = null;
+            PathImagesView.PathImage = imgId + ".png";
+            bufer = null;
+            Refresh();
+        }
+
+    }
+
+
+}
+
+

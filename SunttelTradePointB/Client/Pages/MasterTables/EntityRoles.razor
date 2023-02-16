@@ -1,0 +1,123 @@
+﻿@page "/EntityRoles"
+@using SunttelTradePointB.Client.Shared.TransactionalItems
+@using SunttelTradePointB.Shared.Common
+
+
+@inject IJSRuntime JSRuntime
+@inject ContextMenuService ContextMenuService
+@inject ActorsNodeService actorsNodeServive
+
+
+<PageTitleComponent Title="Entity Roles" IconName="EntityRoles.png"
+                    Description="Describes the different roles the entities could play">
+</PageTitleComponent>
+
+<div class="panelMenuContainer">
+    <DutiesMenu></DutiesMenu>
+    <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
+</div>
+
+
+<div class="tableBodyContainer">
+    @if (isLoading)
+    {
+        <WaitingProcessIndicator loadingTopic="Roles"></WaitingProcessIndicator>
+    }else{
+        @if(entityRolesList != null)
+        {
+            <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="50"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@entityRolesList"
+                    TItem="EntityRole"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    @bind-Value=@selectedRoles Class="m-4"
+                    CellContextMenu="@ShowContextMenuWithContent">
+
+                <Columns>
+                    <RadzenDataGridColumn TItem="EntityRole" Property="Code" Title="Code" Frozen="true" Width="30px" />
+                    <RadzenDataGridColumn TItem="EntityRole" Property="Name" Filterable="true" Title="Name" Frozen="true" Width="180px" TextAlign="TextAlign.Center" />
+                </Columns>
+            </RadzenDataGrid>
+        }
+    }
+</div>
+
+
+@code {
+    string filterText = "";
+    List<EntityRole> entityRolesList;
+    IList<EntityRole> selectedRoles;
+
+
+    bool isLoading = false;
+    string _filterItems = "";
+
+    public string? conceptFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            GetFilterRoles(_filterItems);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetFilterRoles();
+    }
+
+    private async Task GetFilterRoles(string filter = "")
+    {
+        if(filter.Length > 0)
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            var response = await actorsNodeServive.GetListEntityRoles(filter);
+
+            if (response != null)
+                entityRolesList = response;
+
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    void ShowContextMenu(MouseEventArgs e)
+    {
+        if (JSRuntime != null)
+        {
+            JSRuntime.InvokeVoidAsync("ShowContextMenu", e.ClientX, e.ClientY);
+        }
+    }
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<EntityRole> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        EntityRole argObj = (EntityRole)args.Value;
+
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+
+}

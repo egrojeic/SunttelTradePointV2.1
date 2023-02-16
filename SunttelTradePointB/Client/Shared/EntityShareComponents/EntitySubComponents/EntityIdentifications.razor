@@ -1,0 +1,125 @@
+﻿@using SunttelTradePointB.Shared.Common
+@using SunttelTradePointB.Client.Shared.EntityShareComponents.EntityPopUpComponents
+
+@inject ContextMenuService ContextMenuService
+@inject NavigationManager navigationManager
+@inject ActorsNodeService actorsNodeServive
+
+
+<div class="detailsTitleContainer">
+    <h3 class="subTitleDetailForm">Identifications</h3>
+    <span class="btn" title="Add new shipping to address" @onclick="(() => NavigateIdentification())">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+        </svg>
+
+    </span>
+
+</div>
+
+<div class="tableBodyContainer">
+
+    @if (entityIdentificationList != null)
+    {
+        <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="5"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@entityIdentificationList"
+                    TItem="IdentificationEntity"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    @bind-Value=@selectedentityIdentification Class="m-4"
+                    CellContextMenu="@ShowContextMenuWithContent"
+                    @ref=refGrid>
+
+            <Columns>
+                <RadzenDataGridColumn TItem="IdentificationEntity" Property="Code" Title="Code" Frozen="true" Width="140px" />
+                <RadzenDataGridColumn TItem="IdentificationEntity" Property="EntityTypeId.Name" Title="Name" Frozen="true" Width="140px" />
+            </Columns>
+
+
+        </RadzenDataGrid>
+    }
+
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    [Parameter]
+    public string? EntityId { get; set; }
+    List<IdentificationEntity> entityIdentificationList;
+    IList<IdentificationEntity> selectedentityIdentification;
+    RadzenDataGrid<IdentificationEntity>? refGrid;
+
+    private IdentificationPopUp? identificationPopUp;
+
+    IdentificationType identificationType = new IdentificationType();
+
+    private void SaveDataIdentification(IdentificationEntity identificationEntity)
+    {
+        identificationType = identificationEntity.EntityTypeId;
+        entityIdentificationList.Add(new IdentificationEntity
+        {
+            Code = identificationEntity.Code,
+            EntityTypeId = identificationType
+        });
+        refGrid.Reload();
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await GetSelectorDetails();
+    }
+
+    private async Task GetSelectorDetails()
+    {
+        if (EntityId != null)
+        {
+            var response = await actorsNodeServive.GetEntityIdentifierList(EntityId);
+            if (response != null)
+                entityIdentificationList = response;
+            StateHasChanged();
+        }
+    }
+
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<IdentificationEntity> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+        <RadzenMenuItem Text="Delete" Value=args.Data Icon="delete"></RadzenMenuItem>
+        <RadzenMenuItem Text="Show in Map" Value=args.Data Icon="location_on"></RadzenMenuItem>
+
+        </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        IdentificationEntity argObj = (IdentificationEntity)args.Value;
+
+        if(args.Text == "Edit")
+        {
+            navigationManager.NavigateTo($"/Actors/{EntityId}/Identification/{argObj.Id}/Edit");
+        }
+
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+    private async Task NavigateIdentification()
+    {
+        navigationManager.NavigateTo($"/Actors/{EntityId}/Identification");
+    }
+
+}

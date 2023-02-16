@@ -1,0 +1,115 @@
+﻿@using Syncfusion.Blazor.Popups
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Grids
+@inject NavigationManager Navigation
+@inject TransactionalItemsService transactionalService;
+
+<div class="detailsTitleContainer">
+    <h3 class="subTitleDetailForm">Production Specs</h3>
+    <svg @onclick="@ViewControlAddProductionSpecs" style="margin-left:20px;" title="Add new Process" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style" viewBox="0 0 16 16">
+        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+    </svg>
+</div>
+@*<ProductionSpecsCard @ref="referNewProductionSpecs" save="@Save" ></ProductionSpecsCard>*@
+<div class="row">
+    <div class="col-md-12">
+        <SfGrid @ref="GridProductSpecs" DataSource="@ProductionSpecsView" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" EnableStickyHeader="true">
+            <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
+            <GridColumns>                
+                <GridColumn Field="@nameof(TransactionalItemProcessStep.Name)" HeaderText="@Name" Width="110"> </GridColumn>
+                <GridColumn Field="@nameof(TransactionalItemProcessStep.GeneralInstructions)" HeaderText="@GeneralInstructions" Width="110"> </GridColumn>
+                <GridColumn Field="@nameof(TransactionalItemProcessStep.Cost)" HeaderText="@Cost" Width="110"> </GridColumn>
+            </GridColumns>
+        </SfGrid>
+    </div>
+</div>
+@code {
+    List<TransactionalItemProcessStep> ProductionSpecsView = new List<TransactionalItemProcessStep>();
+
+    SfGrid<TransactionalItemProcessStep> GridProductSpecs;
+    ProductionSpecsCard? referNewProductionSpecs;
+    public string transactionalItemId { get; set; }
+
+    #region TileName
+    public string ProductionSpecs { get; set; }
+    public string Key { get; set; }
+    public string Value { get; set; }
+    public string Name { get; set; }
+    public string Cost { get; set; }
+    public string Order { get; set; }
+    public string GeneralInstructions { get; set; }
+    public string TransactionalItemProcessTags { get; set; }
+
+
+    #endregion TitleName
+
+    protected override void OnInitialized()
+    {       
+        InitializedUICommonFunctions();
+        if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
+        {
+            transactionalItemId = transactionalService.transactionalItemId != null ? transactionalService.transactionalItemId : null;
+            OnInitializedProcessStep();
+        }
+    }
+    protected async void OnInitializedProcessStep()
+    {
+        ProductionSpecsView = await transactionalService.GetTransactionalItemDetailsProductionSpecs(transactionalItemId);
+        if (ProductionSpecsView!=null)
+        {
+            GridProductSpecs.DataSource = ProductionSpecsView;
+            await GridProductSpecs.Refresh();
+            StateHasChanged();
+        }
+    }
+
+    public async void InitializedUICommonFunctions()
+    {
+        ProductionSpecs = UICommonFunctions.GetDisplayName(new TransactionalItem(), "ProductionSpecs");
+        Key = ValidateName(UICommonFunctions.GetDisplayName(new TransactionalItemTag(), "Key"));
+        Value = ValidateName(UICommonFunctions.GetDisplayName(new TransactionalItemTag(), "Value"));
+        Name = ValidateName(UICommonFunctions.GetDisplayName(new TransactionalItemProcessStep(), "Name"));
+        Cost = ValidateName(UICommonFunctions.GetDisplayName(new TransactionalItemProcessStep(), "Cost"));
+        Order = ValidateName(UICommonFunctions.GetDisplayName(new TransactionalItemProcessStep(), "Order"));
+        GeneralInstructions = ValidateName(UICommonFunctions.GetDisplayName(new TransactionalItemProcessStep(), "GeneralInstructions"));
+        TransactionalItemProcessTags = ValidateName(UICommonFunctions.GetDisplayName(new TransactionalItemProcessStep(), "TransactionalItemProcessTags"));
+
+        StateHasChanged();
+    }
+
+    private string ValidateName(string? Name)
+    {
+        return Name != null ? Name : "-";
+    }
+
+    void ViewControlAddProductionSpecs()
+    {
+        Navigation.NavigateTo("/ProductionSpecsCard");
+    }
+
+    public void Save(TransactionalItemProcessStep Obj)
+    {
+        try
+        {
+            ProductionSpecsView.Add(Obj);           
+            Refresh();
+        }
+        catch (Exception e)
+        {            
+            throw;
+        }
+      
+
+    }
+
+    public void Refresh()
+    {       
+        GridProductSpecs.Refresh();
+
+    }
+
+   
+
+}

@@ -1,0 +1,406 @@
+﻿@page "/Actors/{Id}"
+@page "/Actors/{Id}/{Page}"
+@using SunttelTradePointB.Client.Shared.ConceptSelectors
+@using SunttelTradePointB.Client.Shared.EntityShareComponents.EntitySubComponents
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+@using SunttelTradePointB.Client.Shared.EntityShareComponents.EntityPopUpComponents
+@using System.Text;
+@using System.Text.Json;
+@using System.Net;
+
+@inject IJSRuntime jsRuntime
+@inject ActorsNodeService actorsNodeServive
+@inject NavigationManager navigationManager
+
+@if(EntityNode != null)
+{
+    <form>
+        <div class="panelMenuContainer">
+            <button @onclick="NavigateToTable" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+
+            <SfSplitButton Content="Create new" IconCss="fa-sharp fa-solid fa-circle-plus" CssClass="splitButtonsStyle">
+                <DropDownMenuItems>
+                    <DropDownMenuItem Text="Customer" IconCss="fa-solid fa-people-arrows"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Provider" IconCss="fa-solid fa-arrow-up-from-ground-water"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Transporter" IconCss="fa-solid fa-truck-field"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Employee" IconCss="fa-solid fa-person-walking-luggage"></DropDownMenuItem>
+
+                </DropDownMenuItems>
+
+            </SfSplitButton>
+
+            <SfSplitButton Content="File" IconCss="fa-solid fa-file" CssClass="splitButtonsStyle">
+                <DropDownMenuItems>
+                    <SplitButtonEvents ItemSelected="ItemSelected">
+
+                    </SplitButtonEvents>
+                    <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                    <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+
+                </DropDownMenuItems>
+
+            </SfSplitButton>
+
+            <SfSplitButton Content="Related Concepts" IconCss="e-icons e-user-defined" CssClass="splitButtonsStyle">
+                <DropDownMenuItems>
+                    <DropDownMenuItem Id="TypesEntities" Text="Types" IconCss="fa-solid fa-group-arrows-rotate"></DropDownMenuItem>
+                    <DropDownMenuItem Id="GroupsEntities" Text="Groups" IconCss="fa-solid fa-layer-group"></DropDownMenuItem>
+                    <DropDownMenuItem Id="IdentificationTyes" Text="Identification Types" IconCss="fa-solid fa-box"></DropDownMenuItem>
+                    <DropDownMenuItem Id="EntityRoles" Text="Roles" IconCss="fa-solid fa-dice-d20"></DropDownMenuItem>
+                    <DropDownMenuItem Id="EntityStatus" Text="Status" IconCss="fa-solid fa-signal"></DropDownMenuItem>
+
+                </DropDownMenuItems>
+
+            </SfSplitButton>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-sm">
+                    <div class="form-group">
+                        <label for="name">@lblName</label>
+                        <input type="text" class="form-control" id="name" @bind-value="EntityNode.Name" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eMailAddress">@lblEmail</label>
+                        <input type="text" class="form-control" id="eMailAddress" @bind-value="EntityNode.EMailAddress" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sunttelUserId">@lblSquarUser</label>
+                        <input type="text" class="form-control" id="sunttelUserId" @bind-value="EntityNode.SunttelUserId" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="InvoicingAddress">@lblInvoicingAddress</label>
+                        <span >@(EntityNode != null ? EntityNode.InvoicingAddress : "")</span>
+                        <span @onclick="(() => NavigateToInvocingAddress())" class="px-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0     8 8">
+                                <path fill="currentColor" d="M6 0L5 1l2 2    l1-1l-2-2zM4 2L0 6v2h2l4-4l-2-2z" />
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="form-group" id="shortCutCodeGroup">
+                        <label for="shortcutCode">@lblShortcutCode</label>
+                        <input type="text" class="form-control" id="shortcutCode" @bind-value="EntityNode.Code" />
+                    </div>
+
+                    <div class="form-group" id="legacyIdGroup">
+                        <label for="legacyId">@lblLegacyId</label>
+                        <input type="number" class="form-control" id="legacyId" @bind-value="EntityNode.LegacyId" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sunttelUserId">@lblRole</label>
+                        <div class="item-edit">
+                            <label>@(role != null ? role.Name : "")</label>
+                            <button type="button" style="float:right" @onclick='()=>SetViewElement("Roles")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                        </div>
+                        <InputTextSelector @ref="inputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectorInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewRoles">
+                            @{
+                                if (entityRoles != null)
+                                {
+                                    foreach (var entity in entityRoles)
+                                    {
+                                        <option value="@entity?.Id">@entity?.Name</option>
+                                    }
+                                }
+
+                            }
+                        </InputTextSelector>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ComercialGroup">@lblGroup</label>
+                        <div>
+                            <div class="conten-chip">
+                                <SfChip @ref="referChip" EnableDelete="true" CssClass="chip-style" EnableRtl="false">
+                                    <ChipEvents Deleted="@onDeleted"></ChipEvents>
+                                    <ChipItems>
+                                        @{
+                                            if (FilterListGroups != null)
+                                            {
+                                                @foreach (var Group in FilterListGroups)
+                                                {
+                                                    if (Group != null && Group.Name != null)
+                                                    {
+                                                        <ChipItem Text="@Group?.Name" LeadingIconCss="anne"></ChipItem>
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                    </ChipItems>
+                                </SfChip>
+                                <InputTextSelector @ref="inputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectorInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewGroups">
+                                    @{
+                                        if (ListGroups != null)
+                                        {
+                                            foreach (var group in ListGroups)
+                                            {
+                                                <option value="@group?.Id">@group?.Name</option>
+                                            }
+
+                                        }
+                                    }
+                                </InputTextSelector>
+                            </div>
+                            <button type="button" @onclick='() => SetViewElement("Group")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <img src="@urlImage" alt="Imagen" width="160px" height="150px">
+                </div>
+            </div>
+        </div>
+
+        <div class="detailsContainer">
+            <div class="menuOptions">
+                <nav class="navVerticalOptions">
+                    <ul>
+                        <li class="@StyleClassItem(0)" @onclick="@(()=>SetMenuOption(0))">Shipping places<span class="arrowhead"></span></li>
+                        <li class="@StyleClassItem(1)" @onclick="@(()=>SetMenuOption(1))">Identifications<span class="arrowhead"></span></li>
+                        <li class="@StyleClassItem(2)" @onclick="@(()=>SetMenuOption(2))">Electronic addresses<span class="arrowhead"></span></li>
+                        <li class="@StyleClassItem(3)" @onclick="@(()=>SetMenuOption(3))">Phones<span class="arrowhead"></span></li>
+                        <li class="@StyleClassItem(4)" @onclick="@(()=>SetMenuOption(4))">Shipping setup<span class="arrowhead"></span></li>
+                        <li class="@StyleClassItem(5)" @onclick="@(()=>SetMenuOption(5))">Commercial Conditions<span class="arrowhead"></span></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="workArea">
+            
+                @switch (verticalMenuOptionSelected)
+                {
+                    case 0:
+                        <EntityShippingPlaces EntityId="@Id" Code="@EntityNode.Code"/>
+                        break;
+                    case 1:
+                        <EntityIdentifications EntityId="@Id" />
+                        break;
+                    case 2:
+                        <EntityElectronicAddress EntityId="@Id" />
+                        break;
+                    case 3:
+                        <EntityPhones EntityId="@Id"/>
+                        break;
+                    case 4:
+                        <EntityShippingSetUp EntityId="@Id" />
+                        break;
+                    case 5:
+                        <EntityComercialConditions EntityId="@Id"/>
+                        break;
+                    default:
+                        <EntityShippingPlaces EntityId="@Id" />
+                        break;
+                }
+
+            </div>
+        </div>
+
+    </form> 
+}
+
+
+
+
+@code {
+    public EntityActor? currentEntityActor { get; set; }
+    EntityActor EntityNode;
+    [Parameter]
+    public string Id { get; set; }
+    [Parameter]
+    public string Page { get; set; } = "0";
+    [Parameter]
+    public bool ViewSelect { get; set; } = false;
+
+    public string urlImage { get; set; }
+
+    SfChip? referChip;
+    EntityRoleSelector? entityRoleSelector;
+
+    int verticalMenuOptionSelected = 0;
+
+    private InvocingAddressPopUp? invocingAddressPopUp;
+    Address InvocingAddress = new Address();
+    City city = new City();
+
+    InputTextSelector? inputTextSelector;
+
+    public bool PopupViewGroups = false;
+    public bool PopupViewRoles = false;
+    public string SearchValueMode = "";
+    public int ParamCountResul = 0;
+
+    List<ConceptGroup>? ListGroups = new List<ConceptGroup>();
+    List<ConceptGroup>? FilterListGroups = new List<ConceptGroup>();
+
+
+    //display
+    public string lblName = "";
+    public string lblEmail = "";
+    public string lblSquarUser = "";
+    public string lblGroup = "";
+    public string lblShortcutCode = "";
+    public string lblLegacyId = "";
+    public string lblRole = "";
+    public string lblInvoicingAddress = "";
+
+    EntityRole role = new EntityRole();
+    List<EntityRole>? entityRoles;
+
+    string entityRoleSelectedId = "";
+    private async Task GetRoles()
+    {
+        var response = await actorsNodeServive.EntityRolesList();
+        if (response != null)
+            entityRoles = response;
+    }
+
+
+
+    public string StyleClassItem(int item) {
+        return (verticalMenuOptionSelected == item ? "menu-item selected" : "menu-item");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        SetMenuOption(Convert.ToInt32(Page != null ? Page : "0"));
+        urlImage = "https://cdn-icons-png.flaticon.com/512/16/16363.png";
+        lblName = UICommonFunctions.GetDisplayName(new EntityActor(), "Name");
+        lblEmail = UICommonFunctions.GetDisplayName(new EntityActor(), "EMailAddress");
+        lblSquarUser = UICommonFunctions.GetDisplayName(new EntityActor(), "SunttelUserId");
+        lblGroup = UICommonFunctions.GetDisplayName(new EntityActor(), "Groups");
+        lblShortcutCode = UICommonFunctions.GetDisplayName(new EntityActor(), "Code");
+        lblLegacyId = UICommonFunctions.GetDisplayName(new EntityActor(), "LegacyId");
+        lblRole = UICommonFunctions.GetDisplayName(new EntityActor(), "DefaultEntityRole");
+        lblInvoicingAddress = UICommonFunctions.GetDisplayName(new EntityActor(), "InvoicingAddress");
+        await ActorEntityNode(Id);
+        await GetRoles();
+
+        if (currentEntityActor == null)
+        {
+            currentEntityActor = new EntityActor();
+        }
+
+        EntityNode = currentEntityActor;
+        FilterListGroups = EntityNode.Groups;
+
+        await Refresh();
+    }
+
+    async Task CreateEntityNodeFace()
+    {
+        await actorsNodeServive.CreateNewEntityActor(currentEntityActor);
+    }
+
+    async Task UpdateEntityNodeFace()
+    {
+        await actorsNodeServive.UpdateEntityActor(currentEntityActor);
+    }
+
+    private void onDeleted(ChipDeletedEventArgs args)
+    {
+        FilterListGroups?.RemoveAt(args.Index);
+        EntityNode.Groups = FilterListGroups;
+        StateHasChanged();
+    }
+
+    public void SetMenuOption(int item) {
+        verticalMenuOptionSelected = item;
+
+    }
+
+    private async Task ActorEntityNode(string entityActorId)
+    {
+        currentEntityActor = await actorsNodeServive.GetEntityActor(entityActorId);
+        if(currentEntityActor != null)
+            EntityNode = currentEntityActor;
+        role = EntityNode.DefaultEntityRole;
+        StateHasChanged();
+    }
+
+
+    public void SetViewElement(string Element)
+    {
+        ViewSelect = false;
+        SearchValueMode = Element;
+        if (Element == "Group" && !PopupViewGroups) { PopupViewGroups = true; }
+        if (Element == "Roles" && !PopupViewRoles) { PopupViewRoles = true; }
+        Refresh();
+        StateHasChanged();
+    }
+
+    protected async void EventSearcherValue(string group)
+    {
+        if (SearchValueMode == "Group")
+        {
+            ListGroups = await actorsNodeServive.GetEntityGroups(group);
+            ParamCountResul = ListGroups.Count();
+        }
+        if (SearchValueMode == "Roles")
+        {
+            entityRoles = await actorsNodeServive.GetListEntityRoles(group);
+            ParamCountResul = entityRoles.Count();
+        }
+        if (ParamCountResul > 0)
+        {
+            ViewSelect = true;
+        }
+        else
+        {
+            ViewSelect = false;
+        }
+        await Refresh();
+    }
+
+    protected async void EventIdSelectorInput(string selectionId)
+    {
+        if (SearchValueMode == "Group")
+        {
+            FilterListGroups.Add(ListGroups.Where(c => c.Id == selectionId).FirstOrDefault());
+        }
+        if (SearchValueMode == "Roles")
+        {
+            role = entityRoles.Where(c => c.Id == selectionId).FirstOrDefault();
+        }
+        await Refresh();
+    }
+
+    public async void ItemSelected(MenuEventArgs menuEventArgs)
+    {
+        string title = menuEventArgs != null ? menuEventArgs.Item.Text : "";
+        if(title == "Save")
+        {
+            EntityNode.DefaultEntityRole = role;
+            EntityNode.Groups = FilterListGroups;
+            await actorsNodeServive.SaveEntity(Id, EntityNode);
+        }
+    }
+
+    public async Task Refresh()
+    {
+        if (inputTextSelector != null) await inputTextSelector.Refresh();
+        StateHasChanged();
+    }
+
+    public async Task NavigateToInvocingAddress()
+    {
+        navigationManager.NavigateTo($"/Actors/{Id}/InvocingAddress");
+    }
+
+    public async Task NavigateToTable()
+    {
+        navigationManager.NavigateTo($"/Actors/");
+    }
+
+
+}

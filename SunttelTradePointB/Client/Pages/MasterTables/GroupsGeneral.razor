@@ -1,0 +1,116 @@
+﻿@page "/Groups"
+@page "/Groups/{_filterItems}"
+@using SunttelTradePointB.Client.Shared.TransactionalItems
+@using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Navigations
+@inject HttpClient Http
+@inject TransactionalItemsService transactItemsService;
+@inject IJSRuntime JSRuntime
+@inject ContextMenuService ContextMenuService
+@inject DialogService DialogService
+@inject NavigationManager Navigation
+
+
+<PageTitleComponent Title="Groups of Transactional Items" IconName="group.png"
+                    Description="Describe how the commercial items could be classified">
+</PageTitleComponent>
+
+<div class="panelMenuContainer">
+    <MenuConcet></MenuConcet>
+    <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
+
+</div>
+
+
+@if (isLoading)
+{
+
+    <WaitingProcessIndicator loadingTopic="Transactional Items"></WaitingProcessIndicator>
+
+}
+else
+{
+    @if (conceptGroup == null) conceptGroup = new();
+    <DataGrid TParameter="ConceptGroup"
+          EventCallbackMenu="OnContextMenuClick"
+          parameterList="conceptGroup"
+          GridColumnsList="GridColumnList"
+          EventCallbackOnLoad="Onload">
+    </DataGrid>
+
+}
+
+
+@code {
+    [Parameter]
+    public string _filterItems { get; set; } = "";
+    public List<ConceptGroup> conceptGroup { get; set; }
+    public List<ConceptGroup> ChildrenGroups { get; set; }
+    public List<GridColumn> GridColumnList { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        GridColumnList = new List<GridColumn>()
+        {
+            new GridColumn() { Field = nameof(ConceptGroup.Name), HeaderText = GetName("Name", new ConceptGroup())  },
+            new GridColumn() { Field = nameof(ConceptGroup.Code), HeaderText = GetName("Code", new ConceptGroup()), Width="120" },
+            new GridColumn() { Field = nameof(ConceptGroup.GroupClassificationCriteria), HeaderText = GetName("GroupClassificationCriteria", new ConceptGroup()) }
+        };
+
+        if (_filterItems != "" && _filterItems != null)
+        {
+            LoadData();
+        }
+        transactItemsService.Page = "Groups";
+    }
+
+    bool isLoading = false;
+
+    public string? conceptFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }   
+
+    private async Task LoadData()
+    {
+        isLoading = true;
+        conceptGroup = await transactItemsService.GetSelectorListTransactionalItemGroups(_filterItems);
+
+        isLoading = false;
+        StateHasChanged();
+
+    }
+
+
+    public void Onload(object args)
+    {
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<ConceptGroup> args)
+    {
+        ConceptGroup itemConceptGroup = null;
+        itemConceptGroup = args.RowInfo.RowData;
+        transactItemsService.ConceptGroupSelectedItems = itemConceptGroup;
+        if (args.Item.Id == "Edit")
+        {
+            Navigation.NavigateTo($"/GroupConcept/Groups/Edit/{_filterItems}");
+        }
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+}

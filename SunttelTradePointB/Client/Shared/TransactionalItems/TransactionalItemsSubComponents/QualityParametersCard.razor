@@ -1,0 +1,167 @@
+﻿@page "/QualityParametersCard"
+@using Syncfusion.Blazor.Popups
+@using SunttelTradePointB.Shared.Common
+@inject NavigationManager Navigation
+@inject TransactionalItemsService transactionalService;
+
+<style>
+    label {
+        margin-left: 50px;
+    }
+</style>
+<br />
+<h6>@Title</h6>
+<br />
+<div id="add-recipe">
+    <div class="flex-horizontal-center">
+        <div class="grid-columns-2 box-shadow-mode">
+          
+            <div>
+                <label>
+                    @GetName( "TransactionalItemQuality", new TransactionalItemQualityPair())
+                </label>
+            </div>
+            <div>
+                <div style="position:relative;">
+                    <div class="item-edit">
+                        <label>@(SetQualityParameter != null ? SetQualityParameter.Name : "")</label>
+                        <button @onclick='()=>SetViewElemnt("QualityParameters")' class="btn color-btn">+</button>
+                    </div>
+
+                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" ViewSelect="ViewPopupCount" ViewControl="transactionalItemQualityPairViewPopup">
+                        @{
+                            if (QualityParameters != null)
+                            {
+                                foreach (var QualityParameter in QualityParameters)
+                                {
+                                    <option value="@QualityParameter.Id">@QualityParameter.Name</option>
+                                }
+                            }
+
+                        }
+                    </InputTextSelector>
+                </div>
+            </div>
+
+            <div>
+            </div>
+            <div class="flex-horizontal-end">
+                <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                <button @onclick="Save" class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
+            </div>
+            <div><p>Value</p></div>
+            <div><input @bind-value="transactionalItemQualityPair.Value" class="form-control" placeholder="Edit value" /></div>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+@code {
+    [Parameter]
+    public List<TransactionalItemQuality> QualityParameters { get; set; }
+    InputTextSelector? ReferInputTextSelector;
+
+    TransactionalItemQualityPair transactionalItemQualityPair = new TransactionalItemQualityPair();
+    List<TransactionalItemQualityPair> transactionalItemQualityPairView = new List<TransactionalItemQualityPair>();
+
+    TransactionalItemQuality SetQualityParameter = new TransactionalItemQuality();
+   
+
+    public int ParamCountResul = 0;
+    bool transactionalItemQualityPairViewPopup = false;
+    bool ViewPopupCount = false;
+    bool PopupViewAddCustomer = false;
+    string ModeSearcher = "";
+    public string _transactionalItemId { get; set; }
+
+    #region TileName
+    public string Title { get; set; }
+    public string transactionalItemId { get; set; }
+    public string Value { get; set; }
+    #endregion TitleName
+
+    protected async override void OnInitialized()
+    {
+        InitializedUICommonFunctions();
+
+        if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
+        {
+            _transactionalItemId = transactionalService.transactionalItemId != null ? transactionalService.transactionalItemId : "";
+
+            transactionalItemQualityPairView = await transactionalService.GetTransactionalItemDetailsQualityParameters();
+        }
+    }
+
+    public async void InitializedUICommonFunctions()
+    {
+        Title = ValidateName(UICommonFunctions.GetDisplayName(new TransactionalItem(), "QualityParameters"));
+        transactionalItemId = ValidateName(UICommonFunctions.GetDisplayName(new TransactionalItemQualityPair(), "transactionalItemId"));
+        Value = ValidateName(UICommonFunctions.GetDisplayName(new TransactionalItemQualityPair(), "Value"));
+        StateHasChanged();
+    }
+
+    private string ValidateName(string? Name)
+    {
+        return Name != null ? Name : "-";
+    }
+
+    private async void Save()
+    {
+        SetQualityParameter.CreationTime = DateTime.UtcNow;
+        SetQualityParameter.DefaultValue = "";
+        var resul = await transactionalService.SaveQualityParameters(_transactionalItemId, transactionalItemQualityPair);
+
+        Closed("control");
+    }
+
+    public async Task Refresh()
+    {
+        //ReferInputTextSelector.Refresh();
+        StateHasChanged();
+    }
+
+    public async Task Closed(string Element)
+    {
+        if (Element == "control") Navigation.NavigateTo("/TransactionalItemCard/2");
+        await Refresh();
+        StateHasChanged();
+    }
+
+
+
+
+    protected async void EventIdSelection(string SelectionId)
+    {
+        transactionalItemQualityPairView = await transactionalService.GetTransactionalItemDetailsQualityParameters();
+       
+        transactionalItemQualityPair = transactionalItemQualityPairView.Where(c => c.TransactionalItemQuality.Id == SelectionId).FirstOrDefault();
+        await Refresh();
+    }
+    protected async void EventSearcherValue(string value)
+    {
+        ViewPopupCount = true;
+        transactionalItemQualityPairView = new List<TransactionalItemQualityPair>();
+        if (ModeSearcher == "QualityParameters")
+        {
+            transactionalItemQualityPairView = await transactionalService.GetTransactionalItemDetailsQualityParameters();
+            transactionalItemQualityPairView = transactionalItemQualityPairView.Where(s => s.TransactionalItemQuality.Name.ToLower().Contains(value.ToLower())).ToList(); 
+            ParamCountResul = transactionalItemQualityPairView.Count();
+        }
+        await Refresh();
+    }
+    public void SetViewElemnt(string Element)
+    {
+        ModeSearcher = Element;
+        if (Element == "QualityParameters") { transactionalItemQualityPairViewPopup = true; }
+        Refresh();
+
+    }
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+}

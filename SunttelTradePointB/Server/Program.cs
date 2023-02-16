@@ -1,0 +1,135 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.ResponseCompression;
+using SunttelTradePointB.Server.Data;
+using SunttelTradePointB.Server.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Configuration;
+using SunttelTradePointB.Server.Services;
+using System.Reflection;
+using SunttelTradePointB.Server.Interfaces;
+using SunttelTradePointB.Server.Interfaces.DAS_FilePreOders;
+using SunttelTradePointB.Server.Services.DAS_FilePreOders;
+using SunttelTradePointB.Server.Interfaces.BL_FilePreOders;
+using SunttelTradePointB.Server.Services.BL_FilePreOders;
+using SunttelTradePointB.Server.Interfaces.DAM_FilePreOders;
+using SunttelTradePointB.Server.Services.DAM_FilePreOders;
+using SunttelTradePointB.Server.InterfacesMigration;
+using SunttelTradePointB.Server.ProcessMigration;
+using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
+using SunttelTradePointB.Server.Services.MasterTablesServices;
+using SunttelTradePointB.Server.Hubs;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+
+var connectionString = builder.Configuration.GetConnectionString("AdminConnection");
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+builder.Services.AddDbContext<SunttelDBContext>(options =>
+    options.UseSqlServer(connectionString));
+
+
+builder.Services.AddSwaggerGen(c =>
+{
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+    c.EnableAnnotations();
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "TradePoint - API", Version = "v1.0" });
+});
+
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = false;
+    options.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.StatusCode = 401;
+        return Task.CompletedTask;
+    };
+});
+builder.Services.AddControllers().AddNewtonsoftJson();
+builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+
+builder.Services.AddScoped<ISquad, SquadService>();
+builder.Services.AddTransient<ISerDasFileEDI, SerDasFileEDI>();
+
+builder.Services.AddTransient<ISerBLFileEDI, SerBLFileEDI>();
+
+builder.Services.AddTransient<ISerDamFileEDI, SerDamFileEDI>();
+
+builder.Services.AddTransient<IGeographicPlaces, GeographicPlacesService>();
+builder.Services.AddTransient<IActorsNodes, EntityActorNodesService>();
+builder.Services.AddTransient<ITransactionalItemsBack, TransactionalItemsService>();
+builder.Services.AddTransient<ISelectorDataSource, SelectorsBackService>();
+builder.Services.AddTransient<ITransactionalItemsRelatedConceptsBKService, TransactionalItemsRelatedConceptsService>();
+builder.Services.AddTransient<IEntitiesRelatedConcepts, EntityActorsRelatedConceptsService>();
+
+
+/*Inyeccion de depencias Proceso migracion*/
+builder.Services.AddTransient<ISerDBMigration, SerDBMigration>();
+
+
+/*Inyeccion Depencias Mongo*/
+builder.Services.AddTransient<ISerDamCustomer, SerDamCustomer>();
+
+
+
+
+
+builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+
+
+builder.Services.AddSignalR();
+builder.Services.AddResponseCompression(opts =>
+{
+    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+        new[] { "application/octet-stream" });
+});
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseWebAssemblyDebugging();
+
+    app.UseSwagger();
+    app.UseSwaggerUI();
+
+}
+else
+{
+    app.UseExceptionHandler("/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+
+app.UseBlazorFrameworkFiles();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+
+app.MapRazorPages();
+app.MapControllers();
+app.MapFallbackToFile("index.html");
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<UserHub>("/hubs/userHub");
+});
+
+app.Run();

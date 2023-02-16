@@ -1,0 +1,127 @@
+﻿
+
+<div class="component-input" style="@style; display:@(ViewControl?"block":"none"); position:relative; width:278px;">
+    <div style=" flex-direction:row; display:@(!ViewSelect?"flex":"none"); ">
+        <input @bind="inputSearcherValue" class="form-control" autocomplete="on" />
+        <img id="btn-img" src="images/search.svg" @onclick="SearcherValue" />
+    </div>
+    <div id="div-Popup"  >
+        <select @onchange="SelectedCarsChanged" style="display:@(ViewSelect?"block":"none");  background-color:@backgroundSelection; color:@colorSelection;  border-color:gray; ">
+            @if (ChildContent != null)
+            {
+                @ChildContent
+            }
+        </select>
+        <div class="div-countResul">
+            <p style="background-color:@(ParamCountResul>0?"green":"orange"); display:@(ViewPopupCount?"block":"none");">@ParamCountResul</p>
+        </div>
+      
+    </div>
+      <input type="button" value="✓" @onclick="SelectedItem" id="Success"/>
+        <input  type="button" value="X" @onclick="Closed" id="Closed"/>
+</div>
+
+
+
+@code {
+    [EditorRequired]
+    [Parameter]
+    public EventCallback<string> EventSearcherValue { get; set; }
+    [EditorRequired]
+    [Parameter]
+    public EventCallback<string> EventIdSelection { get; set; }
+    [Parameter]
+    public EventCallback EventClosed { get; set; }
+    [EditorRequired]
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    [EditorRequired]
+    [Parameter]
+    public int? ParamCountResul { get; set; }
+    [Parameter]
+    public string? ParamFirstSelectedValue { get; set; }    
+    [Parameter]
+    public bool ViewSelect { get; set; } = false;
+    [EditorRequired]
+    [Parameter]
+    public bool ViewControl{ get; set; } = false;
+    [Parameter]
+    public string style { get; set; }
+
+    bool ViewPopupCount = false;
+    public string? inputSearcherValue { get; set; }
+
+    protected bool statusTask = false;
+    string valueSelection = "", backgroundSelection = "", colorSelection = "";
+
+
+    protected override void OnParametersSet()
+    {
+        if (ParamFirstSelectedValue != null)
+        {
+            ViewPopupCount = true;
+            SearcherCountOff();
+            inputSearcherValue = ParamFirstSelectedValue;            
+        }
+
+    }
+
+    public async void SearcherValue()
+    {
+        await EventSearcherValue.InvokeAsync(inputSearcherValue);
+        backgroundSelection = "white";
+        colorSelection = "black";       
+       
+        StateHasChanged();
+    }
+
+    private async void SearcherCountOff()
+    {
+        if (!statusTask)
+        {
+            statusTask = true;
+            await Task.Delay(5000);
+            statusTask = false;
+            ViewPopupCount = false;
+            StateHasChanged();
+        }
+    }
+
+    private void SelectedCarsChanged(ChangeEventArgs e)
+    {
+        if (e.Value is not null)
+        {
+            valueSelection = e.Value.ToString();
+
+        }
+    }
+    private void SelectedItem()
+    {
+        if (valueSelection != "")
+        {
+            EventIdSelection.InvokeAsync(valueSelection);
+            valueSelection = "";
+            backgroundSelection = "";
+            colorSelection = "";
+            ViewSelect = false;
+            ViewControl = false;
+            StateHasChanged();
+        }
+     
+    }
+
+
+    public async Task Refresh()
+    {      
+        StateHasChanged();
+    }
+    public void Closed()
+    {
+        EventClosed.InvokeAsync();
+        ViewControl = false;
+        ViewSelect = false;
+        backgroundSelection = "";
+        colorSelection = "";
+        Refresh();
+    }
+}

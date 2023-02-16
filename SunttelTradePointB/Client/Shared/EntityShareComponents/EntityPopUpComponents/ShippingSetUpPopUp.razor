@@ -1,0 +1,271 @@
+﻿@page "/Actors/{Id}/ShippingInfo"
+@using Syncfusion.Blazor.Popups
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Cards
+@using Syncfusion.Blazor.Navigations
+
+@inject IJSRuntime JSRuntime
+@inject NavigationManager Navigation
+@inject NavigationManager navigationManager
+@inject ActorsNodeService actorsNodeServive
+@inject TransactionalItemsService transactionalService
+
+
+<div class="control-section">
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
+            <SfCard>
+                <CardHeader Title="Add a new shipping info" />
+                <CardContent>
+                    <form onsubmit="event.preventDefault();">
+                        <div class="form-group row">
+                            <label>@lblSender:</label>
+                            <div class="col">
+                                <div class="position:relative;">
+                                    <div class="item-edit">
+                                        <label>@(entityActor != null ? entityActor.Name : "")</label>
+                                        <button type="button" style="float:right" @onclick='()=>SetViewElemnt("Sender")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                                    </div>
+                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEntitiesSender">
+                                        @{
+                                            if (ListEntityActor != null)
+                                            {
+                                                foreach (var entity in ListEntityActor)
+                                                {
+                                                    <option value="@entity?.Id">@entity?.Name</option>
+                                                }
+                                            }
+
+                                        }
+                                    </InputTextSelector>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group py-2">
+                            <label>@lblCarrier:</label>
+                            <div class="col">
+                                <div class="position:relative;">
+                                    <div class="item-edit">
+                                        <label>@(entityActorCarrier != null ? entityActorCarrier.Name : "")</label>
+                                        <button type="button" style="float:right" @onclick='()=>SetViewElemnt("Carrier")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                                    </div>
+                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEntitiesCarrier">
+                                        @{
+                                            if (ListEntityActorCarrier != null)
+                                            {
+                                                foreach (var entity in ListEntityActorCarrier)
+                                                {
+                                                    <option value="@entity?.Id">@entity?.Name</option>
+                                                }
+                                            }
+
+                                        }
+                                    </InputTextSelector>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group py-2">
+                            <label>@lblDeliveryAddress:</label>
+                            <div class="col">
+                                <input type="text" class="form-control" placeholder="Address" @bind-value="@deliver.Name" required />
+                            </div>
+                        </div>
+                        <div class="form-group py-2">
+                            <label>@lblCutOff24Hours:</label>
+                            <div class="col">                                
+                                <input type="number" class="form-control" placeholder="Cut of 24 hours" @bind-value="@shippingInfo.CutOff24Hour" required />
+                            </div>                            
+                        </div>
+                        <div class="form-group py-2">
+                            <label>@lblCutOffMinute:</label>
+                            <div class="col">
+                                <input type="number" class="form-control" placeholder="Cut of minute" @bind-value="@shippingInfo.CutOffMinute" required />
+                            </div>
+                        </div>
+                        <div class="form-group py-2">
+                            <label>@lblDalayTimeDays:</label>
+                            <div class="col">
+                                <input type="number" class="form-control" placeholder="Time Days" @bind-value="@shippingInfo.DelayTimeDays" required />
+                            </div>
+                        </div>
+
+                        
+                        <div class="form-group py-2">
+                            <label>@lblPalletTypeShipping:</label>
+                            <div class="col">
+                                <div class="position:relative;">
+                                    <div class="item-edit">
+                                        <label>@(entityActorPallet != null ? entityActorPallet.Name : "")</label>
+                                        <button type="button" style="float:right" @onclick='()=>SetViewElemnt("Pallet")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                                    </div>
+                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEntitiesPallet">
+                                        @{
+                                            if (ListEntityActorPallet != null)
+                                            {
+                                                foreach (var entity in ListEntityActorPallet)
+                                                {
+                                                    <option value="@entity?.Id">@entity?.Name</option>
+                                                }
+                                            }
+
+                                        }
+                                    </InputTextSelector>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group py-2">
+                            <label>Days:</label>
+                            <div class="col">
+                                <SfCheckBox Label="Monday" @bind-Checked="isCheckedMonday"></SfCheckBox>
+                                <SfCheckBox Label="Tuesday" @bind-Checked="isCheckedTuesday"></SfCheckBox>
+                                <SfCheckBox Label="Wednesday" @bind-Checked="isCheckedWednesday"></SfCheckBox>
+                                <SfCheckBox Label="Thursday" @bind-Checked="isCheckedThursday"></SfCheckBox>
+                                <SfCheckBox Label="Friday" @bind-Checked="isCheckedFriday"></SfCheckBox>
+                                <SfCheckBox Label="Saturday" @bind-Checked="isCheckedSaturday"></SfCheckBox>
+                                <SfCheckBox Label="Sunday" @bind-Checked="isCheckedSunday"></SfCheckBox>
+                            </div>
+                            
+                        </div>
+                        <div class="py-2">
+                            <button type="submit" class="size-btn color-btn" style="float:right"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                            <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
+                        </div>
+                    </form>
+
+                </CardContent>
+            </SfCard>
+        </div>
+    </div>
+</div>
+
+@code{
+    [Parameter]
+    public string Id { get; set; }
+    [Parameter]
+    public bool ViewSelect { get; set; } = false;
+
+    private bool isCheckedMonday = false;
+    private bool isCheckedTuesday = false;
+    private bool isCheckedWednesday = false;
+    private bool isCheckedThursday = false;
+    private bool isCheckedFriday = false;
+    private bool isCheckedSaturday = false;
+    private bool isCheckedSunday = false;
+
+    //Sender
+    EntityActor entityActor = new EntityActor();
+    List<EntityActor> ListEntityActor = new List<EntityActor>();
+    //Carrier
+    EntityActor entityActorCarrier = new EntityActor();
+    List<EntityActor> ListEntityActorCarrier = new List<EntityActor>();
+    //Pallet
+    EntityActor entityActorPallet = new EntityActor();
+    List<EntityActor> ListEntityActorPallet = new List<EntityActor>();
+
+    AtomConcept sender = new AtomConcept();
+    AtomConcept carrier = new AtomConcept();
+    Address deliver = new Address();
+    PalletType palletType = new PalletType();
+    ShippingInfo shippingInfo = new ShippingInfo();
+    InputTextSelector? refInputTextSelector;
+
+    public string lblSender = "";
+    public string lblCarrier = "";
+    public string lblDeliveryAddress = "";
+    public string lblCutOff24Hours = "";
+    public string lblCutOffMinute = "";
+    public string lblDalayTimeDays = "";
+    public string lblPalletTypeShipping = "";
+
+    public string SearcherValueMode = "";
+    public bool PopupViewEntitiesSender = false;
+    public bool PopupViewEntitiesCarrier = false;
+    public bool PopupViewEntitiesPallet = false;
+    public int ParamCountResul = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        lblSender = UICommonFunctions.GetDisplayName(new ShippingInfo(), "Sender");
+        lblCarrier = UICommonFunctions.GetDisplayName(new ShippingInfo(), "Carrier");
+        lblDeliveryAddress = UICommonFunctions.GetDisplayName(new ShippingInfo(), "DeliveryAddress");
+        lblCutOff24Hours = UICommonFunctions.GetDisplayName(new ShippingInfo(), "CutOff24Hour");
+        lblCutOffMinute = UICommonFunctions.GetDisplayName(new ShippingInfo(), "CutOffMinute");
+        lblDalayTimeDays = UICommonFunctions.GetDisplayName(new ShippingInfo(), "DelayTimeDays");
+        lblPalletTypeShipping = UICommonFunctions.GetDisplayName(new ShippingInfo(), "PalletTypeShipping");
+    }
+
+    private void GoBack()
+    {
+        navigationManager.NavigateTo($"/Actors/{Id}/4");
+    }
+
+    public async Task Refresh()
+    {
+        if (refInputTextSelector != null) await refInputTextSelector.Refresh();
+        StateHasChanged();
+    }
+
+    public void SetViewElemnt(string Element)
+    {
+        ViewSelect = false;
+        SearcherValueMode = Element;
+        if (Element == "Sender" && !PopupViewEntitiesSender) { PopupViewEntitiesSender = true; }
+        if (Element == "Carrier" && !PopupViewEntitiesCarrier) { PopupViewEntitiesCarrier = true; }
+        if (Element == "Pallet" && !PopupViewEntitiesPallet) { PopupViewEntitiesPallet = true; }
+        StateHasChanged();
+    }
+
+    protected async void EventSearcherValue(string value)
+    {
+        if (SearcherValueMode == "Sender")
+        {
+            ListEntityActor = await actorsNodeServive.GetEntityActorFaceList(value);
+            ParamCountResul = ListEntityActor != null ? ListEntityActor.Count() : 0;
+        }
+        if (SearcherValueMode == "Carrier")
+        {
+            ListEntityActorCarrier = await actorsNodeServive.GetEntityActorFaceList(value);
+            ParamCountResul = ListEntityActorCarrier != null ? ListEntityActorCarrier.Count() : 0;
+        }
+        if (SearcherValueMode == "Pallet")
+        {
+            ListEntityActorPallet = await actorsNodeServive.GetEntityActorFaceList(value);
+            ParamCountResul = ListEntityActorPallet != null ? ListEntityActorPallet.Count() : 0;
+        }
+        if (ParamCountResul > 0) { ViewSelect = true; } else { ViewSelect = false; }
+        await Refresh();
+    }
+
+    protected async void EventIdSelectionInput(string selectionId)
+    {
+
+        if (SearcherValueMode == "Sender")
+        {
+            entityActor = ListEntityActor.Where(c => c.Id == selectionId).FirstOrDefault();
+        }
+        if (SearcherValueMode == "Carrier")
+        {
+            entityActorCarrier = ListEntityActorCarrier.Where(c => c.Id == selectionId).FirstOrDefault();
+        }
+        if (SearcherValueMode == "Pallet")
+        {
+            entityActorPallet = ListEntityActorPallet.Where(c => c.Id == selectionId).FirstOrDefault();
+        }
+        Reload();
+        await Refresh();
+    }
+
+    private void Reload()
+    {
+        PopupViewEntitiesSender = false;
+        PopupViewEntitiesCarrier = false;
+        PopupViewEntitiesPallet = false;
+    }
+
+}

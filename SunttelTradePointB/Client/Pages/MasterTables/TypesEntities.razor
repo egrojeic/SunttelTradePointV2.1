@@ -1,0 +1,47 @@
+﻿@page "/TypesEntities"
+@using SunttelTradePointB.Client.Shared.TransactionalItems
+@using SunttelTradePointB.Shared.Common
+@inject HttpClient Http
+@inject TransactionalItemsService transactItemsService;
+@inject IJSRuntime JSRuntime
+@inject ContextMenuService ContextMenuService
+@inject DialogService DialogService
+
+
+<PageTitleComponent Title="Types of Entities/Actors/Nodes" IconName="EntityGroups.png"
+                    Description="Describe how the entities could be classified">
+</PageTitleComponent>
+
+<div class="panelMenuContainer">
+    <DutiesMenu></DutiesMenu>
+    <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
+
+</div>
+
+@code {
+    bool isLoading = false;
+    string _filterItems = "";
+
+    public string? conceptFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+
+    private async Task LoadData()
+    {
+        isLoading = true;
+        var data = await transactItemsService.GetTransactionalItemsList(0, 250, _filterItems);
+        //itemList = data;
+        isLoading = false;
+        StateHasChanged();
+
+    }
+
+
+}

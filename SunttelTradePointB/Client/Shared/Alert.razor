@@ -1,0 +1,38 @@
+﻿<div class="@classStyle" style=" @style  display:@(AlertOpen?"block":"none");  background-color:@backgroundColor; " @onclick="Closed">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter]
+    public string? style { get; set; }
+    [Parameter]
+    public string? classStyle { get; set; }
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    [Parameter]
+    public string backgroundColor { get; set; }
+    [Parameter]
+    public bool AlertOpen { get; set; } = false;
+
+    protected override void OnInitialized()
+    {
+        if (classStyle == null || classStyle == "")
+        {
+            classStyle = "alert";
+        }
+    }
+
+    public void Load()
+    {
+        StateHasChanged();
+    }
+
+    public string value = "";
+
+    public void Closed()
+    {
+        AlertOpen = false;
+        Load();
+    }
+
+}

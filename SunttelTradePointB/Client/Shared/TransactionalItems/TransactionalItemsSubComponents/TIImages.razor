@@ -1,0 +1,126 @@
+﻿@using SunttelTradePointB.Client.Shared.TransactionalItems
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Popups
+@inject NavigationManager Navigation
+@inject TransactionalItemsService transactionalService;
+
+<div class="detailsTitleContainer">
+    <h3 class="subTitleDetailForm">Related Images</h3>
+    <svg @onclick="@OpenNewImg" style="margin-left:20px;" title="Add new Image" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style" viewBox="0 0 16 16">
+        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+    </svg>
+</div>
+
+<SfDialog @ref="GridImg" Visible="@ImgOpen" Header="Image view" EnableResize="true" AllowDragging="true" CloseOnEscape="true" ShowCloseIcon="true" Width="300px">
+    <ChildContent>
+        <div class="view-img">
+            <img class="btn open" src="@ImagenUrlOpen" style="border-radius:5px;" />
+        </div>
+    </ChildContent>
+</SfDialog>
+
+<div class="row">
+    <div class="col-md-12">
+        <SfGrid @ref="GridImge" DataSource="@PathImagesView" AllowTextWrap="false" AllowPaging="true" EnableStickyHeader="true">
+            <GridTemplates>
+                <RowTemplate>
+                    <div class="grid-image">
+                        @{
+                            var elemnt = (context as TransactItemImage);
+                            <div class="img">
+                                <img class="btn open" src="/images/extend.png" @onclick="@(()=>SetOpenImg(elemnt.PathImage))" />
+                                <img style="border-radius:5px;" src="@elemnt.PathImage" />
+                            </div>
+                            <div class="description">
+                                <p> @elemnt.Name</p>
+                            </div>
+                            <div>
+                                <input value="Delete" type="button" class="btn" @onclick='()=>Delete(elemnt.Id)' style="background-color:#00ccff;" />
+                            </div>
+                        }
+                    </div>
+                </RowTemplate>
+            </GridTemplates>
+            <GridColumns>
+                @* <GridForeignColumn Field=@nameof(Concept.Name) HeaderText="Employee Name" ForeignKeyValue="FirstName" ForeignDataSource="@ConceptModel" Width="150"></GridForeignColumn>*@
+                <GridColumn HeaderText="Image" Width="180"></GridColumn>
+                <GridColumn HeaderText="@Name" Width="210"></GridColumn>
+                <GridColumn HeaderText="" Width="110"></GridColumn>
+            </GridColumns>
+        </SfGrid>
+
+    </div>
+</div>
+
+@code {
+    List<TransactItemImage> PathImagesView = new List<TransactItemImage>();
+    SfDialog? GridImg;
+    string ImagenUrlOpen = "";
+    bool ImgOpen = false;
+    SfGrid<TransactItemImage>? GridImge;
+
+    public string transactionalItemId { get; set; }
+    #region TileName
+    public string Title { get; set; }
+    public string Name { get; set; }
+    public string PathImage { get; set; }
+    #endregion TitleName
+
+    protected override void OnInitialized()
+    {
+        InitializedUICommonFunctions();
+        if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
+        {
+            transactionalItemId = transactionalService?.transactionalItemId;
+            InitializedPathImage();
+        }
+    }
+
+    protected async void InitializedPathImage()
+    {
+        PathImagesView = await transactionalService.GetTransactionalItemDetailsPathImages(transactionalItemId);
+        if (PathImagesView != null)
+        {
+            await GridImge.Refresh();
+            StateHasChanged();
+        }
+    }
+
+    public async void InitializedUICommonFunctions()
+    {
+        Title = UICommonFunctions.GetDisplayName(new TransactionalItem(), "PathImages");
+        Name = UICommonFunctions.GetDisplayName(new TransactItemImage(), "Name");
+        PathImage = UICommonFunctions.GetDisplayName(new TransactItemImage(), "PathImage");
+        StateHasChanged();
+    }
+
+    public void OpenNewImg()
+    {
+        Navigation.NavigateTo("ImageCard");
+        Refresh();
+    }
+
+    public void Refresh()
+    {
+        GridImge.Refresh();
+    }
+
+    public void Delete(string value)
+    {
+        var resul = PathImagesView.Where(s => s.Id.Trim() == value.Trim()).FirstOrDefault();
+        if (resul != null)
+        {
+            PathImagesView.Remove(resul); Refresh();
+        }
+        ImagenUrlOpen = "";
+        ImgOpen = false;
+    }
+    public void SetOpenImg(string value)
+    {
+        ImagenUrlOpen = value;
+        ImgOpen = true;
+    }
+}

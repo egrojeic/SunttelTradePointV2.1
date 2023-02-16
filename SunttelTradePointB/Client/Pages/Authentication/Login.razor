@@ -1,0 +1,123 @@
+﻿@page "/login"
+@using SunttelTradePointB.Client.Services
+@using SunttelTradePointB.Shared.Security
+@using SunttelTradePointB.Shared.Squad
+@layout AuthLayout
+@inject NavigationManager navigationManager
+@inject CustomStateProvider authStateProvider
+@inject SQuadService squadService;
+@inject IJSRuntime JS;
+
+@if (pathLogo != null)
+{
+    <div id="logingDivContainer">
+        <img src="@pathLogo" id="imgLogoSplash" />
+
+        <EditForm class="form-signin" OnValidSubmit="OnSubmit" Model="loginRequest">
+            <DataAnnotationsValidator />
+
+            <label for="inputUsername" class="lblSplash">User Name</label>
+            <InputText id="inputUsername" class="form-control" @bind-Value="loginRequest.UserName" autofocus placeholder="Username" />
+            <ValidationMessage For="@(() => loginRequest.UserName)" />
+
+            <label for="inputPassword" class="lblSplash">Password</label>
+            <InputText type="password" id="inputPassword" class="form-control" placeholder="Password" @bind-Value="loginRequest.Password" />
+            <ValidationMessage For="@(() => loginRequest.Password)" />
+
+            <div class="form-check m-3">
+                <InputCheckbox id="inputRememberMe" class="form-check-input" @bind-Value="@loginRequest.RememberMe" />
+                <label class="form-check-label" for="inputRememberMe">Remember Me</label>
+            </div>
+
+            <button class="btn btn-lg btn-dark btn-block" type="submit" id="SplashButton">Sign in</button>
+
+            <label class="text-danger">@error</label>
+
+            <br>
+            <br>
+
+
+            <NavLink href="register">
+                <h6 class="font-weight-normal text-center">Create account</h6>
+            </NavLink>
+
+        </EditForm>
+
+
+
+
+    </div>
+
+}
+else
+{
+
+    <div id="loadingContainer">
+
+        <p>loading...</p>
+
+        <div id="loadingPanel">
+            <div id="sunttelSoftwareInfo">
+                <img src="/images/logosunttel.jpg" id="SunttelLogoInit" />
+                <a>Suntel Software Product</a>
+
+            </div>
+
+            <div id="loadingGif">
+                <div class="center">
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+}
+
+
+
+
+@code {
+    LoginRequest loginRequest { get; set; } = new LoginRequest();
+    Squad squd { get; set; } = new Squad();
+
+    string error { get; set; }
+
+    string pathLogo { get; set; }
+
+    async Task OnSubmit()
+    {
+        error = null;
+        try
+        {
+            await authStateProvider.Login(loginRequest);
+            navigationManager.NavigateTo("");
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        squd = await squadService.SquadInfo();
+
+        Thread.Sleep(1000);
+        pathLogo = $"/SkinImagesByAccount/{squd.ID.ToString()}.jpg";
+
+        await JS.InvokeVoidAsync("localStorage.setItem", "IMCL", pathLogo);
+
+    }
+}

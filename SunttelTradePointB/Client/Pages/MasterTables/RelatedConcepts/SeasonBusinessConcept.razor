@@ -1,0 +1,67 @@
+﻿@page "/SeasonBusinessConcept/{Page}/{Mode}/{filterItems}"
+@page "/SeasonBusinessConcept/{Page}/{Mode}"
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Buttons
+@inject NavigationManager Navigation
+@inject TransactionalItemsService transactionalService;
+
+<div class="flex-horizontal-center">
+    <div class="grid-columns-2 box-shadow-mode">
+        <div><label>@GetName( "Name", new AtomConcept())</label></div>
+        <div><input type="text" @bind-value="seasonBusiness.Name" class="form-control" placeholder="Edit value" /></div>
+        <div><label>@GetName( "FlagSundayShipping", new SeasonBusiness())</label></div>
+        <div>
+            <SfSwitch @bind-Checked="seasonBusiness.FlagSundayShipping"></SfSwitch>
+        </div>
+        <div><label>@GetName( "StartDate", new SeasonBusiness())</label></div>
+        <div><input type="date" @bind-value="seasonBusiness.StartDate" class="form-control" placeholder="Edit value" /></div>
+        <div><label>@GetName( "EndDate", new SeasonBusiness())</label></div>
+        <div><input type="date" @bind-value="seasonBusiness.EndDate" class="form-control" placeholder="Edit value" /></div>
+
+        <div></div>
+        <div class="flex-horizontal-end">
+            <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+            <button @onclick='Save' class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public string Page { get; set; } = "";
+    [Parameter]
+    public string Mode { get; set; } = "Add";
+    [Parameter]
+    public string filterItems { get; set; } = "";
+    public SeasonBusiness seasonBusiness = new();
+
+    protected override void OnInitialized()
+    {
+        if (Mode == "Edit")
+        {
+            seasonBusiness = transactionalService.SeasonBusinessSelectedItems;
+        }
+        if (Mode == "Add")
+        {
+            seasonBusiness = new();
+        }
+        base.OnInitialized();
+    }
+
+
+    public void Closed(string value)
+    {
+        if (value == "control") Navigation.NavigateTo($"/{Page}/{filterItems}");
+    }
+
+    public async void Save()
+    {
+        await transactionalService.SaveSeason(null, seasonBusiness);
+
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+}

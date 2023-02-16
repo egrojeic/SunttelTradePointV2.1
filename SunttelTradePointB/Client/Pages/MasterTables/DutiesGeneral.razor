@@ -1,0 +1,108 @@
+﻿@page "/Duties"
+@using SunttelTradePointB.Client.Shared.TransactionalItems
+@using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Grids
+@inject HttpClient Http
+@inject TransactionalItemsService transactItemsService;
+@inject IJSRuntime JSRuntime
+@inject ContextMenuService ContextMenuService
+@inject DialogService DialogService
+@inject NavigationManager Navigation
+
+
+<PageTitleComponent Title="Duties" IconName="taxes.png"
+                    Description="Duties and taxes rates">
+</PageTitleComponent>
+
+<div class="panelMenuContainer">
+    <DutiesMenu></DutiesMenu>
+    <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
+
+</div>
+
+
+@if (isLoading)
+{
+
+    <WaitingProcessIndicator loadingTopic="Transactional Items"></WaitingProcessIndicator>
+
+}
+else
+{
+
+   @* <DataGrid TParameter="ConceptGroup"
+          EventCallbackMenu="OnContextMenuClick"
+          parameterList="conceptGroup"
+          GridColumnsList="GridColumnList"
+          EventCallbackOnLoad="Onload">
+    </DataGrid>*@
+
+}
+
+
+
+@code {
+    [Parameter]
+    public string _filterItems { get; set; } = "";
+    public List<ConceptGroup> conceptGroup { get; set; }
+    public List<ConceptGroup> ChildrenGroups { get; set; }
+    public List<GridColumn> GridColumnList { get; set; }
+
+    bool isLoading = false;
+   
+
+    protected override void OnInitialized()
+    {
+        GridColumnList = new List<GridColumn>()
+        {
+            new GridColumn() { Field = nameof(ConceptGroup.Name), HeaderText = GetName("Name", new ConceptGroup())  },
+            new GridColumn() { Field = nameof(ConceptGroup.Code), HeaderText = GetName("Code", new ConceptGroup()) },
+            new GridColumn() { Field = nameof(ConceptGroup.GroupClassificationCriteria), HeaderText = GetName("GroupClassificationCriteria", new ConceptGroup()) }
+        };
+
+        if (_filterItems != "" && _filterItems != null)
+        {
+            LoadData();
+        }
+        transactItemsService.Page = "Duties";
+    }
+
+    public string? conceptFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+    
+    private async Task LoadData()
+    {
+        isLoading = true;
+        var data = await transactItemsService.GetTransactionalItemsList(0, 250, _filterItems);
+        //itemList = data;
+        isLoading = false;
+        StateHasChanged();
+       
+    }
+
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<ConceptGroup> args)
+    {
+        ConceptGroup itemConceptGroup = null;
+        itemConceptGroup = args.RowInfo.RowData;
+        transactItemsService.ConceptGroupSelectedItems = itemConceptGroup;
+        if (args.Item.Id == "Edit")
+        {
+            Navigation.NavigateTo($"/GroupConcept/Groups/Edit/{_filterItems}");
+        }
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+}

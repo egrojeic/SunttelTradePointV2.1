@@ -1,0 +1,47 @@
+﻿@page "/IdentificationTyes"
+@using SunttelTradePointB.Client.Shared.TransactionalItems
+@using SunttelTradePointB.Shared.Common
+@inject HttpClient Http
+@inject TransactionalItemsService transactItemsService;
+@inject IJSRuntime JSRuntime
+@inject ContextMenuService ContextMenuService
+@inject DialogService DialogService
+
+
+<PageTitleComponent Title="Types of Identification for Entities" IconName="identificationType.png"
+                    Description="Types of identification the different entities could have">
+</PageTitleComponent>
+
+<div class="panelMenuContainer">
+    <IdentificationMenu></IdentificationMenu>
+    <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
+
+</div>
+
+@code {
+    bool isLoading = false;
+    string _filterItems = "";
+
+    public string? conceptFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+
+    private async Task LoadData()
+    {
+        isLoading = true;
+        var data = await transactItemsService.GetTransactionalItemsList(0, 250, _filterItems);
+        //itemList = data;
+        isLoading = false;
+        StateHasChanged();
+
+    }
+
+
+}

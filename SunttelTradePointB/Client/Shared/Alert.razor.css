@@ -1,0 +1,24 @@
+﻿.alert {
+    position: absolute;
+    background-color: green;
+    top: 200px;
+    right: 5%;
+    height: 50px;
+    width: auto;
+    min-width: 100px;
+    z-index: 5000;
+    box-shadow: 0px 2px 5px gray, inset 0px -2px 1px white;
+    color: white;
+    animation-duration: 5s;
+    animation-name: alerstyleOn;
+    
+}
+@keyframes alerstyleOn {
+    from {
+        right: 0%;
+    }
+
+    to {
+        right: 1;
+    }
+}

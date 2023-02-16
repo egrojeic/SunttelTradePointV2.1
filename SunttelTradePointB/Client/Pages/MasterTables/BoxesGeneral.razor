@@ -1,0 +1,126 @@
+﻿@page "/Boxes"
+@page "/Boxes/{_filterItems}"
+@using SunttelTradePointB.Client.Shared.TransactionalItems
+@using SunttelTradePointB.Shared.Common
+@using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Navigations
+@inject HttpClient Http
+@inject TransactionalItemsService transactItemsService;
+@inject IJSRuntime JSRuntime
+@inject ContextMenuService ContextMenuService
+@inject DialogService DialogService
+@inject NavigationManager Navigation
+
+<PageTitleComponent Title="Box Types" IconName="boxes.png"
+                    Description="Box types to keep the different products">
+</PageTitleComponent>
+
+<div class="panelMenuContainer">
+    <BoxTypesMenu></BoxTypesMenu>
+    <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
+
+</div>
+@if (isLoading)
+{
+
+    <WaitingProcessIndicator loadingTopic="Transactional Items"></WaitingProcessIndicator>
+
+}
+else
+{
+    @if (@boxes != null)
+    {
+        <SfGrid @ref="referDataGrid" DataSource="@boxes"
+        AllowFiltering="true"
+        AllowTextWrap="false"
+        AllowPaging="true"
+        AllowResizing="true"
+        Width="200PX"
+        ContextMenuItems="@(new List<ContextMenuItemModel>() {
+        new ContextMenuItemModel {
+        Text = "selected",
+        Target = ".e-content",
+        Id = "Item"    ,
+        Items = new List<MenuItem>() {
+                                      new MenuItem { Text = "Edit", Id = "Edit",IconCss="/images/edit.png" }
+                                      } } }
+            )">
+
+            <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
+            <GridColumns>
+                <GridColumn Field="@nameof(Box.Name)" HeaderText="@GetName("Name", new AtomConcept())" Width="250px"></GridColumn>
+                <GridColumn Field="@nameof(Box.Code)" HeaderText="@GetName("Code", new AtomConcept())" Width="120px"></GridColumn>
+                <GridColumn Field="@nameof(Box.Cost)" HeaderText="@GetName("Cost", new Box())" Width="120px"></GridColumn>
+                <GridColumn Field="@nameof(Box.ContainersNumber)" HeaderText="@GetName("ContainersNumber", new Box())" Width="10%"></GridColumn>
+                <GridColumn Field="@nameof(Box.FlagWet)" HeaderText="@GetName("FlagWet", new Box())" ></GridColumn>
+                <GridColumn Field="@nameof(Box.Length)" HeaderText="@GetName("Length", new Box())" ></GridColumn>
+                <GridColumn Field="@nameof(Box.Notes)" HeaderText="@GetName("Notes", new Box())"></GridColumn>
+            </GridColumns>
+            <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="Box"></GridEvents>
+
+        </SfGrid>
+    }
+
+}
+
+@code {
+    [Parameter]
+    public string _filterItems { get; set; } = "";
+    public List<Box> boxes { get; set; }
+
+    List<GridColumn> ListGridBox = new List<GridColumn>();
+    SfGrid<Box>? referDataGrid;
+
+    bool isLoading = false;
+
+
+
+    public string? conceptFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        if (_filterItems != "" && _filterItems != null)
+        {
+            LoadData();
+        }
+        transactItemsService.Page = "Boxes";
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name) != null ? UICommonFunctions.GetDisplayName(Obj, Name) : Name;
+        return Name;
+    }
+
+    private async Task LoadData()
+    {
+        isLoading = true;
+        boxes = await transactItemsService.GetBoxGetBoxTable(0, 250, _filterItems);
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<Box> args)
+    {
+        Box itemBox = null;
+        itemBox = args.RowInfo.RowData;
+        transactItemsService.BoxSelectedItems = itemBox;
+        if (args.Item.Id == "Edit")
+        {
+            Navigation.NavigateTo($"/BoxeConcept/Boxes/Edit/{_filterItems}");
+        }
+    }
+
+
+
+
+}

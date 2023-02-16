@@ -1,0 +1,65 @@
+﻿@page "/GroupsEntities/NewGroup"
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.Cards
+@using SunttelTradePointB.Shared.Common
+
+@inject NavigationManager navigationManager
+@inject ActorsNodeService actorsNodeServive
+
+<div class="control-section">
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
+            <SfCard>
+                <CardHeader Title="Add a new group" />
+                <CardContent>
+                    <form onsubmit="event.preventDefault();">
+                        <div class="form-group row">
+                            <label class="control-label col-md-12">Code: </label>
+                            <div class="col">
+                                <SfTooltip ID="Tooltip" Target="#name" Content="@ContentCode">
+                                    <input id="name" type="text" class="form-control" @bind-value="@atomConcept.Code" required />
+                                </SfTooltip>
+                            </div>
+                        </div>
+
+                        <div class="form-group py-2">
+                            <label class="control-label col-md-12">Name: </label>
+                            <div class="col">
+                                <SfTooltip ID="Tooltip" Target="#name" Content="@ContentName">
+                                    <input id="name" type="text" class="form-control" @bind-value="@atomConcept.Name" required />
+                                </SfTooltip>
+                            </div>
+                        </div>
+
+                        <div class="py-2">
+                            <button type="submit" class="size-btn color-btn" style="float:right"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                            <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
+                        </div>
+                        
+                    </form>
+                    
+                </CardContent>
+            </SfCard>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    [Parameter]
+    public string groupId { get; set; }
+
+    private string ContentCode = "e.g. 12345";
+    private string ContentName = "e.g. Test";
+
+    AtomConcept atomConcept = new AtomConcept();
+
+
+
+    private void GoBack()
+    {
+        navigationManager.NavigateTo($"/GroupsEntities/");
+    }
+
+}

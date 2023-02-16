@@ -1,0 +1,44 @@
+﻿@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.DropDowns
+
+@inject ActorsNodeService actorsNodeServive;
+
+<div class="form-group controlContainer">
+    <label id="lablSelector" for="cmbRoles">Role</label>
+
+    @if (entityRoles != null)
+    {
+        <SfComboBox TValue="string" TItem="EntityRole" Placeholder="e.g. Select a Role" DataSource="@entityRoles" ID="cmbRoles" @bind-Value="@entityRoleSelectedId">
+            <ComboBoxFieldSettings GroupBy="EntityRoleClassifier.Name" Text="Name" Value="Id"></ComboBoxFieldSettings>
+        </SfComboBox>
+    }
+
+
+</div>
+
+
+@code {
+    [Parameter]
+    public EntityRole? entityRoleSelected { get; set; }
+    List<EntityRole>? entityRoles;
+
+    string entityRoleSelectedId = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetRoles();
+
+        if (entityRoleSelected != null)
+        {
+            entityRoleSelectedId = entityRoleSelected.Name;
+        }
+    }
+
+    private async Task GetRoles()
+    {
+        var response = await actorsNodeServive.EntityRolesList();
+        if (response != null)
+            entityRoles = response;
+    }
+
+}

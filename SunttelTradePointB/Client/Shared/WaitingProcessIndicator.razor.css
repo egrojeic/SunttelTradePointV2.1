@@ -1,0 +1,35 @@
+﻿* {
+    margin: 0;
+    width: 100%;
+    background-color: white;
+    display: flex;
+    align-content: center;
+
+}
+
+#waitingImg {
+    width: 140px;
+    
+    margin: auto;
+}
+
+#loadingContainer {
+    display: block;
+}
+
+#loadingContainer h2 {
+    width: 100%;
+    margin: auto;
+}
+
+#labelText {
+    display: block;
+    margin: auto;
+    padding:0px;
+    font-size: 1.1em;
+    text-align: center;
+    font-weight: bold;
+    width: 100%;
+    
+
+}

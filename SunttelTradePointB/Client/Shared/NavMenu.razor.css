@@ -1,0 +1,213 @@
+
+.navbar-toggler {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+#tradePintLogo {
+    width: 100px;
+}
+
+#imgLogoCompany {
+    width: 120px;
+    margin: auto;
+    
+    border-radius: 100px;
+    border-block-color: red;
+    border-width: 5px;
+    border-style: solid;
+}
+
+i{
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+
+#companyLogoContainer {
+    display: grid;
+    margin: auto;
+    margin-top: 20px;
+    width: 90%;
+    height: 90%;
+    padding-top: 5px;
+    align-content: center;
+    align-content: center;
+    border-radius: 50px;
+}
+
+    #companyLogoContainer h2{
+        margin-top: 10px;
+        
+        font-size: 0.7em;
+        text-align: center;
+        color: #ffffff;
+    }
+
+    #TradePointIdentifierDiv {
+        display: inline-flex;
+        width: 100%;
+        vertical-align: middle;
+    }
+
+    #TradePointIdentifierDiv a {
+        width: 100%;
+        margin: auto;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+.top-row {
+    height: 3.5rem;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.navbar-brand {
+    font-size: 1.1rem;
+}
+
+.oi {
+    width: 2rem;
+    font-size: 1.1rem;
+    vertical-align: text-top;
+    top: -2px;
+}
+
+.nav-item {
+    font-size: 0.9rem;
+    padding-bottom: 0.1rem;
+ 
+
+}
+
+    .nav-item:first-of-type {
+        padding-top: 0.5rem;
+    }
+
+    .nav-item:last-of-type {
+        padding-bottom: 0.5rem;
+    }
+
+#MenuContainer {
+    margin-top: 2px;
+   
+    height: 800px;
+    overflow: auto;
+}
+
+#navMenuContainer {
+    display: block;
+   
+    
+    /*background-image: linear-gradient(180deg, #2D2D2E 0%, #171717 100%);*/
+}
+
+/*
+.nav-item ::deep a {
+    color: #d7d7d7;
+    border-radius: 4px;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    line-height: 3rem;
+}
+
+    .nav-item ::deep a.active {
+        background-color: rgba(255,255,255,0.25);
+        color: white;
+    }
+
+    .nav-item ::deep a:hover {
+        background-color: rgba(255,255,255,0.1);
+        color: white;
+    }
+
+*/
+
+
+
+.card {
+    width: 300px;
+    height: 420px;
+    background-color: yellow;
+    border-radius: 10px 10px;
+}
+
+.header {
+    border-radius: 10px 10px 0px 0px;
+    padding: 2px;
+    background-color: #2A3942;
+}
+
+h3 {
+    color: #FFFFFF;
+    font-family: 'Roboto', sans-serif;
+    margin-left: 1rem;
+}
+
+.iconM {
+    font-size: 18px;
+    margin-left: 170px;
+    color: #2f89fc;
+}
+
+.icon {
+    margin-right: 8px;
+}
+
+.subMenuItem {
+    margin-top: 0.1em;
+    /*background-image: linear-gradient(180deg, #2D2D2E 50%, #171717 100%);*/
+    padding-left: 5px;
+    border-radius: 10px;
+  
+}
+
+   
+
+
+
+    .body li {
+        transition: 1s all;
+        font-family: 'Roboto', sans-serif;
+        font-size: 14px;
+        padding: 5px;
+        margin-left: -20px;
+        margin-top: 5px;
+        margin-right: 5px;
+        color: #fff;
+        list-style: none;
+        display: block;
+        border-top-right-radius: 10px 10px;
+        border-bottom-right-radius: 10px 10px;
+        border-top-left-radius: 10px 10px;
+        border-bottom-left-radius: 10px 10px;
+    }
+
+li:hover {
+    transition: 1s all;
+    color: white;
+    background-color: white;
+    border-top-right-radius: 10px 10px;
+    border-bottom-right-radius: 90px 90px;
+    cursor: pointer;
+    background-color: #00CCFF;
+}
+
+.innerlink .active {
+    width: 100% !important;
+    background-color: yellow !important;
+}
+.innerlink {
+    color: white;
+    
+    text-decoration: none;
+    width: 100%;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+    .innerlink:hover {
+        /*background-color: red;*/
+        text-decoration: underline;
+    }
+

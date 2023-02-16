@@ -1,0 +1,50 @@
+﻿@inject ContextMenuService ContextMenuService
+
+<div class="search-bar">
+	<input type="search" name="search" pattern=".*\S.*" required @bind="@FilterText" @oninput="@OnInputEvent" autocomplete="off">
+
+	<button class="search-btn" @onclick="@ButtonClick">
+		<span>Search</span>
+	</button>
+	
+	
+	
+
+</div>
+
+
+@code {
+	[Parameter]
+	public EventCallback<string> FilterTextChanged { get; set; }
+	[Parameter]
+	public EventCallback<string> FilterTextSetChanged { get; set; }
+
+	[Parameter]
+	public string? FilterText { get; set; }
+	[Parameter]
+	public string? FilterTextSet { get; set; }
+	[Parameter]
+	public bool onlyEnabled { get; set; }
+
+	string _filerText = "";
+
+
+	private void FilterChanged(){
+		FilterTextChanged.InvokeAsync(FilterText);
+	}
+
+	private void ButtonClick()
+	{
+		FilterTextSetChanged.InvokeAsync(FilterText);
+	}
+
+
+	private void OnInputEvent(ChangeEventArgs changeEvent)
+	{
+		_filerText = (string)changeEvent.Value;
+		FilterTextChanged.InvokeAsync(_filerText);
+	}
+
+	
+	
+}

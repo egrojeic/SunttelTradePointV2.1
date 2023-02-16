@@ -1,0 +1,171 @@
+﻿@using SunttelTradePointB.Shared.Common
+@inject TransactionalItemsService transactionalService;
+
+<form>
+    <div style="display:@(Page1?"block":"none");" >
+        <br />
+        <h4>  @GetName( "ListOfMaterials", new PackingSpecs())</h4>
+        <br />
+        <div id="add-recipe">
+            <div class="grid-columns-4">
+                <div>
+                    <label>
+                        @GetName( "Material", new MaterialRecipeItem())
+                    </label>
+                </div>
+                <div style="position:relative;">
+                    <div class="item-edit">
+                        <label>@(Material != null ? Material.Name : "")</label>
+                        <button @onclick='()=>SetViewElemnt("ItemComponent")' class="btn color-btn">+</button>
+                    </div>
+                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditItemComponent">
+                        @{
+                            if (Materials != null)
+                            {
+                                foreach (var Element in Materials)
+                                {
+                                    <option value="@Element?.Id">@Element?.Name</option>
+                                }
+                            }
+                        }
+                    </InputTextSelector>
+                </div>
+
+                <div><label>@GetName( "Quantity",new MaterialRecipeItem())</label></div>
+                <div><input type="number" @bind="packRecipeItem.Quantity" class="form-control" style="border-color:gray;" required /></div>
+
+            </div>
+            <div class="flex-horizontal-end item">
+                <button type="button" @onclick='Closed' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+            </div>
+        </div>
+    </div>
+       
+
+    <div style="display:@(Page2?"block":"none");">
+        <br />
+        <h4>  @GetName( "ListOfMaterials", new PackingSpecs())</h4>
+        <br />
+        <div id="add-recipe">
+            <div class="grid-columns-4">
+                <div>
+                    <label>
+                        @GetName( "Material", new MaterialRecipeItem())
+                    </label>
+                </div>
+                <div style="position:relative;">
+                    <div class="item-edit">
+                        <label>@(Material != null ? Material.Name : "")</label>
+                        <button @onclick='()=>SetViewElemnt("ItemComponent")' class="btn color-btn">+</button>
+                    </div>
+                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditItemComponent">
+                        @{
+                            if (Materials != null)
+                            {
+                                foreach (var Element in Materials)
+                                {
+                                    <option value="@Element?.Id">@Element?.Name</option>
+                                }
+                            }
+                        }
+                    </InputTextSelector>
+                </div>
+
+                <div><label>@GetName( "Quantity",new MaterialRecipeItem())</label></div>
+                <div><input type="number" @bind="packRecipeItem.Quantity" class="form-control" style="border-color:gray;" required /></div>
+
+            </div>
+            <div class="flex-horizontal-end item">
+                <button type="button" @onclick='Closed' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+            </div>
+        </div>
+    </div>
+</form>
+
+@code {
+    [Parameter]
+    public EventCallback<bool> EventClosed { get; set; }
+    [Parameter]
+    public int Page { get; set; } = 0;
+    public bool Page1 = false, Page2 = false;
+
+
+
+    protected override void OnParametersSet()
+    {
+        Page1 = Page == 1;
+        Page2 = Page == 2;
+        base.OnParametersSet();
+    }
+
+    PackRecipeItem packRecipeItem = new PackRecipeItem();
+
+    #region Input
+    InputTextSelector? ReferInputTextSelector;
+    bool ViewSelect = false;
+    string SearcherValueMode = "";
+    int ParamCountResul = 0;
+
+    bool PopupViewEditIRecipeQualityModifier = false;
+    bool PopupViewEditItemComponent = false;
+    #endregion Input
+
+
+    List<Concept> Materials = new List<Concept>();
+    Concept Material = new Concept();
+
+
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    public void SetViewElemnt(string Element)
+    {
+        ViewSelect = false;
+        SearcherValueMode = Element;
+        Reload();
+        if (Element == "Material") { PopupViewEditItemComponent = true; }
+
+
+        StateHasChanged();
+    }
+
+    protected async void EventSearcherValue(string value)
+    {
+        Materials = new List<Concept>();
+
+        if (SearcherValueMode == "Material")
+        {
+            Materials = new List<Concept>();
+            ParamCountResul = Materials != null ? Materials.Count() : 0;
+        }
+
+        if (ParamCountResul > 0) { ViewSelect = true; } else { ViewSelect = false; }
+
+
+    }
+
+    protected async void EventIdSelectionInput(string selectionId)
+    {
+
+        if (SearcherValueMode == "Material")
+        {
+            Material = Materials.Where(c => c.Id == selectionId).FirstOrDefault();
+        }
+        Reload();
+    }
+
+    public void Closed()
+    {
+        EventClosed.InvokeAsync(false);
+    }
+
+   public void Reload()
+    {
+        StateHasChanged();
+    }
+
+}

@@ -1,0 +1,103 @@
+﻿@using SunttelTradePointB.Client.Shared.TransactionalItems
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Popups
+@inject NavigationManager Navigation
+@inject TransactionalItemsService transactionalService;
+
+<div class="detailsTitleContainer">
+    <h3 class="subTitleDetailForm">Quality Requirements</h3>
+    <svg @onclick="@ViewNewQualityPair" style="margin-left:20px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style" viewBox="0 0 16 16">
+        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+    </svg>
+</div>
+
+@if (qualityParameters != null)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <SfGrid @ref="GridQuality" DataSource="@QualityParametersView" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" EnableStickyHeader="true">
+                <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
+                <GridColumns>
+                    <GridColumn Field="@nameof(TransactionalItemQualityPairView.Name)" HeaderText="@Name"></GridColumn>
+                    <GridColumn Field="@nameof(TransactionalItemQualityPairView.Value)" HeaderText="Quality"></GridColumn>
+                </GridColumns>
+            </SfGrid>
+        </div>
+    </div>
+}
+
+@code {
+    List<TransactionalItemQualityPair> qualityParameters { get; set; }
+    List<TransactionalItemQualityPairView> QualityParametersView = new List<TransactionalItemQualityPairView>();
+    SfGrid<TransactionalItemQualityPairView> GridQuality;
+
+    public string transactionalItemId { get; set; }
+    #region TileName
+    public string Title { get; set; }
+    public string Name { get; set; }
+    public string Value { get; set; }
+    #endregion TitleName
+
+    protected override void OnInitialized()
+    {
+        InitializedUICommonFunctions();
+        if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
+        {
+            transactionalItemId = transactionalService.transactionalItemId != null ? transactionalService.transactionalItemId : null;
+            InitializedQualityParameters();
+        }
+    }
+
+    protected async void InitializedQualityParameters()
+    {
+        qualityParameters = await transactionalService.GetTransactionalItemDetailsQualityParameters(transactionalItemId);
+        await ConverTo(qualityParameters);
+        //await GridQuality.Refresh();
+        StateHasChanged();
+    }
+
+    public async void InitializedUICommonFunctions()
+    {
+        Title = ValidateName(UICommonFunctions.GetDisplayName(new TransactionalItem(), "QualityParameters"));
+        Name = ValidateName(UICommonFunctions.GetDisplayName(new AtomConcept(), "Name"));
+        Value = ValidateName(UICommonFunctions.GetDisplayName(new TransactionalItemQualityPair(), "Value"));
+        StateHasChanged();
+    }
+    private string ValidateName(string? Name)
+    {
+        return Name != null ? Name : "-";
+    }
+    protected async Task ConverTo(List<TransactionalItemQualityPair> _qualityParameters)
+    {
+        foreach (TransactionalItemQualityPair Element in _qualityParameters)
+        {
+            QualityParametersView.Add(new TransactionalItemQualityPairView
+                {
+                    Name = Element.TransactionalItemQuality.Name,
+                    Value = Element.Value
+                });
+        }
+
+    }
+
+    public void ViewNewQualityPair()
+    {
+        Navigation.NavigateTo("/QualityParametersCard");
+        Refresh();
+    }
+
+    public void Refresh()
+    {
+
+        GridQuality.Refresh();
+    }
+
+    public class TransactionalItemQualityPairView
+    {
+        public string Name { get; set; }
+        public string Value { get; set; }
+    }
+}

@@ -1,0 +1,214 @@
+﻿@page "/GeographicPlaces"
+@using SunttelTradePointB.Shared.Common
+@using SunttelTradePointB.Client.Services.MasterTablesServices
+
+@inject HttpClient Http
+@inject GeographicPlacesService geoPlaces;
+
+<PageTitleComponent Title="Geographic Places" IconName="GeographyIco.png"
+                    Description="Here you can fetch information about Countries, Regions and Cities">
+</PageTitleComponent>
+
+<div id="GeneralContainer">
+
+
+    <div id="CountiesCard" class="CardList">
+
+
+        @if (countryList != null)
+        {
+            <div class="searchBarContainer">
+                <span class="cardTitle"><i class="fa fa-globe" aria-hidden="true"></i> Countries</span>
+
+                <SearchComponent @bind-FilterText="@countriesFilter"></SearchComponent>
+              
+            </div>
+
+            <ul>
+                @foreach (var c in countryList)
+                {
+                    <li onclick="@(()=>LoadRegions(c))">
+                        <label>@c.Name</label>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+
+           <WaitingProcessIndicator loadingTopic="Countries"></WaitingProcessIndicator>
+        }
+
+
+
+    </div>
+
+
+   
+        @if (regionsList != null)
+        {
+             <div id="RegionsCard" class="CardList">
+
+            <div class="searchBarContainer">
+                <span class="cardTitle"><i class="fa fa-globe" aria-hidden="true"></i> Regions of @(currentCountry.Name??string.Empty)</span>
+
+                <SearchComponent @bind-FilterText="@regionsFilter"></SearchComponent>
+            </div>
+
+            <ul>
+                @foreach (var c in regionsList)
+                {
+                    <li onclick="@(()=>SetCurrentRegion(c))">
+                        <lable>@c.Name</lable>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        }
+        else
+        {
+            if (loadingRegions){
+                <WaitingProcessIndicator loadingTopic="Regions"></WaitingProcessIndicator>
+            }
+                
+        }
+
+
+    @if (citiesList != null)
+        {
+             <div id="CitiesCard" class="CardList">
+
+            <div class="searchBarContainer">
+                <span class="cardTitle"><i class="fa fa-globe" aria-hidden="true"></i> Cities of @(currentRegion.Name ?? string.Empty)</span>
+
+                <SearchComponent @bind-FilterText="@citiesFilter"></SearchComponent>
+            </div>
+
+            <ul>
+                @foreach (var c in citiesList)
+                {
+                    <li>
+                        <lable>@c.Name</lable>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        }
+        else
+        {
+            if (loadingRegions){
+                <WaitingProcessIndicator loadingTopic="Regions"></WaitingProcessIndicator>
+            }
+                
+        }
+
+
+</div>
+
+
+@code {
+    private List<Country>? countryList;
+
+    private List<GeoRegion>? regionsList;
+
+    private List<City>? citiesList;
+
+
+    private Country? currentCountry;
+    private GeoRegion? currentRegion;
+
+    bool loadingRegions = false;
+
+    string _countriesFilter = "";
+    string _regionsFilter = "";
+    string _citiesFilter = "";
+
+
+
+    public string countriesFilter { 
+        get { 
+            return _countriesFilter; 
+        } 
+        set { 
+            _countriesFilter = value;
+            GetFilteredCountries(_countriesFilter);
+        } 
+    }
+
+    public string regionsFilter { 
+        get { 
+            return _regionsFilter; 
+        } 
+        set { 
+            _regionsFilter = value;
+            GetFilteredRegions(currentCountry, _regionsFilter);
+        } 
+    }
+
+    public string citiesFilter { 
+        get { 
+            return _citiesFilter; 
+        } 
+        set { 
+            _citiesFilter = value;
+            GetFilteredCities(currentRegion, _citiesFilter);
+        } 
+    }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetFilteredCountries();
+    }
+
+    private async Task GetFilteredCountries(string filterCountries = ""){
+        var response = await geoPlaces.GetCountries(filterCountries);
+
+        if (response != null)
+            countryList = response.Where(c => c.Id != "000000000000000000000000").ToList();
+
+
+
+    }
+
+
+    private async Task LoadRegions(Country country){
+
+        loadingRegions = true;
+        var response = await geoPlaces.GetRegions(country.Id,"",true);
+        currentCountry = country;
+
+        if (response != null)
+            regionsList = response;
+
+        loadingRegions = false;
+
+        StateHasChanged();
+    }
+
+    private async Task GetFilteredRegions(Country country, string filterRegions = "")
+    {
+        regionsList = await geoPlaces.GetRegions(country.Id, filterRegions);
+
+    }
+
+    private async Task SetCurrentRegion(GeoRegion geoRegion) {
+
+        currentRegion = geoRegion;
+        citiesList = await geoPlaces.GetCities(geoRegion.Id, "", true);
+        StateHasChanged();
+    }
+
+    private async Task GetFilteredCities(GeoRegion geoRegion, string filterRegions = "")
+    {
+        citiesList = await geoPlaces.GetCities(geoRegion.Id, filterRegions);
+
+    }
+
+
+
+
+}

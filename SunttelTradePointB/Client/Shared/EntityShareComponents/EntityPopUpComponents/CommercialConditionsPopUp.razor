@@ -1,0 +1,164 @@
+﻿@page "/Actors/{Id}/CommercialConditions"
+@using Syncfusion.Blazor.Popups
+@using SunttelTradePointB.Shared.Common
+@using SunttelTradePointB.Client.Services.MasterTablesServices
+@using SunttelTradePointB.Client.Shared.EntityShareComponents.EntitySubComponents
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Cards
+
+@inject IJSRuntime JSRuntime
+@inject ActorsNodeService actorsNodeServive
+@inject NavigationManager navigationManager
+
+<div class="control-section">
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
+            <SfCard>
+                <CardHeader Title="Add a new commercial condition" />
+                <CardContent>
+                    <form onsubmit="event.preventDefault();">
+                        <div class="form-group row">
+                            <label>@lblRelatedEntity:</label>
+                            <div class="col">
+                                <div class="position:relative;">
+                                    <div class="item-edit">
+                                        <label>@(entityActor != null ? entityActor.Name : "")</label>
+                                        <button type="button" style="float:right" @onclick='()=>SetViewElemnt("Entity")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                                    </div>
+                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEntities">
+                                        @{
+                                            if (ListEntityActor != null)
+                                            {
+                                                foreach (var entity in ListEntityActor)
+                                                {
+                                                    <option value="@entity?.Id">@entity?.Name</option>
+                                                }
+                                            }
+
+                                        }
+                                    </InputTextSelector>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row py-2">
+                            <label class="control-label col-md-12">@lblLimitCreditDays: </label>
+                            <div class="col">
+                                <input type="number" class="form-control" @bind-value="entitiesCommercialRelationShip.LimitCreditDays" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group row py-2">
+                            <label class="control-label col-md-12">@lblLimitCreditAmount: </label>
+                            <div class="col">
+                                <input type="number" class="form-control" @bind-value="entitiesCommercialRelationShip.LimitCreditAmount" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="control-label col-md-12">@lblRelationType: </label>
+                            <div class="col">
+                                <SfComboBox TValue="string" TItem="CommercialType" Placeholder="e.g. Select a relation type" DataSource="@LocalData" ID="cmbRoles" @bind-Value="@entitiyRelationshipType.Name">
+                                    <ComboBoxFieldSettings Text="Text" Value="Id"></ComboBoxFieldSettings>
+                                </SfComboBox>
+                            </div>
+                        </div>
+                        <div class="py-2">
+                            <button type="submit" class="size-btn color-btn" style="float:right"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                            <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
+                        </div>
+                    </form>
+                </CardContent>
+            </SfCard>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@code {
+    [Parameter]
+    public bool ViewSelect { get; set; } = false;
+    [Parameter]
+    public string Id { get; set; }
+
+    public bool PopupViewEntities = false;
+    public string SearchValueMode = "";
+
+    public string lblRelatedEntity = "";
+    public string lblLimitCreditDays = "";
+    public string lblLimitCreditAmount = "";
+    public string lblRelationType = "";
+    public int ParamCountResul = 0;
+    public bool PopupViewEditionBox = false;
+
+    EntitiesCommercialRelationShip entitiesCommercialRelationShip = new EntitiesCommercialRelationShip();
+    EntitiyRelationshipType entitiyRelationshipType = new EntitiyRelationshipType();
+    Concept concept = new Concept();
+    ConceptStatus conceptStatus = new ConceptStatus();
+    InputTextSelector? refInputTextSelector;
+    EntityActor entityActor = new EntityActor();
+    List<EntityActor> ListEntityActor = new List<EntityActor>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        lblRelatedEntity = UICommonFunctions.GetDisplayName(new EntitiesCommercialRelationShip(), "RelatedEntity");
+        lblLimitCreditDays = UICommonFunctions.GetDisplayName(new EntitiesCommercialRelationShip(), "LimitCreditDays");
+        lblLimitCreditAmount = UICommonFunctions.GetDisplayName(new EntitiesCommercialRelationShip(), "LimitCreditAmount");
+        lblRelationType = UICommonFunctions.GetDisplayName(new EntitiesCommercialRelationShip(), "EntitiyCommercialRelationShipType");
+    }
+
+    public void SetViewElemnt(string Element)
+    {
+        ViewSelect = false;
+        SearchValueMode = Element;
+        if (Element == "Entity" && !PopupViewEntities) { PopupViewEntities = true; }
+        StateHasChanged();
+    }
+
+    protected async void EventSearcherValue(string value)
+    {
+        if (SearchValueMode == "Entity")
+        {
+            ListEntityActor = await actorsNodeServive.GetEntityActorFaceList(value);
+            ParamCountResul = ListEntityActor != null ? ListEntityActor.Count() : 0;
+        }
+        if (ParamCountResul > 0) { ViewSelect = true; } else { ViewSelect = false; }
+        await Refresh();
+    }
+
+    protected async void EventIdSelectionInput(string selectionId)
+    {
+
+        if (SearchValueMode == "Entity")
+        {
+            entityActor = ListEntityActor.Where(c => c.Id == selectionId).FirstOrDefault();
+        }
+        PopupViewEntities = false;
+        await Refresh();
+    }
+
+    public async Task Refresh()
+    {
+        if (refInputTextSelector != null) await refInputTextSelector.Refresh();
+        StateHasChanged();
+    }
+
+    private void GoBack()
+    {
+        navigationManager.NavigateTo($"/Actors/{Id}/5");
+    }
+
+    public class CommercialType
+    {
+        public string Id { get; set; }
+        public string Text { get; set; }
+    }
+    List<CommercialType> LocalData = new List<CommercialType> {
+        new CommercialType() {Text= "Buller", Id = "1"},
+        new CommercialType() {Text= "Saller", Id = "2" },
+    };
+
+}
