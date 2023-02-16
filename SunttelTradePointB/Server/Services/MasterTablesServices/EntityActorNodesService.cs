@@ -386,7 +386,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             try
             {
                 if (phoneNumber.Id == null)
+                {
                     phoneNumber.Id = ObjectId.GenerateNewId().ToString();
+                }
 
                 var filterPrev = Builders<EntityActor>.Filter.Eq(x => x.Id, entityActorId);
                 var resultPrev = await _entityActorsCollection.Find(filterPrev).FirstOrDefaultAsync();
