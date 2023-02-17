@@ -269,13 +269,8 @@ namespace SunttelTradePointB.Shared.Common
     }
 
 
-    public class EntitiyRelationshipType
+    public class EntitiyRelationshipType: AtomConcept
     {
-
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
-        public string Name { get; set; }
 
     }
 
