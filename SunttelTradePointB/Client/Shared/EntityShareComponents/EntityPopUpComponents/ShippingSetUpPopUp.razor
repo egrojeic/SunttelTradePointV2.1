@@ -103,22 +103,18 @@
                                     </div>
                                     <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEntitiesPallet">
                                         @{
-                                            if (ListEntityActorPallet != null)
+                                            if (palletTypeList != null)
                                             {
-                                                foreach (var entity in ListEntityActorPallet)
+                                                foreach (var entity in palletTypeList)
                                                 {
                                                     <option value="@entity?.Id">@entity?.Name</option>
                                                 }
                                             }
-
                                         }
                                     </InputTextSelector>
                                 </div>
                             </div>
                         </div>
-
-
-
                         <div class="form-group py-2">
                             <label>Days:</label>
                             <div class="col">
@@ -130,10 +126,9 @@
                                 <SfCheckBox Label="Saturday" @bind-Checked="isCheckedSaturday"></SfCheckBox>
                                 <SfCheckBox Label="Sunday" @bind-Checked="isCheckedSunday"></SfCheckBox>
                             </div>
-                            
                         </div>
                         <div class="py-2">
-                            <button type="submit" class="size-btn color-btn" style="float:right"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                            <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveShoppingSetUp(Id, shippingInfo))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
                             <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
                         </div>
                     </form>
@@ -165,8 +160,8 @@
     EntityActor entityActorCarrier = new EntityActor();
     List<EntityActor> ListEntityActorCarrier = new List<EntityActor>();
     //Pallet
-    EntityActor entityActorPallet = new EntityActor();
-    List<EntityActor> ListEntityActorPallet = new List<EntityActor>();
+    PalletType entityActorPallet = new PalletType();
+    List<PalletType> palletTypeList = new List<PalletType>();
 
     AtomConcept sender = new AtomConcept();
     AtomConcept carrier = new AtomConcept();
@@ -211,6 +206,25 @@
         StateHasChanged();
     }
 
+    public async Task SaveShoppingSetUp(string entityId, ShippingInfo shippingInfo)
+    {
+        if (entityId != null && shippingInfo != null)
+        {
+            shippingInfo.Sender = entityActor;
+            shippingInfo.Carrier = entityActorCarrier;
+            shippingInfo.DeliveryAddress = deliver;
+            shippingInfo.PalletTypeShipping = entityActorPallet;
+            shippingInfo.Monday = isCheckedMonday;
+            shippingInfo.Tuesday = isCheckedThursday;
+            shippingInfo.Wednesday = isCheckedWednesday;
+            shippingInfo.Thursday = isCheckedThursday;
+            shippingInfo.Friday = isCheckedFriday;
+            shippingInfo.Saturday = isCheckedSaturday;
+            shippingInfo.Sunday = isCheckedSunday;
+            await actorsNodeServive.SaveShippingSetup(entityId, shippingInfo);
+        }
+    }
+
     public void SetViewElemnt(string Element)
     {
         ViewSelect = false;
@@ -235,8 +249,8 @@
         }
         if (SearcherValueMode == "Pallet")
         {
-            ListEntityActorPallet = await actorsNodeServive.GetEntityActorFaceList(value);
-            ParamCountResul = ListEntityActorPallet != null ? ListEntityActorPallet.Count() : 0;
+            //palletTypeList = await actorsNodeServive.GetEntityActorFaceList(value);
+            ParamCountResul = palletTypeList != null ? palletTypeList.Count() : 0;
         }
         if (ParamCountResul > 0) { ViewSelect = true; } else { ViewSelect = false; }
         await Refresh();
@@ -255,7 +269,7 @@
         }
         if (SearcherValueMode == "Pallet")
         {
-            entityActorPallet = ListEntityActorPallet.Where(c => c.Id == selectionId).FirstOrDefault();
+            entityActorPallet = palletTypeList.Where(c => c.Id == selectionId).FirstOrDefault();
         }
         Reload();
         await Refresh();
