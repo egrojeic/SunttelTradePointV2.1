@@ -148,7 +148,7 @@ namespace SunttelTradePointB.Shared.Common
         public string AddressKey { get; set; }
 
         [DisplayName("Emitter")]
-        public EntityActor EmitterEntity { get; set; }
+        public AtomConcept EmitterEntity { get; set; }
     }
 
     public class EntityGroup: ConceptGroup
