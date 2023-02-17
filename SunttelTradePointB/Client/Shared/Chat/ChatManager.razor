@@ -1,4 +1,7 @@
 ﻿
+@using Microsoft.AspNetCore.SignalR.Client
+
+
 <div id ="ChatConatainerDiv">
     <ChatUpperControl>
 
@@ -18,8 +21,16 @@
 </div>
 
 @code {
+     
+    private HubConnection? hubConnection;
+    int NumberOfUsers = 0;
+
     private List<string> addedTexts = new List<string>();
     string _textMessage = "";
+   
+    protected override async Task OnInitializedAsync(){
+
+    }
 
     public string? entitiesFilter
     {
