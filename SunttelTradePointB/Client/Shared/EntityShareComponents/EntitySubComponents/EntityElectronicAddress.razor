@@ -40,7 +40,7 @@
 
             <Columns>
                 <RadzenDataGridColumn TItem="ElectronicAddress" Property="AddressKey" Title="Address Key" Frozen="true" Width="140px" />
-                <RadzenDataGridColumn TItem="ElectronicAddress" Property="EmitterEntity.EMailAddress" Title="Description" Frozen="true" Width="140px" />
+                <RadzenDataGridColumn TItem="ElectronicAddress" Property="EmitterEntity.Name" Title="Description" Frozen="true" Width="140px" />
             </Columns>
 
 
@@ -56,7 +56,7 @@
     IList<ElectronicAddress> selectedEntityElectronicAddress;
     private ElectronicAddressesPopUp? electronicAddressesPopUp;
     RadzenDataGrid<ElectronicAddress>? refDataGrid;
-    EntityActor entityActor = new EntityActor();
+    AtomConcept entityActor = new AtomConcept();
 
     private void SaveData(ElectronicAddress electronicAddress)
     {
