@@ -1,0 +1,50 @@
+﻿@using Syncfusion.Blazor.Inputs
+
+<div id="MessageWriterContainer">
+    <SfTextBox 
+        Placeholder="Type a message" 
+        Enabled="@CheckDisabled" 
+        Multiline="true"
+        @bind-Value="@textBoxValue" @onkeydown="@OnKeyDown"
+        @oninput="@OnTyping">
+
+    </SfTextBox>
+
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<string> TextMessageChanged { get; set; }
+    [Parameter]
+    public string? TextMessage { get; set; }
+
+    private bool CheckDisabled { get; set; } = true;
+    private string textBoxValue = "";
+    
+
+    public void OnEnabledChange(Syncfusion.Blazor.Buttons.ChangeEventArgs<bool> args)
+    {
+        this.CheckDisabled = !args.Checked;
+    }
+
+    private void OnTyping(Microsoft.AspNetCore.Components.ChangeEventArgs args) 
+    { 
+        if (args != null)
+            this.textBoxValue = args.Value.ToString();
+    } 
+
+
+    private void OnKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            TextMessage = textBoxValue;
+            TextMessageChanged.InvokeAsync(TextMessage);
+
+            textBoxValue = "";
+
+            StateHasChanged();
+
+        }
+    }
+}

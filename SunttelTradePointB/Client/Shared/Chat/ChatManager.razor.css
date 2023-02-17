@@ -1,0 +1,13 @@
+﻿#ChatConatainerDiv {
+    min-height: 700px;
+    min-width: 450px;
+    background-color: #313338;
+    border-radius: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    box-shadow: 10px 10px 5px #aaaaaa;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    
+}

@@ -1,0 +1,39 @@
+﻿
+<div id ="ChatConatainerDiv">
+    <ChatUpperControl>
+
+    </ChatUpperControl>
+    
+    <div id="MessagesContainer">
+        <ul>
+            @foreach (var text in addedTexts)
+            {
+                <li>@text</li>
+            }
+        </ul>
+    </div>
+    <ChatMessageWriter @bind-TextMessage="@entitiesFilter">
+
+    </ChatMessageWriter>
+</div>
+
+@code {
+    private List<string> addedTexts = new List<string>();
+    string _textMessage = "";
+
+    public string? entitiesFilter
+    {
+        get { return _textMessage; }
+        set
+        {
+            _textMessage = value;
+            addMessage(_textMessage);
+        }
+    }
+
+
+    private void addMessage(string messageChat) {
+        addedTexts.Add(messageChat);
+
+    }
+}

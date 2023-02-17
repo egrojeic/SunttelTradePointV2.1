@@ -67,9 +67,7 @@
     <Folder Include="Services\ProcurementServices\" />
     <Folder Include="Services\ProductionServices\" />
     <Folder Include="Services\QualityControlServices\" />
-    <Folder Include="Shared\Chat\" />
     <Folder Include="wwwroot\lib\microsoft\signalr\dist\browser\" />
-    <Folder Include="wwwroot\uploads\entityImages\" />
     <Folder Include="wwwroot\uploads\transactionalItemsImages\" />
   </ItemGroup>
 
