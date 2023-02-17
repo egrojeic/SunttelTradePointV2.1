@@ -94,10 +94,10 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         Task<(bool IsSuccess, List<AtomConcept>? ElectronicAddressEntities, string? ErrorDescription)> GetSelectorElectronicAddressEntities();
 
         /// <summary>
-        /// Retrieves a list of Identification Types
+        /// Retrieves a list of EntitiyRelationship Types
         /// </summary>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<IdentificationType>?  identificationTypes, string? ErrorDescription)> GetSelectorIdentificationTypes();
+        Task<(bool IsSuccess, List<EntitiyRelationshipType>?   entitiyRelationshipTypes, string? ErrorDescription)> GetSelectorEntitiyRelationshipTypes();
 
     }
 }
