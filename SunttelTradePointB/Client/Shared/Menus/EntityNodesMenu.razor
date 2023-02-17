@@ -4,11 +4,9 @@
 
 <div id="container-menu-general">
     <nav>
-        <button class="general-menu-button"><i class="fa-solid fa-file"></i> Create New</button>
+        <button class="general-menu-button" @onclick="CreateNew"><i class="fa-solid fa-file"></i> Create New</button>
        
         <SfSplitButton Content="Import Data" IconCss="fa-solid fa-file-import" CssClass="splitButtonsStyle">
-          
-
             <DropDownMenuItems>
                 <DropDownMenuItem Text="Importing from the cloud..." IconCss="fa-solid fa-cloud-arrow-up"></DropDownMenuItem>
                 <DropDownMenuItem Text="Uploading a csv file..." IconCss="fa-solid fa-file-csv"></DropDownMenuItem>
@@ -19,7 +17,6 @@
 
         <SfSplitButton Content="Related Concepts" IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
             <SplitButtonEvents ItemSelected="ItemSelected">
-
             </SplitButtonEvents>
             <DropDownMenuItems>
                 <DropDownMenuItem Id="TypesEntities" Text="Types" IconCss="fa-solid fa-group-arrows-rotate"></DropDownMenuItem>
@@ -52,7 +49,7 @@
         commandStyle = $"display: {(ShowMenu ? "block" : "none")}" ;
         StateHasChanged();
 
-  }
+    }
 
     void OnClick(RadzenSplitButtonItem item, string buttonName)
     {
@@ -70,6 +67,11 @@
     {
         var Selected_item = args.Item.Id; 
         Navigation.NavigateTo(Selected_item);
+    }
+
+    private void CreateNew()
+    {
+        Navigation.NavigateTo("/Actors/NewActor");
     }
 
 }

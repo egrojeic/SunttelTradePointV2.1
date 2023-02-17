@@ -229,6 +229,20 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
+        public async Task<EntityGroup> GetGroupById(string groupId)
+        {
+            try
+            {
+                var group = await _httpClient.GetFromJsonAsync<EntityGroup>($"/api/EntityNodesMaintenance/GetEntityGroup?entityGroupId={groupId}");
+                return group;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
         public async Task<List<IdentificationType>> GetDetailsIdentifiers(string entityActorId)
         {
             try
@@ -257,6 +271,20 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
+        public async Task<AtomConcept> GetIdentificationTypeById(string identificationId)
+        {
+            try
+            {
+                var identificationType = await _httpClient.GetFromJsonAsync<AtomConcept>($"/api/EntityActorsRelatedConcepts/GetIdentificationType?identicationTypeId={identificationId}");
+                return identificationType;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
         public async Task<List<EntityGroup>> GetListEntityGroups(string filterGroup)
         {
             try
@@ -281,6 +309,20 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             catch (Exception ex)
             {
                 string Message = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<EntityRole> GetRoleById(string roleId)
+        {
+            try
+            {
+                var roleList = await _httpClient.GetFromJsonAsync<EntityRole>($"/api/EntityActorsRelatedConcepts/GetEntityRole?entityRoleId={roleId}");
+                return roleList;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
                 return null;
             }
         }
@@ -369,6 +411,20 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
+        public async Task <List<EntitiyRelationshipType>> GetEntityRelationType()
+        {
+            try
+            {
+                var listRelationType = await _httpClient.GetFromJsonAsync<List<EntitiyRelationshipType>>("/api/ConceptsSelector/GetSelectorEntitiyRelationshipTypes");
+                return listRelationType;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
         ///
         /// Save EntityAddress
         ///
@@ -421,5 +477,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveShippingSetup?entityActorId={commercialConditionId}", comercialConditions);
         }
 
+        public async Task SaveEntityRole(string roleId, EntityRole entityRole)
+        {
+            await _httpClient.PostAsJsonAsync($"/api/EntityActorsRelatedConcepts/SaveEntityRole?entityRoleId={roleId}", entityRole);
+        }
     }
 }

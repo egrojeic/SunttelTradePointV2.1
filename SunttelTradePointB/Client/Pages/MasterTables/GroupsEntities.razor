@@ -3,6 +3,7 @@
 @using SunttelTradePointB.Shared.Common
 
 @inject IJSRuntime JSRuntime
+@inject NavigationManager navigationManager
 @inject ActorsNodeService actorsNodeServive;
 @inject ContextMenuService ContextMenuService
 
@@ -95,13 +96,15 @@
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
 
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
-        AtomConcept argObj = (AtomConcept)args.Value;
+        EntityGroup argObj = (EntityGroup)args.Value;
         //Navigate(argObj.Id);
+        if(args.Text == "Edit")
+            navigationManager.NavigateTo($"/GroupsEntities/{argObj.Id}");
 
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {

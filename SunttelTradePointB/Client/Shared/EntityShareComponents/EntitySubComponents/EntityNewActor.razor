@@ -1,0 +1,77 @@
+﻿@page "/Actors/NewActor"
+@using Syncfusion.Blazor.Cards
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.DropDowns
+@using SunttelTradePointB.Shared.Common
+
+@inject ActorsNodeService actorsNodeServive
+@inject NavigationManager navigationManager
+
+<div class="control-section">
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
+            <SfCard>
+                <CardHeader Title="Add a new commercial condition" />
+                <CardContent>
+                    <form onsubmit="event.preventDefault();">
+                        <div class="form-group row">
+                            <label>Name:</label>
+                            <div class="col">
+                                <SfTooltip ID="Tooltip" Target="#name" Content="@ContentName">
+                                    <input type="text" class="form-control" @bind-value="entityActor.Name" />
+                                </SfTooltip>
+                            </div>
+                        </div>
+
+                        <div class="form-group row py-2">
+                            <label>Codigo:</label>
+                            <div class="col">
+                                <SfTooltip ID="Tooltip" Target="#name" Content="@ContentCode">
+                                    <input type="number" class="form-control" @bind-value="entityActor.Code" />
+                                </SfTooltip>
+                            </div>
+                        </div>
+
+                        <div class="form-group row py-2">
+                            <label>LegacyId:</label>
+                            <div class="col">
+                                <SfTooltip ID="Tooltip" Target="#name" Content="@ContentLegacyId">
+                                    <input type="number" class="form-control" @bind-value="entityActor.LegacyId" />
+                                </SfTooltip>
+                            </div>
+                        </div>
+
+                        <div class="py-2">
+                            <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveEntity(entityActor))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                            <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
+                        </div>
+
+                    </form>
+                </CardContent>
+            </SfCard>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    private string ContentName = "e.g Walmart";
+    private string ContentCode = "e.g 123";
+    private string ContentLegacyId = "e.g 0123";
+
+    EntityActor entityActor = new EntityActor();
+
+
+    private async Task SaveEntity(EntityActor entityActor)
+    {
+        string id = null;
+        await actorsNodeServive.SaveEntity(id, entityActor);
+    }
+
+    private void GoBack()
+    {
+        navigationManager.NavigateTo($"/Actors");
+    }
+
+}

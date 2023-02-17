@@ -59,9 +59,10 @@
                         <div class="form-group row">
                             <label class="control-label col-md-12">@lblRelationType: </label>
                             <div class="col">
-                                <SfComboBox TValue="string" TItem="CommercialType" Placeholder="e.g. Select a relation type" DataSource="@LocalData" ID="cmbRoles" @bind-Value="@entitiyRelationshipType.Name">
-                                    <ComboBoxFieldSettings Text="Text" Value="Id"></ComboBoxFieldSettings>
-                                </SfComboBox>
+                                <SfDropDownList TValue="string" TItem="EntitiyRelationshipType" Placeholder="Select a city" AllowFiltering="true" DataSource="@entitiyRelationshipTypeList" @bind-Value="entitiyRelationshipType.Name">
+                                    <DropDownListEvents TItem="EntitiyRelationshipType" TValue="string" ValueChange="@ValueChangeRelation"></DropDownListEvents>
+                                    <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
+                                </SfDropDownList>
                             </div>
                         </div>
                         <div class="py-2">
@@ -95,13 +96,14 @@
     public bool PopupViewEditionBox = false;
 
     EntitiesCommercialRelationShip entitiesCommercialRelationShip = new EntitiesCommercialRelationShip();
-    EntitiyRelationshipType entitiyRelationshipType = new EntitiyRelationshipType();
     Concept concept = new Concept();
     ConceptStatus conceptStatus = new ConceptStatus();
     InputTextSelector? refInputTextSelector;
     EntityActor entityActor = new EntityActor();
     List<EntityActor> ListEntityActor = new List<EntityActor>();
     List<EntitiesCommercialRelationShip> entitiesCommercialRelationsList = new List<EntitiesCommercialRelationShip>();
+    List<EntitiyRelationshipType> entitiyRelationshipTypeList = new List<EntitiyRelationshipType>();
+    EntitiyRelationshipType entitiyRelationshipType = new EntitiyRelationshipType();
 
     protected override async Task OnInitializedAsync()
     {
@@ -109,6 +111,7 @@
         lblLimitCreditDays = UICommonFunctions.GetDisplayName(new EntitiesCommercialRelationShip(), "LimitCreditDays");
         lblLimitCreditAmount = UICommonFunctions.GetDisplayName(new EntitiesCommercialRelationShip(), "LimitCreditAmount");
         lblRelationType = UICommonFunctions.GetDisplayName(new EntitiesCommercialRelationShip(), "EntitiyCommercialRelationShipType");
+        await GetRelationType();
     }
 
     public void SetViewElemnt(string Element)
@@ -168,25 +171,25 @@
         }
     }
 
+    public async Task GetRelationType()
+    {
+        entitiyRelationshipTypeList = await actorsNodeServive.GetEntityRelationType();
+    }
+
     public async Task Refresh()
     {
         if (refInputTextSelector != null) await refInputTextSelector.Refresh();
         StateHasChanged();
     }
 
+    private void ValueChangeRelation(ChangeEventArgs<string, EntitiyRelationshipType> args)
+    {
+        entitiyRelationshipType = args.ItemData;
+    }
+
     private void GoBack()
     {
         navigationManager.NavigateTo($"/Actors/{Id}/5");
     }
-
-    public class CommercialType
-    {
-        public string Id { get; set; }
-        public string Text { get; set; }
-    }
-    List<CommercialType> LocalData = new List<CommercialType> {
-        new CommercialType() {Text= "Buller", Id = "1"},
-        new CommercialType() {Text= "Saller", Id = "2" },
-    };
 
 }

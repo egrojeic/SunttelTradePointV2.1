@@ -1,4 +1,5 @@
 ﻿@page "/GroupsEntities/NewGroup"
+@page "/GroupsEntities/{groupId}"
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.Cards
 @using SunttelTradePointB.Shared.Common
@@ -17,7 +18,7 @@
                             <label class="control-label col-md-12">Code: </label>
                             <div class="col">
                                 <SfTooltip ID="Tooltip" Target="#name" Content="@ContentCode">
-                                    <input id="name" type="text" class="form-control" @bind-value="@atomConcept.Code" required />
+                                    <input id="name" type="text" class="form-control" @bind-value="@entityGroup.Code" required />
                                 </SfTooltip>
                             </div>
                         </div>
@@ -26,13 +27,13 @@
                             <label class="control-label col-md-12">Name: </label>
                             <div class="col">
                                 <SfTooltip ID="Tooltip" Target="#name" Content="@ContentName">
-                                    <input id="name" type="text" class="form-control" @bind-value="@atomConcept.Name" required />
+                                    <input id="name" type="text" class="form-control" @bind-value="@entityGroup.Name" required />
                                 </SfTooltip>
                             </div>
                         </div>
 
                         <div class="py-2">
-                            <button type="submit" class="size-btn color-btn" style="float:right"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                            <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveGroup(groupId, entityGroup))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
                             <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
                         </div>
                         
@@ -46,15 +47,35 @@
 
 @code {
     [Parameter]
-    public string Id { get; set; }
-    [Parameter]
     public string groupId { get; set; }
 
     private string ContentCode = "e.g. 12345";
     private string ContentName = "e.g. Test";
 
-    AtomConcept atomConcept = new AtomConcept();
+    EntityGroup entityGroup = new EntityGroup();
+    EntityGroup entityGroupList = new EntityGroup();
 
+    protected override async Task OnInitializedAsync()
+    {
+        await GetGroupById(groupId);
+    }
+
+    public async Task SaveGroup(string groupId, EntityGroup entityGroupSave)
+    {
+        if (groupId != null && entityGroup != null)
+            entityGroupSave.Id = groupId;
+        entityGroup = entityGroupSave;
+        await actorsNodeServive.SaveEntityGroup(groupId, entityGroup);
+    }
+
+    private async Task GetGroupById(string groupId)
+    {
+        if(groupId != null)
+        {
+            entityGroupList = await actorsNodeServive.GetGroupById(groupId);
+            entityGroup = entityGroupList;
+        }
+    }
 
 
     private void GoBack()

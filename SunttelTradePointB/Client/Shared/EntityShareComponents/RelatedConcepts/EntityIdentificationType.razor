@@ -1,4 +1,5 @@
 ﻿@page "/IdentificationTyes/NewIdentification"
+@page "/IdentificationTyes/{identificationId}/Edit"
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.DropDowns
 @using SunttelTradePointB.Shared.Common
@@ -49,7 +50,7 @@
                             </div>
                         </div>
                         <div class="py-2">
-                            <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveIdentification(Id, identificationEntity))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                            <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveIdentification(identificationId, identificationEntity))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
                             <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
                         </div>
                     </form>
@@ -65,8 +66,6 @@
 
 @code {
     [Parameter]
-    public string Id { get; set; }
-    [Parameter]
     public string identificationId { get; set; }
     [Parameter]
     public bool ViewSelect { get; set; } = false;
@@ -76,10 +75,12 @@
     public int ParamCountResul = 0;
 
     IdentificationEntity identificationEntity = new IdentificationEntity();
-    List<IdentificationEntity> identificationEntityList = new List<IdentificationEntity>();
+    IdentificationEntity identificationEntityList = new IdentificationEntity();
     IdentificationType identificationType = new IdentificationType();
     List<IdentificationType> identificationTypesList = new List<IdentificationType>();
     InputTextSelector? refInputTextSelector;
+
+    AtomConcept identificationTypeAtom = new AtomConcept();
 
     public string lblCode = "";
     public string lblEntityIssuer = "";
@@ -88,13 +89,13 @@
     {
         lblCode = UICommonFunctions.GetDisplayName(new IdentificationEntity(), "Code");
         lblEntityIssuer = UICommonFunctions.GetDisplayName(new IdentificationType(), "EntityIssuer");
-        await GetEntityIdentifierList(Id);
+        await GetEntityIdentifierType(identificationId);
         GetIdentificationsType();
     }
 
     private void GoBack()
     {
-        navigationManager.NavigateTo($"/Actors/");
+        navigationManager.NavigateTo($"/IdentificationTyes/");
     }
 
     public async void GetIdentificationsType()
@@ -154,19 +155,14 @@
         StateHasChanged();
     }
 
-    public async Task GetEntityIdentifierList(string entityId)
+    public async Task GetEntityIdentifierType(string entityId)
     {
         if (identificationId != null)
         {
-            identificationEntityList = await actorsNodeServive.GetEntityIdentifierList(entityId);
-            foreach (var identifierList in identificationEntityList)
-            {
-                if (identifierList.Id == identificationId)
-                {
-                    identificationEntity.Code = identifierList.Code;
-                    identificationType.Name = identifierList.EntityTypeId.Name;
-                }
-            }
+            identificationTypeAtom = await actorsNodeServive.GetIdentificationTypeById(entityId);
+            identificationEntity.Code = identificationTypeAtom.Code;
+            //identificationEntity.EntityTypeId
+
         }
     }
 

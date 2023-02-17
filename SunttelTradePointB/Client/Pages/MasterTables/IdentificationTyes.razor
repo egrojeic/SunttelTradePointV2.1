@@ -1,12 +1,11 @@
 ﻿@page "/IdentificationTyes"
 @using SunttelTradePointB.Client.Shared.TransactionalItems
 @using SunttelTradePointB.Shared.Common
-@inject HttpClient Http
-@inject TransactionalItemsService transactItemsService;
-@inject IJSRuntime JSRuntime
-@inject ContextMenuService ContextMenuService
-@inject DialogService DialogService
 
+@inject IJSRuntime JSRuntime
+@inject NavigationManager navigationManager
+@inject ActorsNodeService actorsNodeServive;
+@inject ContextMenuService ContextMenuService
 
 <PageTitleComponent Title="Types of Identification for Entities" IconName="identificationType.png"
                     Description="Types of identification the different entities could have">
@@ -15,10 +14,48 @@
 <div class="panelMenuContainer">
     <IdentificationMenu></IdentificationMenu>
     <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
-
 </div>
 
+<div class="tableBodyContainer">
+    @if (isLoading)
+    {
+        <WaitingProcessIndicator loadingTopic="Identification type"></WaitingProcessIndicator>
+    }else{
+        @if(entityIdentificationTypeList != null)
+        {
+            <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="50"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@entityIdentificationTypeList"
+                    TItem="IdentificationType"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    @bind-Value=@selectedIdentificationType Class="m-4"
+                    CellContextMenu="@ShowContextMenuWithContent">
+                <Columns>
+                    <RadzenDataGridColumn TItem="IdentificationType" Property="@nameof(EntityGroup.Code)" Title="Code" Frozen="true" Width="120px" />
+                    <RadzenDataGridColumn TItem="IdentificationType" Property="@nameof(EntityGroup.Name)" Title="Name" Frozen="true" Width="auto" />
+                </Columns>
+            </RadzenDataGrid>
+        }
+    }
+</div>
+
+
 @code {
+    string filterText = "";
+    List<IdentificationType>? entityIdentificationTypeList;
+    IList<IdentificationType> selectedIdentificationType;
+
+
     bool isLoading = false;
     string _filterItems = "";
 
@@ -28,19 +65,50 @@
         set
         {
             _filterItems = value;
-            LoadData();
+            GetFilteredIdentificationType(_filterItems);
         }
     }
 
-
-    private async Task LoadData()
+    protected override async Task OnInitializedAsync()
     {
-        isLoading = true;
-        var data = await transactItemsService.GetTransactionalItemsList(0, 250, _filterItems);
-        //itemList = data;
-        isLoading = false;
-        StateHasChanged();
+        await GetFilteredIdentificationType();
+    }
 
+    public async Task GetFilteredIdentificationType(string filter = "")
+    {
+        if (filter.Length >= 0)
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            var response = await actorsNodeServive.GetIdentificationTypes();
+
+            if (response != null)
+                entityIdentificationTypeList = response;
+
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<IdentificationType> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+            <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        IdentificationType argObj = (IdentificationType)args.Value;
+        //Navigate(argObj.Id);
+        if (args.Text == "Edit")
+            navigationManager.NavigateTo($"/IdentificationTyes/{argObj.Id}/Edit");
+
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
     }
 
 

@@ -6,6 +6,8 @@
 @inject IJSRuntime JSRuntime
 @inject ContextMenuService ContextMenuService
 @inject ActorsNodeService actorsNodeServive
+@inject NavigationManager navigationManager
+
 
 
 <PageTitleComponent Title="Entity Roles" IconName="EntityRoles.png"
@@ -13,7 +15,7 @@
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
-    <DutiesMenu></DutiesMenu>
+    <GroupsMenu></GroupsMenu>
     <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
 </div>
 
@@ -106,12 +108,15 @@
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
 
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         EntityRole argObj = (EntityRole)args.Value;
+
+        if (args.Text == "Edit")
+            navigationManager.NavigateTo($"/EntityRoles/{argObj.Id}/Edit");
 
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
