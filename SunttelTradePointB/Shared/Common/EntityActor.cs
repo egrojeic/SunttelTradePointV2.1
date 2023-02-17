@@ -212,6 +212,7 @@ namespace SunttelTradePointB.Shared.Common
         [DisplayName("Carrier")]
         public AtomConcept Carrier { get; set; }
 
+        [BsonIgnoreIfNull]
         [DisplayName("Delivery Address")]
         public Address DeliveryAddress { get; set; }
 
