@@ -200,6 +200,28 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
 
 
         /// <summary>
+        /// Retrives the list of electronic addresses of an Actor
+        /// </summary>
+        /// <param name="entityActorId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetElectronicAddresses")]
+        public async Task<IActionResult> GetElectronicAddresses(string entityActorId)
+        {
+            var result = await _entityNodes.GetElectronicAddresses(entityActorId);
+
+            if(result.IsSuccess)
+            {
+                return Ok(result.electronicAddresses);
+            }
+            else
+            {
+                return NotFound(result.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
         /// Retrieves an Electronic Address filtered by Id
         /// </summary>
         /// <param name="electronicAddressId"></param>
