@@ -5,6 +5,7 @@ using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Shared.Common;
 using Syncfusion.PdfExport;
+using System.Data.Entity.Core.Metadata.Edm;
 
 namespace SunttelTradePointB.Server.Services.MasterTablesServices
 {
@@ -25,6 +26,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         IMongoCollection<Box> _boxes;
         IMongoCollection<AtomConcept> _transactionalItemsModels;
         IMongoCollection<IdentificationType> _identificationTypes;
+        IMongoCollection<EntitiyRelationshipType> _entityRelationshipTypes;
 
         /// <summary>
         /// Service class initialize
@@ -46,6 +48,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             _boxes = mongoDatabase.GetCollection<Box>("Box");
             _transactionalItemsModels = mongoDatabase.GetCollection<AtomConcept>("TransactionalItems");
             _identificationTypes = mongoDatabase.GetCollection<IdentificationType>("IdentificationTypes");
+            _entityRelationshipTypes = mongoDatabase.GetCollection<EntitiyRelationshipType>("EntitiyRelationshipTypes");
 
         }
 
@@ -453,6 +456,33 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             {
                 return(false, null, e.Message);
             }
+        }
+
+
+        /// <summary>
+        /// Retrieves a list of EntitiyRelationship Types
+        /// </summary>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<EntitiyRelationshipType>? entitiyRelationshipTypes, string? ErrorDescription)> GetSelectorEntitiyRelationshipTypes()
+        {
+            try
+            {
+                var entityRelationshipTypes = await _entityRelationshipTypes.Find<EntitiyRelationshipType>(new BsonDocument()).ToListAsync();
+
+                if (entityRelationshipTypes == null || entityRelationshipTypes.Count == 0)
+                {
+                    return (false, null, "Unpopulated EntitiyRelationship Types");
+                }
+                else
+                {
+                    return (true, entityRelationshipTypes, null);
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+
         }
     }
 }
