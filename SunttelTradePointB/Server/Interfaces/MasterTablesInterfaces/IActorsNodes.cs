@@ -119,7 +119,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// </summary>
         /// <param name="entityActorId"></param>
         /// <returns></returns>
-        public Task<(bool IsSuccess, List<ElectronicAddress>?  electronicAddresses, string? ErrorDescription)> SaveElectronicAddresses(string entityActorId);
+        public Task<(bool IsSuccess, List<ElectronicAddress>?  electronicAddresses, string? ErrorDescription)> GetElectronicAddresses(string entityActorId);
 
 
 
