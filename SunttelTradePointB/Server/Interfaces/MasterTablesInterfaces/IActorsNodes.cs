@@ -115,6 +115,15 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
 
 
         /// <summary>
+        /// Retrives the list of electronic addresses of an Actor
+        /// </summary>
+        /// <param name="entityActorId"></param>
+        /// <returns></returns>
+        public Task<(bool IsSuccess, List<ElectronicAddress>?  electronicAddresses, string? ErrorDescription)> SaveElectronicAddresses(string entityActorId);
+
+
+
+        /// <summary>
         /// Retrieves a particular electroica addres give by its id
         /// </summary>
         /// <param name="electronicAddressId"></param>
