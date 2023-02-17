@@ -22,7 +22,7 @@
         <TabItems>
             <TabItem>
                 <ChildContent>
-                    <TabHeader Text="Transactional Type Genaral"></TabHeader>
+                    <TabHeader Text="Transactional Type General"></TabHeader>
                 </ChildContent>
                 <ContentTemplate>
                     <div class="flex-horizontal-center">
@@ -52,7 +52,7 @@
                             <div style="display:@(dataGridView?"block":"none");"> <button @onclick='()=>Closed("grid")' class="size-btn color-btn margin-left"><i class="fa-solid fa-pen-to-square"></i></button></div>
                             <div style="display:@(!dataGridView?"block":"none");"> <button @onclick='()=>Open("grid")' class="size-btn color-btn margin-left"><i class="fa-solid fa-list"></i></button></div>
                         </div>
-                        <div style="display:@(!dataGridView?"block":"none");">
+                        <div style="display:@(!dataGridView?"flex":"none");">
                             <div class="grid-columns-2 box-shadow-mode">
                                 <div>
                                     <label>
@@ -74,14 +74,14 @@
                         </div>
                         <div style="display:@(dataGridView?"block":"none");">
                             @if (transactionalItemProcessSteps == null) transactionalItemProcessSteps = new();
-                            
-                                <DataGrid TParameter="ConceptGroup"
+
+                            <DataGrid TParameter="ConceptGroup"
                                       EventCallbackMenu="OnContextMenuClick"
                                       parameterList="childrenGroups"
                                       GridColumnsList="gridColumnListConceptGroup"
                                       EventCallbackOnLoad="Onload"
-                                      Width="800">
-                                </DataGrid>                           
+                                      Width="300">
+                            </DataGrid>
                         </div>
                     </div>
                 </ContentTemplate>
@@ -109,12 +109,17 @@
                                             <div> </div>
                                             <div style="display:@(dataGridView?"flex":"none");" class="flex-horizontal-end">
                                                 <button style="display:@(dataGridView?"block":"none");" @onclick='()=>AddItem("TransactionalItemProcesses")' class="size-btn color-btn "><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                                <button @onclick='()=>Closed("grid")' class="size-btn color-btn "><i class="fa-solid fa-pen-to-square"></i></button>
+
+                                                <button @onclick='()=>Closed("grid")' class="size-btn color-btn ">                                                  
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-front" viewBox="0 0 16 16">
+                                                        <path d="M0 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2H2a2 2 0 0 1-2-2V2zm5 10v2a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2v5a2 2 0 0 1-2 2H5z" />
+                                                    </svg>
+                                                   <span class="font-size" style="font-size:15px;" >+</span>
+                                                </button>
                                             </div>
                                             <div style="display:@(!dataGridView?"block":"none");"> <button @onclick='()=>Open("grid")' class="size-btn color-btn margin-left"><i class="fa-solid fa-list"></i></button></div>
                                         </div>
                                         <div class="flex-horizontal-center   " style="display:@(!dataGridView?"flex":"none");">
-
                                             <div class="grid-columns-2 box-shadow-mode">
                                                 <div><label>@GetName( "Name", new TransactionalItemProcessStep())</label></div>
                                                 <div><input type="text" @bind-value="transactionalItemProcessStep.Name" class="form-control" placeholder="Edit value" /></div>
@@ -125,7 +130,6 @@
                                                 <div><label>@GetName( "Order", new TransactionalItemProcessStep())</label></div>
                                                 <div><input type="number" @bind-value="transactionalItemProcessStep.Order" class="form-control" placeholder="Edit value" /></div>
                                             </div>
-
                                         </div>
                                         <div class="flex-horizontal-center " style="display:@(dataGridView?"block":"none");">
 
@@ -136,7 +140,9 @@
                                                       EventCallbackMenu="OnContextMenuClick"
                                                       parameterList="transactionalItemProcessSteps"
                                                       GridColumnsList="gridColumnList"
-                                                      EventCallbackOnLoad="Onload">
+                                                      EventCallbackOnLoad="Onload"
+                                           
+                                            >
                                             </DataGrid>
 
 
@@ -167,16 +173,16 @@
                                             </div>
                                         </div>
                                         <div style="display:@(dataGridView?"block":"none");">
-                                            @if (transactionalItemProcessTags == null) transactionalItemProcessTags= new();
-                                           
-                                                <DataGrid TParameter="TransactionalItemTag"
+                                            @if (transactionalItemProcessTags == null) transactionalItemProcessTags = new();
+
+                                            <DataGrid TParameter="TransactionalItemTag"
                                                       EventCallbackMenu="OnContextMenuClick"
                                                       parameterList="transactionalItemProcessTags"
                                                       GridColumnsList="gridColumnListProcessTag"
                                                       EventCallbackOnLoad="Onload"
-                                                      Width="800">
-                                                </DataGrid>
-                                           
+                                                      Width="400">
+                                            </DataGrid>
+
                                         </div>
 
                                     </div>
@@ -232,15 +238,15 @@
                         <div style="display:@(dataGridView?"flex":"none");">
 
                             @if (transactionalItemProcessTags == null) transactionalItemProcessTags = new();
-                         
-                                <DataGrid TParameter="TransactionalItemTypeCharacteristic"
+
+                            <DataGrid TParameter="TransactionalItemTypeCharacteristic"
                                       EventCallbackMenu="OnContextMenuClick"
                                       parameterList="transactionalItemTypeCharacteristics"
                                       GridColumnsList="gridColumnListCharacteristic"
                                       EventCallbackOnLoad="Onload"
                                       Width="400">
-                                </DataGrid>
-                           
+                            </DataGrid>
+
                         </div>
                     </div>
                 </ContentTemplate>
@@ -286,7 +292,7 @@
                                       Width="400px">
 
                             </DataGrid>
-                           
+
 
 
                         </div>
@@ -317,7 +323,7 @@
 
                         <div style="display:@(dataGridView?"flex":"none");">
 
-                            @if (inRecipeQualityModifiers == null) inRecipeQualityModifiers= new();                           
+                            @if (inRecipeQualityModifiers == null) inRecipeQualityModifiers = new();
 
                             <DataGrid TParameter="ProductRecipeQualityModifier"
                                       EventCallbackMenu="OnContextMenuClick"
@@ -327,7 +333,7 @@
                                       Width="400px">
 
                             </DataGrid>
-                           
+
 
                         </div>
                     </div>
@@ -393,7 +399,7 @@
             transactionalItemType = transactionalService.ConceptTransactionalItemType;
             transactionalItemProcessSteps = transactionalItemType.TransactionalItemProcesses;
             childrenGroups = transactionalItemType.Groups;
-            transactionalItemTypeCharacteristics = transactionalItemType.TransactionalItemTypeCharacteristics ;
+            transactionalItemTypeCharacteristics = transactionalItemType.TransactionalItemTypeCharacteristics;
             transactionalItemQualityPairs = transactionalItemType.QualityParameters;
             inRecipeQualityModifiers = transactionalItemType.InRecipeQualityModifiers;
 
@@ -420,9 +426,9 @@
 
         gridColumnListConceptGroup = new List<GridColumn>
         {
-            new GridColumn() { Field = nameof(ConceptGroup.Name), HeaderText = GetName("Name", new ConceptGroup())  },
+            new GridColumn() { Field = nameof(ConceptGroup.Name), HeaderText = GetName("Name", new ConceptGroup()) , Width="300" },
             new GridColumn() { Field = nameof(ConceptGroup.Code), HeaderText = GetName("Code", new ConceptGroup()) , Width="120" },
-            new GridColumn() { Field = nameof(ConceptGroup.GroupClassificationCriteria), HeaderText = GetName("GroupClassificationCriteria", new ConceptGroup()) }
+            new GridColumn() { Field = nameof(ConceptGroup.GroupClassificationCriteria), HeaderText = GetName("GroupClassificationCriteria", new ConceptGroup()), Width="300" }
         };
         gridColumnListProcessTag = new List<GridColumn>
         {
@@ -432,7 +438,7 @@
         };
         gridColumnListCharacteristic = new List<GridColumn>
         {
-            new GridColumn() { Field = nameof(TransactionalItemTypeCharacteristic.Name), HeaderText = GetName("Name", new TransactionalItemTypeCharacteristic())  }
+            new GridColumn() { Field = nameof(TransactionalItemTypeCharacteristic.Name), HeaderText = GetName("Name", new TransactionalItemTypeCharacteristic()), Width="300" }
 
         };
 
@@ -500,7 +506,7 @@
         transactionalItemProcessStep = ObjModel;
         if (args.Item.Id == "Edit")
         {
-            dataGridView = true;
+            dataGridView = false;
         }
     }
     public async void OnContextMenuClick(ContextMenuClickEventArgs<ConceptGroup> args)
@@ -510,7 +516,7 @@
         childrenGroup = ObjModel;
         if (args.Item.Id == "Edit")
         {
-            dataGridView = true;
+            dataGridView = false;
         }
     }
     public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemTag> args)
@@ -520,7 +526,7 @@
         transactionalItemProcessTag = ObjModel;
         if (args.Item.Id == "Edit")
         {
-            dataGridView = true;
+            dataGridView = false;
         }
     }
 
@@ -531,7 +537,7 @@
         transactionalItemTypeCharacteristic = ObjModel;
         if (args.Item.Id == "Edit")
         {
-            dataGridView = true;
+            dataGridView = false;
         }
     }
     public async void OnContextMenuClick(ContextMenuClickEventArgs<ProductRecipeQualityModifier> args)
@@ -541,7 +547,7 @@
         inRecipeQualityModifier = ObjModel;
         if (args.Item.Id == "Edit")
         {
-            dataGridView = true;
+            dataGridView = false;
         }
     }
 

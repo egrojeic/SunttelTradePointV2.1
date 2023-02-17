@@ -21,8 +21,8 @@
             <SfGrid @ref="GridQuality" DataSource="@QualityParametersView" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" EnableStickyHeader="true">
                 <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
                 <GridColumns>
-                    <GridColumn Field="@nameof(TransactionalItemQualityPairView.Name)" HeaderText="@Name"></GridColumn>
-                    <GridColumn Field="@nameof(TransactionalItemQualityPairView.Value)" HeaderText="Quality"></GridColumn>
+                    <GridColumn Field="@nameof(TransactionalItemQualityPairView.Name)" HeaderText="@GetName( "Name", new TransactionalItemQualityPairView())"></GridColumn>
+                    <GridColumn Field="@nameof(TransactionalItemQualityPairView.Value)" HeaderText="@GetName( "Value", new TransactionalItemQualityPairView())"></GridColumn>
                 </GridColumns>
             </SfGrid>
         </div>
@@ -72,12 +72,13 @@
     }
     protected async Task ConverTo(List<TransactionalItemQualityPair> _qualityParameters)
     {
+        QualityParametersView = new();
         foreach (TransactionalItemQualityPair Element in _qualityParameters)
         {
             QualityParametersView.Add(new TransactionalItemQualityPairView
                 {
-                    Name = Element.TransactionalItemQuality.Name,
-                    Value = Element.Value
+                    Name = Element?.TransactionalItemQuality !=null ? Element.TransactionalItemQuality?.Name:"",
+                    Value = Element?.Value
                 });
         }
 
@@ -100,4 +101,11 @@
         public string Name { get; set; }
         public string Value { get; set; }
     }
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
 }

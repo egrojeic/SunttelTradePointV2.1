@@ -1,9 +1,9 @@
 ﻿
 
-<div class="component-input" style="@style; display:@(ViewControl?"block":"none"); position:relative; width:278px;">
+<div class="component-input" style="@style; display:@(ViewControl?"block":"none");  position:relative; width:278px;">
     <div style=" flex-direction:row; display:@(!ViewSelect?"flex":"none"); ">
-        <input @bind="inputSearcherValue" class="form-control" autocomplete="on" />
-        <img id="btn-img" src="images/search.svg" @onclick="SearcherValue" />
+        <input @bind="inputSearcherValue" class="form-control" autocomplete="on"  />
+        <img id="btn-img" src="images/search.svg" @onclick="SearcherValue"  />
     </div>
     <div id="div-Popup"  >
         <select @onchange="SelectedCarsChanged" style="display:@(ViewSelect?"block":"none");  background-color:@backgroundSelection; color:@colorSelection;  border-color:gray; ">
@@ -12,8 +12,8 @@
                 @ChildContent
             }
         </select>
-        <div class="div-countResul">
-            <p style="background-color:@(ParamCountResul>0?"green":"orange"); display:@(ViewPopupCount?"block":"none");">@ParamCountResul</p>
+        <div>
+            <p style="background-color:@(ParamCountResul>0?"#8affa8":"orange"); display:@(ViewPopupCount?"block":"none");">@(ParamCountResul > 0 ? ParamCountResul : "searching")</p>
         </div>
       
     </div>
@@ -52,23 +52,16 @@
     public string? inputSearcherValue { get; set; }
 
     protected bool statusTask = false;
-    string valueSelection = "", backgroundSelection = "", colorSelection = "";
+    string valueSelection = "", backgroundSelection = "",  colorSelection = "";
 
 
-    protected override void OnParametersSet()
-    {
-        if (ParamFirstSelectedValue != null)
-        {
-            ViewPopupCount = true;
-            SearcherCountOff();
-            inputSearcherValue = ParamFirstSelectedValue;            
-        }
-
-    }
 
     public async void SearcherValue()
     {
-        await EventSearcherValue.InvokeAsync(inputSearcherValue);
+        ParamCountResul = 0;
+        ViewPopupCount = true;
+        SearcherCountOff();
+        await EventSearcherValue.InvokeAsync(inputSearcherValue);       
         backgroundSelection = "white";
         colorSelection = "black";       
        

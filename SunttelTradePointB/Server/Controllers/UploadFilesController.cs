@@ -8,7 +8,7 @@ namespace SunttelTradePointB.Server.Controllers
     /// Controller intended to manage files uploading
     /// </summary>
     [Tags("API Controller to upload Files")]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class UploadFilesController : ControllerBase
     {
@@ -37,7 +37,7 @@ namespace SunttelTradePointB.Server.Controllers
         /// <param name="photoName"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> UploadPhoto(IFormFile photo, UploadingFileType uploadingFileType, string photoName)
+        public async Task<IActionResult> UploadPhoto(IFormFile photo, string uploadingFileType, string photoName)
         {
             if (photo == null || photo.Length == 0)
             {
@@ -48,10 +48,10 @@ namespace SunttelTradePointB.Server.Controllers
 
             switch (uploadingFileType)
             {
-                case UploadingFileType.TransactionalItemImage:
+                case "0":
                     uploadFolder = "transactionalItemsImages";
                     break;
-                case UploadingFileType.EntityImage:
+                case "1":
                     uploadFolder = "entityImages";
                     break;
 

@@ -38,3 +38,12 @@
     box-shadow: 0px 0px 7px -2px gray;
     cursor: pointer;
 }
+
+.position{
+    position:absolute;
+    bottom:100px;
+}
+.margin-left{
+    margin-left:80PX;
+
+}

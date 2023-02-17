@@ -5,6 +5,10 @@
 @inject NavigationManager Navigation
 @inject TransactionalItemsService transactionalService;
 
+<PageTitleComponent Title=" Season Business " IconName="seasons.png"
+                    Description="Here you can add  Season Business">
+</PageTitleComponent>
+
 <div class="flex-horizontal-center">
     <div class="grid-columns-2 box-shadow-mode">
         <div><label>@GetName( "Name", new AtomConcept())</label></div>
@@ -39,6 +43,7 @@
         if (Mode == "Edit")
         {
             seasonBusiness = transactionalService.SeasonBusinessSelectedItems;
+            if (seasonBusiness == null) { Closed("control"); }
         }
         if (Mode == "Add")
         {
@@ -55,7 +60,11 @@
 
     public async void Save()
     {
-        await transactionalService.SaveSeason(null, seasonBusiness);
+        var resul =  await transactionalService.SaveSeason(null, seasonBusiness);
+        if (resul)
+        {
+            seasonBusiness = new();
+        }
 
     }
 

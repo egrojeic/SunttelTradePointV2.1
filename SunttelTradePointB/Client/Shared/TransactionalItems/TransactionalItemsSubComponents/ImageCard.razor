@@ -1,4 +1,6 @@
 ﻿@page "/ImageCard"
+@using SixLabors.ImageSharp;
+@using SixLabors.ImageSharp.Formats.Jpeg;
 @using Syncfusion.Blazor.Popups
 @using SunttelTradePointB.Shared.Common
 @using Microsoft.AspNetCore.Http
@@ -6,6 +8,9 @@
 @inject TransactionalItemsService transactionalService;
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
+
+@using Microsoft.AspNetCore.Http 
+@using System.Threading;
 
 
 <br />
@@ -62,6 +67,12 @@
     string urlImageStorage = "";
     public string transactionalItemId { get; set; }
 
+    public IFormFile fileUpload { get; set; }
+    public enum UploadingFileType
+    {
+        TransactionalItemImage,
+        EntityImage
+    }
     #region TileName
     public string Title { get; set; }
     public string Name { get; set; }
@@ -100,7 +111,9 @@
 
     public async void Save()
     {
-        var resul = await transactionalService.SaveImage(transactionalItemId, PathImagesView);
+
+        //var resulFile = await transactionalService.UploadFiles( fileUpload);
+       //    if (resulFile)  await transactionalService.SaveImage(transactionalItemId, PathImagesView);
         PathImagesView = new TransactItemImage();
         imgUrl = "/images/defaultImage.png";
         Refresh();
@@ -114,22 +127,81 @@
 
         foreach (var imagefile in e.GetMultipleFiles())
         {
+
             var resizeFile = await imagefile.RequestImageFileAsync(format, 400, 400);
             var bufer = new byte[resizeFile.Size];
+
             await resizeFile.OpenReadStream().ReadAsync(bufer);
+
             var img = $"data:{format};base64,{Convert.ToBase64String(bufer)}";
             imgUrl = img;
+
+            var file = e.File;
+            string fileName = Guid.NewGuid().ToString();
             PathImagesView.PathImage = "/" + Guid.NewGuid().ToString() + ".png";
-            imgId = Guid.NewGuid().ToString(); //"12345f";
-            PathImagesView.Id = null;
-            PathImagesView.PathImage = imgId + ".png";
+
+       
+
+            using (var image = await Image.LoadAsync(resizeFile.OpenReadStream()))
+            {
+    
+
+                // Convert the image to a byte array
+                using (var ms = new MemoryStream())
+                {
+                    await image.SaveAsync(ms, new JpegEncoder());
+                    var imageData = ms.ToArray();
+
+                    // Upload the image to the server using HttpClient
+                    var content = new MultipartFormDataContent();
+                    content.Add(new ByteArrayContent(imageData), "photo", file.Name);
+                    content.Add(new StringContent("0"), "uploadingFileType");
+                    content.Add(new StringContent(fileName), "photoName");
+
+                    await transactionalService.UploadFiles(content);
+
+
+                }
+            }
+
+
             bufer = null;
             Refresh();
+
+
         }
 
     }
 
+    public class FileUpload : IFormFile
+    {
+        public string ContentType { get; set; }
 
+        public string ContentDisposition { get; set; }
+
+        public IHeaderDictionary Headers { get; set; }
+
+        public long Length { get; set; }
+
+        public string Name { get; set; }
+
+        public string FileName { get; set; }
+
+        public void CopyTo(Stream target)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task CopyToAsync(Stream target, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Stream OpenReadStream()
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
 
 

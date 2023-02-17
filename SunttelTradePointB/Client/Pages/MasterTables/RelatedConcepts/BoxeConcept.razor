@@ -6,9 +6,10 @@
 @inject TransactionalItemsService transactionalService;
 
 
-<PageTitleComponent Title=" Box " IconName="boxes.png"
+<PageTitleComponent Title="@GetName( "Name", new AtomConcept())" IconName="boxes.png"
                     Description="Here you can add box ">
 </PageTitleComponent>
+
 <div class="flex-horizontal-center">
     <div class="grid-columns-2 box-shadow-mode">
         <div><label>@GetName( "Name", new AtomConcept())</label></div>
@@ -37,16 +38,32 @@
         <div>
             <SfSwitch @bind-Checked="@box.Enable"></SfSwitch>
         </div>
+          <div><label>@GetName( "LinkedTransactionalItem", new Box())</label></div>             
+        <div>
+            <div style="position:relative;">
+                <div class="item-edit">
+                    <label>@(transactionalItem != null ? transactionalItem.Name : "")</label>
+                    <button @onclick='()=>SetViewElemnt("LinkedTransactionalItem")' class="btn color-btn">+</button>
+                </div>
+                
+                <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" ViewControl="transactionalItemLinked" ViewSelect="ViewSelect" EventClosed="EventClosedInput" >
+                    @{
+                        if (transactionalItems != null)
+                        {
+                            foreach (var Obj in transactionalItems)
+                            {
+                                <option value="@Obj.Id">@Obj.Name</option>
+                            }
+                        }
+
+                    }
+                </InputTextSelector>
+            </div>
+        </div>
+               
     </div>
 
-    <div class="grid-columns-2 box-shadow-mode">
-        <div><label>@GetName( "LinkedTransactionalItem", new Box())</label></div>
-        <div></div>
-        <div><label>@GetName( "Name", new AtomConcept())</label></div>
-        <div><input @bind-value="linkedTransactionalItem.Name" class="form-control" placeholder="Edit value" /></div>
-        <div><label>@GetName( "Code", new AtomConcept())</label></div>
-        <div><input @bind-value="linkedTransactionalItem.Code" class="form-control" placeholder="Edit value" /></div>
-    </div>
+   
     <div class="flex-horizontal-end">
         <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
         <button @onclick='Save' class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
@@ -60,36 +77,39 @@
     [Parameter]
     public string filterItems { get; set; } = "";
     public Box box = new();
-    public bool ststus = false;
-
+    public bool ststus = false, ViewPopupCount = false, transactionalItemLinked = false, ViewSelect = false;
+    public int ParamCountResul = 0;
+    public string ModeSearcher = "";
+    public List<TransactionalItem> transactionalItems = new();
+    public TransactionalItem transactionalItem = new();
     public AtomConcept linkedTransactionalItem = new();
+    InputTextSelector? ReferInputTextSelector;
 
     protected override void OnInitialized()
     {
         if (Mode == "Edit")
         {
             box = transactionalService.BoxSelectedItems;
+            if (box == null) Closed("control");
         }
         if (Mode == "Add")
         {
             box = new();
         }
-
-
-
         base.OnInitialized();
     }
+
+    protected override void OnParametersSet()
+    {
+        StateHasChanged();
+    }
+
 
     public void Closed(string value)
     {
         if (value == "control") Navigation.NavigateTo($"/{Page}/{filterItems}");
     }
 
-    public string GetName(string Name, Object Obj)
-    {
-        Name = UICommonFunctions.GetDisplayName(Obj, Name);
-        return Name;
-    }
 
     public async void Save()
     {
@@ -100,4 +120,63 @@
         var resul = await transactionalService.SaveBox(boxId, box);
         if (resul) { box = new(); linkedTransactionalItem = new(); };
     }
+
+
+
+    protected async void EventIdSelection(string SelectionId)
+    {
+        // transactionalItems = await transactionalService.GetTransactionalItemDetailsQualityParameters();
+        transactionalItem = transactionalItems.Where(c => c.Id == SelectionId).FirstOrDefault();
+        ViewSelect = false;
+        transactionalItemLinked = false;
+        transactionalItems = null;
+        ParamCountResul = 0;
+        ReferInputTextSelector.Refresh();
+        StateHasChanged();
+
+    }
+    protected async void EventSearcherValue(string value)
+    {
+        ViewPopupCount = true;
+        transactionalItems = new List<TransactionalItem>();
+        if (ModeSearcher == "LinkedTransactionalItem")
+        {
+            transactionalItems = await transactionalService.GetTransactionalItemsList(0, 20, value);
+            if (transactionalItems != null) transactionalItems = transactionalItems.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+
+            ParamCountResul = transactionalItems != null? transactionalItems.Count():0;
+            ViewSelect = ParamCountResul > 0;
+
+            ReferInputTextSelector.Refresh();
+
+        }
+
+        StateHasChanged();
+    }
+    public void SetViewElemnt(string Element)
+    {
+        ModeSearcher = Element;
+        if (Element == "LinkedTransactionalItem") { transactionalItemLinked = true; }
+
+
+    }
+
+    public void EventClosedInput()
+    {
+        ParamCountResul = 0;
+        ViewSelect = false;
+        transactionalItemLinked = false;
+        transactionalItems = null;
+        StateHasChanged();
+    }
+        
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+
+
 }

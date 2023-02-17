@@ -15,7 +15,7 @@
 <div id="add-recipe">
     <div class="flex-horizontal-center">
         <div class="grid-columns-2 box-shadow-mode">
-          
+
             <div>
                 <label>
                     @GetName( "TransactionalItemQuality", new TransactionalItemQualityPair())
@@ -42,6 +42,8 @@
                     </InputTextSelector>
                 </div>
             </div>
+            <div><label>@GetName( "Value", new TransactionalItemQualityPair())</label></div>
+            <div><input @bind-value="transactionalItemQualityPair.Value" class="form-control" placeholder="Edit value" /></div>
 
             <div>
             </div>
@@ -49,8 +51,6 @@
                 <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
                 <button @onclick="Save" class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
             </div>
-            <div><p>Value</p></div>
-            <div><input @bind-value="transactionalItemQualityPair.Value" class="form-control" placeholder="Edit value" /></div>
 
         </div>
     </div>
@@ -68,7 +68,7 @@
     List<TransactionalItemQualityPair> transactionalItemQualityPairView = new List<TransactionalItemQualityPair>();
 
     TransactionalItemQuality SetQualityParameter = new TransactionalItemQuality();
-   
+
 
     public int ParamCountResul = 0;
     bool transactionalItemQualityPairViewPopup = false;
@@ -135,20 +135,35 @@
 
     protected async void EventIdSelection(string SelectionId)
     {
-        transactionalItemQualityPairView = await transactionalService.GetTransactionalItemDetailsQualityParameters();
-       
+        // transactionalItemQualityPairView = await transactionalService.GetTransactionalItemDetailsQualityParameters();
         transactionalItemQualityPair = transactionalItemQualityPairView.Where(c => c.TransactionalItemQuality.Id == SelectionId).FirstOrDefault();
+        if (transactionalItemQualityPair == null) transactionalItemQualityPair = new();
         await Refresh();
     }
     protected async void EventSearcherValue(string value)
     {
         ViewPopupCount = true;
-        transactionalItemQualityPairView = new List<TransactionalItemQualityPair>();
+
         if (ModeSearcher == "QualityParameters")
         {
-            transactionalItemQualityPairView = await transactionalService.GetTransactionalItemDetailsQualityParameters();
-            transactionalItemQualityPairView = transactionalItemQualityPairView.Where(s => s.TransactionalItemQuality.Name.ToLower().Contains(value.ToLower())).ToList(); 
-            ParamCountResul = transactionalItemQualityPairView.Count();
+            transactionalItemQualityPairView = await transactionalService.GetTransactionalItemDetailsQualityParameters(_transactionalItemId);
+            if (transactionalItemQualityPairView != null)
+            {
+                transactionalItemQualityPairView = transactionalItemQualityPairView.Where(s => s.TransactionalItemQuality.Name.ToLower().Contains(value.ToLower())).ToList();
+
+            }
+
+            if (transactionalItemQualityPairView != null)
+            {
+                ParamCountResul = transactionalItemQualityPairView.Count();
+                ViewPopupCount = ParamCountResul > 0;
+            }
+            else
+            {
+                ViewPopupCount = false;
+                ParamCountResul = 0;
+
+            }
         }
         await Refresh();
     }

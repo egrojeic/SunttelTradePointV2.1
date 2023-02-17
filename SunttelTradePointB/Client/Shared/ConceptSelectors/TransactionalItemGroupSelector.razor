@@ -81,7 +81,7 @@
             GroupsQuery = await transactionalService.GetTransactionalItemGroups(value);
 
             GroupsSearcher = new List<ConceptGroup>();
-            GroupsSearcher.Add(new ConceptGroup { Id = "", Name = "select" });
+           
             GroupsSearcher.AddRange(GroupsQuery);
             ParamCountResul = GroupsSearcher != null ? GroupsSearcher.Count() : 0;
             ViewSelect = ParamCountResul > 0;
@@ -100,11 +100,12 @@
         {
             Group = GroupsSearcher.Where(c => c.Id == selectionId).FirstOrDefault();
             ViewSelect = false;
+            PopupViewAddGroup = false;
             Groups.Add(Group);
             EventAddGroups.InvokeAsync(Groups);
             Group = new ConceptGroup();
         }
-        PopupViewAddGroup = false;
+       
         ReferInputTextSelector.Refresh();
         StateHasChanged();
 
@@ -114,12 +115,11 @@
     {
         if (args != null && args.Value != null && args.Value!="")
         {
-            if (SearcherValueMode == "Group")
-            {
+           
                 var groupRemove = Groups.Where(r => r.Id == args.Value).FirstOrDefault();
                 Groups.Remove(groupRemove);
                 EventAddGroups.InvokeAsync(Groups);
-            }
+            
         }       
     }
 

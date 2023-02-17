@@ -29,6 +29,8 @@
 }
 else
 {
+    if (seasonBusiness == null) seasonBusiness = new();
+
     <SfGrid @ref="referDataGrid" DataSource="@seasonBusiness"
         AllowFiltering="true"
         AllowTextWrap="false"
@@ -46,8 +48,16 @@ else
             )">
 
         <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
+        <GridColumns>
+        <GridColumn Field="@nameof(SeasonBusiness.Name)" HeaderText="@GetName("Name", new AtomConcept())" Width="250px"></GridColumn>
+        <GridColumn Field="@nameof(SeasonBusiness.Code)" HeaderText="@GetName("Code", new AtomConcept())" Width="120px"></GridColumn>
+        <GridColumn Field="@nameof(SeasonBusiness.FlagSundayShipping)" HeaderText="@GetName("FlagSundayShipping", new SeasonBusiness())"></GridColumn>
+        <GridColumn Field="@nameof(SeasonBusiness.StartDate)" HeaderText="@GetName("StartDate", new SeasonBusiness())"></GridColumn>
+        <GridColumn Field="@nameof(SeasonBusiness.EndDate)" HeaderText="@GetName("EndDate", new SeasonBusiness())"></GridColumn>
+        <GridColumn Field="@nameof(SeasonBusiness.Notes)" HeaderText="@GetName("Notes", new AtomConcept())"></GridColumn>      
+        <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="SeasonBusiness"></GridEvents>
+        </GridColumns>
 
-        <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="SeasonBusiness"></GridEvents>      
     </SfGrid>
 }
 
@@ -76,7 +86,7 @@ else
     {
         if (_filterItems != "" && _filterItems != null)
         {
-            LoadData();
+           // LoadData();
         }
         transactItemsService.Page = "SeasonsGeneral";
     }

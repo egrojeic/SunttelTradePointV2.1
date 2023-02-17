@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.FileProviders;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
@@ -23,8 +24,14 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         public SeasonBusiness? SeasonBusinessSelectedItems { get; set; }
         public ConceptGroup? ConceptGroupSelectedItems { get; set; }
         public TransactionalItemStatus? ConceptStatusSelectedItems { get; set; }
-        
+
         public TransactionalItemType? ConceptTransactionalItemType { get; set; }
+
+        public enum UploadingFileType
+        {
+            TransactionalItemImage,
+            EntityImage
+        }
 
         #endregion Property
 
@@ -55,10 +62,12 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             try
             {
-                transactionalItemsList = await _httpClient.GetFromJsonAsync<List<TransactionalItem>>($"api/TransactionalItems/GetTransactionalItems?page={page}&perPage={perPage}&filterName={namteToFind}");
+                transactionalItemsList = await _httpClient.GetFromJsonAsync<List<TransactionalItem>>($"api/TransactionalItems/GetTransactionalItems?page=1&perPage=10&filterName={namteToFind}");
+                page = page == 0 ? 1 : page;
 
+                if ((transactionalItemsList.Count() - page) >= perPage) transactionalItemsList.ToList().GetRange((int)page, (int)perPage);
+                if ((transactionalItemsList.Count() - page) < perPage) transactionalItemsList.GetRange((int)page, (transactionalItemsList.Count() - 1));
                 return transactionalItemsList != null ? transactionalItemsList : new List<TransactionalItem>();
-
 
             }
             catch (Exception ex)
@@ -88,8 +97,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             }
         }
-        public async Task<List<ProductModel>> GetSelectorListEntityProductModel(string? transactionalItemId =null)
-        {           
+        public async Task<List<ProductModel>> GetSelectorListEntityProductModel(string? transactionalItemId = null)
+        {
 
             try
             {
@@ -123,13 +132,13 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
         public async Task<List<Box>> GetSelectorListEntityBoxToBuy()
-        {           
+        {
 
             try
             {
 
-                boxsList  = await _httpClient.GetFromJsonAsync<List<Box>>($"/api/ConceptsSelector/GetSelectorListBoxes");
-                
+                boxsList = await _httpClient.GetFromJsonAsync<List<Box>>($"/api/ConceptsSelector/GetSelectorListBoxes");
+
                 return boxsList;
             }
             catch (Exception ex)
@@ -306,7 +315,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             try
             {
                 boxes = await _httpClient.GetFromJsonAsync<List<Box>>($"api/TransactionalItemsRelatedConcepts/GetBoxTable");
-                return boxes != null ? boxes.Where(s => s.Name.ToLower().Contains(nameLike.ToLower())).ToList().GetRange((int)page,(int)perPage): new List<Box>();
+                return boxes != null ? boxes.Where(s => s.Name.ToLower().Contains(nameLike.ToLower())).ToList().GetRange((int)page, (int)perPage) : new List<Box>();
             }
             catch (Exception ex)
             {
@@ -318,7 +327,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
         public async Task<Box> GetBox(string? boxID)
-        {           
+        {
             boxID = boxID != null ? boxID : "";
             try
             {
@@ -336,13 +345,13 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         }
         public async Task<List<SeasonBusiness>> GetSeasonsTable(int? page = 1, int? perPage = 10, string? nameLike = null)
         {
-            
+
             try
             {
-                 seasonBusiness = await _httpClient.GetFromJsonAsync<List<SeasonBusiness>>($"api/TransactionalItemsRelatedConcepts/GetSeasonsTable");
-                page = page==0 ? 1 : page;
-                seasonBusiness = seasonBusiness = seasonBusiness != null ? seasonBusiness.Where(s => s.Name.ToLower().Contains(nameLike.ToLower())).ToList():new List<SeasonBusiness>();
-                if ((seasonBusiness.Count() - page) >= perPage) seasonBusiness.ToList().GetRange((int)page, (int)perPage) ;
+                seasonBusiness = await _httpClient.GetFromJsonAsync<List<SeasonBusiness>>($"api/TransactionalItemsRelatedConcepts/GetSeasonsTable");
+                page = page == 0 ? 1 : page;
+                seasonBusiness = seasonBusiness = seasonBusiness != null ? seasonBusiness.Where(s => s.Name.ToLower().Contains(nameLike.ToLower())).ToList() : new List<SeasonBusiness>();
+                if ((seasonBusiness.Count() - page) >= perPage) seasonBusiness.ToList().GetRange((int)page, (int)perPage);
                 if ((seasonBusiness.Count() - page) < perPage) seasonBusiness.GetRange((int)page, (seasonBusiness.Count() - 1));
                 return seasonBusiness;
             }
@@ -411,8 +420,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             try
             {
-                 transactionalItemStatuss = await _httpClient.GetFromJsonAsync<List<TransactionalItemStatus>> ($"api/TransactionalItemsRelatedConcepts/GetTransactionalStatusesTable");
-                return transactionalItemStatuss != null ? transactionalItemStatuss.Where(s=>s.Name.ToLower().Contains(nameLike.ToLower())).ToList() : new List<TransactionalItemStatus>();
+                transactionalItemStatuss = await _httpClient.GetFromJsonAsync<List<TransactionalItemStatus>>($"api/TransactionalItemsRelatedConcepts/GetTransactionalStatusesTable");
+                return transactionalItemStatuss != null ? transactionalItemStatuss.Where(s => s.Name.ToLower().Contains(nameLike.ToLower())).ToList() : new List<TransactionalItemStatus>();
             }
             catch (Exception ex)
             {
@@ -427,7 +436,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         {
             try
             {
-                var resul =  await _httpClient.PostAsJsonAsync<PackingSpecs>($"api/TransactionalItems/SaveProductPackingSpecs?transactionalItemId={transactionalItemId}", packingSpecs);
+                var resul = await _httpClient.PostAsJsonAsync<PackingSpecs>($"api/TransactionalItems/SaveProductPackingSpecs?transactionalItemId={transactionalItemId}", packingSpecs);
                 return resul.IsSuccessStatusCode;
             }
             catch (Exception ex)
@@ -442,7 +451,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         public async Task<bool> SaveTags(string transactionalItemId, TransactionalItemTag transactionalItemTag)
         {
             try
-            {                
+            {
                 var resul = await _httpClient.PostAsJsonAsync<TransactionalItemTag>($"api/TransactionalItems/SaveTags?transactionalItemId={transactionalItemId}", transactionalItemTag);
                 return resul.IsSuccessStatusCode;
             }
@@ -537,7 +546,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             try
             {
                 var resul = await _httpClient.PostAsJsonAsync<Box>($"api/TransactionalItemsRelatedConcepts/SaveBox?boxId={boxId}", box);
-                return resul.IsSuccessStatusCode;                        
+                return resul.IsSuccessStatusCode;
             }
             catch (Exception ex)
             {
@@ -562,7 +571,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
         public async Task<bool> SaveTransactionalItemGroup(string? transactionalItemGroupId, ConceptGroup conceptGroup)
-        {            
+        {
             try
             {
                 var resul = await _httpClient.PostAsJsonAsync<ConceptGroup>($"api/TransactionalItemsRelatedConcepts/SaveTransactionalItemGroup?transactionalItemGroupId={transactionalItemGroupId}", conceptGroup);
@@ -589,11 +598,32 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+
+        public async Task<bool> UploadFiles(MultipartFormDataContent multipartFormDataContent)
+        {
+ 
+
+            try
+            {
+                var resul = await _httpClient.PostAsync($"api/UploadFiles/UploadPhoto", multipartFormDataContent);
+                return resul.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+
+                return false;
+
+            }
+
+        }
+
+
         public Task<List<ConceptGroup>> GetSelectorListEntityGroups(string? nameLike = null)
         {
             throw new NotImplementedException();
         }
-      
+
     }
 
 

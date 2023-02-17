@@ -82,7 +82,7 @@ else
     private async Task LoadData()
     {
         isLoading = true;
-        conceptGroup = await transactItemsService.GetSelectorListTransactionalItemGroups(_filterItems);
+        conceptGroup = await transactItemsService.GetTransactionalItemGroups(_filterItems);
 
         isLoading = false;
         StateHasChanged();
