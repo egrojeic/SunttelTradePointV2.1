@@ -41,14 +41,11 @@
                                                     <option value="@entity?.Id">@entity?.Name</option>
                                                 }
                                             }
-
                                         }
                                     </InputTextSelector>
                                 </div>
                             </div>
                         </div>
-
-
                         <div class="py-2">
                             <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveElectronicAddress(Id, electronicAddress))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
                             <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
@@ -83,7 +80,6 @@
     public int ParamCountResul = 0;
 
     ElectronicAddress electronicAddress = new ElectronicAddress();
-    AtomConcept entityActor = new AtomConcept();
     List<AtomConcept> electronicAddressesList = new List<AtomConcept>();
     AtomConcept electronic = new AtomConcept();
     List<ElectronicAddress> eAddresList = new List<ElectronicAddress>();
@@ -102,7 +98,7 @@
         {
             if (electronicId != null)
                 electronicAddress.Id = electronicId;
-            electronicAddress.EmitterEntity = entityActor;
+            electronicAddress.EmitterEntity = electronic;
             await actorsNodeServive.SaveElectronicAddress(entityId, electronicAddress);
             StateHasChanged();
         }
@@ -164,7 +160,7 @@
     private void RefreshMe()
     {
         electronicAddress = new ElectronicAddress();
-        entityActor = new EntityActor();
+        electronic = new AtomConcept();
     }
 
     private void GoBack()

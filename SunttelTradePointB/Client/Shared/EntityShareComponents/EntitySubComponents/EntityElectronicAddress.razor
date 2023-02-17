@@ -58,17 +58,6 @@
     RadzenDataGrid<ElectronicAddress>? refDataGrid;
     AtomConcept entityActor = new AtomConcept();
 
-    private void SaveData(ElectronicAddress electronicAddress)
-    {
-        entityActor = electronicAddress.EmitterEntity;
-        entityElectronicAddress.Add(new ElectronicAddress
-        {
-            AddressKey = electronicAddress.AddressKey,
-            EmitterEntity = entityActor
-        });
-        refDataGrid.Reload();
-    }
-    
     protected override async Task OnInitializedAsync()
     {
         await GetEntityElectronicAddress();
