@@ -623,7 +623,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 var filterPrev = Builders<EntityActor>.Filter.Eq(x => x.Id, entityActorId);
                 var resultPrev = await _entityActorsCollection.Find(filterPrev).FirstOrDefaultAsync();
 
-                if (entityActorId.Length > 0 && resultPrev != null && resultPrev.ShippingInformation.Any(x => x.Id == shippingInfo.Id))
+                if (entityActorId.Length > 0 && resultPrev != null && resultPrev.ShippingInformation != null && resultPrev.ShippingInformation.Any(x => x.Id == shippingInfo.Id))
                 {
                     //Update Element
                     var filter = Builders<EntityActor>.Filter.And(
@@ -668,7 +668,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 var filterPrev = Builders<EntityActor>.Filter.Eq(x => x.Id, entityActorId);
                 var resultPrev = await _entityActorsCollection.Find(filterPrev).FirstOrDefaultAsync();
 
-                if (entityActorId.Length > 0 && resultPrev != null && resultPrev.EntitiesRelationShips.Any(x => x.Id == entitiesCommercialRelationShip.Id))
+                if (entityActorId.Length > 0 && resultPrev != null && resultPrev.EntitiesRelationShips != null && resultPrev.EntitiesRelationShips.Any(x => x.Id == entitiesCommercialRelationShip.Id))
                 {
                     //Update Element
                     var filter = Builders<EntityActor>.Filter.And(
@@ -787,31 +787,25 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             {
                 var pipeline = new[] {
 
-                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(entitiesCommercialRelationShipId))),
-
-                     new BsonDocument {
-                        { "$lookup",
-                            new BsonDocument {
-                                { "from", "EntityNodes" },
-                                { "localField", "EntitiesRelationShips.Id" },
-                                { "foreignField", "_id" },
-                                { "as", "EntitiesRelationShips.CityAddress" }//Revisar
-                            }
-                        }
-                    },
-
-                     new BsonDocument(
+                    new BsonDocument(
                         "$unwind",
-                        "EntitiesRelationShips.CityAddress")//Revisar
-                    ,
+                        "EntitiesRelationShips"),
 
+                    new BsonDocument("$match", new BsonDocument("EntitiesRelationShips._id", new ObjectId(entitiesCommercialRelationShipId))),
+
+                    new BsonDocument(
+                        "$project", new BsonDocument("EntitiesRelationShips", 1)
+                    ),
+
+                    new BsonDocument(
+                        "$replaceRoot", new BsonDocument("newRoot", "$EntitiesRelationShips")
+                    )
                 };
 
                 var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
 
 
                 EntitiesCommercialRelationShip result = resultPrev.Select(d => BsonSerializer.Deserialize<EntitiesCommercialRelationShip>(d)).ToList()[0];
-                //Revisar ^^^
 
 
                 return (true, result, null);
