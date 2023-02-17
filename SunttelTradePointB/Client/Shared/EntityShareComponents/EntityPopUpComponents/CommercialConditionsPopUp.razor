@@ -1,4 +1,5 @@
-﻿@page "/Actors/{Id}/CommercialConditions"
+﻿@page "/Actors/{Id}/ComercialConditions"
+@page "/Actors/{Id}/ComercialConditions/{comercialId}/Edit"
 @using Syncfusion.Blazor.Popups
 @using SunttelTradePointB.Shared.Common
 @using SunttelTradePointB.Client.Services.MasterTablesServices
@@ -59,12 +60,12 @@
                             <label class="control-label col-md-12">@lblRelationType: </label>
                             <div class="col">
                                 <SfComboBox TValue="string" TItem="CommercialType" Placeholder="e.g. Select a relation type" DataSource="@LocalData" ID="cmbRoles" @bind-Value="@entitiyRelationshipType.Name">
-                                    <ComboBoxFieldSettings Text="Text" Value="Id"></ComboBoxFieldSettings>
+                                    <ComboBoxFieldSettings Text="Text" Value="Name"></ComboBoxFieldSettings>
                                 </SfComboBox>
                             </div>
                         </div>
                         <div class="py-2">
-                            <button type="submit" class="size-btn color-btn" style="float:right"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                            <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveCommercialCondition(Id, entitiesCommercialRelationShip))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
                             <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
                         </div>
                     </form>
@@ -75,14 +76,13 @@
 </div>
 
 
-
-
-
 @code {
     [Parameter]
     public bool ViewSelect { get; set; } = false;
     [Parameter]
     public string Id { get; set; }
+    [Parameter]
+    public string comercialId { get; set; }
 
     public bool PopupViewEntities = false;
     public string SearchValueMode = "";
@@ -101,6 +101,7 @@
     InputTextSelector? refInputTextSelector;
     EntityActor entityActor = new EntityActor();
     List<EntityActor> ListEntityActor = new List<EntityActor>();
+    List<EntitiesCommercialRelationShip> entitiesCommercialRelationsList = new List<EntitiesCommercialRelationShip>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -131,13 +132,40 @@
 
     protected async void EventIdSelectionInput(string selectionId)
     {
-
         if (SearchValueMode == "Entity")
         {
             entityActor = ListEntityActor.Where(c => c.Id == selectionId).FirstOrDefault();
         }
         PopupViewEntities = false;
         await Refresh();
+    }
+
+    public async Task SaveCommercialCondition(string entityId, EntitiesCommercialRelationShip comercialConditions)
+    {
+        if(entityId != null && comercialConditions != null)
+        {
+            if(comercialId != null)
+            {
+                comercialConditions.Id = comercialId;
+            }
+            comercialConditions.RelatedEntity = entityActor;
+            comercialConditions.EntitiyCommercialRelationShipType = entitiyRelationshipType;
+            await actorsNodeServive.SaveCommercialConditions(entityId, comercialConditions);
+            StateHasChanged();
+        }
+    }
+
+    public async Task GetCommercialConditions(string entityId)
+    {
+        if(comercialId != null)
+        {
+            //entitiesCommercialRelationsList = await
+            foreach(var comercialList in entitiesCommercialRelationsList)
+            {
+                //entityActor = comercialList.RelatedEntity;
+
+            }
+        }
     }
 
     public async Task Refresh()

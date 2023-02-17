@@ -88,7 +88,7 @@
     protected override async Task OnInitializedAsync()
     {
         lblCode = UICommonFunctions.GetDisplayName(new IdentificationEntity(), "Code");
-        lblEntityIssuer = UICommonFunctions.GetDisplayName(new IdentificationType(), "EntityIssuer");
+        lblEntityIssuer = UICommonFunctions.GetDisplayName(new IdentificationType(), "Identification type");
         await GetEntityIdentifierList(Id);
         GetIdentificationsType();
     }

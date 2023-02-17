@@ -247,7 +247,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         {
             try
             {
-                var identificationTypes = await _httpClient.GetFromJsonAsync<List<IdentificationType>>($"/api/EntityActorsRelatedConcepts/GetIdentificationTypes");
+                var identificationTypes = await _httpClient.GetFromJsonAsync<List<IdentificationType>>($"/api/ConceptsSelector/GetSelectorListIdentificationTypes");
                 return identificationTypes;
             }
             catch (Exception ex)
@@ -416,7 +416,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveShippingSetup?entityActorId={shippinSetupId}", shippingInfo);
         }
 
-        public async Task SaveCommercialConditions(string commercialConditionId, EntityComercialConditions comercialConditions)
+        public async Task SaveCommercialConditions(string commercialConditionId, EntitiesCommercialRelationShip comercialConditions)
         {
             await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveShippingSetup?entityActorId={commercialConditionId}", comercialConditions);
         }
