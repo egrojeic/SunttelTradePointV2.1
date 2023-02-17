@@ -668,12 +668,12 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 var filterPrev = Builders<EntityActor>.Filter.Eq(x => x.Id, entityActorId);
                 var resultPrev = await _entityActorsCollection.Find(filterPrev).FirstOrDefaultAsync();
 
-                if (entityActorId.Length > 0 && resultPrev != null && resultPrev.ShippingInformation.Any(x => x.Id == entitiesCommercialRelationShip.Id))
+                if (entityActorId.Length > 0 && resultPrev != null && resultPrev.EntitiesRelationShips.Any(x => x.Id == entitiesCommercialRelationShip.Id))
                 {
                     //Update Element
                     var filter = Builders<EntityActor>.Filter.And(
                         Builders<EntityActor>.Filter.Eq(x => x.Id, entityActorId),
-                        Builders<EntityActor>.Filter.ElemMatch(x => x.ShippingInformation, y => y.Id == entitiesCommercialRelationShip.Id)
+                        Builders<EntityActor>.Filter.ElemMatch(x => x.EntitiesRelationShips, y => y.Id == entitiesCommercialRelationShip.Id)
                     );
                     var update = Builders<EntityActor>.Update.Set(x => x.EntitiesRelationShips[-1], entitiesCommercialRelationShip);
                     await _entityActorsCollection.UpdateOneAsync(filter, update);
@@ -706,31 +706,24 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             {
                 var pipeline = new[] {
 
-                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(electronicAddressId))),
-
-                     new BsonDocument {
-                        { "$lookup",
-                            new BsonDocument {
-                                { "from", "EntityNodes" },
-                                { "localField", "ElectronicAddresses.Id" },
-                                { "foreignField", "_id" },
-                                { "as", "ElectronicAddresses.CityAddress" }//Revisar
-                            }
-                        }
-                    },
-
-                     new BsonDocument(
+                    new BsonDocument(
                         "$unwind",
-                        "$InvoicingAddress.CityAddress")//Revisar
-                    ,
+                        "$ElectronicAddresses"),
 
+                    new BsonDocument("$match", new BsonDocument("ElectronicAddresses._id", new ObjectId(electronicAddressId))),
+
+                    new BsonDocument(
+                        "$project", new BsonDocument("ElectronicAddresses", 1)
+                    ),
+
+                    new BsonDocument(
+                        "$replaceRoot", new BsonDocument("newRoot", "$ElectronicAddresses")
+                    )
                 };
 
                 var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
 
-
-                ElectronicAddress result = resultPrev.Select(d => BsonSerializer.Deserialize<ElectronicAddress>(d)).ToList()[0];//Revisar
-
+                ElectronicAddress result = resultPrev.Select(d => BsonSerializer.Deserialize<ElectronicAddress>(d)).ToList()[0];
 
                 return (true, result, null);
             }
@@ -825,6 +818,45 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 EntitiesCommercialRelationShip result = resultPrev.Select(d => BsonSerializer.Deserialize<EntitiesCommercialRelationShip>(d)).ToList()[0];
                 //Revisar ^^^
 
+
+                return (true, result, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Retrives the list of electronic addresses of an Actor
+        /// </summary>
+        /// <param name="entityActorId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<ElectronicAddress>? electronicAddresses, string? ErrorDescription)> GetElectronicAddresses(string entityActorId)
+        {
+            try
+            {
+                var pipeline = new[] {
+
+                    new BsonDocument(
+                        "$unwind",
+                        "$ElectronicAddresses"),
+
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(entityActorId))),
+
+                    new BsonDocument(
+                        "$project", new BsonDocument("ElectronicAddresses", 1)
+                    ),
+
+                    new BsonDocument(
+                        "$replaceRoot", new BsonDocument("newRoot", "$ElectronicAddresses")
+                    )
+                };
+
+                var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+                List<ElectronicAddress> result = resultPrev.Select(d => BsonSerializer.Deserialize<List<ElectronicAddress>>(d)).ToList()[0];
 
                 return (true, result, null);
             }
