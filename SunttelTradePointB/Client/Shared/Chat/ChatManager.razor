@@ -1,6 +1,6 @@
 ﻿
 @using Microsoft.AspNetCore.SignalR.Client
-
+@inject NavigationManager NavigationManager
 
 <div id ="ChatConatainerDiv">
     <ChatUpperControl>
@@ -23,12 +23,37 @@
 @code {
      
     private HubConnection? hubConnection;
-    int NumberOfUsers = 0;
+    int NumberOfConnectedUsers = 0;
 
     private List<string> addedTexts = new List<string>();
     string _textMessage = "";
    
     protected override async Task OnInitializedAsync(){
+
+        // Initializing hub
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/hubs/userHub"), options =>
+            {
+                options.AccessTokenProvider = () => Task.FromResult(UIClientGlobalVariables.UserId);
+            })
+            .Build();
+
+        hubConnection.On<string>("updateConnectedUsers", (usersConnectedCount) =>
+        {
+            Console.WriteLine(usersConnectedCount);
+
+            NumberOfConnectedUsers = int.Parse(usersConnectedCount);
+            StateHasChanged();
+        });
+
+        try
+        {
+            await hubConnection.StartAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Error connecting: {e.Message}");
+        }
 
     }
 

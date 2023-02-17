@@ -206,11 +206,11 @@ namespace SunttelTradePointB.Shared.Common
         public string Id { get; set; }
 
         [DisplayName("Sender")]
-        public Concept Sender { get; set; }
+        public AtomConcept Sender { get; set; }
 
 
         [DisplayName("Carrier")]
-        public Concept Carrier { get; set; }
+        public AtomConcept Carrier { get; set; }
 
         [DisplayName("Delivery Address")]
         public Address DeliveryAddress { get; set; }
