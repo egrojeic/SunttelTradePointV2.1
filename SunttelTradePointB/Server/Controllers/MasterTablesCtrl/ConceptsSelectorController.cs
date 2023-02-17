@@ -256,5 +256,26 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
                 return NotFound(response.ErrorDescription);
             }
         }
+
+
+        /// <summary>
+        /// Retrieves a list of EntitiyRelationship Types
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetSelectorEntitiyRelationshipTypes")]
+        public async Task<IActionResult> GetSelectorEntitiyRelationshipTypes()
+        {
+            var response = await _selectorDatasource.GetSelectorEntitiyRelationshipTypes();
+
+            if(response.IsSuccess)
+            {
+                return Ok(response.entitiyRelationshipTypes);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
     }
 }

@@ -745,30 +745,25 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             {
                 var pipeline = new[] {
 
-                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(shippingInfoId))),
-
-                     new BsonDocument {
-                        { "$lookup",
-                            new BsonDocument {
-                                { "from", "EntityNodes" },
-                                { "localField", "ShippingInformation.Id" },
-                                { "foreignField", "_id" },
-                                { "as", "ShippingInformation.CityAddress" }//Revisar
-                            }
-                        }
-                    },
-
-                     new BsonDocument(
+                    new BsonDocument(
                         "$unwind",
-                        "ShippingInformation.CityAddress")//Revisar
-                    ,
+                        "$ShippingInformation"),
 
+                    new BsonDocument("$match", new BsonDocument("ShippingInformation._id", new ObjectId(shippingInfoId))),
+
+                    new BsonDocument(
+                        "$project", new BsonDocument("ShippingInformation", 1)
+                    ),
+
+                    new BsonDocument(
+                        "$replaceRoot", new BsonDocument("newRoot", "$ShippingInformation")
+                    )
                 };
 
                 var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
 
 
-                ShippingInfo result = resultPrev.Select(d => BsonSerializer.Deserialize<ShippingInfo>(d)).ToList()[0];//Revisar
+                ShippingInfo result = resultPrev.Select(d => BsonSerializer.Deserialize<ShippingInfo>(d)).ToList()[0];
 
 
                 return (true, result, null);
