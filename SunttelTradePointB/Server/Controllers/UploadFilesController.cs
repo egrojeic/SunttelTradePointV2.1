@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IO.Pipelines;
 
 namespace SunttelTradePointB.Server.Controllers
 {
@@ -8,7 +9,7 @@ namespace SunttelTradePointB.Server.Controllers
     /// Controller intended to manage files uploading
     /// </summary>
     [Tags("API Controller to upload Files")]
-    [Route("api/[controller]/[action]")]
+    [Route("api/UploadFiles")]
     [ApiController]
     public class UploadFilesController : ControllerBase
     {
@@ -37,14 +38,26 @@ namespace SunttelTradePointB.Server.Controllers
         /// <param name="photoName"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> UploadPhoto(IFormFile photo, string uploadingFileType, string photoName)
+        public async Task<IActionResult> UploadFiles()
         {
-            if (photo == null || photo.Length == 0)
+            var formCollection = await Request.ReadFormAsync();
+            
+            var photo = formCollection.Files["photo"];
+
+
+            if (photo == null)
             {
                 return BadRequest("Invalid file");
             }
 
             string uploadFolder = "";
+            string uploadingFileType = "";
+            string photoName = "";
+            
+
+            uploadingFileType = formCollection["uploadingFileType"].ToString();
+            photoName = formCollection["photoName"].ToString();
+
 
             switch (uploadingFileType)
             {
@@ -67,6 +80,9 @@ namespace SunttelTradePointB.Server.Controllers
 
 
             var filePath = Path.Combine(uploadPath, fileName);
+            var file = formCollection.Files.First();
+
+         
 
             using (var stream = new FileStream(filePath, FileMode.Create))
             {

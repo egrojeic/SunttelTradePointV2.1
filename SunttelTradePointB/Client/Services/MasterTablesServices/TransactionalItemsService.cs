@@ -605,7 +605,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             try
             {
-                var resul = await _httpClient.PostAsync($"api/UploadFiles/UploadPhoto", multipartFormDataContent);
+                var resul = await _httpClient.PostAsync($"api/UploadFiles", multipartFormDataContent);
                 return resul.IsSuccessStatusCode;
             }
             catch (Exception ex)

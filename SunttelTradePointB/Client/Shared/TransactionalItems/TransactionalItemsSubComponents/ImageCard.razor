@@ -11,6 +11,7 @@
 
 @using Microsoft.AspNetCore.Http 
 @using System.Threading;
+@using System.Net.Http.Headers
 
 
 <br />
@@ -141,27 +142,21 @@
             PathImagesView.PathImage = "/" + Guid.NewGuid().ToString() + ".png";
 
        
-
-            using (var image = await Image.LoadAsync(resizeFile.OpenReadStream()))
+            var resizedFile = await file.RequestImageFileAsync("image/png", 300, 500);
+            // Convert the image to a byte array
+            using (var ms = resizedFile.OpenReadStream(resizedFile.Size))
             {
-    
 
-                // Convert the image to a byte array
-                using (var ms = new MemoryStream())
-                {
-                    await image.SaveAsync(ms, new JpegEncoder());
-                    var imageData = ms.ToArray();
+                // Upload the image to the server using HttpClient
+                var content = new MultipartFormDataContent();
+                content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
+                content.Add(new StreamContent(ms, Convert.ToInt32(resizedFile.Size)), "photo", file.Name);
+                content.Add(new StringContent("0"), "uploadingFileType");
+                content.Add(new StringContent(fileName), "photoName");
 
-                    // Upload the image to the server using HttpClient
-                    var content = new MultipartFormDataContent();
-                    content.Add(new ByteArrayContent(imageData), "photo", file.Name);
-                    content.Add(new StringContent("0"), "uploadingFileType");
-                    content.Add(new StringContent(fileName), "photoName");
-
-                    await transactionalService.UploadFiles(content);
+                await transactionalService.UploadFiles(content);
 
 
-                }
             }
 
 
