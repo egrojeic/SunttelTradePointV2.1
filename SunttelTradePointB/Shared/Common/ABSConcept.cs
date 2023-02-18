@@ -31,14 +31,7 @@ namespace SunttelTradePointB.Shared.Common
 
         [BsonIgnoreIfNull]
         public InfoAuditRecord AuditRecord { get; set; }
-        
-        //[BsonIgnoreIfNull]
-        //[DisplayName("Creation Time")]
-        //public DateTime? CreationTime { get; set; }
-
-        //[DisplayName("Last Modified Time")]
-        //[BsonIgnoreIfNull]
-        //public DateTime? LastModifiedTime { get; set; }
+     
 
 
         [BsonIgnore]
