@@ -110,7 +110,7 @@
 
     private async void Save()
     {
-        SetQualityParameter.CreationTime = DateTime.UtcNow;
+        //SetQualityParameter.CreationTime = DateTime.UtcNow;
         SetQualityParameter.DefaultValue = "";
         var resul = await transactionalService.SaveQualityParameters(_transactionalItemId, transactionalItemQualityPair);
 

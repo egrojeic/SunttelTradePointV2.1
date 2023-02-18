@@ -30,14 +30,17 @@ namespace SunttelTradePointB.Shared.Common
         public string Name { get; set; }
 
         [BsonIgnoreIfNull]
-        [DisplayName("Creation Time")]
-        public DateTime? CreationTime { get; set; }
-
-        [DisplayName("Last Modified Time")]
-        [BsonIgnoreIfNull]
-        public DateTime? LastModifiedTime { get; set; }
-
+        public InfoAuditRecord AuditRecord { get; set; }
         
+        //[BsonIgnoreIfNull]
+        //[DisplayName("Creation Time")]
+        //public DateTime? CreationTime { get; set; }
+
+        //[DisplayName("Last Modified Time")]
+        //[BsonIgnoreIfNull]
+        //public DateTime? LastModifiedTime { get; set; }
+
+
         [BsonIgnore]
         public bool? IsSelected { get; set; }
 
@@ -131,5 +134,15 @@ namespace SunttelTradePointB.Shared.Common
 
     }
 
+
+    public class InfoAuditRecord {
+        [BsonIgnoreIfNull]
+        [DisplayName("Creation Time")]
+        public DateTime? CreationTime { get; set; }
+
+        [DisplayName("Last Modified Time")]
+        [BsonIgnoreIfNull]
+        public DateTime? LastModifiedTime { get; set; }
+    }
 
 }

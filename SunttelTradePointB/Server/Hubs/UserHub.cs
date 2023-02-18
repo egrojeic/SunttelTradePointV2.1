@@ -68,5 +68,17 @@ namespace SunttelTradePointB.Server.Hubs
 
             await base.OnDisconnectedAsync(exception);
         }
+
+
+        /// <summary>
+        /// A user un-registered sends a message (Just for testing)
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public async Task SendMessage(string user, string message)
+        {
+            await Clients.All.SendAsync("ReceiveMessage", user, message);
+        }
     }
 }

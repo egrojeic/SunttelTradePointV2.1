@@ -115,8 +115,8 @@
     {
         box.LinkedTransactionalItem = linkedTransactionalItem;
         string boxId = box.Id;
-        box.CreationTime = DateTime.UtcNow;
-        box.LastModifiedTime = DateTime.UtcNow;
+        //box.CreationTime = DateTime.UtcNow;
+        //box.LastModifiedTime = DateTime.UtcNow;
         var resul = await transactionalService.SaveBox(boxId, box);
         if (resul) { box = new(); linkedTransactionalItem = new(); };
     }

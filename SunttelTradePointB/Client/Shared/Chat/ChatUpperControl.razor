@@ -1,13 +1,19 @@
-﻿
-<div id ="ChatUpperConatainerDiv">
+﻿@using SunttelTradePointB.Client.Shared.Chat.AuxiliarComponents
 
+<div id ="ChatUpperConatainerDiv">
+    <div id="ConnectedUsers">
+        <label>Connected Users</label>
+        <CounterBubble NumerCount="@NumerCount"></CounterBubble>
+    </div>
+    
     <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
 
 </div>
 
 
 @code {
-    
+    [Parameter]
+    public int NumerCount { get; set; }
     string conceptFilter = "";
 
 

@@ -3,7 +3,7 @@
 @inject NavigationManager NavigationManager
 
 <div id ="ChatConatainerDiv">
-    <ChatUpperControl>
+    <ChatUpperControl NumerCount="@NumberOfConnectedUsers">
 
     </ChatUpperControl>
     
@@ -46,6 +46,12 @@
             StateHasChanged();
         });
 
+        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+        {
+            addedTexts.Add($"User {user} says: {message}");
+            StateHasChanged();
+        });
+
         try
         {
             await hubConnection.StartAsync();
@@ -68,8 +74,9 @@
     }
 
 
-    private void addMessage(string messageChat) {
-        addedTexts.Add(messageChat);
+    private async void addMessage(string messageChat) {
+
+        await hubConnection.SendAsync("SendMessage", "User a", messageChat);
 
     }
 }
