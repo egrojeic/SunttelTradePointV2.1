@@ -6,6 +6,8 @@ using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Shared.Common;
 using Syncfusion.PdfExport;
 using System.Data.Entity.Core.Metadata.Edm;
+using System.Drawing;
+using System.IO.Pipelines;
 
 namespace SunttelTradePointB.Server.Services.MasterTablesServices
 {
@@ -64,35 +66,47 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             {
                 string strNameFiler = filterString == null ? "" : filterString;
 
-                var pipeline = new[] {
-
-                    new BsonDocument{
-                        { "$match",  new BsonDocument {
-                            { "$text",
-                                new BsonDocument {
-                                    { "$search",strNameFiler },
-                                    { "$language","english" },
-                                    { "$caseSensitive",false },
-                                    { "$diacriticSensitive",false }
+                var pipe = new List<BsonDocument>();
+                
+                if (strNameFiler.ToUpper() != "ALL" && strNameFiler.ToUpper() != "TODOS")
+                {
+                   
+                    pipe.Add(
+                        new BsonDocument
+                        {
+                            { "$match", 
+                                new BsonDocument{
+                                    { "$text", new BsonDocument {
+                                            { "$search", strNameFiler },
+                                            { "$language", "english" },
+                                            { "$caseSensitive", false },
+                                            { "$diacriticSensitive", false}
+                                        }
+                                    }
                                 }
                             }
-                        }}
-                    },
+                        }
+                    );
+                }
+
+                pipe.Add(
                     new BsonDocument(
-                        "$match",
-                        new BsonDocument("Status.IsEnabledForTransactions",true)
-                    ),
+                        "$match", new BsonDocument("Status.IsEnabledForTransactions", true)
+                    )
+                );
+
+                pipe.Add(
                     new BsonDocument {
                         { "$project",
-                            new BsonDocument {
+                            new BsonDocument{
                                 { "Code", 1 },
                                 { "Name", 1 }
                             }
                         }
-                    },
-                };
+                    }
+                );
 
-                List<AtomConcept> results = await _entities.Aggregate<AtomConcept>(pipeline).ToListAsync();
+                List<AtomConcept> results = await _entities.Aggregate<AtomConcept>(pipe).ToListAsync();
 
                 return (true, results, null);
             }
