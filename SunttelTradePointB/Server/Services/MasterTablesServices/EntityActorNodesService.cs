@@ -789,7 +789,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                     new BsonDocument(
                         "$unwind",
-                        "EntitiesRelationShips"),
+                        "$EntitiesRelationShips"),
 
                     new BsonDocument("$match", new BsonDocument("EntitiesRelationShips._id", new ObjectId(entitiesCommercialRelationShipId))),
 
