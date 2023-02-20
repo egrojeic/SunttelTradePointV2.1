@@ -51,9 +51,8 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// Saves an Entity/Actor document. If it doesn't exists, it'll be created
         /// </summary>
         /// <param name="entity"></param>
-        /// <param name="entityActorId"></param>
         /// <returns></returns>
-        public Task<(bool IsSuccess, EntityActor? entityActorResponse, string? ErrorDescription)> SaveEntity(EntityActor entity, string entityActorId);
+        public Task<(bool IsSuccess, EntityActor? entityActorResponse, string? ErrorDescription)> SaveEntity(EntityActor entity);
 
         /// <summary>
         /// Saves an address of an entity. If it exists, it'll be updated, otherwise it 'll be inserted in the array
