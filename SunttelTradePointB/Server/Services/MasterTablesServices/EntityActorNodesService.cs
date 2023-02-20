@@ -856,6 +856,14 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
         }
 
-       
+        public Task<(bool IsSuccess, List<ShippingInfo> shippingInfos, string? ErrorDescription)> GetShippingSetup(string entityActorId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<(bool IsSuccess, List<EntitiesCommercialRelationShip> entitiesCommercialRelationShips, string? ErrorDescription)> GetCommercialConditiosOfEntity(string entityActorId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

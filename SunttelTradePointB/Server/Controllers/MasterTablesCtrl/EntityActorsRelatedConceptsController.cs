@@ -109,7 +109,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         {
             var response = await _entitiesRelatedConcepts.GetIdentificationType(identicationTypeId);
 
-            if(response.IsSuccess)
+            if (response.IsSuccess)
             {
                 return Ok(response.identificationType);
             }
@@ -133,6 +133,28 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
             if (response.IsSuccess)
             {
                 return Ok(response.identificationTypes);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Retrieves a Pallet Type by Id
+        /// </summary>
+        /// <param name="palletTypeId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetPalletType")]
+        public async Task<IActionResult> GetPalletType(string palletTypeId)
+        {
+            var response = await _entitiesRelatedConcepts.GetPalletType(palletTypeId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.palletType);
             }
             else
             {
@@ -202,6 +224,28 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
             if (response.IsSuccess)
             {
                 return Ok(response.identificationType);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Insert / Update a Pallet Type
+        /// </summary>
+        /// <param name="palletType"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SavePalletType")]
+        public async Task<IActionResult> SavePalletType(PalletType palletType)
+        {
+            var response = await _entitiesRelatedConcepts.SavePalletType(palletType);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.palletType);
             }
             else
             {

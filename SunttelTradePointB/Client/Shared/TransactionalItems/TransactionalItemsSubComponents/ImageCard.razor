@@ -9,7 +9,7 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
-@using Microsoft.AspNetCore.Http 
+@using Microsoft.AspNetCore.Http
 @using System.Threading;
 @using System.Net.Http.Headers
 
@@ -33,14 +33,14 @@
                 </tr>
                 <tr>
                     <td rowspan="2">
-                        <textarea style="width:350px; height:150px; resize: none;" cols="13" placeholder="Edit description" @bind="PathImagesView.Name">
+                        <textarea style="width:350px; height:150px; resize: none;" cols="13" placeholder="Edit description" @bind="transactItemImage.Name">
                         </textarea>
                     </td>
                 </tr>
                 <tr><td><br /><br /></td></tr>
                 <tr>
                     <td colspan="2">
-                        <div style="display:flex; flex-direction:row; align-items:center; justify-content:center; margin-right:10px;"><label style="width:120px;">@PathImage</label><input value="@PathImagesView.PathImage" class="form-control" readonly /> </div>
+                        <div style="display:flex; flex-direction:row; align-items:center; justify-content:center; margin-right:10px;"><label style="width:120px;">@PathImage</label><input value="@transactItemImage.PathImage" class="form-control" readonly /> </div>
 
                     </td>
 
@@ -61,14 +61,14 @@
     private InputFile? inputFile;
 
     private ElementReference previewImageElem;
-    TransactItemImage PathImagesView = new TransactItemImage();
+    TransactItemImage transactItemImage = new TransactItemImage();
     string imgUrl = "/images/defaultImage.png";
     string imgId = "";
     public bool PopupViewDialog = false;
     string urlImageStorage = "";
     public string transactionalItemId { get; set; }
 
-    public IFormFile fileUpload { get; set; }
+    public MultipartFormDataContent fileUpload { get; set; }
     public enum UploadingFileType
     {
         TransactionalItemImage,
@@ -112,10 +112,15 @@
 
     public async void Save()
     {
+        var resulFile = await transactionalService.UploadFiles(fileUpload);
 
-        //var resulFile = await transactionalService.UploadFiles( fileUpload);
-       //    if (resulFile)  await transactionalService.SaveImage(transactionalItemId, PathImagesView);
-        PathImagesView = new TransactItemImage();
+        if (resulFile!="" )
+        {
+            transactItemImage.PathImage = resulFile;
+            await transactionalService.SaveImage(transactionalItemId, transactItemImage);
+        }
+
+        transactItemImage = new TransactItemImage();
         imgUrl = "/images/defaultImage.png";
         Refresh();
         Closed("control");
@@ -138,10 +143,11 @@
             imgUrl = img;
 
             var file = e.File;
-            string fileName = Guid.NewGuid().ToString();
-            PathImagesView.PathImage = "/" + Guid.NewGuid().ToString() + ".png";
+            string fileName = Guid.NewGuid().ToString() + ".png";
+            transactItemImage.PathImage = "/" + fileName;
+           
 
-       
+
             var resizedFile = await file.RequestImageFileAsync("image/png", 300, 500);
             // Convert the image to a byte array
             using (var ms = resizedFile.OpenReadStream(resizedFile.Size))
@@ -154,8 +160,10 @@
                 content.Add(new StringContent("0"), "uploadingFileType");
                 content.Add(new StringContent(fileName), "photoName");
 
-                await transactionalService.UploadFiles(content);
 
+               await transactionalService.UploadFiles(content);
+               fileUpload = content;
+                
 
             }
 
@@ -168,35 +176,10 @@
 
     }
 
-    public class FileUpload : IFormFile
-    {
-        public string ContentType { get; set; }
 
-        public string ContentDisposition { get; set; }
+ 
 
-        public IHeaderDictionary Headers { get; set; }
 
-        public long Length { get; set; }
-
-        public string Name { get; set; }
-
-        public string FileName { get; set; }
-
-        public void CopyTo(Stream target)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task CopyToAsync(Stream target, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Stream OpenReadStream()
-        {
-            throw new NotImplementedException();
-        }
-    }
 }
 
 

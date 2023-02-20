@@ -162,5 +162,22 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         public Task<(bool IsSuccess, EntitiesCommercialRelationShip? entitiesCommercialRelationShip, string? ErrorDescription)> GetEntitiesCommercialRelationShipById(string entitiesCommercialRelationShipId);
 
 
+        /// <summary>
+        /// Retrieves the relation of all Shipping info records related with an Entity
+        /// </summary>
+        /// <param name="entityActorId"></param>
+        /// <returns></returns>
+        public Task<(bool IsSuccess, List<ShippingInfo>  shippingInfos, string? ErrorDescription)> GetShippingSetup(string entityActorId);
+
+
+        /// <summary>
+        /// Retrieves the list of the different commercial conditions for an Entity
+        /// </summary>
+        /// <param name="entityActorId"></param>
+        /// <returns></returns>
+        public Task<(bool IsSuccess, List<EntitiesCommercialRelationShip>  entitiesCommercialRelationShips, string? ErrorDescription)> GetCommercialConditiosOfEntity(string entityActorId);
+
+
+
     }
 }

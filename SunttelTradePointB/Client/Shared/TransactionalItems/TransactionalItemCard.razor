@@ -13,7 +13,7 @@
 
 <Alert @ref="referAlert" backgroundColor="@backgroundColor" AlertOpen="@AlertOpen">
     <h6>@msg</h6>
- 
+
 </Alert>
 
 <form>
@@ -75,11 +75,11 @@
                     <ul>
                         <li class="@StyleClassItem(0)" @onclick="@(()=>SetMenuOption(0))">Packing Recipe<span class="arrowhead"></span></li>
                         <li class="@StyleClassItem(1)" @onclick="@(()=>SetMenuOption(1))">Production Specs<span class="arrowhead"></span></li>
-                        <li class="@StyleClassItem(2)" @onclick="@(()=>SetMenuOption(2))">Quality Parameters<span class="arrowhead"></span></li>                     
+                        <li class="@StyleClassItem(2)" @onclick="@(()=>SetMenuOption(2))">Quality Parameters<span class="arrowhead"></span></li>
                         <li class="@StyleClassItem(3)" @onclick="@(()=>SetMenuOption(3))">Images<span class="arrowhead"></span></li>
                         <li class="@StyleClassItem(4)" @onclick="@(()=>SetMenuOption(4))">Tags<span class="arrowhead"></span></li>
                         <li class="@StyleClassItem(5)" @onclick="@(()=>SetMenuOption(5))">Characteristic<span class="arrowhead"></span></li>
-                        
+
                     </ul>
                 </nav>
             </div>
@@ -106,6 +106,9 @@
                     case 4:
                         <TITags />
 
+                        break;
+                    case 5:
+                        <TICharacteristic />
                         break;
                     default:
                         <TIPackingRecipe />
@@ -144,14 +147,14 @@
     public string transactionalItemId { get; set; }
     public string currentItemStatus { get; set; }
 
-    protected override  void OnInitialized()
+    protected override void OnInitialized()
     {
 
         transactionalItemId = transactionalService.transactionalItemId != null ? transactionalService.transactionalItemId : "";
-        currentItem = transactionalService.TransactionalItems; 
+        currentItem = transactionalService.TransactionalItems;
         if (currentItem != null)
         {
-            currentItemStatus = currentItem.Status != null ? currentItem.Status.Name : "";           
+            currentItemStatus = currentItem.Status != null ? currentItem.Status.Name : "";
         }
 
         int PageMode = Convert.ToInt32((Page != null ? Page : "0"));
@@ -176,7 +179,7 @@
     public void AddGroup(List<ConceptGroup> conceptGroups)
     {
         this.conceptGroups = conceptGroups;
-        SetAlert("requires saving", "orange");        
+        SetAlert("requires saving", "orange");
     }
 
     public async void ItemSelected(MenuEventArgs e)
@@ -190,7 +193,7 @@
             currentItem.Groups = conceptGroups;
             var resul = await transactionalService.SaveTransactionalItem(transactionalItemId, currentItem);
             AlertOpen = true;
-            msg = resul ? "save" : "not save"; 
+            msg = resul ? "save" : "not save";
         }
         if (tile == "Save as...")
         {
@@ -208,7 +211,7 @@
             Navigation.NavigateTo("/SeasonBusinessCard");
         }
         backgroundColor = "green";
-        if (referAlert!=null) referAlert.Load();
+        if (referAlert != null) referAlert.Load();
         StateHasChanged();
 
 

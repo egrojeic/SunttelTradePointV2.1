@@ -29,6 +29,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         IMongoCollection<AtomConcept> _transactionalItemsModels;
         IMongoCollection<IdentificationType> _identificationTypes;
         IMongoCollection<EntitiyRelationshipType> _entityRelationshipTypes;
+        IMongoCollection<PalletType> _palletTypes;
 
         /// <summary>
         /// Service class initialize
@@ -51,7 +52,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             _transactionalItemsModels = mongoDatabase.GetCollection<AtomConcept>("TransactionalItems");
             _identificationTypes = mongoDatabase.GetCollection<IdentificationType>("IdentificationTypes");
             _entityRelationshipTypes = mongoDatabase.GetCollection<EntitiyRelationshipType>("EntitiyRelationshipTypes");
-
+            _palletTypes = mongoDatabase.GetCollection<PalletType>("PalletTypes");
         }
 
         /// <summary>
@@ -499,9 +500,30 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
         }
 
-        public Task<(bool IsSuccess, List<PalletType>? palletTypes, string? ErrorDescription)> GetSelectorListPalletTypes()
+
+        /// <summary>
+        /// Retrieves a list of Pallet Types
+        /// </summary>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<PalletType>? palletTypes, string? ErrorDescription)> GetSelectorListPalletTypes()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var palletTypes = await _palletTypes.Find<PalletType>(new BsonDocument()).ToListAsync();
+
+                if (palletTypes == null || palletTypes.Count == 0)
+                {
+                    return (false, null, "Unpopulated Pallet Types");
+                }
+                else
+                {
+                    return (true, palletTypes, null);
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
 
         public Task<(bool IsSuccess, List<Shared.Common.EntityType>? entityTypes, string? ErrorDescription)> GetSelectorListEntityTypes()
