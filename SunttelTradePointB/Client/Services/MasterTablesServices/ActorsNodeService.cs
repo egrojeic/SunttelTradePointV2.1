@@ -355,7 +355,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task<List<ElectronicAddress>> GetElectronicAddressList(string entityActorId)
+        public async Task<List<ElectronicAddress>> GetElectronicAddressById(string entityActorId)
         {
             try
             {
@@ -417,6 +417,20 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             {
                 var listRelationType = await _httpClient.GetFromJsonAsync<List<EntitiyRelationshipType>>("/api/ConceptsSelector/GetSelectorEntitiyRelationshipTypes");
                 return listRelationType;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<List<ElectronicAddress>> GetEntityElectronicAddress(string entityActorId)
+        {
+            try
+            {
+                var listElectronicAddress = await _httpClient.GetFromJsonAsync<List<ElectronicAddress>>($"/api/EntityNodesMaintenance/GetElectronicAddresses?entityActorId={entityActorId}");
+                return listElectronicAddress;
             }
             catch (Exception ex)
             {

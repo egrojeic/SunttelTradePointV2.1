@@ -65,6 +65,9 @@
                                 </SfDropDownList>
                             </div>
                         </div>
+
+                        <MessageSaveComponent message="Comercial Condition Saved" isVisible="succesful"></MessageSaveComponent>
+
                         <div class="py-2">
                             <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveCommercialCondition(Id, entitiesCommercialRelationShip))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
                             <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
@@ -84,6 +87,8 @@
     public string Id { get; set; }
     [Parameter]
     public string comercialId { get; set; }
+
+    public bool succesful = false;
 
     public bool PopupViewEntities = false;
     public string SearchValueMode = "";
@@ -154,6 +159,7 @@
             comercialConditions.RelatedEntity = entityActor;
             comercialConditions.EntitiyCommercialRelationShipType = entitiyRelationshipType;
             await actorsNodeServive.SaveCommercialConditions(entityId, comercialConditions);
+            succesful = true;
             StateHasChanged();
         }
     }

@@ -46,6 +46,9 @@
                                 </div>
                             </div>
                         </div>
+
+                        <MessageSaveComponent message="Electronic Address Saved" isVisible="visible"></MessageSaveComponent>
+
                         <div class="py-2">
                             <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveElectronicAddress(Id, electronicAddress))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
                             <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
@@ -70,6 +73,8 @@
     [Parameter]
     public bool ViewSelect { get; set; } = false;
 
+    public bool visible = false;
+
     public string lblAddresKey = "";
     public string lblEmitter = "";
 
@@ -89,7 +94,7 @@
     {
         lblAddresKey = UICommonFunctions.GetDisplayName(new ElectronicAddress(), "AddressKey");
         lblEmitter = UICommonFunctions.GetDisplayName(new ElectronicAddress(), "EmitterEntity");
-        ElectronicAddressType();
+        await ElectronicAddressType();
     }
 
     private async Task SaveElectronicAddress(string entityId, ElectronicAddress electronicAddress)
@@ -100,6 +105,7 @@
                 electronicAddress.Id = electronicId;
             electronicAddress.EmitterEntity = electronic;
             await actorsNodeServive.SaveElectronicAddress(entityId, electronicAddress);
+            visible = true;
             StateHasChanged();
         }
     }
@@ -108,7 +114,7 @@
     {
         if(electronicId != null)
         {
-            eAddresList = await actorsNodeServive.GetElectronicAddressList(entityId);
+            eAddresList = await actorsNodeServive.GetElectronicAddressById(entityId);
             foreach(var electronicList in eAddresList)
             {
                 if (electronicList.Id == electronicId)

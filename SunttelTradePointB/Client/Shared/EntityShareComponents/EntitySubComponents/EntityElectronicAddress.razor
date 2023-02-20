@@ -57,9 +57,11 @@
     private ElectronicAddressesPopUp? electronicAddressesPopUp;
     RadzenDataGrid<ElectronicAddress>? refDataGrid;
     AtomConcept entityActor = new AtomConcept();
+    List<ElectronicAddress> pruebaList = new List<ElectronicAddress>();
 
     protected override async Task OnInitializedAsync()
     {
+        pruebaList = await actorsNodeServive.GetEntityElectronicAddress(EntityId);
         await GetEntityElectronicAddress();
     }
 
@@ -67,7 +69,7 @@
     {
         if (EntityId != null)
         {
-            var response = await actorsNodeServive.GetElectronicAddressList(EntityId);
+            var response = await actorsNodeServive.GetElectronicAddressById(EntityId);
             if (response != null)
                 entityElectronicAddress = response;
             StateHasChanged();

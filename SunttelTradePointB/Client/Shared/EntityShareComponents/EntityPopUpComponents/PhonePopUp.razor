@@ -38,10 +38,15 @@
                                 </SfTooltip>
                             </div>
                         </div>
+
+                        <MessageSaveComponent message="Save phone number" isVisible="succesfull"></MessageSaveComponent>
+
                         <div class="py-2">
                             <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SavePhone(Id, phoneNumber))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
                             <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
                         </div>
+
+                        
                     </form>
 
                 </CardContent>
@@ -66,6 +71,8 @@
     public string lblPhone = "";
     public string lblDescription = "";
 
+    private bool succesfull = false;
+
     PhoneNumber phoneNumber = new PhoneNumber();
     List<PhoneNumber> phoneNumberList = new List<PhoneNumber>();
 
@@ -86,8 +93,8 @@
                 phoneNumber.Id = phoneId;
             }
             await actorsNodeServive.SavePhone(EntityActorId, phoneNumber);
+            succesfull = true;
             StateHasChanged();
-            await OnInitializedAsync();
         }
     }
 

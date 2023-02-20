@@ -536,4 +536,7 @@ namespace SunttelTradePointB.Shared.Common
         [DisplayName("Customers in List")]
         public List<Concept> CustomersInList { get; set; }
     }
+
+
+   
 }

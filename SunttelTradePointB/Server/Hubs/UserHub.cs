@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using SunttelTradePointB.Server.Interfaces.Communications;
+using SunttelTradePointB.Server.Services.Communications;
+using SunttelTradePointB.Shared.Communications;
 
 namespace SunttelTradePointB.Server.Hubs
 {
@@ -11,6 +14,18 @@ namespace SunttelTradePointB.Server.Hubs
     /// </summary>
     public class UserHub: Hub
     {
+
+        private IMessagesValet _messagesValet;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="messagesValet"></param>
+        public UserHub(IMessagesValet messagesValet)
+        {
+            _messagesValet = messagesValet;
+        }
+
         /// <summary>
         /// Number of users connected
         /// </summary>
@@ -78,6 +93,12 @@ namespace SunttelTradePointB.Server.Hubs
         /// <returns></returns>
         public async Task SendMessage(string user, string message)
         {
+            await _messagesValet.SaveMessage(new CommunicationsMessage
+            {
+                Message = message,
+                MessageTypeId = CommunicationsMessageType.ChatMessage
+            }); 
+
             await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
     }
