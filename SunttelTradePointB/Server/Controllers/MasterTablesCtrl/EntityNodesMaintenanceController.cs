@@ -295,9 +295,9 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveEntity")]
-        public async Task<IActionResult> SaveEntity(EntityActor entity, string entityActorId)
+        public async Task<IActionResult> SaveEntity(EntityActor entity, string? entityActorId)
         {
-            var response = await _entityNodes.SaveEntity(entity, entityActorId);
+            var response = await _entityNodes.SaveEntity(entity);
 
             if (response.IsSuccess)
             {

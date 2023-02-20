@@ -303,16 +303,16 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="entity"></param>
         /// <param name="entityActorId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, EntityActor? entityActorResponse, string? ErrorDescription)> SaveEntity(EntityActor entity, string entityActorId)
+        public async Task<(bool IsSuccess, EntityActor? entityActorResponse, string? ErrorDescription)> SaveEntity(EntityActor entity)
         {
             try
             {
-                if (entity.InvoicingAddress.Id == null)
+                if (entity.Id == null)
                 {
-                    entity.InvoicingAddress.Id = ObjectId.GenerateNewId().ToString();
+                    entity.Id = ObjectId.GenerateNewId().ToString();
                 }
 
-                var filter = Builders<EntityActor>.Filter.Eq("_id", new ObjectId(entityActorId));
+                var filter = Builders<EntityActor>.Filter.Eq("_id", new ObjectId(entity.Id));
 
                 var updateOptions = new ReplaceOptions { IsUpsert = true };
 
@@ -790,7 +790,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                     new BsonDocument(
                         "$unwind",
-                        "EntitiesRelationShips"),
+                        "$EntitiesRelationShips"),
 
                     new BsonDocument("$match", new BsonDocument("EntitiesRelationShips._id", new ObjectId(entitiesCommercialRelationShipId))),
 
