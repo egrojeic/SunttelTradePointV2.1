@@ -17,6 +17,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         IMongoCollection<EntityType> _entityType;
         IMongoCollection<IdentificationType> _identificationType;
         IMongoCollection<IdentificationType> _identificationTypes;
+        IMongoCollection<PalletType> _palletType;
 
 
         /// <summary>
@@ -34,6 +35,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             _entityType = mongoDatabase.GetCollection<EntityType>("EntityTypes");
             _identificationType = mongoDatabase.GetCollection<IdentificationType>("IdentificationTypes");
             _identificationTypes = mongoDatabase.GetCollection<IdentificationType>("IdentificationTypes");
+            _palletType = mongoDatabase.GetCollection<PalletType>("PalletTypes");
         }
 
 
@@ -168,9 +170,31 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
         }
 
-        public Task<(bool IsSuccess, PalletType? palletType, string? ErrorDescription)> GetPalletTypeById(string palletTypeId)
+
+        /// <summary>
+        /// Retrieves a Pallet Type by Id
+        /// </summary>
+        /// <param name="palletTypeId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, PalletType? palletType, string? ErrorDescription)> GetPalletType(string palletTypeId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var filterPalletType = Builders<PalletType>.Filter.Eq(x => x.Id, palletTypeId);
+                var resultPalletType = await _palletType.Find(filterPalletType).FirstOrDefaultAsync();
+                if (resultPalletType == null)
+                {
+                    return (false, null, "Unpopulated Pallet Types");
+                }
+                else
+                {
+                    return (true, resultPalletType, null);
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
 
 
@@ -242,9 +266,31 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
         }
 
-        public Task<(bool IsSuccess, PalletType? palletType, string? ErrorDescription)> SavePalletType(PalletType palletType)
+
+        /// <summary>
+        /// Insert / Update a Pallet Type
+        /// </summary>
+        /// <param name="palletType"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, PalletType? palletType, string? ErrorDescription)> SavePalletType(PalletType palletType)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if(palletType.Id == null)
+                {
+                    palletType.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterPalletType = Builders<PalletType>.Filter.Eq("_id", new ObjectId(palletType.Id));
+                var updatePalletTypeOptions = new ReplaceOptions { IsUpsert = true };
+                var resultPalletType = await _palletType.ReplaceOneAsync(filterPalletType, palletType, updatePalletTypeOptions);
+
+                return (true, palletType, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
     }
 }

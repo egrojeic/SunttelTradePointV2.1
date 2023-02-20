@@ -277,5 +277,26 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
                 return NotFound(response.ErrorDescription);
             }
         }
+
+
+        /// <summary>
+        /// Retrieves a list of Pallet Types
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetSelectorListPalletTypes")]
+        public async Task<IActionResult> GetSelectorListPalletTypes()
+        {
+            var response = await _selectorDatasource.GetSelectorListPalletTypes();
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.palletTypes);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
     }
 }
