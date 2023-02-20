@@ -137,7 +137,7 @@ namespace SunttelTradePointB.Shared.Common
 
     public class EntityType: ConceptType
     {
-       
+        public bool IsHuman { get; set; }
     }
 
 
