@@ -72,5 +72,20 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<(bool IsSuccess, EntityRole? entityRole, string? ErrorDescription)> SaveEntityRole(string entityRoleId, EntityRole entityRole);
 
+        /// <summary>
+        /// Insert / Update a Pallet Type
+        /// </summary>
+        /// <param name="palletType"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, PalletType? palletType, string? ErrorDescription)> SavePalletType(PalletType palletType);
+
+
+        /// <summary>
+        /// Retrieves a Pallet Type by Id
+        /// </summary>
+        /// <param name="palletTypeId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, PalletType? palletType, string? ErrorDescription)> GetPalletTypeById(string palletTypeId);
+
     }
 }

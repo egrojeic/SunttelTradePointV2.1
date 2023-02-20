@@ -99,5 +99,12 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<(bool IsSuccess, List<EntitiyRelationshipType>?   entitiyRelationshipTypes, string? ErrorDescription)> GetSelectorEntitiyRelationshipTypes();
 
+
+        /// <summary>
+        /// Retrieves a list of Pallet Types
+        /// </summary>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<PalletType>? palletTypes, string? ErrorDescription)> GetSelectorListPalletTypes();
+
     }
 }
