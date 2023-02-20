@@ -222,6 +222,50 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
 
 
         /// <summary>
+        /// Retrieves the relation of all Shipping info records related with an Entity
+        /// </summary>
+        /// <param name="entityActorId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetShippingSetup")]
+        public async Task<IActionResult> GetShippingSetup(string entityActorId)
+        {
+            var result = await _entityNodes.GetShippingSetup(entityActorId);
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.shippingInfos);
+            }
+            else
+            {
+                return NotFound(result.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Retrieves the list of the different commercial conditions for an Entity
+        /// </summary>
+        /// <param name="entityActorId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetCommercialConditiosOfEntity")]
+        public async Task<IActionResult> GetCommercialConditiosOfEntity(string entityActorId)
+        {
+            var result = await _entityNodes.GetCommercialConditiosOfEntity(entityActorId);
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.entitiesCommercialRelationShips);
+            }
+            else
+            {
+                return NotFound(result.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
         /// Retrieves an Electronic Address filtered by Id
         /// </summary>
         /// <param name="electronicAddressId"></param>
