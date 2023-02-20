@@ -298,5 +298,26 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
                 return NotFound(response.ErrorDescription);
             }
         }
+
+
+        /// <summary>
+        /// Retrieves a list of Entity Types
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetSelectorListEntityTypes")]
+        public async Task<IActionResult> GetSelectorListEntityTypes()
+        {
+            var response = await _selectorDatasource.GetSelectorListEntityTypes();
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.entityTypes);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
     }
 }
