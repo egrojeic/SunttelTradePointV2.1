@@ -14,7 +14,8 @@
 
 
 <div class="flex-verical-center position-relative" style="display:@(!modeEdit?"flex":"none");">
-
+   
+    
     @if (pageView == "ChildrenGroups")
     {
         <PageTitleComponent Title=" Children Groups" IconName="group.png"
@@ -96,8 +97,8 @@
 
     @if (pageView == "TransactionalItemTypeCharacteristics")
     {
-        <PageTitleComponent Title="Characteristics "
-                        Description="Here you can add characteristics">
+        <PageTitleComponent Title="@GetName( "PossibleValues", new TransactionalItemTypeCharacteristic())"
+                        Description="@("Here you can add "+@GetName( "PossibleValues", new TransactionalItemTypeCharacteristic()) )">
         </PageTitleComponent>
         <div class="flex-horizontal-center ">
 
@@ -108,8 +109,8 @@
                 <div><input type="text" @bind-value="possibleValue" class="form-control" placeholder="Edit value" /></div>
                 <div></div>
                 <div>
-                    <button @onclick='()=>OpenAdd("QualityParameters")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-                    <button @onclick='()=>AddItem("QualityParameters")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                    <button @onclick='()=>OpenAdd("TransactionalItemTypeCharacteristics")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                    <button @onclick='AddPossibleValue' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                 </div>
             </div>
             <br>
@@ -155,6 +156,19 @@
 
     @if (pageView == "InRecipeQualityModifiers")
     {
+        <PageTitleComponent Title=" Recipe Quality Modifiers "
+                        Description="Here you can add quality modifiers">
+        </PageTitleComponent>
+        <div class="flex-horizontal-center" >
+            <div class="grid-columns-2 box-shadow-mode">
+                <div><label>@GetName( "Name", new ProductRecipeQualityModifier())</label></div>
+                <div><input type="text" @bind-value="inRecipeQualityModifier.Name" class="form-control" placeholder="Edit value" /></div>
+                <div>
+                    <button @onclick='()=>OpenAdd("InRecipeQualityModifiers")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                    <button @onclick='()=>AddItem("InRecipeQualityModifiers")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                </div>
+            </div>
+        </div>
 
 
     }
@@ -201,11 +215,10 @@
 
 
 
-    <SfTab Height="300px" HeaderPlacement="HeaderPosition.Left">
+    <SfTab Height="300px"  HeaderPlacement="HeaderPosition.Left">
         <TabAnimationSettings>
         </TabAnimationSettings>
         <TabItems>
-
             <TabItem>
                 <ChildContent>
                     <TabHeader Text="@GetName( "ChildrenGroups", new ConceptGroup())"></TabHeader>
@@ -281,7 +294,7 @@
                                 <ContentTemplate>
                                     <div class="flex-horizontal-center">
                                         <div class="detailsTitleContainer">
-                                            <h3 class="subTitleDetailForm">General</h3>
+                                            <h3 class="subTitleDetailForm">@GetName( "TransactionalItemProcessTags", new TransactionalItemProcessStep())</h3>
                                             <svg @onclick='()=>ClosedAdd("TransactionalItemProcessestags")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
                                                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                                                 <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
@@ -314,7 +327,7 @@
 
                     <div class="flex-horizontal-center   ">
                         <div class="detailsTitleContainer">
-                            <h3 class="subTitleDetailForm">General</h3>
+                            <h3 class="subTitleDetailForm">Characteristics</h3>
                             <svg @onclick='()=>ClosedAdd("TransactionalItemTypeCharacteristics")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
                                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                                 <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
@@ -349,7 +362,6 @@
                             </svg>
                         </div>
 
-
                         @if (transactionalItemQualityPairs == null) transactionalItemQualityPairs = new();
 
                         <DataGrid TParameter="TransactionalItemQualityPairModel"
@@ -372,7 +384,7 @@
                     <div class="flex-horizontal-center">
 
                         <div class="detailsTitleContainer">
-                            <h3 class="subTitleDetailForm">General</h3>
+                            <h3 class="subTitleDetailForm">@GetName("InRecipeQualityModifiers", new TransactionalItemType())</h3>
                             <svg @onclick='()=>ClosedAdd("InRecipeQualityModifiers")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
                                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                                 <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
@@ -380,36 +392,18 @@
                         </div>
 
 
-                        <div class="grid-columns-2">
-                            <div></div>
-                            <div style="display:@(dataGridView?"block":"none");">
-                                <button @onclick='()=>AddItem("InRecipeQualityModifiers")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                <button @onclick='()=>Closed("grid")' class="size-btn color-btn "><i class="fa-solid fa-pen-to-square"></i></button>
-                            </div>
+                        @if (inRecipeQualityModifiers == null) inRecipeQualityModifiers = new();
 
-                        </div>
-                        <div class="flex-horizontal-center" style="display:@(!dataGridView?"flex":"none");">
-                            <div class="grid-columns-2 box-shadow-mode">
-                                <div><label>@GetName( "Name", new ProductRecipeQualityModifier())</label></div>
-                                <div><input type="text" @bind-value="inRecipeQualityModifier.Name" class="form-control" placeholder="Edit value" /></div>
-                            </div>
-                        </div>
+                        <DataGrid TParameter="ProductRecipeQualityModifier"
+                                  EventCallbackMenu="OnContextMenuClick"
+                                  parameterList="inRecipeQualityModifiers"
+                                  GridColumnsList="gridColumnListModifier"
+                                  EventCallbackOnLoad="Onload"
+                                  Width="400px">
 
-                        <div style="display:@(dataGridView?"flex":"none");">
-
-                            @if (inRecipeQualityModifiers == null) inRecipeQualityModifiers = new();
-
-                            <DataGrid TParameter="ProductRecipeQualityModifier"
-                                      EventCallbackMenu="OnContextMenuClick"
-                                      parameterList="inRecipeQualityModifiers"
-                                      GridColumnsList="gridColumnListModifier"
-                                      EventCallbackOnLoad="Onload"
-                                      Width="400px">
-
-                            </DataGrid>
+                        </DataGrid>
 
 
-                        </div>
                     </div>
                 </ContentTemplate>
             </TabItem>
@@ -638,7 +632,7 @@
                     Note = transactionalItemQualityPair.TransactionalItemQuality != null ? transactionalItemQualityPair.TransactionalItemQuality.Notes : "",
                     DefaulValue = transactionalItemQualityPair.TransactionalItemQuality != null ? transactionalItemQualityPair.TransactionalItemQuality.DefaultValue : "",
                     Id = transactionalItemQualityPair.Id,
-                    Value = transactionalItemQualityPair.Value                  
+                    Value = transactionalItemQualityPair.Value
                 });
             transactionalItemQualityPair = new();
             transactionalItemQuality = new();
@@ -650,6 +644,7 @@
             inRecipeQualityModifier = new();
         }
 
+     
 
     }
 
