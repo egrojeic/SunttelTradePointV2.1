@@ -10,6 +10,7 @@
 @using System.Text;
 @using System.Text.Json;
 @using System.Net;
+@using System.IO;
 
 @inject IJSRuntime jsRuntime
 @inject ActorsNodeService actorsNodeServive
@@ -420,6 +421,11 @@
     {
         if (inputTextSelector != null) await inputTextSelector.Refresh();
         StateHasChanged();
+    }
+
+    public bool CarpetaVacia(string path)
+    {
+        return Directory.GetFiles(path).Length == 0;
     }
 
     public async Task NavigateToInvocingAddress()

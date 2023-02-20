@@ -1,5 +1,11 @@
 ﻿@page "/Actors/{Id}/Image"
 
+@using System.IO
+@using SixLabors.ImageSharp;
+@using SixLabors.ImageSharp.Formats.Jpeg;
+@using System.Threading;
+@using Microsoft.AspNetCore.Http
+@using System.Net.Http.Headers
 @using Syncfusion.Blazor.Cards
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.DropDowns
@@ -7,6 +13,7 @@
 @using SunttelTradePointB.Client.Shared.EntityShareComponents.EntityPopUpComponents
 
 @inject NavigationManager navigationManager
+@inject ActorsNodeService actorsNodeServive
 
 <div class="control-section">
     <div class="row">
@@ -18,14 +25,15 @@
                         <div class="form-group row">
                             <label>Select an image:</label>
                             <div class="col">
-                                <InputFile OnChange="@HandleFileSelection" class="" />
+                                <img src="@imgUrl" style="height:120px; width:180px; border-radius:10px 10px 0px 0px; margin-left:5px;" @ref="previewImageElem" /><br />
+                                <InputFile @ref="referInputFile" class="form-control" lang="en-us" OnChange="@LoadFile" />
                             </div>
                         </div>
 
                         <MessageSaveComponent message="Image saved" isVisible="visible"></MessageSaveComponent>
 
                         <div class="py-2">
-                            <button type="submit" class="size-btn color-btn" style="float:right"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                            <button type="submit" class="size-btn color-btn" style="float:right" @onclick="Save"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
                             <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
                         </div>
 
@@ -45,14 +53,100 @@
 
     public bool visible = false;
 
-    private async Task HandleFileSelection(InputFileChangeEventArgs e)
+    private ElementReference previewImageElem;
+    string imgUrl = "/images/defaultImage.png";
+
+    InputFile referInputFile;
+    TransactItemImage itemImage = new TransactItemImage();
+
+    private async Task LoadFile(InputFileChangeEventArgs e)
     {
-        //selectedFile = e.GetMultipleFiles().FirstOrDefault();
+        var maxFiles = 1;
+        var format = "img/png";
+
+        foreach(var imagefile in e.GetMultipleFiles())
+        {
+            var resizeFile = await imagefile.RequestImageFileAsync(format, 400, 400);
+            var bufer = new byte[resizeFile.Size];
+
+            await resizeFile.OpenReadStream().ReadAsync(bufer);
+
+            var img = $"data:{format};base64,{Convert.ToBase64String(bufer)}";
+            imgUrl = img;
+
+            var file = e.File;
+            string fileName = Guid.NewGuid().ToString();
+            itemImage.PathImage = "/" + Id + ".png";
+
+            var resizedFile = await file.RequestImageFileAsync("image/png", 300, 300);
+
+            using (var ms = resizedFile.OpenReadStream(resizedFile.Size))
+            {
+                var content = new MultipartFormDataContent();
+                content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
+                content.Add(new StreamContent(ms, Convert.ToInt32(resizedFile.Size)), "photo", file.Name);
+                content.Add(new StringContent("1"), "uploadingFileType");
+                content.Add(new StringContent(fileName), "photoName");
+
+                await actorsNodeServive.UploadFiles(content);
+            }
+
+            bufer = null;
+
+            StateHasChanged();
+        }
+    }
+
+    public async void Save()
+    {
+        itemImage = new TransactItemImage();
+        imgUrl = "/images/defaultImage.png";
+        StateHasChanged();
     }
 
     public void GoBack()
     {
-        navigationManager.NavigateTo($"/Actors/");    
+        navigationManager.NavigateTo($"/Actors/{Id}");    
     }
+
+
+
+
+
+
+
+
+
+
+    public class FileUpload : IFormFile
+    {
+        public string ContentType { get; set; }
+
+        public string ContentDisposition { get; set; }
+
+        public IHeaderDictionary Headers { get; set; }
+
+        public long Length { get; set; }
+
+        public string Name { get; set; }
+
+        public string FileName { get; set; }
+
+        public void CopyTo(Stream target)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task CopyToAsync(Stream target, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Stream OpenReadStream()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 
 }
