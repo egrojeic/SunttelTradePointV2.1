@@ -168,6 +168,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
         }
 
+        public Task<(bool IsSuccess, PalletType? palletType, string? ErrorDescription)> GetPalletTypeById(string palletTypeId)
+        {
+            throw new NotImplementedException();
+        }
+
 
         /// <summary>
         /// Insert / Updates Entity Role information
@@ -235,6 +240,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             {
                 return (false, null, e.Message);
             }
+        }
+
+        public Task<(bool IsSuccess, PalletType? palletType, string? ErrorDescription)> SavePalletType(PalletType palletType)
+        {
+            throw new NotImplementedException();
         }
     }
 }
