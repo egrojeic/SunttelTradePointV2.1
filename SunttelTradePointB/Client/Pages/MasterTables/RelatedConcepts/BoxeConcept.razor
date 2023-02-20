@@ -2,73 +2,98 @@
 @page "/BoxeConcept/{Page}/{Mode}"
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
 @inject NavigationManager Navigation
 @inject TransactionalItemsService transactionalService;
 
 
-<PageTitleComponent Title="@GetName( "Name", new AtomConcept())" IconName="boxes.png"
-                    Description="Here you can add box ">
-</PageTitleComponent>
 
-<div class="flex-horizontal-center">
-    <div class="grid-columns-2 box-shadow-mode">
-        <div><label>@GetName( "Name", new AtomConcept())</label></div>
-        <div><input @bind-value="box.Name" class="form-control" placeholder="Edit value" /></div>
-        <div><label>@GetName( "Code", new AtomConcept())</label></div>
-        <div><input @bind-value="box.Code" class="form-control" placeholder="Edit value" /></div>
-        <div><label>@GetName( "Notes", new AtomConcept())</label></div>
-        <div><input @bind-value="box.Notes" class="form-control" placeholder="Edit value" /></div>
-        <div><label>@GetName( "Length", new Box())</label></div>
-        <div><input @bind-value="box.Length" class="form-control" placeholder="Edit value" /></div>
-        <div><label>@GetName( "Width", new Box())</label></div>
-        <div><input @bind-value="box.Width" class="form-control" placeholder="Edit value" /></div>
-        <div><label>@GetName( "Height", new Box())</label></div>
-        <div><input @bind-value="box.Height" class="form-control" placeholder="Edit value" /></div>
-        <div><label>@GetName( "WeightVolumeRate", new Box())</label></div>
-        <div><input @bind-value="box.WeightVolumeRate" class="form-control" placeholder="Edit value" /></div>
-        <div><label>@GetName( "ContainersNumber", new Box())</label></div>
-        <div><input @bind-value="box.ContainersNumber" class="form-control" placeholder="Edit value" /></div>
-        <div><label>@GetName( "PalletsEquivalent", new Box())</label></div>
-        <div><input @bind-value="box.PalletsEquivalent" class="form-control" placeholder="Edit value" /></div>
-        <div><label>@GetName( "FlagWet", new Box())</label></div>
-        <div>
-            <SfSwitch @bind-Checked="@box.FlagWet"></SfSwitch>
-        </div>
-        <div><label>@GetName( "Enable", new Box())</label></div>
-        <div>
-            <SfSwitch @bind-Checked="@box.Enable"></SfSwitch>
-        </div>
-          <div><label>@GetName( "LinkedTransactionalItem", new Box())</label></div>             
-        <div>
-            <div style="position:relative;">
-                <div class="item-edit">
-                    <label>@(transactionalItem != null ? transactionalItem.Name : "")</label>
-                    <button @onclick='()=>SetViewElemnt("LinkedTransactionalItem")' class="btn color-btn">+</button>
-                </div>
-                
-                <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" ViewControl="transactionalItemLinked" ViewSelect="ViewSelect" EventClosed="EventClosedInput" >
-                    @{
-                        if (transactionalItems != null)
-                        {
-                            foreach (var Obj in transactionalItems)
-                            {
-                                <option value="@Obj.Id">@Obj.Name</option>
-                            }
-                        }
+<div class="flex-verical-center position-relative">
+    @if (@viewMsg)
+    {
+        <MessageSaveComponent isVisible="viewMsg" message="@msg">
+        </MessageSaveComponent>
+    }
 
-                    }
-                </InputTextSelector>
-            </div>
-        </div>
-               
+    <PageTitleComponent Title=" Children Groups" IconName="group.png"
+                        Description="Here you can add types of Children Groups">
+    </PageTitleComponent>
+
+    <div class="container-menu-g">
+        <nav>
+            <button @onclick='()=>Closed("control")' class="general-menu-button" style="text-align:center;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+
+            <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+                <SplitButtonEvents ItemSelected="ItemSelected">
+                </SplitButtonEvents>
+                <DropDownMenuItems>
+                    <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                    <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                    <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+                </DropDownMenuItems>
+            </SfSplitButton>
+        </nav>
     </div>
 
-   
-    <div class="flex-horizontal-end">
-        <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-        <button @onclick='Save' class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
+    <div class="flex-horizontal-center">
+        <div class="grid-columns-2 box-shadow-mode">
+            <div><label>@GetName( "Name", new AtomConcept())</label></div>
+            <div><input @bind-value="box.Name" class="form-control" placeholder="Edit value" /></div>
+            <div><label>@GetName( "Code", new AtomConcept())</label></div>
+            <div><input @bind-value="box.Code" class="form-control" placeholder="Edit value" /></div>
+            <div><label>@GetName( "Notes", new AtomConcept())</label></div>
+            <div><input @bind-value="box.Notes" class="form-control" placeholder="Edit value" /></div>
+            <div><label>@GetName( "Length", new Box())</label></div>
+            <div><input @bind-value="box.Length" class="form-control" placeholder="Edit value" /></div>
+            <div><label>@GetName( "Width", new Box())</label></div>
+            <div><input @bind-value="box.Width" class="form-control" placeholder="Edit value" /></div>
+            <div><label>@GetName( "Height", new Box())</label></div>
+            <div><input @bind-value="box.Height" class="form-control" placeholder="Edit value" /></div>
+            <div><label>@GetName( "WeightVolumeRate", new Box())</label></div>
+            <div><input @bind-value="box.WeightVolumeRate" class="form-control" placeholder="Edit value" /></div>
+            <div><label>@GetName( "ContainersNumber", new Box())</label></div>
+            <div><input @bind-value="box.ContainersNumber" class="form-control" placeholder="Edit value" /></div>
+            <div><label>@GetName( "PalletsEquivalent", new Box())</label></div>
+            <div><input @bind-value="box.PalletsEquivalent" class="form-control" placeholder="Edit value" /></div>
+            <div><label>@GetName( "FlagWet", new Box())</label></div>
+            <div>
+                <SfSwitch @bind-Checked="@box.FlagWet"></SfSwitch>
+            </div>
+            <div><label>@GetName( "Enable", new Box())</label></div>
+            <div>
+                <SfSwitch @bind-Checked="@box.Enable"></SfSwitch>
+            </div>
+            <div><label>@GetName( "LinkedTransactionalItem", new Box())</label></div>
+            <div>
+                <div style="position:relative;">
+                    <div class="item-edit">
+                        <label>@(transactionalItem != null ? transactionalItem.Name : "")</label>
+                        <button @onclick='()=>SetViewElemnt("LinkedTransactionalItem")' class="btn color-btn">+</button>
+                    </div>
+
+                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" ViewControl="transactionalItemLinked" ViewSelect="ViewSelect" EventClosed="EventClosedInput">
+                        @{
+                            if (transactionalItems != null)
+                            {
+                                foreach (var Obj in transactionalItems)
+                                {
+                                    <option value="@Obj.Id">@Obj.Name</option>
+                                }
+                            }
+
+                        }
+                    </InputTextSelector>
+                </div>
+            </div>
+
+        </div>
+
     </div>
 </div>
+
 @code {
     [Parameter]
     public string Page { get; set; } = "";
@@ -84,6 +109,9 @@
     public TransactionalItem transactionalItem = new();
     public AtomConcept linkedTransactionalItem = new();
     InputTextSelector? ReferInputTextSelector;
+
+    public bool modeEdit = true, viewMsg = false;
+    public string msg = "", pageView = "";
 
     protected override void OnInitialized()
     {
@@ -111,18 +139,6 @@
     }
 
 
-    public async void Save()
-    {
-        box.LinkedTransactionalItem = linkedTransactionalItem;
-        string boxId = box.Id;
-        //box.CreationTime = DateTime.UtcNow;
-        //box.LastModifiedTime = DateTime.UtcNow;
-        var resul = await transactionalService.SaveBox(boxId, box);
-        if (resul) { box = new(); linkedTransactionalItem = new(); };
-    }
-
-
-
     protected async void EventIdSelection(string SelectionId)
     {
         // transactionalItems = await transactionalService.GetTransactionalItemDetailsQualityParameters();
@@ -144,7 +160,7 @@
             transactionalItems = await transactionalService.GetTransactionalItemsList(0, 20, value);
             if (transactionalItems != null) transactionalItems = transactionalItems.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
 
-            ParamCountResul = transactionalItems != null? transactionalItems.Count():0;
+            ParamCountResul = transactionalItems != null ? transactionalItems.Count() : 0;
             ViewSelect = ParamCountResul > 0;
 
             ReferInputTextSelector.Refresh();
@@ -169,7 +185,46 @@
         transactionalItems = null;
         StateHasChanged();
     }
-        
+
+    public void OpenAdd(string value)
+    {
+        pageView = value;
+        modeEdit = true;
+        viewMsg = false;
+
+    }
+
+    public void ClosedAdd(string value)
+    {
+        pageView = value;
+        modeEdit = false;
+        viewMsg = false;
+    }
+
+    public async void ItemSelected(MenuEventArgs e)
+    {
+        StateHasChanged();
+        string tile = e.Item != null ? e.Item.Text : "";
+        if (tile == "Save")
+        {
+            box.LinkedTransactionalItem = linkedTransactionalItem;
+            string boxId = box.Id;
+            //box.CreationTime = DateTime.UtcNow;
+            //box.LastModifiedTime = DateTime.UtcNow;
+            var resul = await transactionalService.SaveBox(boxId, box);
+            if (resul) { box = new(); linkedTransactionalItem = new(); };
+
+        }
+        if (tile == "Save as...")
+        {
+
+        }
+
+
+        StateHasChanged();
+
+
+    }
 
     public string GetName(string Name, Object Obj)
     {
