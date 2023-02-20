@@ -77,4 +77,24 @@
     position:absolute;
     top:-10px;
     right:-5px;
+    
+}
+
+.width-page1{
+    width:700px;
+}
+
+.margin-left{
+    margin-left:5PX;
+}
+.style-tag {
+    padding: 10px;
+    text-align: justify;
+    background-color: red;
+    width: 300px;
+}
+.img-style{
+    height:30px;
+    margin-left:10px;
+    cursor:pointer;
 }

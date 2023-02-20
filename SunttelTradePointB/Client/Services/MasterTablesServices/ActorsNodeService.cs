@@ -14,17 +14,15 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         List<EntityActor>? entityNodesList;
 
+        public enum UploadingFileTyoe
+        {
+            ActorItemImage,
+            EntityImage
+        }
+
         public ActorsNodeService(HttpClient httpClient)
         {
             _httpClient = httpClient;
-        }
-
-
-        public Task<EntityActor> CreateNewEntityActor(EntityActor entityActor)
-        {
-
-            throw new NotImplementedException();
-
         }
 
         /// <summary>
@@ -85,11 +83,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 return null;
 #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo.
             }
-        }
-
-        public Task<EntityActor> GetEntityActorById(string entityActorId)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -355,7 +348,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task<List<ElectronicAddress>> GetElectronicAddressList(string entityActorId)
+        public async Task<List<ElectronicAddress>> GetElectronicAddressById(string entityActorId)
         {
             try
             {
@@ -425,6 +418,20 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
+        public async Task<List<ElectronicAddress>> GetEntityElectronicAddress(string entityActorId)
+        {
+            try
+            {
+                var listElectronicAddress = await _httpClient.GetFromJsonAsync<List<ElectronicAddress>>($"/api/EntityNodesMaintenance/GetElectronicAddresses?entityActorId={entityActorId}");
+                return listElectronicAddress;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
         ///
         /// Save EntityAddress
         ///
@@ -444,7 +451,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         {
             try
             {
-                await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SavePhone?entityActorId={EntityActorId}", phoneNumber);
+                var result = await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SavePhone?entityActorId={EntityActorId}", phoneNumber);
             }
             catch (Exception ex)
             {
@@ -480,6 +487,38 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         public async Task SaveEntityRole(string roleId, EntityRole entityRole)
         {
             await _httpClient.PostAsJsonAsync($"/api/EntityActorsRelatedConcepts/SaveEntityRole?entityRoleId={roleId}", entityRole);
+        }
+
+        public async Task<bool> UploadFiles(MultipartFormDataContent multipartFormDataContent)
+        {
+            try
+            {
+                var resul = await _httpClient.PostAsync($"api/UploadFiles", multipartFormDataContent);
+                return resul.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+
+                return false;
+
+            }
+
+        }
+
+
+
+
+
+
+        public Task<EntityActor> GetEntityActorById(string entityActorId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<EntityActor> CreateNewEntityActor(EntityActor entityActor)
+        {
+            throw new NotImplementedException();
         }
     }
 }

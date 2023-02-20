@@ -599,20 +599,24 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-        public async Task<bool> UploadFiles(MultipartFormDataContent multipartFormDataContent)
+        public async Task<string> UploadFiles(MultipartFormDataContent multipartFormDataContent)
         {
- 
+
 
             try
             {
+
                 var resul = await _httpClient.PostAsync($"api/UploadFiles", multipartFormDataContent);
-                return resul.IsSuccessStatusCode;
+                FilePath  filePath = await resul.Content.ReadFromJsonAsync<FilePath>();
+                return filePath.filePath;
+
+
             }
             catch (Exception ex)
             {
                 string errMessage = ex.Message;
 
-                return false;
+                return "";
 
             }
 
@@ -626,6 +630,10 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
     }
 
+    public class FilePath
+    {
+        public string filePath { get; set; }
 
+    }
 
 }

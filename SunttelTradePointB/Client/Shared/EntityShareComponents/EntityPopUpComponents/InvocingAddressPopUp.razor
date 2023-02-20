@@ -70,6 +70,9 @@
                                 </SfTooltip>
                             </div>
                         </div>
+
+                        <MessageSaveComponent message="Invoicing Address Saved" isVisible="visible"></MessageSaveComponent>
+
                         <div class="py-2">
                             <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveInvoicingAddres(Id, entityActor))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
                             <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
@@ -93,6 +96,8 @@
     private string ContentAddres1 = "e.g Unit 1, Apartament 201";
 
     private string ContentZipCode = "12345";
+
+    public bool visible = false;
 
     [Parameter]
     public EventCallback<Address> saveInvocingAddress { get; set; }
@@ -264,6 +269,7 @@
         address.CityAddressRef = city.Id;
         entityActor.InvoicingAddress = address;
         await actorsNodeServive.SaveEntity(entityId, entityActor);
+        visible = true;
     }
 
     private void GoBack()

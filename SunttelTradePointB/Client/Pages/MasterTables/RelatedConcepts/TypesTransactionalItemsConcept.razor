@@ -2,87 +2,248 @@
 @page "/TypesTransactionalItemsConcept/{Page}/{Mode}"
 @using SunttelTradePointB.Shared.Common
 @using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents
+@using SunttelTradePointB.Client.Shared.Menus
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.Navigations
 @using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.SplitButtons
 @inject NavigationManager Navigation
 @inject TransactionalItemsService transactionalService;
 
 
-<PageTitleComponent Title=" Transactional Type" IconName="TransactionalTypes.png"
-                    Description="Here you can add types of transactional">
-</PageTitleComponent>
 
-<div class="flex-verical-center position-relative">
-    <SfTab Height="50px">
+
+<div class="flex-verical-center position-relative" style="display:@(!modeEdit?"flex":"none");">
+   
+    
+    @if (pageView == "ChildrenGroups")
+    {
+        <PageTitleComponent Title=" Children Groups" IconName="group.png"
+                        Description="Here you can add types of Children Groups">
+        </PageTitleComponent>
+        <div class="flex-horizontal-center">
+            <div class="grid-columns-2 box-shadow-mode width-page1">
+                <div>
+                    <label>
+                        @GetName( "ChildrenGroups", new ConceptGroup())
+                    </label>
+                </div>
+                <div></div>
+                <div><label>@GetName( "Name", new AtomConcept())</label></div>
+                <div><input type="text" @bind-value="childrenGroup.Name" class="form-control" placeholder="Edit value" /></div>
+                <div><label>@GetName( "Code", new AtomConcept())</label></div>
+                <div><input type="text" @bind-value="childrenGroup.Code" class="form-control" placeholder="Edit value" /></div>
+                <div><label>@GetName( "Notes", new AtomConcept())</label></div>
+                <div><input type="text" @bind-value="childrenGroup.Notes" class="form-control" placeholder="Edit value" /></div>
+                <div><label>@GetName( "GroupClassificationCriteria", new ConceptGroup())</label></div>
+                <div><input type="text" @bind-value="childrenGroup.GroupClassificationCriteria" class="form-control" placeholder="Edit value" /></div>
+                <div></div>
+                <div class="flex-horizontal-end">
+                    <button @onclick='()=>OpenAdd("ChildrenGroups")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                    <button @onclick='AddGroupchildren' class="size-btn color-btn "><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (pageView == "TransactionalItemProcessesGeneral")
+    {
+        <PageTitleComponent Title=" Processes General"
+                        Description="Here you can add processes general">
+        </PageTitleComponent>
+
+        <div class="flex-horizontal-center ">
+            <div class="grid-columns-2 box-shadow-mode width-page1">
+                <div><label>@GetName( "Name", new TransactionalItemProcessStep())</label></div>
+                <div><input type="text" @bind-value="transactionalItemProcessStep.Name" class="form-control" placeholder="Edit value" /></div>
+                <div><label>@GetName( "GeneralInstructions", new TransactionalItemProcessStep())</label></div>
+                <div> <textarea style="resize:false;" @bind="transactionalItemProcessStep.GeneralInstructions" class="form-control" placeholder="Edit value"></textarea></div>
+                <div><label>@GetName( "Cost", new TransactionalItemProcessStep())</label></div>
+                <div><input type="number" @bind-value="transactionalItemProcessStep.Cost" class="form-control" placeholder="Edit value" /></div>
+                <div><label>@GetName( "Order", new TransactionalItemProcessStep())</label></div>
+                <div><input type="number" @bind-value="transactionalItemProcessStep.Order" class="form-control" placeholder="Edit value" /></div>
+                <div> </div>
+                <div style="display:@(dataGridView?"flex":"none");" class="flex-horizontal-end">
+                    <button @onclick='()=>OpenAdd("TransactionalItemProcesses")' class="size-btn color-btn "><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                </div>
+            </div>
+        </div>
+
+
+    }
+
+    @if (pageView == "TransactionalItemProcessestags")
+    {
+        <PageTitleComponent Title="Children Tag "
+                        Description="Here you can add children tag">
+        </PageTitleComponent>
+
+        <div class="grid-columns-2 box-shadow-mode">
+            <div><label>@GetName( "Key", new TransactionalItemTag())</label></div>
+            <div><input type="text" @bind-value="transactionalItemProcessTag.Key" class="form-control" placeholder="Edit value" /></div>
+            <div><label>@GetName( "Value", new TransactionalItemTag())</label></div>
+            <div><input type="text" @bind-value="transactionalItemProcessTag.Value" class="form-control" placeholder="Edit value" /></div>
+            <div></div>
+            <div class="flex-horizontal-end">
+                <button @onclick='()=>OpenAdd("TransactionalItemProcesses")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                <button @onclick='AddTag' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+
+            </div>
+        </div>
+
+
+
+    }
+
+    @if (pageView == "TransactionalItemTypeCharacteristics")
+    {
+        <PageTitleComponent Title="@GetName( "PossibleValues", new TransactionalItemTypeCharacteristic())"
+                        Description="@("Here you can add "+@GetName( "PossibleValues", new TransactionalItemTypeCharacteristic()) )">
+        </PageTitleComponent>
+        <div class="flex-horizontal-center ">
+
+            <div class="grid-columns-2 box-shadow-mode">
+                <div><label>@GetName( "Name", new TransactionalItemTypeCharacteristic())</label></div>
+                <div><input type="text" @bind-value="transactionalItemTypeCharacteristic.Name" class="form-control" placeholder="Edit value" /></div>
+                <div><label>@GetName( "PossibleValues", new TransactionalItemTypeCharacteristic())</label></div>
+                <div><input type="text" @bind-value="possibleValue" class="form-control" placeholder="Edit value" /></div>
+                <div></div>
+                <div>
+                    <button @onclick='()=>OpenAdd("TransactionalItemTypeCharacteristics")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                    <button @onclick='AddPossibleValue' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                </div>
+            </div>
+            <br>
+
+            <div class="flex-horizontal-center ">
+                <DataGrid TParameter="PossibleValues"
+                      EventCallbackMenu="OnContextMenuClick"
+                      parameterList="possibleValuesModel"
+                      GridColumnsList="gridColumnListPossibleValues"
+                      Width="400">
+                </DataGrid>
+            </div>
+        </div>
+
+
+    }
+
+    @if (pageView == "QualityParameters")
+    {
+        <PageTitleComponent Title="Quality Parameters "
+                        Description="Here you can add quality parameters">
+        </PageTitleComponent>
+        <div class="flex-horizontal-center ">
+            <div class="grid-columns-2 box-shadow-mode">
+                <div><label>@GetName( "Name", new AtomConcept())</label></div>
+                <div><input type="text" @bind-value="transactionalItemQuality.Name" class="form-control" placeholder="Edit value" /></div>
+                <div><label>@GetName( "Code", new AtomConcept())</label></div>
+                <div><input type="text" @bind-value="transactionalItemQuality.Code" class="form-control" placeholder="Edit value" /></div>
+                <div><label>@GetName( "Notes", new AtomConcept())</label></div>
+                <div><input type="text" @bind-value="transactionalItemQuality.Notes" class="form-control" placeholder="Edit value" /></div>
+                <div><label>@GetName( "Value", new TransactionalItemQualityPair())</label></div>
+                <div><input type="text" @bind-value="transactionalItemQualityPair.Value" class="form-control" placeholder="Edit value" /></div>
+                <div><label>@GetName( "DefaultValue", new TransactionalItemQuality())</label></div>
+                <div><input type="text" @bind-value="transactionalItemQuality.DefaultValue" class="form-control" placeholder="Edit value" /></div>
+                <div></div>
+                <div>
+                    <button @onclick='()=>OpenAdd("QualityParameters")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                    <button @onclick='()=>AddItem("QualityParameters")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (pageView == "InRecipeQualityModifiers")
+    {
+        <PageTitleComponent Title=" Recipe Quality Modifiers "
+                        Description="Here you can add quality modifiers">
+        </PageTitleComponent>
+        <div class="flex-horizontal-center" >
+            <div class="grid-columns-2 box-shadow-mode">
+                <div><label>@GetName( "Name", new ProductRecipeQualityModifier())</label></div>
+                <div><input type="text" @bind-value="inRecipeQualityModifier.Name" class="form-control" placeholder="Edit value" /></div>
+                <div>
+                    <button @onclick='()=>OpenAdd("InRecipeQualityModifiers")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                    <button @onclick='()=>AddItem("InRecipeQualityModifiers")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                </div>
+            </div>
+        </div>
+
+
+    }
+
+</div>
+
+
+<div class="flex-verical-center position-relative" style="display:@(modeEdit?"flex":"none");">
+    <PageTitleComponent Title=" Transactional Type" IconName="TransactionalTypes.png"
+                        Description="Here you can add types of transactional">
+    </PageTitleComponent>
+
+    <div class="container-menu-g">
+        <nav>
+            <button @onclick='()=>Closed("control")' class="general-menu-button" style="text-align:center;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+
+            <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+                <SplitButtonEvents ItemSelected="ItemSelected">
+                </SplitButtonEvents>
+                <DropDownMenuItems>
+                    <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                    <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                    <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+                </DropDownMenuItems>
+            </SfSplitButton>
+        </nav>
+    </div>
+
+    <div class="grid-columns-header ">
+        <div><label>@GetName( "Name", new AtomConcept())</label></div>
+        <div><input type="text" @bind-value="transactionalItemType.Name" class="form-control" placeholder="Edit value" /></div>
+        <div><label>@GetName( "HasProductionSpecs", new TransactionalItemType())</label></div>
+        <div>
+            <SfSwitch @bind-Checked="@transactionalItemType.HasProductionSpecs"></SfSwitch>
+        </div>
+        <div><label>@GetName( "HasPackingRecipe", new TransactionalItemType())</label></div>
+        <div>
+            <SfSwitch @bind-Checked="@transactionalItemType.HasPackingRecipe"></SfSwitch>
+        </div>
+    </div>
+
+
+
+    <SfTab Height="300px"  HeaderPlacement="HeaderPosition.Left">
         <TabAnimationSettings>
-            <TabAnimationPrevious Effect=AnimationEffect.None></TabAnimationPrevious>
-            <TabAnimationNext Effect=AnimationEffect.None></TabAnimationNext>
         </TabAnimationSettings>
         <TabItems>
-            <TabItem>
-                <ChildContent>
-                    <TabHeader Text="Transactional Type General"></TabHeader>
-                </ChildContent>
-                <ContentTemplate>
-                    <div class="flex-horizontal-center">
-                        <div class="grid-columns-2 box-shadow-mode">
-                            <div><label>@GetName( "Name", new AtomConcept())</label></div>
-                            <div><input type="text" @bind-value="transactionalItemType.Name" class="form-control" placeholder="Edit value" /></div>
-                            <div><label>@GetName( "HasProductionSpecs", new TransactionalItemType())</label></div>
-                            <div>
-                                <SfSwitch @bind-Checked="@transactionalItemType.HasProductionSpecs"></SfSwitch>
-                            </div>
-                            <div><label>@GetName( "HasPackingRecipe", new TransactionalItemType())</label></div>
-                            <div>
-                                <SfSwitch @bind-Checked="@transactionalItemType.HasPackingRecipe"></SfSwitch>
-                            </div>
-                        </div>
-                    </div>
-                </ContentTemplate>
-            </TabItem>
             <TabItem>
                 <ChildContent>
                     <TabHeader Text="@GetName( "ChildrenGroups", new ConceptGroup())"></TabHeader>
                 </ChildContent>
                 <ContentTemplate>
                     <div class="flex-horizontal-center">
-                        <div class="grid-columns-2 ">
-                            <div></div>
-                            <div style="display:@(dataGridView?"block":"none");"> <button @onclick='()=>Closed("grid")' class="size-btn color-btn margin-left"><i class="fa-solid fa-pen-to-square"></i></button></div>
-                            <div style="display:@(!dataGridView?"block":"none");"> <button @onclick='()=>Open("grid")' class="size-btn color-btn margin-left"><i class="fa-solid fa-list"></i></button></div>
-                        </div>
-                        <div style="display:@(!dataGridView?"flex":"none");">
-                            <div class="grid-columns-2 box-shadow-mode">
-                                <div>
-                                    <label>
-                                        @GetName( "ChildrenGroups", new ConceptGroup())
-                                    </label>
-                                </div>
-                                <div></div>
-                                <div><label>@GetName( "Name", new AtomConcept())</label></div>
-                                <div><input type="text" @bind-value="childrenGroup.Name" class="form-control" placeholder="Edit value" /></div>
-                                <div><label>@GetName( "Code", new AtomConcept())</label></div>
-                                <div><input type="text" @bind-value="childrenGroup.Code" class="form-control" placeholder="Edit value" /></div>
-                                <div><label>@GetName( "Notes", new AtomConcept())</label></div>
-                                <div><input type="text" @bind-value="childrenGroup.Notes" class="form-control" placeholder="Edit value" /></div>
-                                <div><label>@GetName( "GroupClassificationCriteria", new ConceptGroup())</label></div>
-                                <div><input type="text" @bind-value="childrenGroup.GroupClassificationCriteria" class="form-control" placeholder="Edit value" /></div>
-                                <div></div>
-                                <div> <button @onclick='AddGroupchildren' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-plus"></i></button></div>
-                            </div>
-                        </div>
-                        <div style="display:@(dataGridView?"block":"none");">
-                            @if (transactionalItemProcessSteps == null) transactionalItemProcessSteps = new();
 
-                            <DataGrid TParameter="ConceptGroup"
-                                      EventCallbackMenu="OnContextMenuClick"
-                                      parameterList="childrenGroups"
-                                      GridColumnsList="gridColumnListConceptGroup"
-                                      EventCallbackOnLoad="Onload"
-                                      Width="300">
-                            </DataGrid>
+                        <div class="detailsTitleContainer">
+                            <h3 class="subTitleDetailForm">@GetName( "ChildrenGroups", new ConceptGroup())</h3>
+                            <svg @onclick='()=>ClosedAdd("ChildrenGroups")' title="Add new tag" style="margin-left:20px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                            </svg>
                         </div>
+
+                        @if (transactionalItemProcessSteps == null) transactionalItemProcessSteps = new();
+
+                        <DataGrid TParameter="ConceptGroup"
+                                  EventCallbackMenu="OnContextMenuClick"
+                                  parameterList="childrenGroups"
+                                  GridColumnsList="gridColumnListConceptGroup"
+                                  EventCallbackOnLoad="Onload"
+                                  Width="100%">
+                        </DataGrid>
+
                     </div>
                 </ContentTemplate>
             </TabItem>
@@ -91,11 +252,8 @@
                     <TabHeader Text="@GetName( "TransactionalItemProcesses", new TransactionalItemType())"></TabHeader>
                 </ChildContent>
                 <ContentTemplate>
-
                     <SfTab Height="50px">
                         <TabAnimationSettings>
-                            <TabAnimationPrevious Effect=AnimationEffect.None></TabAnimationPrevious>
-                            <TabAnimationNext Effect=AnimationEffect.None></TabAnimationNext>
                         </TabAnimationSettings>
                         <TabItems>
                             <TabItem>
@@ -105,49 +263,27 @@
                                 <ContentTemplate>
 
                                     <div class="flex-horizontal-center">
-                                        <div class="grid-columns-2 ">
-                                            <div> </div>
-                                            <div style="display:@(dataGridView?"flex":"none");" class="flex-horizontal-end">
-                                                <button style="display:@(dataGridView?"block":"none");" @onclick='()=>AddItem("TransactionalItemProcesses")' class="size-btn color-btn "><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-
-                                                <button @onclick='()=>Closed("grid")' class="size-btn color-btn ">                                                  
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-front" viewBox="0 0 16 16">
-                                                        <path d="M0 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2H2a2 2 0 0 1-2-2V2zm5 10v2a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2v5a2 2 0 0 1-2 2H5z" />
-                                                    </svg>
-                                                   <span class="font-size" style="font-size:15px;" >+</span>
-                                                </button>
-                                            </div>
-                                            <div style="display:@(!dataGridView?"block":"none");"> <button @onclick='()=>Open("grid")' class="size-btn color-btn margin-left"><i class="fa-solid fa-list"></i></button></div>
+                                        <div class="detailsTitleContainer">
+                                            <h3 class="subTitleDetailForm">General</h3>
+                                            <svg @onclick='()=>ClosedAdd("TransactionalItemProcessesGeneral")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                            </svg>
+                                            <img class="img-style" src="/images/save-2.png" @onclick='()=>AddItem("TransactionalItemProcessesGeneral")' />
                                         </div>
-                                        <div class="flex-horizontal-center   " style="display:@(!dataGridView?"flex":"none");">
-                                            <div class="grid-columns-2 box-shadow-mode">
-                                                <div><label>@GetName( "Name", new TransactionalItemProcessStep())</label></div>
-                                                <div><input type="text" @bind-value="transactionalItemProcessStep.Name" class="form-control" placeholder="Edit value" /></div>
-                                                <div><label>@GetName( "GeneralInstructions", new TransactionalItemProcessStep())</label></div>
-                                                <div> <textarea style="resize:false;" @bind="transactionalItemProcessStep.GeneralInstructions" class="form-control" placeholder="Edit value"></textarea></div>
-                                                <div><label>@GetName( "Cost", new TransactionalItemProcessStep())</label></div>
-                                                <div><input type="number" @bind-value="transactionalItemProcessStep.Cost" class="form-control" placeholder="Edit value" /></div>
-                                                <div><label>@GetName( "Order", new TransactionalItemProcessStep())</label></div>
-                                                <div><input type="number" @bind-value="transactionalItemProcessStep.Order" class="form-control" placeholder="Edit value" /></div>
-                                            </div>
-                                        </div>
-                                        <div class="flex-horizontal-center " style="display:@(dataGridView?"block":"none");">
 
-                                            @if (transactionalItemProcessSteps == null) { transactionalItemProcessSteps = new List<TransactionalItemProcessStep>(); }
+                                        @if (transactionalItemProcessSteps == null) { transactionalItemProcessSteps = new List<TransactionalItemProcessStep>(); }
 
 
-                                            <DataGrid TParameter="TransactionalItemProcessStep"
-                                                      EventCallbackMenu="OnContextMenuClick"
-                                                      parameterList="transactionalItemProcessSteps"
-                                                      GridColumnsList="gridColumnList"
-                                                      EventCallbackOnLoad="Onload"
-                                           
-                                            >
-                                            </DataGrid>
+                                        <DataGrid TParameter="TransactionalItemProcessStep"
+                                                  EventCallbackMenu="OnContextMenuClick"
+                                                  parameterList="transactionalItemProcessSteps"
+                                                  GridColumnsList="gridColumnList"
+                                                  EventCallbackOnLoad="Onload">
+                                        </DataGrid>
 
 
 
-                                        </div>
                                     </div>
                                 </ContentTemplate>
                             </TabItem>
@@ -157,33 +293,23 @@
                                 </ChildContent>
                                 <ContentTemplate>
                                     <div class="flex-horizontal-center">
-                                        <div class="grid-columns-2 ">
-                                            <div></div>
-                                            <div style="display:@(dataGridView?"block":"none");"> <button @onclick='()=>Closed("grid")' class="size-btn color-btn margin-left"><i class="fa-solid fa-pen-to-square"></i></button></div>
-                                            <div style="display:@(!dataGridView?"block":"none");"> <button @onclick='()=>Open("grid")' class="size-btn color-btn margin-left"><i class="fa-solid fa-list"></i></button></div>
+                                        <div class="detailsTitleContainer">
+                                            <h3 class="subTitleDetailForm">@GetName( "TransactionalItemProcessTags", new TransactionalItemProcessStep())</h3>
+                                            <svg @onclick='()=>ClosedAdd("TransactionalItemProcessestags")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                            </svg>
                                         </div>
-                                        <div style="display:@(!dataGridView?"block":"none");">
-                                            <div class="grid-columns-2 box-shadow-mode">
-                                                <div><label>@GetName( "Key", new TransactionalItemTag())</label></div>
-                                                <div><input type="text" @bind-value="transactionalItemProcessTag.Key" class="form-control" placeholder="Edit value" /></div>
-                                                <div><label>@GetName( "Value", new TransactionalItemTag())</label></div>
-                                                <div><input type="text" @bind-value="transactionalItemProcessTag.Value" class="form-control" placeholder="Edit value" /></div>
-                                                <div></div>
-                                                <div> <button @onclick='AddTag' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-plus"></i></button></div>
-                                            </div>
-                                        </div>
-                                        <div style="display:@(dataGridView?"block":"none");">
-                                            @if (transactionalItemProcessTags == null) transactionalItemProcessTags = new();
 
-                                            <DataGrid TParameter="TransactionalItemTag"
-                                                      EventCallbackMenu="OnContextMenuClick"
-                                                      parameterList="transactionalItemProcessTags"
-                                                      GridColumnsList="gridColumnListProcessTag"
-                                                      EventCallbackOnLoad="Onload"
-                                                      Width="400">
-                                            </DataGrid>
+                                        @if (transactionalItemProcessTags == null) transactionalItemProcessTags = new();
 
-                                        </div>
+                                        <DataGrid TParameter="TransactionalItemTag"
+                                                  EventCallbackMenu="OnContextMenuClick"
+                                                  parameterList="transactionalItemProcessTags"
+                                                  GridColumnsList="gridColumnListProcessTag"
+                                                  EventCallbackOnLoad="Onload"
+                                                  Width="400">
+                                        </DataGrid>
 
                                     </div>
                                 </ContentTemplate>
@@ -200,54 +326,24 @@
                 <ContentTemplate>
 
                     <div class="flex-horizontal-center   ">
-                        <div class="grid-columns-2 ">
-                            <div></div>
-                            <div style="display:@(dataGridView?"flex":"none");" class="flex-horizontal-end">
-                                <button @onclick='()=>AddItem("TransactionalItemTypeCharacteristics")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                <button @onclick='()=>Closed("grid")' class="size-btn color-btn "><i class="fa-solid fa-pen-to-square"></i></button>
-                            </div>
-                            <div style="display:@(!dataGridView?"block":"none");"> <button @onclick='()=>Open("grid")' class="size-btn color-btn margin-left"><i class="fa-solid fa-list"></i></button></div>
+                        <div class="detailsTitleContainer">
+                            <h3 class="subTitleDetailForm">Characteristics</h3>
+                            <svg @onclick='()=>ClosedAdd("TransactionalItemTypeCharacteristics")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                            </svg>
+                            <img class="img-style" src="/images/save-2.png" @onclick='()=>AddItem("TransactionalItemTypeCharacteristics")' />
                         </div>
-                        <div style="display:@(!dataGridView?"block":"none");">
+                        @if (transactionalItemTypeCharacteristics == null) transactionalItemTypeCharacteristics = new();
 
-                            <div class="grid-columns-2 box-shadow-mode">
-                                <div><label>@GetName( "Name", new TransactionalItemTypeCharacteristic())</label></div>
-                                <div><input type="text" @bind-value="transactionalItemTypeCharacteristic.Name" class="form-control" placeholder="Edit value" /></div>
-                                <div><label>@GetName( "PossibleValues", new TransactionalItemTypeCharacteristic())</label></div>
-                                <div><input type="text" @bind-value="possibleValue" class="form-control" placeholder="Edit value" /></div>
-                                <div></div>
-                                <div> <button @onclick='AddPossibleValue' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-plus"></i></button></div>
-                            </div>
-                            <div class="content-item-grid">
-                                @{
-                                    if (possibleValues != null)
-                                    {
-                                        foreach (string Elemen in possibleValues)
-                                        {
-                                            <div class="tagItem">
-                                                <p>@Elemen</p>
-                                                <input type="button" class="delete color-btn" @onclick="()=>DeletePossibleValue(Elemen)" value="X" />
-                                            </div>
+                        <DataGrid TParameter="TransactionalItemTypeCharacteristic"
+                                  EventCallbackMenu="OnContextMenuClick"
+                                  parameterList="transactionalItemTypeCharacteristics"
+                                  GridColumnsList="gridColumnListCharacteristic"
+                                  EventCallbackOnLoad="Onload"
+                                  Width="400">
+                        </DataGrid>
 
-                                        }
-                                    }
-
-                                }
-                            </div>
-                        </div>
-                        <div style="display:@(dataGridView?"flex":"none");">
-
-                            @if (transactionalItemProcessTags == null) transactionalItemProcessTags = new();
-
-                            <DataGrid TParameter="TransactionalItemTypeCharacteristic"
-                                      EventCallbackMenu="OnContextMenuClick"
-                                      parameterList="transactionalItemTypeCharacteristics"
-                                      GridColumnsList="gridColumnListCharacteristic"
-                                      EventCallbackOnLoad="Onload"
-                                      Width="400">
-                            </DataGrid>
-
-                        </div>
                     </div>
                 </ContentTemplate>
             </TabItem>
@@ -257,45 +353,25 @@
                 </ChildContent>
                 <ContentTemplate>
                     <div class="flex-horizontal-center">
-                        <div class="grid-columns-2 ">
-                            <div></div>
-                            <div style="display:@(dataGridView?"flex":"none");" class="flex-horizontal-end">
-                                <button @onclick='()=>AddItem("QualityParameters")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                <button @onclick='()=>Closed("grid")' class="size-btn color-btn "><i class="fa-solid fa-pen-to-square"></i></button>
-                            </div>
-                            <div style="display:@(!dataGridView?"block":"none");"> <button @onclick='()=>Open("grid")' class="size-btn color-btn margin-left"><i class="fa-solid fa-list"></i></button></div>
-                        </div>
-                        <div style="display:@(!dataGridView?"block":"none");">
-                            <div class="grid-columns-2 box-shadow-mode">
-                                <div><label>@GetName( "Name", new AtomConcept())</label></div>
-                                <div><input type="text" @bind-value="transactionalItemQuality.Name" class="form-control" placeholder="Edit value" /></div>
-                                <div><label>@GetName( "Code", new AtomConcept())</label></div>
-                                <div><input type="text" @bind-value="transactionalItemQuality.Code" class="form-control" placeholder="Edit value" /></div>
-                                <div><label>@GetName( "Notes", new AtomConcept())</label></div>
-                                <div><input type="text" @bind-value="transactionalItemQuality.Notes" class="form-control" placeholder="Edit value" /></div>
-                                <div><label>@GetName( "Value", new TransactionalItemQualityPair())</label></div>
-                                <div><input type="text" @bind-value="transactionalItemQualityPair.Value" class="form-control" placeholder="Edit value" /></div>
-                                <div><label>@GetName( "DefaultValue", new TransactionalItemQuality())</label></div>
-                                <div><input type="text" @bind-value="transactionalItemQuality.DefaultValue" class="form-control" placeholder="Edit value" /></div>
-                            </div>
+
+                        <div class="detailsTitleContainer">
+                            <h3 class="subTitleDetailForm">General</h3>
+                            <svg @onclick='()=>ClosedAdd("QualityParameters")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                            </svg>
                         </div>
 
-                        <div style="display:@(dataGridView?"block":"none");">
+                        @if (transactionalItemQualityPairs == null) transactionalItemQualityPairs = new();
 
-                            @if (transactionalItemQualityPairs == null) transactionalItemQualityPairs = new();
+                        <DataGrid TParameter="TransactionalItemQualityPairModel"
+                                  EventCallbackMenu="OnContextMenuClick"
+                                  parameterList="transactionalItemQualityPairsModel"
+                                  GridColumnsList="gridColumnListQualityPair"
+                                  EventCallbackOnLoad="Onload"
+                                  Width="970px">
+                        </DataGrid>
 
-                            <DataGrid TParameter="TransactionalItemQualityPair"
-                                      EventCallbackMenu="OnContextMenuClick"
-                                      parameterList="transactionalItemQualityPairs"
-                                      GridColumnsList="gridColumnListQualityPair"
-                                      EventCallbackOnLoad="Onload"
-                                      Width="400px">
-
-                            </DataGrid>
-
-
-
-                        </div>
                     </div>
 
                 </ContentTemplate>
@@ -306,48 +382,33 @@
                 </ChildContent>
                 <ContentTemplate>
                     <div class="flex-horizontal-center">
-                        <div class="grid-columns-2">
-                            <div></div>
-                            <div style="display:@(dataGridView?"block":"none");">
-                                <button @onclick='()=>AddItem("InRecipeQualityModifiers")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                <button @onclick='()=>Closed("grid")' class="size-btn color-btn "><i class="fa-solid fa-pen-to-square"></i></button>
-                            </div>
-                            <div style="display:@(!dataGridView?"block":"none");"> <button @onclick='()=>Open("grid")' class="size-btn color-btn margin-left"><i class="fa-solid fa-list"></i></button></div>
-                        </div>
-                        <div class="flex-horizontal-center" style="display:@(!dataGridView?"flex":"none");">
-                            <div class="grid-columns-2 box-shadow-mode">
-                                <div><label>@GetName( "Name", new ProductRecipeQualityModifier())</label></div>
-                                <div><input type="text" @bind-value="inRecipeQualityModifier.Name" class="form-control" placeholder="Edit value" /></div>
-                            </div>
+
+                        <div class="detailsTitleContainer">
+                            <h3 class="subTitleDetailForm">@GetName("InRecipeQualityModifiers", new TransactionalItemType())</h3>
+                            <svg @onclick='()=>ClosedAdd("InRecipeQualityModifiers")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                            </svg>
                         </div>
 
-                        <div style="display:@(dataGridView?"flex":"none");">
 
-                            @if (inRecipeQualityModifiers == null) inRecipeQualityModifiers = new();
+                        @if (inRecipeQualityModifiers == null) inRecipeQualityModifiers = new();
 
-                            <DataGrid TParameter="ProductRecipeQualityModifier"
-                                      EventCallbackMenu="OnContextMenuClick"
-                                      parameterList="inRecipeQualityModifiers"
-                                      GridColumnsList="gridColumnListModifier"
-                                      EventCallbackOnLoad="Onload"
-                                      Width="400px">
+                        <DataGrid TParameter="ProductRecipeQualityModifier"
+                                  EventCallbackMenu="OnContextMenuClick"
+                                  parameterList="inRecipeQualityModifiers"
+                                  GridColumnsList="gridColumnListModifier"
+                                  EventCallbackOnLoad="Onload"
+                                  Width="400px">
 
-                            </DataGrid>
+                        </DataGrid>
 
 
-                        </div>
                     </div>
                 </ContentTemplate>
             </TabItem>
         </TabItems>
     </SfTab>
-
-
-
-    <div class=" div-btn flex-horizontal-end">
-        <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-        <button @onclick='Save' class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
-    </div>
 
 </div>
 
@@ -368,11 +429,14 @@
     public List<TransactionalItemTypeCharacteristic> transactionalItemTypeCharacteristics = new();
     public TransactionalItemTypeCharacteristic transactionalItemTypeCharacteristic = new();
     public List<TransactionalItemQualityPair> transactionalItemQualityPairs = new();
+    public List<TransactionalItemQualityPairModel> transactionalItemQualityPairsModel = new();
     public TransactionalItemQualityPair transactionalItemQualityPair = new();
     public TransactionalItemQuality transactionalItemQuality = new();
     public List<ProductRecipeQualityModifier> inRecipeQualityModifiers = new();
     public ProductRecipeQualityModifier inRecipeQualityModifier = new();
     public List<ConceptGroup>? Groups = new();
+
+    public DataGrid<PossibleValues> referGrid;
 
     public List<GridColumn> gridColumnList = new();
     public List<GridColumn> gridColumnListQualityPair = new();
@@ -380,12 +444,13 @@
     public List<GridColumn> gridColumnListProcessTag = new();
     public List<GridColumn> gridColumnListCharacteristic = new();
     public List<GridColumn> gridColumnListModifier = new();
+    public List<GridColumn> gridColumnListPossibleValues = new();
 
-
-
-    public bool isLoading = false, dataGridView = true;
+    public bool isLoading = false, dataGridView = true, modeEdit = true;
+    public List<PossibleValues> possibleValuesModel = new();
     public List<string> possibleValues = new();
     public string possibleValue = "";
+    string pageView = "";
 
     protected override void OnParametersSet()
     {
@@ -421,7 +486,11 @@
 
         gridColumnListQualityPair = new List<GridColumn>
         {
-             new GridColumn() { Field = nameof(TransactionalItemQualityPair.Value), HeaderText = GetName("Name", new TransactionalItemQualityPair())  }
+             new GridColumn() { Field = nameof(TransactionalItemQualityPairModel.Name), HeaderText = GetName("Name", new AtomConcept())  },
+             new GridColumn() { Field = nameof(TransactionalItemQualityPairModel.Code), HeaderText = GetName("Code", new AtomConcept())  },
+             new GridColumn() { Field = nameof(TransactionalItemQualityPairModel.Note), HeaderText = GetName("Note", new AtomConcept())  },
+             new GridColumn() { Field = nameof(TransactionalItemQualityPairModel.Value), HeaderText = GetName("Value", new TransactionalItemQualityPair())  },
+             new GridColumn() { Field = nameof(TransactionalItemQualityPairModel.Code), HeaderText = GetName("DefaultValue", new TransactionalItemQuality())  },
         };
 
         gridColumnListConceptGroup = new List<GridColumn>
@@ -433,7 +502,7 @@
         gridColumnListProcessTag = new List<GridColumn>
         {
             new GridColumn() { Field = nameof(TransactionalItemTag.Key), HeaderText = GetName("Name", new TransactionalItemTag())  },
-            new GridColumn() { Field = nameof(TransactionalItemTag.Value), HeaderText = GetName("Code", new TransactionalItemTag())  },
+            new GridColumn() { Field = nameof(TransactionalItemTag.Value), HeaderText = GetName("Code", new TransactionalItemTag())  }
 
         };
         gridColumnListCharacteristic = new List<GridColumn>
@@ -447,52 +516,24 @@
             new GridColumn() { Field = nameof(ProductRecipeQualityModifier.Name), HeaderText = GetName("Name", new ProductRecipeQualityModifier())  }
 
         };
-
-
-
-
-
-    }
-
-
-    public void Closed(string value)
-    {
-        if (value == "control") Navigation.NavigateTo($"/{Page}/{filterItems}");
-        if (value == "grid") dataGridView = false;
-    }
-    public void Open(string value)
-    {
-        if (value == "grid") dataGridView = true;
-    }
-
-    public async void Save()
-    {
-        //transactionalItemType.CreationTime = DateTime.UtcNow;
-        //transactionalItemType.LastModifiedTime = DateTime.UtcNow;
-        transactionalItemType.TransactionalItemProcesses = transactionalItemProcessSteps;
-        transactionalItemType.TransactionalItemTypeCharacteristics = transactionalItemTypeCharacteristics;
-        transactionalItemType.QualityParameters = transactionalItemQualityPairs;
-        transactionalItemType.InRecipeQualityModifiers = inRecipeQualityModifiers;
-        transactionalItemType.Groups = childrenGroups;
-
-        var resul = await transactionalService.SaveTransactionalItemType(null, transactionalItemType);
-        if (resul)
+        gridColumnListPossibleValues = new List<GridColumn>
         {
-            childrenGroups = new();
-            transactionalItemType = new();
-            inRecipeQualityModifiers = new();
-            transactionalItemQualityPairs = new();
-            transactionalItemTypeCharacteristics = new();
-            transactionalItemProcessSteps = new();
-        }
+            new GridColumn() { Field=nameof(PossibleValues.Name) ,  HeaderText = @GetName( "Name", new TransactionalItemTypeCharacteristic())  }
+            ,new GridColumn() { Field=nameof(PossibleValues.Value) ,  HeaderText = @GetName( "PossibleValues", new TransactionalItemTypeCharacteristic())  }
+        };
+
+
     }
 
 
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemQualityPair> args)
+
+
+
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemQualityPairModel> args)
     {
-        TransactionalItemQualityPair ObjModel = null;
+        TransactionalItemQualityPairModel ObjModel = null;
         ObjModel = args.RowInfo.RowData;
-        transactionalItemQualityPair = ObjModel;
+        // transactionalItemQualityPair = ObjModel;
         if (args.Item.Id == "Edit")
         {
             dataGridView = true;
@@ -550,7 +591,15 @@
             dataGridView = false;
         }
     }
-
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<PossibleValues> args)
+    {
+        PossibleValues ObjModel = new();
+        ObjModel = args.RowInfo.RowData;
+        if (args.Item.Id == "Edit")
+        {
+            dataGridView = false;
+        }
+    }
 
 
     public void AddItem(string value)
@@ -576,6 +625,15 @@
             if (transactionalItemQualityPairs == null) transactionalItemQualityPairs = new();
             transactionalItemQualityPair.TransactionalItemQuality = transactionalItemQuality;
             transactionalItemQualityPairs.Add(transactionalItemQualityPair);
+            transactionalItemQualityPairsModel.Add(new TransactionalItemQualityPairModel
+                {
+                    Name = transactionalItemQualityPair.TransactionalItemQuality != null ? transactionalItemQualityPair.TransactionalItemQuality.Name : "",
+                    Code = transactionalItemQualityPair.TransactionalItemQuality != null ? transactionalItemQualityPair.TransactionalItemQuality.Code : "",
+                    Note = transactionalItemQualityPair.TransactionalItemQuality != null ? transactionalItemQualityPair.TransactionalItemQuality.Notes : "",
+                    DefaulValue = transactionalItemQualityPair.TransactionalItemQuality != null ? transactionalItemQualityPair.TransactionalItemQuality.DefaultValue : "",
+                    Id = transactionalItemQualityPair.Id,
+                    Value = transactionalItemQualityPair.Value
+                });
             transactionalItemQualityPair = new();
             transactionalItemQuality = new();
         }
@@ -586,6 +644,7 @@
             inRecipeQualityModifier = new();
         }
 
+     
 
     }
 
@@ -622,6 +681,7 @@
         if (possibleValue != null && possibleValue != "")
         {
             possibleValues.Add(possibleValue);
+            possibleValuesModel.Add(new PossibleValues { Name = transactionalItemTypeCharacteristic.Name, Value = possibleValue });
             possibleValue = "";
         }
     }
@@ -671,5 +731,79 @@
         return Name;
     }
 
+    public void OpenAdd(string value)
+    {
+        pageView = value;
+        modeEdit = true;
+
+    }
+    public void ClosedAdd(string value)
+    {
+        pageView = value;
+        modeEdit = false;
+
+
+    }
+
+    public void Closed(string value)
+    {
+        if (value == "control") Navigation.NavigateTo($"/{Page}/{filterItems}");
+
+    }
+
+
+    public async void ItemSelected(MenuEventArgs e)
+    {
+
+
+        StateHasChanged();
+        string tile = e.Item != null ? e.Item.Text : "";
+        if (tile == "Save")
+        {
+            transactionalItemType.TransactionalItemProcesses = transactionalItemProcessSteps;
+            transactionalItemType.TransactionalItemTypeCharacteristics = transactionalItemTypeCharacteristics;
+            transactionalItemType.QualityParameters = transactionalItemQualityPairs;
+            transactionalItemType.InRecipeQualityModifiers = inRecipeQualityModifiers;
+            transactionalItemType.Groups = childrenGroups;
+
+            var resul = await transactionalService.SaveTransactionalItemType(null, transactionalItemType);
+            if (resul)
+            {
+                childrenGroups = new();
+                transactionalItemType = new();
+                inRecipeQualityModifiers = new();
+                transactionalItemQualityPairs = new();
+                transactionalItemTypeCharacteristics = new();
+                transactionalItemProcessSteps = new();
+            }
+        }
+        if (tile == "Save as...")
+        {
+
+        }
+
+
+        StateHasChanged();
+
+
+    }
+
+
+
+    public class PossibleValues
+    {
+        public string Name { get; set; }
+        public string Value { get; set; }
+    }
+
+    public class TransactionalItemQualityPairModel
+    {
+        public string Name { get; set; }
+        public string Note { get; set; }
+        public string Code { get; set; }
+        public string Value { get; set; }
+        public string DefaulValue { get; set; }
+        public string Id { get; set; }
+    }
 
 }

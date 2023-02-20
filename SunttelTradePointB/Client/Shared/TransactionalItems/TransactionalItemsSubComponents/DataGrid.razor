@@ -22,12 +22,16 @@
             )">
 
         <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
-        <GridColumns>
-            @foreach (var item in GridColumnsList)
-            {
-                <GridColumn Field="@item?.Field" HeaderText="@item?.HeaderText" Width="@item?.Width"></GridColumn>
-            }
-        </GridColumns>
+        @if (GridColumnsList != null )
+        {
+            <GridColumns>
+                @foreach (var item in GridColumnsList)
+                {
+                    <GridColumn Field="@item?.Field" HeaderText="@item?.HeaderText" Width="@item?.Width"></GridColumn>
+                }
+            </GridColumns>
+        }
+        
         <GridEvents OnLoad="EventCallbackOnLoad" ContextMenuItemClicked="EventCallbackMenu" TValue="TParameter"></GridEvents>
     </SfGrid>
 }
@@ -60,9 +64,9 @@
     }
 
 
-    public void Load()
+    public void Refresh()
     {
-        // referDataGrid.Refresh();
+         referDataGrid.Refresh();
         //StateHasChanged();
     }
 

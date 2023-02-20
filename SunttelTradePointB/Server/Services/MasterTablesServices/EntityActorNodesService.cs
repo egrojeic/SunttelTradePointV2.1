@@ -8,6 +8,7 @@ using SharpCompress.Writers;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Server.Migrations;
 using SunttelTradePointB.Shared.Common;
+using System.Linq.Dynamic.Core;
 using System.Net;
 using System.Reflection.Metadata;
 using System.Text.Json;
@@ -827,26 +828,27 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
-                var pipeline = new[] {
+                var pipeline = new List<BsonDocument>();
 
-                    new BsonDocument(
-                        "$unwind",
-                        "$ElectronicAddresses"),
+                pipeline.Add(
+                    new BsonDocument("$unwind", "$ElectronicAddresses")
+                );
 
-                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(entityActorId))),
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(entityActorId)))
+                );
 
-                    new BsonDocument(
-                        "$project", new BsonDocument("ElectronicAddresses", 1)
-                    ),
+                pipeline.Add(
+                    new BsonDocument("$project", new BsonDocument("ElectronicAddresses", 1))
+                );
 
-                    new BsonDocument(
-                        "$replaceRoot", new BsonDocument("newRoot", "$ElectronicAddresses")
-                    )
-                };
+                pipeline.Add(
+                    new BsonDocument("$replaceRoot", new BsonDocument("newRoot", "$ElectronicAddresses"))
+                );
 
                 var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
 
-                List<ElectronicAddress> result = resultPrev.Select(d => BsonSerializer.Deserialize<List<ElectronicAddress>>(d)).ToList()[0];
+                List<ElectronicAddress> result = resultPrev.Select(d => BsonSerializer.Deserialize<ElectronicAddress>(d)).ToList();
 
                 return (true, result, null);
             }
@@ -856,14 +858,84 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
         }
 
-        public Task<(bool IsSuccess, List<ShippingInfo> shippingInfos, string? ErrorDescription)> GetShippingSetup(string entityActorId)
+
+        /// <summary>
+        /// Retrieves the relation of all Shipping info records related with an Entity
+        /// </summary>
+        /// <param name="entityActorId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<ShippingInfo> shippingInfos, string? ErrorDescription)> GetShippingSetup(string entityActorId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument("$unwind", "$ShippingInformation")
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(entityActorId)))
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$project", new BsonDocument("ShippingInformation", 1))
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$replaceRoot", new BsonDocument("newRoot", "$ShippingInformation"))
+                );
+
+                var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+                List<ShippingInfo> result = resultPrev.Select(d => BsonSerializer.Deserialize<ShippingInfo>(d)).ToList();
+
+                return (true, result, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
 
-        public Task<(bool IsSuccess, List<EntitiesCommercialRelationShip> entitiesCommercialRelationShips, string? ErrorDescription)> GetCommercialConditiosOfEntity(string entityActorId)
+
+        /// <summary>
+        /// Retrieves the list of the different commercial conditions for an Entity
+        /// </summary>
+        /// <param name="entityActorId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<EntitiesCommercialRelationShip> entitiesCommercialRelationShips, string? ErrorDescription)> GetCommercialConditiosOfEntity(string entityActorId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument("$unwind", "$EntitiesRelationShips")
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(entityActorId)))
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$project", new BsonDocument("EntitiesRelationShips", 1))
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$replaceRoot", new BsonDocument("newRoot", "$EntitiesRelationShips"))
+                );
+
+                var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+                List<EntitiesCommercialRelationShip> result = resultPrev.Select(d => BsonSerializer.Deserialize<EntitiesCommercialRelationShip>(d)).ToList();
+
+                return (true, result, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
     }
 }

@@ -35,7 +35,7 @@
                                 <img style="border-radius:5px;" src="@elemnt.PathImage" />
                             </div>
                             <div class="description">
-                                <p> @elemnt.Name</p>
+                                <p id="@elemnt.Id" > @elemnt.Name</p>
                             </div>
                             <div>
                                 <input value="Delete" type="button" class="btn" @onclick='()=>Delete(elemnt.Id)' style="background-color:#00ccff;" />
@@ -123,4 +123,8 @@
         ImagenUrlOpen = value;
         ImgOpen = true;
     }
+
+  
+
+   
 }

@@ -49,6 +49,9 @@
                                 </div>
                             </div>
                         </div>
+
+                        <MessageSaveComponent message="Identification Saved" isVisible="visible"></MessageSaveComponent>
+
                         <div class="py-2">
                             <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveIdentification(Id, identificationEntity))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
                             <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
@@ -72,6 +75,8 @@
     [Parameter]
     public bool ViewSelect { get; set; } = false;
 
+    public bool visible = false;
+
     public bool PopupViewIdentification = false;
     public string SearchValueMode = "";
     public int ParamCountResul = 0;
@@ -83,12 +88,12 @@
     InputTextSelector? refInputTextSelector;
 
     public string lblCode = "";
-    public string lblEntityIssuer = "";
+    public string lblEntityIssuer = "Type of identification";
 
     protected override async Task OnInitializedAsync()
     {
         lblCode = UICommonFunctions.GetDisplayName(new IdentificationEntity(), "Code");
-        lblEntityIssuer = UICommonFunctions.GetDisplayName(new IdentificationType(), "Identification type");
+        //lblEntityIssuer = UICommonFunctions.GetDisplayName(new IdentificationType(), "Identification type");
         await GetEntityIdentifierList(Id);
         GetIdentificationsType();
     }
@@ -114,6 +119,7 @@
             }
             identificationEntity.EntityTypeId = identificationType;
             await actorsNodeServive.SaveIdentificationCode(entityId, identificationEntity);
+            visible = true;
             StateHasChanged();  
         }
 

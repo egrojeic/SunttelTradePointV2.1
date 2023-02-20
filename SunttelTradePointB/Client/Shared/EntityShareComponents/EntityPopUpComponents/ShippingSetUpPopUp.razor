@@ -127,6 +127,9 @@
                                 <SfCheckBox Label="Sunday" @bind-Checked="isCheckedSunday"></SfCheckBox>
                             </div>
                         </div>
+
+                        <MessageSaveComponent message="Shipping Set Up Saved" isVisible="visible"></MessageSaveComponent>
+
                         <div class="py-2">
                             <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveShoppingSetUp(Id, shippingInfo))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
                             <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
@@ -144,6 +147,8 @@
     public string Id { get; set; }
     [Parameter]
     public bool ViewSelect { get; set; } = false;
+
+    public bool visible = false;
 
     private bool isCheckedMonday = false;
     private bool isCheckedTuesday = false;
@@ -222,6 +227,7 @@
             shippingInfo.Saturday = isCheckedSaturday;
             shippingInfo.Sunday = isCheckedSunday;
             await actorsNodeServive.SaveShippingSetup(entityId, shippingInfo);
+            visible = true;
         }
     }
 
