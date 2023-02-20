@@ -85,7 +85,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// </summary>
         /// <param name="palletTypeId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, PalletType? palletType, string? ErrorDescription)> GetPalletTypeById(string palletTypeId);
+        Task<(bool IsSuccess, PalletType? palletType, string? ErrorDescription)> GetPalletType(string palletTypeId);
 
     }
 }
