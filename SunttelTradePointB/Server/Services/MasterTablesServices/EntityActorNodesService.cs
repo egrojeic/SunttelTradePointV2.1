@@ -48,6 +48,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
             _entityActorsCollection = mongoDatabase.GetCollection<EntityActor>("EntityNodes");
             _entityGroup = mongoDatabase.GetCollection<EntityGroup>("EntityGroups");
+
         }
 
 

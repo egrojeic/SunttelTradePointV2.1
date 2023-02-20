@@ -1,4 +1,7 @@
-﻿using SunttelTradePointB.Server.Interfaces.Communications;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
+using SunttelTradePointB.Server.Interfaces.Communications;
+using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.Communications;
 
 namespace SunttelTradePointB.Server.Services.Communications
@@ -9,6 +12,24 @@ namespace SunttelTradePointB.Server.Services.Communications
     /// </summary>
     public class MessageValet : IMessagesValet
     {
+
+        IMongoCollection<CommunicationsMessage> _messagedb;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="config"></param>
+        public MessageValet(IConfiguration config)
+        {
+            var mongoClient = new MongoClient(config.GetConnectionString("MongoConectionString"));
+            string DataBaseName = config["DatabaseMongo"];
+
+            var mongoDatabase = mongoClient.GetDatabase(DataBaseName);
+            _messagedb = mongoDatabase.GetCollection<CommunicationsMessage>("CommunicationsMessages");
+
+
+        }
+
 
         /// <summary>
         /// Retrieves a list of messages sent or received by an entity 
@@ -35,9 +56,28 @@ namespace SunttelTradePointB.Server.Services.Communications
             throw new NotImplementedException();
         }
 
-        public Task<(bool IsSuccess, CommunicationsMessage communicationsMessage, string? ErrorDescription)> SaveMessage(CommunicationsMessage communicationsMessage)
+        /// <summary>
+        /// Saves (Insert/Update) a message
+        /// </summary>
+        /// <param name="communicationsMessage"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, CommunicationsMessage communicationsMessage, string? ErrorDescription)> SaveMessage(CommunicationsMessage communicationsMessage)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (communicationsMessage.Id == null)
+                    communicationsMessage.Id = ObjectId.GenerateNewId().ToString();
+
+                var filterCommunicationsMessage = Builders<CommunicationsMessage>.Filter.Eq("_id", new ObjectId(communicationsMessage.Id));
+                var updateCommunicationsMessage = new ReplaceOptions { IsUpsert = true };
+                var resultTransactionalItemType = await _messagedb.ReplaceOneAsync(filterCommunicationsMessage, communicationsMessage, updateCommunicationsMessage);
+
+              return (true, communicationsMessage, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
     }
 }

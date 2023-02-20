@@ -118,6 +118,7 @@ namespace SunttelTradePointB.Shared.Common
            
             this.AddressList = new List<Address>();
             this.ElectronicAddresses = new List<ElectronicAddress>();
+            this.EntitiesRelationShips = new List<EntitiesCommercialRelationShip>();
 
             this.DefaultEntityRole = new EntityRole();
             this.Tags = new List<EntityTag>();
@@ -239,12 +240,9 @@ namespace SunttelTradePointB.Shared.Common
 
     }
 
-    public class PalletType
+    public class PalletType: AtomConcept
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
-        public string Name { get; set; }
+
     }
 
 

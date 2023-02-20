@@ -18,6 +18,8 @@ using SunttelTradePointB.Server.ProcessMigration;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Server.Services.MasterTablesServices;
 using SunttelTradePointB.Server.Hubs;
+using SunttelTradePointB.Server.Interfaces.Communications;
+using SunttelTradePointB.Server.Services.Communications;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,6 +71,7 @@ builder.Services.AddTransient<ITransactionalItemsBack, TransactionalItemsService
 builder.Services.AddTransient<ISelectorDataSource, SelectorsBackService>();
 builder.Services.AddTransient<ITransactionalItemsRelatedConceptsBKService, TransactionalItemsRelatedConceptsService>();
 builder.Services.AddTransient<IEntitiesRelatedConcepts, EntityActorsRelatedConceptsService>();
+builder.Services.AddTransient<IMessagesValet, MessageValet>();
 
 
 /*Inyeccion de depencias Proceso migracion*/
