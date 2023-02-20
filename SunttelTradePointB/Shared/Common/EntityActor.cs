@@ -65,26 +65,35 @@ namespace SunttelTradePointB.Shared.Common
 
         [DisplayName("Invoicing Address")]
         public Address InvoicingAddress { get; set; }
+        
+        [BsonIgnoreIfNull]
 
         [DisplayName("Role by Default")]
         public EntityRole DefaultEntityRole { get; set; }
+
+        [BsonIgnoreIfNull]
         public List<EntityTag> Tags { get; set; }
 
 
         // Contact Information
+        [BsonIgnoreIfNull]
         [DisplayName("Sunttel User Name")]
         public string SunttelUserId { get; set; }
 
         [DisplayName("EMail")]
+        [BsonIgnoreIfNull]
         public string EMailAddress { get; set; }
 
         [DisplayName("Address List")]
+        [BsonIgnoreIfNull]
         public List<Address> AddressList { get; set; }
 
         [DisplayName("Electronic Addresses")]
+        [BsonIgnoreIfNull]
         public List<ElectronicAddress> ElectronicAddresses { get; set; }
 
         [DisplayName("Phone Numbers")]
+        [BsonIgnoreIfNull]
         public List<PhoneNumber> PhoneNumbers { get; set; }
 
         [BsonIgnoreIfNull]
@@ -107,8 +116,8 @@ namespace SunttelTradePointB.Shared.Common
 
         }
 
-        
-
+        [DisplayName("Entity Relationships")]
+        [BsonIgnoreIfNull]
         public List<EntitiesCommercialRelationShip> EntitiesRelationShips { get; set; }
 
         public EntityActor()
