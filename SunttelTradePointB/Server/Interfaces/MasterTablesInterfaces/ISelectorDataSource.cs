@@ -11,11 +11,12 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
     {
 
         /// <summary>
-        /// Retrieves the list of Entity/Nodes/Actors filtered by the optional parameter
+        /// Retrieves the list of Entity/Nodes/Actors filtered by the optional parameter or/and by role
         /// </summary>
         /// <param name="filterString"></param>
+        /// <param name="roleName"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<AtomConcept>? EntityActorList, string? ErrorDescription)> GetSelectorListEntityActor(string? filterString);
+        Task<(bool IsSuccess, List<AtomConcept>? EntityActorList, string? ErrorDescription)> GetSelectorListEntityActor(string? filterString, string? roleName = null);
      
         /// <summary>
         /// Retrives the different address of an Entity
@@ -105,6 +106,13 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// </summary>
         /// <returns></returns>
         Task<(bool IsSuccess, List<PalletType>? palletTypes, string? ErrorDescription)> GetSelectorListPalletTypes();
+
+        /// <summary>
+        /// Retrieves a list of Entity Types
+        /// </summary>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<EntityType>?  entityTypes, string? ErrorDescription)> GetSelectorListEntityTypes();
+
 
     }
 }

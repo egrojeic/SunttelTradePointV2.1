@@ -58,9 +58,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// Retrieves the list of Entity/Nodes/Actors filtered by the optional parameter
         /// </summary>
         /// <param name="filterString"></param>
+        /// <param name="roleName"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, List<AtomConcept>? EntityActorList, string? ErrorDescription)> GetSelectorListEntityActor(string? filterString)
+        public async Task<(bool IsSuccess, List<AtomConcept>? EntityActorList, string? ErrorDescription)> GetSelectorListEntityActor(string? filterString, string? roleName)
         {
             try
             {
@@ -497,6 +497,16 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 return (false, null, e.Message);
             }
 
+        }
+
+        public Task<(bool IsSuccess, List<PalletType>? palletTypes, string? ErrorDescription)> GetSelectorListPalletTypes()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<(bool IsSuccess, List<Shared.Common.EntityType>? entityTypes, string? ErrorDescription)> GetSelectorListEntityTypes()
+        {
+            throw new NotImplementedException();
         }
     }
 }

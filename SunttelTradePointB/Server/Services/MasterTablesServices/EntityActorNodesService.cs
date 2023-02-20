@@ -855,5 +855,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 return (false, null, e.Message);
             }
         }
+
+       
     }
 }
