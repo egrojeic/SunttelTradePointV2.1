@@ -45,9 +45,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// Retrieves info of a particular Box
         /// </summary>
         /// <param name="boxID"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, Box? box, string? ErrorDescription)> GetBox(string boxID)
+        public async Task<(bool IsSuccess, Box? box, string? ErrorDescription)> GetBox(string userId, string ipAddress, string boxID)
         {
             try
             {
@@ -101,9 +103,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// Retrieves the information of a particular Season
         /// </summary>
         /// <param name="seasonId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, SeasonBusiness? season, string? ErrorDescription)> GetSeason(string seasonId)
+        public async Task<(bool IsSuccess, SeasonBusiness? season, string? ErrorDescription)> GetSeason(string userId, string ipAddress, string seasonId)
         {
             try
             {
@@ -156,9 +160,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// Retives the information of a particular Transactional Item Type
         /// </summary>
         /// <param name="transactionalItemId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, TransactionalItemType? transactionalItemType, string? ErrorDescription)> GetTransactionalItemType(string transactionalItemId)
+        public async Task<(bool IsSuccess, TransactionalItemType? transactionalItemType, string? ErrorDescription)> GetTransactionalItemType(string userId, string ipAddress, string transactionalItemId)
         {
             try
             {
@@ -212,8 +218,10 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// Retrieves a list of Transactional Item Groups with a specified condition
         /// </summary>
         /// <param name="filterCondition"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<ConceptGroup>? transactionalItemGroups, string? ErrorDescription)> GetTransactionalItemGroups(string filterCondition)
+        public async Task<(bool IsSuccess, List<ConceptGroup>? transactionalItemGroups, string? ErrorDescription)> GetTransactionalItemGroups(string userId, string ipAddress, string filterCondition)
         {
             try
             {
@@ -245,8 +253,10 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// Retrieves a particular TransactionalItemGroup
         /// </summary>
         /// <param name="transactionalItemGroupId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, ConceptGroup? transactionalItemGroup, string? ErrorDescription)> GetTransactionalItemGroup(string transactionalItemGroupId)
+        public async Task<(bool IsSuccess, ConceptGroup? transactionalItemGroup, string? ErrorDescription)> GetTransactionalItemGroup(string userId, string ipAddress, string transactionalItemGroupId)
         {
             try
             {
@@ -272,11 +282,12 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Insert / Updates box information
         /// </summary>
-        /// <param name="boxId"></param>
         /// <param name="box"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, Box? box, string? ErrorDescription)> SaveBox(Box box)
+        public async Task<(bool IsSuccess, Box? box, string? ErrorDescription)> SaveBox(string userId, string ipAddress, Box box)
         {
             try
             {
@@ -303,11 +314,12 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Insert / Updates Season info
         /// </summary>
-        /// <param name="seasonId"></param>
         /// <param name="season"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, SeasonBusiness? season, string? ErrorDescription)> SaveSeason(SeasonBusiness season)
+        public async Task<(bool IsSuccess, SeasonBusiness? season, string? ErrorDescription)> SaveSeason(string userId, string ipAddress, SeasonBusiness season)
         {
             try
             {
@@ -331,11 +343,12 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         ///  Insert / Updates Transactional Item Status 
         /// </summary>
-        /// <param name="statusId"></param>
         /// <param name="transactionalItemStatus"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, TransactionalItemStatus? transactionalItemStatus, string? ErrorDescription)> SaveStatus(TransactionalItemStatus transactionalItemStatus)
+        public async Task<(bool IsSuccess, TransactionalItemStatus? transactionalItemStatus, string? ErrorDescription)> SaveStatus(string userId, string ipAddress, TransactionalItemStatus transactionalItemStatus)
         {
             try
             {
@@ -358,11 +371,12 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Insert / Uodates Transactional Item Types
         /// </summary>
-        /// <param name="transactionalItemId"></param>
         /// <param name="transactionalItemType"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, TransactionalItemType? transactionalItemType, string? ErrorDescription)> SaveTransactionalItemType(TransactionalItemType transactionalItemType)
+        public async Task<(bool IsSuccess, TransactionalItemType? transactionalItemType, string? ErrorDescription)> SaveTransactionalItemType(string userId, string ipAddress, TransactionalItemType transactionalItemType)
         {
             try
             {
@@ -386,10 +400,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Insert / Updates Transactional Item Group
         /// </summary>
-        /// <param name="transactionalItemGroupId"></param>
         /// <param name="transactionalItemGroup"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, ConceptGroup? transactionalItemGroup, string? ErrorDescription)> SaveTransactionalItemGroup(ConceptGroup transactionalItemGroup)
+        public async Task<(bool IsSuccess, ConceptGroup? transactionalItemGroup, string? ErrorDescription)> SaveTransactionalItemGroup(string userId, string ipAddress, ConceptGroup transactionalItemGroup)
         {
             try
             {
