@@ -5,6 +5,7 @@ using MongoDB.Driver;
 using Newtonsoft.Json.Bson;
 using Radzen.Blazor.Rendering;
 using SharpCompress.Writers;
+using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Server.Migrations;
 using SunttelTradePointB.Shared.Common;
@@ -68,7 +69,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 var pipeline = new BsonDocument[]
                 {
-                    new BsonDocument("$match", new BsonDocument("_id", entityActorId)),
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(entityActorId))),
                     new BsonDocument
                     {
                         {
@@ -98,11 +99,14 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         { "preserveNullAndEmptyArrays", true },
                     })
                                 };
+                //var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
                 var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
 
 
                 EntityActor result = resultPrev.Select(d => BsonSerializer.Deserialize<EntityActor>(d)).ToList()[0];
-
+               
+              
 
                 return (true, result, null);
             }
