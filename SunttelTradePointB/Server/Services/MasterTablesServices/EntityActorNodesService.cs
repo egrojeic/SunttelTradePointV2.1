@@ -65,18 +65,25 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
-                var pipeline = new[] {
-                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(entityActorId))),
-                    new BsonDocument {
-                        { "$lookup",
-                            new BsonDocument {
+
+                var pipeline = new BsonDocument[]
+                {
+                    new BsonDocument("$match", new BsonDocument("_id", entityActorId)),
+                    new BsonDocument
+                    {
+                        {
+                            "$lookup",
+                            new BsonDocument
+                            {
                                 { "from", "GeographicCities" },
                                 { "let", new BsonDocument { { "cityId", "$InvoicingAddress.CityAddressRef" } } },
-                                { "pipeline", new BsonArray {
+                                { "pipeline", new BsonArray
+                                {
                                     new BsonDocument("$match", new BsonDocument("$expr",
-                                        new BsonDocument("$cond", new BsonArray {
-                                            new BsonDocument("$eq", new BsonArray { "$$cityId", null }),
-                                            new BsonDocument("$eq", new BsonArray { "$_id", null }),
+                                        new BsonDocument("$cond", new BsonArray
+                                        {
+                                            new BsonDocument("$eq", new BsonArray { "$$cityId", BsonNull.Value }),
+                                            new BsonDocument("$eq", new BsonArray { "$_id", BsonNull.Value }),
                                             new BsonDocument("$eq", new BsonArray { "$_id", "$$cityId" })
                                         })
                                     ))
@@ -85,12 +92,12 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                             }
                         }
                     },
-                    new BsonDocument("$unwind", new BsonDocument {
+                    new BsonDocument("$unwind", new BsonDocument
+                    {
                         { "path", "$InvoicingAddress.CityAddress" },
                         { "preserveNullAndEmptyArrays", true },
                     })
-                };
-
+                                };
                 var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
 
 
