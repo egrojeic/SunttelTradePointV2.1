@@ -68,11 +68,12 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
-                string strNameFiler = filterString == null ? "" : filterString;
+                string strNameFilter = filterString == null ? "" : filterString;
+                string strRoleName = roleName == null ? "" : roleName;
 
                 var pipe = new List<BsonDocument>();
                 
-                if (strNameFiler.ToUpper() != "ALL" && strNameFiler.ToUpper() != "TODOS")
+                if (strNameFilter.ToUpper() != "ALL" && strNameFilter.ToUpper() != "TODOS")
                 {
                    
                     pipe.Add(
@@ -81,7 +82,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                             { "$match", 
                                 new BsonDocument{
                                     { "$text", new BsonDocument {
-                                            { "$search", strNameFiler },
+                                            { "$search", strNameFilter },
                                             { "$language", "english" },
                                             { "$caseSensitive", false },
                                             { "$diacriticSensitive", false}
@@ -90,6 +91,20 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                                 }
                             }
                         }
+                    );
+                }
+
+                if(strRoleName != "")
+                {
+                    pipe.Add(
+                        new BsonDocument(
+                        "$match",
+                          new BsonDocument(
+                                 "DefaultEntityRole.Name",
+                                    new BsonDocument(
+                                        "$regex", new BsonRegularExpression($"/{strRoleName}/i"))
+                                )
+                        )
                     );
                 }
 

@@ -35,13 +35,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// Retrieves the list of Entity/Nodes/Actors filtered by the optional parameter
         /// </summary>
         /// <param name="filterString"></param>
+        /// <param name="roleName"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetSelectorListEntityActor")]
-        public async Task<IActionResult> GetSelectorListEntityActor(string? filterString = null)
+        public async Task<IActionResult> GetSelectorListEntityActor(string? filterString = null, string? roleName = null)
         {
 
-            var response = await _selectorDatasource.GetSelectorListEntityActor(filterString);
+            var response = await _selectorDatasource.GetSelectorListEntityActor(filterString, roleName);
 
             if (response.IsSuccess)
             {
