@@ -53,14 +53,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// </summary>
         /// <param name="nameLike"></param>       
         /// <returns></returns>
-        Task<List<TransactionalItemTag>> GetSelectorListTag(string? nameLike = null);
-
-        /// <summary>
-        /// Retrives a list with Entity Groups Items meeting search criteria
-        /// </summary>
-        /// <param name="nameLike"></param>       
-        /// <returns></returns>
-        Task<List<ConceptGroup>> GetSelectorListEntityGroups(string? nameLike = null);
+        Task<List<TransactionalItemTag>> GetSelectorListTag(string? nameLike = null);      
 
         /// <summary>
         /// Retrives a list with Path Images Items meeting search criteria
@@ -74,6 +67,65 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <param name="transactionalItemId"></param>       
         /// <returns></returns>
         Task<List<TransactionalItemQualityPair>> GetTransactionalItemDetailsQualityParameters(string? transactionalItemId = null);
+
+        /// Retrives a list with Process Step  Items meeting search criteria
+        /// </summary>
+        /// <param name="transactionalItemId"></param>       
+        /// <returns></returns>
+        Task<List<TransactionalItemProcessStep>> GetTransactionalItemDetailsProductionSpecs(string? transactionalItemId = null);
+
+        /// Retrives a list with Packing Recipe Items meeting search criteria
+        /// </summary>
+        /// <param name="transactionalItemId"></param>       
+        /// <returns></returns>
+        Task<List<PackingSpecs>> GetTransactionalItemDetailsPackingRecipe(string? transactionalItemId = null);
+
+        /// <summary>
+        /// Retrives a list with Boxsed meeting search criteria
+        /// </summary>
+        /// <param name="nameLike"></param>       
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <returns></returns>
+        Task<List<Box>> GetBoxGetBoxTable(int? page = 1, int? perPage = 10, string? nameLike = null);
+
+        /// <summary>
+        /// Retrives Boxsed  with search criteria
+        /// </summary>
+        /// <param name="boxID"></param>     
+        /// <returns></returns>
+        Task<Box> GetBox(string boxID);
+
+
+        /// <summary>
+        /// Retrives a list with Seasons meeting search criteria
+        /// </summary>
+        /// <param name="nameLike"></param>       
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <returns></returns>
+        Task<List<SeasonBusiness>> GetSeasonsTable(int? page = 1, int? perPage = 10, string? nameLike = null);
+
+        /// <summary>
+        /// Retrives Season  with search criteria
+        /// </summary>
+        /// <param name="seasonId"></param>     
+        /// <returns></returns>
+        Task<SeasonBusiness> GetSeason(string seasonId);
+
+        /// <summary>
+        /// Retrives a list with transactional item type meeting search criteria
+        /// </summary>
+        /// <param name="nameLike"></param>              
+        /// <returns></returns>
+        Task<List<TransactionalItemType>> GetTransactionalItemType( string? nameLike = null);
+
+        /// <summary>
+        /// Retrives a list with Transactional Statuses meeting search criteria
+        /// </summary>
+        /// <param name="nameLike"></param>              
+        /// <returns></returns>
+        Task<List<TransactionalItemStatus>> GetTransactionalStatusesTable(string? nameLike = null);
 
         /// save a Packing Spec
         /// </summary>
@@ -103,16 +155,63 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<bool> SaveImage(string? transactionalItemId, TransactItemImage transactItemImage);
 
-        /// save a Image
+        /// Save Quality Parameters
         /// </summary>
         /// <param name="transactionalItemId"></param>
         /// <param name="transactionalItemQualityPair"></param>   
         /// <returns></returns>
         Task<bool> SaveQualityParameters(string transactionalItemId,TransactionalItemQualityPair transactionalItemQualityPair);
 
+        /// Save Transactional Item
+        /// </summary>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="transactionalItem"></param>   
+        /// <returns></returns>
+        Task<bool> SaveTransactionalItem(string? transactionalItemId, TransactionalItem transactionalItem);
 
 
-      
+        /// Save Season
+        /// </summary>
+        /// <param name="seasonId"></param>
+        /// <param name="season"></param>   
+        /// <returns></returns>
+        Task<bool> SaveSeason(string? seasonId, SeasonBusiness season);
+
+        /// Save Box
+        /// </summary>
+        /// <param name="boxId"></param>
+        /// <param name="box"></param>   
+        /// <returns></returns>
+        Task<bool> SaveBox(string? boxId, Box box);
+
+        /// Save Transactional Item Type
+        /// </summary>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="transactionalItemType"></param>   
+        /// <returns></returns>
+        Task<bool> SaveTransactionalItemType(string? transactionalItemId, TransactionalItemType transactionalItemType);
+
+        /// Save Transactional Item Group
+        /// </summary>
+        /// <param name="transactionalItemGroupId"></param>
+        /// <param name="conceptGroup"></param>   
+        /// <returns></returns>
+        Task<bool> SaveTransactionalItemGroup(string? transactionalItemGroupId, ConceptGroup conceptGroup);
+
+        /// Save Status
+        /// </summary>
+        /// <param name="statusId"></param>
+        /// <param name="transactionalItemStatus"></param>   
+        /// <returns></returns>
+        Task<bool> SaveStatus(string? statusId, TransactionalItemStatus transactionalItemStatus);
+
+        /// Upload Files
+        /// </summary>
+        /// <param name="multipartFormDataContent"></param>     
+        /// <returns></returns>
+        Task<string> UploadFiles(MultipartFormDataContent multipartFormDataContent);
+
 
     }
 }
+

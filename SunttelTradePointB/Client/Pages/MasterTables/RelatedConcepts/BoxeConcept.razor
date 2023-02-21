@@ -71,7 +71,7 @@
                 <div style="position:relative;">
                     <div class="item-edit">
                         <label>@(transactionalItem != null ? transactionalItem.Name : "")</label>
-                        <button @onclick='()=>SetViewElemnt("LinkedTransactionalItem")' class="btn color-btn">+</button>
+                        <button @onclick='()=>SetViewElemnt("LinkedTransactionalItem")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                     </div>
 
                     <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" ViewControl="transactionalItemLinked" ViewSelect="ViewSelect" EventClosed="EventClosedInput">
@@ -109,6 +109,8 @@
     public TransactionalItem transactionalItem = new();
     public AtomConcept linkedTransactionalItem = new();
     InputTextSelector? ReferInputTextSelector;
+
+    public InputText inputName { get; set; }
 
     public bool modeEdit = true, viewMsg = false;
     public string msg = "", pageView = "";
@@ -207,23 +209,52 @@
         string tile = e.Item != null ? e.Item.Text : "";
         if (tile == "Save")
         {
-            box.LinkedTransactionalItem = linkedTransactionalItem;
-            string boxId = box.Id;
-            //box.CreationTime = DateTime.UtcNow;
-            //box.LastModifiedTime = DateTime.UtcNow;
-            var resul = await transactionalService.SaveBox(boxId, box);
-            if (resul) { box = new(); linkedTransactionalItem = new(); };
+            bool validate = Validate.GetValidate(box);
+            if (validate)
+            {
+                box.LinkedTransactionalItem = linkedTransactionalItem;
+                string boxId = box.Id;
+                var resul = await transactionalService.SaveBox(boxId, box);
+                if (resul) { box = new(); linkedTransactionalItem = new(); };
+                Msg(resul);
+
+            }
+            else
+            {
+                Msg(Validate.Msg);
+            }
 
         }
         if (tile == "Save as...")
         {
-
+            Box CopyBox = box;
+            if (CopyBox.Name.Trim() == box.Name.Trim())
+            {
+                CopyBox.LinkedTransactionalItem = linkedTransactionalItem;
+                CopyBox.Id = null;
+                var resul = await transactionalService.SaveBox("", CopyBox);
+                if (resul) { box = new(); linkedTransactionalItem = new(); };
+                Msg(resul);
+            }
+            else
+            {
+                Msg("You need to add a new name");
+                inputName.Element.Value.FocusAsync();
+            }
         }
-
-
         StateHasChanged();
+    }
 
+    public void Msg(bool mode)
+    {
+        msg = mode ? "Saved" : "No saved";
+        viewMsg = true;
+    }
 
+    public void Msg(string? Msg)
+    {
+        msg = Msg;
+        viewMsg = true;
     }
 
     public string GetName(string Name, Object Obj)
@@ -234,4 +265,24 @@
 
 
 
+    class Validate
+    {
+        private static string _Msg = "";
+        public static string Msg { get { return _Msg; } }
+        public static bool GetValidate(Box box)
+        {
+            BoxeConcept concept = new BoxeConcept();
+            bool resul = false;
+            if (box.Name != null && box.Name != "") _Msg = $"{concept.GetName("Name", new AtomConcept())} field required";
+            if (box.Length != null && box.Length > 0) _Msg = $"{concept.GetName("Length", new Box())} field required";
+            if (box.Width != null && box.Width > 0) _Msg = $"{concept.GetName("Width", new Box())} field required";
+            if (box.Height != null && box.Height > 0) _Msg = $"{concept.GetName("Height", new Box())} field required";
+            if (box.WeightVolumeRate != null && box.WeightVolumeRate > 0) _Msg = $"{concept.GetName("WeightVolumeRate", new Box())} field required";
+            if (box.ContainersNumber != null && box.ContainersNumber > 0) _Msg = $"{concept.GetName("ContainersNumber", new Box())} field required";
+            if (box.PalletsEquivalent != null && box.PalletsEquivalent > 0) _Msg = $"{concept.GetName("PalletsEquivalent", new Box())} field required";
+           
+            return _Msg == "" ? true : false;
+        }
+    }
+   
 }

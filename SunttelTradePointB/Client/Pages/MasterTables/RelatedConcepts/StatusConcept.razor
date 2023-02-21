@@ -5,6 +5,11 @@
 @inject NavigationManager Navigation
 @inject TransactionalItemsService transactionalService;
 
+@if (@viewMsg)
+{
+    <MessageSaveComponent isVisible="viewMsg" message="@msg">
+    </MessageSaveComponent>
+}
 
 <PageTitleComponent Title=" Status " IconName="signal.png"
                     Description="Here you can add  Status ">
@@ -30,16 +35,13 @@
         <div>
             <SfSwitch @bind-Checked="@transactionalItemStatus.IsAvailableToBuy"></SfSwitch>
         </div>
+        <div>
+            <div class="flex-horizontal-end">
+                <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                <button @onclick='Save' class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
+            </div>
+        </div>
     </div>
-
-
-
-    <div></div>
-    <div class="flex-horizontal-end">
-        <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-        <button @onclick='Save' class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
-    </div>
-
 
 </div>
 
@@ -52,6 +54,9 @@
     public string filterItems { get; set; } = "";
     public TransactionalItemStatus transactionalItemStatus = new();
     public List<TransactionalItemStatus> transactionalItemStatuss = new();
+
+    public bool modeEdit = true, viewMsg = false;
+    public string msg = "", pageView = "";
 
 
     protected override void OnInitialized()
@@ -74,15 +79,23 @@
     }
 
     public async void Save()
-    {
-        //transactionalItemStatus.CreationTime = DateTime.UtcNow;
-        //transactionalItemStatus.LastModifiedTime = DateTime.UtcNow;        
-       var resul = await transactionalService.SaveStatus(null, transactionalItemStatus);
+    {       
+        var resul = await transactionalService.SaveStatus(null, transactionalItemStatus);
         if (resul) transactionalItemStatus = new();
+        Msg(resul);
 
     }
 
-
+    private void Msg(bool mode)
+    {
+        msg = mode ? "Saved" : "No saved";
+        viewMsg = true;
+    }
+    private void Msg(string? Msg)
+    {
+        msg = Msg;
+        viewMsg = true;
+    }
     public string GetName(string Name, Object Obj)
     {
         Name = UICommonFunctions.GetDisplayName(Obj, Name);
