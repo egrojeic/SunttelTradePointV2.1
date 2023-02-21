@@ -227,11 +227,16 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="entityTypeId"></param>
         /// <param name="entityType"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, EntityType? entityType, string? ErrorDescription)> SaveEntityType(string entityTypeId, EntityType entityType)
+        public async Task<(bool IsSuccess, EntityType? entityType, string? ErrorDescription)> SaveEntityType(EntityType entityType)
         {
             try
             {
-                var filterEntityType = Builders<EntityType>.Filter.Eq("_id", new ObjectId(entityTypeId));
+                if(entityType.Id== null)
+                {
+                    entityType.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterEntityType = Builders<EntityType>.Filter.Eq("_id", new ObjectId(entityType.Id));
                 var updateEntityTypeOptions = new ReplaceOptions { IsUpsert = true };
                 var resultEntityType = await _entityType.ReplaceOneAsync(filterEntityType, entityType, updateEntityTypeOptions);
 

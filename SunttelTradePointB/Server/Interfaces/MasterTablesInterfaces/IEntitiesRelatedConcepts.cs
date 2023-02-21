@@ -48,10 +48,9 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <summary>
         /// Inserts/ Updates an Entity Type
         /// </summary>
-        /// <param name="entityTypeId"></param>
         /// <param name="entityType"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, EntityType? entityType, string? ErrorDescription)> SaveEntityType(string entityTypeId, EntityType entityType);
+        Task<(bool IsSuccess, EntityType? entityType, string? ErrorDescription)> SaveEntityType(EntityType entityType);
 
 
         /// <summary>

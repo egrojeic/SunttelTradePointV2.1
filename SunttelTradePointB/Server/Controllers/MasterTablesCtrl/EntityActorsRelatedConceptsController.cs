@@ -194,9 +194,9 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveEntityType")]
-        public async Task<IActionResult> SaveEntityType(string entityTypeId, EntityType entityType)
+        public async Task<IActionResult> SaveEntityType(string? entityTypeId, EntityType entityType)
         {
-            var response = await _entitiesRelatedConcepts.SaveEntityType(entityTypeId, entityType);
+            var response = await _entitiesRelatedConcepts.SaveEntityType(entityType);
 
             if (response.IsSuccess)
             {
