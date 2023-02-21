@@ -124,8 +124,10 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// Retrieves an object of a transactional Item by id
         /// </summary>
         /// <param name="transactionalItemId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, AtomConcept transactionalItem, string? ErrorDescription)> GetTransactionalItemById(string transactionalItemId)
+        public async Task<(bool IsSuccess, AtomConcept transactionalItem, string? ErrorDescription)> GetTransactionalItemById(string userId, string ipAddress, string transactionalItemId)
         {
 
             try
@@ -158,8 +160,10 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <typeparam name="T"></typeparam>
         /// <param name="transactItemId"></param>
         /// <param name="transactionalItemDetailsSection"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<T>? TransactionalItemRelatedList, string? ErrorDescription)> GetTransactionalItemDetailsOf<T>(string transactItemId, TransactionalItemDetailsSection transactionalItemDetailsSection)
+        public async Task<(bool IsSuccess, List<T>? TransactionalItemRelatedList, string? ErrorDescription)> GetTransactionalItemDetailsOf<T>(string userId, string ipAddress, string transactItemId, TransactionalItemDetailsSection transactionalItemDetailsSection)
         {
             string detailsArrayListName = "";
             if (transactItemId.Length == 0)
@@ -248,17 +252,23 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// Updates/ Insert a new Transactional Item
         /// </summary>
         /// <param name="transactionalItem"></param>
-        /// <param name="transactionalItemId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, TransactionalItem? transactionalItem, string? ErrorDescription)> SaveTransactionalItem(TransactionalItem transactionalItem, string transactionalItemId)
+        public async Task<(bool IsSuccess, TransactionalItem? transactionalItem, string? ErrorDescription)> SaveTransactionalItem(string userId, string ipAddress, TransactionalItem transactionalItem)
         {
             try
             {
+                if(transactionalItem.Id == null)
+                {
+                    transactionalItem.Id = ObjectId.GenerateNewId().ToString();
+                }
+
                 var type = transactionalItem.GetType();
                 var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
 
-                var filter = Builders<TransactionalItem>.Filter.Eq("_id", new ObjectId(transactionalItemId));
+                var filter = Builders<TransactionalItem>.Filter.Eq("_id", new ObjectId(transactionalItem.Id));
 
 
                 var updateOptions = new UpdateOptions { IsUpsert = true };
@@ -294,8 +304,10 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// </summary>
         /// <param name="transactionalItemId"></param>
         /// <param name="transactionalItemCharacteristicPair"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, TransactionalItemCharacteristicPair? transactionalItemCharacteristicPairs, string? ErrorDescription)> SaveCharacteristics(string transactionalItemId, TransactionalItemCharacteristicPair transactionalItemCharacteristicPair)
+        public async Task<(bool IsSuccess, TransactionalItemCharacteristicPair? transactionalItemCharacteristicPairs, string? ErrorDescription)> SaveCharacteristics(string userId, string ipAddress, string transactionalItemId, TransactionalItemCharacteristicPair transactionalItemCharacteristicPair)
         {
             try
             {
@@ -337,8 +349,10 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// </summary>
         /// <param name="transactionalItemId"></param>
         /// <param name="transactItemImage"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, TransactItemImage? transactItemImage, string? ErrorDescription)> SaveImage(string transactionalItemId, TransactItemImage transactItemImage)
+        public async Task<(bool IsSuccess, TransactItemImage? transactItemImage, string? ErrorDescription)> SaveImage(string userId, string ipAddress, string transactionalItemId, TransactItemImage transactItemImage)
         {
             try
             {
@@ -384,8 +398,10 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// </summary>
         /// <param name="transactionalItemId"></param>
         /// <param name="transactionalItemProcessStep"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, TransactionalItemProcessStep? transactionalItemProcessStep, string? ErrorDescription)> SaveProductionSpecs(string transactionalItemId, TransactionalItemProcessStep transactionalItemProcessStep)
+        public async Task<(bool IsSuccess, TransactionalItemProcessStep? transactionalItemProcessStep, string? ErrorDescription)> SaveProductionSpecs(string userId, string ipAddress, string transactionalItemId, TransactionalItemProcessStep transactionalItemProcessStep)
         {
             try
             {
@@ -434,8 +450,10 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// </summary>
         /// <param name="transactionalItemId"></param>
         /// <param name="transactionalItemQualityPair"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, TransactionalItemQualityPair? transactionalItemQualityPair, string? ErrorDescription)> SaveQualityParameters(string transactionalItemId, TransactionalItemQualityPair transactionalItemQualityPair)
+        public async Task<(bool IsSuccess, TransactionalItemQualityPair? transactionalItemQualityPair, string? ErrorDescription)> SaveQualityParameters(string userId, string ipAddress, string transactionalItemId, TransactionalItemQualityPair transactionalItemQualityPair)
         {
             try
             {
@@ -480,8 +498,10 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// </summary>
         /// <param name="transactionalItemId"></param>
         /// <param name="packingSpecs"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, PackingSpecs? packingSpecs, string? ErrorDescription)> SaveProductPackingSpecs(string transactionalItemId, PackingSpecs packingSpecs)
+        public async Task<(bool IsSuccess, PackingSpecs? packingSpecs, string? ErrorDescription)> SaveProductPackingSpecs(string userId, string ipAddress, string transactionalItemId, PackingSpecs packingSpecs)
         {
             try
             {
@@ -523,8 +543,10 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// </summary>
         /// <param name="transactionalItemId"></param>
         /// <param name="transactionalItemTag"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, TransactionalItemTag? transactionalItemTag, string? ErrorDescription)> SaveTags(string transactionalItemId, TransactionalItemTag transactionalItemTag)
+        public async Task<(bool IsSuccess, TransactionalItemTag? transactionalItemTag, string? ErrorDescription)> SaveTags(string userId, string ipAddress, string transactionalItemId, TransactionalItemTag transactionalItemTag)
         {
             try
             {
@@ -567,9 +589,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// Retrieves a list of Transactional Item Types with the posibility to receive an optional paremeter
         /// </summary>
         /// <param name="filterCondition"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, List<TransactionalItemType>? transactionalItemTypes, string? ErrorDescription)> GetTransactionalItemTypes(string? filterCondition = null)
+        public async Task<(bool IsSuccess, List<TransactionalItemType>? transactionalItemTypes, string? ErrorDescription)> GetTransactionalItemTypes(string userId, string ipAddress, string? filterCondition = null)
         {
             try
             {
@@ -614,8 +638,10 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// Retrieves a particular Transactional Item Type by Id
         /// </summary>
         /// <param name="TransactionalItemTypeId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, TransactionalItemType? transactionalItemType, string? ErrorDescription)> GetTransactionalItemType(string TransactionalItemTypeId)
+        public async Task<(bool IsSuccess, TransactionalItemType? transactionalItemType, string? ErrorDescription)> GetTransactionalItemType(string userId, string ipAddress, string TransactionalItemTypeId)
         {
             try
             {
@@ -641,15 +667,21 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Inserts / Updates an Transactional Item Type object
         /// </summary>
-        /// <param name="TransactionalItemTypeId"></param>
         /// <param name="transactionalItemType"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, TransactionalItemType? transactionalItemType, string? ErrorDescription)> SaveTransactionalItemType(string? TransactionalItemTypeId, TransactionalItemType transactionalItemType)
+        public async Task<(bool IsSuccess, TransactionalItemType? transactionalItemType, string? ErrorDescription)> SaveTransactionalItemType(string userId, string ipAddress, TransactionalItemType transactionalItemType)
         {
             try
             {
-                var filterTransactionalItemType = Builders<TransactionalItemType>.Filter.Eq("_id", new ObjectId(TransactionalItemTypeId));
+                if(transactionalItemType.Id == null)
+                {
+                    transactionalItemType.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterTransactionalItemType = Builders<TransactionalItemType>.Filter.Eq("_id", new ObjectId(transactionalItemType.Id));
                 var updateTransactionalItemType = new ReplaceOptions { IsUpsert = true };
                 var resultTransactionalItemType = await _transactionalItemTypes.ReplaceOneAsync(filterTransactionalItemType, transactionalItemType, updateTransactionalItemType);
 
@@ -666,9 +698,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// Retrieves a list of Boxes with the posibility to receive an optional paremeter
         /// </summary>
         /// <param name="filterCondition"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, List<Box>? boxes, string? ErrorDescription)> GetBoxes(string? filterCondition = null)
+        public async Task<(bool IsSuccess, List<Box>? boxes, string? ErrorDescription)> GetBoxes(string userId, string ipAddress, string? filterCondition = null)
         {
             try
             {
@@ -712,8 +746,10 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// Retrieves a particular Box by Id
         /// </summary>
         /// <param name="boxId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, Box? box, string? ErrorDescription)> GetBoxeById(string boxId)
+        public async Task<(bool IsSuccess, Box? box, string? ErrorDescription)> GetBoxeById(string userId, string ipAddress, string boxId)
         {
             try
             {
@@ -739,15 +775,21 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Inserts / Updates a Box object
         /// </summary>
-        /// <param name="boxId"></param>
         /// <param name="box"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, Box? box, string? ErrorDescription)> SaveBox(string? boxId, Box box)
+        public async Task<(bool IsSuccess, Box? box, string? ErrorDescription)> SaveBox(string userId, string ipAddress, Box box)
         {
             try
             {
-                var filterBox = Builders<Box>.Filter.Eq("_id", new ObjectId(boxId));
+                if(box.Id == null)
+                {
+                    box.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterBox = Builders<Box>.Filter.Eq("_id", new ObjectId(box.Id));
                 var updateBoxOptions = new ReplaceOptions { IsUpsert = true };
                 var resultBox = await _box.ReplaceOneAsync(filterBox, box, updateBoxOptions);
 
@@ -765,9 +807,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// Retrieves a list of Business Seasons with the posibility to receive an optional paremeter
         /// </summary>
         /// <param name="filterCondition"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, List<SeasonBusiness>? seasonBusinesses, string? ErrorDescription)> GetSeasons(string? filterCondition = null)
+        public async Task<(bool IsSuccess, List<SeasonBusiness>? seasonBusinesses, string? ErrorDescription)> GetSeasons(string userId, string ipAddress, string? filterCondition = null)
         {
             try
             {
@@ -811,9 +855,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// Retrieves a particular Business Season by Id
         /// </summary>
         /// <param name="seasonId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, SeasonBusiness? seasonBusiness, string? ErrorDescription)> GetSeason(string seasonId)
+        public async Task<(bool IsSuccess, SeasonBusiness? seasonBusiness, string? ErrorDescription)> GetSeason(string userId, string ipAddress, string seasonId)
         {
             try
             {
@@ -839,15 +885,21 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Inserts / Updates a Business Season object
         /// </summary>
-        /// <param name="seasonId"></param>
         /// <param name="seasonBusiness"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, SeasonBusiness? seasonBusiness, string? ErrorDescription)> SaveSeason(string? seasonId, SeasonBusiness seasonBusiness)
+        public async Task<(bool IsSuccess, SeasonBusiness? seasonBusiness, string? ErrorDescription)> SaveSeason(string userId, string ipAddress, SeasonBusiness seasonBusiness)
         {
             try
             {
-                var filterSeason = Builders<SeasonBusiness>.Filter.Eq("_id", new ObjectId(seasonId));
+                if(seasonBusiness.Id == null)
+                {
+                    seasonBusiness.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterSeason = Builders<SeasonBusiness>.Filter.Eq("_id", new ObjectId(seasonBusiness.Id));
                 var updateSeasonOptions = new ReplaceOptions { IsUpsert = true };
                 var resultSeason = await _season.ReplaceOneAsync(filterSeason, seasonBusiness, updateSeasonOptions);
 

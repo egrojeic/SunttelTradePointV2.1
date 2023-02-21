@@ -59,14 +59,16 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// Retrieves the Packing Recipe of a particular Product ID
         /// </summary>
         /// <param name="transactionalItemId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetTransactionalItemDetailsPackingRecipe")]
-        public async Task<IActionResult> GetTransactionalItemDetailsPackingRecipe(string transactionalItemId)
+        public async Task<IActionResult> GetTransactionalItemDetailsPackingRecipe(string userId, string ipAddress, string transactionalItemId)
         {
 
             //var response = await _entityNodes.GetEntityActorAddressList(EntityId);
-            var response = await _transactionalItems.GetTransactionalItemDetailsOf<PackingSpecs>(transactionalItemId, TransactionalItemDetailsSection.PackingRecipe);
+            var response = await _transactionalItems.GetTransactionalItemDetailsOf<PackingSpecs>(userId, ipAddress, transactionalItemId, TransactionalItemDetailsSection.PackingRecipe);
 
             if (response.IsSuccess)
             {
@@ -82,13 +84,15 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// Retreives Information about the proccesses needed to produce the transactional item
         /// </summary>
         /// <param name="transactionalItemId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetTransactionalItemDetailsProductionSpecs")]
-        public async Task<IActionResult> GetTransactionalItemDetailsProductionSpecs(string transactionalItemId)
+        public async Task<IActionResult> GetTransactionalItemDetailsProductionSpecs(string userId, string ipAddress, string transactionalItemId)
         {
 
-            var response = await _transactionalItems.GetTransactionalItemDetailsOf<TransactionalItemProcessStep>(transactionalItemId, TransactionalItemDetailsSection.ProductionSpecs);
+            var response = await _transactionalItems.GetTransactionalItemDetailsOf<TransactionalItemProcessStep>(userId, ipAddress, transactionalItemId, TransactionalItemDetailsSection.ProductionSpecs);
 
             if (response.IsSuccess)
             {
@@ -103,13 +107,15 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// Retrieves information about quality standards the Transactional Item should meet
         /// </summary>
         /// <param name="transactionalItemId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetTransactionalItemDetailsQualityParameters")]
-        public async Task<IActionResult> GetTransactionalItemDetailsQualityParameters(string transactionalItemId)
+        public async Task<IActionResult> GetTransactionalItemDetailsQualityParameters(string userId, string ipAddress, string transactionalItemId)
         {
 
-            var response = await _transactionalItems.GetTransactionalItemDetailsOf<TransactionalItemQualityPair>(transactionalItemId, TransactionalItemDetailsSection.QualityParameters);
+            var response = await _transactionalItems.GetTransactionalItemDetailsOf<TransactionalItemQualityPair>(userId, ipAddress, transactionalItemId, TransactionalItemDetailsSection.QualityParameters);
 
             if (response.IsSuccess)
             {
@@ -125,12 +131,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// Retrieves the different paths to images related to the transactional item provided as parameter
         /// </summary>
         /// <param name="transactionalItemId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetTransactionalItemDetailsPathImages")]
-        public async Task<IActionResult> GetTransactionalItemDetailsPathImages(string transactionalItemId)
+        public async Task<IActionResult> GetTransactionalItemDetailsPathImages(string userId, string ipAddress, string transactionalItemId)
         {
-            var response = await _transactionalItems.GetTransactionalItemDetailsOf<TransactItemImage>(transactionalItemId, TransactionalItemDetailsSection.PathImages);
+            var response = await _transactionalItems.GetTransactionalItemDetailsOf<TransactItemImage>(userId, ipAddress, transactionalItemId, TransactionalItemDetailsSection.PathImages);
 
             if (response.IsSuccess)
             {
@@ -144,14 +152,16 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// Retrieves the tags related to the Transactional Item
         /// </summary>
         /// <param name="transactionalItemId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetTransactionalItemDetailsTags")]
-        public async Task<IActionResult> GetTransactionalItemDetailsTags(string transactionalItemId)
+        public async Task<IActionResult> GetTransactionalItemDetailsTags(string userId, string ipAddress, string transactionalItemId)
         {
             try
             {
-                var response = await _transactionalItems.GetTransactionalItemDetailsOf<TransactionalItemTag>(transactionalItemId, TransactionalItemDetailsSection.Tags);
+                var response = await _transactionalItems.GetTransactionalItemDetailsOf<TransactionalItemTag>(userId, ipAddress, transactionalItemId, TransactionalItemDetailsSection.Tags);
                 if (response.IsSuccess)
                 {
                     return Ok(response.TransactionalItemRelatedList);
@@ -172,12 +182,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// Retrieves an object of a transactional Item by id
         /// </summary>
         /// <param name="transactionalItemId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetTransactionalItemById")]
-        public async Task<IActionResult> GetTransactionalItemById(string transactionalItemId)
+        public async Task<IActionResult> GetTransactionalItemById(string userId, string ipAddress, string transactionalItemId)
         {
-            var response = await _transactionalItems.GetTransactionalItemById(transactionalItemId);
+            var response = await _transactionalItems.GetTransactionalItemById(userId, ipAddress, transactionalItemId);
 
             if (response.IsSuccess)
             {
@@ -192,12 +204,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// Retrieves a Transactional Item Type object by Id
         /// </summary>
         /// <param name="transactionalItemTypeId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetTransactionalItemType")]
-        public async Task<IActionResult> GetTransactionalItemType(string transactionalItemTypeId)
+        public async Task<IActionResult> GetTransactionalItemType(string userId, string ipAddress, string transactionalItemTypeId)
         {
-            var response = await _transactionalItems.GetTransactionalItemType(transactionalItemTypeId);
+            var response = await _transactionalItems.GetTransactionalItemType(userId, ipAddress, transactionalItemTypeId);
 
             if (response.IsSuccess)
             {
@@ -214,12 +228,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// Retrieves a list of Transactional Item Types with the posibility to receive an optional paremeter
         /// </summary>
         /// <param name="filterCondition"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetTransactionalItemTypes")]
-        public async Task<IActionResult> GetTransactionalItemTypes(string? filterCondition = null)
+        public async Task<IActionResult> GetTransactionalItemTypes(string userId, string ipAddress, string? filterCondition = null)
         {
-            var response = await _transactionalItems.GetTransactionalItemTypes(filterCondition);
+            var response = await _transactionalItems.GetTransactionalItemTypes(userId, ipAddress, filterCondition);
 
             if (response.IsSuccess)
             {
@@ -236,12 +252,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// Retrieves a Box by Id
         /// </summary>
         /// <param name="boxId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetBoxeById")]
-        public async Task<IActionResult> GetBoxeById(string boxId)
+        public async Task<IActionResult> GetBoxeById(string userId, string ipAddress, string boxId)
         {
-            var response = await _transactionalItems.GetBoxeById(boxId);
+            var response = await _transactionalItems.GetBoxeById(userId, ipAddress, boxId);
 
             if (response.IsSuccess)
             {
@@ -260,9 +278,9 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetBoxes")]
-        public async Task<IActionResult> GetBoxes(string? filterCondition = null)
+        public async Task<IActionResult> GetBoxes(string userId, string ipAddress, string? filterCondition = null)
         {
-            var response = await _transactionalItems.GetBoxes(filterCondition);
+            var response = await _transactionalItems.GetBoxes(userId, ipAddress, filterCondition);
 
             if (response.IsSuccess)
             {
@@ -279,12 +297,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// Retrieves a Seasson by Id
         /// </summary>
         /// <param name="seasonId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetSeason")]
-        public async Task<IActionResult> GetSeason(string seasonId)
+        public async Task<IActionResult> GetSeason(string userId, string ipAddress, string seasonId)
         {
-            var response = await _transactionalItems.GetSeason(seasonId);
+            var response = await _transactionalItems.GetSeason(userId, ipAddress, seasonId);
 
             if (response.IsSuccess)
             {
@@ -303,9 +323,9 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetSeasons")]
-        public async Task<IActionResult> GetSeasons(string? filterCondition = null)
+        public async Task<IActionResult> GetSeasons(string userId, string ipAddress, string? filterCondition = null)
         {
-            var response = await _transactionalItems.GetSeasons(filterCondition);
+            var response = await _transactionalItems.GetSeasons(userId, ipAddress, filterCondition);
 
             if(response.IsSuccess)
             {
@@ -322,13 +342,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// Updates/ Insert a new Transactional Item
         /// </summary>
         /// <param name="transactionalItem"></param>
-        /// <param name="transactionalItemId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveTransactionalItem")]
-        public async Task<IActionResult> SaveTransactionalItem(TransactionalItem transactionalItem, string transactionalItemId)
+        public async Task<IActionResult> SaveTransactionalItem(string userId, string ipAddress, TransactionalItem transactionalItem)
         {
-            var response = await _transactionalItems.SaveTransactionalItem(transactionalItem, transactionalItemId);
+            var response = await _transactionalItems.SaveTransactionalItem(userId, ipAddress, transactionalItem);
 
             if (response.IsSuccess)
             {
@@ -344,12 +365,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// </summary>
         /// <param name="transactionalItemId"></param>
         /// <param name="transactionalItemCharacteristicPair"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveCharacteristics")]
-        public async Task<IActionResult> SaveCharacteristics(string transactionalItemId, TransactionalItemCharacteristicPair transactionalItemCharacteristicPair)
+        public async Task<IActionResult> SaveCharacteristics(string userId, string ipAddress, string transactionalItemId, TransactionalItemCharacteristicPair transactionalItemCharacteristicPair)
         {
-            var response = await _transactionalItems.SaveCharacteristics(transactionalItemId, transactionalItemCharacteristicPair);
+            var response = await _transactionalItems.SaveCharacteristics(userId, ipAddress, transactionalItemId, transactionalItemCharacteristicPair);
 
             if (response.IsSuccess)
             {
@@ -364,12 +387,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// </summary>
         /// <param name="transactionalItemId"></param>
         /// <param name="transactItemImage"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveImage")]
-        public async Task<IActionResult> SaveImage(string transactionalItemId, TransactItemImage transactItemImage)
+        public async Task<IActionResult> SaveImage(string userId, string ipAddress, string transactionalItemId, TransactItemImage transactItemImage)
         {
-            var response = await _transactionalItems.SaveImage(transactionalItemId, transactItemImage);
+            var response = await _transactionalItems.SaveImage(userId, ipAddress, transactionalItemId, transactItemImage);
 
             if (response.IsSuccess)
             {
@@ -385,12 +410,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// </summary>
         /// <param name="transactionalItemId"></param>
         /// <param name="transactionalItemProcessStep"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveProductionSpecs")]
-        public async Task<IActionResult> SaveProductionSpecs(string transactionalItemId, TransactionalItemProcessStep transactionalItemProcessStep)
+        public async Task<IActionResult> SaveProductionSpecs(string userId, string ipAddress, string transactionalItemId, TransactionalItemProcessStep transactionalItemProcessStep)
         {
-            var response = await _transactionalItems.SaveProductionSpecs(transactionalItemId, transactionalItemProcessStep);
+            var response = await _transactionalItems.SaveProductionSpecs(userId, ipAddress, transactionalItemId, transactionalItemProcessStep);
 
             if (response.IsSuccess)
             {
@@ -405,12 +432,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// </summary>
         /// <param name="transactionalItemId"></param>
         /// <param name="transactionalItemQualityPair"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveQualityParameters")]
-        public async Task<IActionResult> SaveQualityParameters(string transactionalItemId, TransactionalItemQualityPair transactionalItemQualityPair)
+        public async Task<IActionResult> SaveQualityParameters(string userId, string ipAddress, string transactionalItemId, TransactionalItemQualityPair transactionalItemQualityPair)
         {
-            var response = await _transactionalItems.SaveQualityParameters(transactionalItemId, transactionalItemQualityPair);
+            var response = await _transactionalItems.SaveQualityParameters(userId, ipAddress, transactionalItemId, transactionalItemQualityPair);
 
             if (response.IsSuccess)
             {
@@ -425,12 +454,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// </summary>
         /// <param name="transactionalItemId"></param>
         /// <param name="packingSpecs"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveProductPackingSpecs")]
-        public async Task<IActionResult> SaveProductPackingSpecs(string transactionalItemId, PackingSpecs packingSpecs)
+        public async Task<IActionResult> SaveProductPackingSpecs(string userId, string ipAddress, string transactionalItemId, PackingSpecs packingSpecs)
         {
-            var response = await _transactionalItems.SaveProductPackingSpecs(transactionalItemId, packingSpecs);
+            var response = await _transactionalItems.SaveProductPackingSpecs(userId, ipAddress, transactionalItemId, packingSpecs);
 
             if (response.IsSuccess)
             {
@@ -446,14 +477,16 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// </summary>
         /// <param name="transactionalItemId"></param>
         /// <param name="transactionalItemTag"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveTags")]
-        public async Task<IActionResult> SaveTags(string transactionalItemId, TransactionalItemTag transactionalItemTag)
+        public async Task<IActionResult> SaveTags(string userId, string ipAddress, string transactionalItemId, TransactionalItemTag transactionalItemTag)
         {
 
                 
-            var response = await _transactionalItems.SaveTags(transactionalItemId, transactionalItemTag);
+            var response = await _transactionalItems.SaveTags(userId, ipAddress, transactionalItemId, transactionalItemTag);
 
             if (response.IsSuccess)
             {
@@ -467,14 +500,15 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Insert / Update a Transactional Item Type
         /// </summary>
-        /// <param name="transactionalItemTypeId"></param>
         /// <param name="transactionalItemType"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveTransactionalItemType")]
-        public async Task<IActionResult> SaveTransactionalItemType(string? transactionalItemTypeId, TransactionalItemType transactionalItemType)
+        public async Task<IActionResult> SaveTransactionalItemType(string userId, string ipAddress, TransactionalItemType transactionalItemType)
         {
-            var response = await _transactionalItems.SaveTransactionalItemType(transactionalItemTypeId, transactionalItemType);
+            var response = await _transactionalItems.SaveTransactionalItemType(userId, ipAddress, transactionalItemType);
 
             if (response.IsSuccess)
             {
@@ -490,14 +524,15 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Insert / Update a Box Type
         /// </summary>
-        /// <param name="boxId"></param>
         /// <param name="box"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveBox")]
-        public async Task<IActionResult> SaveBox(string? boxId, Box box)
+        public async Task<IActionResult> SaveBox(string userId, string ipAddress, Box box)
         {
-            var response = await _transactionalItems.SaveBox(boxId, box);
+            var response = await _transactionalItems.SaveBox(userId, ipAddress, box);
 
             if(response.IsSuccess)
             {
@@ -513,14 +548,15 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Insert / Update a Business Season object
         /// </summary>
-        /// <param name="seasonId"></param>
         /// <param name="seasonBusiness"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveSeason")]
-        public async Task<IActionResult> SaveSeason(string? seasonId, SeasonBusiness seasonBusiness)
+        public async Task<IActionResult> SaveSeason(string userId, string ipAddress, SeasonBusiness seasonBusiness)
         {
-            var response = await _transactionalItems.SaveSeason(seasonId, seasonBusiness);
+            var response = await _transactionalItems.SaveSeason(userId, ipAddress, seasonBusiness);
 
             if (response.IsSuccess)
             {
