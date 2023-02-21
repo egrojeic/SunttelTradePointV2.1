@@ -296,7 +296,6 @@ namespace SunttelTradePointB.Shared.Common
         [DisplayName("Product")]
         public Concept ItemComponent { get; set; }
 
-
         [DisplayName("Product Recipe")]
         [BsonIgnoreIfNull]
         public List<PackRecipeItem> ComponentItemRecipe { get; set; }

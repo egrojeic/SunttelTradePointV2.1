@@ -5,6 +5,13 @@
 @inject NavigationManager Navigation
 @inject TransactionalItemsService transactionalService;
 
+
+@if (@viewMsg)
+{
+    <MessageSaveComponent isVisible="viewMsg" message="@msg">
+    </MessageSaveComponent>
+}
+
 <PageTitleComponent Title=" Season Business " IconName="seasons.png"
                     Description="Here you can add  Season Business">
 </PageTitleComponent>
@@ -36,6 +43,9 @@
     public string Mode { get; set; } = "Add";
     [Parameter]
     public string filterItems { get; set; } = "";
+    public bool viewMsg = false;
+    public string msg = ""; 
+
     public SeasonBusiness seasonBusiness = new();
 
     protected override void OnInitialized()
@@ -65,7 +75,19 @@
         {
             seasonBusiness = new();
         }
+        Msg(resul);
 
+    }
+
+    private void Msg(bool mode)
+    {
+        msg = mode ? "Saved" : "No saved";
+        viewMsg = true;
+    }
+    private void Msg(string? Msg)
+    {
+        msg = Msg;
+        viewMsg = true;
     }
 
     public string GetName(string Name, Object Obj)

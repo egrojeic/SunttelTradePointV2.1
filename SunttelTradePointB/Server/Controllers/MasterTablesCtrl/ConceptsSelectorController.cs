@@ -35,13 +35,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// Retrieves the list of Entity/Nodes/Actors filtered by the optional parameter
         /// </summary>
         /// <param name="filterString"></param>
+        /// <param name="roleName"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetSelectorListEntityActor")]
-        public async Task<IActionResult> GetSelectorListEntityActor(string? filterString = null)
+        public async Task<IActionResult> GetSelectorListEntityActor(string? filterString = null, string? roleName = null)
         {
 
-            var response = await _selectorDatasource.GetSelectorListEntityActor(filterString);
+            var response = await _selectorDatasource.GetSelectorListEntityActor(filterString, roleName);
 
             if (response.IsSuccess)
             {
@@ -292,6 +293,27 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
             if (response.IsSuccess)
             {
                 return Ok(response.palletTypes);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Retrieves a list of Entity Types
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetSelectorListEntityTypes")]
+        public async Task<IActionResult> GetSelectorListEntityTypes()
+        {
+            var response = await _selectorDatasource.GetSelectorListEntityTypes();
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.entityTypes);
             }
             else
             {

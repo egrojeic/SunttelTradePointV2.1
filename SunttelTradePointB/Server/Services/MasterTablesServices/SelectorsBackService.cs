@@ -2,6 +2,7 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
 using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
+using SunttelTradePointB.Client.Shared.EntityShareComponents.RelatedConcepts;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Shared.Common;
 using Syncfusion.PdfExport;
@@ -30,6 +31,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         IMongoCollection<IdentificationType> _identificationTypes;
         IMongoCollection<EntitiyRelationshipType> _entityRelationshipTypes;
         IMongoCollection<PalletType> _palletTypes;
+        IMongoCollection<Shared.Common.EntityType> _entityTypes;
 
         /// <summary>
         /// Service class initialize
@@ -53,6 +55,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             _identificationTypes = mongoDatabase.GetCollection<IdentificationType>("IdentificationTypes");
             _entityRelationshipTypes = mongoDatabase.GetCollection<EntitiyRelationshipType>("EntitiyRelationshipTypes");
             _palletTypes = mongoDatabase.GetCollection<PalletType>("PalletTypes");
+            _entityTypes = mongoDatabase.GetCollection<Shared.Common.EntityType>("EntityTypes");
         }
 
         /// <summary>
@@ -65,11 +68,12 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
-                string strNameFiler = filterString == null ? "" : filterString;
+                string strNameFilter = filterString == null ? "" : filterString;
+                string strRoleName = roleName == null ? "" : roleName;
 
                 var pipe = new List<BsonDocument>();
                 
-                if (strNameFiler.ToUpper() != "ALL" && strNameFiler.ToUpper() != "TODOS")
+                if (strNameFilter.ToUpper() != "ALL" && strNameFilter.ToUpper() != "TODOS")
                 {
                    
                     pipe.Add(
@@ -78,7 +82,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                             { "$match", 
                                 new BsonDocument{
                                     { "$text", new BsonDocument {
-                                            { "$search", strNameFiler },
+                                            { "$search", strNameFilter },
                                             { "$language", "english" },
                                             { "$caseSensitive", false },
                                             { "$diacriticSensitive", false}
@@ -87,6 +91,20 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                                 }
                             }
                         }
+                    );
+                }
+
+                if(strRoleName != "")
+                {
+                    pipe.Add(
+                        new BsonDocument(
+                        "$match",
+                          new BsonDocument(
+                                 "DefaultEntityRole.Name",
+                                    new BsonDocument(
+                                        "$regex", new BsonRegularExpression($"/{strRoleName}/i"))
+                                )
+                        )
                     );
                 }
 
@@ -526,9 +544,30 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
         }
 
-        public Task<(bool IsSuccess, List<Shared.Common.EntityType>? entityTypes, string? ErrorDescription)> GetSelectorListEntityTypes()
+
+        /// <summary>
+        /// Retrieves a list of Entity Types
+        /// </summary>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<Shared.Common.EntityType>? entityTypes, string? ErrorDescription)> GetSelectorListEntityTypes()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var entityTypes = await _entityTypes.Find<Shared.Common.EntityType>(new BsonDocument()).ToListAsync();
+
+                if (entityTypes == null || entityTypes.Count == 0)
+                {
+                    return (false, null, "Unpopulated Entity Types");
+                }
+                else
+                {
+                    return (true, entityTypes, null);
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
     }
 }

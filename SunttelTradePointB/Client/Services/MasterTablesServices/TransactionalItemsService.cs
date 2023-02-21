@@ -622,11 +622,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-
-        public Task<List<ConceptGroup>> GetSelectorListEntityGroups(string? nameLike = null)
-        {
-            throw new NotImplementedException();
-        }
+       
 
     }
 

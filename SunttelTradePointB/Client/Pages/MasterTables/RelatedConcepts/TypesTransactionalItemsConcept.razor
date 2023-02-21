@@ -15,7 +15,12 @@
 
 <div class="flex-verical-center position-relative" style="display:@(!modeEdit?"flex":"none");">
    
-    
+    @if (@viewMsg)
+    {
+        <MessageSaveComponent isVisible="viewMsg" message="@msg"    >
+        </MessageSaveComponent>
+    }
+
     @if (pageView == "ChildrenGroups")
     {
         <PageTitleComponent Title=" Children Groups" IconName="group.png"
@@ -78,7 +83,7 @@
                         Description="Here you can add children tag">
         </PageTitleComponent>
 
-        <div class="grid-columns-2 box-shadow-mode">
+        <div class="grid-columns-2 box-shadow-mode width-page1">
             <div><label>@GetName( "Key", new TransactionalItemTag())</label></div>
             <div><input type="text" @bind-value="transactionalItemProcessTag.Key" class="form-control" placeholder="Edit value" /></div>
             <div><label>@GetName( "Value", new TransactionalItemTag())</label></div>
@@ -90,8 +95,6 @@
 
             </div>
         </div>
-
-
 
     }
 
@@ -177,6 +180,12 @@
 
 
 <div class="flex-verical-center position-relative" style="display:@(modeEdit?"flex":"none");">
+     @if (@viewMsg)
+    {
+        <MessageSaveComponent isVisible="viewMsg" message="@msg"    >
+        </MessageSaveComponent>
+    }
+
     <PageTitleComponent Title=" Transactional Type" IconName="TransactionalTypes.png"
                         Description="Here you can add types of transactional">
     </PageTitleComponent>
@@ -446,10 +455,10 @@
     public List<GridColumn> gridColumnListModifier = new();
     public List<GridColumn> gridColumnListPossibleValues = new();
 
-    public bool isLoading = false, dataGridView = true, modeEdit = true;
+    public bool isLoading = false, dataGridView = true, modeEdit = true,viewMsg=false;
     public List<PossibleValues> possibleValuesModel = new();
     public List<string> possibleValues = new();
-    public string possibleValue = "";
+    public string possibleValue = "", msg = "";
     string pageView = "";
 
     protected override void OnParametersSet()
@@ -644,7 +653,7 @@
             inRecipeQualityModifier = new();
         }
 
-     
+         Msg("Added");
 
     }
 
@@ -664,6 +673,7 @@
             {
                 transactionalItemProcessTags.Add(transactionalItemProcessTag);
                 transactionalItemProcessTag = new();
+                 Msg("Added");
             }
         }
 
@@ -673,6 +683,7 @@
     {
         var tag = transactionalItemProcessTags.Where(r => r.Key == value).FirstOrDefault();
         transactionalItemProcessTags.Remove(tag);
+        Msg("Deleteed");
     }
 
 
@@ -683,18 +694,21 @@
             possibleValues.Add(possibleValue);
             possibleValuesModel.Add(new PossibleValues { Name = transactionalItemTypeCharacteristic.Name, Value = possibleValue });
             possibleValue = "";
+            Msg("Added");
         }
     }
 
     public void DeletePossibleValue(string value)
     {
         var element = possibleValues.Where(e => e.Trim() == value.Trim()).FirstOrDefault();
+        var elemenModel = possibleValuesModel.Where(e => e.Name.Trim() == value.Trim()).FirstOrDefault();
         if (element != null && possibleValue != null && possibleValue != "")
         {
             possibleValues.Remove(element);
+            possibleValuesModel.Remove(elemenModel);
+            Msg("Deleteed");
         }
     }
-
 
     public async void AddGroupchildren()
     {
@@ -704,6 +718,7 @@
             {
                 childrenGroups.Add(childrenGroup);
                 childrenGroup = new();
+                Msg("Added");
             }
 
         }
@@ -718,12 +733,12 @@
             if (remove != null)
             {
                 childrenGroups.Remove(remove);
+                Msg("Deleteed");
             }
 
         }
 
     }
-
 
     public string GetName(string Name, Object Obj)
     {
@@ -735,20 +750,20 @@
     {
         pageView = value;
         modeEdit = true;
+         viewMsg = false;
 
     }
+
     public void ClosedAdd(string value)
     {
         pageView = value;
         modeEdit = false;
-
-
+        viewMsg = false;
     }
 
     public void Closed(string value)
     {
         if (value == "control") Navigation.NavigateTo($"/{Page}/{filterItems}");
-
     }
 
 
@@ -767,8 +782,10 @@
             transactionalItemType.Groups = childrenGroups;
 
             var resul = await transactionalService.SaveTransactionalItemType(null, transactionalItemType);
+            Msg(resul);
             if (resul)
             {
+                
                 childrenGroups = new();
                 transactionalItemType = new();
                 inRecipeQualityModifiers = new();
@@ -776,6 +793,7 @@
                 transactionalItemTypeCharacteristics = new();
                 transactionalItemProcessSteps = new();
             }
+            
         }
         if (tile == "Save as...")
         {
@@ -788,6 +806,16 @@
 
     }
 
+    private void Msg(bool mode)
+    {
+        msg = mode?"Saved": "No saved";       
+        viewMsg = true;
+    }
+    private void Msg( string? Msg)
+    {      
+        msg = Msg;
+        viewMsg = true;
+    }
 
 
     public class PossibleValues
