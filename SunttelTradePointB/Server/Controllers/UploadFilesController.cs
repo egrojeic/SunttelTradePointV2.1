@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.IO.Pipelines;
 
@@ -13,6 +14,19 @@ namespace SunttelTradePointB.Server.Controllers
     [ApiController]
     public class UploadFilesController : ControllerBase
     {
+
+        private readonly IWebHostEnvironment _env;
+
+        /// <summary>
+        /// Constructor to get the hosting environment
+        /// </summary>
+        /// <param name="env"></param>
+        public UploadFilesController(IWebHostEnvironment env)
+        {
+            _env = env;
+        }
+
+
 
         /// <summary>
         /// File Type to upload
@@ -40,6 +54,10 @@ namespace SunttelTradePointB.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadFiles()
         {
+            string rootpath = AppDomain.CurrentDomain.BaseDirectory;
+
+            var strHostFolder = rootpath.Replace("\\Server\\bin\\Debug\\net6.0\\", "\\Client\\wwwroot\\uploads\\");
+
             var formCollection = await Request.ReadFormAsync();
             
             var photo = formCollection.Files["photo"];
@@ -58,6 +76,7 @@ namespace SunttelTradePointB.Server.Controllers
             uploadingFileType = formCollection["uploadingFileType"].ToString();
             photoName = formCollection["photoName"].ToString();
 
+            
 
             switch (uploadingFileType)
             {
@@ -69,7 +88,10 @@ namespace SunttelTradePointB.Server.Controllers
                     break;
 
             }
-            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), uploadFolder);
+            //var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), uploadFolder);
+
+            var uploadPath = Path.Combine(strHostFolder, uploadFolder);
+
 
             if (!Directory.Exists(uploadPath))
             {

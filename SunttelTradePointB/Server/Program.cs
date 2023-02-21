@@ -65,6 +65,8 @@ builder.Services.AddTransient<ISerBLFileEDI, SerBLFileEDI>();
 
 builder.Services.AddTransient<ISerDamFileEDI, SerDamFileEDI>();
 
+
+
 builder.Services.AddTransient<IGeographicPlaces, GeographicPlacesService>();
 builder.Services.AddTransient<IActorsNodes, EntityActorNodesService>();
 builder.Services.AddTransient<ITransactionalItemsBack, TransactionalItemsService>();
@@ -95,6 +97,7 @@ builder.Services.AddResponseCompression(opts =>
     opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
         new[] { "application/octet-stream" });
 });
+
 
 var app = builder.Build();
 
