@@ -23,15 +23,7 @@
         AllowResizing="true"
         EnableVirtualization="true"
         EnableColumnVirtualization="true"
-        ContextMenuItems="@(new List<ContextMenuItemModel>() {
-        new ContextMenuItemModel {
-        Text = "selected",
-        Target = ".e-content",
-        Id = "clipboard"    ,
-        Items = new List<MenuItem>() {
-                                      new MenuItem { Text = "Edit", Id = "Edit",IconCss="/images/edit.png" }
-                                      } } }
-            )">
+        ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader" } })">
     
     <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
     <GridColumns>
@@ -46,6 +38,7 @@
         <GridColumn Field="@nameof(PackingSpecsView.PackingBoxToBuyName)" HeaderText="Box to buy" Width="125px"> </GridColumn>
         <GridColumn Field="@nameof(PackingSpecsView.UnitPrice)" HeaderText="Unit Price" Width="125px"> </GridColumn>
     </GridColumns>
+    <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="PackingSpecsView"></GridEvents>
 </SfGrid>
 
 
@@ -157,9 +150,16 @@
 
     public void OnContextMenuClick(ContextMenuClickEventArgs<PackingSpecsView> args)
     {
-        if (args.Item.Id == "Edit")
+        PackingSpecsView _PackingSpecs = new();
+        _PackingSpecs = args.RowInfo.RowData;
+
+        if (args.Item.Text == "Edit")
         {
-            // this.DefaultGrid.Copy(true);
+            transactionalService.ConceptTransactionalItemPackingSpecs = productPackingSpecs.Where(s => s.Id == _PackingSpecs.Id).FirstOrDefault();
+            if (transactionalService.ConceptTransactionalItemPackingSpecs !=null)
+            {
+                Navigation.NavigateTo("/PackingRecipeCard/Edit");
+            }
         }
     }
 

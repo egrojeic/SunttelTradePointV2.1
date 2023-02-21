@@ -11,10 +11,12 @@
 @inject NavigationManager Navigation
 
 
-<Alert @ref="referAlert" backgroundColor="@backgroundColor" AlertOpen="@AlertOpen">
-    <h6>@msg</h6>
+@if (@AlertOpen)
+    {
+        <MessageSaveComponent isVisible="AlertOpen" message="@msg"    >
+        </MessageSaveComponent>
+    }
 
-</Alert>
 
 <form>
     <div class="panelMenuContainer" style="max-width:95%;">
@@ -146,6 +148,7 @@
     int verticalMenuOptionSelected = 0;
     public string transactionalItemId { get; set; }
     public string currentItemStatus { get; set; }
+    public string nameTemp { get; set; }
 
     protected override void OnInitialized()
     {
@@ -154,6 +157,7 @@
         currentItem = transactionalService.TransactionalItems;
         if (currentItem != null)
         {
+            nameTemp = currentItem.Name;
             currentItemStatus = currentItem.Status != null ? currentItem.Status.Name : "";
         }
 
@@ -178,8 +182,9 @@
 
     public void AddGroup(List<ConceptGroup> conceptGroups)
     {
-        this.conceptGroups = conceptGroups;
-        SetAlert("requires saving", "orange");
+        this.conceptGroups = conceptGroups;    
+        msg =  "added" ;
+        AlertOpen = true;
     }
 
     public async void ItemSelected(MenuEventArgs e)
@@ -192,15 +197,27 @@
         {
             currentItem.Groups = conceptGroups;
             var resul = await transactionalService.SaveTransactionalItem(transactionalItemId, currentItem);
-            AlertOpen = true;
             msg = resul ? "save" : "not save";
+            AlertOpen = true;
         }
         if (tile == "Save as...")
         {
             currentItem.Groups = conceptGroups;
-            var resul = await transactionalService.SaveTransactionalItem(null, currentItem);
+            var currentItemCopy = currentItem;
+            currentItemCopy.Id = null;
+            if (currentItemCopy.Name != nameTemp)
+            {
+                var resul = await transactionalService.SaveTransactionalItem(null, currentItemCopy);
+
+                msg = resul ? "saved as " + nameTemp : "not saved";
+                currentItem.Name = nameTemp;
+            }
+            else
+            {
+                msg = "not saved you need to add a different name";
+              
+            }
             AlertOpen = true;
-            msg = resul ? "save" : "not save";
         }
         if (tile == "Boxes")
         {

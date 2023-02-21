@@ -24,21 +24,22 @@
 
 <div class="row">
     <div class="col-md-12">
-        <SfGrid @ref="GridImge" DataSource="@PathImagesView" AllowTextWrap="false" AllowPaging="true" EnableStickyHeader="true">
+        <SfGrid @ref="GridImge" DataSource="@PathImagesView" AllowTextWrap="false" AllowPaging="true" EnableStickyHeader="true"
+                ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader" } })">
             <GridTemplates>
                 <RowTemplate>
                     <div class="grid-image">
                         @{
                             var elemnt = (context as TransactItemImage);
                             <div class="img">
-                                <img class="btn open" src="/images/extend.png" @onclick="@(()=>SetOpenImg(elemnt.PathImage))" />
-                                <img style="border-radius:5px;" src="@elemnt.PathImage" />
+                                <img class="btn open" src="/images/extend.png" @onclick="@(()=>SetOpenImg(transactionalService.Host+elemnt.PathImage))" />
+                                <img class="img-style" src="@(transactionalService.Host+elemnt.PathImage)" />
                             </div>
                             <div class="description">
                                 <p id="@elemnt.Id" > @elemnt.Name</p>
                             </div>
                             <div>
-                                <input value="Delete" type="button" class="btn" @onclick='()=>Delete(elemnt.Id)' style="background-color:#00ccff;" />
+                                <input value="Delete" type="button" class="btn btn-color" @onclick='()=>Delete(elemnt.Id)'  />
                             </div>
                         }
                     </div>
@@ -50,6 +51,7 @@
                 <GridColumn HeaderText="@Name" Width="210"></GridColumn>
                 <GridColumn HeaderText="" Width="110"></GridColumn>
             </GridColumns>
+            <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="TransactItemImage"></GridEvents>
         </SfGrid>
 
     </div>
@@ -124,7 +126,16 @@
         ImgOpen = true;
     }
 
-  
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactItemImage> args)
+    {
+        TransactItemImage ObjModel = new();
+        ObjModel = args.RowInfo.RowData;
+        if (args.Item.Id == "Edit")
+        {
+            
+        }
+    }
+
 
    
 }

@@ -24,15 +24,14 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         public SeasonBusiness? SeasonBusinessSelectedItems { get; set; }
         public ConceptGroup? ConceptGroupSelectedItems { get; set; }
         public TransactionalItemStatus? ConceptStatusSelectedItems { get; set; }
-
         public TransactionalItemType? ConceptTransactionalItemType { get; set; }
-
+        public PackingSpecs? ConceptTransactionalItemPackingSpecs { get; set; }
         public enum UploadingFileType
         {
             TransactionalItemImage,
             EntityImage
         }
-
+        public string Host { get { return "https://localhost:7186/uploads/transactionalItemsImages/"; } }
         #endregion Property
 
         private readonly HttpClient _httpClient;
@@ -68,6 +67,25 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 if ((transactionalItemsList.Count() - page) >= perPage) transactionalItemsList.ToList().GetRange((int)page, (int)perPage);
                 if ((transactionalItemsList.Count() - page) < perPage) transactionalItemsList.GetRange((int)page, (transactionalItemsList.Count() - 1));
                 return transactionalItemsList != null ? transactionalItemsList : new List<TransactionalItem>();
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+
+                return null;
+
+            }
+        }
+        public async Task<TransactionalItem> GetTransactionalItemById(string? transactionalItemId = null)
+        {
+            transactionalItemId = transactionalItemId != null ? transactionalItemId : "";
+
+            try
+            {
+                var transactionalItem = await _httpClient.GetFromJsonAsync<TransactionalItem>($"api/TransactionalItems/GetTransactionalItems?page=1&perPage=10&filterName={transactionalItemId}");
+              
+                return transactionalItem != null ? transactionalItem : new TransactionalItem();
 
             }
             catch (Exception ex)

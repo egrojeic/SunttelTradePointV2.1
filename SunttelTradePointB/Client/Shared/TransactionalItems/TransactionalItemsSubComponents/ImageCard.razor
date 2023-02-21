@@ -14,9 +14,16 @@
 @using System.Net.Http.Headers
 
 
-<br />
-<h6>@Title</h6>
-<br />
+@if (@viewMsg)
+{
+    <MessageSaveComponent isVisible="viewMsg" message="@msg">
+    </MessageSaveComponent>
+}
+<PageTitleComponent Title="@Title"
+                    Description="Here you can add image">
+</PageTitleComponent>
+
+
 <div class="flex-horizontal-center">
     <div class="conten-new-imge">
         <div>
@@ -26,16 +33,12 @@
                     <td rowspan="3">
                         <div>
                             <img src="@imgUrl" style="height:120px; width:180px; border-radius:10px 10px 0px 0px; margin-left:5px;" @ref="previewImageElem" /><br />
-                            <InputFile @ref="inputFile" OnChange="@LoadFiles" class="btn color-btn" style="color:transparent;width:180px; border-radius:0px 0px 10px 10px;" />
-                               
-
-                            <div class="upload-container">
+                            <div class="btn color-btn width">
                                 <label for="file-input">
-                                    <div class="upload-button"> Choose your file </div>
+                                    <div><p> Choose your file </p></div>
                                 </label>
-                                <input id="file-input" (change)="getFile($event)" type="file" />
+                                <InputFile id="file-input" @ref="inputFile" OnChange="@LoadFiles" class="btn color-btn" style="color:transparent;width:180px; border-radius:0px 0px 10px 10px; display:none;" />
                             </div>
-
                         </div>
                     </td>
                 </tr>
@@ -86,6 +89,10 @@
     public string Title { get; set; }
     public string Name { get; set; }
     public string PathImage { get; set; }
+
+    public string msg = "";
+    public bool viewMsg = false;
+
     #endregion TitleName
 
     protected override void OnInitialized()
@@ -120,18 +127,29 @@
 
     public async void Save()
     {
-        var resulFile = await transactionalService.UploadFiles(fileUpload);
 
-        if (resulFile != "")
-        {
-            transactItemImage.PathImage = resulFile;
-            await transactionalService.SaveImage(transactionalItemId, transactItemImage);
+        if (fileUpload !=null) {
+            var resulFile = await transactionalService.UploadFiles(fileUpload);
+
+            if (resulFile != "")
+            {
+                await transactionalService.SaveImage(transactionalItemId, transactItemImage);
+                transactItemImage = new TransactItemImage();
+                Msg("Saved");
+            }
+            else
+            {
+                Msg("No saved");
+            }
         }
-
-        transactItemImage = new TransactItemImage();
+        else
+        {
+            Msg("No saved img required");
+        }
+      
         imgUrl = "/images/defaultImage.png";
         Refresh();
-        Closed("control");
+      
     }
 
 
@@ -153,10 +171,8 @@
             imgUrl = img;
 
             var file = e.File;
-            string fileName = Guid.NewGuid().ToString() + ".png";
-            transactItemImage.PathImage = "/" + fileName;
-
-
+            string fileName = Guid.NewGuid().ToString();
+            transactItemImage.PathImage = fileName+".png";
 
             var resizedFile = await file.RequestImageFileAsync("image/png", 300, 500);
             // Convert the image to a byte array
@@ -174,7 +190,6 @@
                 await transactionalService.UploadFiles(content);
                 fileUpload = content;
 
-
             }
 
 
@@ -186,7 +201,16 @@
 
     }
 
-
+    private void Msg(bool mode)
+    {
+        msg = mode ? "Saved" : "No saved";
+        viewMsg = true;
+    }
+    private void Msg(string? Msg)
+    {
+        msg = Msg;
+        viewMsg = true;
+    }
 
 
 

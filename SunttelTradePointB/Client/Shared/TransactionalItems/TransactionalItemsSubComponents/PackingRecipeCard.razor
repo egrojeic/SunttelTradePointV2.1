@@ -1,4 +1,5 @@
 ﻿@page "/PackingRecipeCard"
+@page "/PackingRecipeCard/{Mode}"
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.Grids
 @using Syncfusion.Blazor.Data
@@ -118,7 +119,7 @@
                     <div></div>
                     <div class="flex-horizontal-end">
                         <button type="button" @onclick='()=>ClosedAdd("ItemComponent")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-                        <button type="button"  class="size-btn color-btn "><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                        <button type="button" class="size-btn color-btn "><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                     </div>
                 </div>
             </div>
@@ -518,12 +519,15 @@
 </form>
 
 @code {
-
+    [Parameter]
+    public string id { get; set; }
     public RenderFragment render { get; set; }
     [Parameter]
     public EventCallback<PackingSpecs> save { get; set; }
     [Parameter]
     public bool ViewSelect { get; set; } = false;
+    [Parameter]
+    public string Mode { get; set; } = "Add";
     bool viewMsg = false, modeEdit = false, PopupViewEditItemComponent = false;
     string msg = "";
     string pageView = "";
@@ -531,6 +535,7 @@
     SfGrid<MaterialRecipeItemView>? DataGrid;
     SfGrid<PackRecipeItemView>? DataGrid1;
     MaterialRecipeItemCard? addControl;
+    public TransactionalItem? transactionalItems { get; set; }
 
 
 
@@ -628,21 +633,29 @@
     protected async void InitializedAsync()
     {
         SetBox = await transactionalService.GetSelectorListEntityBoxToBuy();
+
         if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
         {
             TransactionalItemId = transactionalService.transactionalItemId;
             OnInitializedModel();
         }
-
+        if (Mode =="Edit")
+        {
+            _PackingSpecs = transactionalService.ConceptTransactionalItemPackingSpecs;
+            Customer = _PackingSpecs.Customer;            
+            Season = _PackingSpecs.Season;
+            ModelRecipe = _PackingSpecs.ModelRecipe;
+            PriceInfo = _PackingSpecs.Price;
+            BoxToBuy = _PackingSpecs.PackingBoxToBuy;
+            BoxToSale = _PackingSpecs.PackingBoxToSale;
+            ListOfMaterials = _PackingSpecs.ListOfMaterials;
+        }
     }
 
     protected async void OnInitializedModel()
     {
         SetModels = await transactionalService.GetSelectorListEntityProductModel(TransactionalItemId);
     }
-
-
-
 
     public async void ItemSelected(MenuEventArgs e)
     {
@@ -652,11 +665,9 @@
         {
 
             bool status = false;
-            //Season.CreationTime = DateTime.UtcNow;
+
             BoxToBuy.Id = Guid.NewGuid().ToString();
-            //BoxToBuy.CreationTime = DateTime.UtcNow;
             BoxToSale.Id = Guid.NewGuid().ToString();
-            //BoxToSale.CreationTime = DateTime.UtcNow;
             _PackingSpecs.Id = Guid.NewGuid().ToString();
 
             _PackingSpecs.Customer = Customer;
@@ -666,7 +677,7 @@
             _PackingSpecs.PackingBoxToBuy = BoxToBuy;
             _PackingSpecs.PackingBoxToSale = BoxToSale;
             _PackingSpecs.ListOfMaterials = ListOfMaterials;
-            
+
             Msg("Saved");
 
 
@@ -699,7 +710,7 @@
             materialRecipeItem = new();
             DataGrid.Refresh();
             Msg("Added");
-        }     
+        }
     }
 
     public async Task Refresh()

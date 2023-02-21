@@ -1,0 +1,11 @@
+﻿.img-style {
+    height:85px;
+    width:85px;
+}
+.btn-color {
+    background-color: #00ccff;
+}
+.btn-color:hover {
+    background-color: #00ccff;
+    color:white;
+}
