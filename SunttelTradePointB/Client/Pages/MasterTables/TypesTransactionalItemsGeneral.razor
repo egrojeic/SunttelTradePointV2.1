@@ -100,7 +100,7 @@ else
         TransactionalItemType itemTransactionalItemType = null;
         itemTransactionalItemType = args.RowInfo.RowData;
         transactItemsService.ConceptTransactionalItemType = itemTransactionalItemType;
-        if (args.Item.Id == "Edit")
+        if (args.Item.Text == "Edit")
         {
             Navigation.NavigateTo($"/TypesTransactionalItemsConcept/TypesTransactionalItems/Edit/{_filterItems}");
         }

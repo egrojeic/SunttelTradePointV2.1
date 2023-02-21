@@ -27,6 +27,14 @@
                         <div>
                             <img src="@imgUrl" style="height:120px; width:180px; border-radius:10px 10px 0px 0px; margin-left:5px;" @ref="previewImageElem" /><br />
                             <InputFile @ref="inputFile" OnChange="@LoadFiles" class="btn color-btn" style="color:transparent;width:180px; border-radius:0px 0px 10px 10px;" />
+                               
+
+                            <div class="upload-container">
+                                <label for="file-input">
+                                    <div class="upload-button"> Choose your file </div>
+                                </label>
+                                <input id="file-input" (change)="getFile($event)" type="file" />
+                            </div>
 
                         </div>
                     </td>
@@ -114,7 +122,7 @@
     {
         var resulFile = await transactionalService.UploadFiles(fileUpload);
 
-        if (resulFile!="" )
+        if (resulFile != "")
         {
             transactItemImage.PathImage = resulFile;
             await transactionalService.SaveImage(transactionalItemId, transactItemImage);
@@ -125,6 +133,8 @@
         Refresh();
         Closed("control");
     }
+
+
 
     private async void LoadFiles(InputFileChangeEventArgs e)
     {
@@ -145,7 +155,7 @@
             var file = e.File;
             string fileName = Guid.NewGuid().ToString() + ".png";
             transactItemImage.PathImage = "/" + fileName;
-           
+
 
 
             var resizedFile = await file.RequestImageFileAsync("image/png", 300, 500);
@@ -161,9 +171,9 @@
                 content.Add(new StringContent(fileName), "photoName");
 
 
-               await transactionalService.UploadFiles(content);
-               fileUpload = content;
-                
+                await transactionalService.UploadFiles(content);
+                fileUpload = content;
+
 
             }
 
@@ -177,7 +187,7 @@
     }
 
 
- 
+
 
 
 }

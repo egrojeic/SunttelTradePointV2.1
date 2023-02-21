@@ -137,7 +137,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             try
             {
 
-                boxsList = await _httpClient.GetFromJsonAsync<List<Box>>($"/api/ConceptsSelector/GetSelectorListBoxes");
+                boxsList = await _httpClient.GetFromJsonAsync<List<Box>>($"api/ConceptsSelector/GetSelectorListBoxes");
 
                 return boxsList;
             }
@@ -350,9 +350,15 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             {
                 seasonBusiness = await _httpClient.GetFromJsonAsync<List<SeasonBusiness>>($"api/TransactionalItemsRelatedConcepts/GetSeasonsTable");
                 page = page == 0 ? 1 : page;
-                seasonBusiness = seasonBusiness = seasonBusiness != null ? seasonBusiness.Where(s => s.Name.ToLower().Contains(nameLike.ToLower())).ToList() : new List<SeasonBusiness>();
-                if ((seasonBusiness.Count() - page) >= perPage) seasonBusiness.ToList().GetRange((int)page, (int)perPage);
-                if ((seasonBusiness.Count() - page) < perPage) seasonBusiness.GetRange((int)page, (seasonBusiness.Count() - 1));
+                if (!nameLike.ToLower().Contains("all") && !nameLike.ToLower().Contains("todo"))
+                {
+                    seasonBusiness = seasonBusiness = seasonBusiness != null ? seasonBusiness.Where(s => s.Name.ToLower().Contains(nameLike.ToLower())).ToList() : new List<SeasonBusiness>();
+
+                    if ((seasonBusiness.Count() - page) >= perPage) seasonBusiness.ToList().GetRange((int)page, (int)perPage);
+                    if ((seasonBusiness.Count() - page) < perPage) seasonBusiness.GetRange((int)page, (seasonBusiness.Count() - 1));
+                }
+               
+
                 return seasonBusiness;
             }
             catch (Exception ex)
@@ -607,7 +613,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             {
 
                 var resul = await _httpClient.PostAsync($"api/UploadFiles", multipartFormDataContent);
-                FilePath  filePath = await resul.Content.ReadFromJsonAsync<FilePath>();
+                FilePath filePath = await resul.Content.ReadFromJsonAsync<FilePath>();
                 return filePath.filePath;
 
 
@@ -622,7 +628,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-       
+
 
     }
 
