@@ -57,9 +57,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Retrieves the whole object of an Entity/Actor
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entityActorId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, AtomConcept entityActorResponse, string? ErrorDescription)> GetEntityActorById(string entityActorId)
+        public async Task<(bool IsSuccess, AtomConcept entityActorResponse, string? ErrorDescription)> GetEntityActorById(string userId, string ipAdress, string entityActorId)
         {
             try
             {
@@ -102,11 +104,13 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Retrives the list 
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="nameLike"></param>
         /// <param name="entityType"></param>
         /// <param name="entityCode"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<EntityActor>? ActorsNodesList, string? ErrorDescription)> GetEntityActorFaceList(string? nameLike = null, string? entityType = null, string? entityCode = null)
+        public async Task<(bool IsSuccess, List<EntityActor>? ActorsNodesList, string? ErrorDescription)> GetEntityActorFaceList(string userId, string ipAdress, string? nameLike = null, string? entityType = null, string? entityCode = null)
         {
 
             try
@@ -167,10 +171,12 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// Retrieves an list of details from an array in the Entity Collection
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entityActorId"></param>
         /// <param name="entityDetailsSection"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<T>? EntityRelatedList, string? ErrorDescription)> GetEntityDetailsOf<T>(string entityActorId, EntityDetailsSection entityDetailsSection)
+        public async Task<(bool IsSuccess, List<T>? EntityRelatedList, string? ErrorDescription)> GetEntityDetailsOf<T>(string userId, string ipAdress, string entityActorId, EntityDetailsSection entityDetailsSection)
         {
             string detailsArrayListName = "";
 
@@ -301,10 +307,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Saves an Entity/Actor document. If it doesn't exists, it'll be created
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entity"></param>
-        /// <param name="entityActorId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, EntityActor? entityActorResponse, string? ErrorDescription)> SaveEntity(EntityActor entity)
+        public async Task<(bool IsSuccess, EntityActor? entityActorResponse, string? ErrorDescription)> SaveEntity(string userId, string ipAdress, EntityActor entity)
         {
             try
             {
@@ -331,10 +338,12 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Saves an address of an entity. If it exists, it'll be updated, otherwise it 'll be inserted in the array
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entityActorId"></param>
         /// <param name="address"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, Address? entityAddress, string? ErrorDescription)> SaveEntityAddress(string entityActorId, Address address)
+        public async Task<(bool IsSuccess, Address? entityAddress, string? ErrorDescription)> SaveEntityAddress(string userId, string ipAdress, string entityActorId, Address address)
         {
             try
             {
@@ -380,10 +389,12 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Saves a phone number of an entity. If it exists, it'll be updated, otherwise it 'll be inserted in the array
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entityActorId"></param>
         /// <param name="phoneNumber"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, PhoneNumber? phoneNumber, string? ErrorDescription)> SavePhone(string entityActorId, PhoneNumber phoneNumber)
+        public async Task<(bool IsSuccess, PhoneNumber? phoneNumber, string? ErrorDescription)> SavePhone(string userId, string ipAdress, string entityActorId, PhoneNumber phoneNumber)
         {
             try
             {
@@ -424,10 +435,12 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Saves an identification Code of an entity. If it exists, it'll be updated, otherwise it 'll be inserted in the array
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entityActorId"></param>
         /// <param name="identificationEntity"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, IdentificationEntity? identificationEntity, string? ErrorDescription)> SaveIdentificationCode(string entityActorId, IdentificationEntity identificationEntity)
+        public async Task<(bool IsSuccess, IdentificationEntity? identificationEntity, string? ErrorDescription)> SaveIdentificationCode(string userId, string ipAdress, string entityActorId, IdentificationEntity identificationEntity)
         {
             try
             {
@@ -467,9 +480,13 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Retrieves a list of Entity Groups with the posibility to receive an optional paremeter
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="filterCondition"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<EntityGroup>? entityGroup, string? ErrorDescription)> GetEntityGroups(string? filterCondition = null)
+        public async Task<(bool IsSuccess, List<EntityGroup>? entityGroup, string? ErrorDescription)> GetEntityGroups(string userId, string ipAdress, string? filterCondition = null)
         {
             try
             {
@@ -513,9 +530,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Retrieves a particular Entity Group object by Id
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entityGroupId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, EntityGroup? entityGroup, string? ErrorDescription)> GetEntityGroup(string entityGroupId)
+        public async Task<(bool IsSuccess, EntityGroup? entityGroup, string? ErrorDescription)> GetEntityGroup(string userId, string ipAdress, string entityGroupId)
         {
             try
             {
@@ -541,10 +560,12 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Inserts / Updates an Entity Group object
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entityGroupId"></param>
         /// <param name="entityGroup"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, EntityGroup? entityGroup, string? ErrorDescription)> SaveEntityGroup(string entityGroupId, EntityGroup entityGroup)
+        public async Task<(bool IsSuccess, EntityGroup? entityGroup, string? ErrorDescription)> SaveEntityGroup(string userId, string ipAdress, string entityGroupId, EntityGroup entityGroup)
         {
             try
             {
@@ -564,11 +585,12 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Inserts / Updates Electronic Address in an Entity Actor
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entityActorId"></param>
         /// <param name="electronicAddress"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, ElectronicAddress? electronicAddress, string? ErrorDescription)> SaveElectronicAddress(string entityActorId, ElectronicAddress electronicAddress)
+        public async Task<(bool IsSuccess, ElectronicAddress? electronicAddress, string? ErrorDescription)> SaveElectronicAddress(string userId, string ipAdress, string entityActorId, ElectronicAddress electronicAddress)
         {
             try
             {
@@ -610,11 +632,12 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Inserts / Updates Shipping Setup in an Entity Actor
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entityActorId"></param>
         /// <param name="shippingInfo"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, ShippingInfo? shippingInfo, string? ErrorDescription)> SaveShippingSetup(string entityActorId, ShippingInfo shippingInfo)
+        public async Task<(bool IsSuccess, ShippingInfo? shippingInfo, string? ErrorDescription)> SaveShippingSetup(string userId, string ipAdress, string entityActorId, ShippingInfo shippingInfo)
         {
             try
             {
@@ -655,11 +678,12 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Inserts / Updates Commercial Conditions in an Entity Actor
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entityActorId"></param>
         /// <param name="entitiesCommercialRelationShip"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, EntitiesCommercialRelationShip? entitiesCommercialRelationShip, string? ErrorDescription)> SaveCommercialConditions(string entityActorId, EntitiesCommercialRelationShip entitiesCommercialRelationShip)
+        public async Task<(bool IsSuccess, EntitiesCommercialRelationShip? entitiesCommercialRelationShip, string? ErrorDescription)> SaveCommercialConditions(string userId, string ipAdress, string entityActorId, EntitiesCommercialRelationShip entitiesCommercialRelationShip)
         {
             try
             {
@@ -700,9 +724,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Retrieves an Electronic Address filtered by Id
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="electronicAddressId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, ElectronicAddress? electronicAddress, string? ErrorDescription)> GetElectronicAddressById(string electronicAddressId)
+        public async Task<(bool IsSuccess, ElectronicAddress? electronicAddress, string? ErrorDescription)> GetElectronicAddressById(string userId, string ipAdress, string electronicAddressId)
         {
             try
             {
@@ -735,13 +761,14 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
         }
 
-
         /// <summary>
         /// Retrieves Shipping Information filtered by Id
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="shippingInfoId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, ShippingInfo? shippingInfo, string? ErrorDescription)> GetShippingSetupById(string shippingInfoId)
+        public async Task<(bool IsSuccess, ShippingInfo? shippingInfo, string? ErrorDescription)> GetShippingSetupById(string userId, string ipAdress, string shippingInfoId)
         {
             try
             {
@@ -780,10 +807,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Retrieves Entities Relationships filtered by Id
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entitiesCommercialRelationShipId"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, EntitiesCommercialRelationShip? entitiesCommercialRelationShip, string? ErrorDescription)> GetEntitiesCommercialRelationShipById(string entitiesCommercialRelationShipId)
+        public async Task<(bool IsSuccess, EntitiesCommercialRelationShip? entitiesCommercialRelationShip, string? ErrorDescription)> GetEntitiesCommercialRelationShipById(string userId, string ipAdress, string entitiesCommercialRelationShipId)
         {
             try
             {
@@ -822,9 +850,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Retrives the list of electronic addresses of an Actor
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entityActorId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<ElectronicAddress>? electronicAddresses, string? ErrorDescription)> GetElectronicAddresses(string entityActorId)
+        public async Task<(bool IsSuccess, List<ElectronicAddress>? electronicAddresses, string? ErrorDescription)> GetElectronicAddresses(string userId, string ipAdress, string entityActorId)
         {
             try
             {
@@ -858,13 +888,14 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
         }
 
-
         /// <summary>
-        /// Retrieves the relation of all Shipping info records related with an Entity
+        ///  Retrieves the relation of all Shipping info records related with an Entity
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entityActorId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<ShippingInfo> shippingInfos, string? ErrorDescription)> GetShippingSetup(string entityActorId)
+        public async Task<(bool IsSuccess, List<ShippingInfo> shippingInfos, string? ErrorDescription)> GetShippingSetup(string userId, string ipAdress, string entityActorId)
         {
             try
             {
@@ -902,9 +933,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Retrieves the list of the different commercial conditions for an Entity
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entityActorId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<EntitiesCommercialRelationShip> entitiesCommercialRelationShips, string? ErrorDescription)> GetCommercialConditiosOfEntity(string entityActorId)
+        public async Task<(bool IsSuccess, List<EntitiesCommercialRelationShip> entitiesCommercialRelationShips, string? ErrorDescription)> GetCommercialConditiosOfEntity(string userId, string ipAdress, string entityActorId)
         {
             try
             {
