@@ -34,15 +34,17 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
 
 
         /// <summary>
-        /// Retrieves a Entity Role Object
+        ///  Retrieves a Entity Role Object
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entityRoleId"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetEntityRole")]
-        public async Task<IActionResult> GetEntityRole(string entityRoleId)
+        public async Task<IActionResult> GetEntityRole(string userId, string ipAdress, string entityRoleId)
         {
-            var response = await _entitiesRelatedConcepts.GetEntityRole(entityRoleId);
+            var response = await _entitiesRelatedConcepts.GetEntityRole(userId, ipAdress, entityRoleId);
 
             if (response.IsSuccess)
             {
@@ -79,13 +81,15 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Retrieves a Entity Type object
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entityTypeId"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetEntityType")]
-        public async Task<IActionResult> GetEntityType(string entityTypeId)
+        public async Task<IActionResult> GetEntityType(string userId, string ipAdress, string entityTypeId)
         {
-            var response = await _entitiesRelatedConcepts.GetEntityType(entityTypeId);
+            var response = await _entitiesRelatedConcepts.GetEntityType(userId, ipAdress, entityTypeId);
 
             if (response.IsSuccess)
             {
@@ -101,13 +105,15 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Retrieves an Identification Type object
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="identicationTypeId"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetIdentificationType")]
-        public async Task<IActionResult> GetIdentificationType(string identicationTypeId)
+        public async Task<IActionResult> GetIdentificationType(string userId, string ipAdress, string identicationTypeId)
         {
-            var response = await _entitiesRelatedConcepts.GetIdentificationType(identicationTypeId);
+            var response = await _entitiesRelatedConcepts.GetIdentificationType(userId, ipAdress, identicationTypeId);
 
             if (response.IsSuccess)
             {
@@ -144,13 +150,15 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Retrieves a Pallet Type by Id
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="palletTypeId"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetPalletType")]
-        public async Task<IActionResult> GetPalletType(string palletTypeId)
+        public async Task<IActionResult> GetPalletType(string userId, string ipAdress, string palletTypeId)
         {
-            var response = await _entitiesRelatedConcepts.GetPalletType(palletTypeId);
+            var response = await _entitiesRelatedConcepts.GetPalletType(userId, ipAdress, palletTypeId);
 
             if (response.IsSuccess)
             {
@@ -166,14 +174,15 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Saves an Entity Role document. If it doesn't exists, it will be created
         /// </summary>
-        /// <param name="entityRoleId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entityRole"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveEntityRole")]
-        public async Task<IActionResult> SaveEntityRole(string entityRoleId, EntityRole entityRole)
+        public async Task<IActionResult> SaveEntityRole(string userId, string ipAdress, EntityRole entityRole)
         {
-            var response = await _entitiesRelatedConcepts.SaveEntityRole(entityRoleId, entityRole);
+            var response = await _entitiesRelatedConcepts.SaveEntityRole(userId, ipAdress, entityRole);
 
             if (response.IsSuccess)
             {
@@ -189,14 +198,15 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Saves an Entity Type document. If it doesn't exists, it will be created
         /// </summary>
-        /// <param name="entityTypeId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entityType"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveEntityType")]
-        public async Task<IActionResult> SaveEntityType(string? entityTypeId, EntityType entityType)
+        public async Task<IActionResult> SaveEntityType(string userId, string ipAdress, EntityType entityType)
         {
-            var response = await _entitiesRelatedConcepts.SaveEntityType(entityType);
+            var response = await _entitiesRelatedConcepts.SaveEntityType(userId, ipAdress, entityType);
 
             if (response.IsSuccess)
             {
@@ -212,14 +222,15 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Saves an Identification Type document. If it doesn't exists, it will be created
         /// </summary>
-        /// <param name="identicationTypeId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="identificationType"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveIdentificationType")]
-        public async Task<IActionResult> SaveIdentificationType(string identicationTypeId, IdentificationType identificationType)
+        public async Task<IActionResult> SaveIdentificationType(string userId, string ipAdress, IdentificationType identificationType)
         {
-            var response = await _entitiesRelatedConcepts.SaveIdentificationType(identicationTypeId, identificationType);
+            var response = await _entitiesRelatedConcepts.SaveIdentificationType(userId, ipAdress, identificationType);
 
             if (response.IsSuccess)
             {
@@ -235,13 +246,15 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Insert / Update a Pallet Type
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="palletType"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SavePalletType")]
-        public async Task<IActionResult> SavePalletType(PalletType palletType)
+        public async Task<IActionResult> SavePalletType(string userId, string ipAdress, PalletType palletType)
         {
-            var response = await _entitiesRelatedConcepts.SavePalletType(palletType);
+            var response = await _entitiesRelatedConcepts.SavePalletType(userId, ipAdress, palletType);
 
             if (response.IsSuccess)
             {

@@ -42,9 +42,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Retrieves info of a particular Entity Role
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entityRoleId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, EntityRole? entityRole, string? ErrorDescription)> GetEntityRole(string entityRoleId)
+        public async Task<(bool IsSuccess, EntityRole? entityRole, string? ErrorDescription)> GetEntityRole(string userId, string ipAdress, string entityRoleId)
         {
             try
             {
@@ -94,10 +96,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Retrieves info of a particular Entity Type
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entityTypeId"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, EntityType? entityType, string? ErrorDescription)> GetEntityType(string entityTypeId)
+        public async Task<(bool IsSuccess, EntityType? entityType, string? ErrorDescription)> GetEntityType(string userId, string ipAdress, string entityTypeId)
         {
             try
             {
@@ -122,9 +125,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Retrieves info of a particular Identification Type
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="identicationTypeId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, IdentificationType? identificationType, string? ErrorDescription)> GetIdentificationType(string identicationTypeId)
+        public async Task<(bool IsSuccess, IdentificationType? identificationType, string? ErrorDescription)> GetIdentificationType(string userId, string ipAdress, string identicationTypeId)
         {
             try
             {
@@ -174,9 +179,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Retrieves a Pallet Type by Id
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="palletTypeId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, PalletType? palletType, string? ErrorDescription)> GetPalletType(string palletTypeId)
+        public async Task<(bool IsSuccess, PalletType? palletType, string? ErrorDescription)> GetPalletType(string userId, string ipAdress, string palletTypeId)
         {
             try
             {
@@ -201,14 +208,18 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Insert / Updates Entity Role information
         /// </summary>
-        /// <param name="entityRoleId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entityRole"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, EntityRole? entityRole, string? ErrorDescription)> SaveEntityRole(string entityRoleId, EntityRole entityRole)
+        public async Task<(bool IsSuccess, EntityRole? entityRole, string? ErrorDescription)> SaveEntityRole(string userId, string ipAdress, EntityRole entityRole)
         {
             try
             {
-                var filterEntityRole = Builders<EntityRole>.Filter.Eq("_id", new ObjectId(entityRoleId));
+                if (entityRole.Id == null)
+                    entityRole.Id = ObjectId.GenerateNewId().ToString();
+
+                var filterEntityRole = Builders<EntityRole>.Filter.Eq("_id", new ObjectId(entityRole.Id));
                 var updateEntityRolesOptions = new ReplaceOptions { IsUpsert = true };
                 var resultEntityRoles = await _entityRoles.ReplaceOneAsync(filterEntityRole, entityRole, updateEntityRolesOptions);
 
@@ -224,10 +235,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Insert / Updates Entity Type information
         /// </summary>
-        /// <param name="entityTypeId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="entityType"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, EntityType? entityType, string? ErrorDescription)> SaveEntityType(EntityType entityType)
+        public async Task<(bool IsSuccess, EntityType? entityType, string? ErrorDescription)> SaveEntityType(string userId, string ipAdress, EntityType entityType)
         {
             try
             {
@@ -252,14 +264,18 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Insert / Saves Identification Type information
         /// </summary>
-        /// <param name="identicationTypeId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="identificationType"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, IdentificationType? identificationType, string? ErrorDescription)> SaveIdentificationType(string identicationTypeId, IdentificationType identificationType)
+        public async Task<(bool IsSuccess, IdentificationType? identificationType, string? ErrorDescription)> SaveIdentificationType(string userId, string ipAdress, IdentificationType identificationType)
         {
             try
             {
-                var filterIdentificationType = Builders<IdentificationType>.Filter.Eq("_id", new ObjectId(identicationTypeId));
+                if (identificationType.Id == null)
+                    identificationType.Id = ObjectId.GenerateNewId().ToString();
+
+                var filterIdentificationType = Builders<IdentificationType>.Filter.Eq("_id", new ObjectId(identificationType.Id));
                 var updateIdentificationTypeOptions = new ReplaceOptions { IsUpsert = true };
                 var resultIdentificationType = await _identificationType.ReplaceOneAsync(filterIdentificationType, identificationType, updateIdentificationTypeOptions);
 
@@ -273,11 +289,13 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
 
         /// <summary>
-        /// Insert / Update a Pallet Type
+        ///  Insert / Update a Pallet Type
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="palletType"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, PalletType? palletType, string? ErrorDescription)> SavePalletType(PalletType palletType)
+        public async Task<(bool IsSuccess, PalletType? palletType, string? ErrorDescription)> SavePalletType(string userId, string ipAdress, PalletType palletType)
         {
             try
             {
