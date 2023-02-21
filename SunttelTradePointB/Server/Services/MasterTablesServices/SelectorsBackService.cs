@@ -71,6 +71,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 string strNameFilter = filterString == null ? "" : filterString;
                 string strRoleName = roleName == null ? "" : roleName;
 
+                //if(strRoleName.Length > 0)
+                //{
+                //    strNameFilter = "ALL";
+                //}
+
                 var pipe = new List<BsonDocument>();
                 
                 if (strNameFilter.ToUpper() != "ALL" && strNameFilter.ToUpper() != "TODOS")

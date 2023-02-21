@@ -311,6 +311,10 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
+                if(transactionalItemCharacteristicPair.Id == null)
+                {
+                    transactionalItemCharacteristicPair.Id = ObjectId.GenerateNewId().ToString();
+                }
 
                 var filterPrev = Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId);
                 var resultPrev = await _TransactionalItemsCollection.Find(filterPrev).FirstOrDefaultAsync();
@@ -357,7 +361,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             try
             {
                 if (transactItemImage.Id == null)
-                    transactItemImage.Id = "";
+                {
+                    transactItemImage.Id = ObjectId.GenerateNewId().ToString();
+                }
 
                 var filterPrev = Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId);
                 var resultPrev = await _TransactionalItemsCollection.Find(filterPrev).FirstOrDefaultAsync();

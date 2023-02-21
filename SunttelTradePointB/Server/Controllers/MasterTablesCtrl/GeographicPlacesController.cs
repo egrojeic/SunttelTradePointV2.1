@@ -147,14 +147,13 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Inserts / Updates a Warehouse object
         /// </summary>
-        /// <param name="warehouseId"></param>
         /// <param name="warehouse"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveWarehouse")]
-        public async Task<IActionResult> SaveWarehouse(string warehouseId, Warehouse warehouse)
+        public async Task<IActionResult> SaveWarehouse(Warehouse warehouse)
         {
-            var response = await _geographicPlaces.SaveWarehouse(warehouseId, warehouse);
+            var response = await _geographicPlaces.SaveWarehouse(warehouse);
 
             if(response.IsSuccess)
             {

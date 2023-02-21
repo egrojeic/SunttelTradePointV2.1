@@ -201,11 +201,10 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Inserts / Updates a Warehouse object
         /// </summary>
-        /// <param name="warehouseId"></param>
         /// <param name="warehouse"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, Warehouse? warehouse, string? ErrorDescription)> SaveWarehouse(string warehouseId, Warehouse warehouse)
+        public async Task<(bool IsSuccess, Warehouse? warehouse, string? ErrorDescription)> SaveWarehouse(Warehouse warehouse)
         {
             try
             {
@@ -214,7 +213,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     warehouse.Id = ObjectId.GenerateNewId().ToString();
                 }
 
-                var filterWarehouse = Builders<Warehouse>.Filter.Eq("_id", new ObjectId(warehouseId));
+                var filterWarehouse = Builders<Warehouse>.Filter.Eq("_id", new ObjectId(warehouse.Id));
                 var updateWarehouseOptions = new ReplaceOptions { IsUpsert = true };
                 var resultWarehouse = await _WarehouseCollection.ReplaceOneAsync(filterWarehouse, warehouse, updateWarehouseOptions);
 

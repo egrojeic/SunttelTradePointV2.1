@@ -55,10 +55,9 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <summary>
         /// Insert/ Updates a Warehouse
         /// </summary>
-        /// <param name="warehouseId"></param>
         /// <param name="warehouse"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, Warehouse? warehouse, string? ErrorDescription)> SaveWarehouse(string warehouseId, Warehouse warehouse);
+        Task<(bool IsSuccess, Warehouse? warehouse, string? ErrorDescription)> SaveWarehouse(Warehouse warehouse);
 
 
     }
