@@ -66,25 +66,29 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             try
             {
                 var pipeline = new[] {
-
                     new BsonDocument("$match", new BsonDocument("_id", new ObjectId(entityActorId))),
-
-                     new BsonDocument {
+                    new BsonDocument {
                         { "$lookup",
                             new BsonDocument {
                                 { "from", "GeographicCities" },
-                                { "localField", "InvoicingAddress.CityAddressRef" },
-                                { "foreignField", "_id" },
+                                { "let", new BsonDocument { { "cityId", "$InvoicingAddress.CityAddressRef" } } },
+                                { "pipeline", new BsonArray {
+                                    new BsonDocument("$match", new BsonDocument("$expr",
+                                        new BsonDocument("$cond", new BsonArray {
+                                            new BsonDocument("$eq", new BsonArray { "$$cityId", null }),
+                                            new BsonDocument("$eq", new BsonArray { "$_id", null }),
+                                            new BsonDocument("$eq", new BsonArray { "$_id", "$$cityId" })
+                                        })
+                                    ))
+                                }},
                                 { "as", "InvoicingAddress.CityAddress" }
                             }
                         }
                     },
-
-                     new BsonDocument(
-                        "$unwind",
-                        "$InvoicingAddress.CityAddress")
-                    ,
-
+                    new BsonDocument("$unwind", new BsonDocument {
+                        { "path", "$InvoicingAddress.CityAddress" },
+                        { "preserveNullAndEmptyArrays", true },
+                    })
                 };
 
                 var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
