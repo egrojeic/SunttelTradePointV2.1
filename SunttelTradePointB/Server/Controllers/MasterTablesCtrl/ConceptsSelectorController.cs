@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
+using SunttelTradePointB.Shared.Common;
 
 namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
 {
@@ -35,14 +36,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// Retrieves the list of Entity/Nodes/Actors filtered by the optional parameter
         /// </summary>
         /// <param name="filterString"></param>
-        /// <param name="roleName"></param>
+        /// <param name="roleIndex">1: Provider, 2: Customer, 3: Carrier, 4: Company, 5: User, 6: Employee</param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetSelectorListEntityActor")]
-        public async Task<IActionResult> GetSelectorListEntityActor(string? filterString = null, string? roleName = null)
+        public async Task<IActionResult> GetSelectorListEntityActor(string? filterString = null, BasicRolesFilter? roleIndex = null)
         {
 
-            var response = await _selectorDatasource.GetSelectorListEntityActor(filterString, roleName);
+            var response = await _selectorDatasource.GetSelectorListEntityActor(filterString, roleIndex);
 
             if (response.IsSuccess)
             {

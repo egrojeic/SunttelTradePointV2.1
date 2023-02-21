@@ -62,14 +62,25 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// Retrieves the list of Entity/Nodes/Actors filtered by the optional parameter
         /// </summary>
         /// <param name="filterString"></param>
-        /// <param name="roleName"></param>
+        /// <param name="roleIndex"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<AtomConcept>? EntityActorList, string? ErrorDescription)> GetSelectorListEntityActor(string? filterString, string? roleName)
+        public async Task<(bool IsSuccess, List<AtomConcept>? EntityActorList, string? ErrorDescription)> GetSelectorListEntityActor(string? filterString, BasicRolesFilter? roleIndex)
         {
             try
             {
+                Dictionary<BasicRolesFilter, string> roleDict = new Dictionary<BasicRolesFilter, string>
+                {
+                    { 0, "" },
+                    { BasicRolesFilter.Provider, "Provider" },
+                    { BasicRolesFilter.Customer, "Customer" },
+                    { BasicRolesFilter.Carrier, "Carrier" },
+                    { BasicRolesFilter.Company, "Company" },
+                    { BasicRolesFilter.User, "User" },
+                    { BasicRolesFilter.Employee, "Employee" }
+                };
+
                 string strNameFilter = filterString == null ? "" : filterString;
-                string strRoleName = roleName == null ? "" : roleName;
+                string strRoleName = roleIndex == null ? "" : roleDict[roleIndex??0];
 
                 //if(strRoleName.Length > 0)
                 //{
