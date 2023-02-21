@@ -47,6 +47,44 @@ namespace SunttelTradePointB.Shared.Common
         ComercialConditions = 5
     }
 
+
+    /// <summary>
+    /// Enumerator with the main basic Entity Roles
+    /// </summary>
+    public enum BasicRolesFilter { 
+    
+        /// <summary>
+        /// Provider
+        /// </summary>
+        Provider = 1,
+
+        /// <summary>
+        /// Customer
+        /// </summary>
+        Customer = 2,
+
+        /// <summary>
+        /// Carrier
+        /// </summary>
+        Carrier = 3,
+
+        /// <summary>
+        /// Company
+        /// </summary>
+        Company = 4,
+
+        /// <summary>
+        /// User
+        /// </summary>
+        User = 5,
+
+        /// <summary>
+        /// Employee
+        /// </summary>
+        Employee = 6
+
+    }
+
     [BsonIgnoreExtraElements]
     public class EntityActor: Concept
     {
