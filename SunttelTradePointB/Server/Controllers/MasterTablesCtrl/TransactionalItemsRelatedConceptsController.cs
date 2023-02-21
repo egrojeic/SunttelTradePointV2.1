@@ -37,13 +37,15 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// Retrieves a box object
         /// </summary>
         /// <param name="boxID"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetBox")]
-        public async Task<IActionResult> GetBox(string boxID)
+        public async Task<IActionResult> GetBox(string userId, string ipAddress, string boxID)
         {
 
-            var response = await _transactionalItemsRelatedConcepts.GetBox(boxID);
+            var response = await _transactionalItemsRelatedConcepts.GetBox(userId, ipAddress, boxID);
 
             if (response.IsSuccess)
             {
@@ -79,12 +81,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// Retrieves a SeasonBusiness object
         /// </summary>
         /// <param name="seasonId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetSeason")]
-        public async Task<IActionResult> GetSeason(string seasonId)
+        public async Task<IActionResult> GetSeason(string userId, string ipAddress, string seasonId)
         {
-            var response = await _transactionalItemsRelatedConcepts.GetSeason(seasonId);
+            var response = await _transactionalItemsRelatedConcepts.GetSeason(userId, ipAddress, seasonId);
 
             if (response.IsSuccess)
             {
@@ -122,12 +126,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// Retrieves a TransactionalItemType object
         /// </summary>
         /// <param name="transactionalItemId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetTransactionalItemType")]
-        public async Task<IActionResult> GetTransactionalItemType(string transactionalItemId)
+        public async Task<IActionResult> GetTransactionalItemType(string userId, string ipAddress, string transactionalItemId)
         {
-            var response = await _transactionalItemsRelatedConcepts.GetTransactionalItemType(transactionalItemId);
+            var response = await _transactionalItemsRelatedConcepts.GetTransactionalItemType(userId, ipAddress, transactionalItemId);
 
             if (response.IsSuccess)
             {
@@ -164,12 +170,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// Retrieves a list of Transactional Item Groupd with a specified condition
         /// </summary>
         /// <param name="filterCondition"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetTransactionalItemGroups")]
-        public async Task<IActionResult> GetTransactionalItemGroups(string filterCondition)
+        public async Task<IActionResult> GetTransactionalItemGroups(string userId, string ipAddress, string filterCondition)
         {
-            var response = await _transactionalItemsRelatedConcepts.GetTransactionalItemGroups(filterCondition);
+            var response = await _transactionalItemsRelatedConcepts.GetTransactionalItemGroups(userId, ipAddress, filterCondition);
             if(response.IsSuccess)
             {
                 return Ok(response.transactionalItemGroups);
@@ -185,12 +193,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// Retrieves a particular TransactionalItemGroup
         /// </summary>
         /// <param name="transactionalItemGroupId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetTransactionalItemGroup")]
-        public async Task<IActionResult> GetTransactionalItemGroup(string transactionalItemGroupId)
+        public async Task<IActionResult> GetTransactionalItemGroup(string userId, string ipAddress, string transactionalItemGroupId)
         {
-            var response = await _transactionalItemsRelatedConcepts.GetTransactionalItemGroup(transactionalItemGroupId);
+            var response = await _transactionalItemsRelatedConcepts.GetTransactionalItemGroup(userId, ipAddress, transactionalItemGroupId);
             if(response.IsSuccess)
             {
                 return Ok(response.transactionalItemGroup);
@@ -205,14 +215,15 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Saves a Box document. If it doesn't exists, it will be created
         /// </summary>
-        /// <param name="boxId"></param>
         /// <param name="box"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveBox")]
-        public async Task<IActionResult> SaveBox(string? boxId, Box box)
+        public async Task<IActionResult> SaveBox(string userId, string ipAddress, Box box)
         {
-            var response = await _transactionalItemsRelatedConcepts.SaveBox(box);
+            var response = await _transactionalItemsRelatedConcepts.SaveBox(userId, ipAddress, box);
             if(response.IsSuccess)
             {
                 return Ok(response.box);
@@ -227,14 +238,15 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Saves a SeasonBusiness document. If it doesn't exists, it will be created
         /// </summary>
-        /// <param name="seasonId"></param>
         /// <param name="season"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveSeason")]
-        public async Task<IActionResult> SaveSeason(string? seasonId, SeasonBusiness season)
+        public async Task<IActionResult> SaveSeason(string userId, string ipAddress, SeasonBusiness season)
         {
-            var response = await _transactionalItemsRelatedConcepts.SaveSeason(season);
+            var response = await _transactionalItemsRelatedConcepts.SaveSeason(userId, ipAddress, season);
             if (response.IsSuccess)
             {
                 return Ok(response.season);
@@ -249,14 +261,15 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Saves a TransactionalItemStatus document. If it doesn't exists, it will be created
         /// </summary>
-        /// <param name="statusId"></param>
         /// <param name="transactionalItemStatus"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveStatus")]
-        public async Task<IActionResult> SaveStatus(string? statusId, TransactionalItemStatus transactionalItemStatus)
+        public async Task<IActionResult> SaveStatus(string userId, string ipAddress, TransactionalItemStatus transactionalItemStatus)
         {
-            var response = await _transactionalItemsRelatedConcepts.SaveStatus(transactionalItemStatus);
+            var response = await _transactionalItemsRelatedConcepts.SaveStatus(userId, ipAddress, transactionalItemStatus);
             if (response.IsSuccess)
             {
                 return Ok(response.transactionalItemStatus);
@@ -271,14 +284,15 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Saves a TransactionalItemType document. If it doesn't exists, it will be created
         /// </summary>
-        /// <param name="transactionalItemId"></param>
         /// <param name="transactionalItemType"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveTransactionalItemType")]
-        public async Task<IActionResult> SaveTransactionalItemType(string? transactionalItemId, TransactionalItemType transactionalItemType)
+        public async Task<IActionResult> SaveTransactionalItemType(string userId, string ipAddress, TransactionalItemType transactionalItemType)
         {
-            var response = await _transactionalItemsRelatedConcepts.SaveTransactionalItemType(transactionalItemType);
+            var response = await _transactionalItemsRelatedConcepts.SaveTransactionalItemType(userId, ipAddress, transactionalItemType);
             if (response.IsSuccess)
             {
                 return Ok(response.transactionalItemType);
@@ -293,14 +307,15 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Insert / Updates Transactional Item Group
         /// </summary>
-        /// <param name="transactionalItemGroupId"></param>
         /// <param name="transactionalItemGroup"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveTransactionalItemGroup")]
-        public async Task<IActionResult> SaveTransactionalItemGroup(string? transactionalItemGroupId, ConceptGroup transactionalItemGroup)
+        public async Task<IActionResult> SaveTransactionalItemGroup(string userId, string ipAddress, ConceptGroup transactionalItemGroup)
         {
-            var response = await _transactionalItemsRelatedConcepts.SaveTransactionalItemGroup(transactionalItemGroup);
+            var response = await _transactionalItemsRelatedConcepts.SaveTransactionalItemGroup(userId, ipAddress, transactionalItemGroup);
             if (response.IsSuccess)
             {
                 return Ok(response.transactionalItemGroup);
