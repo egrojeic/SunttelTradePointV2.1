@@ -1,6 +1,8 @@
 ﻿@page "/GroupsEntities"
-@using SunttelTradePointB.Client.Shared.TransactionalItems
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Navigations
 @using SunttelTradePointB.Shared.Common
+@using SunttelTradePointB.Client.Shared.TransactionalItems
 
 @inject IJSRuntime JSRuntime
 @inject NavigationManager navigationManager
@@ -24,28 +26,26 @@
     }else{
         @if(entityGroupList != null)
         {
-            <RadzenDataGrid AllowFiltering="true"
-                    AllowColumnResize="true"
-                    AllowAlternatingRows="true"
-                    FilterMode="FilterMode.Advanced"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    AllowSorting="true"
-                    PageSize="50"
-                    AllowPaging="true"
-                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    Data="@entityGroupList"
-                    TItem="EntityGroup"
-                    ColumnWidth="300px"
-                    SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"
-                    @bind-Value=@selectedGroups Class="m-4"
-                    CellContextMenu="@ShowContextMenuWithContent">
-                <Columns>
-                    <RadzenDataGridColumn TItem="EntityGroup" Property="@nameof(EntityGroup.Code)" Title="Code" Frozen="true" Width="120px" />
-                    <RadzenDataGridColumn TItem="EntityGroup" Property="@nameof(EntityGroup.Name)" Title="Name" Frozen="true" Width="auto" />
-                </Columns>
-            </RadzenDataGrid>
+            <SfGrid 
+                DataSource="entityGroupList"
+                Height="auto"
+                Width="auto"
+                TValue="EntityGroup"
+                AllowFiltering="true"
+                AllowTextWrap="false"
+                AllowPaging="true"
+                AllowResizing="true"    
+                ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" } })">
+                <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
+                <GridColumns>
+                    <GridColumn Field="@nameof(EntityGroup.Code)" HeaderText="Code" Width="110"></GridColumn>
+                    <GridColumn Field="@nameof(EntityGroup.Name)" HeaderText="Name" Width="110"></GridColumn>
+                    <GridColumn Field="@nameof(EntityGroup.GroupClassificationCriteria)" HeaderText="Group Classification" Width="110"></GridColumn>
+                </GridColumns>
+                    <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="EntityGroup"></GridEvents>
+            </SfGrid>
+
+
         }
     }
 </div>
@@ -92,23 +92,14 @@
         }
     }
 
-    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<EntityGroup> args) => ContextMenuService.Open(args, ds =>
-    @<RadzenMenu Click="OnMenuItemClick">
-        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-
-        </RadzenMenu>
-    );
-
-    void OnMenuItemClick(MenuItemEventArgs args)
+    public void OnContextMenuClick(ContextMenuClickEventArgs<EntityGroup> args)
     {
-        EntityGroup argObj = (EntityGroup)args.Value;
-        //Navigate(argObj.Id);
-        if(args.Text == "Edit")
-            navigationManager.NavigateTo($"/GroupsEntities/{argObj.Id}");
+        EntityGroup _EntityGroup = new();
+        _EntityGroup = args.RowInfo.RowData;
 
-        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        if (args.Item.Text == "Edit")
         {
-            ContextMenuService.Close();
+            navigationManager.NavigateTo($"/GroupsEntities/{_EntityGroup.Id}");
         }
     }
 
