@@ -414,7 +414,7 @@
                 visible = true;
                 StateHasChanged();    
             }
-            
+
         }
         if (title == "Save as...")
         {
@@ -428,31 +428,31 @@
                 visible = true;
                 StateHasChanged();    
             }
-            
+
         }
         if(title == "Entities Types")
         {
-            navigationManager.NavigateTo("/TypesEntities");
+            jsRuntime.InvokeAsync<object>("window.open", "/TypesEntities", "_blank");
         }
         if(title == "Groups")
         {
-            navigationManager.NavigateTo("/GroupsEntities");
+            jsRuntime.InvokeAsync<object>("window.open", "/GroupsEntities", "_blank");
         }
         if (title == "Identification Types")
         {
-            navigationManager.NavigateTo("/IdentificationTyes");
+            jsRuntime.InvokeAsync<object>("window.open", "/IdentificationTyes", "_blank");
         }
         if(title == "Roles")
         {
-            navigationManager.NavigateTo("/EntityRoles");
+            jsRuntime.InvokeAsync<object>("window.open", "/EntityRoles", "_blank");
         }
         if (title == "Status")
         {
-            navigationManager.NavigateTo("/EntityStatus");
+            jsRuntime.InvokeAsync<object>("window.open", "/EntityStatus", "_blank");
         }
         if (title == "Pallet Type")
         {
-            navigationManager.NavigateTo("/EntityPalletType");
+            jsRuntime.InvokeAsync<object>("window.open", "/EntityPalletType", "_blank");
         }
     }
 
