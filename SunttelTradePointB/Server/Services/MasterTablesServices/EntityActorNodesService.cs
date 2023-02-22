@@ -152,16 +152,39 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 );
 
                 pipeline.Add(
-                    new BsonDocument {
-                        { "$lookup",
-                            new BsonDocument {
+                    new BsonDocument
+                    {
+                        {
+                            "$lookup",
+                            new BsonDocument
+                            {
                                 { "from", "GeographicCities" },
-                                { "localField", "InvoicingAddress.CityAddressRef" },
-                                { "foreignField", "_id" },
+                                { "let", new BsonDocument { { "cityId", "$InvoicingAddress.CityAddressRef" } } },
+                                { "pipeline", new BsonArray
+                                {
+                                    new BsonDocument("$match", new BsonDocument("$expr",
+                                        new BsonDocument("$cond", new BsonArray
+                                        {
+                                            new BsonDocument("$eq", new BsonArray { "$$cityId", BsonNull.Value }),
+                                            new BsonDocument("$eq", new BsonArray { "$_id", BsonNull.Value }),
+                                            new BsonDocument("$eq", new BsonArray { "$_id", "$$cityId" })
+                                        })
+                                    ))
+                                }},
                                 { "as", "InvoicingAddress.CityAddress" }
                             }
                         }
                     }
+                    //new BsonDocument {
+                    //    { "$lookup",
+                    //        new BsonDocument {
+                    //            { "from", "GeographicCities" },
+                    //            { "localField", "InvoicingAddress.CityAddressRef" },
+                    //            { "foreignField", "_id" },
+                    //            { "as", "InvoicingAddress.CityAddress" }
+                    //        }
+                    //    }
+                    //}
                 );
 
                 pipeline.Add(
