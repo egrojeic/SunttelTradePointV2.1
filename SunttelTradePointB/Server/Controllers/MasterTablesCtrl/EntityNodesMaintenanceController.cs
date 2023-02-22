@@ -451,14 +451,13 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAdress"></param>
-        /// <param name="entityGroupId"></param>
         /// <param name="entityGroup"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveEntityGroup")]
-        public async Task<IActionResult> SaveEntityGroup(string userId, string ipAdress, string entityGroupId, EntityGroup entityGroup)
+        public async Task<IActionResult> SaveEntityGroup(string userId, string ipAdress, EntityGroup entityGroup)
         {
-            var response = await _entityNodes.SaveEntityGroup(userId, ipAdress, entityGroupId, entityGroup);
+            var response = await _entityNodes.SaveEntityGroup(userId, ipAdress, entityGroup);
 
             if(response.IsSuccess)
             {

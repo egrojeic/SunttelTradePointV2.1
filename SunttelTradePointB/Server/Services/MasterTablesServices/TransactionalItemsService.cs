@@ -413,7 +413,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             {
 
                 if (transactionalItemProcessStep.Id == null)
-                    transactionalItemProcessStep.Id = "";
+                {
+                    transactionalItemProcessStep.Id = ObjectId.GenerateNewId().ToString();
+                }
 
 
                 var filterPrev = Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId);
@@ -464,7 +466,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             try
             {
                 if (transactionalItemQualityPair.Id == null)
-                    transactionalItemQualityPair.Id = "";
+                {
+                    transactionalItemQualityPair.Id = ObjectId.GenerateNewId().ToString();
+                }
 
                 var filterPrev = Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId);
                 var resultPrev = await _TransactionalItemsCollection.Find(filterPrev).FirstOrDefaultAsync();
@@ -512,7 +516,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             try
             {
                 if (packingSpecs.Id == null)
-                    packingSpecs.Id = "";
+                {
+                    packingSpecs.Id = ObjectId.GenerateNewId().ToString();
+                }
 
                 var filterPrev = Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId);
                 var resultPrev = await _TransactionalItemsCollection.Find(filterPrev).FirstOrDefaultAsync();
@@ -557,7 +563,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             try
             {
                 if (transactionalItemTag.Id == null)
-                    transactionalItemTag.Id = "";
+                {
+                    transactionalItemTag.Id = ObjectId.GenerateNewId().ToString();
+                }
 
                 var filterPrev = Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId);
                 var resultPrev = await _TransactionalItemsCollection.Find(filterPrev).FirstOrDefaultAsync();
