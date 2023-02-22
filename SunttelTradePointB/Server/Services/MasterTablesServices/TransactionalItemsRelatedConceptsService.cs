@@ -227,18 +227,20 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             {
                 string strFilterCondition = filterCondition == null ? "" : filterCondition;
 
-                var pipeline = new[]
-                {
-                new BsonDocument(
-                    "$match",
-                        new BsonDocument(
-                            "Name",
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument(
+                        "$match",
                             new BsonDocument(
-                                "$regex", new BsonRegularExpression($"/{filterCondition}/i")
+                                "Name",
+                                new BsonDocument(
+                                    "$regex", new BsonRegularExpression($"/{filterCondition}/i")
+                            )
                         )
                     )
-                )
-            };
+                );
+
                 List<ConceptGroup> results = await _transactionalItemGroups.Aggregate<ConceptGroup>(pipeline).ToListAsync();
                 return (true, results, null);
             }

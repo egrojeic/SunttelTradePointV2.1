@@ -139,14 +139,16 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 if (filter.Length > 0)
                 {
-                    var pipeline = new[]
-                    {
-                    new BsonDocument(
-                        "$match", new BsonDocument(
-                            "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filter}/i"))
+                    var pipeline = new List<BsonDocument>();
+
+                    pipeline.Add(
+                        new BsonDocument(
+                            "$match", new BsonDocument(
+                                "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filter}/i"))
+                            )
                         )
-                     )
-                };
+                    );
+
                     List<Warehouse> results = await _WarehouseCollection.Aggregate<Warehouse>(pipeline).ToListAsync();
                     return (true, results, null);
                 }

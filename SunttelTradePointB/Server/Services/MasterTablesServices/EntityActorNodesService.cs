@@ -66,10 +66,13 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
+                var pipeline = new List<BsonDocument>();
 
-                var pipeline = new BsonDocument[]
-                {
-                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(entityActorId))),
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(entityActorId)))
+                );
+
+                pipeline.Add(
                     new BsonDocument
                     {
                         {
@@ -92,13 +95,16 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                                 { "as", "InvoicingAddress.CityAddress" }
                             }
                         }
-                    },
+                    }
+                );
+
+                pipeline.Add(
                     new BsonDocument("$unwind", new BsonDocument
                     {
                         { "path", "$InvoicingAddress.CityAddress" },
                         { "preserveNullAndEmptyArrays", true },
                     })
-                                };
+                );
                 //var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
 
                 var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
@@ -132,16 +138,20 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             {
                 string strNameFiler = nameLike == null ? "" : nameLike;
 
+                var pipeline = new List<BsonDocument>();
 
-                var pipeline = new[] {
+                pipeline.Add(
                     new BsonDocument(
                         "$match",
                         new BsonDocument(
                                  "Name",
-                                    new BsonDocument (
+                                    new BsonDocument(
                                         "$regex", new BsonRegularExpression($"/{strNameFiler}/i"))
                             )
-                    ),
+                    )
+                );
+
+                pipeline.Add(
                     new BsonDocument {
                         { "$lookup",
                             new BsonDocument {
@@ -151,11 +161,14 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                                 { "as", "InvoicingAddress.CityAddress" }
                             }
                         }
-                    },
-                    new BsonDocument(
-                        "$unwind",
-                        "$InvoicingAddress.CityAddress")
-                    ,
+                    }
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$unwind", "$InvoicingAddress.CityAddress")
+                );
+
+                pipeline.Add(
                     new BsonDocument {
                         { "$project",
                             new BsonDocument {
@@ -163,9 +176,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                             }
                         }
                     }
-                };
-
-
+                );
 
                 List<EntityActor> results = await _entityActorsCollection.Aggregate<EntityActor>(pipeline).ToListAsync();
 
@@ -221,39 +232,48 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 return (false, null, "Not valid Entity Id");
             try
             {
-                var pipeline = new[] {
+                var pipeline = new List<BsonDocument>();
 
-                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(entityActorId))),
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(entityActorId)))
+                );
 
+                pipeline.Add(
                     new BsonDocument("$project", new BsonDocument(){
                         { $"{detailsArrayListName}", 1},
                         { "_id", 0}
-                    }),
+                    })
+                );
 
-                    new BsonDocument("$unwind", $"${detailsArrayListName}"),
-                       new BsonDocument(
+                pipeline.Add(
+                    new BsonDocument("$unwind", $"${detailsArrayListName}")
+                );
+
+                pipeline.Add(
+                    new BsonDocument(
                        "$replaceRoot",
-                            new BsonDocument("newRoot", $"${detailsArrayListName}")),
-                };
-
+                            new BsonDocument("newRoot", $"${detailsArrayListName}"))
+                );
 
 
                 if (detailsArrayListName == "AddressList")
                 {
-                    Array.Resize(ref pipeline, pipeline.Length + 1);
-                    pipeline[pipeline.Length - 1] =
+                    pipeline.Add(
                         new BsonDocument {
-                        { "$lookup",
-                            new BsonDocument {
-                                { "from", "GeographicCities" },
-                                { "localField", "CityAddressRef" },
-                                { "foreignField", "_id" },
-                                { "as", "CityAddress" }
+                            { "$lookup",
+                                new BsonDocument {
+                                    { "from", "GeographicCities" },
+                                    { "localField", "CityAddressRef" },
+                                    { "foreignField", "_id" },
+                                    { "as", "CityAddress" }
+                                }
                             }
                         }
-                    };
-                    Array.Resize(ref pipeline, pipeline.Length + 1);
-                    pipeline[pipeline.Length - 1] = new BsonDocument { { "$unwind", "$CityAddress" } };
+                    );
+
+                    pipeline.Add(
+                        new BsonDocument { { "$unwind", "$CityAddress" } }
+                    );
                 }
                 var result = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
 
@@ -509,14 +529,15 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 if (filter.Length > 0)
                 {
-                    var pipeline = new[]
-                    {
+                    var pipeline = new List<BsonDocument>();
+
+                    pipeline.Add(
                         new BsonDocument(
                             "$match", new BsonDocument(
                                 "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filter}/i"))
                             )
                         )
-                    };
+                    );
 
                     List<EntityGroup> results = await _entityGroup.Aggregate<EntityGroup>(pipeline).ToListAsync();
                     return (true, results, null);
@@ -751,22 +772,23 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
-                var pipeline = new[] {
+                var pipeline = new List<BsonDocument>();
 
-                    new BsonDocument(
-                        "$unwind",
-                        "$ElectronicAddresses"),
+                pipeline.Add(
+                    new BsonDocument("$unwind", "$ElectronicAddresses")
+                );
 
-                    new BsonDocument("$match", new BsonDocument("ElectronicAddresses._id", new ObjectId(electronicAddressId))),
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("ElectronicAddresses._id", new ObjectId(electronicAddressId)))
+                );
 
-                    new BsonDocument(
-                        "$project", new BsonDocument("ElectronicAddresses", 1)
-                    ),
+                pipeline.Add(
+                    new BsonDocument("$project", new BsonDocument("ElectronicAddresses", 1))
+                );
 
-                    new BsonDocument(
-                        "$replaceRoot", new BsonDocument("newRoot", "$ElectronicAddresses")
-                    )
-                };
+                pipeline.Add(
+                    new BsonDocument("$replaceRoot", new BsonDocument("newRoot", "$ElectronicAddresses"))
+                );
 
                 var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
 
@@ -791,22 +813,23 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
-                var pipeline = new[] {
+                var pipeline = new List<BsonDocument>();
 
-                    new BsonDocument(
-                        "$unwind",
-                        "$ShippingInformation"),
+                pipeline.Add(
+                    new BsonDocument("$unwind", "$ShippingInformation")
+                );
 
-                    new BsonDocument("$match", new BsonDocument("ShippingInformation._id", new ObjectId(shippingInfoId))),
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("ShippingInformation._id", new ObjectId(shippingInfoId)))
+                );
 
-                    new BsonDocument(
-                        "$project", new BsonDocument("ShippingInformation", 1)
-                    ),
+                pipeline.Add(
+                    new BsonDocument("$project", new BsonDocument("ShippingInformation", 1))
+                );
 
-                    new BsonDocument(
-                        "$replaceRoot", new BsonDocument("newRoot", "$ShippingInformation")
-                    )
-                };
+                pipeline.Add(
+                    new BsonDocument("$replaceRoot", new BsonDocument("newRoot", "$ShippingInformation"))
+                );
 
                 var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
 
@@ -834,22 +857,23 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
-                var pipeline = new[] {
+                var pipeline = new List<BsonDocument>();
 
-                    new BsonDocument(
-                        "$unwind",
-                        "$EntitiesRelationShips"),
+                pipeline.Add(
+                    new BsonDocument("$unwind", "$EntitiesRelationShips")
+                );
 
-                    new BsonDocument("$match", new BsonDocument("EntitiesRelationShips._id", new ObjectId(entitiesCommercialRelationShipId))),
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("EntitiesRelationShips._id", new ObjectId(entitiesCommercialRelationShipId)))
+                );
 
-                    new BsonDocument(
-                        "$project", new BsonDocument("EntitiesRelationShips", 1)
-                    ),
+                pipeline.Add(
+                    new BsonDocument("$project", new BsonDocument("EntitiesRelationShips", 1))
+                );
 
-                    new BsonDocument(
-                        "$replaceRoot", new BsonDocument("newRoot", "$EntitiesRelationShips")
-                    )
-                };
+                pipeline.Add(
+                    new BsonDocument("$replaceRoot", new BsonDocument("newRoot", "$EntitiesRelationShips"))
+                );
 
                 var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
 
