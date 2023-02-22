@@ -60,12 +60,12 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         /// </summary>
         /// <param name="entityActorId"></param>
         /// <returns></returns>
-        public async Task<List<Address>> GetEntityActorAddressList(string entityActorId)
+        public async Task<List<Address>> GetEntityActorAddressList(string userId, string ipAddress, string entityActorId)
         {
             try
             {
 #pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
-                List<Address>  entityNodesAddressList = await _httpClient.GetFromJsonAsync<List<Address>>($"api/EntityNodesMaintenance/GetEntityDetailsAddressList?EntityId={entityActorId}");
+                List<Address>  entityNodesAddressList = await _httpClient.GetFromJsonAsync<List<Address>>($"/api/EntityNodesMaintenance/GetEntityDetailsAddressList?userId={userId}&ipAdress={ipAddress}&EntityId={entityActorId}");
 #pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
 #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo.
                 return entityNodesAddressList;
@@ -93,14 +93,14 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         /// <param name="entityCode"></param>
         /// <param name="forceRefresh"></param>
         /// <returns></returns>
-        public async Task<List<EntityActor>> GetEntityActorFaceList(string? nameLike = null, string? entityType = null, string? entityCode = null, bool forceRefresh = false)
+        public async Task<List<EntityActor>> GetEntityActorFaceList(string userId, string ipAddress, string? nameLike = null)
         {
            
-            string namteToFind = nameLike !=null ? nameLike:"";
+            string nameToFind = nameLike !=null ? nameLike:"";
 
             try
             {
-                entityNodesList = await _httpClient.GetFromJsonAsync<List<EntityActor>>($"api/EntityNodesMaintenance/GetEntityNodes?filterName={namteToFind}");
+                entityNodesList = await _httpClient.GetFromJsonAsync<List<EntityActor>>($"/api/EntityNodesMaintenance/GetEntityNodes?userId={userId}&ipAdress={ipAddress}&filterName={nameToFind}");
 #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo.
                 return entityNodesList;
 #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo.
@@ -158,11 +158,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             throw new NotImplementedException();
         }
 
-        public async Task<List<IdentificationEntity>> GetEntityIdentifierList(string entityId)
+        public async Task<List<IdentificationEntity>> GetEntityIdentifierList(string userId, string ipAddress, string entityId)
         {
             try
             {
-                var entityIdentifcationList = await _httpClient.GetFromJsonAsync<List<IdentificationEntity>>($"/api/EntityNodesMaintenance/GetEntityDetailsIdentifiersList?EntityId={entityId}");
+                var entityIdentifcationList = await _httpClient.GetFromJsonAsync<List<IdentificationEntity>>($"/api/EntityNodesMaintenance/GetEntityDetailsIdentifiersList?userId={userId}&ipAdress={ipAddress}&EntityId={entityId}");
                 return entityIdentifcationList;
             }
             catch (Exception ex)
@@ -172,11 +172,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task<List<PhoneNumber>> GetPhoneNumber(string entityActorId)
+        public async Task<List<PhoneNumber>> GetPhoneNumber(string userId, string ipAddres, string entityActorId)
         {
             try
             {
-                var entityPhoneList = await _httpClient.GetFromJsonAsync<List<PhoneNumber>>($"api/EntityNodesMaintenance/GetEntityDetailsPhoneDirectory?EntityId={entityActorId}");
+                var entityPhoneList = await _httpClient.GetFromJsonAsync<List<PhoneNumber>>($"/api/EntityNodesMaintenance/GetEntityDetailsPhoneDirectory?userId={userId}&ipAdress={ipAddres}&EntityId={entityActorId}");
                 return entityPhoneList;
 
                 //if (entityNodesList != null)
@@ -191,12 +191,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task<EntityActor> GetEntityActor(string entityActorId)
+        public async Task<EntityActor> GetEntityActor(string userId, string ipAddress, string entityActorId)
         {
             try
             {
-                var actor = await _httpClient.GetFromJsonAsync<EntityActor>($"/api/EntityNodesMaintenance/GetEntityActorById?entityActorId={entityActorId}");
-                Console.WriteLine(actor);
+                var actor = await _httpClient.GetFromJsonAsync<EntityActor>($"/api/EntityNodesMaintenance/GetEntityActorById?userId={userId}&ipAdress={ipAddress}&entityActorId={entityActorId}");
                 return actor;
 
             }
@@ -208,12 +207,12 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         }
 
         //Get groups 
-        public async Task<List<ConceptGroup>> GetEntityGroups(string filterCondition)
+        public async Task<List<ConceptGroup>> GetEntityGroups(string userId, string ipAddress, string filterCondition)
         {
             try
             {
-                List<ConceptGroup> groups = await _httpClient.GetFromJsonAsync<List<ConceptGroup>>($"api/ConceptsSelector/GetSelectorListEntityGroups?filterCondition={filterCondition}");
-                return groups.Take(10).ToList();
+                List<ConceptGroup>? groups = await _httpClient.GetFromJsonAsync<List<ConceptGroup>>($"/api/EntityNodesMaintenance/GetEntityGroups?userId={userId}&ipAdress={ipAddress}&filterCondition={filterCondition}");
+                return groups;
             }
             catch (Exception ex)
             {
@@ -222,11 +221,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task<EntityGroup> GetGroupById(string groupId)
+        public async Task<EntityGroup> GetEntityGroup(string userId, string ipAddress, string groupId)
         {
             try
             {
-                var group = await _httpClient.GetFromJsonAsync<EntityGroup>($"/api/EntityNodesMaintenance/GetEntityGroup?entityGroupId={groupId}");
+                var group = await _httpClient.GetFromJsonAsync<EntityGroup>($"/api/EntityNodesMaintenance/GetEntityGroup?userId={userId}&ipAdress={ipAddress}&entityGroupId={groupId}");
                 return group;
             }
             catch (Exception ex)
@@ -236,11 +235,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task<List<IdentificationType>> GetDetailsIdentifiers(string entityActorId)
+        public async Task<List<IdentificationType>> GetDetailsIdentifiers(string userId, string ipAddress, string entityActorId)
         {
             try
             {
-                var detailsList = await _httpClient.GetFromJsonAsync<List<IdentificationType>>($"api/EntityNodesMaintenance/GetEntityDetailsIdentifiersList?EntityId={entityActorId}");
+                var detailsList = await _httpClient.GetFromJsonAsync<List<IdentificationType>>($"/api/EntityNodesMaintenance/GetEntityDetailsIdentifiersList?userId={userId}&ipAdress={ipAddress}&EntityId={entityActorId}");
                 return detailsList;
             }
             catch (Exception ex)
@@ -264,11 +263,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task<AtomConcept> GetIdentificationTypeById(string identificationId)
+        public async Task<AtomConcept> GetIdentificationTypeById(string userId, string ipAddress, string identificationId)
         {
             try
             {
-                var identificationType = await _httpClient.GetFromJsonAsync<AtomConcept>($"/api/EntityActorsRelatedConcepts/GetIdentificationType?identicationTypeId={identificationId}");
+                var identificationType = await _httpClient.GetFromJsonAsync<AtomConcept>($"/api/EntityActorsRelatedConcepts/GetIdentificationType?userId={userId}&ipAdress={ipAddress}&identicationTypeId={identificationId}");
                 return identificationType;
             }
             catch (Exception ex)
@@ -278,11 +277,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task<List<EntityGroup>> GetListEntityGroups(string filterGroup)
+        public async Task<List<EntityGroup>> GetListEntityGroups(string userId, string ipAddress, string filterGroup)
         {
             try
             {
-                var listGroups = await _httpClient.GetFromJsonAsync<List<EntityGroup>>($"/api/ConceptsSelector/GetSelectorListEntityGroups?filterCondition={filterGroup}");
+                var listGroups = await _httpClient.GetFromJsonAsync<List<EntityGroup>>($"/api/EntityNodesMaintenance/GetEntityGroups?userId={userId}&ipAdress={ipAddress}&filterCondition={filterGroup}");
                 return listGroups;
             }
             catch (Exception ex)
@@ -334,11 +333,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task<List<Address>> GetEntityDetailsAddressList(string entityId)
+        public async Task<List<Address>> GetEntityDetailsAddressList(string userId, string ipAddress, string entityId)
         {
             try
             {
-                var entityAddress = await _httpClient.GetFromJsonAsync<List<Address>>($"/api/EntityNodesMaintenance/GetEntityDetailsAddressList?EntityId={entityId}");
+                var entityAddress = await _httpClient.GetFromJsonAsync<List<Address>>($"/api/EntityNodesMaintenance/GetEntityDetailsAddressList?userId={userId}&ipAdress={ipAddress}&EntityId={entityId}");
                 return entityAddress;
             }
             catch (Exception ex)
@@ -348,11 +347,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task<List<ElectronicAddress>> GetElectronicAddressById(string entityActorId)
+        public async Task<ElectronicAddress> GetElectronicAddressById(string userId, string ipAddress, string entityActorId)
         {
             try
             {
-                var electronicList = await _httpClient.GetFromJsonAsync<List<ElectronicAddress>>($"/api/EntityNodesMaintenance/GetElectronicAddressById?electronicAddressId={entityActorId}");
+                var electronicList = await _httpClient.GetFromJsonAsync<ElectronicAddress>($"/api/EntityNodesMaintenance/GetElectronicAddresses?userId={userId}&ipAdress={ipAddress}&entityActorId={entityActorId}");
                 return electronicList;
             }
             catch (Exception ex)
@@ -362,11 +361,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task<List<ShippingInfo>> GetShippingInfos(string shippingId)
+        public async Task<List<ShippingInfo>> GetShippingInfos(string userId, string ipAddress, string shippingId)
         {
             try
             {
-                var shippingInfoList = await _httpClient.GetFromJsonAsync<List<ShippingInfo>>($"/api/EntityNodesMaintenance/GetShippingSetupById?shippingInfoId={shippingId}");
+                var shippingInfoList = await _httpClient.GetFromJsonAsync<List<ShippingInfo>>($"/api/EntityNodesMaintenance/GetShippingSetup?userId={userId}&ipAdress={ipAddress}&entityActorId={shippingId}");
                 return shippingInfoList;
             }
             catch (Exception ex)
@@ -376,11 +375,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task<List<EntityComercialConditions>> GetCommercialConditions(string commercialConditionId)
+        public async Task<List<EntitiesCommercialRelationShip>> GetCommercialConditions(string userId, string ipAddress, string commercialConditionId)
         {
             try
             {
-                var commercialConditionsList = await _httpClient.GetFromJsonAsync<List<EntityComercialConditions>>($"/api/EntityNodesMaintenance/GetEntitiesCommercialRelationShipById?entitiesCommercialRelationShipId={commercialConditionId}");
+                var commercialConditionsList = await _httpClient.GetFromJsonAsync<List<EntitiesCommercialRelationShip>>($"/api/EntityNodesMaintenance/GetCommercialConditiosOfEntity?userId={userId}&ipAdress={ipAddress}&entityActorId={commercialConditionId}");
                 return commercialConditionsList;
             }
             catch (Exception ex)
@@ -418,12 +417,110 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task<List<ElectronicAddress>> GetEntityElectronicAddress(string entityActorId)
+        public async Task<List<ElectronicAddress>> GetEntityElectronicAddress(string userId, string ipAddress, string entityActorId)
         {
             try
             {
-                var listElectronicAddress = await _httpClient.GetFromJsonAsync<List<ElectronicAddress>>($"/api/EntityNodesMaintenance/GetElectronicAddresses?entityActorId={entityActorId}");
+                var listElectronicAddress = await _httpClient.GetFromJsonAsync<List<ElectronicAddress>>($"/api/EntityNodesMaintenance/GetElectronicAddresses?userId={userId}&ipAdress={ipAddress}&entityActorId={entityActorId}");
                 return listElectronicAddress;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<EntitiesCommercialRelationShip> GetCommercialRelationShip(string userId, string ipAddress, string entityActorId)
+        {
+            try
+            {
+                var commercialConditions = await _httpClient.GetFromJsonAsync<EntitiesCommercialRelationShip>($"/api/EntityNodesMaintenance/GetEntitiesCommercialRelationShipById?userId={userId}&ipAdress={ipAddress}&entitiesCommercialRelationShipId={entityActorId}");
+                return commercialConditions;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<List<PalletType>> GetPalletTypes()
+        {
+            try
+            {
+                var palletTypes = await _httpClient.GetFromJsonAsync<List<PalletType>>("/api/ConceptsSelector/GetSelectorListPalletTypes");
+                return palletTypes;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<ShippingInfo> GetShippingSetUpById(string userId, string ipAddress, string shippingInfoId)
+        {
+            try
+            {
+                var shipingInfo = await _httpClient.GetFromJsonAsync<ShippingInfo>($"/api/EntityNodesMaintenance/GetShippingSetupById?userId={userId}&ipAdress={ipAddress}&shippingInfoId={shippingInfoId}");
+                return shipingInfo;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null; ;
+            }
+        }
+
+        public async Task<List<EntityType>> GetEntityTypeList()
+        {
+            try
+            {
+                var entityTypeList = await _httpClient.GetFromJsonAsync<List<EntityType>>("/api/ConceptsSelector/GetSelectorListEntityTypes");
+                return entityTypeList;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<AtomConcept> GetEntityTypeById(string userId, string ipAddress, string entityTypeId)
+        {
+            try
+            {
+                var entityType = await _httpClient.GetFromJsonAsync<AtomConcept>($"/api/EntityActorsRelatedConcepts/GetEntityType?userId={userId}&ipAdress={ipAddress}&entityTypeId={entityTypeId}");
+                return entityType;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<List<PalletType>> GetPalletTypeList()
+        {
+            try
+            {
+                var palletList = await _httpClient.GetFromJsonAsync<List<PalletType>>("/api/ConceptsSelector/GetSelectorListPalletTypes");
+                return palletList;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<PalletType> GetPalleTypeById(string userId, string ipAddress, string palletTypeId)
+        {
+            try
+            {
+                var palletType = await _httpClient.GetFromJsonAsync<PalletType>($"/api/EntityActorsRelatedConcepts/GetPalletType?userId={userId}&ipAdress={ipAddress}&palletTypeId={palletTypeId}");
+                return palletType;
             }
             catch (Exception ex)
             {
@@ -436,22 +533,32 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         /// Save EntityAddress
         ///
 
-        public async Task SaveEntity(string EntityActorId, EntityActor entityActor)
+        public async Task<bool> SaveEntity(string userId, string ipAddress, string? EntityActorId, EntityActor entityActor)
         {
-            await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveEntity?entityActorId={EntityActorId}", entityActor);
+            EntityActorId = EntityActorId != null ? EntityActorId : "";
+            try
+            {
+                var result = await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveEntity?userId={userId}&ipAdress={ipAddress}&entityActorId={EntityActorId}", entityActor);
+                return result.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
         }
 
 
-        public async Task SaveEntityAddress(string EntityActorId, Address address)
+        public async Task SaveEntityAddress(string userId, string ipAddress, string EntityActorId, Address address)
         {
-            await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveEntityAddress?entityActorId={EntityActorId}", address);
+            await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveEntityAddress?userId={userId}&ipAdress={ipAddress}&entityActorId={EntityActorId}", address);
         }
 
-        public async Task SavePhone(string EntityActorId, PhoneNumber phoneNumber)
+        public async Task SavePhone(string userId, string ipAddress, string EntityActorId, PhoneNumber phoneNumber)
         {
             try
             {
-                var result = await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SavePhone?entityActorId={EntityActorId}", phoneNumber);
+                var result = await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SavePhone?userId={userId}&ipAdress={ipAddress}&entityActorId={EntityActorId}", phoneNumber);
             }
             catch (Exception ex)
             {
@@ -459,29 +566,47 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task SaveIdentificationCode(string EntityActorId, IdentificationEntity identificationEntity)
+        public async Task SaveIdentificationCode(string userId, string ipAddress, string EntityActorId, IdentificationEntity identificationEntity)
         {
-            await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveIdentificationCode?entityActorId={EntityActorId}", identificationEntity);
+            await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveIdentificationCode?userId={userId}&ipAdress={ipAddress}&entityActorId={EntityActorId}", identificationEntity);
         }
 
-        public async Task SaveEntityGroup(string entityGroupId, EntityGroup entityGroup)
+        public async Task<bool> SaveEntityGroup(string userId, string ipAddress, string entityGroupId, EntityGroup entityGroup)
         {
-            await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveEntityGroup?entityGroupId={entityGroupId}", entityGroup);
+            try
+            {
+                var result = await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveEntityGroup?userId={userId}&ipAdress={ipAddress}&entityGroupId={entityGroupId}", entityGroup);
+                return result.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                throw;
+            }
         }
 
-        public async Task SaveElectronicAddress(string electronicAddressId, ElectronicAddress electronicAddress)
+        public async Task SaveElectronicAddress(string userId, string ipAddress, string electronicAddressId, ElectronicAddress electronicAddress)
         {
-            await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveElectronicAddress?entityActorId={electronicAddressId}", electronicAddress);
+            await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveElectronicAddress?userId={userId}&ipAdress={ipAddress}&entityActorId={electronicAddressId}", electronicAddress);
         }
 
-        public async Task SaveShippingSetup(string shippinSetupId, ShippingInfo shippingInfo)
+        public async Task SaveShippingSetup(string userId, string ipAddress, string shippinSetupId, ShippingInfo shippingInfo)
         {
-            await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveShippingSetup?entityActorId={shippinSetupId}", shippingInfo);
+            await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveShippingSetup?userId={userId}&ipAdress={ipAddress}&entityActorId={shippinSetupId}", shippingInfo);
         }
 
-        public async Task SaveCommercialConditions(string commercialConditionId, EntitiesCommercialRelationShip comercialConditions)
+        public async Task<bool> SaveCommercialConditions(string userId, string ipAddress, string commercialConditionId, EntitiesCommercialRelationShip comercialConditions)
         {
-            await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveShippingSetup?entityActorId={commercialConditionId}", comercialConditions);
+            try
+            {
+                var result = await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveCommercialConditions?userId={userId}&ipAdress={ipAddress}&entityActorId={commercialConditionId}", comercialConditions);
+                return result.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
         }
 
         public async Task SaveEntityRole(string roleId, EntityRole entityRole)
@@ -503,7 +628,25 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 return false;
 
             }
+        }
 
+        public async Task<bool> SaveEntityType(string userId, string ipAddress, AtomConcept atomConcept)
+        {
+            try
+            {
+                var result = await _httpClient.PostAsJsonAsync($"/api/EntityActorsRelatedConcepts/SaveEntityType?userId={userId}&ipAdress={ipAddress}", atomConcept);
+                return result.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+        }
+
+        public async Task SavePalletType(string userId, string ipAddress, PalletType palletType)
+        {
+            await _httpClient.PostAsJsonAsync($"/api/EntityActorsRelatedConcepts/SavePalletType?userId={userId}&ipAdress={ipAddress}", palletType);
         }
 
 
@@ -517,6 +660,16 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         }
 
         public Task<EntityActor> CreateNewEntityActor(EntityActor entityActor)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<EntityActor>> GetEntityActorFaceList(string? nameLike = null, string? entityType = null, string? entityCode = null, bool forceRefresh = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Address>> GetEntityActorAddressList(string entityActorId)
         {
             throw new NotImplementedException();
         }

@@ -1,11 +1,11 @@
 ﻿@page "/TypesEntities"
 @using SunttelTradePointB.Client.Shared.TransactionalItems
 @using SunttelTradePointB.Shared.Common
-@inject HttpClient Http
-@inject TransactionalItemsService transactItemsService;
+
 @inject IJSRuntime JSRuntime
 @inject ContextMenuService ContextMenuService
-@inject DialogService DialogService
+@inject ActorsNodeService actorsNodeServive
+@inject NavigationManager navigationManager
 
 
 <PageTitleComponent Title="Types of Entities/Actors/Nodes" IconName="EntityGroups.png"
@@ -18,7 +18,46 @@
 
 </div>
 
+<div class="tableBodyContainer">
+    @if (isLoading)
+    {
+        <WaitingProcessIndicator loadingTopic="Entity Types"></WaitingProcessIndicator>
+    }else{
+        @if(entityTypesList != null)
+        {
+            <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="50"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@entityTypesList"
+                    TItem="EntityType"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    @bind-Value=@selectedEntityType Class="m-4"
+                    CellContextMenu="@ShowContextMenuWithContent">
+
+                <Columns>
+                    <RadzenDataGridColumn TItem="EntityType" Property="Code" Title="Code" Frozen="true" Width="30px" />
+                    <RadzenDataGridColumn TItem="EntityType" Property="LegacyId" Title="LegacyId" Frozen="true" Width="30px" />
+                    <RadzenDataGridColumn TItem="EntityType" Property="Name" Filterable="true" Title="Name" Frozen="true" Width="180px" TextAlign="TextAlign.Center" />
+                </Columns>
+            </RadzenDataGrid>
+        }
+    }
+</div>
+
+
 @code {
+    List<EntityType> entityTypesList;
+    IList<EntityType> selectedEntityType;
+
     bool isLoading = false;
     string _filterItems = "";
 
@@ -28,20 +67,61 @@
         set
         {
             _filterItems = value;
-            LoadData();
+            GetEntityTypes(_filterItems);
         }
     }
 
-
-    private async Task LoadData()
+    protected override async Task OnParametersSetAsync()
     {
-        isLoading = true;
-        var data = await transactItemsService.GetTransactionalItemsList(0, 250, _filterItems);
-        //itemList = data;
-        isLoading = false;
-        StateHasChanged();
-
+        await GetEntityTypes();
     }
+
+    private async Task GetEntityTypes(string filter = "")
+    {
+        if(filter.Length > 0)
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            var response = await actorsNodeServive.GetEntityTypeList();
+
+            if (response != null)
+                entityTypesList = response;
+
+            isLoading = false;
+            StateHasChanged();
+
+        }
+    } 
+
+    void ShowContextMenu(MouseEventArgs e)
+    {
+        if (JSRuntime != null)
+        {
+            JSRuntime.InvokeVoidAsync("ShowContextMenu", e.ClientX, e.ClientY);
+        }
+    }
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<EntityType> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        EntityType argObj = (EntityType)args.Value;
+
+        if (args.Text == "Edit")
+            navigationManager.NavigateTo($"/EntityType/{argObj.Id}/Edit");
+
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
 
 
 }

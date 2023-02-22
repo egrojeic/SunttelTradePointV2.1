@@ -1,5 +1,5 @@
-﻿@page "/EntityType/NewEntityType"
-@page "/EntityType/{entityId}/Edit"
+﻿@page "/EntityPalletType/NewPalletType"
+@page "/EntityPalletType/{palletId}/Edit"
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.Cards
 @using SunttelTradePointB.Shared.Common
@@ -7,28 +7,27 @@
 @inject NavigationManager navigationManager
 @inject ActorsNodeService actorsNodeServive
 
-
 <div class="control-section">
     <div class="row">
         <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
             <SfCard>
-                <CardHeader Title="Add a new entity Type" />
+                <CardHeader Title="Add a new group" />
                 <CardContent>
                     <form onsubmit="event.preventDefault();">
                         <div class="form-group row">
                             <label class="control-label col-md-12">Code: </label>
                             <div class="col">
                                 <SfTooltip ID="Tooltip" Target="#name" Content="@ContentCode">
-                                    <input id="name" type="text" class="form-control" @bind-value="@entityType.Code" required />
+                                    <input id="name" type="text" class="form-control" @bind-value="@palletType.Code" required />
                                 </SfTooltip>
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group py-2">
                             <label class="control-label col-md-12">Legacy Id: </label>
                             <div class="col">
-                                <SfTooltip ID="Tooltip" Target="#name" Content="@ContentLegacy">
-                                    <input id="name" type="text" class="form-control" @bind-value="@entityType.LegacyId" required />
+                                <SfTooltip ID="Tooltip" Target="#name" Content="@ContentCode">
+                                    <input id="name" type="text" class="form-control" @bind-value="@palletType.LegacyId" required />
                                 </SfTooltip>
                             </div>
                         </div>
@@ -37,15 +36,15 @@
                             <label class="control-label col-md-12">Name: </label>
                             <div class="col">
                                 <SfTooltip ID="Tooltip" Target="#name" Content="@ContentName">
-                                    <input id="name" type="text" class="form-control" @bind-value="@entityType.Name" required />
+                                    <input id="name" type="text" class="form-control" @bind-value="@palletType.Name" required />
                                 </SfTooltip>
                             </div>
                         </div>
 
-                        <MessageSaveComponent message="Entity Type Saved" isVisible="visible"></MessageSaveComponent>
+                        <MessageSaveComponent message="Pallet Type Saved" isVisible="visible"></MessageSaveComponent>
 
                         <div class="py-2">
-                            <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveEntityType(entityId, entityType))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                            <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SavePalletType(palletId, palletType))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
                             <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
                         </div>
 
@@ -59,50 +58,52 @@
 
 @code {
     [Parameter]
-    public string entityId { get; set; }
+    public string palletId { get; set; }
 
     private string ContentCode = "e.g. 12345";
-    private string ContentLegacy = "e.g. 12345";
     private string ContentName = "e.g. Test";
 
-    AtomConcept entityType = new AtomConcept();
-    AtomConcept entityTypeById = new AtomConcept();
+    private bool visible = false;
 
     private string userId = UIClientGlobalVariables.UserId;
     private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
 
-    private bool visible { get; set; } = false;
+    PalletType palletType = new PalletType();
 
     protected override async Task OnInitializedAsync()
     {
-        await GetEntityTypeById(entityId);
+        await GetPalletTypeById(palletId);
     }
 
-    private async Task GetEntityTypeById(string entityTypeId)
+    private async Task SavePalletType(string palletTypeId, PalletType palletTypeSave)
     {
-        if (entityTypeId != null)
+        if (palletId != null)
+            palletTypeSave.Id = palletId;
+        palletTypeSave = palletType;
+        if(palletTypeSave != null)
         {
-            entityTypeById = await actorsNodeServive.GetEntityTypeById(userId, ipAddress, entityTypeId);
-            if (entityTypeById != null)
-            {
-                entityType = entityTypeById;
-            }
+            await actorsNodeServive.SavePalletType(userId, ipAddress, palletTypeSave);
+            visible = true;
+            StateHasChanged();
         }
     }
 
-    private async Task SaveEntityType(string entityTypeId, AtomConcept entityTypeSave)
+    private async Task GetPalletTypeById(string palletTypeId)
     {
-        if (entityTypeId != null && entityType != null)
-            entityType.Id = entityTypeId;
-        entityTypeSave = entityType;
-        await actorsNodeServive.SaveEntityType(userId, ipAddress, entityTypeSave);
-        visible = true;
-        StateHasChanged();
+        if(palletId != null)
+        {
+            palletType = await actorsNodeServive.GetPalleTypeById(userId, ipAddress, palletTypeId);
+        }
+    }
+
+    private void Refresh()
+    {
+        palletType = new PalletType();
     }
 
     private void GoBack()
     {
-        navigationManager.NavigateTo($"/TypesEntities");
+        navigationManager.NavigateTo($"/EntityPalletType");
     }
 
 }

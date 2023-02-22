@@ -85,6 +85,9 @@
     List<EntityActor>? entityNodesList;
     IList<EntityActor> selectedEntities;
 
+    private string userId = UIClientGlobalVariables.UserId;
+    private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
     bool isLoading = false;
 
     string _filterEntities = "";
@@ -111,7 +114,7 @@
             isLoading = true;
             StateHasChanged();
 
-            var response = await actorsNodeServive.GetEntityActorFaceList(stringFilter);
+            var response = await actorsNodeServive.GetEntityActorFaceList(userId, ipAddress, stringFilter);
 
             if (response != null)
                 entityNodesList = response.Where(c => c.Id != "000000000000000000000000").ToList();

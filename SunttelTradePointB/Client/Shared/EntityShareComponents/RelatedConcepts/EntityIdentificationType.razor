@@ -82,6 +82,9 @@
 
     AtomConcept identificationTypeAtom = new AtomConcept();
 
+    private string userId = UIClientGlobalVariables.UserId;
+    private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
     public string lblCode = "";
     public string lblEntityIssuer = "";
 
@@ -112,8 +115,8 @@
             {
                 identificationEntity.Id = identificationId;
             }
-            identificationEntity.EntityTypeId = identificationType;
-            await actorsNodeServive.SaveIdentificationCode(entityId, identificationEntity);
+            //identificationEntity.EntityTypeId = identificationType;
+            await actorsNodeServive.SaveIdentificationCode(userId, ipAddress, entityId, identificationEntity);
             StateHasChanged();
         }
 
@@ -159,9 +162,10 @@
     {
         if (identificationId != null)
         {
-            identificationTypeAtom = await actorsNodeServive.GetIdentificationTypeById(entityId);
+            identificationTypeAtom = await actorsNodeServive.GetIdentificationTypeById(userId, ipAddress, entityId);
             identificationEntity.Code = identificationTypeAtom.Code;
-            //identificationEntity.EntityTypeId
+            identificationType.Name = identificationTypeAtom.Name;
+
 
         }
     }

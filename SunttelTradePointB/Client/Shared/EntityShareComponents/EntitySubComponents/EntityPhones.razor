@@ -62,6 +62,9 @@
     private PhonePopUp? phonePopUp;
     RadzenDataGrid<PhoneNumber>? radzenDataGrid;
 
+    private string userId = UIClientGlobalVariables.UserId;
+    private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
     protected override async Task OnInitializedAsync()
     {
         await GetEntityPhone();
@@ -71,7 +74,7 @@
     {
         if (EntityId != null)
         {
-            var response = await actorsNodeServive.GetPhoneNumber(EntityId);
+            var response = await actorsNodeServive.GetPhoneNumber(userId, ipAddress, EntityId);
             if (response != null)
                 entityPhonesList = response;
             StateHasChanged();

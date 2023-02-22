@@ -59,7 +59,7 @@
                         <div class="form-group row">
                             <label class="control-label col-md-12">@lblRelationType: </label>
                             <div class="col">
-                                <SfDropDownList TValue="string" TItem="EntitiyRelationshipType" Placeholder="Select a city" AllowFiltering="true" DataSource="@entitiyRelationshipTypeList" @bind-Value="entitiyRelationshipType.Name">
+                                <SfDropDownList TValue="string" TItem="EntitiyRelationshipType" Placeholder="Select a relation type" AllowFiltering="true" DataSource="@entitiyRelationshipTypeList" @bind-Value="entitiyRelationshipType.Name">
                                     <DropDownListEvents TItem="EntitiyRelationshipType" TValue="string" ValueChange="@ValueChangeRelation"></DropDownListEvents>
                                     <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
                                 </SfDropDownList>
@@ -100,15 +100,19 @@
     public int ParamCountResul = 0;
     public bool PopupViewEditionBox = false;
 
+    private string userId = UIClientGlobalVariables.UserId;
+    private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
     EntitiesCommercialRelationShip entitiesCommercialRelationShip = new EntitiesCommercialRelationShip();
     Concept concept = new Concept();
     ConceptStatus conceptStatus = new ConceptStatus();
     InputTextSelector? refInputTextSelector;
-    EntityActor entityActor = new EntityActor();
+    AtomConcept entityActor = new AtomConcept();
     List<EntityActor> ListEntityActor = new List<EntityActor>();
     List<EntitiesCommercialRelationShip> entitiesCommercialRelationsList = new List<EntitiesCommercialRelationShip>();
     List<EntitiyRelationshipType> entitiyRelationshipTypeList = new List<EntitiyRelationshipType>();
     EntitiyRelationshipType entitiyRelationshipType = new EntitiyRelationshipType();
+    EntitiesCommercialRelationShip relations = new EntitiesCommercialRelationShip();
 
     protected override async Task OnInitializedAsync()
     {
@@ -117,6 +121,7 @@
         lblLimitCreditAmount = UICommonFunctions.GetDisplayName(new EntitiesCommercialRelationShip(), "LimitCreditAmount");
         lblRelationType = UICommonFunctions.GetDisplayName(new EntitiesCommercialRelationShip(), "EntitiyCommercialRelationShipType");
         await GetRelationType();
+        await GetCommercialConditions(comercialId);
     }
 
     public void SetViewElemnt(string Element)
@@ -131,7 +136,7 @@
     {
         if (SearchValueMode == "Entity")
         {
-            ListEntityActor = await actorsNodeServive.GetEntityActorFaceList(value);
+            ListEntityActor = await actorsNodeServive.GetEntityActorFaceList(userId, ipAddress, value);
             ParamCountResul = ListEntityActor != null ? ListEntityActor.Count() : 0;
         }
         if (ParamCountResul > 0) { ViewSelect = true; } else { ViewSelect = false; }
@@ -158,8 +163,9 @@
             }
             comercialConditions.RelatedEntity = entityActor;
             comercialConditions.EntitiyCommercialRelationShipType = entitiyRelationshipType;
-            await actorsNodeServive.SaveCommercialConditions(entityId, comercialConditions);
+            await actorsNodeServive.SaveCommercialConditions(userId, ipAddress, entityId, comercialConditions);
             succesful = true;
+            //RefreshMe();
             StateHasChanged();
         }
     }
@@ -168,13 +174,17 @@
     {
         if(comercialId != null)
         {
-            //entitiesCommercialRelationsList = await
-            foreach(var comercialList in entitiesCommercialRelationsList)
-            {
-                //entityActor = comercialList.RelatedEntity;
-
-            }
+            relations = await actorsNodeServive.GetCommercialRelationShip(userId, ipAddress, entityId);
+            entityActor = relations.RelatedEntity;
+            entitiesCommercialRelationShip = relations;
+            entitiyRelationshipType = relations.EntitiyCommercialRelationShipType;
         }
+    }
+
+    public void RefreshMe()
+    {
+        entityActor = new EntityActor();
+        entitiesCommercialRelationShip = new EntitiesCommercialRelationShip();
     }
 
     public async Task GetRelationType()

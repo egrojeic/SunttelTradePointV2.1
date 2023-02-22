@@ -1,12 +1,10 @@
 ﻿@page "/EntityStatus"
-@using SunttelTradePointB.Client.Shared.TransactionalItems
 @using SunttelTradePointB.Shared.Common
 
-@inject HttpClient Http
-@inject TransactionalItemsService transactItemsService;
 @inject IJSRuntime JSRuntime
 @inject ContextMenuService ContextMenuService
-@inject DialogService DialogService
+@inject ActorsNodeService actorsNodeServive
+@inject NavigationManager navigationManager
 
 
 <PageTitleComponent Title="Status of Entities/Actors/Nodes" IconName="EntityGroups.png"
@@ -37,7 +35,7 @@
     private async Task LoadData()
     {
         isLoading = true;
-        var data = await transactItemsService.GetTransactionalItemsList(0, 250, _filterItems);
+        //var data = await transactItemsService.GetTransactionalItemsList(0, 250, _filterItems);
         //itemList = data;
         isLoading = false;
         StateHasChanged();

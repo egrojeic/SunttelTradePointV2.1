@@ -78,6 +78,9 @@
     public string lblAddresKey = "";
     public string lblEmitter = "";
 
+    private string userId = UIClientGlobalVariables.UserId;
+    private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
     InputTextSelector? refInputTextSelector;
 
     public bool PopupViewElectronic = false;
@@ -87,7 +90,7 @@
     ElectronicAddress electronicAddress = new ElectronicAddress();
     List<AtomConcept> electronicAddressesList = new List<AtomConcept>();
     AtomConcept electronic = new AtomConcept();
-    List<ElectronicAddress> eAddresList = new List<ElectronicAddress>();
+    ElectronicAddress electronicById = new ElectronicAddress();
 
 
     protected override async Task OnInitializedAsync()
@@ -95,17 +98,19 @@
         lblAddresKey = UICommonFunctions.GetDisplayName(new ElectronicAddress(), "AddressKey");
         lblEmitter = UICommonFunctions.GetDisplayName(new ElectronicAddress(), "EmitterEntity");
         await ElectronicAddressType();
+        await GetEAddresList(electronicId);
     }
 
     private async Task SaveElectronicAddress(string entityId, ElectronicAddress electronicAddress)
     {
-        if(entityId != null && electronicAddress != null)
+        if (entityId != null && electronicAddress != null)
         {
             if (electronicId != null)
                 electronicAddress.Id = electronicId;
             electronicAddress.EmitterEntity = electronic;
-            await actorsNodeServive.SaveElectronicAddress(entityId, electronicAddress);
+            await actorsNodeServive.SaveElectronicAddress(userId, ipAddress, entityId, electronicAddress);
             visible = true;
+            RefreshMe();
             StateHasChanged();
         }
     }
@@ -114,14 +119,11 @@
     {
         if(electronicId != null)
         {
-            eAddresList = await actorsNodeServive.GetElectronicAddressById(entityId);
-            foreach(var electronicList in eAddresList)
+            electronicById = await actorsNodeServive.GetElectronicAddressById(userId, ipAddress, entityId);
+            if(electronicById != null)
             {
-                if (electronicList.Id == electronicId)
-                {
-                    electronicAddress.AddressKey = electronicList.AddressKey;
-                    electronic.Name = electronicList.EmitterEntity.Name;
-                }
+                electronicAddress = electronicById;
+                electronic = electronicById.EmitterEntity;   
             }
         }
     }

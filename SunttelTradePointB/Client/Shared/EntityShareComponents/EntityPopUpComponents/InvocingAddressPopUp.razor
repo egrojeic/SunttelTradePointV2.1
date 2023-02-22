@@ -129,6 +129,9 @@
     public string lblCity = "";
     public string lblZipCode = "";
 
+    private string userId = UIClientGlobalVariables.UserId;
+    private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
     Address address = new Address();
     City city = new City();
     GeoRegion geo = new GeoRegion();
@@ -261,14 +264,14 @@
 
     public async void GetEntityId(string entityId)
     {
-        entityActor = await actorsNodeServive.GetEntityActor(entityId);
+        entityActor = await actorsNodeServive.GetEntityActor(userId, ipAddress, entityId);
     }
 
     public async void SaveInvoicingAddres(string entityId, EntityActor entityActor)
     {
         address.CityAddressRef = city.Id;
         entityActor.InvoicingAddress = address;
-        await actorsNodeServive.SaveEntity(entityId, entityActor);
+        await actorsNodeServive.SaveEntity(userId, ipAddress, entityId, entityActor);
         visible = true;
     }
 
