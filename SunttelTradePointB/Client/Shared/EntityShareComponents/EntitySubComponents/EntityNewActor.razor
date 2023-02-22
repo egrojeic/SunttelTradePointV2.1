@@ -4,14 +4,17 @@
 @using Syncfusion.Blazor.DropDowns
 @using SunttelTradePointB.Shared.Common
 
-@inject ActorsNodeService actorsNodeServive
+@inject IJSRuntime JSRuntime
+@inject HttpClient httpClient
+@inject GeographicPlacesService geoPlaces
 @inject NavigationManager navigationManager
+@inject ActorsNodeService actorsNodeServive
 
 <div class="control-section">
     <div class="row">
         <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
             <SfCard>
-                <CardHeader Title="Add a new commercial condition" />
+                <CardHeader Title="Add a new entity" />
                 <CardContent>
                     <form onsubmit="event.preventDefault();">
                         <div class="form-group row">
@@ -41,6 +44,58 @@
                             </div>
                         </div>
 
+                        <div class="form-group row py-2">
+                            <label>Address Line 1:</label>
+                            <div class="col">
+                                <SfTooltip ID="Tooltip" Target="#name" Content="@ContentLegacyId">
+                                    <input type="text" class="form-control" @bind-value="address.AddressLine1" />
+                                </SfTooltip>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group row py-2">
+                            <label class="control-label col-md-12">Country: </label>
+                            <div class="col">
+                                <SfDropDownList TValue="string" TItem="Country" Placeholder="Select a country" AllowFiltering="true" DataSource="@countryList" @bind-Value="country1.Name">
+                                    <DropDownListEvents TItem="Country" TValue="string" ValueChange="@ValueChangeCountry"></DropDownListEvents>
+                                    <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
+                                </SfDropDownList>
+                            </div>
+                        </div>
+
+                        <div class="form-group row py-2">
+                            <label class="control-label col-md-12">Region: </label>
+                            <div class="col">
+                                <SfDropDownList TValue="string" TItem="GeoRegion" Placeholder="Select a region" AllowFiltering="true" DataSource="@regionsList" @bind-Value="geo.Name">
+                                    <DropDownListEvents TItem="GeoRegion" TValue="string" ValueChange="@ValueChangeRegion"></DropDownListEvents>
+                                    <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
+                                </SfDropDownList>
+                            </div>
+                        </div>
+
+                        <div class="form-group row py-2">
+                            <label class="control-label col-md-12">City: </label>
+                            <div class="col">
+                                <SfDropDownList TValue="string" TItem="City" Placeholder="Select a city" AllowFiltering="true" DataSource="@citiesList" @bind-Value="city.Name">
+                                    <DropDownListEvents TItem="City" TValue="string" ValueChange="@ValueChangeCity"></DropDownListEvents>
+                                    <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
+                                </SfDropDownList>
+                            </div>
+                        </div>
+
+                        <div class="form-group row py-2">
+                            <label class="control-label col-md-12">ZipCode: </label>
+                            <div class="col">
+                                <SfTooltip ID="Tooltip" Target="#zipCode" Content="@ContentZipCode">
+                                    <input id="zipCode" type="text" class="form-control" @bind-value="@address.ZipCode" required />
+                                </SfTooltip>
+                            </div>
+                        </div>
+
+                        <MessageSaveComponent message="@message" isVisible="visible"></MessageSaveComponent>
+
                         <div class="py-2">
                             <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveEntity(entityActor))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
                             <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
@@ -59,13 +114,168 @@
     private string ContentName = "e.g Walmart";
     private string ContentCode = "e.g 123";
     private string ContentLegacyId = "e.g 0123";
+    private string ContentZipCode = "e.g 0123";
 
     EntityActor entityActor = new EntityActor();
+    Address address = new Address();
+    City city = new City();
+    GeoRegion geo = new GeoRegion();
+    Country country1 = new Country();
+
+
+    private bool showRegion { get; set; } = false;
+    private bool showCities { get; set; } = false;
+
+    private bool visible { get; set; } = false;
+    private string message { get; set; } = "";
+
+
+    //Geographic Place Definition
+    private List<Country>? countryList;
+
+    private List<GeoRegion>? regionsList;
+
+    private List<City>? citiesList;
+
+
+    private Country? currentCountry;
+    private GeoRegion? currentRegion;
+
+    bool loadingRegions = false;
+
+    string _countriesFilter = "";
+    string _regionsFilter = "";
+    string _citiesFilter = "";
+
+
+
+
+    // Functions for Api GeoPlaces
+    public string countriesFilter
+    {
+        get
+        {
+            return _countriesFilter;
+        }
+        set
+        {
+            _countriesFilter = value;
+            GetFilteredCountries(_countriesFilter);
+        }
+    }
+
+    public string regionsFilter
+    {
+        get
+        {
+            return _regionsFilter;
+        }
+        set
+        {
+            _regionsFilter = value;
+            GetFilteredRegions(currentCountry, _regionsFilter);
+        }
+    }
+
+    public string citiesFilter
+    {
+        get
+        {
+            return _citiesFilter;
+        }
+        set
+        {
+            _citiesFilter = value;
+            GetFilteredCities(currentRegion, _citiesFilter);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetFilteredCountries();
+    }
+
+    private async Task GetFilteredCountries(string filterCountries = "")
+    {
+        var response = await geoPlaces.GetCountries(filterCountries);
+
+        if (response != null)
+            countryList = response.Where(c => c.Id != "000000000000000000000000").ToList();
+    }
+
+
+    private async Task LoadRegions(Country country)
+    {
+
+        loadingRegions = true;
+        var response = await geoPlaces.GetRegions(country.Id, "", true);
+        currentCountry = country;
+
+        if (response != null)
+            regionsList = response;
+
+        loadingRegions = false;
+
+        StateHasChanged();
+    }
+
+    private async Task GetFilteredRegions(Country country, string filterRegions = "")
+    {
+        regionsList = await geoPlaces.GetRegions(country.Id, filterRegions);
+
+    }
+
+    private async Task SetCurrentRegion(GeoRegion geoRegion)
+    {
+        currentRegion = geoRegion;
+        citiesList = await geoPlaces.GetCities(geoRegion.Id, "", true);
+        StateHasChanged();
+    }
+
+    private async Task GetFilteredCities(GeoRegion geoRegion, string filterRegions = "")
+    {
+        citiesList = await geoPlaces.GetCities(geoRegion.Id, filterRegions);
+    }
+
+    private void ValueChangeCountry(ChangeEventArgs<string, Country> args)
+    {
+        country1 = args.ItemData;
+        LoadRegions(args.ItemData);
+        this.showRegion = true;
+    }
+
+    private void ValueChangeRegion(ChangeEventArgs<string, GeoRegion> args)
+    {
+        geo = args.ItemData;
+        SetCurrentRegion(args.ItemData);
+        this.showCities = true;
+    }
+
+    private void ValueChangeCity(ChangeEventArgs<string, City> args)
+    {
+        city = args.ItemData;
+    }
 
     private async Task SaveEntity(EntityActor entityActor)
     {
-        string id;
-        await actorsNodeServive.SaveEntity(id = "", entityActor);
+        address.CityAddressRef = city.Id;
+        entityActor.InvoicingAddress = address;
+        var result = await actorsNodeServive.SaveEntity(null, entityActor);
+        if (result)
+        {
+            message = "New Entity Saved";
+            visible = true;
+            RefreshMe();
+        }
+    }
+
+    private void RefreshMe()
+    {
+        entityActor = new EntityActor();
+        address = new Address();
+        city = new City();
+        geo = new GeoRegion();
+        country1 = new Country();
     }
 
     private void GoBack()

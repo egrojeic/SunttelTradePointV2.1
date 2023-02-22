@@ -421,7 +421,8 @@
             EntityNode.DefaultEntityRole = role;
             EntityNode.Groups = FilterListGroups;
             EntityNode.Name = "New " + EntityNode.Name;
-            var result = await actorsNodeServive.SaveEntity("", EntityNode);
+            EntityNode.Id = null;
+            var result = await actorsNodeServive.SaveEntity(null, EntityNode);
             if (result)
             {
                 message = "New Entity Actor Saved As: " + EntityNode.Name;

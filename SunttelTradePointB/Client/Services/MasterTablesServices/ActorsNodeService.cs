@@ -736,6 +736,23 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             await _httpClient.PostAsJsonAsync($"/api/EntityActorsRelatedConcepts/SavePalletType?userId={userId}&ipAdress={ipAddress}", palletType);
         }
 
+
+        public async Task<bool> SaveIdentificationType(AtomConcept identification)
+        {
+            var userId = UIClientGlobalVariables.UserId;
+            var ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+                var result = await _httpClient.PostAsJsonAsync($"/api/EntityActorsRelatedConcepts/SaveIdentificationType?userId={userId}&ipAdress={ipAddress}", identification);
+                return result.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+        }
+
         public Task<List<EntityActor>> GetEntityActorFaceList(string? nameLike = null, string? entityType = null, string? entityCode = null, bool forceRefresh = false)
         {
             throw new NotImplementedException();

@@ -27,26 +27,9 @@
                         </div>
 
                         <div class="form-group row py-2">
-                            <div class="form-group row">
-                                <label class="control-label col-md-12">@lblEntityIssuer: </label>
-                                <div class="col">
-                                    <div class="item-edit">
-                                        <label>@(identificationType != null ? identificationType.Name : "")</label>
-                                        <button type="button" style="float:right" @onclick='()=>SetViewElemnt("Identification")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                    </div>
-                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewIdentification">
-                                        @{
-                                            if (identificationTypesList != null)
-                                            {
-                                                foreach (var entity in identificationTypesList)
-                                                {
-                                                    <option value="@entity?.Id">@entity?.Name</option>
-                                                }
-                                            }
-
-                                        }
-                                    </InputTextSelector>
-                                </div>
+                            <label class="control-label col-md-12">@lblEntityIssuer: </label>
+                            <div class="col">
+                                <input type="Text" class="form-control" @bind-value="identificationEntity.Name" required />
                             </div>
                         </div>
                         <div class="py-2">
@@ -74,11 +57,9 @@
     public string SearchValueMode = "";
     public int ParamCountResul = 0;
 
-    IdentificationEntity identificationEntity = new IdentificationEntity();
-    IdentificationEntity identificationEntityList = new IdentificationEntity();
+    AtomConcept identificationEntity = new AtomConcept();
     IdentificationType identificationType = new IdentificationType();
     List<IdentificationType> identificationTypesList = new List<IdentificationType>();
-    InputTextSelector? refInputTextSelector;
 
     AtomConcept identificationTypeAtom = new AtomConcept();
 
@@ -104,55 +85,23 @@
         StateHasChanged();
     }
 
-    private async void SaveIdentification(string entityId, IdentificationEntity identificationEntity)
+    private async void SaveIdentification(string entityId, AtomConcept identificationEntitySave)
     {
-        if (entityId != null && identificationEntity != null)
+        if (entityId != null && identificationEntitySave != null)
         {
             if (identificationId != null)
             {
-                identificationEntity.Id = identificationId;
+                identificationEntitySave.Id = identificationId;
             }
-            //identificationEntity.EntityTypeId = identificationType;
-            await actorsNodeServive.SaveIdentificationCode(entityId, identificationEntity);
-            StateHasChanged();
+            identificationEntitySave = identificationType;
+            await actorsNodeServive.SaveIdentificationType(identificationEntitySave);
         }
-
-    }
-
-    public void SetViewElemnt(string Element)
-    {
-        ViewSelect = false;
-        SearchValueMode = Element;
-        if (Element == "Identification" && !PopupViewIdentification) { PopupViewIdentification = true; }
-        StateHasChanged();
-    }
-
-    protected async void EventSearcherValue(string value)
-    {
-        if (SearchValueMode == "Identification")
+        if(entityId == null && identificationEntitySave != null)
         {
-            identificationTypesList = await actorsNodeServive.GetIdentificationTypes();
-            ParamCountResul = identificationTypesList != null ? identificationTypesList.Count() : 0;
+            identificationEntitySave = identificationEntity;
+            await actorsNodeServive.SaveIdentificationType(identificationEntitySave);
         }
-        if (ParamCountResul > 0) { ViewSelect = true; } else { ViewSelect = false; }
-        await Refresh();
-    }
 
-    protected async void EventIdSelectionInput(string selectionId)
-    {
-
-        if (SearchValueMode == "Identification")
-        {
-            identificationType = identificationTypesList.Where(c => c.Id == selectionId).FirstOrDefault();
-        }
-        PopupViewIdentification = false;
-        await Refresh();
-    }
-
-    public async Task Refresh()
-    {
-        if (refInputTextSelector != null) await refInputTextSelector.Refresh();
-        StateHasChanged();
     }
 
     public async Task GetEntityIdentifierType(string entityId)
@@ -160,16 +109,12 @@
         if (identificationId != null)
         {
             identificationTypeAtom = await actorsNodeServive.GetIdentificationTypeById(entityId);
-            identificationEntity.Code = identificationTypeAtom.Code;
-            identificationType.Name = identificationTypeAtom.Name;
-
-
+            identificationEntity = identificationTypeAtom;
         }
     }
 
     public void Reload()
     {
-        identificationEntity = new IdentificationEntity();
-        identificationType = new IdentificationType();
+        identificationEntity = new AtomConcept();
     }
 }
