@@ -155,6 +155,7 @@
 
         transactionalItemId = transactionalService.transactionalItemId != null ? transactionalService.transactionalItemId : "";
         currentItem = transactionalService.TransactionalItems;
+       
         if (currentItem != null)
         {
             nameTemp = currentItem.Name;
@@ -196,7 +197,7 @@
         if (tile == "Save")
         {
             currentItem.Groups = conceptGroups;
-            var resul = await transactionalService.SaveTransactionalItem(transactionalItemId, currentItem);
+            var resul = await transactionalService.SaveTransactionalItem(currentItem);
             msg = resul ? "save" : "not save";
             AlertOpen = true;
         }
@@ -207,7 +208,7 @@
             currentItemCopy.Id = null;
             if (currentItemCopy.Name != nameTemp)
             {
-                var resul = await transactionalService.SaveTransactionalItem(null, currentItemCopy);
+                var resul = await transactionalService.SaveTransactionalItem( currentItemCopy);
 
                 msg = resul ? "saved as " + nameTemp : "not saved";
                 currentItem.Name = nameTemp;
