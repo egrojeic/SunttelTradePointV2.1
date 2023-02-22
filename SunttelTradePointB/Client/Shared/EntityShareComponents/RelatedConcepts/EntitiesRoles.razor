@@ -24,15 +24,6 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
-                            <label class="control-label col-md-12">Legacy Id: </label>
-                            <div class="col">
-                                <SfTooltip ID="Tooltip" Target="#name" Content="@ContentLegacy">
-                                    <input id="name" type="text" class="form-control" @bind-value="@entityRole.LegacyId" required />
-                                </SfTooltip>
-                            </div>
-                        </div>
-
                         <div class="form-group py-2">
                             <label class="control-label col-md-12">Name: </label>
                             <div class="col">
@@ -41,6 +32,8 @@
                                 </SfTooltip>
                             </div>
                         </div>
+
+                        <MessageSaveComponent message="@message" isVisible="visible"></MessageSaveComponent>
 
                         <div class="py-2">
                             <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveRole(roleId, entityRole))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
@@ -60,8 +53,10 @@
     public string roleId { get; set; }
 
     private string ContentCode = "e.g. 12345";
-    private string ContentLegacy = "e.g. 12345";
     private string ContentName = "e.g. Test";
+
+    private string message { get; set; } = "";
+    private bool visible { get; set; } = false;
 
     EntityRole entityRole = new EntityRole();
 
@@ -83,7 +78,18 @@
         if (roleId != null && entityRole != null)
             entityRole.Id = roleId;
         entityRoleSave = entityRole;
-        await actorsNodeServive.SaveEntityRole(roleId, entityRoleSave);
+        var result = await actorsNodeServive.SaveEntityRole(roleId, entityRoleSave);
+        if (result)
+        {
+            message = "Role Saved";
+            visible = true;
+        }
+        RefreshMe();
+    }
+
+    private void RefreshMe()
+    {
+        entityRole = new EntityRole();
     }
 
     private void GoBack()

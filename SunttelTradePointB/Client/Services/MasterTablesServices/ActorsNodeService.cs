@@ -335,7 +335,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                var roleList = await _httpClient.GetFromJsonAsync<EntityRole>($"/api/EntityActorsRelatedConcepts/GetEntityRole?entityRoleId={roleId}");
+                var roleList = await _httpClient.GetFromJsonAsync<EntityRole>($"/api/EntityActorsRelatedConcepts/GetEntityRole?userId={userId}&ipAdress={ipAddress}&entityRoleId={roleId}");
                 return roleList;
             }
             catch (Exception ex)
@@ -679,11 +679,20 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task SaveEntityRole(string roleId, EntityRole entityRole)
+        public async Task<bool> SaveEntityRole(string roleId, EntityRole entityRole)
         {
             var userId = UIClientGlobalVariables.UserId;
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
-            await _httpClient.PostAsJsonAsync($"/api/EntityActorsRelatedConcepts/SaveEntityRole?entityRoleId={roleId}", entityRole);
+            try
+            {
+                var result = await _httpClient.PostAsJsonAsync($"/api/EntityActorsRelatedConcepts/SaveEntityRole?userId={userId}&ipAdress={ipAddress}", entityRole);
+                return result.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                throw;
+            }
         }
 
         public async Task<bool> UploadFiles(MultipartFormDataContent multipartFormDataContent)
