@@ -161,9 +161,6 @@
     private bool isCheckedSaturday = false;
     private bool isCheckedSunday = false;
 
-    private string userId = UIClientGlobalVariables.UserId;
-    private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
-
     //Sender
     EntityActor entityActor = new EntityActor();
     List<EntityActor> ListEntityActor = new List<EntityActor>();
@@ -236,7 +233,7 @@
             shippingInfo.Friday = isCheckedFriday;
             shippingInfo.Saturday = isCheckedSaturday;
             shippingInfo.Sunday = isCheckedSunday;
-            await actorsNodeServive.SaveShippingSetup(userId, ipAddress, entityId, shippingInfo);
+            await actorsNodeServive.SaveShippingSetup(entityId, shippingInfo);
             visible = true;
         }
     }
@@ -245,7 +242,7 @@
     {
         if (shippingId != null)
         {
-            getShippingInfo = await actorsNodeServive.GetShippingSetUpById(userId, ipAddress, shippingId);
+            getShippingInfo = await actorsNodeServive.GetShippingSetUpById(shippingId);
             if(getShippingInfo != null)
             {
                 entityActor.Name = getShippingInfo.Sender.Name;
@@ -280,12 +277,12 @@
     {
         if (SearcherValueMode == "Sender")
         {
-            ListEntityActor = await actorsNodeServive.GetEntityActorFaceList(userId, ipAddress, value);
+            ListEntityActor = await actorsNodeServive.GetEntityActorFaceList(value);
             ParamCountResul = ListEntityActor != null ? ListEntityActor.Count() : 0;
         }
         if (SearcherValueMode == "Carrier")
         {
-            ListEntityActorCarrier = await actorsNodeServive.GetEntityActorFaceList(userId, ipAddress, value);
+            ListEntityActorCarrier = await actorsNodeServive.GetEntityActorFaceList(value);
             ParamCountResul = ListEntityActorCarrier != null ? ListEntityActorCarrier.Count() : 0;
         }
         if (SearcherValueMode == "Pallet")

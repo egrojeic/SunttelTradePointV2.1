@@ -116,9 +116,6 @@
     private string ContentAddres2 = "e.g Unit 1, Apartament 201";
     private string ContentZipCode = "12345";
 
-    private string userId = UIClientGlobalVariables.UserId;
-    private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
-
     //lbltext
     public string lblName = "";
     public string lblAddressLine1 = "";
@@ -294,7 +291,7 @@
             address.Code = Code;
             address.CityAddressRef = city.Id;
             address.Code = identificationEntity.Code;
-            await actorsNodeServive.SaveEntityAddress(userId, ipAddress, EntityActorId, address);
+            await actorsNodeServive.SaveEntityAddress(EntityActorId, address);
             visible = true;
             StateHasChanged();
         }
@@ -304,7 +301,7 @@
     {
         if(addressId != null)
         {
-            addresList = await actorsNodeServive.GetEntityDetailsAddressList(userId, ipAddress, entityId);
+            addresList = await actorsNodeServive.GetEntityDetailsAddressList(entityId);
             foreach(var addressL in addresList)
             {
                 if(addressL.Id == addressId)

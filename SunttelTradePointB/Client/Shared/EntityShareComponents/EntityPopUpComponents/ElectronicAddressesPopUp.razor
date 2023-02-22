@@ -78,9 +78,6 @@
     public string lblAddresKey = "";
     public string lblEmitter = "";
 
-    private string userId = UIClientGlobalVariables.UserId;
-    private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
-
     InputTextSelector? refInputTextSelector;
 
     public bool PopupViewElectronic = false;
@@ -108,7 +105,7 @@
             if (electronicId != null)
                 electronicAddress.Id = electronicId;
             electronicAddress.EmitterEntity = electronic;
-            await actorsNodeServive.SaveElectronicAddress(userId, ipAddress, entityId, electronicAddress);
+            await actorsNodeServive.SaveElectronicAddress(entityId, electronicAddress);
             visible = true;
             RefreshMe();
             StateHasChanged();
@@ -119,7 +116,7 @@
     {
         if(electronicId != null)
         {
-            electronicById = await actorsNodeServive.GetElectronicAddressById(userId, ipAddress, entityId);
+            electronicById = await actorsNodeServive.GetElectronicAddressById(entityId);
             if(electronicById != null)
             {
                 electronicAddress = electronicById;

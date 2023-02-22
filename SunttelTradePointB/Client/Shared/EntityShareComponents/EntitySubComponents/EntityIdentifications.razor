@@ -65,9 +65,6 @@
 
     IdentificationType identificationType = new IdentificationType();
 
-    private string userId = UIClientGlobalVariables.UserId;
-    private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
-
     private void SaveDataIdentification(IdentificationEntity identificationEntity)
     {
         identificationType = identificationEntity.EntityTypeId;
@@ -88,7 +85,7 @@
     {
         if (EntityId != null)
         {
-            var response = await actorsNodeServive.GetEntityIdentifierList(userId, ipAddress, EntityId);
+            var response = await actorsNodeServive.GetEntityIdentifierList(EntityId);
             if (response != null)
                 entityIdentificationList = response;
             StateHasChanged();

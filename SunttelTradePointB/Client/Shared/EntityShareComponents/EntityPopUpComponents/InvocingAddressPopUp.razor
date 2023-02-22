@@ -264,14 +264,14 @@
 
     public async void GetEntityId(string entityId)
     {
-        entityActor = await actorsNodeServive.GetEntityActor(userId, ipAddress, entityId);
+        entityActor = await actorsNodeServive.GetEntityActor(entityId);
     }
 
     public async void SaveInvoicingAddres(string entityId, EntityActor entityActor)
     {
         address.CityAddressRef = city.Id;
         entityActor.InvoicingAddress = address;
-        await actorsNodeServive.SaveEntity(userId, ipAddress, entityId, entityActor);
+        await actorsNodeServive.SaveEntity(entityId, entityActor);
         visible = true;
     }
 

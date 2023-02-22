@@ -72,7 +72,7 @@
         if (groupId != null && entityGroup != null)
             entityGroupSave.Id = groupId;
         entityGroup = entityGroupSave;
-        await actorsNodeServive.SaveEntityGroup(userId, ipAddress, groupId, entityGroup);
+        await actorsNodeServive.SaveEntityGroup(groupId, entityGroup);
         visible = true;
         Refresh();
     }
@@ -81,7 +81,7 @@
     {
         if(groupId != null)
         {
-            entityGroupList = await actorsNodeServive.GetEntityGroup(userId, ipAddress, groupId);
+            entityGroupList = await actorsNodeServive.GetEntityGroup(groupId);
             entityGroup = entityGroupList;
         }
     }

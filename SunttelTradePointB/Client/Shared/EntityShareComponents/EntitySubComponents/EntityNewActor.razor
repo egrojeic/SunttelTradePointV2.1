@@ -62,13 +62,10 @@
 
     EntityActor entityActor = new EntityActor();
 
-    private string userId = UIClientGlobalVariables.UserId;
-    private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
-
     private async Task SaveEntity(EntityActor entityActor)
     {
         string id;
-        await actorsNodeServive.SaveEntity(userId, ipAddress, id = "", entityActor);
+        await actorsNodeServive.SaveEntity(id = "", entityActor);
     }
 
     private void GoBack()

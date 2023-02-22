@@ -65,9 +65,6 @@
 
     private bool visible = false;
 
-    private string userId = UIClientGlobalVariables.UserId;
-    private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
-
     PalletType palletType = new PalletType();
 
     protected override async Task OnInitializedAsync()
@@ -82,7 +79,7 @@
         palletTypeSave = palletType;
         if(palletTypeSave != null)
         {
-            await actorsNodeServive.SavePalletType(userId, ipAddress, palletTypeSave);
+            await actorsNodeServive.SavePalletType(palletTypeSave);
             visible = true;
             StateHasChanged();
         }
@@ -92,7 +89,7 @@
     {
         if(palletId != null)
         {
-            palletType = await actorsNodeServive.GetPalleTypeById(userId, ipAddress, palletTypeId);
+            palletType = await actorsNodeServive.GetPalleTypeById( palletTypeId);
         }
     }
 

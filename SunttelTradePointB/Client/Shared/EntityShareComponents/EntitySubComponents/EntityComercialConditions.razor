@@ -70,9 +70,6 @@
     Concept concept = new Concept();
     ConceptStatus conceptStatus = new ConceptStatus();
 
-    private string userId = UIClientGlobalVariables.UserId;
-    private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
-
     protected override async Task OnInitializedAsync()
     {
         await GetComercialConditions();
@@ -82,7 +79,7 @@
     {
         if (EntityId != null)
         {
-            var response = await actorsNodeServive.GetCommercialConditions(userId, ipAddress, EntityId);
+            var response = await actorsNodeServive.GetCommercialConditions(EntityId);
             if (response != null)
                 entityCommercialCondition = response;
             StateHasChanged();

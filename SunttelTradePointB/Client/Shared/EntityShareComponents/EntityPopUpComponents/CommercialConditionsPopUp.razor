@@ -100,9 +100,6 @@
     public int ParamCountResul = 0;
     public bool PopupViewEditionBox = false;
 
-    private string userId = UIClientGlobalVariables.UserId;
-    private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
-
     EntitiesCommercialRelationShip entitiesCommercialRelationShip = new EntitiesCommercialRelationShip();
     Concept concept = new Concept();
     ConceptStatus conceptStatus = new ConceptStatus();
@@ -136,7 +133,7 @@
     {
         if (SearchValueMode == "Entity")
         {
-            ListEntityActor = await actorsNodeServive.GetEntityActorFaceList(userId, ipAddress, value);
+            ListEntityActor = await actorsNodeServive.GetEntityActorFaceList(value);
             ParamCountResul = ListEntityActor != null ? ListEntityActor.Count() : 0;
         }
         if (ParamCountResul > 0) { ViewSelect = true; } else { ViewSelect = false; }
@@ -163,7 +160,7 @@
             }
             comercialConditions.RelatedEntity = entityActor;
             comercialConditions.EntitiyCommercialRelationShipType = entitiyRelationshipType;
-            await actorsNodeServive.SaveCommercialConditions(userId, ipAddress, entityId, comercialConditions);
+            await actorsNodeServive.SaveCommercialConditions(entityId, comercialConditions);
             succesful = true;
             //RefreshMe();
             StateHasChanged();
@@ -174,7 +171,7 @@
     {
         if(comercialId != null)
         {
-            relations = await actorsNodeServive.GetCommercialRelationShip(userId, ipAddress, entityId);
+            relations = await actorsNodeServive.GetCommercialRelationShip(entityId);
             entityActor = relations.RelatedEntity;
             entitiesCommercialRelationShip = relations;
             entitiyRelationshipType = relations.EntitiyCommercialRelationShipType;

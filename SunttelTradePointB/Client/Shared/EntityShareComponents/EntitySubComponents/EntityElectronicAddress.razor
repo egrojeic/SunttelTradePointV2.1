@@ -59,9 +59,6 @@
     AtomConcept entityActor = new AtomConcept();
     List<ElectronicAddress> pruebaList = new List<ElectronicAddress>();
 
-    private string userId = UIClientGlobalVariables.UserId;
-    private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
-
     protected override async Task OnInitializedAsync()
     {
         await GetEntityElectronicAddress();
@@ -71,7 +68,7 @@
     {
         if (EntityId != null)
         {
-            var response = await actorsNodeServive.GetEntityElectronicAddress(userId, ipAddress, EntityId);
+            var response = await actorsNodeServive.GetEntityElectronicAddress(EntityId);
             if (response != null)
                 entityElectronicAddress = response;
             StateHasChanged();

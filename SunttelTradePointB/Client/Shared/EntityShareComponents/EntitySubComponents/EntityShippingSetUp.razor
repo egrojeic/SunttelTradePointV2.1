@@ -61,9 +61,6 @@
     IList<ShippingInfo> selectedShippingInfo;
     RadzenDataGrid<ShippingInfo>? radzenDataGrid;
 
-    private string userId = UIClientGlobalVariables.UserId;
-    private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
-
     protected override async Task OnInitializedAsync()
     {
         await GetEntityShippingSetUp();
@@ -73,7 +70,7 @@
     {
         if(EntityId != null)
         {
-            var response = await actorsNodeServive.GetShippingInfos(userId, ipAddress, EntityId);
+            var response = await actorsNodeServive.GetShippingInfos(EntityId);
             if (response != null)
                 shippingInfoList = response;
             StateHasChanged();

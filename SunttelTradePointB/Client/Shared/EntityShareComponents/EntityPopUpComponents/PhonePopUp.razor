@@ -71,9 +71,6 @@
     public string lblPhone = "";
     public string lblDescription = "";
 
-    private string userId = UIClientGlobalVariables.UserId;
-    private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
-
     private bool succesfull = false;
 
     PhoneNumber phoneNumber = new PhoneNumber();
@@ -95,7 +92,7 @@
             {
                 phoneNumber.Id = phoneId;
             }
-            await actorsNodeServive.SavePhone(userId, ipAddress, EntityActorId, phoneNumber);
+            await actorsNodeServive.SavePhone(EntityActorId, phoneNumber);
             succesfull = true;
             StateHasChanged();
         }
@@ -105,7 +102,7 @@
     {
         if(phoneId != null)
         {
-            phoneNumberList = await actorsNodeServive.GetPhoneNumber(userId, ipAddress, entityId);
+            phoneNumberList = await actorsNodeServive.GetPhoneNumber(entityId);
             foreach(var phones in phoneNumberList)
             {
                 if(phones.Id == phoneId)

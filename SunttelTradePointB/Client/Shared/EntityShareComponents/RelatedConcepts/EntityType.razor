@@ -68,9 +68,6 @@
     AtomConcept entityType = new AtomConcept();
     AtomConcept entityTypeById = new AtomConcept();
 
-    private string userId = UIClientGlobalVariables.UserId;
-    private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
-
     private bool visible { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
@@ -82,7 +79,7 @@
     {
         if (entityTypeId != null)
         {
-            entityTypeById = await actorsNodeServive.GetEntityTypeById(userId, ipAddress, entityTypeId);
+            entityTypeById = await actorsNodeServive.GetEntityTypeById(entityTypeId);
             if (entityTypeById != null)
             {
                 entityType = entityTypeById;
@@ -95,7 +92,7 @@
         if (entityTypeId != null && entityType != null)
             entityType.Id = entityTypeId;
         entityTypeSave = entityType;
-        await actorsNodeServive.SaveEntityType(userId, ipAddress, entityTypeSave);
+        await actorsNodeServive.SaveEntityType(entityTypeSave);
         visible = true;
         StateHasChanged();
     }

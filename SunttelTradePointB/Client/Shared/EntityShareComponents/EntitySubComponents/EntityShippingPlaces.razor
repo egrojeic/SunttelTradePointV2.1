@@ -73,9 +73,6 @@
     City city = new City();
     GeoRegion geoRegion = new GeoRegion();
 
-    private string userId = UIClientGlobalVariables.UserId;
-    private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
-
     protected override async Task OnInitializedAsync()
     {
         await GetEntityAddress();
@@ -85,7 +82,7 @@
     {
         if (EntityId != null)
         {
-            var response = await actorsNodeServive.GetEntityActorAddressList(userId, ipAddress, EntityId);
+            var response = await actorsNodeServive.GetEntityActorAddressList(EntityId);
             if (response != null)
                 entityAddressList = response;
             StateHasChanged();

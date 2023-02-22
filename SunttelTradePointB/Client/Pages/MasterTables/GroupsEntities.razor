@@ -56,9 +56,6 @@
     List<EntityGroup>? entityGroupList;
     IList<EntityGroup> selectedGroups;
 
-    private string userId = UIClientGlobalVariables.UserId;
-    private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
-
 
     bool isLoading = false;
     string _filterItems = "";
@@ -85,7 +82,7 @@
             isLoading = true;
             StateHasChanged();
 
-            var response = await actorsNodeServive.GetListEntityGroups(userId, ipAddress, filter);
+            var response = await actorsNodeServive.GetListEntityGroups(filter);
 
             if (response != null)
                 entityGroupList = response;

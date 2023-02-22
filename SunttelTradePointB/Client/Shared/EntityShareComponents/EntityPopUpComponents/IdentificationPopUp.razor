@@ -90,9 +90,6 @@
     public string lblCode = "";
     public string lblEntityIssuer = "Type of identification";
 
-    private string userId = UIClientGlobalVariables.UserId;
-    private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
-
     protected override async Task OnInitializedAsync()
     {
         lblCode = UICommonFunctions.GetDisplayName(new IdentificationEntity(), "Code");
@@ -121,7 +118,7 @@
                 identificationEntity.Id = identificationId;
             }
             identificationEntity.EntityTypeId = identificationType;
-            await actorsNodeServive.SaveIdentificationCode(userId, ipAddress, entityId, identificationEntity);
+            await actorsNodeServive.SaveIdentificationCode(entityId, identificationEntity);
             visible = true;
             StateHasChanged();  
         }
@@ -168,7 +165,7 @@
     {
         if(identificationId != null)
         {
-            identificationEntityList = await actorsNodeServive.GetEntityIdentifierList(userId, ipAddress, entityId);
+            identificationEntityList = await actorsNodeServive.GetEntityIdentifierList(entityId);
             foreach (var identifierList in identificationEntityList)
             {
                 if (identifierList.Id == identificationId)
