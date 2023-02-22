@@ -61,11 +61,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             try
             {
-                transactionalItemsList = await _httpClient.GetFromJsonAsync<List<TransactionalItem>>($"api/TransactionalItems/GetTransactionalItems?page=1&perPage=10&filterName={namteToFind}");
+                transactionalItemsList = await _httpClient.GetFromJsonAsync<List<TransactionalItem>>($"api/TransactionalItems/GetTransactionalItems?page={page}&perPage={perPage}&filterName={namteToFind}");
                 page = page == 0 ? 1 : page;
 
-                if ((transactionalItemsList.Count() - page) >= perPage) transactionalItemsList.ToList().GetRange((int)page, (int)perPage);
-                if ((transactionalItemsList.Count() - page) < perPage) transactionalItemsList.GetRange((int)page, (transactionalItemsList.Count() - 1));
+                //if ((transactionalItemsList.Count() - page) >= perPage) transactionalItemsList.ToList().GetRange((int)page, (int)perPage);
+                //if ((transactionalItemsList.Count() - page) < perPage) transactionalItemsList.GetRange((int)page, (transactionalItemsList.Count() - 1));
                 return transactionalItemsList != null ? transactionalItemsList : new List<TransactionalItem>();
 
             }
@@ -346,9 +346,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             catch (Exception ex)
             {
                 string errMessage = ex.Message;
-
                 return null;
-
             }
 
         }
@@ -459,10 +457,12 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         public async Task<List<TransactionalItemType>> GetSelectorListTransactionalItemTypes(string? nameLike = null)
         {
             nameLike = nameLike != null ? nameLike : "";
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                transactionalItemTypes = await _httpClient.GetFromJsonAsync<List<TransactionalItemType>>($"api/ConceptsSelector/GetSelectorListTransactionalItemTypes");
-                return transactionalItemTypes != null ? transactionalItemTypes.Where(s => s.Name.ToLower().Contains(nameLike.ToLower())).ToList() : new List<TransactionalItemType>();
+                transactionalItemTypes = await _httpClient.GetFromJsonAsync<List<TransactionalItemType>>($"api/ConceptsSelector/GetSelectorListTransactionalItemTypes?userId={userId}&ipAddress={ipAddress}&filterCondition={nameLike}");
+                return transactionalItemTypes;
             }
             catch (Exception ex)
             {
@@ -615,7 +615,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
-        public async Task<bool> SaveTransactionalItem(TransactionalItem transactionalItem)
+        public async Task<TransactionalItem> SaveTransactionalItem(TransactionalItem transactionalItem)
         {
 
             string userId = UIClientGlobalVariables.UserId;
@@ -623,12 +623,13 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             try
             {
                 var resul = await _httpClient.PostAsJsonAsync<TransactionalItem>($"api/TransactionalItems/SaveTransactionalItem?userId={userId}&ipAddress={ipAddress}", transactionalItem);
-                return resul.IsSuccessStatusCode;
+                TransactionalItem item = await resul.Content.ReadFromJsonAsync<TransactionalItem>();
+                return item;
             }
             catch (Exception ex)
             {
                 string errMessage = ex.Message;
-                return false;
+                return null;
             }
 
         }
@@ -741,11 +742,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         public Task<List<Concept>> GetSelectorListEntityActors(string? nameLike = null)
         {
             throw new NotImplementedException();
-        }       
+        }
 
        
-
-
     }
 
     public class FilePath

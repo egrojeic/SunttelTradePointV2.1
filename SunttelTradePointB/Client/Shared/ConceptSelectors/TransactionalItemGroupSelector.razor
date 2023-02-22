@@ -63,6 +63,13 @@
     public bool ViewSelect = false, PopupViewAddGroup = false;
     InputTextSelector? ReferInputTextSelector;
     SfChip? referChip;
+
+    protected override void OnParametersSet()
+    {      
+        var R = Groups;
+        StateHasChanged();
+    }
+
     protected override Task OnInitializedAsync()
     {
         if (Groups != null)
@@ -81,7 +88,7 @@
             GroupsQuery = await transactionalService.GetTransactionalItemGroups(value);
 
             GroupsSearcher = new List<ConceptGroup>();
-           
+
             GroupsSearcher.AddRange(GroupsQuery);
             ParamCountResul = GroupsSearcher != null ? GroupsSearcher.Count() : 0;
             ViewSelect = ParamCountResul > 0;
@@ -98,6 +105,7 @@
 
         if (SearcherValueMode == "Group")
         {
+            if (Groups == null) Groups = new();
             Group = GroupsSearcher.Where(c => c.Id == selectionId).FirstOrDefault();
             ViewSelect = false;
             PopupViewAddGroup = false;
@@ -125,11 +133,11 @@
 
     public void Refresh()
     {
-        referChip.Chips.Clear();
-        foreach (var Group in Groups)
-        {
-            referChip.Chips.Add(new ChipItem { Text = Group.Name, LeadingIconCss = "anne" });
-        }
+        if (referChip!=null) referChip.Chips.Clear();
+        //foreach (var Group in Groups)
+        //{
+        //    referChip.Chips.Add(new ChipItem { Text = Group.Name, LeadingIconCss = "anne" });
+        //}
 
         StateHasChanged();
     }

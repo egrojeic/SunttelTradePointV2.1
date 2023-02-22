@@ -51,7 +51,7 @@ else
         <GridColumns>
         <GridColumn Field="@nameof(SeasonBusiness.Name)" HeaderText="@GetName("Name", new AtomConcept())" Width="250px"></GridColumn>
         <GridColumn Field="@nameof(SeasonBusiness.Code)" HeaderText="@GetName("Code", new AtomConcept())" Width="120px"></GridColumn>
-        <GridColumn Field="@nameof(SeasonBusiness.FlagSundayShipping)" HeaderText="@GetName("FlagSundayShipping", new SeasonBusiness())"></GridColumn>
+        <GridColumn Field="@nameof(SeasonBusiness.FlagSundayShipping)" HeaderText="@GetName("FlagSundayShipping", new SeasonBusiness())"  DisplayAsCheckBox="true"   ></GridColumn>
         <GridColumn Field="@nameof(SeasonBusiness.StartDate)" HeaderText="@GetName("StartDate", new SeasonBusiness())"></GridColumn>
         <GridColumn Field="@nameof(SeasonBusiness.EndDate)" HeaderText="@GetName("EndDate", new SeasonBusiness())"></GridColumn>
         <GridColumn Field="@nameof(SeasonBusiness.Notes)" HeaderText="@GetName("Notes", new AtomConcept())"></GridColumn>      

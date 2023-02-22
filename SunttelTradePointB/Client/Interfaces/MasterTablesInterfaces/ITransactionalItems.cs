@@ -166,7 +166,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// </summary>      
         /// <param name="transactionalItem"></param>   
         /// <returns></returns>
-        Task<bool> SaveTransactionalItem(TransactionalItem transactionalItem);
+        Task<TransactionalItem> SaveTransactionalItem(TransactionalItem transactionalItem);
 
 
         /// Save Season
