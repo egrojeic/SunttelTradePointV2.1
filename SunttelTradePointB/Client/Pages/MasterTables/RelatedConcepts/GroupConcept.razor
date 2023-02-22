@@ -259,7 +259,7 @@
         if (tile == "Save")
         {
             conceptGroup.ChildrenGroups = childrenGroups;
-            var resul = await transactionalService.SaveTransactionalItemGroup(null, conceptGroup);
+            var resul = await transactionalService.SaveTransactionalItemGroup( conceptGroup);
             if (resul)
             {
                 conceptGroup = new();

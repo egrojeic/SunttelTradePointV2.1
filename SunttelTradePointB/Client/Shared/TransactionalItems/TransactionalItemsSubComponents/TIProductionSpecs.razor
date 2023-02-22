@@ -15,13 +15,15 @@
 @*<ProductionSpecsCard @ref="referNewProductionSpecs" save="@Save" ></ProductionSpecsCard>*@
 <div class="row">
     <div class="col-md-12">
-        <SfGrid @ref="GridProductSpecs" DataSource="@ProductionSpecsView" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" EnableStickyHeader="true">
+        <SfGrid @ref="GridProductSpecs" DataSource="@ProductionSpecsView" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" EnableStickyHeader="true"
+                ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader" } })">
             <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
             <GridColumns>                
                 <GridColumn Field="@nameof(TransactionalItemProcessStep.Name)" HeaderText="@Name" Width="110"> </GridColumn>
                 <GridColumn Field="@nameof(TransactionalItemProcessStep.GeneralInstructions)" HeaderText="@GeneralInstructions" Width="110"> </GridColumn>
                 <GridColumn Field="@nameof(TransactionalItemProcessStep.Cost)" HeaderText="@Cost" Width="110"> </GridColumn>
             </GridColumns>
+            <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="TransactionalItemProcessStep"></GridEvents>
         </SfGrid>
     </div>
 </div>
@@ -108,6 +110,19 @@
     {       
         GridProductSpecs.Refresh();
 
+    }
+    public void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemProcessStep> args)
+    {
+        TransactionalItemProcessStep _PackingSpecs = new();
+        _PackingSpecs = args.RowInfo.RowData;
+
+        if (args.Item.Text == "Edit")
+        {           
+            if (transactionalService.ConceptTransactionalItemPackingSpecs != null)
+            {
+                Navigation.NavigateTo("/ProductionSpecsCard/Edit");
+            }
+        }
     }
 
    

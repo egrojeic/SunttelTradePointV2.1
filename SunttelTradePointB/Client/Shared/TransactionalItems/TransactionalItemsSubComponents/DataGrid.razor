@@ -11,11 +11,7 @@
         AllowTextWrap="false"
         AllowPaging="true"
         AllowResizing="true"    
-        ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader" } })"
-
-
-
-            >
+        ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" } })">
 
         <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
         @if (GridColumnsList != null )

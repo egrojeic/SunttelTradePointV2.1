@@ -214,7 +214,7 @@
             {
                 box.LinkedTransactionalItem = linkedTransactionalItem;
                 string boxId = box.Id;
-                var resul = await transactionalService.SaveBox(boxId, box);
+                var resul = await transactionalService.SaveBox( box);
                 if (resul) { box = new(); linkedTransactionalItem = new(); };
                 Msg(resul);
 
@@ -232,7 +232,7 @@
             {
                 CopyBox.LinkedTransactionalItem = linkedTransactionalItem;
                 CopyBox.Id = null;
-                var resul = await transactionalService.SaveBox("", CopyBox);
+                var resul = await transactionalService.SaveBox(CopyBox);
                 if (resul) { box = new(); linkedTransactionalItem = new(); };
                 Msg(resul);
             }

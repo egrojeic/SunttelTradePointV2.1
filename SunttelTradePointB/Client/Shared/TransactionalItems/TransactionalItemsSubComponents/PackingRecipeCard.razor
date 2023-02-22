@@ -166,7 +166,7 @@
                                     <div style="position:relative;">
                                         <div class="item-edit">
                                             <label>@(Customer != null ? Customer.Name : "")</label>
-                                            <button @onclick='()=>SetViewElemnt("Customer")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                                            <button type="button" @onclick='()=>SetViewElemnt("Customer")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                         </div>
 
                                         <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewAddCustomer">
@@ -194,7 +194,7 @@
                                     <div style="position:relative;">
                                         <div class="item-edit">
                                             <label>@(Season != null ? Season.Name : "")</label>
-                                            <button @onclick='()=>SetViewElemnt("Season")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                                            <button type="button" @onclick='()=>SetViewElemnt("Season")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                         </div>
 
                                         <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditSeason">
@@ -219,7 +219,7 @@
                                     <div style="position:relative;">
                                         <div class="item-edit">
                                             <label>@(ModelRecipe != null ? ModelRecipe.Name : "")</label>
-                                            <button @onclick='()=>SetViewElemnt("Model")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                                            <button type="button" @onclick='()=>SetViewElemnt("Model")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                         </div>
 
                                         <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditModel">
@@ -253,7 +253,7 @@
                                     <div style="position:relative;">
                                         <div class="item-edit">
                                             <label>@(BoxToSale != null ? BoxToSale.Name : "")</label>
-                                            <button @onclick='()=>SetViewElemnt("BoxToSale")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                                            <button type="button" @onclick='()=>SetViewElemnt("BoxToSale")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                         </div>
 
                                         <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditBoxToSale">
@@ -276,7 +276,7 @@
                                     <div style="position:relative;">
                                         <div class="item-edit">
                                             <label>@(BoxToBuy != null ? BoxToBuy.Name : "")</label>
-                                            <button @onclick='()=>SetViewElemnt("BoxToBuy")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                                            <button type="button" @onclick='()=>SetViewElemnt("BoxToBuy")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                         </div>
 
                                         <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditBoxToBuy">
@@ -322,7 +322,7 @@
                                 <div style="position:relative;">
                                     <div class="item-edit">
                                         <label>@(palletLabelStyle != null ? palletLabelStyle.Name : "")</label>
-                                        <button @onclick='()=>SetViewElemnt("PalletLabelStyle")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                                        <button type="button" @onclick='()=>SetViewElemnt("PalletLabelStyle")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                     </div>
                                     <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditPalletLabelStyle">
                                         @{
@@ -345,7 +345,7 @@
                                 <div style="position:relative;">
                                     <div class="item-edit">
                                         <label>@(BoxLabelStyle != null ? BoxLabelStyle.Name : "")</label>
-                                        <button @onclick='()=>SetViewElemnt("BoxLabelStyle")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                                        <button type="button" @onclick='()=>SetViewElemnt("BoxLabelStyle")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                     </div>
                                     <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditBoxLabelStyle">
                                         @{
@@ -372,7 +372,7 @@
                                 <div style="position:relative;">
                                     <div class="item-edit">
                                         <label>@(InnerProductLabelStyleByDeafult != null ? InnerProductLabelStyleByDeafult.Name : "")</label>
-                                        <button @onclick='()=>SetViewElemnt("InnerProductLabelStyleByDeafult")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                                        <button type="button" @onclick='()=>SetViewElemnt("InnerProductLabelStyleByDeafult")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                     </div>
                                     <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditBoxLabelStyle">
                                         @{
@@ -410,7 +410,7 @@
                                 <div style="position:relative;">
                                     <div class="item-edit">
                                         <label>@(uPCDateCodeBasedOn != null ? uPCDateCodeBasedOn.Name : "")</label>
-                                        <button @onclick='()=>SetViewElemnt("UPCDateCodeBasedOn")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                                        <button type="button" @onclick='()=>SetViewElemnt("UPCDateCodeBasedOn")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                     </div>
                                     <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditUPCDateCodeBasedOn">
                                         @{
@@ -426,7 +426,7 @@
                                 </div>
                                 @*// int UPCDateCodeDaysAfterReferenceDate*@
                                 <div><label> @GetName("UPCDateCodeDaysAfterReferenceDate", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.UPCDateCodeFormat" type="number" class="form-control" style="border-color:gray;" required /></div>
+                                <div><input  @bind="labelInstruction.UPCDateCodeFormat" type="number" class="form-control" style="border-color:gray;" required /></div>
 
                                 @*// string OriginCountryLegend *@
                                 <div><label> @GetName("OriginCountryLegend", new LabelInstruction()) </label></div>
@@ -642,13 +642,18 @@
         if (Mode =="Edit")
         {
             _PackingSpecs = transactionalService.ConceptTransactionalItemPackingSpecs;
-            Customer = _PackingSpecs.Customer;            
-            Season = _PackingSpecs.Season;
-            ModelRecipe = _PackingSpecs.ModelRecipe;
-            PriceInfo = _PackingSpecs.Price;
-            BoxToBuy = _PackingSpecs.PackingBoxToBuy;
-            BoxToSale = _PackingSpecs.PackingBoxToSale;
-            ListOfMaterials = _PackingSpecs.ListOfMaterials;
+            if (_PackingSpecs !=null)
+            {             
+
+                Customer = _PackingSpecs.Customer != null ? _PackingSpecs.Customer : new Concept();
+                Season = _PackingSpecs.Season != null ? _PackingSpecs.Season : new SeasonBusiness() ;
+                ModelRecipe = _PackingSpecs.ModelRecipe != null ? _PackingSpecs.ModelRecipe : new ProductModel();
+                PriceInfo = _PackingSpecs.Price != null ? _PackingSpecs.Price : new PriceInfo();
+                BoxToBuy = _PackingSpecs.PackingBoxToBuy != null ? _PackingSpecs.PackingBoxToBuy : new Box(); ;
+                BoxToSale = _PackingSpecs.PackingBoxToSale != null ? _PackingSpecs.PackingBoxToSale : new Box();
+                ListOfMaterials = _PackingSpecs.ListOfMaterials != null ? _PackingSpecs.ListOfMaterials : new List<MaterialRecipeItem>();
+                StateHasChanged();
+            }
         }
     }
 
@@ -769,15 +774,13 @@
         }
         if (SearcherValueMode == "BoxToSale")
         {
-
-            if (SetBox == null) SetBox = new();
-            GetBoxToSaleView = SetBox.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+            GetBoxToSaleView = await transactionalService.GetBoxGetBoxTable(value);
             ParamCountResul = GetBoxToSaleView != null ? GetBoxToSaleView.Count() : 0;
         }
         if (SearcherValueMode == "BoxToBuy")
         {
             if (SetBox == null) SetBox = new();
-            GetBoxToBuyView = SetBox.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+            GetBoxToBuyView = await transactionalService.GetBoxGetBoxTable(value);
             ParamCountResul = GetBoxToBuyView != null ? GetBoxToBuyView.Count() : 0;
         }
         if (SearcherValueMode == "PalletLabelStyle")
