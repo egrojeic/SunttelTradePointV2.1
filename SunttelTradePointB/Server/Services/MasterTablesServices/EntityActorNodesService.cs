@@ -577,14 +577,18 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAdress"></param>
-        /// <param name="entityGroupId"></param>
         /// <param name="entityGroup"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, EntityGroup? entityGroup, string? ErrorDescription)> SaveEntityGroup(string userId, string ipAdress, string entityGroupId, EntityGroup entityGroup)
+        public async Task<(bool IsSuccess, EntityGroup? entityGroup, string? ErrorDescription)> SaveEntityGroup(string userId, string ipAdress, EntityGroup entityGroup)
         {
             try
             {
-                var filterEntityGroup = Builders<EntityGroup>.Filter.Eq("_id", new ObjectId(entityGroupId));
+                if(entityGroup.Id == null)
+                {
+                    entityGroup.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterEntityGroup = Builders<EntityGroup>.Filter.Eq("_id", new ObjectId(entityGroup.Id));
                 var updateEntityOptions = new ReplaceOptions { IsUpsert = true };
                 var resultEntityGroup = await _entityGroup.ReplaceOneAsync(filterEntityGroup, entityGroup, updateEntityOptions);
 

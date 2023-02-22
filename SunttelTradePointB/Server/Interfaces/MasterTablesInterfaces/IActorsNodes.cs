@@ -117,10 +117,9 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAdress"></param>
-        /// <param name="entityGroupId"></param>
         /// <param name="conceptGroup"></param>
         /// <returns></returns>
-        public Task<(bool IsSuccess, EntityGroup? entityGroup, string? ErrorDescription)> SaveEntityGroup(string userId, string ipAdress, string entityGroupId, EntityGroup conceptGroup);
+        public Task<(bool IsSuccess, EntityGroup? entityGroup, string? ErrorDescription)> SaveEntityGroup(string userId, string ipAdress, EntityGroup conceptGroup);
 
         /// <summary>
         /// Insert / Updates an electronic address of an entity
