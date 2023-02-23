@@ -69,7 +69,7 @@
 
             <div class="container-menu-g">
                 <nav>
-                    <button @onclick='()=>OpenAdd("AssemblyRecipeItems")' class="general-menu-button" style="text-align:center;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                    <button type="button" @onclick='()=>OpenAdd("AssemblyRecipeItems")' class="general-menu-button" style="text-align:center;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
                     <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
                         <SplitButtonEvents ItemSelected="ItemSelected_1">
@@ -179,7 +179,7 @@
                               <div class="flex-horizontal-center">
                             <div class="detailsTitleContainer">
                                     <h3 class="subTitleDetailForm">@GetName( "ComponentItemRecipe", new PackRecipeItem())</h3>
-                                    <svg @onclick='()=>ClosedAdd("ComponentItemRecipeAssembly")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                                    <svg @onclick='()=>ClosedAdd("ComponentItemRecipeChildren")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                 </svg>
@@ -247,6 +247,7 @@
                 </div>
             </div>
         }
+
         @if (@pageView == "ComponentItemRecipeAssembly")
         {
             <PageTitleComponent Title="@GetName( "ComponentItemRecipe", new PackRecipeItem())" IconName="TransactionalTypes.png"
@@ -263,6 +264,11 @@
                     </div>
                 </div>
             </div>
+        }
+
+        @if(pageView == "ComponentItemRecipeChildren")
+        {
+            <ComponentItemRecipeChildrenCard EventCallbackPage="ClosedAdd" ></ComponentItemRecipeChildrenCard>
         }
 
     </div>
@@ -691,7 +697,7 @@
     public string id { get; set; }
     public RenderFragment render { get; set; }
     [Parameter]
-    public EventCallback<PackingSpecs> save { get; set; }
+    public EventCallback<PackingSpecs> save { get; set; }  
     [Parameter]
     public bool ViewSelect { get; set; } = false;
     [Parameter]
@@ -893,6 +899,18 @@
         if (tile == "Save")
         {
 
+
+
+
+            if (transactionalService.TransactionalItems != null)
+            {
+                if (transactionalService.TransactionalItems.ProductPackingSpecs == null)
+                {
+                    transactionalService.TransactionalItems.ProductPackingSpecs = new List<PackingSpecs>();
+                }
+               // transactionalService.TransactionalItems.ProductPackingSpecs.Add(_TransactionalItemProcessStep);
+
+            }
 
             Msg("Addded");
 

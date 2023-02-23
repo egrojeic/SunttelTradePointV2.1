@@ -30,28 +30,28 @@
         </PageTitleComponent>
         <div class="flex-horizontal-center ">
             <div class="grid-columns-2 box-shadow-mode width-page1">
-               
-                    <div >
-                        <label>@Key</label>
-                    </div>
-                    <div>
-                        <input @bind-value="TransactionalItemTag.Key" class="form-control" placeholder="Edit key" />
-                    </div>
-                    <div c>
-                        <label>@Value</label>
-                    </div>
-                    <div>
-                        <input @bind-value="TransactionalItemTag.Value" class="form-control" placeholder="Edit value" />
-                    </div>
-                   
-                    <div></div>
-                    <div>
-                        <button @onclick='Addtag' class="size-btn color-btn margin-left" style="background-color:#00ccff;"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                        <button @onclick='()=>OpenAdd("TransactionalItemTag")' class="size-btn color-btn margin-left" style="background-color:#00ccff;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-                    </div>
+
+                <div>
+                    <label>@Key</label>
+                </div>
+                <div>
+                    <input @bind-value="TransactionalItemTag.Key" class="form-control" placeholder="Edit key" />
+                </div>
+                <div c>
+                    <label>@Value</label>
+                </div>
+                <div>
+                    <input @bind-value="TransactionalItemTag.Value" class="form-control" placeholder="Edit value" />
                 </div>
 
-          
+                <div></div>
+                <div>
+                    <button @onclick='Addtag' class="size-btn color-btn margin-left" style="background-color:#00ccff;"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                    <button @onclick='()=>OpenAdd("TransactionalItemTag")' class="size-btn color-btn margin-left" style="background-color:#00ccff;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                </div>
+            </div>
+
+
         </div>
     }
 </div>
@@ -149,7 +149,7 @@
             </TabItems>
         </SfTab>
     </div>
-    
+
 
 </div>
 
@@ -311,13 +311,30 @@
             if (transactionalItemId != "" && transactionalItemId != null)
             {
                 var resul = await transactionalService.SaveProductionSpecs(transactionalItemId, _TransactionalItemProcessStep);
-                if (resul) { OpenAlert("Saved", 1); } else { OpenAlert("No saved", 0); };
+                if (resul )
+                {
+                    OpenAlert("Saved", 1);
+                   
+                    if (transactionalService.TransactionalItems != null)
+                    {
+                        if (transactionalService.TransactionalItems.ProductionSpecs == null)
+                        {
+                            transactionalService.TransactionalItems.ProductionSpecs = new List<TransactionalItemProcessStep>();
+                        }
+                        transactionalService.TransactionalItems.ProductionSpecs.Add(_TransactionalItemProcessStep);
+                        
+                    }
+                  
+
+                }
             }
-
+            else { OpenAlert("No saved", 0); };
         }
-
         StateHasChanged();
     }
+
+  
+
 
 
 
@@ -327,5 +344,4 @@
         viewMsg = true;
         statusMsg = status;
     }
-
-    }
+}

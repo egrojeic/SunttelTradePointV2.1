@@ -1,5 +1,4 @@
-﻿@page "/ComponentItemRecipe"
-@using Syncfusion.Blazor.Popups
+﻿@using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.Grids
 @using Syncfusion.Blazor.Data
 @using SunttelTradePointB.Shared.Common
@@ -21,13 +20,13 @@
 
         @if (@pageView == "AssemblyRecipeItems")
         {
-            <PageTitleComponent Title="@GetName("AssemblyRecipeItems", new PackingSpecs())" IconName="TransactionalTypes.png"
+            <PageTitleComponent Title="@($"{GetName("ComponentItemRecipe", new PackRecipeItem())} Children")" IconName="TransactionalTypes.png"
                             Description="@($"Here you can add {GetName("AssemblyRecipeItems", new PackingSpecs())}")">
             </PageTitleComponent>
 
             <div class="container-menu-g">
                 <nav>
-                    <button @onclick='()=>OpenAdd("AssemblyRecipeItems")' class="general-menu-button" style="text-align:center;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                    <button @onclick='()=>HomePage("AssemblyRecipeItems")' class="general-menu-button" style="text-align:center;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
                     <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
                         <SplitButtonEvents ItemSelected="ItemSelected_1">
@@ -301,6 +300,8 @@
 @code {
     [Parameter]
     public string id { get; set; }
+    [Parameter]
+    public EventCallback<string> EventCallbackPage { get; set; }
     //public RenderFragment render { get; set; }
     //[Parameter]
     //public EventCallback<PackingSpecs> save { get; set; }   
@@ -422,7 +423,7 @@
         {
              new GridColumn() { Field=nameof(MaterialRecipeItem.Material.Name) ,  HeaderText = @GetName( "Name", new AtomConcept())  },
               new GridColumn() { Field=nameof(MaterialRecipeItem.Quantity) ,  HeaderText = @GetName( "Quantity", new AtomConcept())  }
-             
+
         };
 
     }
@@ -495,11 +496,11 @@
 
     }
 
-    
-    
+
+
     public async void ItemSelected_1(MenuEventArgs e)
     {
-     
+
         string tile = e.Item != null ? e.Item.Text : "";
         if (tile == "Save")
         {
@@ -535,7 +536,7 @@
                     SkinImageName = materialRecipeItem.Material != null ? materialRecipeItem.Material.SkinImageName : ""
                 });
             materialRecipeItem = new();
-           // DataGrid.Refresh();
+            // DataGrid.Refresh();
             Msg("Added");
         }
     }
@@ -720,10 +721,10 @@
     {
         MaterialRecipeItem ObjModel = null;
         ObjModel = args.RowInfo.RowData;
-       
+
         if (args.Item.Id == "Edit")
         {
-            
+
         }
     }
 
@@ -769,6 +770,11 @@
 
     }
 
+
+    public void HomePage(string value)
+    {
+        EventCallbackPage.InvokeAsync(value);
+    }
 
 
     public void OpenAdd(string value)

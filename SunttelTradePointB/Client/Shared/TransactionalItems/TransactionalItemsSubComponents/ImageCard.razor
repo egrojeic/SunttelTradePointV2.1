@@ -132,10 +132,20 @@
             var resulFile = await transactionalService.UploadFiles(fileUpload);
 
             if (resulFile != "")
-            {
-              
-                await transactionalService.SaveImage(transactionalItemId, transactItemImage);
+            {              
+               var resul = await transactionalService.SaveImage(transactionalItemId, transactItemImage);
                 transactItemImage = new TransactItemImage();
+
+                if (transactionalService.TransactionalItems != null && resul )
+                    {
+                        if (transactionalService.TransactionalItems.PathImages == null)
+                        {
+                        transactionalService.TransactionalItems.PathImages = new List<TransactItemImage>();
+                        }
+                    transactionalService.TransactionalItems.PathImages.Add(transactItemImage);
+                        
+                    }
+
                 Msg("Saved");
             }
             else

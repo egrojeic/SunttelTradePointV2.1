@@ -57,14 +57,14 @@
             <label for="name">Name</label>
         </div>
         <div>
-            <input type="text" class="form-control" id="name" @bind-value="@currentItem.Name" />
+            <input type="text" class="form-control" id="name" @bind-value="@currentItem.Name"  autocomplete="off" />
         </div>
 
         <div id="shortCutCodeGroup">
             <label for="shortcutCode">Identifier Code</label>
         </div>
         <div>
-            <input type="text" class="form-control"  @bind="currentItem.Code" />
+            <input type="text" class="form-control"  @bind="currentItem.Code" autocomplete="off" />
         </div>
         <div><label for="shortcutCode">@GetName("Status", new Concept())</label></div>
         <div @onclick="SetStatus">
@@ -74,13 +74,13 @@
             <label for="shortcutCode">@GetName("ReferenceCost", new TransactionalItem())</label>
         </div>
         <div>
-            <input type="number" class="form-control"  @bind="currentItem.ReferenceCost" />
+            <input type="number" class="form-control" @bind="currentItem.ReferenceCost" autocomplete="off" />
         </div>
         <div id="shortCutCodeGroup">
             <label for="shortcutCode">@GetName("SkinImageName", new Concept())</label>
         </div>
         <div>
-            <input type="text" class="form-control"  @bind="currentItem.SkinImageName" />
+            <input type="text" class="form-control" @bind="currentItem.SkinImageName" autocomplete="off" />
         </div>
 
         <div class="lineFormGroup">
@@ -239,13 +239,21 @@
         string tile = e.Item != null ? e.Item.Text : "";
         if (tile == "Save")
         {
-            currentItem.ProductionSpecs = new List<TransactionalItemProcessStep>();
+            if (currentItem.ItemCatalog == null) currentItem.ItemCatalog = new CatalogItem();
+            if (currentItem.ItemCharacteristics == null) currentItem.ItemCharacteristics = new List<TransactionalItemCharacteristicPair>();
+            if (currentItem.ProductPackingSpecs == null) currentItem.ProductPackingSpecs = new List<PackingSpecs>();
+            if (currentItem.ProductionSpecs == null) currentItem.ProductionSpecs = new List<TransactionalItemProcessStep>();           
+            if (currentItem.PathImages == null) currentItem.PathImages = new List<TransactItemImage>();
+            if (currentItem.PriceOverridenByPriceList == null) currentItem.PriceOverridenByPriceList = new PriceListTransactionalItems();
+            if (currentItem.QualityParameters == null) currentItem.QualityParameters = new List<TransactionalItemQualityPair>();
+            if (currentItem.TransactionalItemTags == null) currentItem.TransactionalItemTags = new List<TransactionalItemTag>();
+
+            
             TransactionalItem item = await transactionalService.SaveTransactionalItem(currentItem);
             bool resul = (item != null ? true : false);
             if (resul)
             {
                 currentItem = item;
-
                 transactionalService.TransactionalItems = item;
                 transactionalService.transactionalItemId = item.Id;
             }

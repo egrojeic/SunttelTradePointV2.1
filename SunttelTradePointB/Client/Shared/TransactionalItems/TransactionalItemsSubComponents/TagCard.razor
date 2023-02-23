@@ -74,6 +74,15 @@
         if (transactionalItemId != "" && transactionalItemId != null)
         {
             var resul = await transactionalService.SaveTags(transactionalItemId, Tag);
+
+            if (transactionalService.TransactionalItems != null && resul)
+            {
+                if (transactionalService.TransactionalItems.TransactionalItemTags == null)
+                {
+                    transactionalService.TransactionalItems.TransactionalItemTags = new List<TransactionalItemTag>();
+                }
+                transactionalService.TransactionalItems.TransactionalItemTags.Add(Tag);
+            }
         }
         Closed("control");
     }

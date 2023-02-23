@@ -25,7 +25,7 @@
 <div class="row">
     <div class="col-md-12">
         <SfGrid @ref="GridImge" DataSource="@PathImagesView" AllowTextWrap="false" AllowPaging="true" EnableStickyHeader="true"
-                ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader" } })">
+              >
             <GridTemplates>
                 <RowTemplate>
                     <div class="grid-image">
@@ -39,7 +39,7 @@
                                 <p id="@elemnt.Id" > @elemnt.Name</p>
                             </div>
                             <div>
-                                <img src="/images//delete.png" class="btn btn-color" @onclick='()=>Delete(elemnt.Id)'>                               
+                                <img src="/images//delete.png" class="btn btn-color btn-delete" @onclick='()=>Delete(elemnt.Id)'>                               
                             </div>
                         }
                     </div>
@@ -51,7 +51,7 @@
                 <GridColumn HeaderText="@Name" Width="210"></GridColumn>
                 <GridColumn HeaderText="" Width="110"></GridColumn>
             </GridColumns>
-            <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="TransactItemImage"></GridEvents>
+          
         </SfGrid>
 
     </div>
@@ -116,6 +116,16 @@
         if (resul != null)
         {
             PathImagesView.Remove(resul); Refresh();
+            if (transactionalService.TransactionalItems != null)
+            {
+                if (transactionalService.TransactionalItems.PathImages == null)
+                {
+                    transactionalService.TransactionalItems.PathImages = new List<TransactItemImage>();
+                }
+                var image = transactionalService.TransactionalItems.PathImages.Where(s => s.Id.Trim() == value.Trim()).FirstOrDefault();
+                if (image!=null) transactionalService.TransactionalItems.PathImages.Remove(image);
+
+            }
         }
         ImagenUrlOpen = "";
         ImgOpen = false;
