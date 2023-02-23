@@ -88,7 +88,7 @@ else
     private async Task LoadData()
     {
         isLoading = true;
-        var data = await transactItemsService.GetTransactionalItemType(_filterItems);
+        var data = await transactItemsService.GetSelectorListTransactionalItemTypes(_filterItems);
         transactionalItemType = data; 
         isLoading = false;
         StateHasChanged();

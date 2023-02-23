@@ -9,7 +9,6 @@
 @inject NavigationManager Navigation
 
 
-
 <PageTitleComponent Title="Products, Services & Materials" IconName="goods.png"
                     Description="Here you'll find every product or service">
 </PageTitleComponent>
@@ -17,9 +16,7 @@
 <div class="panelMenuContainer">
     <ProductsGeneralMenu></ProductsGeneralMenu>
     <SearchComponent @bind-FilterTextSet="@productsFilter"></SearchComponent>
-
 </div>
-
 
 
 <div class="tableBodyContainer">
@@ -153,7 +150,7 @@
         transactItemsService.transactionalItemId = itemCard.Id;
         transactItemsService.TransactionalItems = itemCard;
         transactItemsService.Page = "TransactionalItemCard";
-        Navigation.NavigateTo("/TransactionalItemCard");      
+        Navigation.NavigateTo("/TransactionalItemCard/0/Edit");      
     }
 
 
