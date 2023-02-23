@@ -61,7 +61,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        pruebaList = await actorsNodeServive.GetEntityElectronicAddress(EntityId);
         await GetEntityElectronicAddress();
     }
 
@@ -69,7 +68,7 @@
     {
         if (EntityId != null)
         {
-            var response = await actorsNodeServive.GetElectronicAddressById(EntityId);
+            var response = await actorsNodeServive.GetEntityElectronicAddress(EntityId);
             if (response != null)
                 entityElectronicAddress = response;
             StateHasChanged();
@@ -83,14 +82,18 @@
             <RadzenMenuItem Text="Delete" Value=args.Data Icon="delete"></RadzenMenuItem>
             <RadzenMenuItem Text="Show in Map" Value=args.Data Icon="location_on"></RadzenMenuItem>
 
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
-        EntityActor argObj = (EntityActor)args.Value;
+        ElectronicAddress argObj = (ElectronicAddress)args.Value;
 
-        Console.WriteLine($"Menu item with Value={argObj.Name} clicked");
+        if(args.Text == "Edit")
+        {
+            navigationManager.NavigateTo($"/Actors/{EntityId}/ElectronicAddress/{argObj.Id}/Edit");
+        }
+
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();

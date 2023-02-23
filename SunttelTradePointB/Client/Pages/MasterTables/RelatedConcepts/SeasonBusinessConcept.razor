@@ -70,7 +70,7 @@
 
     public async void Save()
     {
-        var resul =  await transactionalService.SaveSeason(null, seasonBusiness);
+        var resul =  await transactionalService.SaveSeason(seasonBusiness);
         if (resul)
         {
             seasonBusiness = new();

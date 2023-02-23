@@ -162,30 +162,37 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             {
                 string strNameFiler = entityId == null ? "" : entityId;
 
-                var pipeline = new[] {
+                var pipeline = new List<BsonDocument>();
 
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(strNameFiler)))
+                );
 
-                    new BsonDocument(
-                        "$match",
-                        new BsonDocument("_id",new ObjectId(strNameFiler))
-                    ),
+                pipeline.Add(
                     new BsonDocument {
                         { "$project",
                             new BsonDocument {
                                 { "AddressList", 1 }
                             }
                         }
-                    },
-                    new BsonDocument(
-                        "$unwind", "$AddressList"
-                    ),
+                    }
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$unwind", "$AddressList")
+                );
+
+                pipeline.Add(
                     new BsonDocument {
                         { "$replaceRoot",
                             new BsonDocument {
                                 { "newRoot", "$AddressList" }
                             }
                         }
-                    },
+                    }
+                );
+
+                pipeline.Add(
                     new BsonDocument {
                         { "$project",
                             new BsonDocument {
@@ -193,8 +200,8 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                                 { "Name", 1 }
                             }
                         }
-                    },
-                };
+                    }
+                );
 
                 List<AtomConcept> results = await _entities.Aggregate<AtomConcept>(pipeline).ToListAsync();
 
@@ -217,18 +224,20 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             {
                 string strNameFiler = filterString == null ? "" : filterString;
 
-                var pipeline = new[] {
+                var pipeline = new List<BsonDocument>();
 
-
+                pipeline.Add(
                     new BsonDocument(
                         "$match",
                           new BsonDocument(
                                  "Name",
-                                    new BsonDocument (
+                                    new BsonDocument(
                                         "$regex", new BsonRegularExpression($"/{strNameFiler}/i"))
                             )
-                    ),
+                    )
+                );
 
+                pipeline.Add(
                     new BsonDocument {
                         { "$project",
                             new BsonDocument {
@@ -236,8 +245,8 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                                 { "Name", 1 }
                             }
                         }
-                    },
-                };
+                    }
+                );
 
                 List<AtomConcept> results = await _entityComercialGroups.Aggregate<AtomConcept>(pipeline).ToListAsync();
 
@@ -260,9 +269,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             {
                 string strNameFiler = filterString == null ? "" : filterString;
 
-                var pipeline = new[] {
+                var pipeline = new List<BsonDocument>();
 
-
+                pipeline.Add(
                     new BsonDocument(
                         "$match",
                           new BsonDocument(
@@ -270,8 +279,10 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                                     new BsonDocument (
                                         "$regex", new BsonRegularExpression($"/{strNameFiler}/i"))
                             )
-                    ),
+                    )
+                );
 
+                pipeline.Add(
                     new BsonDocument {
                         { "$project",
                             new BsonDocument {
@@ -279,8 +290,8 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                                 { "Name", 1 }
                             }
                         }
-                    },
-                };
+                    }
+                );
 
                 List<AtomConcept> results = await _entityRoles.Aggregate<AtomConcept>(pipeline).ToListAsync();
 
@@ -300,9 +311,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
+                var pipeline = new List<BsonDocument>();
 
-                var pipeline = new[] {
-
+                pipeline.Add(
                     new BsonDocument {
                         { "$project",
                             new BsonDocument {
@@ -310,8 +321,8 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                                 { "Name", 1 }
                             }
                         }
-                    },
-                };
+                    }
+                );
 
                 List<AtomConcept> results = await _seasons.Aggregate<AtomConcept>(pipeline).ToListAsync();
 
@@ -334,9 +345,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             {
                 string strNameFiler = filterString == null ? "" : filterString;
 
-                var pipeline = new[] {
+                var pipeline = new List<BsonDocument>();
 
-
+                pipeline.Add(
                     new BsonDocument(
                         "$match",
                           new BsonDocument(
@@ -344,8 +355,10 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                                     new BsonDocument (
                                         "$regex", new BsonRegularExpression($"/{strNameFiler}/i"))
                             )
-                    ),
+                    )
+                );
 
+                pipeline.Add(
                     new BsonDocument {
                         { "$project",
                             new BsonDocument {
@@ -354,8 +367,8 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                                 { "GroupClassificationCriteria", 1 },
                             }
                         }
-                    },
-                };
+                    }
+                );
 
                 List<ConceptGroup> results = await _transactionalItemsGroups.Aggregate<ConceptGroup>(pipeline).ToListAsync();
 
@@ -376,9 +389,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
+                var pipeline = new List<BsonDocument>();
 
-                var pipeline = new[] {
-
+                pipeline.Add(
                     new BsonDocument {
                         { "$project",
                             new BsonDocument {
@@ -386,8 +399,8 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                                 { "Name", 1 }
                             }
                         }
-                    },
-                };
+                    }
+                );
 
                 List<AtomConcept> results = await _transactionalItemsTypes.Aggregate<AtomConcept>(pipeline).ToListAsync();
 
@@ -428,25 +441,38 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
+                var pipeline = new List<BsonDocument>();
 
-                var pipeline = new[] {
+                pipeline.Add(
                     new BsonDocument{
                         {"$match", new BsonDocument( "_id", new ObjectId(transactionalItemId))
                         }
-                    },
+                    }
+                );
+
+                pipeline.Add(
                     new BsonDocument(
                         "$unwind",  "$ProductPackingSpecs"
-                    ),
+                    )
+                );
+
+                pipeline.Add(
                     new BsonDocument(
                         "$project",  new BsonDocument("ProductPackingSpecs.ModelRecipe", 1)
-                    ),
+                    )
+                );
+
+                pipeline.Add(
                     new BsonDocument(
                         "$group",  new BsonDocument("_id", "$ProductPackingSpecs.ModelRecipe")
-                    ),
+                    )
+                );
+
+                pipeline.Add(
                     new BsonDocument(
                         "$replaceRoot",  new BsonDocument("newRoot", "$_id")
                     )
-                };
+                );
 
                 List<AtomConcept> results = await _transactionalItemsTypes.Aggregate<AtomConcept>(pipeline).ToListAsync();
 

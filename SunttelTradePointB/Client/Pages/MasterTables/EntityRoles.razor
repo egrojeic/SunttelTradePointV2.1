@@ -1,5 +1,6 @@
 ﻿@page "/EntityRoles"
-@using SunttelTradePointB.Client.Shared.TransactionalItems
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Navigations
 @using SunttelTradePointB.Shared.Common
 
 
@@ -15,7 +16,7 @@
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
-    <GroupsMenu></GroupsMenu>
+    <RolesMenu></RolesMenu>
     <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
 </div>
 
@@ -27,29 +28,24 @@
     }else{
         @if(entityRolesList != null)
         {
-            <RadzenDataGrid AllowFiltering="true"
-                    AllowColumnResize="true"
-                    AllowAlternatingRows="true"
-                    FilterMode="FilterMode.Advanced"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    AllowSorting="true"
-                    PageSize="50"
-                    AllowPaging="true"
-                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    Data="@entityRolesList"
-                    TItem="EntityRole"
-                    ColumnWidth="300px"
-                    SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"
-                    @bind-Value=@selectedRoles Class="m-4"
-                    CellContextMenu="@ShowContextMenuWithContent">
-
-                <Columns>
-                    <RadzenDataGridColumn TItem="EntityRole" Property="Code" Title="Code" Frozen="true" Width="30px" />
-                    <RadzenDataGridColumn TItem="EntityRole" Property="Name" Filterable="true" Title="Name" Frozen="true" Width="180px" TextAlign="TextAlign.Center" />
-                </Columns>
-            </RadzenDataGrid>
+            <SfGrid DataSource="entityRolesList"
+                Height="auto"
+                Width="auto"
+                TValue="EntityRole"
+                AllowFiltering="true"
+                AllowTextWrap="false"
+                AllowPaging="true"
+                AllowResizing="true"    
+                ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" } })">
+                <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
+                <GridColumns>
+                    <GridColumn Field="@nameof(EntityRole.Code)" HeaderText="Code" Width="130px"></GridColumn>
+                    @*<GridColumn Field="@nameof(EntityRole.LegacyId)" HeaderText="Legacy Id" Width="130px"></GridColumn>*@
+                    <GridColumn Field="@nameof(EntityRole.Name)" HeaderText="Name" Width="auto"></GridColumn>
+                    @*<GridColumn Field="@nameof(EntityRole.EntityRoleClassifier.ToString)" HeaderText="Role Classifier" Width="110"></GridColumn>*@
+                </GridColumns>
+                <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="EntityRole"></GridEvents>
+            </SfGrid>
         }
     }
 </div>
@@ -96,31 +92,14 @@
         }
     }
 
-    void ShowContextMenu(MouseEventArgs e)
+    public void OnContextMenuClick(ContextMenuClickEventArgs<EntityRole> args)
     {
-        if (JSRuntime != null)
+        EntityRole _EntityRole = new();
+        _EntityRole = args.RowInfo.RowData;
+
+        if (args.Item.Text == "Edit")
         {
-            JSRuntime.InvokeVoidAsync("ShowContextMenu", e.ClientX, e.ClientY);
-        }
-    }
-
-    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<EntityRole> args) => ContextMenuService.Open(args, ds =>
-    @<RadzenMenu Click="OnMenuItemClick">
-        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-
-        </RadzenMenu>
-    );
-
-    void OnMenuItemClick(MenuItemEventArgs args)
-    {
-        EntityRole argObj = (EntityRole)args.Value;
-
-        if (args.Text == "Edit")
-            navigationManager.NavigateTo($"/EntityRoles/{argObj.Id}/Edit");
-
-        if (!args.Value.Equals(3) && !args.Value.Equals(4))
-        {
-            ContextMenuService.Close();
+            navigationManager.NavigateTo($"/EntityRoles/{_EntityRole.Id}/Edit");
         }
     }
 

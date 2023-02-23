@@ -1,5 +1,5 @@
 ﻿@page "/TransactionalItemCard"
-@page "/TransactionalItemCard/{Page}"
+@page "/TransactionalItemCard/{Page}/{Mode}"
 @using SunttelTradePointB.Client.Shared.ConceptSelectors
 @using SunttelTradePointB.Client.Shared.EntityShareComponents.EntitySubComponents
 @using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents
@@ -12,10 +12,10 @@
 
 
 @if (@AlertOpen)
-    {
-        <MessageSaveComponent isVisible="AlertOpen" message="@msg"    >
-        </MessageSaveComponent>
-    }
+{
+    <MessageSaveComponent isVisible="AlertOpen" message="@msg">
+    </MessageSaveComponent>
+}
 
 
 <form>
@@ -50,26 +50,45 @@
 
 
 
-    @if (currentItem != null)
-    {
-        <div id="identificationGroup">
-            <div class="form-group">
+    @if (currentItem == null) currentItem = new();
+    @*id="identificationGroup"*@
+        <div  class="grid-columns-header">
+            <div>
                 <label for="name">Name</label>
+            </div>
+            <div>
                 <input type="text" class="form-control" id="name" @bind-value="@currentItem.Name" />
             </div>
 
-            <div class="form-group" id="shortCutCodeGroup">
+            <div id="shortCutCodeGroup">
                 <label for="shortcutCode">Identifier Code</label>
+            </div>
+            <div>
                 <input type="text" class="form-control" id="shortcutCode" @bind="currentItem.Code" />
             </div>
-
-            <div class="form-group">
-                <label id="statusConcept">@currentItemStatus</label>
+            <div></div>
+            <div @onclick="SetStatus">
+                <label id="statusConcept" class="style-status" style="background-color:@colorStatus;">@currentItemStatus</label>
             </div>
+            <div id="shortCutCodeGroup">
+                <label for="shortcutCode">@GetName("ReferenceCost", new TransactionalItem());</label>
+            </div>
+            <div>
+                <input type="number" class="form-control" id="shortcutCode" @bind="currentItem.ReferenceCost" />
+            </div>
+            <div id="shortCutCodeGroup">
+                <label for="shortcutCode">@GetName("SkinImageName", new Concept());</label>
+            </div>
+            <div>
+                <input type="text" class="form-control" id="shortcutCode" @bind="currentItem.SkinImageName" />
+            </div>
+
+            <div class="lineFormGroup">
+                <TransactionalItemGroupSelector @ref="referGroup" Groups="@currentItem.Groups" EventAddGroups="AddGroup"></TransactionalItemGroupSelector>
+            </div>
+
         </div>
-        <div class="lineFormGroup">
-            <TransactionalItemGroupSelector @ref="referGroup" Groups="@currentItem.Groups" EventAddGroups="AddGroup"></TransactionalItemGroupSelector>
-        </div>
+
         <hr />
         <div class="detailsContainer">
             <div class="menuOptions">
@@ -86,44 +105,43 @@
                 </nav>
             </div>
             <div class="workArea">
+                @{
+                    if (currentItem != null && currentItem.Id != null)
+                    {
+                        @switch (verticalMenuOptionSelected)
+                        {
+                            case 0:
+                                <TIPackingRecipe />
+                                break;
 
-                @switch (verticalMenuOptionSelected)
-                {
-                    case 0:
-                        <TIPackingRecipe />
-                        break;
+                            case 1:
+                                <TIProductionSpecs />
+                                break;
 
-                    case 1:
-                        <TIProductionSpecs />
-                        break;
+                            case 2:
+                                <TIQualityParameters />
+                                break;
 
-                    case 2:
-                        <TIQualityParameters />
-                        break;
+                            case 3:
+                                <TIImages />
+                                break;
 
-                    case 3:
-                        <TIImages />
-                        break;
+                            case 4:
+                                <TITags />
 
-                    case 4:
-                        <TITags />
-
-                        break;
-                    case 5:
-                        <TICharacteristic />
-                        break;
-                    default:
-                        <TIPackingRecipe />
-                        break;
+                                break;
+                            case 5:
+                                <TICharacteristic />
+                                break;
+                            default:
+                                <TIPackingRecipe />
+                                break;
+                        }
+                    }
                 }
-
-            </div>
+            
         </div>
-    }
-    else
-    {
-        Navigation.NavigateTo("/Products");
-    }
+    </div>
 </form>
 
 
@@ -132,8 +150,12 @@
 @code {
     [Parameter]
     public string Page { get; set; } = "0";
+    [Parameter]
+    public string Mode { get; set; } = "Add";
     public string msg = "", backgroundColor = "";
+    public int status = 0;
     public bool AlertOpen = false;
+    bool modeStatus = true;
     Alert? referAlert;
 
 
@@ -149,18 +171,33 @@
     public string transactionalItemId { get; set; }
     public string currentItemStatus { get; set; }
     public string nameTemp { get; set; }
+    string colorStatus = "gray";
+
+    protected override void OnParametersSet()
+    {
+        StateHasChanged();
+    }
 
     protected override void OnInitialized()
     {
-
-        transactionalItemId = transactionalService.transactionalItemId != null ? transactionalService.transactionalItemId : "";
-        currentItem = transactionalService.TransactionalItems;
-        if (currentItem != null)
+        if (Mode == "Edit")
         {
-            nameTemp = currentItem.Name;
-            currentItemStatus = currentItem.Status != null ? currentItem.Status.Name : "";
-        }
+            transactionalItemId = transactionalService.transactionalItemId != null ? transactionalService.transactionalItemId : "";
+            currentItem = transactionalService.TransactionalItems;
 
+            if (currentItem != null)
+            {
+                nameTemp = currentItem.Name;
+                currentItemStatus = currentItem.Status != null ? currentItem.Status.Name : "";
+            }
+        }
+        else if (Mode == "Add")
+        {
+            transactionalService.transactionalItemId = null;
+            currentItem = new();
+            SetStatus();
+
+        }
         int PageMode = Convert.ToInt32((Page != null ? Page : "0"));
         SetMenuOption(PageMode);
 
@@ -182,22 +219,28 @@
 
     public void AddGroup(List<ConceptGroup> conceptGroups)
     {
-        this.conceptGroups = conceptGroups;    
-        msg =  "added" ;
-        AlertOpen = true;
+        if (currentItem.Groups == null) currentItem.Groups = new();
+        currentItem.Groups = conceptGroups;
+        StateHasChanged();
+        OpenAlert("Added", 0);
     }
 
     public async void ItemSelected(MenuEventArgs e)
     {
-        AlertOpen = false;
+
 
         StateHasChanged();
         string tile = e.Item != null ? e.Item.Text : "";
         if (tile == "Save")
         {
-            currentItem.Groups = conceptGroups;
-            var resul = await transactionalService.SaveTransactionalItem(transactionalItemId, currentItem);
-            msg = resul ? "save" : "not save";
+            SetStatus();
+            TransactionalItem item = await transactionalService.SaveTransactionalItem(currentItem);
+            bool resul = (item != null ? true : false);
+            if (resul)
+            {
+                currentItem = item;
+            }
+            msg = resul ? "save" : "no save";
             AlertOpen = true;
         }
         if (tile == "Save as...")
@@ -207,17 +250,18 @@
             currentItemCopy.Id = null;
             if (currentItemCopy.Name != nameTemp)
             {
-                var resul = await transactionalService.SaveTransactionalItem(null, currentItemCopy);
-
-                msg = resul ? "saved as " + nameTemp : "not saved";
+                var item = await transactionalService.SaveTransactionalItem(currentItemCopy);
+                bool resul = item != null ? true : false;
+                OpenAlert((resul ? "saved as " + nameTemp : "no saved"), 0);
                 currentItem.Name = nameTemp;
             }
             else
             {
-                msg = "not saved you need to add a different name";
-              
+                OpenAlert("no saved you need to add a different name", 1);
+
+
             }
-            AlertOpen = true;
+
         }
         if (tile == "Boxes")
         {
@@ -227,7 +271,7 @@
         {
             Navigation.NavigateTo("/SeasonBusinessCard");
         }
-        backgroundColor = "green";
+
         if (referAlert != null) referAlert.Load();
         StateHasChanged();
 
@@ -239,11 +283,48 @@
         Navigation.NavigateTo("/Products");
     }
 
-    public void SetAlert(string _msg, string _backgroundColor)
+    public void OpenAlert(string _msg, int _status)
     {
-        AlertOpen = false;
+
         AlertOpen = true;
         msg = _msg;
-        backgroundColor = _backgroundColor;
+        status = _status;
+
+    }
+
+    public void SetStatus()
+    {
+        modeStatus = modeStatus ? false : true;
+        ConceptStatus statust = new();
+        if (modeStatus)
+        {
+            currentItem.Status = statust = new ConceptStatus
+                {
+                    Id = "000000000000000000000001",
+                    LegacyId = "1",
+                    Code = "name",
+                    Name = "ACTIVE",
+                };
+            colorStatus = "#008080";
+        }
+        else
+        {
+            currentItem.Status = statust = new ConceptStatus
+                {
+                    Id = "",
+                    LegacyId = "",
+                    Code = "",
+                    Name = "....",
+                };
+            colorStatus = "gary";
+        }
+        currentItemStatus = currentItem.Status.Name;
+    }
+
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
     }
 }

@@ -52,11 +52,12 @@
                     <SplitButtonEvents ItemSelected="ItemSelected">
 
                     </SplitButtonEvents>
-                    <DropDownMenuItem Text="Types" IconCss="fa-solid fa-group-arrows-rotate"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Entities Types" IconCss="fa-solid fa-group-arrows-rotate"></DropDownMenuItem>
                     <DropDownMenuItem Text="Groups" IconCss="fa-solid fa-layer-group"></DropDownMenuItem>
                     <DropDownMenuItem Text="Identification Types" IconCss="fa-solid fa-box"></DropDownMenuItem>
                     <DropDownMenuItem Text="Roles" IconCss="fa-solid fa-dice-d20"></DropDownMenuItem>
                     <DropDownMenuItem Text="Status" IconCss="fa-solid fa-signal"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Pallet Type" IconCss="fa-sharp fa-solid fa-palette"></DropDownMenuItem>
 
                 </DropDownMenuItems>
 
@@ -162,7 +163,12 @@
                     </div>
                 </div>
                 <div class="col-sm">
-                    <img src="@urlImage" alt="Imagen" width="160px" height="150px">
+                    @*@if (EmptyFolder("/uploads/entityImages"))
+                    {
+                        <img src="~/uploads/entityImages/8195193b-d768-4914-8747-0aa8f8815cbd.png" alt="Imagen" width="160px" height="150px">
+                    }*@
+                    <img src="~/uploads/entityImages/avatar_male_man_person_user_icon.png" alt="Icon" width="160px" height="150px">
+
                 </div>
                 <div class="col">
                     <span @onclick="NavigateToImage">
@@ -172,7 +178,11 @@
                     </span>
                 </div>
             </div>
+
+            <MessageSaveComponent message="@message" isVisible="visible"></MessageSaveComponent>
+
         </div>
+
 
         <div class="detailsContainer">
             <div class="menuOptions">
@@ -233,7 +243,11 @@
     [Parameter]
     public bool ViewSelect { get; set; } = false;
 
-    public string urlImage { get; set; }
+    private bool visible { get; set; } = false;
+    private string message { get; set; } = "";
+
+    private string userId { get; set; } = "";
+    private string ipAddress { get; set; } = "";
 
     SfChip? referChip;
     EntityRoleSelector? entityRoleSelector;
@@ -285,7 +299,6 @@
     protected override async Task OnInitializedAsync()
     {
         SetMenuOption(Convert.ToInt32(Page != null ? Page : "0"));
-        urlImage = "https://cdn-icons-png.flaticon.com/512/16/16363.png";
         lblName = UICommonFunctions.GetDisplayName(new EntityActor(), "Name");
         lblEmail = UICommonFunctions.GetDisplayName(new EntityActor(), "EMailAddress");
         lblSquarUser = UICommonFunctions.GetDisplayName(new EntityActor(), "SunttelUserId");
@@ -294,6 +307,7 @@
         lblLegacyId = UICommonFunctions.GetDisplayName(new EntityActor(), "LegacyId");
         lblRole = UICommonFunctions.GetDisplayName(new EntityActor(), "DefaultEntityRole");
         lblInvoicingAddress = UICommonFunctions.GetDisplayName(new EntityActor(), "InvoicingAddress");
+
         await ActorEntityNode(Id);
         await GetRoles();
 
@@ -393,9 +407,30 @@
         {
             EntityNode.DefaultEntityRole = role;
             EntityNode.Groups = FilterListGroups;
-            await actorsNodeServive.SaveEntity(Id, EntityNode);
+            var result = await actorsNodeServive.SaveEntity(Id, EntityNode);
+            if (result)
+            {
+                message = "Entity Actor Saved";
+                visible = true;
+                StateHasChanged();    
+            }
+            
         }
-        if(title == "Types")
+        if (title == "Save as...")
+        {
+            EntityNode.DefaultEntityRole = role;
+            EntityNode.Groups = FilterListGroups;
+            EntityNode.Name = "New " + EntityNode.Name;
+            var result = await actorsNodeServive.SaveEntity("", EntityNode);
+            if (result)
+            {
+                message = "New Entity Actor Saved As: " + EntityNode.Name;
+                visible = true;
+                StateHasChanged();    
+            }
+            
+        }
+        if(title == "Entities Types")
         {
             navigationManager.NavigateTo("/TypesEntities");
         }
@@ -415,6 +450,10 @@
         {
             navigationManager.NavigateTo("/EntityStatus");
         }
+        if (title == "Pallet Type")
+        {
+            navigationManager.NavigateTo("/EntityPalletType");
+        }
     }
 
     public async Task Refresh()
@@ -423,8 +462,9 @@
         StateHasChanged();
     }
 
-    public bool CarpetaVacia(string path)
+    public bool EmptyFolder(string path)
     {
+        StateHasChanged();
         return Directory.GetFiles(path).Length == 0;
     }
 

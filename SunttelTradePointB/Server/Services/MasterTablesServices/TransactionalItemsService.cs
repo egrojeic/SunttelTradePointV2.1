@@ -69,8 +69,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 string strNameFiler = nameLike == null ? "" : nameLike;
                 var skip = (page - 1) * perPage;
 
-                var pipeline = new[] {
+                var pipeline = new List<BsonDocument>();
 
+                pipeline.Add(
                     new BsonDocument{
                         { "$match",  new BsonDocument {
                             { "$text",
@@ -82,12 +83,18 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                                 }
                             }
                         }}
-                    },
+                    }
+                );
+
+                pipeline.Add(
                     new BsonDocument(
                         "$match",
                         new BsonDocument("Status.IsEnabledForTransactions",true)
 
-                    ),
+                    )
+                );
+
+                pipeline.Add(
                     new BsonDocument {
                         { "$project",
                             new BsonDocument {
@@ -95,17 +102,20 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                                 { "ProductPackingSpecs", 0 }
                             }
                         }
-                    },
+                    }
+                );
+
+                pipeline.Add(
                     new BsonDocument{
                         {"$skip",  skip}
                     }
-                    ,
+                );
+
+                pipeline.Add(
                     new BsonDocument{
                         {"$limit",  perPage}
                     }
-                };
-
-
+                );
 
                 List<TransactionalItem> results = await _TransactionalItemsCollection.Aggregate<TransactionalItem>(pipeline).ToListAsync();
 
@@ -132,11 +142,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
             try
             {
-                var pipeline = new[] {
-
-                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(transactionalItemId))),
-
-                };
+                var pipeline = new List<BsonDocument>();
+                
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(transactionalItemId)))
+                );
 
                 var resultPrev = await _TransactionalItemsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
 
@@ -195,22 +205,26 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
             try
             {
-                var pipeline = new[] {
+                var pipeline = new List<BsonDocument>();
 
-                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(transactItemId))),
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(transactItemId)))
+                );
 
+                pipeline.Add(
                     new BsonDocument("$project", new BsonDocument(){
                         { $"{detailsArrayListName}", 1},
                         { "_id", 0}
-                    }),
+                    })
+                );
 
-                    new BsonDocument("$unwind", $"${detailsArrayListName}"),
-                       new BsonDocument(
-                       "$replaceRoot",
-                            new BsonDocument("newRoot", $"${detailsArrayListName}")),
-                };
+                pipeline.Add(
+                    new BsonDocument("$unwind", $"${detailsArrayListName}")
+                );
 
-
+                pipeline.Add(
+                    new BsonDocument("$replaceRoot", new BsonDocument("newRoot", $"${detailsArrayListName}"))
+                );
 
                 var result = await _TransactionalItemsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
 
@@ -413,7 +427,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             {
 
                 if (transactionalItemProcessStep.Id == null)
-                    transactionalItemProcessStep.Id = "";
+                {
+                    transactionalItemProcessStep.Id = ObjectId.GenerateNewId().ToString();
+                }
 
 
                 var filterPrev = Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId);
@@ -464,7 +480,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             try
             {
                 if (transactionalItemQualityPair.Id == null)
-                    transactionalItemQualityPair.Id = "";
+                {
+                    transactionalItemQualityPair.Id = ObjectId.GenerateNewId().ToString();
+                }
 
                 var filterPrev = Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId);
                 var resultPrev = await _TransactionalItemsCollection.Find(filterPrev).FirstOrDefaultAsync();
@@ -512,7 +530,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             try
             {
                 if (packingSpecs.Id == null)
-                    packingSpecs.Id = "";
+                {
+                    packingSpecs.Id = ObjectId.GenerateNewId().ToString();
+                }
 
                 var filterPrev = Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId);
                 var resultPrev = await _TransactionalItemsCollection.Find(filterPrev).FirstOrDefaultAsync();
@@ -557,7 +577,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             try
             {
                 if (transactionalItemTag.Id == null)
-                    transactionalItemTag.Id = "";
+                {
+                    transactionalItemTag.Id = ObjectId.GenerateNewId().ToString();
+                }
 
                 var filterPrev = Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId);
                 var resultPrev = await _TransactionalItemsCollection.Find(filterPrev).FirstOrDefaultAsync();
@@ -607,14 +629,15 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 if (filter.Length > 0)
                 {
-                    var pipeline = new[]
-                    {
+                    var pipeline = new List<BsonDocument>();
+
+                    pipeline.Add(
                         new BsonDocument(
                             "$match", new BsonDocument(
                                 "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filter}/i"))
                             )
                         )
-                    };
+                    );
 
                     List<TransactionalItemType> results = await _transactionalItemTypes.Aggregate<TransactionalItemType>(pipeline).ToListAsync();
                     return (true, results, null);
@@ -716,14 +739,15 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 if (filter.Length > 0)
                 {
-                    var pipeline = new[]
-                    {
+                    var pipeline = new List<BsonDocument>();
+
+                    pipeline.Add(
                         new BsonDocument(
                             "$match", new BsonDocument(
                                 "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filter}/i"))
                             )
                         )
-                    };
+                    );
                     List<Box> results = await _box.Aggregate<Box>(pipeline).ToListAsync();
                     return (true, results, null);
                 }
@@ -825,14 +849,15 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 if (filter.Length > 0)
                 {
-                    var pipeline = new[]
-                    {
-                    new BsonDocument(
-                        "$match", new BsonDocument(
-                            "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filter}/i"))
+                    var pipeline = new List<BsonDocument>();
+
+                    pipeline.Add(
+                        new BsonDocument(
+                            "$match", new BsonDocument(
+                                "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filter}/i"))
+                            )
                         )
-                    )
-                };
+                    );
                     List<SeasonBusiness> results = await _season.Aggregate<SeasonBusiness>(pipeline).ToListAsync();
                     return (true, results, null);
                 }

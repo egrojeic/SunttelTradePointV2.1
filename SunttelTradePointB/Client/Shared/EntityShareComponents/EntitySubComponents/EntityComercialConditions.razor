@@ -18,7 +18,7 @@
 
 <div class="tableBodyContainer">
 
-    @if (entityIdentificationList != null)
+    @if (entityCommercialCondition != null)
     {
         <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
@@ -30,12 +30,12 @@
                     AllowPaging="true"
                     PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                     ShowPagingSummary="true"
-                    Data="@entityIdentificationList"
+                    Data="@entityCommercialCondition"
                     TItem="EntitiesCommercialRelationShip"
                     ColumnWidth="300px"
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"
-                    @bind-Value=@selectedentityIdentification Class="m-4"
+                    @bind-Value=@selectedCommercialCondition Class="m-4"
                     CellContextMenu="@ShowContextMenuWithContent"
                     @ref="refDataGrid">
 
@@ -62,45 +62,29 @@
 @code {
     [Parameter]
     public string? EntityId { get; set; }
-    List<EntitiesCommercialRelationShip> entityIdentificationList = new List<EntitiesCommercialRelationShip>();
-    IList<EntitiesCommercialRelationShip> selectedentityIdentification;
-    private CommercialConditionsPopUp? comercialConditionsPopUp;
+    List<EntitiesCommercialRelationShip> entityCommercialCondition = new List<EntitiesCommercialRelationShip>();
+    IList<EntitiesCommercialRelationShip> selectedCommercialCondition;
 
     RadzenDataGrid<EntitiesCommercialRelationShip>? refDataGrid;
     EntitiyRelationshipType entitiyRelationshipType = new EntitiyRelationshipType();
     Concept concept = new Concept();
     ConceptStatus conceptStatus = new ConceptStatus();
 
-    public void SaveData(EntitiesCommercialRelationShip entitiesCommercialRelationShip)
+    protected override async Task OnInitializedAsync()
     {
-        //concept = entitiesCommercialRelationShip.RelatedEntity;
-        //conceptStatus = entitiesCommercialRelationShip.RelatedEntity.Status;
-        entitiyRelationshipType = entitiesCommercialRelationShip.EntitiyCommercialRelationShipType;
-        entityIdentificationList.Add(new EntitiesCommercialRelationShip
-        {
-            LimitCreditAmount = entitiesCommercialRelationShip.LimitCreditAmount,
-            LimitCreditDays = entitiesCommercialRelationShip.LimitCreditDays,
-            RelatedEntity = concept,
-            EntitiyCommercialRelationShipType = entitiyRelationshipType
-        });
-        refDataGrid.Reload();
+        await GetComercialConditions();
     }
 
-    /*protected override async Task OnInitializedAsync()
-    {
-        await GetEntityAddress();
-    }
-
-    private async Task GetEntityAddress()
+    private async Task GetComercialConditions()
     {
         if (EntityId != null)
         {
-            var response = await actorsNodeServive.GetEntityDetailsOf<IdentificationEntity>(EntityId, EntityDetailsSection.IdentifiersList);
+            var response = await actorsNodeServive.GetCommercialConditions(EntityId);
             if (response != null)
-                entityIdentificationList = response;
+                entityCommercialCondition = response;
             StateHasChanged();
         }
-    }*/
+    }
 
 
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<EntitiesCommercialRelationShip> args) => ContextMenuService.Open(args, ds =>
@@ -109,14 +93,18 @@
             <RadzenMenuItem Text="Delete" Value=args.Data Icon="delete"></RadzenMenuItem>
             <RadzenMenuItem Text="Show in Map" Value=args.Data Icon="location_on"></RadzenMenuItem>
 
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
-        Address argObj = (Address)args.Value;
+        EntitiesCommercialRelationShip argObj = (EntitiesCommercialRelationShip)args.Value;
 
-        Console.WriteLine($"Menu item with Value={argObj.Name} clicked");
+        if(args.Text == "Edit")
+        {
+            navigationManager.NavigateTo($"/Actors/{EntityId}/ComercialConditions/{argObj.Id}/Edit");
+        }
+
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();

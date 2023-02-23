@@ -1,5 +1,4 @@
-﻿@page "/TypesEntities"
-@using SunttelTradePointB.Client.Shared.TransactionalItems
+﻿@page "/EntityPalletType"
 @using SunttelTradePointB.Shared.Common
 
 @inject IJSRuntime JSRuntime
@@ -7,23 +6,21 @@
 @inject ActorsNodeService actorsNodeServive
 @inject NavigationManager navigationManager
 
-
-<PageTitleComponent Title="Types of Entities/Actors/Nodes" IconName="EntityGroups.png"
-                    Description="Describe how the entities could be classified">
+<PageTitleComponent Title="Pallet Types" IconName="EntityRoles.png"
+                    Description="Describes the different pallets types">
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
-    <TypeMenu></TypeMenu>
+    <PalletTypeMenu></PalletTypeMenu>
     <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
-
 </div>
 
 <div class="tableBodyContainer">
     @if (isLoading)
     {
-        <WaitingProcessIndicator loadingTopic="Entity Types"></WaitingProcessIndicator>
+        <WaitingProcessIndicator loadingTopic="Pallet Types"></WaitingProcessIndicator>
     }else{
-        @if(entityTypesList != null)
+        @if(palletTypesList != null)
         {
             <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
@@ -35,28 +32,32 @@
                     AllowPaging="true"
                     PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                     ShowPagingSummary="true"
-                    Data="@entityTypesList"
-                    TItem="EntityType"
+                    Data="@palletTypesList"
+                    TItem="PalletType"
                     ColumnWidth="300px"
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"
-                    @bind-Value=@selectedEntityType Class="m-4"
+                    @bind-Value=@selectedPalletTypes Class="m-4"
                     CellContextMenu="@ShowContextMenuWithContent">
 
                 <Columns>
-                    <RadzenDataGridColumn TItem="EntityType" Property="Code" Title="Code" Frozen="true" Width="30px" />
-                    <RadzenDataGridColumn TItem="EntityType" Property="LegacyId" Title="LegacyId" Frozen="true" Width="30px" />
-                    <RadzenDataGridColumn TItem="EntityType" Property="Name" Filterable="true" Title="Name" Frozen="true" Width="180px" TextAlign="TextAlign.Center" />
+                    <RadzenDataGridColumn TItem="PalletType" Property="Code" Title="Code" Frozen="true" Width="30px" />
+                    <RadzenDataGridColumn TItem="PalletType" Property="LegacyId" Title="Legacy Id" Frozen="true" Width="30px" />
+                    <RadzenDataGridColumn TItem="PalletType" Property="Name" Filterable="true" Title="Name" Frozen="true" Width="180px" TextAlign="TextAlign.Center" />
                 </Columns>
             </RadzenDataGrid>
+            
         }
     }
+
 </div>
 
 
 @code {
-    List<EntityType> entityTypesList;
-    IList<EntityType> selectedEntityType;
+    string filterText = "";
+    List<PalletType> palletTypesList;
+    IList<PalletType> selectedPalletTypes;
+
 
     bool isLoading = false;
     string _filterItems = "";
@@ -67,32 +68,31 @@
         set
         {
             _filterItems = value;
-            GetEntityTypes(_filterItems);
+            GetFilterPalletTypes(_filterItems);
         }
     }
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
-        await GetEntityTypes();
+        await GetFilterPalletTypes();
     }
 
-    private async Task GetEntityTypes(string filter = "")
+    private async Task GetFilterPalletTypes(string filter = "")
     {
-        if(filter.Length > 0)
+        if (filter.Length > 0)
         {
             isLoading = true;
             StateHasChanged();
 
-            var response = await actorsNodeServive.GetEntityTypeList();
+            var response = await actorsNodeServive.GetPalletTypeList();
 
             if (response != null)
-                entityTypesList = response;
+                palletTypesList = response;
 
             isLoading = false;
             StateHasChanged();
-
         }
-    } 
+    }
 
     void ShowContextMenu(MouseEventArgs e)
     {
@@ -102,7 +102,7 @@
         }
     }
 
-    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<EntityType> args) => ContextMenuService.Open(args, ds =>
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<PalletType> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
 
@@ -111,10 +111,10 @@
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
-        EntityType argObj = (EntityType)args.Value;
+        PalletType argObj = (PalletType)args.Value;
 
         if (args.Text == "Edit")
-            navigationManager.NavigateTo($"/EntityType/{argObj.Id}/Edit");
+            navigationManager.NavigateTo($"EntityPalletType/{argObj.Id}/Edit");
 
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {

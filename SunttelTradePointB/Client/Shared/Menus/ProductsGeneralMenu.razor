@@ -4,7 +4,7 @@
 
 <div id="container-menu-general">
     <nav>
-        <button class="general-menu-button"><i class="fa-solid fa-file"></i> Create New ...</button>
+        <button type="button" @onclick='()=>SetNavigateTo("TransactionalItemCard")' class="general-menu-button"><i class="fa-solid fa-file"></i> Create New ...</button>
 
         <SfSplitButton Content="Import Data" IconCss="fa-solid fa-file-import" CssClass="splitButtonsStyle">
             <DropDownMenuItems>
@@ -12,7 +12,6 @@
                 <DropDownMenuItem Text="Uploading a csv file..." IconCss="fa-solid fa-file-csv"></DropDownMenuItem>
             </DropDownMenuItems>
         </SfSplitButton>
-
 
         <SfSplitButton Content="Related Concepts" IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
             <SplitButtonEvents ItemSelected="ItemSelected">
@@ -26,7 +25,6 @@
                 <DropDownMenuItem Id="Duties" Text="Duties" IconCss="fa-solid fa-comments-dollar"></DropDownMenuItem>
             </DropDownMenuItems>
         </SfSplitButton>
-
 
     </nav>
 
@@ -63,9 +61,18 @@
 
     private void ItemSelected(MenuEventArgs args)
     {
-        var Selected_item = args.Item.Id; 
-        Navigation.NavigateTo(Selected_item);
+        var Selected_item = args.Item.Id;       
+       Navigation.NavigateTo(Selected_item);
     }
+
+    private void SetNavigateTo(string PageView)
+    {     
+        Navigation.NavigateTo($"{PageView}/0/Add");
+    }
+
+
+
+    
 
 }
 

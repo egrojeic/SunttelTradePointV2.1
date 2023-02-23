@@ -32,6 +32,17 @@
                             </div>
                         </div>
 
+                        <div class="form-group py-2">
+                            <label class="control-label col-md-12">Commercial Group: </label>
+                            <div class="col">
+                                <SfTooltip ID="Tooltip" Target="#name" Content="@ContentGroup">
+                                    <input id="name" type="text" class="form-control" @bind-value="@entityGroup.GroupClassificationCriteria" required />
+                                </SfTooltip>
+                            </div>
+                        </div>
+
+                        <MessageSaveComponent message="Group Saved" isVisible="visible"></MessageSaveComponent>
+
                         <div class="py-2">
                             <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveGroup(groupId, entityGroup))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
                             <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
@@ -51,9 +62,15 @@
 
     private string ContentCode = "e.g. 12345";
     private string ContentName = "e.g. Test";
+    private string ContentGroup = "e.g. Commercial";
+
+    private string userId = UIClientGlobalVariables.UserId;
+    private string ipAddress = UIClientGlobalVariables.PublicIpAddress;
 
     EntityGroup entityGroup = new EntityGroup();
     EntityGroup entityGroupList = new EntityGroup();
+
+    public bool visible = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -66,15 +83,22 @@
             entityGroupSave.Id = groupId;
         entityGroup = entityGroupSave;
         await actorsNodeServive.SaveEntityGroup(groupId, entityGroup);
+        visible = true;
+        Refresh();
     }
 
     private async Task GetGroupById(string groupId)
     {
         if(groupId != null)
         {
-            entityGroupList = await actorsNodeServive.GetGroupById(groupId);
+            entityGroupList = await actorsNodeServive.GetEntityGroup(groupId);
             entityGroup = entityGroupList;
         }
+    }
+
+    private void Refresh()
+    {
+        entityGroup = new EntityGroup();
     }
 
 

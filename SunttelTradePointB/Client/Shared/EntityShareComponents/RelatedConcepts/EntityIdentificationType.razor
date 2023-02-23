@@ -112,7 +112,7 @@
             {
                 identificationEntity.Id = identificationId;
             }
-            identificationEntity.EntityTypeId = identificationType;
+            //identificationEntity.EntityTypeId = identificationType;
             await actorsNodeServive.SaveIdentificationCode(entityId, identificationEntity);
             StateHasChanged();
         }
@@ -161,7 +161,8 @@
         {
             identificationTypeAtom = await actorsNodeServive.GetIdentificationTypeById(entityId);
             identificationEntity.Code = identificationTypeAtom.Code;
-            //identificationEntity.EntityTypeId
+            identificationType.Name = identificationTypeAtom.Name;
+
 
         }
     }

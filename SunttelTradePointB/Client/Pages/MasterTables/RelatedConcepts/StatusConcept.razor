@@ -80,7 +80,7 @@
 
     public async void Save()
     {       
-        var resul = await transactionalService.SaveStatus(null, transactionalItemStatus);
+        var resul = await transactionalService.SaveStatus(transactionalItemStatus);
         if (resul) transactionalItemStatus = new();
         Msg(resul);
 

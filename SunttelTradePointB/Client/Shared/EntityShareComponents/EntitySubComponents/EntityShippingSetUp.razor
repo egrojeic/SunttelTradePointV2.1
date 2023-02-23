@@ -39,13 +39,13 @@
                     @ref="radzenDataGrid">
 
             <Columns>
-                <RadzenDataGridColumn TItem="ShippingInfo" Property="Sender" Title="Sender" Frozen="true" Width="100px" />
-                <RadzenDataGridColumn TItem="ShippingInfo" Property="Carrier" Title="Carrier" Frozen="true" Width="100px" />
-                <RadzenDataGridColumn TItem="ShippingInfo" Property="DeliveryAddress" Title="Delivery Address" Frozen="true" Width="100px" />
+                <RadzenDataGridColumn TItem="ShippingInfo" Property="Sender.Name" Title="Sender" Frozen="true" Width="100px" />
+                <RadzenDataGridColumn TItem="ShippingInfo" Property="Carrier.Name" Title="Carrier" Frozen="true" Width="100px" />
+                <RadzenDataGridColumn TItem="ShippingInfo" Property="DeliveryAddress.Name" Title="Delivery Address" Frozen="true" Width="100px" />
                 <RadzenDataGridColumn TItem="ShippingInfo" Property="CutOff24Hour" Title="Cut Off 24H" Frozen="true" Width="100px" />
                 <RadzenDataGridColumn TItem="ShippingInfo" Property="CutOffMinute" Title="Cut Off Minute" Frozen="true" Width="100px" />
                 <RadzenDataGridColumn TItem="ShippingInfo" Property="DelayTimeDays" Title="Delay Time Days" Frozen="true" Width="100px" />
-                <RadzenDataGridColumn TItem="ShippingInfo" Property="PalletTypeShipping" Title="Pallet Type Shipping" Frozen="true" Width="100px" />
+                <RadzenDataGridColumn TItem="ShippingInfo" Property="PalletTypeShipping.Name" Title="Pallet Type Shipping" Frozen="true" Width="100px" />
             </Columns>
 
 
@@ -89,9 +89,13 @@
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
-        PhoneNumber argObj = (PhoneNumber)args.Value;
+        ShippingInfo argObj = (ShippingInfo)args.Value;
 
-        Console.WriteLine($"Menu item with Value={argObj.Number} clicked");
+        if(args.Text == "Edit")
+        {
+            navigationManager.NavigateTo($"/Actors/{EntityId}/ShippingInfo/{argObj.Id}/Edit");
+        }
+
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();

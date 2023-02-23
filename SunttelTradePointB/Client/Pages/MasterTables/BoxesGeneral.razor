@@ -104,7 +104,7 @@ else
     private async Task LoadData()
     {
         isLoading = true;
-        boxes = await transactItemsService.GetBoxGetBoxTable(0, 250, _filterItems);
+        boxes = await transactItemsService.GetBoxGetBoxTable( _filterItems);
         isLoading = false;
         StateHasChanged();
     }

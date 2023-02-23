@@ -1,4 +1,5 @@
 ﻿@page "/Actors/{Id}/ShippingInfo"
+@page "/Actors/{Id}/ShippingInfo/{shippingId}/Edit"
 @using Syncfusion.Blazor.Popups
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Cards
@@ -146,6 +147,8 @@
     [Parameter]
     public string Id { get; set; }
     [Parameter]
+    public string shippingId { get; set; }
+    [Parameter]
     public bool ViewSelect { get; set; } = false;
 
     public bool visible = false;
@@ -173,6 +176,7 @@
     Address deliver = new Address();
     PalletType palletType = new PalletType();
     ShippingInfo shippingInfo = new ShippingInfo();
+    ShippingInfo getShippingInfo = new ShippingInfo();
     InputTextSelector? refInputTextSelector;
 
     public string lblSender = "";
@@ -198,6 +202,7 @@
         lblCutOffMinute = UICommonFunctions.GetDisplayName(new ShippingInfo(), "CutOffMinute");
         lblDalayTimeDays = UICommonFunctions.GetDisplayName(new ShippingInfo(), "DelayTimeDays");
         lblPalletTypeShipping = UICommonFunctions.GetDisplayName(new ShippingInfo(), "PalletTypeShipping");
+        await GetShippingInfoById(shippingId);
     }
 
     private void GoBack()
@@ -215,6 +220,8 @@
     {
         if (entityId != null && shippingInfo != null)
         {
+            if (shippingId != null)
+                shippingInfo.Id = shippingId;
             shippingInfo.Sender = entityActor;
             shippingInfo.Carrier = entityActorCarrier;
             shippingInfo.DeliveryAddress = deliver;
@@ -228,6 +235,31 @@
             shippingInfo.Sunday = isCheckedSunday;
             await actorsNodeServive.SaveShippingSetup(entityId, shippingInfo);
             visible = true;
+        }
+    }
+
+    private async Task GetShippingInfoById(string shippingId)
+    {
+        if (shippingId != null)
+        {
+            getShippingInfo = await actorsNodeServive.GetShippingSetUpById(shippingId);
+            if(getShippingInfo != null)
+            {
+                entityActor.Name = getShippingInfo.Sender.Name;
+                entityActorCarrier.Name = getShippingInfo.Carrier.Name;
+                deliver.Name = getShippingInfo.DeliveryAddress.Name;
+                shippingInfo.CutOff24Hour = getShippingInfo.CutOff24Hour;
+                shippingInfo.CutOffMinute = getShippingInfo.CutOffMinute;
+                shippingInfo.DelayTimeDays = getShippingInfo.DelayTimeDays;
+                entityActorPallet.Name = getShippingInfo.PalletTypeShipping.Name;
+                isCheckedMonday = getShippingInfo.Monday;
+                isCheckedTuesday = getShippingInfo.Tuesday;
+                isCheckedWednesday = getShippingInfo.Wednesday;
+                isCheckedThursday = getShippingInfo.Thursday;
+                isCheckedFriday = getShippingInfo.Friday;
+                isCheckedSaturday = getShippingInfo.Saturday;
+                isCheckedSunday = getShippingInfo.Sunday;
+            }
         }
     }
 
@@ -255,7 +287,7 @@
         }
         if (SearcherValueMode == "Pallet")
         {
-            //palletTypeList = await actorsNodeServive.GetEntityActorFaceList(value);
+            palletTypeList = await actorsNodeServive.GetPalletTypes();
             ParamCountResul = palletTypeList != null ? palletTypeList.Count() : 0;
         }
         if (ParamCountResul > 0) { ViewSelect = true; } else { ViewSelect = false; }

@@ -81,13 +81,13 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         Task<List<PackingSpecs>> GetTransactionalItemDetailsPackingRecipe(string? transactionalItemId = null);
 
         /// <summary>
-        /// Retrives a list with Boxsed meeting search criteria
+        /// Retrives a list with Box meeting search criteria
         /// </summary>
         /// <param name="nameLike"></param>       
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <returns></returns>
-        Task<List<Box>> GetBoxGetBoxTable(int? page = 1, int? perPage = 10, string? nameLike = null);
+        Task<List<Box>> GetBoxGetBoxTable( string? nameLike = null);
 
         /// <summary>
         /// Retrives Boxsed  with search criteria
@@ -163,11 +163,10 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         Task<bool> SaveQualityParameters(string transactionalItemId,TransactionalItemQualityPair transactionalItemQualityPair);
 
         /// Save Transactional Item
-        /// </summary>
-        /// <param name="transactionalItemId"></param>
+        /// </summary>      
         /// <param name="transactionalItem"></param>   
         /// <returns></returns>
-        Task<bool> SaveTransactionalItem(string? transactionalItemId, TransactionalItem transactionalItem);
+        Task<TransactionalItem> SaveTransactionalItem(TransactionalItem transactionalItem);
 
 
         /// Save Season
@@ -175,35 +174,31 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <param name="seasonId"></param>
         /// <param name="season"></param>   
         /// <returns></returns>
-        Task<bool> SaveSeason(string? seasonId, SeasonBusiness season);
+        Task<bool> SaveSeason(SeasonBusiness season);
 
         /// Save Box
         /// </summary>
-        /// <param name="boxId"></param>
         /// <param name="box"></param>   
         /// <returns></returns>
-        Task<bool> SaveBox(string? boxId, Box box);
+        Task<bool> SaveBox(Box box);
 
         /// Save Transactional Item Type
         /// </summary>
-        /// <param name="transactionalItemId"></param>
         /// <param name="transactionalItemType"></param>   
         /// <returns></returns>
-        Task<bool> SaveTransactionalItemType(string? transactionalItemId, TransactionalItemType transactionalItemType);
+        Task<bool> SaveTransactionalItemType( TransactionalItemType transactionalItemType);
 
         /// Save Transactional Item Group
-        /// </summary>
-        /// <param name="transactionalItemGroupId"></param>
+        /// </summary>       
         /// <param name="conceptGroup"></param>   
         /// <returns></returns>
-        Task<bool> SaveTransactionalItemGroup(string? transactionalItemGroupId, ConceptGroup conceptGroup);
+        Task<bool> SaveTransactionalItemGroup( ConceptGroup conceptGroup);
 
         /// Save Status
         /// </summary>
-        /// <param name="statusId"></param>
         /// <param name="transactionalItemStatus"></param>   
         /// <returns></returns>
-        Task<bool> SaveStatus(string? statusId, TransactionalItemStatus transactionalItemStatus);
+        Task<bool> SaveStatus(TransactionalItemStatus transactionalItemStatus);
 
         /// Upload Files
         /// </summary>
