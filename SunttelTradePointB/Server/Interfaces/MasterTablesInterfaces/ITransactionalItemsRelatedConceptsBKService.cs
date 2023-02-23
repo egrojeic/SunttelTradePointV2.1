@@ -155,7 +155,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         Task<(bool IsSuccess, TransactionalItemQuality?  transactionalItemQuality, string? ErrorDescription)> SaveTransactionalItemQuality(string userId, string ipAddress, string transactionalItemTypeId, TransactionalItemQuality  transactionalItemQuality);
 
         /// <summary>
-        /// 
+        /// Saves (INSERT/UPDATE) a Recipe Modifier
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>

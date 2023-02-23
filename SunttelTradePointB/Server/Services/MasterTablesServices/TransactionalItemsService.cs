@@ -942,26 +942,100 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
         }
 
+
+        /// <summary>
+        /// Retrieves the Models of a Transactional Items
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="trasnsactionalItemId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public Task<(bool IsSuccess, List<ProductModel>? productModels, string? ErrorDescription)> GetListModelsByTransactionalItemId(string userId, string ipAddress, string trasnsactionalItemId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<(bool IsSuccess, List<TransactionalItemProcessStep>? transactionalItemProcessSteps, string? ErrorDescription)> GetTransactionalItemProcessStepsByTypeID(string userId, string ipAddress, string transactionalItemTypeId)
+
+        /// <summary>
+        /// Retrieves a list with the different posble process for a Transactional Item Type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemTypeId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<(bool IsSuccess, List<TransactionalItemProcessStep>? transactionalItemProcessSteps, string? ErrorDescription)> GetTransactionalItemProcessStepsByTypeID(string userId, string ipAddress, string transactionalItemTypeId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument("$unwind", "$TransactionalItemProcesses")
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(transactionalItemTypeId)))
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$project", new BsonDocument("TransactionalItemProcesses", 1))
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$replaceRoot", new BsonDocument("newRoot", "$TransactionalItemProcesses"))
+                );
+
+                var resultPrev = await _transactionalItemTypes.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+                List<TransactionalItemProcessStep> result = resultPrev.Select(d => BsonSerializer.Deserialize<TransactionalItemProcessStep>(d)).ToList();
+
+                return (true, result, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
 
+
+        /// <summary>
+        /// Retrieves a list with the different possible characterisitics for a Transactional Item Type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemTypeId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public Task<(bool IsSuccess, List<TransactionalItemTypeCharacteristic>? transactionalItemTypeCharacteristics, string? ErrorDescription)> GetTransactionalItemTypeCharacteristicByTypeID(string userId, string ipAddress, string transactionalItemTypeId)
         {
             throw new NotImplementedException();
         }
 
+
+        /// <summary>
+        /// Retrieves a list with the different possible Quality Parameters for a Transactional Item Type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemTypeId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public Task<(bool IsSuccess, List<TransactionalItemQuality>? transactionalItemQualities, string? ErrorDescription)> GetQualityParametersByTypeID(string userId, string ipAddress, string transactionalItemTypeId)
         {
             throw new NotImplementedException();
         }
 
+
+        /// <summary>
+        /// Retrieves a list with the different possible Quality Parameters for a Transactional Item Type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemTypeId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public Task<(bool IsSuccess, List<RecipeModifier>? recipeModifiers, string? ErrorDescription)> GetRecipeModifiersByTypeID(string userId, string ipAddress, string transactionalItemTypeId)
         {
             throw new NotImplementedException();
