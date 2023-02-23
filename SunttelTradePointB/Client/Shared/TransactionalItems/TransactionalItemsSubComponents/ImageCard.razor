@@ -121,7 +121,7 @@
 
     public void Closed(string value)
     {
-        if (value == "control") Navigation.NavigateTo("/TransactionalItemCard/3");
+        if (value == "control") Navigation.NavigateTo("/TransactionalItemCard/3/Edit");
         Refresh();
     }
 
@@ -133,6 +133,7 @@
 
             if (resulFile != "")
             {
+              
                 await transactionalService.SaveImage(transactionalItemId, transactItemImage);
                 transactItemImage = new TransactItemImage();
                 Msg("Saved");

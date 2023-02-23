@@ -4,14 +4,10 @@
 @inject NavigationManager Navigation
 @inject TransactionalItemsService transactionalService;
 
-<style>
-    label {
-        margin-left: 50px;
-    }
-</style>
-<br />
-<h6>@Title</h6>
-<br />
+<PageTitleComponent Title=" Characteristics " IconName=""
+                    Description="Here you can add characteristics">
+</PageTitleComponent>
+
 <div id="add-recipe">
     <div class="flex-horizontal-center">
         <div class="grid-columns-2 box-shadow-mode">
@@ -101,7 +97,7 @@
 
     public async Task Closed(string Element)
     {
-        if (Element == "control") Navigation.NavigateTo("/TransactionalItemCard/5");
+        if (Element == "control") Navigation.NavigateTo("/TransactionalItemCard/5/Edit");
     }
 
     protected async void EventIdSelection(string filter)

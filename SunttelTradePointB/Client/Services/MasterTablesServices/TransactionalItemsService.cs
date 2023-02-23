@@ -350,7 +350,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
-        public async Task<List<Box>> GetBoxGetBoxTable( string? nameLike = null)
+        public async Task<List<Box>> GetBoxTable( string? nameLike = null)
         {
             transactionalItemId = transactionalItemId != null ? transactionalItemId : "";
             nameLike = nameLike != null ? nameLike : "";
@@ -737,12 +737,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             }
 
-        }
-
-        public Task<List<Concept>> GetSelectorListEntityActors(string? nameLike = null)
-        {
-            throw new NotImplementedException();
-        }
+        }      
 
        
     }

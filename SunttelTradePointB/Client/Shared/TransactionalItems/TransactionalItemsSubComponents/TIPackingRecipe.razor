@@ -23,20 +23,21 @@
         AllowResizing="true"
         EnableVirtualization="true"
         EnableColumnVirtualization="true"
+        Width="100%"
         ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader" } })">
     
     <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
     <GridColumns>
-        <GridColumn Field="@nameof(PackingSpecsView.CustomerName)" HeaderText="Customer" Width="125px"></GridColumn>
-        <GridColumn Field="@nameof(PackingSpecsView.CustomerCode)" HeaderText="Customer Code" Width="125px"> </GridColumn>
-        <GridColumn Field="@nameof(PackingSpecsView.SeasonName)" HeaderText="Season" Width="125px"> </GridColumn>
-        <GridColumn Field="@nameof(PackingSpecsView.ModelRecipeName)" HeaderText="Model" Width="5px"> </GridColumn>
-        <GridColumn Field="@nameof(PackingSpecsView.PackPerBoxLayer)" HeaderText="Pack/Layer" Width="125px"> </GridColumn>
-        <GridColumn Field="@nameof(PackingSpecsView.PackLayersToSale)" HeaderText="Layers-sale" Width="125px"> </GridColumn>
-        <GridColumn Field="@nameof(PackingSpecsView.PackLayersToBuy)" HeaderText="Layers-buy" Width="125px"> </GridColumn>
-        <GridColumn Field="@nameof(PackingSpecsView.PackingBoxToSaleName)" HeaderText="Box to sale" Width="125px"> </GridColumn>
-        <GridColumn Field="@nameof(PackingSpecsView.PackingBoxToBuyName)" HeaderText="Box to buy" Width="125px"> </GridColumn>
-        <GridColumn Field="@nameof(PackingSpecsView.UnitPrice)" HeaderText="Unit Price" Width="125px"> </GridColumn>
+        <GridColumn Field="@nameof(PackingSpecsView.CustomerName)" HeaderText="Customer" Width="250px"></GridColumn>
+        <GridColumn Field="@nameof(PackingSpecsView.CustomerCode)" HeaderText="Customer Code" Width="70px"> </GridColumn>
+        <GridColumn Field="@nameof(PackingSpecsView.SeasonName)" HeaderText="Season" Width="70px"> </GridColumn>
+        <GridColumn Field="@nameof(PackingSpecsView.ModelRecipeName)" HeaderText="Model" Width="70px"> </GridColumn>
+        <GridColumn Field="@nameof(PackingSpecsView.PackPerBoxLayer)" HeaderText="Pack/Layer" Width="70px"> </GridColumn>
+        <GridColumn Field="@nameof(PackingSpecsView.PackLayersToSale)" HeaderText="Layers-sale" Width="70px"> </GridColumn>
+        <GridColumn Field="@nameof(PackingSpecsView.PackLayersToBuy)" HeaderText="Layers-buy" Width="70px"> </GridColumn>
+        <GridColumn Field="@nameof(PackingSpecsView.PackingBoxToSaleName)" HeaderText="Box to sale" Width="70px"> </GridColumn>
+        <GridColumn Field="@nameof(PackingSpecsView.PackingBoxToBuyName)" HeaderText="Box to buy" Width="70px"> </GridColumn>
+        <GridColumn Field="@nameof(PackingSpecsView.UnitPrice)" HeaderText="Unit Price" Width="50px"> </GridColumn>
     </GridColumns>
     <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="PackingSpecsView"></GridEvents>
 </SfGrid>
@@ -118,6 +119,7 @@
                     CustomerCode = PackingSpecs.Customer != null ? PackingSpecs.Customer.Code : "",
                     PackLayersToSale = PackingSpecs.PackLayersToSale != null ? PackingSpecs.PackLayersToSale : 0,
                     PackPerBoxLayer = PackingSpecs.PackPerBoxLayer != null ? PackingSpecs.PackPerBoxLayer : 0,
+                    SeasonName = PackingSpecs.Season !=null ? PackingSpecs.Season.Name:"",
                     Id = PackingSpecs.Id
 
                 });

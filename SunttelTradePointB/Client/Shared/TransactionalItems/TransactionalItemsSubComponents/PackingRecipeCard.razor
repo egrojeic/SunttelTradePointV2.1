@@ -1,28 +1,23 @@
 ﻿@page "/PackingRecipeCard"
-@page "/PackingRecipeCard/{Mode}"
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.Grids
 @using Syncfusion.Blazor.Data
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Navigations
 @using Syncfusion.Blazor.SplitButtons
+@using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents
 @inject TransactionalItemsService transactionalService;
 @inject NavigationManager Navigation
 
-@*label {
-        margin-left: 50px;
-    }
-*@
+
 @if (@viewMsg)
 {
     <MessageSaveComponent isVisible="viewMsg" message="@msg">
     </MessageSaveComponent>
 }
-<PageTitleComponent Title="@GetName("ProductPackingSpecs", new TransactionalItem())" IconName="TransactionalTypes.png"
-                    Description="@($"Here you can add {@GetName("ProductPackingSpecs", new TransactionalItem())}")">
-</PageTitleComponent>
+
 <form>
-    <div class="content-new-packing-recipe" style=' display:@(modeEdit?"block":"none"); };'>
+    <div class="content-new-packing-recipe" style=' display:@(!modeEdit?"block":"none"); };'>
 
         @if (@pageView == "ListOfMaterials")
         {
@@ -68,66 +63,243 @@
 
         @if (@pageView == "AssemblyRecipeItems")
         {
+            <PageTitleComponent Title="@GetName("AssemblyRecipeItems", new PackingSpecs())" IconName="TransactionalTypes.png"
+                            Description="@($"Here you can add {GetName("AssemblyRecipeItems", new PackingSpecs())}")">
+            </PageTitleComponent>
+
+            <div class="container-menu-g">
+                <nav>
+                    <button @onclick='()=>OpenAdd("AssemblyRecipeItems")' class="general-menu-button" style="text-align:center;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+
+                    <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+                        <SplitButtonEvents ItemSelected="ItemSelected_1">
+                        </SplitButtonEvents>
+                        <DropDownMenuItems>
+                            <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                            <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                            <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                            <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                            <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                            <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+                        </DropDownMenuItems>
+                    </SfSplitButton>
+                </nav>
+            </div>
+
+            <div class="grid-columns-header ">
+                <div>
+                    <label>
+                        @GetName( "ItemComponent", new PackRecipeItem())
+                    </label>
+                </div>
+                <div style="position:relative;">
+                    <div class="item-edit">
+                        <label>@(itemComponent != null ? itemComponent.Name : "")</label>
+                        <button type="button" @onclick='()=>SetViewElemnt("Material")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                    </div>
+                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditItemComponent">
+                        @{
+                            if (itemComponents != null)
+                            {
+                                foreach (var Element in itemComponents)
+                                {
+                                    <option value="@Element?.Id">@Element?.Name</option>
+                                }
+                            }
+                        }
+                    </InputTextSelector>
+                </div>
+                <div>
+                    <label>
+                        @GetName( "RecipeQualityModifier", new PackRecipeItem())
+                    </label>
+                </div>
+
+                <div style="position:relative;">
+                    <div class="item-edit">
+                        <label>@(recipeQualityModifier != null ? recipeQualityModifier.Name : "")</label>
+                        <button type="button" @onclick='()=>SetViewElemnt("RecipeQualityModifier")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                    </div>
+                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditItemComponent">
+                        @{
+                            if (recipeQualityModifiers != null)
+                            {
+                                foreach (var Element in recipeQualityModifiers)
+                                {
+                                    <option value="@Element?.Id">@Element?.Name</option>
+                                }
+                            }
+                        }
+                    </InputTextSelector>
+                </div>
+
+                <div><label>@GetName( "Quantity",new MaterialRecipeItem())</label></div>
+                <div><input type="number" @bind="assemblyRecipeItem.Quantity" class="form-control" style="border-color:gray;" required /></div>
+            </div>
+
+            <SfTab Height="300px" HeaderPlacement="HeaderPosition.Left">
+                <TabAnimationSettings>
+                    <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
+                    <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
+                </TabAnimationSettings>
+                <TabItems>
+                    <TabItem>
+                        <ChildContent>
+                            <TabHeader Text="@GetName( "ListOfMaterials", new PackRecipeItem())"></TabHeader>
+                        </ChildContent>
+                        <ContentTemplate>
+                             <div class="flex-horizontal-center">
+                            <div class="detailsTitleContainer">
+                                <h3 class="subTitleDetailForm">@GetName( "ListOfMaterials", new PackRecipeItem())</h3>
+                                <svg @onclick='()=>ClosedAdd("ListOfMaterialsAssembly")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                </svg>
+                            </div>
+
+                            @if (MaterialRecipeItemAssembly == null) { MaterialRecipeItemAssembly = new List<MaterialRecipeItem>(); }
+
+
+                            <DataGrid TParameter="MaterialRecipeItem"
+                                  EventCallbackMenu="OnContextMenuClick"
+                                  parameterList="MaterialRecipeItemAssembly"
+                                  GridColumnsList="gridColumnListListOfMaterials"
+                                  Width="100%">
+                            </DataGrid>
+                           </div>
+
+                        </ContentTemplate>
+                    </TabItem>
+                    <TabItem>
+                        <ChildContent>
+                            <TabHeader Text="@GetName( "ComponentItemRecipe", new PackRecipeItem())"></TabHeader>
+                        </ChildContent>
+                        <ContentTemplate>
+
+                              <div class="flex-horizontal-center">
+                            <div class="detailsTitleContainer">
+                                <h3 class="subTitleDetailForm">@GetName( "ComponentItemRecipeAssembly", new PackRecipeItem())</h3>
+                                <svg @onclick='()=>ClosedAdd("ComponentItemRecipe")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                </svg>
+                            </div>
+
+                            @if (MaterialRecipeItemAssembly == null) { MaterialRecipeItemAssembly = new List<MaterialRecipeItem>(); }
+
+
+                            <DataGrid TParameter="MaterialRecipeItem"
+                                  EventCallbackMenu="OnContextMenuClick"
+                                  parameterList="MaterialRecipeItemAssembly"
+                                  GridColumnsList="gridColumnListListOfMaterials"
+                                  Width="100%">
+                            </DataGrid>
+                            </div>
+                        </ContentTemplate>
+                    </TabItem>
+                </TabItems>
+            </SfTab>
+
+        }
+
+        @if (@pageView == "ListOfMaterialsAssembly")
+        {
+              <PageTitleComponent Title="@GetName( "Material", new MaterialRecipeItem())" IconName="TransactionalTypes.png"
+                            Description="@($"Here you can add {@GetName( "Material", new MaterialRecipeItem())}")">
+            </PageTitleComponent>
+
             <div class="flex-horizontal-center">
                 <div class="grid-columns-2 box-shadow-mode">
+                    <div><label>@GetName( "ListOfMaterials", new PackRecipeItem())</label></div>
+                    <div>
+                        <div style="position:relative;">
+                            <div class="item-edit">
+                                <label>@(ConceptMaterialAssembly != null ? ConceptMaterialAssembly.Name : "")</label>
+                                <button type="button" @onclick='()=>SetViewElemnt("MaterialAssembly")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                            </div>
+
+                            <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewMaterialAssembly">
+                                @{
+                                    if (ListConcept != null)
+                                    {
+                                        foreach (var customer in ConceptMaterialsAssembly)
+                                        {
+                                            <option value="@customer?.Id">@customer?.Name</option>
+                                        }
+                                    }
+
+                                }
+                            </InputTextSelector>
+                        </div>
+                    </div>
                     <div>
                         <label>
-                            @GetName( "ItemComponent", new PackRecipeItem())
+                            @GetName( "Quantity", new MaterialRecipeItem())
                         </label>
                     </div>
-                    <div style="position:relative;">
-                        <div class="item-edit">
-                            <label>@(itemComponent != null ? itemComponent.Name : "")</label>
-                            <button type="button" @onclick='()=>SetViewElemnt("Material")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                        </div>
-                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditItemComponent">
-                            @{
-                                if (itemComponents != null)
-                                {
-                                    foreach (var Element in itemComponents)
-                                    {
-                                        <option value="@Element?.Id">@Element?.Name</option>
-                                    }
-                                }
-                            }
-                        </InputTextSelector>
-                    </div>
-                    <div>
-                        <label>
-                            @GetName( "RecipeQualityModifier", new PackRecipeItem())
-                        </label>
-                    </div>
-                    <div style="position:relative;">
-                        <div class="item-edit">
-                            <label>@(recipeQualityModifier != null ? recipeQualityModifier.Name : "")</label>
-                            <button type="button" @onclick='()=>SetViewElemnt("RecipeQualityModifier")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                        </div>
-                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditItemComponent">
-                            @{
-                                if (recipeQualityModifiers != null)
-                                {
-                                    foreach (var Element in recipeQualityModifiers)
-                                    {
-                                        <option value="@Element?.Id">@Element?.Name</option>
-                                    }
-                                }
-                            }
-                        </InputTextSelector>
-                    </div>
-                    <div><label>@GetName( "Quantity",new MaterialRecipeItem())</label></div>
-                    <div><input type="number" @bind="assemblyRecipeItem.Quantity" class="form-control" style="border-color:gray;" required /></div>
+                    <div><input type="number" @bind="_PackingSpecs.PackPerBoxLayer" class="form-control" style="border-color:gray;" maxlength="4" min="1" /></div>
+
                     <div></div>
                     <div class="flex-horizontal-end">
-                        <button type="button" @onclick='()=>ClosedAdd("ItemComponent")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                        <button type="button" @onclick='()=>ClosedAdd("AssemblyRecipeItems")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
                         <button type="button" class="size-btn color-btn "><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                     </div>
                 </div>
             </div>
         }
+        @if (@pageView == "ComponentItemRecipeAssembly")
+        {
+            <PageTitleComponent Title="@GetName( "ComponentItemRecipe", new PackRecipeItem())" IconName="TransactionalTypes.png"
+                            Description="@($"Here you can add {@GetName( "Material", new MaterialRecipeItem())}")">
+            </PageTitleComponent>
+
+            <div class="flex-horizontal-center">
+                <div class="grid-columns-2 box-shadow-mode">
+                    <div><label>@GetName( "Material", new MaterialRecipeItem())</label></div>
+                    <div>
+                        <div style="position:relative;">
+                            <div class="item-edit">
+                                <label>@(ConceptMaterialAssembly != null ? ConceptMaterialAssembly.Name : "")</label>
+                                <button type="button" @onclick='()=>SetViewElemnt("MaterialAssembly")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                            </div>
+
+                            <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewMaterialAssembly">
+                                @{
+                                    if (ListConcept != null)
+                                    {
+                                        foreach (var customer in ConceptMaterialsAssembly)
+                                        {
+                                            <option value="@customer?.Id">@customer?.Name</option>
+                                        }
+                                    }
+
+                                }
+                            </InputTextSelector>
+                        </div>
+                    </div>
+                    <div>
+                        <label>
+                            @GetName( "Quantity", new MaterialRecipeItem())
+                        </label>
+                    </div>
+                    <div><input type="number" @bind="_PackingSpecs.PackPerBoxLayer" class="form-control" style="border-color:gray;" maxlength="4" min="1" /></div>
+
+                    <div></div>
+                    <div class="flex-horizontal-end">
+                        <button type="button" @onclick='()=>ClosedAdd("AssemblyRecipeItems")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                        <button type="button" class="size-btn color-btn "><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+        }
+
     </div>
 
 
-    <div class="content-new-packing-recipe" style=' display:@(!addMaterials?"block":"none"); };'>
+    <div class="content-new-packing-recipe" style=' display:@(modeEdit?"block":"none"); };'>
+        <PageTitleComponent Title="@GetName("ProductPackingSpecs", new TransactionalItem())" IconName="TransactionalTypes.png"
+                            Description="@($"Here you can add {@GetName("ProductPackingSpecs", new TransactionalItem())}")">
+        </PageTitleComponent>
 
         <div class="container-menu-g">
             <nav>
@@ -183,6 +355,7 @@
                                         </InputTextSelector>
                                     </div>
                                 </div>
+
                                 <div><label>@GetName( "Code", new PackingSpecs())</label></div>
                                 <div> <label>@(Customer != null ? Customer.Code : "")</label></div>
                                 <div>
@@ -426,7 +599,7 @@
                                 </div>
                                 @*// int UPCDateCodeDaysAfterReferenceDate*@
                                 <div><label> @GetName("UPCDateCodeDaysAfterReferenceDate", new LabelInstruction()) </label></div>
-                                <div><input  @bind="labelInstruction.UPCDateCodeFormat" type="number" class="form-control" style="border-color:gray;" required /></div>
+                                <div><input @bind="labelInstruction.UPCDateCodeFormat" type="number" class="form-control" style="border-color:gray;" required /></div>
 
                                 @*// string OriginCountryLegend *@
                                 <div><label> @GetName("OriginCountryLegend", new LabelInstruction()) </label></div>
@@ -439,6 +612,33 @@
                                 @* // Stwitch Boolean ShowRetailPriceUPCInfo *@
                                 <div><label> @GetName("ShowRetailPriceUPCInfo", new LabelInstruction()) </label></div>
                                 <div><input @bind="labelInstruction.ShowRetailPriceUPCInfo" class="form-control" style="border-color:gray;" required /></div>
+
+                                <div>
+                                    <label>
+                                        @GetName("ItemAssemblyType",new PackingSpecs())
+                                    </label>
+                                </div>
+                                <div>
+                                    <div style="position:relative;">
+                                        <div class="item-edit">
+                                            <label>@(assemblyType != null ? assemblyType.Name : "")</label>
+                                            <button type="button" @onclick='()=>SetViewElemnt("ItemAssemblyType")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                                        </div>
+
+                                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditAssembly">
+                                            @{
+                                                if (GetModelView != null)
+                                                {
+                                                    foreach (var model in GetModelView)
+                                                    {
+                                                        <option value="@model?.Id">@model?.Name</option>
+                                                    }
+                                                }
+
+                                            }
+                                        </InputTextSelector>
+                                    </div>
+                                </div>
 
                             </div>
                         </div>
@@ -454,7 +654,7 @@
 
                             <div class="detailsTitleContainer">
                                 <h3 class="subTitleDetailForm">@GetName( "ListOfMaterials", new PackingSpecs())</h3>
-                                <svg @onclick='()=>OpenAdd("ListOfMaterials")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                                <svg @onclick='()=>ClosedAdd("ListOfMaterials")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                 </svg>
@@ -471,9 +671,7 @@
                                 </GridColumns>
                             </SfGrid>
                         </div>
-                        @*   <h1>Boton add + Pack Materials</h1>
-                        <h1>Grid view con Items de receta Materials</h1>*@
-                        @*List<MaterialRecipeItem> ListOfMaterials { get; set; }*@
+
                     </ContentTemplate>
                 </TabItem>
                 <TabItem>
@@ -485,7 +683,7 @@
 
                             <div class="detailsTitleContainer">
                                 <h3 class="subTitleDetailForm">@GetName( "AssemblyRecipeItems", new PackingSpecs())</h3>
-                                <svg @onclick='()=>OpenAdd("AssemblyRecipeItems")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                                <svg @onclick='()=>ClosedAdd("AssemblyRecipeItems")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                 </svg>
@@ -505,9 +703,7 @@
                                 </GridColumns>
                             </SfGrid>
                         </div>
-                        @*  <h1>Boton add + Ir a otra pagina para agregar un Item de Raw Materials</h1>
-                        <h1>Grid view con Items de receta</h1>
-                        List<PackRecipeItem> AssemblyRecipeItems { get; set; }*@
+
                     </ContentTemplate>
                 </TabItem>
             </TabItems>
@@ -528,7 +724,7 @@
     public bool ViewSelect { get; set; } = false;
     [Parameter]
     public string Mode { get; set; } = "Add";
-    bool viewMsg = false, modeEdit = false, PopupViewEditItemComponent = false;
+    bool viewMsg = false, modeEdit = true, PopupViewEditItemComponent = false;
     string msg = "";
     string pageView = "";
     SfTab? referTag;
@@ -538,6 +734,8 @@
     public TransactionalItem? transactionalItems { get; set; }
 
 
+
+    List<GridColumn> gridColumnListListOfMaterials = new();
 
     public int Page = 0;
     public string TransactionalItemId { get; set; }
@@ -553,6 +751,10 @@
     public bool PopupViewEditBoxLabelStyle = false;
     public bool PopupViewEditUPCDateCodeBasedOn { get; set; }
     public string PopupViewEditInnerProductLabelStyleByDeafult { get; set; }
+    public bool PopupViewEditAssembly = false;
+    public bool PopupViewMaterialAssembly = false;
+
+
 
 
     public int ParamCountResul = 0;
@@ -566,8 +768,9 @@
     public List<Box>? SetBox = new List<Box>();
     public List<Box>? GetBoxToSaleView = new List<Box>();
     public List<Box>? GetBoxToBuyView = new List<Box>();
-    //List<PackRecipeItem> AssemblyRecipeItems = new List<PackRecipeItem>();
-    //PackRecipeItem AssemblyRecipeItem = new PackRecipeItem();
+
+    public AssemblyType assemblyType = new();
+    public List<AssemblyType> assemblyTypes = new();
 
 
     PackingSpecs _PackingSpecs = new PackingSpecs();
@@ -609,6 +812,9 @@
     Concept itemComponent = new();
     List<ProductRecipeQualityModifier> recipeQualityModifiers = new();
     ProductRecipeQualityModifier recipeQualityModifier = new();
+    List<MaterialRecipeItem> MaterialRecipeItemAssembly = new();
+    List<Concept> ConceptMaterialsAssembly = new();
+    Concept ConceptMaterialAssembly = new();
     #endregion Tag 4
 
 
@@ -628,6 +834,14 @@
     protected override void OnInitialized()
     {
         InitializedAsync();
+
+        gridColumnListListOfMaterials = new List<GridColumn>()
+        {
+             new GridColumn() { Field=nameof(MaterialRecipeItem.Material.Name) ,  HeaderText = @GetName( "Name", new AtomConcept())  },
+              new GridColumn() { Field=nameof(MaterialRecipeItem.Quantity) ,  HeaderText = @GetName( "Quantity", new AtomConcept())  }
+             
+        };
+
     }
 
     protected async void InitializedAsync()
@@ -639,14 +853,14 @@
             TransactionalItemId = transactionalService.transactionalItemId;
             OnInitializedModel();
         }
-        if (Mode =="Edit")
+        if (Mode == "Edit")
         {
             _PackingSpecs = transactionalService.ConceptTransactionalItemPackingSpecs;
-            if (_PackingSpecs !=null)
-            {             
+            if (_PackingSpecs != null)
+            {
 
                 Customer = _PackingSpecs.Customer != null ? _PackingSpecs.Customer : new Concept();
-                Season = _PackingSpecs.Season != null ? _PackingSpecs.Season : new SeasonBusiness() ;
+                Season = _PackingSpecs.Season != null ? _PackingSpecs.Season : new SeasonBusiness();
                 ModelRecipe = _PackingSpecs.ModelRecipe != null ? _PackingSpecs.ModelRecipe : new ProductModel();
                 PriceInfo = _PackingSpecs.Price != null ? _PackingSpecs.Price : new PriceInfo();
                 BoxToBuy = _PackingSpecs.PackingBoxToBuy != null ? _PackingSpecs.PackingBoxToBuy : new Box(); ;
@@ -698,6 +912,31 @@
 
     }
 
+    
+    
+    public async void ItemSelected_1(MenuEventArgs e)
+    {
+     
+        string tile = e.Item != null ? e.Item.Text : "";
+        if (tile == "Save")
+        {
+
+
+            Msg("Addded");
+
+
+        }
+        if (tile == "Save as...")
+        {
+
+        }
+
+
+        StateHasChanged();
+
+
+    }
+
     private void AddMaterials()
     {
         if (materialRecipeItem != null)
@@ -727,7 +966,7 @@
 
     public async Task Closed(string Element)
     {
-        if (Element == "control") Navigation.NavigateTo("/TransactionalItemCard/0");
+        if (Element == "control") Navigation.NavigateTo("/TransactionalItemCard/0/Edit");
         Reload();
         await Refresh();
         StateHasChanged();
@@ -748,7 +987,8 @@
         if (Element == "InnerProductLabelStyleByDeafult") { PopupViewEditBoxLabelStyle = true; }
         if (Element == "UPCDateCodeBasedOn") { PopupViewEditUPCDateCodeBasedOn = true; }
         if (Element == "Material") { PopupViewEditItemComponent = true; }
-
+        if (Element == "ItemAssemblyType") { PopupViewEditAssembly = true; }
+        if (Element == "MaterialAssembly") { PopupViewMaterialAssembly = true; }
 
         StateHasChanged();
     }
@@ -758,7 +998,7 @@
 
         if (SearcherValueMode == "Customer")
         {
-            ListConcept = await transactionalService.GetSelectorListEntityActors(value);
+            ListConcept = await transactionalService.GetSelectorListEntityActors(value, "MassMarket");
             ParamCountResul = ListConcept != null ? ListConcept.Count() : 0;
         }
         if (SearcherValueMode == "Model")
@@ -774,13 +1014,13 @@
         }
         if (SearcherValueMode == "BoxToSale")
         {
-            GetBoxToSaleView = await transactionalService.GetBoxGetBoxTable(value);
+            GetBoxToSaleView = await transactionalService.GetBoxTable(value);
             ParamCountResul = GetBoxToSaleView != null ? GetBoxToSaleView.Count() : 0;
         }
         if (SearcherValueMode == "BoxToBuy")
         {
             if (SetBox == null) SetBox = new();
-            GetBoxToBuyView = await transactionalService.GetBoxGetBoxTable(value);
+            GetBoxToBuyView = await transactionalService.GetBoxTable(value);
             ParamCountResul = GetBoxToBuyView != null ? GetBoxToBuyView.Count() : 0;
         }
         if (SearcherValueMode == "PalletLabelStyle")
@@ -806,6 +1046,22 @@
             UPCDateCodeBasedOnsView = UPCDateCodeBasedOnsView.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
             ParamCountResul = InnerProductLabelStyleByDeafultsView != null ? InnerProductLabelStyleByDeafultsView.Count() : 0;
         }
+        if (SearcherValueMode == "ItemAssemblyType")
+        {
+            if (assemblyTypes == null) assemblyTypes = new();
+            assemblyTypes = assemblyTypes.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+            ParamCountResul = assemblyTypes != null ? assemblyTypes.Count() : 0;
+        }
+
+        if (SearcherValueMode == "MaterialAssembly")
+        {
+            if (ConceptMaterialsAssembly == null) ConceptMaterialsAssembly = new();
+            ConceptMaterialsAssembly = ConceptMaterialsAssembly.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+            ParamCountResul = assemblyTypes != null ? ConceptMaterialsAssembly.Count() : 0;
+        }
+
+
+
 
         if (ParamCountResul > 0) { ViewSelect = true; } else { ViewSelect = false; }
 
@@ -856,11 +1112,39 @@
             uPCDateCodeBasedOn = UPCDateCodeBasedOnsView.Where(c => c.Id == selectionId).FirstOrDefault();
             ParamCountResul = UPCDateCodeBasedOnsView.Count();
         }
+        if (SearcherValueMode == "ItemAssemblyType")
+        {
+            if (assemblyTypes == null) assemblyTypes = new();
+            assemblyType = assemblyTypes.Where(c => c.Id == selectionId).FirstOrDefault();
+            ParamCountResul = assemblyTypes.Count();
+        }
+        if (SearcherValueMode == "MaterialAssembly")
+        {
+            if (ConceptMaterialsAssembly == null) ConceptMaterialsAssembly = new();
+            ConceptMaterialAssembly = ConceptMaterialsAssembly.Where(c => c.Id == selectionId).FirstOrDefault();
+            ParamCountResul = assemblyTypes.Count();
+        }
+
 
 
         Reload();
         await Refresh();
     }
+
+
+
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<MaterialRecipeItem> args)
+    {
+        MaterialRecipeItem ObjModel = null;
+        ObjModel = args.RowInfo.RowData;
+       
+        if (args.Item.Id == "Edit")
+        {
+            
+        }
+    }
+
+
 
     public void Reload()
     {
@@ -869,6 +1153,8 @@
         PopupViewEditSeason = false;
         PopupViewEditBoxToSale = false;
         PopupViewEditBoxToBuy = false;
+        PopupViewEditAssembly = false;
+        PopupViewMaterialAssembly = false;
         ParamCountResul = 0;
     }
 
