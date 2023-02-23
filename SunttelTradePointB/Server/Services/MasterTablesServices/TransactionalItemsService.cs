@@ -941,5 +941,30 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 return (false, null, e.Message);
             }
         }
+
+        public Task<(bool IsSuccess, List<ProductModel>? productModels, string? ErrorDescription)> GetListModelsByTransactionalItemId(string userId, string ipAddress, string trasnsactionalItemId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<(bool IsSuccess, List<TransactionalItemProcessStep>? transactionalItemProcessSteps, string? ErrorDescription)> GetTransactionalItemProcessStepsByTypeID(string userId, string ipAddress, string transactionalItemTypeId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<(bool IsSuccess, List<TransactionalItemTypeCharacteristic>? transactionalItemTypeCharacteristics, string? ErrorDescription)> GetTransactionalItemTypeCharacteristicByTypeID(string userId, string ipAddress, string transactionalItemTypeId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<(bool IsSuccess, List<TransactionalItemQuality>? transactionalItemQualities, string? ErrorDescription)> GetQualityParametersByTypeID(string userId, string ipAddress, string transactionalItemTypeId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<(bool IsSuccess, List<RecipeModifier>? recipeModifiers, string? ErrorDescription)> GetRecipeModifiersByTypeID(string userId, string ipAddress, string transactionalItemTypeId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
