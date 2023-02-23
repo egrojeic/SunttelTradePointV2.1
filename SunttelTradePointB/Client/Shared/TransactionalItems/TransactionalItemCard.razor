@@ -52,94 +52,98 @@
 
     @if (currentItem == null) currentItem = new();
     @*id="identificationGroup"*@
-        <div  class="grid-columns-header">
-            <div>
-                <label for="name">Name</label>
-            </div>
-            <div>
-                <input type="text" class="form-control" id="name" @bind-value="@currentItem.Name" />
-            </div>
-
-            <div id="shortCutCodeGroup">
-                <label for="shortcutCode">Identifier Code</label>
-            </div>
-            <div>
-                <input type="text" class="form-control" id="shortcutCode" @bind="currentItem.Code" />
-            </div>
-            <div></div>
-            <div @onclick="SetStatus">
-                <label id="statusConcept" class="style-status" style="background-color:@colorStatus;">@currentItemStatus</label>
-            </div>
-            <div id="shortCutCodeGroup">
-                <label for="shortcutCode">@GetName("ReferenceCost", new TransactionalItem());</label>
-            </div>
-            <div>
-                <input type="number" class="form-control" id="shortcutCode" @bind="currentItem.ReferenceCost" />
-            </div>
-            <div id="shortCutCodeGroup">
-                <label for="shortcutCode">@GetName("SkinImageName", new Concept());</label>
-            </div>
-            <div>
-                <input type="text" class="form-control" id="shortcutCode" @bind="currentItem.SkinImageName" />
-            </div>
-
-            <div class="lineFormGroup">
-                <TransactionalItemGroupSelector @ref="referGroup" Groups="@currentItem.Groups" EventAddGroups="AddGroup"></TransactionalItemGroupSelector>
-            </div>
-
+    <div class="grid-columns-header">
+        <div>
+            <label for="name">Name</label>
+        </div>
+        <div>
+            <input type="text" class="form-control" id="name" @bind-value="@currentItem.Name" />
         </div>
 
-        <hr />
-        <div class="detailsContainer">
-            <div class="menuOptions">
-                <nav class="navVerticalOptions">
-                    <ul>
-                        <li class="@StyleClassItem(0)" @onclick="@(()=>SetMenuOption(0))">Packing Recipe<span class="arrowhead"></span></li>
-                        <li class="@StyleClassItem(1)" @onclick="@(()=>SetMenuOption(1))">Production Specs<span class="arrowhead"></span></li>
-                        <li class="@StyleClassItem(2)" @onclick="@(()=>SetMenuOption(2))">Quality Parameters<span class="arrowhead"></span></li>
-                        <li class="@StyleClassItem(3)" @onclick="@(()=>SetMenuOption(3))">Images<span class="arrowhead"></span></li>
-                        <li class="@StyleClassItem(4)" @onclick="@(()=>SetMenuOption(4))">Tags<span class="arrowhead"></span></li>
-                        <li class="@StyleClassItem(5)" @onclick="@(()=>SetMenuOption(5))">Characteristic<span class="arrowhead"></span></li>
+        <div id="shortCutCodeGroup">
+            <label for="shortcutCode">Identifier Code</label>
+        </div>
+        <div>
+            <input type="text" class="form-control"  @bind="currentItem.Code" />
+        </div>
+        <div><label for="shortcutCode">@GetName("Status", new Concept())</label></div>
+        <div @onclick="SetStatus">
+            <label id="statusConcept" class="style-status" style="background-color:@colorStatus;">@currentItemStatus</label>
+        </div>
+        <div id="shortCutCodeGroup">
+            <label for="shortcutCode">@GetName("ReferenceCost", new TransactionalItem())</label>
+        </div>
+        <div>
+            <input type="number" class="form-control"  @bind="currentItem.ReferenceCost" />
+        </div>
+        <div id="shortCutCodeGroup">
+            <label for="shortcutCode">@GetName("SkinImageName", new Concept())</label>
+        </div>
+        <div>
+            <input type="text" class="form-control"  @bind="currentItem.SkinImageName" />
+        </div>
 
-                    </ul>
-                </nav>
-            </div>
-            <div class="workArea">
-                @{
-                    if (currentItem != null && currentItem.Id != null)
+        <div class="lineFormGroup">
+            <TransactionalItemGroupSelector @ref="referGroup" Groups="@currentItem.Groups" EventAddGroups="AddGroup"></TransactionalItemGroupSelector>
+        </div>
+
+    </div>
+
+    <hr />
+    <div class="detailsContainer">
+        <div class="menuOptions">
+            <nav class="navVerticalOptions">
+                <ul>
+                    <li class="@StyleClassItem(0)" @onclick="@(()=>SetMenuOption(0))">Packing Recipe<span class="arrowhead"></span></li>
+                    <li class="@StyleClassItem(1)" @onclick="@(()=>SetMenuOption(1))">Production Specs<span class="arrowhead"></span></li>
+                    <li class="@StyleClassItem(2)" @onclick="@(()=>SetMenuOption(2))">Quality Parameters<span class="arrowhead"></span></li>
+                    <li class="@StyleClassItem(3)" @onclick="@(()=>SetMenuOption(3))">Images<span class="arrowhead"></span></li>
+                    <li class="@StyleClassItem(4)" @onclick="@(()=>SetMenuOption(4))">Tags<span class="arrowhead"></span></li>
+                    <li class="@StyleClassItem(5)" @onclick="@(()=>SetMenuOption(5))">Characteristics<span class="arrowhead"></span></li>
+                    <li class="@StyleClassItem(6)" @onclick="@(()=>SetMenuOption(6))">Models<span class="arrowhead"></span></li>
+
+                </ul>
+            </nav>
+        </div>
+        <div class="workArea">
+            @{
+                if (currentItem != null && currentItem.Id != null)
+                {
+                    @switch (verticalMenuOptionSelected)
                     {
-                        @switch (verticalMenuOptionSelected)
-                        {
-                            case 0:
-                                <TIPackingRecipe />
-                                break;
+                        case 0:
+                            <TIPackingRecipe />
+                            break;
 
-                            case 1:
-                                <TIProductionSpecs />
-                                break;
+                        case 1:
+                            <TIProductionSpecs />
+                            break;
 
-                            case 2:
-                                <TIQualityParameters />
-                                break;
+                        case 2:
+                            <TIQualityParameters />
+                            break;
 
-                            case 3:
-                                <TIImages />
-                                break;
+                        case 3:
+                            <TIImages />
+                            break;
 
-                            case 4:
-                                <TITags />
+                        case 4:
+                            <TITags />
 
-                                break;
-                            case 5:
-                                <TICharacteristic />
-                                break;
-                            default:
-                                <TIPackingRecipe />
-                                break;
-                        }
+                            break;
+                        case 5:
+                            <TICharacteristic />
+                            break;
+                        case 6:
+                            <TIProductModel />
+                            break;
+                        default:
+                            <TIPackingRecipe />
+                            break;
                     }
                 }
-            
+            }
+
         </div>
     </div>
 </form>
@@ -155,7 +159,7 @@
     public string msg = "", backgroundColor = "";
     public int status = 0;
     public bool AlertOpen = false;
-    bool modeStatus = true;
+    bool modeStatus = false;
     Alert? referAlert;
 
 
@@ -191,16 +195,18 @@
                 currentItemStatus = currentItem.Status != null ? currentItem.Status.Name : "";
             }
         }
-        else if (Mode == "Add")
+
+
+        if (Mode == "Add" || currentItem==null)
         {
             transactionalService.transactionalItemId = null;
             currentItem = new();
             SetStatus();
-
         }
+
         int PageMode = Convert.ToInt32((Page != null ? Page : "0"));
         SetMenuOption(PageMode);
-
+        SetStatus();
         StateHasChanged();
 
     }
@@ -233,12 +239,15 @@
         string tile = e.Item != null ? e.Item.Text : "";
         if (tile == "Save")
         {
-            SetStatus();
+            currentItem.ProductionSpecs = new List<TransactionalItemProcessStep>();
             TransactionalItem item = await transactionalService.SaveTransactionalItem(currentItem);
             bool resul = (item != null ? true : false);
             if (resul)
             {
                 currentItem = item;
+
+                transactionalService.TransactionalItems = item;
+                transactionalService.transactionalItemId = item.Id;
             }
             msg = resul ? "save" : "no save";
             AlertOpen = true;
@@ -295,6 +304,7 @@
     public void SetStatus()
     {
         modeStatus = modeStatus ? false : true;
+       
         ConceptStatus statust = new();
         if (modeStatus)
         {
@@ -304,6 +314,7 @@
                     LegacyId = "1",
                     Code = "name",
                     Name = "ACTIVE",
+                    IsEnabledForTransactions = true
                 };
             colorStatus = "#008080";
         }
@@ -315,10 +326,11 @@
                     LegacyId = "",
                     Code = "",
                     Name = "....",
+                    IsEnabledForTransactions = false
                 };
             colorStatus = "gary";
         }
-        currentItemStatus = currentItem.Status.Name;
+        if (currentItem!=null) currentItemStatus = currentItem.Status !=null ? currentItem.Status.Name:"";
     }
 
 

@@ -1,17 +1,15 @@
 ﻿@page "/QualityParametersCard"
 @using Syncfusion.Blazor.Popups
 @using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Grids
 @inject NavigationManager Navigation
 @inject TransactionalItemsService transactionalService;
 
-<style>
-    label {
-        margin-left: 50px;
-    }
-</style>
-<br />
-<h6>@Title</h6>
-<br />
+
+<PageTitleComponent Title="@Title" IconName="group.png"
+                    Description="Here you can add types of quality parameters">
+</PageTitleComponent>
+
 <div id="add-recipe">
     <div class="flex-horizontal-center">
         <div class="grid-columns-2 box-shadow-mode">
@@ -125,7 +123,7 @@
 
     public async Task Closed(string Element)
     {
-        if (Element == "control") Navigation.NavigateTo("/TransactionalItemCard/2");
+        if (Element == "control") Navigation.NavigateTo("/TransactionalItemCard/2/Edit");
         await Refresh();
         StateHasChanged();
     }
@@ -174,6 +172,17 @@
         Refresh();
 
     }
+
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemCharacteristicPair> args)
+    {
+        //PossibleValues ObjModel = new();
+        //ObjModel = args.RowInfo.RowData;
+        //if (args.Item.Id == "Edit")
+        //{
+        //    dataGridView = false;
+        //}
+    }
+
     public string GetName(string Name, Object Obj)
     {
         Name = UICommonFunctions.GetDisplayName(Obj, Name);

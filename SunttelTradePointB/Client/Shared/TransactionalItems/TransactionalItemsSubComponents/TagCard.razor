@@ -4,15 +4,12 @@
 @inject TransactionalItemsService transactionalService;
 @inject NavigationManager Navigation
 
+<PageTitleComponent Title="@Title" IconName=""
+                    Description="Here you can add tags">
+</PageTitleComponent>
 
-<style>
-    label {
-        margin-left: 50px;
-    }
-</style>
 
-<br />
-<h6>@Title</h6>
+
 <div class="flex-horizontal-center">
     <div class="grid-mode-row">
         <div><label>@Key</label></div>
@@ -84,7 +81,7 @@
 
     public async Task Closed(string Element)
     {
-        if (Element == "control") Navigation.NavigateTo("/TransactionalItemCard/4");
+        if (Element == "control") Navigation.NavigateTo("/TransactionalItemCard/4/Edit");
         StateHasChanged();
     }
 
