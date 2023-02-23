@@ -68,6 +68,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
+                if (ipAddress == "")
+                    ipAddress = "127.0.0.0";
 #pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
                 List<Address>  entityNodesAddressList = await _httpClient.GetFromJsonAsync<List<Address>>($"/api/EntityNodesMaintenance/GetEntityDetailsAddressList?userId={userId}&ipAdress={ipAddress}&EntityId={entityActorId}");
 #pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
@@ -105,6 +107,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
+                if (ipAddress == "")
+                    ipAddress = "127.0.0.0";
                 entityNodesList = await _httpClient.GetFromJsonAsync<List<EntityActor>>($"/api/EntityNodesMaintenance/GetEntityNodes?userId={userId}&ipAdress={ipAddress}&filterName={nameToFind}");
 #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo.
                 return entityNodesList;
@@ -140,6 +144,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
+                if (ipAddress == "")
+                    ipAddress = "127.0.0.0";
                 var entityNodesList = await _httpClient.GetFromJsonAsync<List<T>>($"api/EntityNodesMaintenance/GetEntityDetails{entityDetailsSection.ToString()}?filterName={patternToFind}");
 #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo.
                 return entityNodesList;
@@ -170,6 +176,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
+                if (ipAddress == "")
+                    ipAddress = "127.0.0.0";
                 var entityIdentifcationList = await _httpClient.GetFromJsonAsync<List<IdentificationEntity>>($"/api/EntityNodesMaintenance/GetEntityDetailsIdentifiersList?userId={userId}&ipAdress={ipAddress}&EntityId={entityId}");
                 return entityIdentifcationList;
             }
@@ -186,6 +194,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
+                if (ipAddress == "")
+                    ipAddress = "127.0.0.0";
                 var entityPhoneList = await _httpClient.GetFromJsonAsync<List<PhoneNumber>>($"/api/EntityNodesMaintenance/GetEntityDetailsPhoneDirectory?userId={userId}&ipAdress={ipAddress}&EntityId={entityActorId}");
                 return entityPhoneList;
 
@@ -207,6 +217,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
+                if (ipAddress == "")
+                    ipAddress = "127.0.0.0";
                 var actor = await _httpClient.GetFromJsonAsync<EntityActor>($"/api/EntityNodesMaintenance/GetEntityActorById?userId={userId}&ipAdress={ipAddress}&entityActorId={entityActorId}");
                 return actor;
 
@@ -225,6 +237,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
+                if (ipAddress == "")
+                    ipAddress = "127.0.0.0";
                 List<ConceptGroup>? groups = await _httpClient.GetFromJsonAsync<List<ConceptGroup>>($"/api/EntityNodesMaintenance/GetEntityGroups?userId={userId}&ipAdress={ipAddress}&filterCondition={filterCondition}");
                 return groups;
             }
@@ -241,6 +255,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
+                if (ipAddress == "")
+                    ipAddress = "127.0.0.0";
                 var group = await _httpClient.GetFromJsonAsync<EntityGroup>($"/api/EntityNodesMaintenance/GetEntityGroup?userId={userId}&ipAdress={ipAddress}&entityGroupId={groupId}");
                 return group;
             }
@@ -257,6 +273,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
+                if (ipAddress == "")
+                    ipAddress = "127.0.0.0";
                 var detailsList = await _httpClient.GetFromJsonAsync<List<IdentificationType>>($"/api/EntityNodesMaintenance/GetEntityDetailsIdentifiersList?userId={userId}&ipAdress={ipAddress}&EntityId={entityActorId}");
                 return detailsList;
             }
@@ -287,6 +305,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
+                if (ipAddress == "")
+                    ipAddress = "127.0.0.0";
                 var identificationType = await _httpClient.GetFromJsonAsync<AtomConcept>($"/api/EntityActorsRelatedConcepts/GetIdentificationType?userId={userId}&ipAdress={ipAddress}&identicationTypeId={identificationId}");
                 return identificationType;
             }
@@ -303,6 +323,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
+                if (ipAddress == "")
+                    ipAddress = "127.0.0.0";    
                 var listGroups = await _httpClient.GetFromJsonAsync<List<EntityGroup>>($"/api/EntityNodesMaintenance/GetEntityGroups?userId={userId}&ipAdress={ipAddress}&filterCondition={filterGroup}");
                 return listGroups;
             }
@@ -315,8 +337,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         public async Task<List<EntityRole>> GetListEntityRoles(string filterGroup)
         {
-            var userId = UIClientGlobalVariables.UserId;
-            var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
                 var listRoles = await _httpClient.GetFromJsonAsync<List<EntityRole>>($"/api/ConceptsSelector/GetSelectorListEntityRoles?filterCondition={filterGroup}");
@@ -335,6 +355,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
+                if (ipAddress == "")
+                    ipAddress = "127.0.0.0";
                 var roleList = await _httpClient.GetFromJsonAsync<EntityRole>($"/api/EntityActorsRelatedConcepts/GetEntityRole?userId={userId}&ipAdress={ipAddress}&entityRoleId={roleId}");
                 return roleList;
             }
@@ -347,8 +369,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         public async Task<List<AtomConcept>> GetListElectronicAddress()
         {
-            var userId = UIClientGlobalVariables.UserId;
-            var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
                 var listElectronicAddress = await _httpClient.GetFromJsonAsync<List<AtomConcept>>("/api/ConceptsSelector/GetSelectorElectronicAddressEntities");
@@ -367,6 +387,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
+                if (ipAddress == "")
+                    ipAddress = "127.0.0.0";
                 var entityAddress = await _httpClient.GetFromJsonAsync<List<Address>>($"/api/EntityNodesMaintenance/GetEntityDetailsAddressList?userId={userId}&ipAdress={ipAddress}&EntityId={entityId}");
                 return entityAddress;
             }
@@ -383,6 +405,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
+                if (ipAddress == "")
+                    ipAddress = "127.0.0.0";
                 var electronicList = await _httpClient.GetFromJsonAsync<ElectronicAddress>($"/api/EntityNodesMaintenance/GetElectronicAddresses?userId={userId}&ipAdress={ipAddress}&entityActorId={entityActorId}");
                 return electronicList;
             }
@@ -399,6 +423,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
+                if (ipAddress == "")
+                    ipAddress = "127.0.0.0";
                 var shippingInfoList = await _httpClient.GetFromJsonAsync<List<ShippingInfo>>($"/api/EntityNodesMaintenance/GetShippingSetup?userId={userId}&ipAdress={ipAddress}&entityActorId={shippingId}");
                 return shippingInfoList;
             }
@@ -415,6 +441,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
+                if (ipAddress == "")
+                    ipAddress = "127.0.0.0";
                 var commercialConditionsList = await _httpClient.GetFromJsonAsync<List<EntitiesCommercialRelationShip>>($"/api/EntityNodesMaintenance/GetCommercialConditiosOfEntity?userId={userId}&ipAdress={ipAddress}&entityActorId={commercialConditionId}");
                 return commercialConditionsList;
             }
@@ -431,6 +459,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
+                if (ipAddress == "")
+                    ipAddress = "127.0.0.0";
                 var listWarehouse = await _httpClient.GetFromJsonAsync<List<Warehouse>>($"/api/GeographicPlaces/GetWarehouses?nameLike={filterWarehouse}");
                 return listWarehouse;
             }
@@ -751,6 +781,28 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 string errMessage = ex.Message;
                 return false;
             }
+        }
+
+        public async Task<TransactItemImage> GetImage(string? transactionalItemId = null)
+        {
+            transactionalItemId = transactionalItemId != null ? transactionalItemId : "";
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+                List<TransactItemImage> imagenList = await _httpClient.GetFromJsonAsync<List<TransactItemImage>>($"api/TransactionalItems/GetTransactionalItemDetailsPathImages?userId={userId}&ipAddress={ipAddress}&transactionalItemId={transactionalItemId}");
+                TransactItemImage image = imagenList.Where(s => s.Id == transactionalItemId).FirstOrDefault();
+                return image;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+
+                return null;
+
+            }
+
+
         }
 
         public Task<List<EntityActor>> GetEntityActorFaceList(string? nameLike = null, string? entityType = null, string? entityCode = null, bool forceRefresh = false)

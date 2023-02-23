@@ -69,13 +69,13 @@
     {
         identificationType = identificationEntity.EntityTypeId;
         entityIdentificationList.Add(new IdentificationEntity
-        {
-            Code = identificationEntity.Code,
-            EntityTypeId = identificationType
-        });
+                {
+                    Code = identificationEntity.Code,
+                    EntityTypeId = identificationType
+                });
         refGrid.Reload();
     }
-    
+
     protected override async Task OnInitializedAsync()
     {
         await GetSelectorDetails();
@@ -99,14 +99,14 @@
         <RadzenMenuItem Text="Delete" Value=args.Data Icon="delete"></RadzenMenuItem>
         <RadzenMenuItem Text="Show in Map" Value=args.Data Icon="location_on"></RadzenMenuItem>
 
-        </RadzenMenu>
+    </RadzenMenu>
     );
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         IdentificationEntity argObj = (IdentificationEntity)args.Value;
 
-        if(args.Text == "Edit")
+        if (args.Text == "Edit")
         {
             navigationManager.NavigateTo($"/Actors/{EntityId}/Identification/{argObj.Id}/Edit");
         }

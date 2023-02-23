@@ -310,6 +310,7 @@
 
         await ActorEntityNode(Id);
         await GetRoles();
+        var a = await actorsNodeServive.GetImage(Id);
 
         if (currentEntityActor == null)
         {

@@ -23,39 +23,29 @@
 
     @if (entityAddressList != null)
     {
-        <RadzenDataGrid AllowFiltering="true"
-                    AllowColumnResize="true"
-                    AllowAlternatingRows="true"
-                    FilterMode="FilterMode.Advanced"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    AllowSorting="true"
-                    PageSize="5"
-                    AllowPaging="true"
-                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    Data="@entityAddressList"
-                    TItem="Address"
-                    ColumnWidth="300px"
-                    SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"
-                    @bind-Value=@selectedAddres Class="m-4"
-                    CellContextMenu="@ShowContextMenuWithContent"
-                    @ref="referGrid">
+        <SfGrid 
+            DataSource="entityAddressList"
+            Height="auto"
+            Width="auto"
+            TValue="Address"
+            AllowFiltering="true"
+            AllowTextWrap="false"
+            AllowPaging="true"
+            AllowResizing="true"    
+            ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" } })">
+            <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
+            <GridColumns>
+                <GridColumn Field="@nameof(Address.Name)" HeaderText="Name" Width="auto"></GridColumn>
+                <GridColumn Field="@nameof(Address.AddressLine1)" HeaderText="Address Line 1" Width="auto"></GridColumn>
+                <GridColumn Field="@nameof(Address.AddressLine2)" HeaderText="Address Line 2" Width="auto"></GridColumn>
+                <GridColumn Field="@nameof(Address.CityAddress.RegionCity.CountryRegion.Name)" HeaderText="Country" Width="auto"></GridColumn>
+                <GridColumn Field="@nameof(Address.CityAddress.RegionCity.Name)" HeaderText="Region/State" Width="auto"></GridColumn>
+                <GridColumn Field="@nameof(Address.CityAddress.Name)" HeaderText="City" Width="auto"></GridColumn>
+                <GridColumn Field="@nameof(Address.ZipCode)" HeaderText="Zip Code" Width="auto"></GridColumn>
+            </GridColumns>
+            <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="Address"></GridEvents>
+        </SfGrid>
 
-            <Columns>
-                <RadzenDataGridColumn TItem="Address" Property="Name" Title="Name" Frozen="true" Width="auto" />
-                    <RadzenDataGridColumn TItem="Address" Property="AddressLine1" Title="Address Line 1" Frozen="false" Width="auto" />
-                    <RadzenDataGridColumn TItem="Address" Property="AddressLine2" Title="Address Line 2" Frozen="false" Width="auto" />
-                    <RadzenDataGridColumn TItem="Address" Property="CityAddress.RegionCity.CountryRegion.Name" Title="Country" Frozen="false" Width="auto" />
-                    <RadzenDataGridColumn TItem="Address" Property="CityAddress.RegionCity.Name" Title="Region/State" Frozen="false" Width="auto" />
-                    <RadzenDataGridColumn TItem="Address" Property="CityAddress.Name" Title="City" Frozen="false" Width="auto" />
-                    <RadzenDataGridColumn TItem="Address" Property="ZipCode" Title="Zip" Frozen="false" Width="auto" />
-
-
-            </Columns>
-
-
-        </RadzenDataGrid>
     }
 
 </div>
@@ -89,26 +79,14 @@
         }
     }
 
-    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<Address> args) => ContextMenuService.Open(args, ds =>
-    @<RadzenMenu Click="OnMenuItemClick">
-                    <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-                    <RadzenMenuItem Text="Delete" Value=args.Data Icon="delete"></RadzenMenuItem>
-                    <RadzenMenuItem Text="Show in Map" Value=args.Data Icon="location_on"></RadzenMenuItem>
-
-        </RadzenMenu>
-    );
-
-    void OnMenuItemClick(MenuItemEventArgs args)
+    public void OnContextMenuClick(ContextMenuClickEventArgs<Address> args)
     {
-        Address argObj = (Address)args.Value;
-        if(args.Text == "Edit")
+        Address _Address = new();
+        _Address = args.RowInfo.RowData;
+
+        if (args.Item.Text == "Edit")
         {
-            navigationManager.NavigateTo($"/Actors/{EntityId}/ShippingPlaces/{argObj.Id}/Edit");
-        }
-        Console.WriteLine($"Menu item with Value={argObj.Name} clicked");
-        if (!args.Value.Equals(3) && !args.Value.Equals(4))
-        {
-            ContextMenuService.Close();
+            navigationManager.NavigateTo($"/Actors/{EntityId}/ShippingPlaces/{_Address.Id}/Edit");
         }
     }
 
