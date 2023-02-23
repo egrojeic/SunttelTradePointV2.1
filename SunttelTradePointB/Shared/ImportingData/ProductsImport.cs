@@ -176,7 +176,8 @@ namespace SunttelTradePointB.Shared.ImportingData
            public int FlagActivo  {get;set;}
            public int FlagFarm{get;set;}
            public int FlagCalifornia { get; set; }
-
-
     }
+
+
+
 }

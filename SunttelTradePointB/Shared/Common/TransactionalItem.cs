@@ -26,7 +26,7 @@ namespace SunttelTradePointB.Shared.Common
     }
 
     [BsonIgnoreExtraElements]
-    public class TransactionalItem: Concept
+    public class TransactionalItem : Concept
     {
         [DisplayName("Catalog")]
         [BsonIgnoreIfNull]
@@ -35,7 +35,7 @@ namespace SunttelTradePointB.Shared.Common
         [DisplayName("Characteristics")]
         [BsonIgnoreIfNull]
         public List<TransactionalItemCharacteristicPair> ItemCharacteristics { get; set; }
-        
+
         [DisplayName("Packing Specs")]
         [BsonIgnoreIfNull]
         public List<PackingSpecs> ProductPackingSpecs { get; set; }
@@ -54,7 +54,7 @@ namespace SunttelTradePointB.Shared.Common
 
         [DisplayName("Price Lists")]
         [BsonIgnoreIfNull]
-        public PriceListTransactionalItems PriceOverridenByPriceList{ get; set; }
+        public PriceListTransactionalItems PriceOverridenByPriceList { get; set; }
 
         [DisplayName("Quality Parameters")]
         [BsonIgnoreIfNull]
@@ -72,7 +72,7 @@ namespace SunttelTradePointB.Shared.Common
 
     }
 
-   
+
 
     public class TransactItemImage {
         [BsonId]
@@ -86,10 +86,10 @@ namespace SunttelTradePointB.Shared.Common
         public string PathImage { get; set; }
 
     }
-    public class TransactionalItemStatus: ConceptStatus
+    public class TransactionalItemStatus : ConceptStatus
     {
 
-        
+
         [DisplayName("Is Available to Sale")]
         public bool IsAvailableForSale { get; set; }
 
@@ -100,22 +100,53 @@ namespace SunttelTradePointB.Shared.Common
         public bool IsAvailableToBuy { get; set; }
     }
 
-  
 
-    public class TransactionalItemProcessStep {
+
+    public class TransactionalItemProcessStep:AtomConcept {
+        
+        [DisplayName("General Instructions")]
+        public string GeneralInstructions { get; set; }
+        public double Cost { get; set; }
+
+        public double HolidayDayCost { get; set; }
+
+        [DisplayName("Process Tags")]
+        public List<TransactionalItemTag> TransactionalItemProcessTags { get; set; }
+        public int Order { get; set; }
+
+        [DisplayName("Costs exceptions by Quantity")]
+        public List<CostExceptionByQuantity> CostExceptionsByQuantity { get; set; }
+
+        public ChargeableUnitsType TypeOfComponentsToCharge { get; set; }
+
+        public BasicConcept ProcessType { get; set; }
+
+    }
+
+
+    public class ChargeableUnitsType
+    {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         public string Name { get; set; }
 
-        [DisplayName("General Instructions")]
-        public string GeneralInstructions { get; set; }
-        public double Cost { get; set; }
-
-        [DisplayName("Process Tags")]
-        public List<TransactionalItemTag> TransactionalItemProcessTags { get; set; }
-        public int Order { get; set; }
     }
+
+    public class CostExceptionByQuantity {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
+
+        [DisplayName("Minimum Quantity")]
+        public double MinimumQty { get; set; }
+
+        [DisplayName("Maximum Quantity")]
+        public double MaximumQty { get; set; }
+
+
+    }
+
 
     public class TransactionalItemTag {
         [BsonId]
@@ -165,26 +196,46 @@ namespace SunttelTradePointB.Shared.Common
 
         [DisplayName("Quality Parameters")]
         [BsonIgnoreIfNull]
-        public List<TransactionalItemQualityPair> QualityParameters { get; set; }
+        public List<TransactionalItemQuality> QualityParameters { get; set; }
 
 
         [DisplayName("Recipe Quality Modifiers")]
         [BsonIgnoreIfNull]
-        public List<ProductRecipeQualityModifier> InRecipeQualityModifiers { get; set; }
+        public List<RecipeModifier> InRecipeModifiers { get; set; }
 
         
 
     }
 
     public class TransactionalItemTypeCharacteristic {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
         public string Name { get; set; }
 
         [DisplayName("Possible Values")]
-        public List<string> PossibleValues { get; set; }
+        public List<TransactionalItemCharacteristic> PossibleValues { get; set; }
+    }
+
+    public class TransactionalItemCharacteristic {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
+        public string Name { get; set; }
+
+        [DisplayName("Is Enabled")]
+        public bool IsEnabled { get; set; }
+
+        [DisplayName("Additional Description")]
+        public string AdditionalDescription { get; set; }
+
     }
 
     public class TransactionalItemInRecipeModifiers
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
         public string Name { get; set; }
 
         [DisplayName("Possible Values")]
@@ -211,6 +262,7 @@ namespace SunttelTradePointB.Shared.Common
         [DisplayName("Default Value")]
         [BsonIgnoreIfNull]
         public string DefaultValue { get; set; }
+        public string AdditionalDescription { get; set; }
     }
 
     public class TransactionalItemQualityPair
@@ -312,11 +364,24 @@ namespace SunttelTradePointB.Shared.Common
         public double Quantity { get; set; }
     }
 
+
+    public class RecipeModifier
+    {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
+        public string LegacyId { get; set; }
+        public string Name { get; set; }
+        public List<ProductRecipeQualityModifier> RecipePossibleModifierValues { get; set; }
+
+    }
+
+
     public class ProductRecipeQualityModifier {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
-        public int LegacyId { get; set; }
+        public string LegacyId { get; set; }
         public string Name { get; set; }
 
        
