@@ -1,4 +1,4 @@
-﻿@page "/PackingRecipeCard"
+﻿@page "/ComponentItemRecipe"
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.Grids
 @using Syncfusion.Blazor.Data
@@ -17,49 +17,7 @@
 }
 
 <form>
-    <div class="content-new-packing-recipe" style=' display:@(!modeEdit?"block":"none"); };'>
-
-        @if (@pageView == "ListOfMaterials")
-        {
-            <div>
-                <div class="flex-horizontal-center">
-                    <div class="grid-columns-2 box-shadow-mode">
-                        <div>
-                            <label>
-                                @GetName( "Material", new MaterialRecipeItem())
-                            </label>
-                        </div>
-                        <div style="position:relative;">
-                            <div class="item-edit">
-                                <label>@(Material != null ? Material.Name : "")</label>
-                                <button type="button" @onclick='()=>SetViewElemnt("Material")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                            </div>
-                            <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditItemComponent">
-                                @{
-                                    if (Materials != null)
-                                    {
-                                        foreach (var Element in Materials)
-                                        {
-                                            <option value="@Element?.Id">@Element?.Name</option>
-                                        }
-                                    }
-                                }
-                            </InputTextSelector>
-                        </div>
-
-                        <div><label>@GetName( "Quantity",new MaterialRecipeItem())</label></div>
-                        <div><input type="number" @bind="materialRecipeItem.Quantity" class="form-control" style="border-color:gray;" required /></div>
-                        <div></div>
-                        <div class="flex-horizontal-end">
-                            <button type="button" @onclick='()=>ClosedAdd("ChildrenGroups")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-                            <button type="button" @onclick='AddMaterials' class="size-btn color-btn "><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
-        }
+    <div class="content-new-packing-recipe" style=' display:@(!modeEdit?"block":"none"); };'>      
 
         @if (@pageView == "AssemblyRecipeItems")
         {
@@ -247,6 +205,7 @@
                 </div>
             </div>
         }
+
         @if (@pageView == "ComponentItemRecipeAssembly")
         {
             <PageTitleComponent Title="@GetName( "ComponentItemRecipe", new PackRecipeItem())" IconName="TransactionalTypes.png"
@@ -269,8 +228,8 @@
 
 
     <div class="content-new-packing-recipe" style=' display:@(modeEdit?"block":"none"); };'>
-        <PageTitleComponent Title="@GetName("ProductPackingSpecs", new TransactionalItem())" IconName="TransactionalTypes.png"
-                            Description="@($"Here you can add {@GetName("ProductPackingSpecs", new TransactionalItem())}")">
+        <PageTitleComponent Title="@GetName("ComponentItemRecipe", new PackRecipeItem())" IconName="TransactionalTypes.png"
+                            Description="@($"Here you can add {@GetName("ComponentItemRecipe", new PackRecipeItem())}")">
         </PageTitleComponent>
 
         <div class="container-menu-g">
@@ -292,360 +251,13 @@
             </nav>
         </div>
 
-        <SfTab @ref="referTag" Height="50px">
+        <SfTab  Height="50px">
             <TabAnimationSettings>
                 <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
                 <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
             </TabAnimationSettings>
-            <TabItems>
-                <TabItem>
-                    <ChildContent>
-                        <TabHeader Text="@GetName("ProductPackingSpecs", new TransactionalItem())"></TabHeader>
-                    </ChildContent>
-                    <ContentTemplate>
-                        <div id="add-recipe">
-                            <div class="grid-columns-4">
-                                <div><label>@GetName( "Customer", new PackingSpecs())</label></div>
-                                <div>
-                                    <div style="position:relative;">
-                                        <div class="item-edit">
-                                            <label>@(Customer != null ? Customer.Name : "")</label>
-                                            <button type="button" @onclick='()=>SetViewElemnt("Customer")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                        </div>
-
-                                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewAddCustomer">
-                                            @{
-                                                if (ListConcept != null)
-                                                {
-                                                    foreach (var customer in ListConcept)
-                                                    {
-                                                        <option value="@customer?.Id">@customer?.Name</option>
-                                                    }
-                                                }
-
-                                            }
-                                        </InputTextSelector>
-                                    </div>
-                                </div>
-
-                                <div><label>@GetName( "Code", new PackingSpecs())</label></div>
-                                <div> <label>@(Customer != null ? Customer.Code : "")</label></div>
-                                <div>
-                                    <label>
-                                        @GetName( "Season", new PackingSpecs())
-                                    </label>
-                                </div>
-                                <div>
-                                    <div style="position:relative;">
-                                        <div class="item-edit">
-                                            <label>@(Season != null ? Season.Name : "")</label>
-                                            <button type="button" @onclick='()=>SetViewElemnt("Season")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                        </div>
-
-                                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditSeason">
-                                            @{
-                                                if (GetSeasonView != null)
-                                                {
-                                                    foreach (var season in GetSeasonView)
-                                                    {
-                                                        <option value="@season?.Id">@season?.Name</option>
-                                                    }
-                                                }
-                                            }
-                                        </InputTextSelector>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label>
-                                        @GetName("ModelRecipe",new PackingSpecs())
-                                    </label>
-                                </div>
-                                <div>
-                                    <div style="position:relative;">
-                                        <div class="item-edit">
-                                            <label>@(ModelRecipe != null ? ModelRecipe.Name : "")</label>
-                                            <button type="button" @onclick='()=>SetViewElemnt("Model")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                        </div>
-
-                                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditModel">
-                                            @{
-                                                if (GetModelView != null)
-                                                {
-                                                    foreach (var model in GetModelView)
-                                                    {
-                                                        <option value="@model?.Id">@model?.Name</option>
-                                                    }
-                                                }
-
-                                            }
-                                        </InputTextSelector>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label>
-                                        @GetName( "PackLayersToSale", new PackingSpecs())
-                                    </label>
-                                </div>
-                                <div><input type="number" @bind="_PackingSpecs.PackLayersToSale" class="form-control" style="border-color:gray;" autofocus required /></div>
-                                <div><label>@GetName( "PackLayersToBuy",new PackingSpecs())</label></div>
-                                <div><input type="number" @bind="_PackingSpecs.PackLayersToBuy" class="form-control" style="border-color:gray;" required /></div>
-                                <div>
-                                    <label>
-                                        @GetName( "PackingBoxToSale", new PackingSpecs())
-                                    </label>
-                                </div>
-                                <div>
-                                    <div style="position:relative;">
-                                        <div class="item-edit">
-                                            <label>@(BoxToSale != null ? BoxToSale.Name : "")</label>
-                                            <button type="button" @onclick='()=>SetViewElemnt("BoxToSale")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                        </div>
-
-                                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditBoxToSale">
-                                            @{
-                                                if (GetBoxToSaleView != null)
-                                                {
-                                                    foreach (var Box in GetBoxToSaleView)
-                                                    {
-                                                        <option value="@Box?.Id">@Box?.Name</option>
-                                                    }
-                                                }
-
-                                            }
-                                        </InputTextSelector>
-                                    </div>
-
-                                </div>
-                                <div><label>@GetName( "PackingBoxToBuy", new PackingSpecs())</label></div>
-                                <div>
-                                    <div style="position:relative;">
-                                        <div class="item-edit">
-                                            <label>@(BoxToBuy != null ? BoxToBuy.Name : "")</label>
-                                            <button type="button" @onclick='()=>SetViewElemnt("BoxToBuy")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                        </div>
-
-                                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditBoxToBuy">
-                                            @{
-                                                if (GetBoxToBuyView != null)
-                                                {
-                                                    foreach (var Box in GetBoxToBuyView)
-                                                    {
-                                                        <option value="@Box?.Id">@Box?.Name</option>
-                                                    }
-                                                }
-                                            }
-                                        </InputTextSelector>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label>
-                                        @GetName( "PackPerBoxLayer", new PackingSpecs())
-                                    </label>
-                                </div>
-                                <div><input type="number" @bind="_PackingSpecs.PackPerBoxLayer" class="form-control" style="border-color:gray;" maxlength="4" min="1" /></div>
-                                <div><label> @GetName("UnitPrice", new PriceInfo() )</label></div>
-                                <div><input @bind="PriceInfo.UnitPrice" type="number" class="form-control" style="border-color:gray;" /></div>
-
-                            </div>
-                        </div>
-                    </ContentTemplate>
-                </TabItem>
-                <TabItem>
-                    <ChildContent>
-                        <TabHeader Text="@GetName( "CustomerLabelInstructions", new PackingSpecs())"></TabHeader>
-                    </ChildContent>
-                    <ContentTemplate>
-
-                        <div id="add-recipe">
-                            @*// Control David LabelStyle PalletLabelStyle (Selector PalletLabelStyles)*@
-                            <div class="grid-columns-4">
-                                <div>
-                                    <label>
-                                        @GetName( "PalletLabelStyle", new LabelInstruction())
-                                    </label>
-                                </div>
-                                <div style="position:relative;">
-                                    <div class="item-edit">
-                                        <label>@(palletLabelStyle != null ? palletLabelStyle.Name : "")</label>
-                                        <button type="button" @onclick='()=>SetViewElemnt("PalletLabelStyle")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                    </div>
-                                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditPalletLabelStyle">
-                                        @{
-                                            if (palletLabelStylesView != null)
-                                            {
-                                                foreach (var Element in palletLabelStylesView)
-                                                {
-                                                    <option value="@Element?.Id">@Element?.Name</option>
-                                                }
-                                            }
-                                        }
-                                    </InputTextSelector>
-                                </div>
-                                <div>
-                                    <label>
-                                        @GetName( "BoxLabelStyle", new LabelInstruction())
-                                    </label>
-                                </div>
-                                @*// Control David LabelStyle BoxLabelStyle (Selector BoxLabelStyles)*@
-                                <div style="position:relative;">
-                                    <div class="item-edit">
-                                        <label>@(BoxLabelStyle != null ? BoxLabelStyle.Name : "")</label>
-                                        <button type="button" @onclick='()=>SetViewElemnt("BoxLabelStyle")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                    </div>
-                                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditBoxLabelStyle">
-                                        @{
-                                            if (BoxLabelStylesView != null)
-                                            {
-                                                foreach (var Element in BoxLabelStylesView)
-                                                {
-                                                    <option value="@Element?.Id">@Element?.Name</option>
-                                                }
-                                            }
-                                        }
-                                    </InputTextSelector>
-                                </div>
-                                @* string UPCName*@
-                                <div><label> @GetName("UPCName", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.UPCComments" class="form-control" style="border-color:gray;" required /></div>
-                                @*// Control David LabelStyle InnerProductLabelStyleByDeafult (Selector UPCLabelStyles)*@
-                                <div>
-                                    <label>
-                                        @GetName( "InnerProductLabelStyleByDeafult", new LabelInstruction())
-                                    </label>
-                                </div>
-                                @*// Control David LabelStyle BoxLabelStyle (Selector BoxLabelStyles)*@
-                                <div style="position:relative;">
-                                    <div class="item-edit">
-                                        <label>@(InnerProductLabelStyleByDeafult != null ? InnerProductLabelStyleByDeafult.Name : "")</label>
-                                        <button type="button" @onclick='()=>SetViewElemnt("InnerProductLabelStyleByDeafult")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                    </div>
-                                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditBoxLabelStyle">
-                                        @{
-                                            if (InnerProductLabelStyleByDeafultsView != null)
-                                            {
-                                                foreach (var Element in InnerProductLabelStyleByDeafultsView)
-                                                {
-                                                    <option value="@Element?.Id">@Element?.Name</option>
-                                                }
-                                            }
-                                        }
-                                    </InputTextSelector>
-                                </div>
-                                @*// string UPCComments *@
-                                <div><label> @GetName("UPCComments", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.UPCComments" class="form-control" style="border-color:gray;" required /></div>
-
-                                @*// string BoxUPCCode *@
-                                <div><label> @GetName("BoxUPCCode", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.BoxUPCCode" class="form-control" style="border-color:gray;" required /></div>
-                                @*// string InnerProductUPCCode *@
-                                <div><label> @GetName("InnerProductUPCCode", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.InnerProductUPCCode" class="form-control" style="border-color:gray;" required /></div>
-
-                                @*// int UPCDateCodeFormat (Numeric Input)*@
-                                <div><label> @GetName("UPCDateCodeFormat", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.UPCDateCodeFormat" type="number" class="form-control" style="border-color:gray;" required /></div>
-
-                                @*// Control David  DatesReferenceType UPCDateCodeBasedOn (Selector DatesReferenceType)*@
-                                <div>
-                                    <label>
-                                        @GetName( "UPCDateCodeBasedOn", new LabelInstruction())
-                                    </label>
-                                </div>
-                                <div style="position:relative;">
-                                    <div class="item-edit">
-                                        <label>@(uPCDateCodeBasedOn != null ? uPCDateCodeBasedOn.Name : "")</label>
-                                        <button type="button" @onclick='()=>SetViewElemnt("UPCDateCodeBasedOn")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                    </div>
-                                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditUPCDateCodeBasedOn">
-                                        @{
-                                            if (UPCDateCodeBasedOnsView != null)
-                                            {
-                                                foreach (var Element in UPCDateCodeBasedOnsView)
-                                                {
-                                                    <option value="@Element?.Id">@Element?.Name</option>
-                                                }
-                                            }
-                                        }
-                                    </InputTextSelector>
-                                </div>
-                                @*// int UPCDateCodeDaysAfterReferenceDate*@
-                                <div><label> @GetName("UPCDateCodeDaysAfterReferenceDate", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.UPCDateCodeFormat" type="number" class="form-control" style="border-color:gray;" required /></div>
-
-                                @*// string OriginCountryLegend *@
-                                <div><label> @GetName("OriginCountryLegend", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.OriginCountryLegend" class="form-control" style="border-color:gray;" required /></div>
-
-                                @*// string SKU *@
-                                <div><label> @GetName("SKU", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.SKU" class="form-control" style="border-color:gray;" required /></div>
-
-                                @* // Stwitch Boolean ShowRetailPriceUPCInfo *@
-                                <div><label> @GetName("ShowRetailPriceUPCInfo", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.ShowRetailPriceUPCInfo" class="form-control" style="border-color:gray;" required /></div>
-
-                                <div>
-                                    <label>
-                                        @GetName("ItemAssemblyType",new PackingSpecs())
-                                    </label>
-                                </div>
-                                <div>
-                                    <div style="position:relative;">
-                                        <div class="item-edit">
-                                            <label>@(assemblyType != null ? assemblyType.Name : "")</label>
-                                            <button type="button" @onclick='()=>SetViewElemnt("ItemAssemblyType")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                        </div>
-
-                                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditAssembly">
-                                            @{
-                                                if (GetModelView != null)
-                                                {
-                                                    foreach (var model in GetModelView)
-                                                    {
-                                                        <option value="@model?.Id">@model?.Name</option>
-                                                    }
-                                                }
-
-                                            }
-                                        </InputTextSelector>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </ContentTemplate>
-                </TabItem>
-                <TabItem>
-                    <ChildContent>
-                        <TabHeader Text="@GetName( "ListOfMaterials",new PackingSpecs())"></TabHeader>
-                    </ChildContent>
-                    <ContentTemplate>
-                        <div style="display:flex; flex-direction:column; justify-content:center;">
-
-                            <div class="detailsTitleContainer">
-                                <h3 class="subTitleDetailForm">@GetName( "ListOfMaterials", new PackingSpecs())</h3>
-                                <svg @onclick='()=>ClosedAdd("ListOfMaterials")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
-                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                                </svg>
-                            </div>
-                            <SfGrid @ref="DataGrid" DataSource="@ListOfMaterialsView" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" AllowResizing="true">
-                                <GridEvents Destroyed="AddMaterialsOff" TValue="MaterialRecipeItemView"></GridEvents>
-                                <GridFilterSettings Type=" Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
-                                <GridColumns>
-                                    <GridColumn Field="@nameof(MaterialRecipeItemView.Name)" HeaderText="@GetName( "Name",new AtomConcept())" Width="300px"></GridColumn>
-                                    <GridColumn Field="@nameof(MaterialRecipeItemView.Quantity)" HeaderText="@GetName( "Quantity",new MaterialRecipeItem())" Width="300px"></GridColumn>
-                                    <GridColumn Field="@nameof(MaterialRecipeItemView.Code)" HeaderText="@GetName( "Code",new AtomConcept())" Width="120px"></GridColumn>
-                                    <GridColumn Field="@nameof(MaterialRecipeItemView.SkinImageName)" HeaderText="@GetName( "SkinImageName",new Concept())" Width="120px"></GridColumn>
-                                    <GridColumn Field="@nameof(MaterialRecipeItemView.FullClassName)" HeaderText="@GetName( "FullClassName",new Concept())" Width="120px"></GridColumn>
-                                </GridColumns>
-                            </SfGrid>
-                        </div>
-
-                    </ContentTemplate>
-                </TabItem>
+            <TabItems>              
+              
                 <TabItem>
                     <ChildContent>
                         <TabHeader Text="@GetName("AssemblyRecipeItems", new PackingSpecs())"></TabHeader>
@@ -664,7 +276,7 @@
                             <div class="content-btn">
                                 @* <button type="button" @onclick='()=>AddAssemblyControl(true)' class="size-btn color-btn" style=' display:@(btnAddMaterials?"block":"none");'>+</button>*@
                             </div>
-                            <SfGrid @ref="DataGrid1" DataSource="@assemblyRecipeItemsView" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" AllowResizing="true">
+                            <SfGrid  DataSource="@assemblyRecipeItemsView" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" AllowResizing="true">
                                 <GridFilterSettings Type=" Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
                                 <GridColumns>
                                     <GridColumn Field="@nameof(PackRecipeItemView.Name)" HeaderText="@GetName( "Name",new AtomConcept())" Width="300px"></GridColumn>
@@ -689,20 +301,19 @@
 @code {
     [Parameter]
     public string id { get; set; }
-    public RenderFragment render { get; set; }
-    [Parameter]
-    public EventCallback<PackingSpecs> save { get; set; }
-    [Parameter]
+    //public RenderFragment render { get; set; }
+    //[Parameter]
+    //public EventCallback<PackingSpecs> save { get; set; }   
     public bool ViewSelect { get; set; } = false;
     [Parameter]
     public string Mode { get; set; } = "Add";
     bool viewMsg = false, modeEdit = true, PopupViewEditItemComponent = false;
     string msg = "";
     string pageView = "";
-    SfTab? referTag;
-    SfGrid<MaterialRecipeItemView>? DataGrid;
-    SfGrid<PackRecipeItemView>? DataGrid1;
-    MaterialRecipeItemCard? addControl;
+    //SfTab? referTag;
+    //SfGrid<MaterialRecipeItemView>? DataGrid;
+    //SfGrid<PackRecipeItemView>? DataGrid1;
+    //MaterialRecipeItemCard? addControl;
     public TransactionalItem? transactionalItems { get; set; }
 
 
@@ -924,7 +535,7 @@
                     SkinImageName = materialRecipeItem.Material != null ? materialRecipeItem.Material.SkinImageName : ""
                 });
             materialRecipeItem = new();
-            DataGrid.Refresh();
+           // DataGrid.Refresh();
             Msg("Added");
         }
     }

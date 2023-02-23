@@ -521,8 +521,8 @@
             transactionalItemProcessSteps = transactionalItemType.TransactionalItemProcesses;
             childrenGroups = transactionalItemType.Groups;
             transactionalItemTypeCharacteristics = transactionalItemType.TransactionalItemTypeCharacteristics;
-            transactionalItemQualityPairs = transactionalItemType.QualityParameters;
-            inRecipeQualityModifiers = transactionalItemType.InRecipeQualityModifiers;
+            //transactionalItemQualityPairs = transactionalItemType.QualityParameters;
+            //inRecipeQualityModifiers = transactionalItemType.InRecipeQualityModifiers;
 
         }
         if (Mode == "Add")
@@ -670,7 +670,7 @@
         if (value == "TransactionalItemTypeCharacteristics")
         {
             if (transactionalItemTypeCharacteristics == null) transactionalItemTypeCharacteristics = new();
-            transactionalItemTypeCharacteristic.PossibleValues = possibleValues;
+           // transactionalItemTypeCharacteristic.PossibleValues = possibleValues;
             transactionalItemTypeCharacteristics.Add(transactionalItemTypeCharacteristic);
             transactionalItemTypeCharacteristic = new();
             possibleValues = new();
@@ -825,8 +825,8 @@
         {
             transactionalItemType.TransactionalItemProcesses = transactionalItemProcessSteps;
             transactionalItemType.TransactionalItemTypeCharacteristics = transactionalItemTypeCharacteristics;
-            transactionalItemType.QualityParameters = transactionalItemQualityPairs;
-            transactionalItemType.InRecipeQualityModifiers = inRecipeQualityModifiers;
+            //transactionalItemType.QualityParameters = transactionalItemQualityPairs;
+          //  transactionalItemType.InRecipeQualityModifiers = inRecipeQualityModifiers;
             transactionalItemType.Groups = childrenGroups;
 
             var resul = await transactionalService.SaveTransactionalItemType(transactionalItemType);
