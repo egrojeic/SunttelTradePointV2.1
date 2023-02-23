@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
+using SixLabors.ImageSharp.ColorSpaces;
 using SunttelTradePointB.Client.Shared.ConceptSelectors;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Shared.Common;
@@ -436,9 +437,42 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="transactionalItemProcessStep"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<(bool IsSuccess, TransactionalItemProcessStep? transactionalItemProcessStep, string? ErrorDescription)> SaveTransactionalItemProcessStep(string userId, string ipAddress, string transactionalItemTypeId, TransactionalItemProcessStep transactionalItemProcessStep)
+        public async Task<(bool IsSuccess, TransactionalItemProcessStep? transactionalItemProcessStep, string? ErrorDescription)> SaveTransactionalItemProcessStep(string userId, string ipAddress, string transactionalItemTypeId, TransactionalItemProcessStep transactionalItemProcessStep)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (transactionalItemProcessStep.Id == null)
+                {
+                    transactionalItemProcessStep.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterPrev = Builders<TransactionalItemType>.Filter.Eq(x => x.Id, transactionalItemTypeId);
+                var resultPrev = await _transactionalItemType.Find(filterPrev).FirstOrDefaultAsync();
+
+                if (transactionalItemTypeId.Length > 0 && resultPrev != null && resultPrev.TransactionalItemProcesses.Any(x => x.Id == transactionalItemProcessStep.Id))
+                {
+                    //Update element
+                    var filter = Builders<TransactionalItemType>.Filter.And(
+                        Builders<TransactionalItemType>.Filter.Eq(x => x.Id, transactionalItemTypeId),
+                        Builders<TransactionalItemType>.Filter.ElemMatch(x => x.TransactionalItemProcesses, y => y.Id == transactionalItemProcessStep.Id)
+                    );
+                    var update = Builders<TransactionalItemType>.Update.Set(x => x.TransactionalItemProcesses[-1], transactionalItemProcessStep);
+                    await _transactionalItemType.UpdateOneAsync(filter, update);
+                }
+                else
+                {
+                    //Add element
+                    var filter = Builders<TransactionalItemType>.Filter.Eq(x => x.Id, transactionalItemTypeId);
+                    var update = Builders<TransactionalItemType>.Update.AddToSet(x => x.TransactionalItemProcesses, transactionalItemProcessStep);
+                    await _transactionalItemType.UpdateOneAsync(filter, update);
+                }
+
+                return (true, transactionalItemProcessStep, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
 
 
@@ -451,9 +485,42 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="transactionalItemTypeCharacteristic"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<(bool IsSuccess, TransactionalItemTypeCharacteristic? transactionalItemTypeCharacteristic, string? ErrorDescription)> SaveTransactionalItemTypeCharacteristic(string userId, string ipAddress, string transactionalItemTypeId, TransactionalItemTypeCharacteristic transactionalItemTypeCharacteristic)
+        public async Task<(bool IsSuccess, TransactionalItemTypeCharacteristic? transactionalItemTypeCharacteristic, string? ErrorDescription)> SaveTransactionalItemTypeCharacteristic(string userId, string ipAddress, string transactionalItemTypeId, TransactionalItemTypeCharacteristic transactionalItemTypeCharacteristic)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (transactionalItemTypeCharacteristic.Id == null)
+                {
+                    transactionalItemTypeCharacteristic.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterPrev = Builders<TransactionalItemType>.Filter.Eq(x => x.Id, transactionalItemTypeId);
+                var resultPrev = await _transactionalItemType.Find(filterPrev).FirstOrDefaultAsync();
+
+                if (transactionalItemTypeId.Length > 0 && resultPrev != null && resultPrev.TransactionalItemTypeCharacteristics.Any(x => x.Id == transactionalItemTypeCharacteristic.Id))
+                {
+                    //Update element
+                    var filter = Builders<TransactionalItemType>.Filter.And(
+                        Builders<TransactionalItemType>.Filter.Eq(x => x.Id, transactionalItemTypeId),
+                        Builders<TransactionalItemType>.Filter.ElemMatch(x => x.TransactionalItemTypeCharacteristics, y => y.Id == transactionalItemTypeCharacteristic.Id)
+                    );
+                    var update = Builders<TransactionalItemType>.Update.Set(x => x.TransactionalItemTypeCharacteristics[-1], transactionalItemTypeCharacteristic);
+                    await _transactionalItemType.UpdateOneAsync(filter, update);
+                }
+                else
+                {
+                    //Add element
+                    var filter = Builders<TransactionalItemType>.Filter.Eq(x => x.Id, transactionalItemTypeId);
+                    var update = Builders<TransactionalItemType>.Update.AddToSet(x => x.TransactionalItemTypeCharacteristics, transactionalItemTypeCharacteristic);
+                    await _transactionalItemType.UpdateOneAsync(filter, update);
+                }
+
+                return (true, transactionalItemTypeCharacteristic, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
 
 
@@ -466,9 +533,42 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="transactionalItemQuality"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<(bool IsSuccess, TransactionalItemQuality? transactionalItemQuality, string? ErrorDescription)> SaveTransactionalItemQuality(string userId, string ipAddress, string transactionalItemTypeId, TransactionalItemQuality transactionalItemQuality)
+        public async Task<(bool IsSuccess, TransactionalItemQuality? transactionalItemQuality, string? ErrorDescription)> SaveTransactionalItemQuality(string userId, string ipAddress, string transactionalItemTypeId, TransactionalItemQuality transactionalItemQuality)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (transactionalItemQuality.Id == null)
+                {
+                    transactionalItemQuality.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterPrev = Builders<TransactionalItemType>.Filter.Eq(x => x.Id, transactionalItemTypeId);
+                var resultPrev = await _transactionalItemType.Find(filterPrev).FirstOrDefaultAsync();
+
+                if (transactionalItemTypeId.Length > 0 && resultPrev != null && resultPrev.QualityParameters.Any(x => x.Id == transactionalItemQuality.Id))
+                {
+                    //Update element
+                    var filter = Builders<TransactionalItemType>.Filter.And(
+                        Builders<TransactionalItemType>.Filter.Eq(x => x.Id, transactionalItemTypeId),
+                        Builders<TransactionalItemType>.Filter.ElemMatch(x => x.QualityParameters, y => y.Id == transactionalItemQuality.Id)
+                    );
+                    var update = Builders<TransactionalItemType>.Update.Set(x => x.QualityParameters[-1], transactionalItemQuality);
+                    await _transactionalItemType.UpdateOneAsync(filter, update);
+                }
+                else
+                {
+                    //Add element
+                    var filter = Builders<TransactionalItemType>.Filter.Eq(x => x.Id, transactionalItemTypeId);
+                    var update = Builders<TransactionalItemType>.Update.AddToSet(x => x.QualityParameters, transactionalItemQuality);
+                    await _transactionalItemType.UpdateOneAsync(filter, update);
+                }
+
+                return (true, transactionalItemQuality, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
 
 
@@ -481,9 +581,42 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="recipeModifier"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<(bool IsSuccess, RecipeModifier? recipeModifier, string? ErrorDescription)> SaveRecipeModifier(string userId, string ipAddress, string transactionalItemTypeId, RecipeModifier recipeModifier)
+        public async Task<(bool IsSuccess, RecipeModifier? recipeModifier, string? ErrorDescription)> SaveRecipeModifier(string userId, string ipAddress, string transactionalItemTypeId, RecipeModifier recipeModifier)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (recipeModifier.Id == null)
+                {
+                    recipeModifier.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterPrev = Builders<TransactionalItemType>.Filter.Eq(x => x.Id, transactionalItemTypeId);
+                var resultPrev = await _transactionalItemType.Find(filterPrev).FirstOrDefaultAsync();
+
+                if (transactionalItemTypeId.Length > 0 && resultPrev != null && resultPrev.InRecipeModifiers.Any(x => x.Id == recipeModifier.Id))
+                {
+                    //Update element
+                    var filter = Builders<TransactionalItemType>.Filter.And(
+                        Builders<TransactionalItemType>.Filter.Eq(x => x.Id, transactionalItemTypeId),
+                        Builders<TransactionalItemType>.Filter.ElemMatch(x => x.InRecipeModifiers, y => y.Id == recipeModifier.Id)
+                    );
+                    var update = Builders<TransactionalItemType>.Update.Set(x => x.InRecipeModifiers[-1], recipeModifier);
+                    await _transactionalItemType.UpdateOneAsync(filter, update);
+                }
+                else
+                {
+                    //Add element
+                    var filter = Builders<TransactionalItemType>.Filter.Eq(x => x.Id, transactionalItemTypeId);
+                    var update = Builders<TransactionalItemType>.Update.AddToSet(x => x.InRecipeModifiers, recipeModifier);
+                    await _transactionalItemType.UpdateOneAsync(filter, update);
+                }
+
+                return (true, recipeModifier, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
     }
 }
