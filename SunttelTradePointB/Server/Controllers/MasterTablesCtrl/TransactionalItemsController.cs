@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Shared.Common;
 
@@ -330,6 +331,102 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
             if(response.IsSuccess)
             {
                 return Ok(response.seasonBusinesses);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Retrieves a list with the different posble process for a Transactional Item Type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemTypeId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetTransactionalItemProcessStepsByTypeID")]
+        public async Task<IActionResult> GetTransactionalItemProcessStepsByTypeID(string userId, string ipAddress, string transactionalItemTypeId)
+        {
+            var response = await _transactionalItems.GetTransactionalItemProcessStepsByTypeID(userId, ipAddress, transactionalItemTypeId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.transactionalItemProcessSteps);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Retrieves a list with the different possible characterisitics for a Transactional Item Type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemTypeId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetTransactionalItemTypeCharacteristicByTypeID")]
+        public async Task<IActionResult> GetTransactionalItemTypeCharacteristicByTypeID(string userId, string ipAddress, string transactionalItemTypeId)
+        {
+            var response = await _transactionalItems.GetTransactionalItemTypeCharacteristicByTypeID(userId, ipAddress, transactionalItemTypeId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.transactionalItemTypeCharacteristics);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Retrieves a list with the different possible Quality Parameters for a Transactional Item Type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemTypeId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetQualityParametersByTypeID")]
+        public async Task<IActionResult> GetQualityParametersByTypeID(string userId, string ipAddress, string transactionalItemTypeId)
+        {
+            var response = await _transactionalItems.GetQualityParametersByTypeID(userId, ipAddress, transactionalItemTypeId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.transactionalItemQualities);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Retrieves a list with the different possible Quality Parameters for a Transactional Item Type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemTypeId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetRecipeModifiersByTypeID")]
+        public async Task<IActionResult> GetRecipeModifiersByTypeID(string userId, string ipAddress, string transactionalItemTypeId)
+        {
+            var response = await _transactionalItems.GetRecipeModifiersByTypeID(userId, ipAddress, transactionalItemTypeId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.recipeModifiers);
             }
             else
             {

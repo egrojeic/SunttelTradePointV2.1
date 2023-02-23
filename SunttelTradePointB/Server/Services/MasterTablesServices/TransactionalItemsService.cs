@@ -1008,9 +1008,38 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="transactionalItemTypeId"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<(bool IsSuccess, List<TransactionalItemTypeCharacteristic>? transactionalItemTypeCharacteristics, string? ErrorDescription)> GetTransactionalItemTypeCharacteristicByTypeID(string userId, string ipAddress, string transactionalItemTypeId)
+        public async Task<(bool IsSuccess, List<TransactionalItemTypeCharacteristic>? transactionalItemTypeCharacteristics, string? ErrorDescription)> GetTransactionalItemTypeCharacteristicByTypeID(string userId, string ipAddress, string transactionalItemTypeId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument("$unwind", "$TransactionalItemTypeCharacteristics")
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(transactionalItemTypeId)))
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$project", new BsonDocument("TransactionalItemTypeCharacteristics", 1))
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$replaceRoot", new BsonDocument("newRoot", "$TransactionalItemTypeCharacteristics"))
+                );
+
+                var resultPrev = await _transactionalItemTypes.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+                List<TransactionalItemTypeCharacteristic> result = resultPrev.Select(d => BsonSerializer.Deserialize<TransactionalItemTypeCharacteristic>(d)).ToList();
+
+                return (true, result, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
 
 
@@ -1022,9 +1051,38 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="transactionalItemTypeId"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<(bool IsSuccess, List<TransactionalItemQuality>? transactionalItemQualities, string? ErrorDescription)> GetQualityParametersByTypeID(string userId, string ipAddress, string transactionalItemTypeId)
+        public async Task<(bool IsSuccess, List<TransactionalItemQuality>? transactionalItemQualities, string? ErrorDescription)> GetQualityParametersByTypeID(string userId, string ipAddress, string transactionalItemTypeId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument("$unwind", "$QualityParameters")
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(transactionalItemTypeId)))
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$project", new BsonDocument("QualityParameters", 1))
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$replaceRoot", new BsonDocument("newRoot", "$QualityParameters"))
+                );
+
+                var resultPrev = await _transactionalItemTypes.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+                List<TransactionalItemQuality> result = resultPrev.Select(d => BsonSerializer.Deserialize<TransactionalItemQuality>(d)).ToList();
+
+                return (true, result, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
 
 
@@ -1036,9 +1094,38 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="transactionalItemTypeId"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<(bool IsSuccess, List<RecipeModifier>? recipeModifiers, string? ErrorDescription)> GetRecipeModifiersByTypeID(string userId, string ipAddress, string transactionalItemTypeId)
+        public async Task<(bool IsSuccess, List<RecipeModifier>? recipeModifiers, string? ErrorDescription)> GetRecipeModifiersByTypeID(string userId, string ipAddress, string transactionalItemTypeId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument("$unwind", "$InRecipeModifiers")
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(transactionalItemTypeId)))
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$project", new BsonDocument("InRecipeModifiers", 1))
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$replaceRoot", new BsonDocument("newRoot", "$InRecipeModifiers"))
+                );
+
+                var resultPrev = await _transactionalItemTypes.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+                List<RecipeModifier> result = resultPrev.Select(d => BsonSerializer.Deserialize<RecipeModifier>(d)).ToList();
+
+                return (true, result, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
     }
 }
