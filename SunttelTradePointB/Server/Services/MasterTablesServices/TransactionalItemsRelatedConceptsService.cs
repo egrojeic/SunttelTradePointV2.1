@@ -618,5 +618,33 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 return (false, null, e.Message);
             }
         }
+
+
+        /// <summary>
+        /// Retrieves a particular assembly type by its ID
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="assemblyTypeId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public Task<(bool IsSuccess, AssemblyType? assemblyType, string? ErrorDescription)> GetAssemblyTypeByID(string userId, string ipAddress, string assemblyTypeId)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        /// <summary>
+        /// Saves an assembly type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="assemblyType"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public Task<(bool IsSuccess, AssemblyType? assemblyType, string? ErrorDescription)> SaveAssemblyTypeByID(string userId, string ipAddress, AssemblyType assemblyType)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

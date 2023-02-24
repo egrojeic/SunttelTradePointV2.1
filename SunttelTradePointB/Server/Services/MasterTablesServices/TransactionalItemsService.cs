@@ -1127,5 +1127,43 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 return (false, null, e.Message);
             }
         }
+
+
+        /// <summary>
+        /// Retrieves the posible values for an specific recipe modifier
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="modifierId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public Task<(bool IsSuccess, List<ProductRecipeQualityModifier>? productRecipeQualityModifiers, string? ErrorDescription)> GetProductRecipeQualityModifiersByModifierId(string userId, string ipAddress, string modifierId)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        /// <summary>
+        /// Retrieves thelist of products used as packing material
+        /// </summary>
+        /// <param name="filterString"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public Task<(bool IsSuccess, List<AtomConcept>? materialsList, string? ErrorDescription)> GetSelectorListPackingMaterials(string filterString)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        /// <summary>
+        /// Retrieves a list of assembly types
+        /// </summary>
+        /// <param name="filterString"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public Task<(bool IsSuccess, List<AtomConcept>? assemblyTypes, string? ErrorDescription)> GetSelectorListAssemblyTypes(string filterString)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -508,12 +508,12 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 var filterPrev = Builders<EntityActor>.Filter.Eq(x => x.Id, entityActorId);
                 var resultPrev = await _entityActorsCollection.Find(filterPrev).FirstOrDefaultAsync();
 
-                if (resultPrev != null && resultPrev.Identifications.Any(x => x.Code == identificationEntity.Code))
+                if (entityActorId.Length > 0 && resultPrev != null && resultPrev.Identifications != null && resultPrev.Identifications.Any(x => x.Id == identificationEntity.Id))
                 {
                     //Update Element
                     var filter = Builders<EntityActor>.Filter.And(
                         Builders<EntityActor>.Filter.Eq(x => x.Id, entityActorId),
-                        Builders<EntityActor>.Filter.ElemMatch(x => x.Identifications, y => y.Code == identificationEntity.Code)
+                        Builders<EntityActor>.Filter.ElemMatch(x => x.Identifications, y => y.Id == identificationEntity.Id)
                     );
                     var update = Builders<EntityActor>.Update.Set(x => x.Identifications[-1], identificationEntity);
                     await _entityActorsCollection.UpdateOneAsync(filter, update);
