@@ -178,6 +178,61 @@ namespace SunttelTradePointB.Shared.ImportingData
            public int FlagCalifornia { get; set; }
     }
 
+    public class LabelStyleImports
+    {
+        public string LegacyId { get; set;}
+        public string LegacyIdObjectID {get; set;}
+        public string Nombre {get; set;}
+        public string FlagActivo {get; set;}
+        public string PurposeLegacyId {get; set;}
+        public string PurposeLegacyIdObjectID {get; set;}
+        public string PurposeName {get; set;}
+        public string PDFReportName {get; set;}
+        public string DataMaxColumnSeparatorSpace {get; set;}
+        public string ZebraColumnSeparatorSpace {get; set;}
+        public string PaperName {get; set;}
+        public string Ancho {get; set;}
+        public string Largo { get; set; }
+    }
+
+    public class DataMaxFieldsImports {
+
+        public string LegacyIdObjectID { get; set; }
+
+        public string IDEstilosLabels {get; set;}
+        public string LabelFieldName {get; set;}
+        public string LabelFieldLegacyIdObjectID {get; set;}
+        public string Rotation {get; set;}
+        public string Font {get; set;}
+        public string Width {get; set;}
+        public string Height {get; set;}
+        public string FontSize {get; set;}
+        public string Row {get; set;}
+        public string GGColumn {get; set;}
+        public string IIIColumn {get; set;}
+        public string JColumn { get; set; }
 
 
+    }
+
+    public class ZebraFieldsImports {
+
+        public string LegacyIdObjectID {get; set;}
+        public string IDEstilosLabels {get; set;}
+        public string LabelFieldName {get; set;}
+        public string LabelFieldLegacyIdObjectID {get; set;}
+        public string CampoA {get; set;}
+        public string CampoB {get; set;}
+        public string CampoC {get; set;}
+        public string CampoD {get; set;}
+        public string CampoEEE {get; set;}
+        public string CampoFFFF {get; set;}
+        public string CampoGGGG {get; set;}
+        public string CampoHHHH {get; set;}
+        public string CampoIIII {get; set;}
+        public string CampoJ {get; set;}
+        public string CampoK {get; set;}
+        public string Orden { get; set; }
+
+    }
 }
