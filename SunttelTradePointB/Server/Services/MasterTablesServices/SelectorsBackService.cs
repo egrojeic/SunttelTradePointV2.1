@@ -32,6 +32,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         IMongoCollection<EntitiyRelationshipType> _entityRelationshipTypes;
         IMongoCollection<PalletType> _palletTypes;
         IMongoCollection<Shared.Common.EntityType> _entityTypes;
+        IMongoCollection<AssemblyType> _assemblyTypes;
 
         /// <summary>
         /// Service class initialize
@@ -56,6 +57,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             _entityRelationshipTypes = mongoDatabase.GetCollection<EntitiyRelationshipType>("EntitiyRelationshipTypes");
             _palletTypes = mongoDatabase.GetCollection<PalletType>("PalletTypes");
             _entityTypes = mongoDatabase.GetCollection<Shared.Common.EntityType>("EntityTypes");
+            _assemblyTypes = mongoDatabase.GetCollection<AssemblyType>("AssemblyTypes");
         }
 
         /// <summary>
@@ -605,6 +607,68 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 {
                     return (true, entityTypes, null);
                 }
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Retrieves the posible values for an specific recipe modifier
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="modifierId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public Task<(bool IsSuccess, List<ProductRecipeQualityModifier>? productRecipeQualityModifiers, string? ErrorDescription)> GetProductRecipeQualityModifiersByModifierId(string userId, string ipAddress, string modifierId)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        /// <summary>
+        /// Retrieves thelist of products used as packing material
+        /// </summary>
+        /// <param name="filterString"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public Task<(bool IsSuccess, List<AtomConcept>? materialsList, string? ErrorDescription)> GetSelectorListPackingMaterials(string filterString)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        /// <summary>
+        /// Retrieves a list of assembly types
+        /// </summary>
+        /// <param name="filterString"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<(bool IsSuccess, List<AtomConcept>? assemblyTypes, string? ErrorDescription)> GetSelectorListAssemblyTypes(string filterString)
+        {
+            try
+            {
+                string strNameFiler = filterString == null ? "" : filterString;
+
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument(
+                        "$match",
+                          new BsonDocument(
+                                 "Name",
+                                    new BsonDocument(
+                                        "$regex", new BsonRegularExpression($"/{strNameFiler}/i"))
+                            )
+                    )
+                );
+
+                List<AtomConcept> results = await _assemblyTypes.Aggregate<AtomConcept>(pipeline).ToListAsync();
+
+                return (true, results, null);
             }
             catch (Exception e)
             {

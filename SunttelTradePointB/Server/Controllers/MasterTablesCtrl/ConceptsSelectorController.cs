@@ -321,5 +321,27 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
                 return NotFound(response.ErrorDescription);
             }
         }
+
+
+        /// <summary>
+        /// Retrieves a list of assembly types
+        /// </summary>
+        /// <param name="filterString"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetSelectorListAssemblyTypes")]
+        public async Task<IActionResult> GetSelectorListAssemblyTypes(string filterString)
+        {
+            var response = await _selectorDatasource.GetSelectorListAssemblyTypes(filterString);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.assemblyTypes);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
     }
 }
