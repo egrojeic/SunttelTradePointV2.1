@@ -182,7 +182,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="ipAddress"></param>
         /// <param name="assemblyType"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, AssemblyType? assemblyType, string? ErrorDescription)> SaveAssemblyTypeByID(string userId, string ipAddress, AssemblyType assemblyType);
+        Task<(bool IsSuccess, AssemblyType? assemblyType, string? ErrorDescription)> SaveAssemblyType(string userId, string ipAddress, AssemblyType assemblyType);
 
     }
 }
