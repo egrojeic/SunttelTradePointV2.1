@@ -213,6 +213,29 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
 
 
         /// <summary>
+        /// Retrieves a particular assembly type by its ID
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="assemblyTypeId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetAssemblyTypeByID")]
+        public async Task<IActionResult> GetAssemblyTypeByID(string userId, string ipAddress, string assemblyTypeId)
+        {
+            var response = await _transactionalItemsRelatedConcepts.GetAssemblyTypeByID(userId, ipAddress, assemblyTypeId);
+            if (response.IsSuccess)
+            {
+                return Ok(response.assemblyType);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
         /// Saves a Box document. If it doesn't exists, it will be created
         /// </summary>
         /// <param name="box"></param>
@@ -319,6 +342,125 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
             if (response.IsSuccess)
             {
                 return Ok(response.transactionalItemGroup);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Saves (INSERT/UPDATE) a Transactional Item Process Step
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemTypeId"></param>
+        /// <param name="transactionalItemProcessStep"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveTransactionalItemProcessStep")]
+        public async Task<IActionResult> SaveTransactionalItemProcessStep(string userId, string ipAddress, string transactionalItemTypeId, TransactionalItemProcessStep transactionalItemProcessStep)
+        {
+            var response = await _transactionalItemsRelatedConcepts.SaveTransactionalItemProcessStep(userId, ipAddress, transactionalItemTypeId, transactionalItemProcessStep);
+            if(response.IsSuccess)
+            {
+                return Ok(response.transactionalItemProcessStep);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Saves (INSERT/UPDATE) a Transactional Item Type Characteristic
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemTypeId"></param>
+        /// <param name="transactionalItemTypeCharacteristic"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveTransactionalItemTypeCharacteristic")]
+        public async Task<IActionResult> SaveTransactionalItemTypeCharacteristic(string userId, string ipAddress, string transactionalItemTypeId, TransactionalItemTypeCharacteristic transactionalItemTypeCharacteristic)
+        {
+            var response = await _transactionalItemsRelatedConcepts.SaveTransactionalItemTypeCharacteristic(userId, ipAddress, transactionalItemTypeId, transactionalItemTypeCharacteristic);
+            if (response.IsSuccess)
+            {
+                return Ok(response.transactionalItemTypeCharacteristic);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Saves (INSERT/UPDATE) a Transactional Item Quality
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemTypeId"></param>
+        /// <param name="transactionalItemQuality"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveTransactionalItemQuality")]
+        public async Task<IActionResult> SaveTransactionalItemQuality(string userId, string ipAddress, string transactionalItemTypeId, TransactionalItemQuality transactionalItemQuality)
+        {
+            var response = await _transactionalItemsRelatedConcepts.SaveTransactionalItemQuality(userId, ipAddress, transactionalItemTypeId, transactionalItemQuality);
+            if (response.IsSuccess)
+            {
+                return Ok(response.transactionalItemQuality);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Saves (INSERT/UPDATE) a Recipe Modifier
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemTypeId"></param>
+        /// <param name="recipeModifier"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveRecipeModifier")]
+        public async Task<IActionResult> SaveRecipeModifier(string userId, string ipAddress, string transactionalItemTypeId, RecipeModifier recipeModifier)
+        {
+            var response = await _transactionalItemsRelatedConcepts.SaveRecipeModifier(userId, ipAddress, transactionalItemTypeId, recipeModifier);
+            if (response.IsSuccess)
+            {
+                return Ok(response.recipeModifier);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Saves an assembly type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="assemblyType"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveAssemblyType")]
+        public async Task<IActionResult> SaveAssemblyType(string userId, string ipAddress, AssemblyType assemblyType)
+        {
+            var response = await _transactionalItemsRelatedConcepts.SaveAssemblyType(userId, ipAddress, assemblyType);
+            if (response.IsSuccess)
+            {
+                return Ok(response.assemblyType);
             }
             else
             {

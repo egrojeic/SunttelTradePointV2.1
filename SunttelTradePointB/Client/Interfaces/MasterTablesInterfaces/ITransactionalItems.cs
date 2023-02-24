@@ -20,7 +20,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// </summary>
         /// <param name="nameLike"></param>       
         /// <returns></returns>
-        Task<List<Concept>> GetSelectorListEntityActors(string? nameLike = null);
+        Task<List<Concept>> GetSelectorListEntityActors(string? nameLike = null, string roleName = null);
 
         /// <summary>
         /// Retrives a list with ProductModel Items meeting search criteria
@@ -87,7 +87,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <returns></returns>
-        Task<List<Box>> GetBoxGetBoxTable( string? nameLike = null);
+        Task<List<Box>> GetBoxTable( string? nameLike = null);
 
         /// <summary>
         /// Retrives Boxsed  with search criteria

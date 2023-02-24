@@ -1,0 +1,73 @@
+﻿@page "/ProductModelCard"
+@using Syncfusion.Blazor.Popups
+@using SunttelTradePointB.Shared.Common
+@inject TransactionalItemsService transactionalService;
+@inject NavigationManager Navigation
+
+<PageTitleComponent Title="@GetName("ModelRecipe", new PackingSpecs())" IconName=""
+                    Description="Here you can add tags">
+</PageTitleComponent>
+
+
+
+<div class="flex-horizontal-center">
+    <div class="grid-columns-2  box-shadow-mode">
+        <div><label>@GetName("Name",new AtomConcept())</label></div>
+        <div><input @bind-value="productModel.Name" class="form-control" placeholder="Edit value" /></div>
+        <div>
+            <label>@GetName("Code",new AtomConcept())</label>
+        </div>
+        <div><input @bind-value="productModel.Code" class="form-control" placeholder="Edit value" /></div>
+        <div>
+            <label>@GetName("Description",new ProductModel())</label>
+        </div>
+        <div><input @bind-value="productModel.Description" class="form-control" placeholder="Edit value" /></div>
+        <div>
+            <label>@GetName("Notes",new AtomConcept())</label>
+        </div>
+        <div><input @bind-value="productModel.Notes" class="form-control" placeholder="Edit value" /></div>
+        <div></div>
+        <div class="flex-horizontal-end">
+            <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+            <button @onclick="Save" class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+@code {
+    string transactionalItemId = "";
+    ProductModel productModel = new();
+
+    protected override Task OnInitializedAsync()
+    {
+        if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
+        {
+            transactionalItemId = transactionalService.transactionalItemId;
+        }
+        return base.OnInitializedAsync();
+    }
+
+
+    public void Save()
+    {
+        
+    }
+
+
+
+    public async Task Closed(string Element)
+    {
+        if (Element == "control") Navigation.NavigateTo("/TransactionalItemCard/4/Edit");
+        StateHasChanged();
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+}

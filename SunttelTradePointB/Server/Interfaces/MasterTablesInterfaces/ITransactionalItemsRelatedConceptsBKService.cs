@@ -123,5 +123,66 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<(bool IsSuccess, ConceptGroup? transactionalItemGroup, string? ErrorDescription)> SaveTransactionalItemGroup(string userId, string ipAddress, ConceptGroup transactionalItemGroup);
 
+        /// <summary>
+        /// Saves (INSERT/UPDATE) a Transactional Item Process Step
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemTypeId"></param>
+        /// <param name="transactionalItemProcessStep"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, TransactionalItemProcessStep?  transactionalItemProcessStep, string? ErrorDescription)> SaveTransactionalItemProcessStep(string userId, string ipAddress, string transactionalItemTypeId, TransactionalItemProcessStep transactionalItemProcessStep);
+
+
+        /// <summary>
+        /// Saves (INSERT/UPDATE) a Transactional Item Type Characteristic
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemTypeId"></param>
+        /// <param name="transactionalItemTypeCharacteristic"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, TransactionalItemTypeCharacteristic?  transactionalItemTypeCharacteristic, string? ErrorDescription)> SaveTransactionalItemTypeCharacteristic(string userId, string ipAddress, string transactionalItemTypeId, TransactionalItemTypeCharacteristic transactionalItemTypeCharacteristic);
+
+        /// <summary>
+        /// Saves (INSERT/UPDATE) a Transactional Item Quality
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemTypeId"></param>
+        /// <param name="transactionalItemQuality"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, TransactionalItemQuality?  transactionalItemQuality, string? ErrorDescription)> SaveTransactionalItemQuality(string userId, string ipAddress, string transactionalItemTypeId, TransactionalItemQuality  transactionalItemQuality);
+
+        /// <summary>
+        /// Saves (INSERT/UPDATE) a Recipe Modifier
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemTypeId"></param>
+        /// <param name="recipeModifier"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, RecipeModifier?  recipeModifier, string? ErrorDescription)> SaveRecipeModifier(string userId, string ipAddress, string transactionalItemTypeId, RecipeModifier recipeModifier);
+
+
+        /// <summary>
+        /// Retrieves a particular assembly type by its ID
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="assemblyTypeId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, AssemblyType? assemblyType, string? ErrorDescription)> GetAssemblyTypeByID(string userId, string ipAddress, string assemblyTypeId);
+
+
+        /// <summary>
+        /// Saves an assembly type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="assemblyType"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, AssemblyType? assemblyType, string? ErrorDescription)> SaveAssemblyType(string userId, string ipAddress, AssemblyType assemblyType);
+
     }
 }

@@ -203,5 +203,54 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         Task<(bool IsSuccess, SeasonBusiness? seasonBusiness, string? ErrorDescription)> SaveSeason(string userId, string ipAddress, SeasonBusiness seasonBusiness);
 
 
+        /// <summary>
+        /// Retrieves the Models of a Transactional Items
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="trasnsactionalItemId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<ProductModel>? productModels, string? ErrorDescription)> GetListModelsByTransactionalItemId(string userId, string ipAddress, string trasnsactionalItemId);
+
+        /// <summary>
+        /// Retrieves a list with the different posble process for a Transactional Item Type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemTypeId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<TransactionalItemProcessStep>?  transactionalItemProcessSteps, string? ErrorDescription)> GetTransactionalItemProcessStepsByTypeID(string userId, string ipAddress, string transactionalItemTypeId);
+
+        /// <summary>
+        /// Retrieves a list with the different possible characterisitics for a Transactional Item Type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemTypeId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<TransactionalItemTypeCharacteristic>?  transactionalItemTypeCharacteristics, string? ErrorDescription)> GetTransactionalItemTypeCharacteristicByTypeID(string userId, string ipAddress, string transactionalItemTypeId);
+
+
+        /// <summary>
+        /// Retrieves a list with the different possible Quality Parameters for a Transactional Item Type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemTypeId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<TransactionalItemQuality>? transactionalItemQualities, string? ErrorDescription)> GetQualityParametersByTypeID(string userId, string ipAddress, string transactionalItemTypeId);
+
+
+        /// <summary>
+        /// Retrieves a list with the different possible Quality Parameters for a Transactional Item Type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemTypeId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<RecipeModifier>?  recipeModifiers, string? ErrorDescription)> GetRecipeModifiersByTypeID(string userId, string ipAddress, string transactionalItemTypeId);
+
+
+
     }
 }
