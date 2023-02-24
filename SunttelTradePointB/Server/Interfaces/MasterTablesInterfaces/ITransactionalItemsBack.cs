@@ -251,5 +251,30 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         Task<(bool IsSuccess, List<RecipeModifier>?  recipeModifiers, string? ErrorDescription)> GetRecipeModifiersByTypeID(string userId, string ipAddress, string transactionalItemTypeId);
 
 
+        /// <summary>
+        /// Retrieves the posible values for an specific recipe modifier
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="modifierId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<ProductRecipeQualityModifier>?  productRecipeQualityModifiers, string? ErrorDescription)> GetProductRecipeQualityModifiersByModifierId(string userId, string ipAddress, string modifierId);
+
+        /// <summary>
+        /// Retrieves thelist of products used as packing material
+        /// </summary>
+        /// <param name="filterString"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<AtomConcept>? materialsList, string? ErrorDescription)> GetSelectorListPackingMaterials(string filterString);
+
+
+        /// <summary>
+        /// Retrieves a list of assembly types
+        /// </summary>
+        /// <param name="filterString"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<AtomConcept>? assemblyTypes, string? ErrorDescription)> GetSelectorListAssemblyTypes(string filterString);
+
+
     }
 }

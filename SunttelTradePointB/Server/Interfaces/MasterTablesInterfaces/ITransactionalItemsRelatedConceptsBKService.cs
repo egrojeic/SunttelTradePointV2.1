@@ -165,5 +165,24 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         Task<(bool IsSuccess, RecipeModifier?  recipeModifier, string? ErrorDescription)> SaveRecipeModifier(string userId, string ipAddress, string transactionalItemTypeId, RecipeModifier recipeModifier);
 
 
+        /// <summary>
+        /// Retrieves a particular assembly type by its ID
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="assemblyTypeId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, AssemblyType? assemblyType, string? ErrorDescription)> GetAssemblyTypeByID(string userId, string ipAddress, string assemblyTypeId);
+
+
+        /// <summary>
+        /// Saves an assembly type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="assemblyType"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, AssemblyType? assemblyType, string? ErrorDescription)> SaveAssemblyTypeByID(string userId, string ipAddress, AssemblyType assemblyType);
+
     }
 }
