@@ -10,11 +10,11 @@
         AllowFiltering="true"
         AllowTextWrap="false"
         AllowPaging="true"
-        AllowResizing="true"    
-        ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" } })">
+        AllowResizing="true"
+        ContextMenuItems="@(contextMenuItemModel)">
 
         <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
-        @if (GridColumnsList != null )
+        @if (GridColumnsList != null)
         {
             <GridColumns>
                 @foreach (var item in GridColumnsList)
@@ -22,14 +22,16 @@
                     @if (item.Type == ColumnType.CheckBox)
                     {
                         <GridColumn Field="@item?.Field" HeaderText="@item?.HeaderText" Width="@item?.Width" Type="ColumnType.CheckBox"></GridColumn>
-                    }else{
-                        <GridColumn Field="@item?.Field" HeaderText="@item?.HeaderText" Width="@item?.Width" ></GridColumn>
                     }
-                   
+                    else
+                    {
+                        <GridColumn Field="@item?.Field" HeaderText="@item?.HeaderText" Width="@item?.Width"></GridColumn>
+                    }
+
                 }
             </GridColumns>
         }
-      
+
         <GridEvents OnLoad="EventCallbackOnLoad" ContextMenuItemClicked="EventCallbackMenu" TValue="TParameter"></GridEvents>
     </SfGrid>
 }
@@ -55,16 +57,22 @@
     public string Width { get; set; } = "100%";
     SfGrid<TParameter>? referDataGrid;
 
+    List<ContextMenuItemModel> contextMenuItemModel = new List<ContextMenuItemModel>()
+    {
+        new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" },
+         new ContextMenuItemModel { Text = "Reload", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" }
+    };
+
     protected override void OnParametersSet()
     {
         StateHasChanged();
-        if (referDataGrid!=null) referDataGrid.Refresh();
+        if (referDataGrid != null) referDataGrid.Refresh();
     }
 
 
     public void Refresh()
     {
-         referDataGrid.Refresh();
+        referDataGrid.Refresh();
         //StateHasChanged();
     }
 

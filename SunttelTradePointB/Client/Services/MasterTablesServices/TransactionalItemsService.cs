@@ -472,6 +472,26 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+
+        //---
+        public async Task<List<TransactionalItemType>> GetTransactionalItemTypes(string? nameLike = null)
+        {
+            nameLike = nameLike != null ? nameLike : "";
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+                transactionalItemTypes = await _httpClient.GetFromJsonAsync<List<TransactionalItemType>>($"api/TransactionalItems/GetTransactionalItemTypes?userId={userId}&ipAddress={ipAddress}&filterCondition={nameLike}");
+                return transactionalItemTypes;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+
+            }
+
+        }
         public async Task<List<TransactionalItemType>> GetTransactionalItemType(string? transactionalItemTypeId = null)
         {
             transactionalItemTypeId = transactionalItemTypeId != null ? transactionalItemTypeId : "";
@@ -672,7 +692,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             
             try
             {
-                var resul = await _httpClient.PostAsJsonAsync<TransactionalItemType>($"api/TransactionalItemsRelatedConcepts/SaveTransactionalItemType?userId={userId}&ipAddress={ipAddress}", transactionalItemType);
+                var resul = await _httpClient.PostAsJsonAsync<TransactionalItemType>($"api/TransactionalItems/SaveTransactionalItemType?userId={userId}&ipAddress={ipAddress}", transactionalItemType);
                 return resul.IsSuccessStatusCode;
             }
             catch (Exception ex)

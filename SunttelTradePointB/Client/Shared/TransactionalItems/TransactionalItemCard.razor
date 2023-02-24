@@ -52,42 +52,70 @@
 
     @if (currentItem == null) currentItem = new();
     @*id="identificationGroup"*@
-    <div class="grid-columns-header">
-        <div>
-            <label for="name">Name</label>
-        </div>
-        <div>
-            <input type="text" class="form-control" id="name" @bind-value="@currentItem.Name"  autocomplete="off" />
-        </div>
 
-        <div id="shortCutCodeGroup">
-            <label for="shortcutCode">Identifier Code</label>
+    <div class="grid-columns-2-img">
+        <div class="grid-columns-header">
+            <div>
+                <label for="name">Name</label>
+            </div>
+            <div>
+                <input type="text" class="form-control" id="name" @bind-value="@currentItem.Name" autocomplete="off" />
+            </div>
+
+            <div id="shortCutCodeGroup">
+                <label for="shortcutCode">Identifier Code</label>
+            </div>
+            <div>
+                <input type="text" class="form-control" @bind="currentItem.Code" autocomplete="off" />
+            </div>
+            <div><label for="shortcutCode">@GetName("Status", new Concept())</label></div>
+            <div @onclick="SetStatus">
+                <label id="statusConcept" class="style-status" style="background-color:@colorStatus;">@currentItemStatus</label>
+            </div>
+            <div id="shortCutCodeGroup">
+                <label for="shortcutCode">@GetName("ReferenceCost", new TransactionalItem())</label>
+            </div>
+            <div>
+                <input type="number" class="form-control" @bind="currentItem.ReferenceCost" autocomplete="off" />
+            </div>
+            <div class="lineFormGroup">
+                <TransactionalItemGroupSelector @ref="referGroup" Groups="@currentItem.Groups" EventAddGroups="AddGroup"></TransactionalItemGroupSelector>
+            </div>
+
         </div>
-        <div>
-            <input type="text" class="form-control"  @bind="currentItem.Code" autocomplete="off" />
-        </div>
-        <div><label for="shortcutCode">@GetName("Status", new Concept())</label></div>
-        <div @onclick="SetStatus">
-            <label id="statusConcept" class="style-status" style="background-color:@colorStatus;">@currentItemStatus</label>
-        </div>
-        <div id="shortCutCodeGroup">
-            <label for="shortcutCode">@GetName("ReferenceCost", new TransactionalItem())</label>
-        </div>
-        <div>
-            <input type="number" class="form-control" @bind="currentItem.ReferenceCost" autocomplete="off" />
-        </div>
-        <div id="shortCutCodeGroup">
+        <div >
             <label for="shortcutCode">@GetName("SkinImageName", new Concept())</label>
-        </div>
-        <div>
-            <input type="text" class="form-control" @bind="currentItem.SkinImageName" autocomplete="off" />
-        </div>
+            <br />
+            <div class="lineFormGroup" style="position:relative;">
+                <div class="form-group">
+                    <div style="display:flex; flex-direction:row;">
+                        <div class="conten-chip margin-left-control">
+                            <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewAddImg">
+                                @{
+                                    if (transactItemImages != null)
+                                    {
+                                        foreach (var group in transactItemImages)
+                                        {
+                                            <option value="@group?.Id">@group?.Name</option>
+                                        }
+                                    }
 
-        <div class="lineFormGroup">
-            <TransactionalItemGroupSelector @ref="referGroup" Groups="@currentItem.Groups" EventAddGroups="AddGroup"></TransactionalItemGroupSelector>
-        </div>
+                                }
+                            </InputTextSelector>
+                        </div>
+                        <div>
+                            @if (transactItemImages == null) transactItemImages = new List<TransactItemImage>();
+                            <img class="style-img" src="@(transactItemImage.PathImage !=null?transactionalService.Host+transactItemImage.PathImage:"/images/defaultImage.png")" @onclick='()=> SetViewElemnt("img")' />
+                        </div>
+                     
 
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
+   
 
     <hr />
     <div class="detailsContainer">
@@ -162,6 +190,8 @@
     bool modeStatus = false;
     Alert? referAlert;
 
+    InputTextSelector? ReferInputTextSelector;
+
 
     public TransactionalItem? currentItem = new TransactionalItem();
     List<ConceptGroup> conceptGroups = new List<ConceptGroup>();
@@ -170,12 +200,17 @@
     List<TransactItemImage> pathImages = new();
     List<TransactionalItemQualityPair> qualityParameters = new();
     List<TransactionalItemTag> transactionalItemTags = new();
+    TransactItemImage transactItemImage = new();
+    List<TransactItemImage> transactItemImages = new();
     TransactionalItemGroupSelector? referGroup;
     int verticalMenuOptionSelected = 0;
+    int ParamCountResul = 0;
     public string transactionalItemId { get; set; }
     public string currentItemStatus { get; set; }
-    public string nameTemp { get; set; }
-    string colorStatus = "gray";
+    public string nameTemp { get; set; }   
+    string colorStatus = "gray", SearcherValueMode = "";
+    bool ViewSelect = false;
+    bool PopupViewAddImg = false;
 
     protected override void OnParametersSet()
     {
@@ -248,7 +283,7 @@
             if (currentItem.QualityParameters == null) currentItem.QualityParameters = new List<TransactionalItemQualityPair>();
             if (currentItem.TransactionalItemTags == null) currentItem.TransactionalItemTags = new List<TransactionalItemTag>();
 
-            
+
             TransactionalItem item = await transactionalService.SaveTransactionalItem(currentItem);
             bool resul = (item != null ? true : false);
             if (resul)
@@ -294,6 +329,54 @@
 
 
     }
+
+
+
+    protected async void EventSearcherValue(string value)
+    {
+        if (SearcherValueMode == "img")
+        {
+            transactItemImages = await transactionalService.GetTransactionalItemDetailsPathImages(transactionalItemId);    
+            if (transactItemImages==null) transactItemImages = new List<TransactItemImage>();
+
+            transactItemImages = transactItemImages.Where(s => s.Name != null && s.Name.ToLower().Contains(value.ToLower())).ToList();
+            ParamCountResul = transactItemImages != null ? transactItemImages.Count() : 0;
+            ViewSelect = ParamCountResul > 0;
+            if (ReferInputTextSelector!=null) ReferInputTextSelector.Refresh();
+            StateHasChanged();
+
+        }
+
+    }
+
+
+    protected async void EventIdSelectionInput(string selectionId)
+    {
+
+        if (SearcherValueMode == "img")
+        {
+            if (transactItemImages == null) transactItemImages = new();
+            transactItemImage = transactItemImages.Where(c => c.Id == selectionId).FirstOrDefault();
+            currentItem.SkinImageName = transactItemImage.Name;
+            ViewSelect = false;
+            PopupViewAddImg = false;
+
+        }
+
+        if (ReferInputTextSelector != null) ReferInputTextSelector.Refresh();
+        StateHasChanged();
+
+    }
+
+    public void SetViewElemnt(string Element)
+    {
+        ViewSelect = false;
+        SearcherValueMode = Element;
+        if (Element == "img") { PopupViewAddImg = true; }
+
+        StateHasChanged();
+    }
+
 
     public void Home()
     {

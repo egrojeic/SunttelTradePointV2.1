@@ -85,24 +85,75 @@
             <div><input type="number" @bind-value="transactionalItemProcessStep.Cost" class="form-control" placeholder="Edit value" /></div>
             <div><label>@GetName( "Order", new TransactionalItemProcessStep())</label></div>
             <div><input type="number" @bind-value="transactionalItemProcessStep.Order" class="form-control" placeholder="Edit value" /></div>
+            <div><label>@GetName( "HolidayDayCost", new TransactionalItemProcessStep())</label></div>
+            <div><input type="number" @bind-value="transactionalItemProcessStep.HolidayDayCost" class="form-control" placeholder="Edit value" /></div>
+            <div><label>@GetName( "Name", new ChargeableUnitsType())</label></div>
+            <div><input type="text" @bind-value="typeOfComponentsToCharge.Name" class="form-control" placeholder="Edit value" /></div>
+            <div><label>@GetName( "Name", new BasicConcept())</label></div>
+            <div><input type="text" @bind-value="processType.Name" class="form-control" placeholder="Edit value" /></div>
         </div>
 
-        <div class="detailsTitleContainer">
-            <h3 class="subTitleDetailForm">@GetName( "TransactionalItemProcessTags", new TransactionalItemProcessStep())</h3>
-            <svg @onclick='()=>ClosedAdd("TransactionalItemProcessestags")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
-                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-            </svg>
-        </div>
-        @if (transactionalItemProcessTags == null) transactionalItemProcessTags = new();
 
-        <DataGrid TParameter="TransactionalItemTag"
-              EventCallbackMenu="OnContextMenuClick"
-              parameterList="transactionalItemProcessTags"
-              GridColumnsList="gridColumnListProcessTag"
-              EventCallbackOnLoad="Onload"
-              Width="100%">
-        </DataGrid>
+        <SfTab Height="300px" HeaderPlacement="HeaderPosition.Left">
+            <TabAnimationSettings>
+                <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
+                <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
+            </TabAnimationSettings>
+            <TabItems>
+                <TabItem>
+                    <ChildContent>
+                        <TabHeader Text="@GetName( "TransactionalItemProcessTags", new TransactionalItemProcessStep())"></TabHeader>
+                    </ChildContent>
+                    <ContentTemplate>
+                        <div class="flex-horizontal-center ">
+                            <div class="detailsTitleContainer">
+                                <h3 class="subTitleDetailForm">@GetName( "TransactionalItemProcessTags", new TransactionalItemProcessStep())</h3>
+                                <svg @onclick='()=>ClosedAdd("TransactionalItemProcessestags")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                </svg>
+                            </div>
+                            @if (transactionalItemProcessTags == null) transactionalItemProcessTags = new();
+
+                            <DataGrid TParameter="TransactionalItemTag"
+                                  EventCallbackMenu="OnContextMenuClick"
+                                  parameterList="transactionalItemProcessTags"
+                                  GridColumnsList="gridColumnListProcessTag"
+                                  EventCallbackOnLoad="Onload"
+                                  Width="100%">
+                            </DataGrid>
+                        </div>
+                    </ContentTemplate>
+                </TabItem>
+                <TabItem>
+                    <ChildContent>
+                        <TabHeader Text="@GetName( "CostExceptionsByQuantity", new TransactionalItemProcessStep())"></TabHeader>
+                    </ChildContent>
+                    <ContentTemplate>
+
+                        <div class="flex-horizontal-center ">
+
+                            <div class="detailsTitleContainer">
+                                <h3 class="subTitleDetailForm">@GetName( "CostExceptionsByQuantity", new TransactionalItemProcessStep())</h3>
+                                <svg @onclick='()=>ClosedAdd("CostExceptionsByQuantityProcessStep")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                </svg>
+                            </div>
+                            @if (costExceptionsByQuantitys == null) costExceptionsByQuantitys = new();
+
+                            <DataGrid TParameter="CostExceptionByQuantity"
+                                  EventCallbackMenu="OnContextMenuClick"
+                                  parameterList="costExceptionsByQuantitys"
+                                  GridColumnsList="gridColumnListByQuantity"
+                                  EventCallbackOnLoad="Onload"
+                                  Width="100%">
+                            </DataGrid>
+                        </div>
+                    </ContentTemplate>
+                </TabItem>
+            </TabItems>
+        </SfTab>
 
 
     }
@@ -123,8 +174,32 @@
                 <div></div>
                 <div class="flex-horizontal-end">
                     <button @onclick='()=>ClosedAdd("TransactionalItemProcessesGeneral")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-                    <button @onclick='AddTag' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                    <button @onclick='()=>AddItem("TransactionalItemProcessesTag")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
 
+                </div>
+            </div>
+        </div>
+
+    }
+
+    @if (pageView == "CostExceptionsByQuantityProcessStep")
+    {
+        <PageTitleComponent Title="@GetName( "CostExceptionsByQuantity", new TransactionalItemProcessStep())"
+                        Description="@($"Here you can add {@GetName( "CostExceptionsByQuantity", new TransactionalItemProcessStep())}")">
+        </PageTitleComponent>
+
+        <div class="flex-horizontal-center">
+
+            <div class="grid-columns-2 box-shadow-mode width-page1">
+                <div><label>@GetName( "MinimumQty", new CostExceptionByQuantity())</label></div>
+                <div><input type="number" @bind-value="costExceptionsByQuantity.MinimumQty" class="form-control" placeholder="Edit value" autocomplete="off" autofocus /></div>
+                <div><label>@GetName( "MaximumQty", new CostExceptionByQuantity())</label></div>
+                <div><input type="number" @bind-value="costExceptionsByQuantity.MaximumQty" class="form-control" placeholder="Edit value" autocomplete="off" /></div>
+
+                <div></div>
+                <div class="flex-horizontal-end">
+                    <button @onclick='()=>ClosedAdd("TransactionalItemProcessesGeneral")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                    <button @onclick='()=>AddItem("CostExceptionsByQuantityProcessStep")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                 </div>
             </div>
         </div>
@@ -133,8 +208,8 @@
 
     @if (pageView == "TransactionalItemTypeCharacteristics")
     {
-        <PageTitleComponent Title="@GetName( "PossibleValues", new TransactionalItemTypeCharacteristic())"
-                        Description="@("Here you can add "+@GetName( "PossibleValues", new TransactionalItemTypeCharacteristic()) )">
+        <PageTitleComponent Title="@GetName( "TransactionalItemTypeCharacteristics", new TransactionalItemType())"
+                        Description="@("Here you can add "+@GetName( "TransactionalItemTypeCharacteristics", new TransactionalItemType()) )">
         </PageTitleComponent>
 
         <div class="container-menu-g">
@@ -169,9 +244,9 @@
         </div>
 
         <div class="flex-horizontal-center ">
-            <DataGrid TParameter="PossibleValues"
+            <DataGrid TParameter="TransactionalItemCharacteristic"
                   EventCallbackMenu="OnContextMenuClick"
-                  parameterList="possibleValuesModel"
+                  parameterList="possibleValues"
                   GridColumnsList="gridColumnListPossibleValues"
                   Width="100%">
             </DataGrid>
@@ -190,8 +265,14 @@
         <div class="flex-horizontal-center ">
 
             <div class="grid-columns-2 box-shadow-mode">
-                <div><label>@GetName( "PossibleValues", new TransactionalItemTypeCharacteristic())</label></div>
-                <div><input type="text" @bind-value="possibleValue" class="form-control" placeholder="Edit value" /></div>
+                <div><span class="c-red">*</span><label>@GetName( "Name", new TransactionalItemCharacteristic())</label></div>
+                <div><input type="text" @bind-value="possibleValue.Name" class="form-control" placeholder="Edit value" /></div>
+                <div><span class="c-red">*</span><label>@GetName( "IsEnabled", new TransactionalItemCharacteristic())</label></div>
+                <div>
+                    <SfSwitch @bind-Checked="@possibleValue.IsEnabled"></SfSwitch>
+                </div>
+                <div><span class="c-red">*</span><label>@GetName( "AdditionalDescription", new TransactionalItemCharacteristic())</label></div>
+                <div><input type="text" @bind-value="possibleValue.AdditionalDescription" class="form-control" placeholder="Edit value" /></div>
                 <div></div>
                 <div>
                     <button @onclick='()=>ClosedAdd("TransactionalItemTypeCharacteristics")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
@@ -211,16 +292,17 @@
         </PageTitleComponent>
         <div class="flex-horizontal-center ">
             <div class="grid-columns-2 box-shadow-mode">
-                <div><label>@GetName( "Name", new AtomConcept())</label></div>
+
+                <div><label><span class="c-red">*</span> @GetName( "Name", new AtomConcept())</label></div>
                 <div><input type="text" @bind-value="transactionalItemQuality.Name" class="form-control" placeholder="Edit value" /></div>
                 <div><label>@GetName( "Code", new AtomConcept())</label></div>
                 <div><input type="text" @bind-value="transactionalItemQuality.Code" class="form-control" placeholder="Edit value" /></div>
                 <div><label>@GetName( "Notes", new AtomConcept())</label></div>
                 <div><input type="text" @bind-value="transactionalItemQuality.Notes" class="form-control" placeholder="Edit value" /></div>
-                <div><label>@GetName( "Value", new TransactionalItemQualityPair())</label></div>
-                <div><input type="text" @bind-value="transactionalItemQualityPair.Value" class="form-control" placeholder="Edit value" /></div>
                 <div><label>@GetName( "DefaultValue", new TransactionalItemQuality())</label></div>
                 <div><input type="text" @bind-value="transactionalItemQuality.DefaultValue" class="form-control" placeholder="Edit value" /></div>
+                <div><label>@GetName( "AdditionalDescription", new TransactionalItemQuality())</label></div>
+                <textarea @bind="transactionalItemQuality.AdditionalDescription" class="form-control" placeholder="Edit value"></textarea>
                 <div></div>
                 <div>
                     <button @onclick='()=>OpenAdd("QualityParameters")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
@@ -230,23 +312,78 @@
         </div>
     }
 
-    @if (pageView == "InRecipeQualityModifiers")
+    @if (pageView == "InRecipeModifiers")
     {
-        <PageTitleComponent Title=" Recipe Quality Modifiers "
-                        Description="Here you can add quality modifiers">
+        <PageTitleComponent Title="@GetName("InRecipeModifiers", new TransactionalItemType())"
+                        Description="@($"Here you can add {GetName("InRecipeModifiers", new TransactionalItemType()).ToLower()}")">
         </PageTitleComponent>
+        <div class="container-menu-g">
+            <nav>
+                <button @onclick='()=>OpenAdd("InRecipeQualityModifiers")' class="general-menu-button" style="text-align:center;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+
+                <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+                    <SplitButtonEvents ItemSelected="ItemSelected_3">
+                    </SplitButtonEvents>
+                    <DropDownMenuItems>
+                        <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                        <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                        <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                        <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                        <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                        <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+                    </DropDownMenuItems>
+                </SfSplitButton>
+            </nav>
+        </div>
+        <div class="grid-columns-header ">
+            <div><label>@GetName( "Name", new RecipeModifier())</label></div>
+            <div><input type="text" @bind-value="inRecipeModifier.Name" class="form-control" placeholder="Edit value" /></div>
+        </div>
         <div class="flex-horizontal-center">
-            <div class="grid-columns-2 box-shadow-mode">
-                <div><label>@GetName( "Name", new ProductRecipeQualityModifier())</label></div>
-                <div><input type="text" @bind-value="inRecipeQualityModifier.Name" class="form-control" placeholder="Edit value" /></div>
-                <div>
-                    <button @onclick='()=>OpenAdd("InRecipeQualityModifiers")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-                    <button @onclick='()=>AddItem("InRecipeQualityModifiers")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                </div>
+
+            <div class="detailsTitleContainer">
+                <h3 class="subTitleDetailForm">@GetName("RecipePossibleModifierValues", new RecipeModifier())</h3>
+                <svg @onclick='()=>ClosedAdd("RecipePossibleModifierValues")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                </svg>
             </div>
+
+
+            @if (recipePossibleModifierValues == null) recipePossibleModifierValues = new();
+
+            <DataGrid TParameter="ProductRecipeQualityModifier"
+                  EventCallbackMenu="OnContextMenuClick"
+                  parameterList="recipePossibleModifierValues"
+                  GridColumnsList="gridColumnListPossibleModifierValues"
+                  EventCallbackOnLoad="Onload"
+                  Width="100%">
+
+            </DataGrid>
+
+
         </div>
 
 
+    }
+
+    @if (pageView == "RecipePossibleModifierValues")
+    {
+        <PageTitleComponent Title="@GetName("RecipePossibleModifierValues", new RecipeModifier())"
+                        Description="Here you can add quality parameters">
+        </PageTitleComponent>
+        <div class="flex-horizontal-center ">
+            <div class="grid-columns-2 box-shadow-mode">
+
+                <div><label><span class="c-red">*</span> @GetName( "Name", new AtomConcept())</label></div>
+                <div><input type="text" @bind-value="recipePossibleModifierValue.Name" class="form-control" placeholder="Edit value" /></div>
+                <div></div>
+                <div>
+                    <button @onclick='()=>ClosedAdd("InRecipeModifiers")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                    <button @onclick='()=>AddItem("RecipePossibleModifierValues")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                </div>
+            </div>
+        </div>
     }
 
 </div>
@@ -297,8 +434,10 @@
 
 
 
-    <SfTab Height="300px" HeaderPlacement="HeaderPosition.Left">
+    <SfTab Height="400px" HeaderPlacement="HeaderPosition.Left">
         <TabAnimationSettings>
+            <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
+            <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
         </TabAnimationSettings>
         <TabItems>
             <TabItem>
@@ -334,45 +473,29 @@
                     <TabHeader Text="@GetName( "TransactionalItemProcesses", new TransactionalItemType())"></TabHeader>
                 </ChildContent>
                 <ContentTemplate>
-                    <SfTab Height="50px">
-                        <TabAnimationSettings>
-                        </TabAnimationSettings>
-                        <TabItems>
-                            <TabItem>
-                                <ChildContent>
-                                    <TabHeader Text="@GetName( "TransactionalItemProcesses", new TransactionalItemType())"></TabHeader>
-                                </ChildContent>
-                                <ContentTemplate>
+                    <div class="flex-horizontal-center">
+                        <div class="detailsTitleContainer">
+                            <h3 class="subTitleDetailForm">@GetName( "TransactionalItemProcesses", new TransactionalItemType())</h3>
+                            <svg @onclick='()=>ClosedAdd("TransactionalItemProcessesGeneral")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                            </svg>
+                        </div>
 
-                                    <div class="flex-horizontal-center">
-                                        <div class="detailsTitleContainer">
-                                            <h3 class="subTitleDetailForm">@GetName( "TransactionalItemProcesses", new TransactionalItemType())</h3>
-                                            <svg @onclick='()=>ClosedAdd("TransactionalItemProcessesGeneral")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
-                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                                            </svg>
-
-                                        </div>
-
-                                        @if (transactionalItemProcessSteps == null) { transactionalItemProcessSteps = new List<TransactionalItemProcessStep>(); }
+                        @if (transactionalItemProcessSteps == null) { transactionalItemProcessSteps = new List<TransactionalItemProcessStep>(); }
 
 
-                                        <DataGrid TParameter="TransactionalItemProcessStep"
-                                                  EventCallbackMenu="OnContextMenuClick"
-                                                  parameterList="transactionalItemProcessSteps"
-                                                  GridColumnsList="gridColumnList"
-                                                  EventCallbackOnLoad="Onload"
-                                                  Width="100%">
-                                        </DataGrid>
+                        <DataGrid TParameter="TransactionalItemProcessStep"
+                                  EventCallbackMenu="OnContextMenuClick"
+                                  parameterList="transactionalItemProcessSteps"
+                                  GridColumnsList="gridColumnList"
+                                  EventCallbackOnLoad="Onload"
+                                  Width="100%">
+                        </DataGrid>
 
 
 
-                                    </div>
-                                </ContentTemplate>
-                            </TabItem>
-
-                        </TabItems>
-                    </SfTab>
+                    </div>
                 </ContentTemplate>
             </TabItem>
 
@@ -411,18 +534,18 @@
                     <div class="flex-horizontal-center">
 
                         <div class="detailsTitleContainer">
-                            <h3 class="subTitleDetailForm">General</h3>
+                            <h3 class="subTitleDetailForm">@GetName( "QualityParameters",new TransactionalItemType())</h3>
                             <svg @onclick='()=>ClosedAdd("QualityParameters")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
                                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                                 <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                             </svg>
                         </div>
 
-                        @if (transactionalItemQualityPairs == null) transactionalItemQualityPairs = new();
+                        @if (transactionalItemQualitys == null) transactionalItemQualitys = new();
 
-                        <DataGrid TParameter="TransactionalItemQualityPairModel"
+                        <DataGrid TParameter="TransactionalItemQuality"
                                   EventCallbackMenu="OnContextMenuClick"
-                                  parameterList="transactionalItemQualityPairsModel"
+                                  parameterList="transactionalItemQualitys"
                                   GridColumnsList="gridColumnListQualityPair"
                                   EventCallbackOnLoad="Onload"
                                   Width="970px">
@@ -434,25 +557,25 @@
             </TabItem>
             <TabItem>
                 <ChildContent>
-                    <TabHeader Text="@GetName("InRecipeQualityModifiers", new TransactionalItemType())"></TabHeader>
+                    <TabHeader Text="@GetName("InRecipeModifiers", new TransactionalItemType())"></TabHeader>
                 </ChildContent>
                 <ContentTemplate>
                     <div class="flex-horizontal-center">
 
                         <div class="detailsTitleContainer">
-                            <h3 class="subTitleDetailForm">@GetName("InRecipeQualityModifiers", new TransactionalItemType())</h3>
-                            <svg @onclick='()=>ClosedAdd("InRecipeQualityModifiers")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                            <h3 class="subTitleDetailForm">@GetName("InRecipeModifiers", new TransactionalItemType())</h3>
+                            <svg @onclick='()=>ClosedAdd("InRecipeModifiers")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
                                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                                 <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                             </svg>
                         </div>
 
 
-                        @if (inRecipeQualityModifiers == null) inRecipeQualityModifiers = new();
+                        @if (inRecipeModifiers == null) inRecipeModifiers = new();
 
-                        <DataGrid TParameter="ProductRecipeQualityModifier"
+                        <DataGrid TParameter="RecipeModifier"
                                   EventCallbackMenu="OnContextMenuClick"
-                                  parameterList="inRecipeQualityModifiers"
+                                  parameterList="inRecipeModifiers"
                                   GridColumnsList="gridColumnListModifier"
                                   EventCallbackOnLoad="Onload"
                                   Width="100%">
@@ -480,19 +603,26 @@
     public ConceptGroup childrenGroup = new();
     public TransactionalItemProcessStep transactionalItemProcessStep = new();
     public List<TransactionalItemProcessStep> transactionalItemProcessSteps = new();
-    public TransactionalItemTag transactionalItemProcessTag = new();
     public List<TransactionalItemTag> transactionalItemProcessTags = new();
+    public TransactionalItemTag transactionalItemProcessTag = new();
+    public List<CostExceptionByQuantity> costExceptionsByQuantitys = new();
+    public CostExceptionByQuantity costExceptionsByQuantity = new();
+    public ChargeableUnitsType typeOfComponentsToCharge = new();
+    public BasicConcept processType = new();
     public List<TransactionalItemTypeCharacteristic> transactionalItemTypeCharacteristics = new();
     public TransactionalItemTypeCharacteristic transactionalItemTypeCharacteristic = new();
-    public List<TransactionalItemQualityPair> transactionalItemQualityPairs = new();
-    public List<TransactionalItemQualityPairModel> transactionalItemQualityPairsModel = new();
-    public TransactionalItemQualityPair transactionalItemQualityPair = new();
+    public List<TransactionalItemQuality> transactionalItemQualitys = new();
     public TransactionalItemQuality transactionalItemQuality = new();
-    public List<ProductRecipeQualityModifier> inRecipeQualityModifiers = new();
-    public ProductRecipeQualityModifier inRecipeQualityModifier = new();
+    public List<ProductRecipeQualityModifier> recipePossibleModifierValues = new();
+    public ProductRecipeQualityModifier recipePossibleModifierValue = new();
+    public List<RecipeModifier> inRecipeModifiers = new();
+    public RecipeModifier inRecipeModifier = new();
+
+    //public List<ProductRecipeQualityModifier> recipePossibleModifierValues = new();
+    //public ProductRecipeQualityModifier recipePossibleModifierValue = new();
     public List<ConceptGroup>? Groups = new();
 
-    public DataGrid<PossibleValues> referGrid;
+    public DataGrid<TransactionalItemCharacteristic> referGrid;
 
     public List<GridColumn> gridColumnList = new();
     public List<GridColumn> gridColumnListQualityPair = new();
@@ -501,11 +631,16 @@
     public List<GridColumn> gridColumnListCharacteristic = new();
     public List<GridColumn> gridColumnListModifier = new();
     public List<GridColumn> gridColumnListPossibleValues = new();
+    public List<GridColumn> gridColumnListByQuantity = new();
+    public List<GridColumn> gridColumnListPossibleModifierValues = new();
+
+
 
     public bool isLoading = false, dataGridView = true, modeEdit = true, viewMsg = false;
-    public List<PossibleValues> possibleValuesModel = new();
-    public List<string> possibleValues = new();
-    public string possibleValue = "", msg = "";
+    //public List<PossibleValues> possibleValuesModel = new();
+    public List<TransactionalItemCharacteristic> possibleValues = new();
+    public TransactionalItemCharacteristic possibleValue = new();
+    string msg = "";
     string pageView = "";
 
     protected override void OnParametersSet()
@@ -517,12 +652,20 @@
     {
         if (Mode == "Edit")
         {
-            transactionalItemType = transactionalService.ConceptTransactionalItemType;
-            transactionalItemProcessSteps = transactionalItemType.TransactionalItemProcesses;
-            childrenGroups = transactionalItemType.Groups;
-            transactionalItemTypeCharacteristics = transactionalItemType.TransactionalItemTypeCharacteristics;
-            //transactionalItemQualityPairs = transactionalItemType.QualityParameters;
-            //inRecipeQualityModifiers = transactionalItemType.InRecipeQualityModifiers;
+            if (transactionalService.ConceptTransactionalItemType != null)
+            {
+                transactionalItemType = transactionalService.ConceptTransactionalItemType;
+                transactionalItemProcessSteps = transactionalItemType.TransactionalItemProcesses;
+                childrenGroups = transactionalItemType.Groups;
+                transactionalItemTypeCharacteristics = transactionalItemType.TransactionalItemTypeCharacteristics;
+                transactionalItemQualitys = transactionalItemType.QualityParameters;
+                inRecipeModifiers = transactionalItemType.InRecipeModifiers;
+            }
+            else
+            {
+                Closed("control");
+            }
+
 
         }
         if (Mode == "Add")
@@ -531,6 +674,7 @@
         }
 
 
+        #region Column
         gridColumnList = new List<GridColumn>()
         {
             new GridColumn() { Field = nameof(TransactionalItemProcessStep.Name), HeaderText = GetName("Name", new TransactionalItemProcessStep())  },
@@ -569,91 +713,248 @@
 
         gridColumnListModifier = new List<GridColumn>
         {
-            new GridColumn() { Field = nameof(ProductRecipeQualityModifier.Name), HeaderText = GetName("Name", new ProductRecipeQualityModifier())  }
+            new GridColumn() { Field = nameof(RecipeModifier.Name), HeaderText = GetName("Name", new RecipeModifier())  }
 
+        };
+        gridColumnListPossibleModifierValues = new List<GridColumn>
+        {
+         new GridColumn() { Field = nameof(ProductRecipeQualityModifier.Name), HeaderText = GetName("Name", new ProductRecipeQualityModifier())  }
         };
         gridColumnListPossibleValues = new List<GridColumn>
         {
-            new GridColumn() { Field=nameof(PossibleValues.Value) ,  HeaderText = @GetName( "PossibleValues", new TransactionalItemTypeCharacteristic())  }
+            new GridColumn() { Field=nameof(TransactionalItemCharacteristic.Name) ,  HeaderText = @GetName( "Name", new TransactionalItemTypeCharacteristic())  },
+            new GridColumn() { Field=nameof(TransactionalItemCharacteristic.IsEnabled) ,  HeaderText = @GetName( "IsEnabled", new TransactionalItemTypeCharacteristic()) , DisplayAsCheckBox=true },
+            new GridColumn() { Field=nameof(TransactionalItemCharacteristic.AdditionalDescription) ,  HeaderText = @GetName( "AdditionalDescription", new TransactionalItemTypeCharacteristic())  },
         };
-
+        gridColumnListByQuantity = new List<GridColumn>
+        {
+              new GridColumn() { Field=nameof(CostExceptionByQuantity.MinimumQty) ,  HeaderText = @GetName( "MinimumQty", new CostExceptionByQuantity())  },
+               new GridColumn() { Field=nameof(CostExceptionByQuantity.MaximumQty) ,  HeaderText = @GetName( "MaximumQty", new CostExceptionByQuantity())  }
+        };
+        #endregion Column
 
     }
 
 
 
 
-
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemQualityPairModel> args)
+    #region Event
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemQuality> args)
     {
-        TransactionalItemQualityPairModel ObjModel = null;
-        ObjModel = args.RowInfo.RowData;
-        // transactionalItemQualityPair = ObjModel;
-        if (args.Item.Id == "Edit")
+
+        transactionalItemQuality = args.RowInfo.RowData;
+        if (args.Item.Text == "Edit" && transactionalItemQuality != null)
         {
-            dataGridView = true;
+            ClosedAdd("QualityParameters");
+        }
+        if (args.Item.Text == "Reload")
+        {
+            StateHasChanged();
         }
     }
 
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<CostExceptionByQuantity> args)
+    {
+        costExceptionsByQuantity = args.RowInfo.RowData;
+        if (args.Item.Text == "Edit" && costExceptionsByQuantity != null)
+        {
+            ClosedAdd("CostExceptionsByQuantityProcessStep");
+        }
+        if (args.Item.Text == "Reload")
+        {
+            StateHasChanged();
+        }
+    }
+
+
+
+
     public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemProcessStep> args)
     {
-        TransactionalItemProcessStep ObjModel = null;
-        ObjModel = args.RowInfo.RowData;
-        transactionalItemProcessStep = ObjModel;
-        if (args.Item.Id == "Edit")
+
+        transactionalItemProcessStep = args.RowInfo.RowData;
+        if (args.Item.Text == "Edit" && transactionalItemProcessStep != null)
         {
-            dataGridView = false;
+            transactionalItemProcessTags = transactionalItemProcessStep.TransactionalItemProcessTags;
+            costExceptionsByQuantitys = transactionalItemProcessStep.CostExceptionsByQuantity;
+            processType = transactionalItemProcessStep.ProcessType;
+            typeOfComponentsToCharge = transactionalItemProcessStep.TypeOfComponentsToCharge;
+            ClosedAdd("TransactionalItemProcessesGeneral");
+        }
+        if (args.Item.Text == "Reload")
+        {
+            StateHasChanged();
         }
     }
     public async void OnContextMenuClick(ContextMenuClickEventArgs<ConceptGroup> args)
     {
-        ConceptGroup ObjModel = null;
-        ObjModel = args.RowInfo.RowData;
-        childrenGroup = ObjModel;
-        if (args.Item.Id == "Edit")
+        childrenGroup = args.RowInfo.RowData;
+        if (args.Item.Text == "Edit" && childrenGroup != null)
         {
-            dataGridView = false;
+            ClosedAdd("ChildrenGroups");
+        }
+        if (args.Item.Text == "Reload")
+        {
+            StateHasChanged();
         }
     }
+
     public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemTag> args)
     {
-        TransactionalItemTag ObjModel = null;
-        ObjModel = args.RowInfo.RowData;
-        transactionalItemProcessTag = ObjModel;
-        if (args.Item.Id == "Edit")
+
+        transactionalItemProcessTag = args.RowInfo.RowData;
+        if (args.Item.Text == "Edit" && transactionalItemProcessTag != null)
         {
-            dataGridView = false;
+            ClosedAdd("TransactionalItemProcessestags");
+        }
+        if (args.Item.Text == "Reload")
+        {
+            StateHasChanged();
         }
     }
 
     public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemTypeCharacteristic> args)
     {
-        TransactionalItemTypeCharacteristic ObjModel = null;
-        ObjModel = args.RowInfo.RowData;
-        transactionalItemTypeCharacteristic = ObjModel;
-        if (args.Item.Id == "Edit")
+        transactionalItemTypeCharacteristic = args.RowInfo.RowData;
+
+        if (args.Item.Text == "Edit" && transactionalItemTypeCharacteristic != null)
         {
-            dataGridView = false;
+            possibleValues = transactionalItemTypeCharacteristic.PossibleValues != null ? transactionalItemTypeCharacteristic.PossibleValues : new();
+            ClosedAdd("TransactionalItemTypeCharacteristics");
+        }
+        if (args.Item.Text == "Reload")
+        {
+            StateHasChanged();
+        }
+
+    }
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<RecipeModifier> args)
+    {
+
+        inRecipeModifier = args.RowInfo.RowData;
+
+        if (args.Item.Text == "Edit" && inRecipeModifier != null)
+        {
+            recipePossibleModifierValues = inRecipeModifier.RecipePossibleModifierValues;
+            ClosedAdd("InRecipeModifiers");
+        }
+        if (args.Item.Text == "Reload")
+        {
+            StateHasChanged();
         }
     }
     public async void OnContextMenuClick(ContextMenuClickEventArgs<ProductRecipeQualityModifier> args)
     {
-        ProductRecipeQualityModifier ObjModel = null;
-        ObjModel = args.RowInfo.RowData;
-        inRecipeQualityModifier = ObjModel;
-        if (args.Item.Id == "Edit")
+        recipePossibleModifierValue = args.RowInfo.RowData;
+
+        if (args.Item.Text == "Edit" && recipePossibleModifierValue != null)
         {
-            dataGridView = false;
+            ClosedAdd("RecipePossibleModifierValues");
+        }
+        if (args.Item.Text == "Reload")
+        {
+            StateHasChanged();
+        }
+
+    }
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemCharacteristic> args)
+    {
+        possibleValue = args.RowInfo.RowData;
+        if (args.Item.Text == "Edit" && possibleValue != null)
+        {
+            ClosedAdd("PossibleValues");
+        }
+        if (args.Item.Text == "Disable")
+        {
+            StateHasChanged();
         }
     }
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<PossibleValues> args)
+
+
+    #endregion Event
+
+
+
+    public async void ItemSelected(MenuEventArgs e)
     {
-        PossibleValues ObjModel = new();
-        ObjModel = args.RowInfo.RowData;
-        if (args.Item.Id == "Edit")
+        StateHasChanged();
+        string tile = e.Item != null ? e.Item.Text : "";
+
+        if (tile == "Save")
         {
-            dataGridView = false;
+
+            transactionalItemType.TransactionalItemProcesses = transactionalItemProcessSteps;
+            transactionalItemType.TransactionalItemTypeCharacteristics = transactionalItemTypeCharacteristics;
+            transactionalItemType.QualityParameters = transactionalItemQualitys;
+            transactionalItemType.Groups = childrenGroups;
+            transactionalItemType.InRecipeModifiers = inRecipeModifiers;
+
+            var resul = await transactionalService.SaveTransactionalItemType(transactionalItemType);
+
+            Msg(resul);
+
+            if (resul && Mode == "Add")
+            {
+                inRecipeModifiers = new();
+                childrenGroups = new();
+                transactionalItemQualitys = new();
+                transactionalItemTypeCharacteristics = new();
+                transactionalItemProcessSteps = new();
+                transactionalItemType = new();
+
+            }
+            StateHasChanged();
+
         }
+        if (tile == "Save as...")
+        {
+
+        }
+        StateHasChanged();
+    }
+
+    public async void ItemSelected_1(MenuEventArgs e)
+    {
+        StateHasChanged();
+        string tile = e.Item != null ? e.Item.Text : "";
+
+        if (tile == "Save")
+        {
+
+            AddItem("TransactionalItemProcesses");
+
+        }
+
+        StateHasChanged();
+    }
+
+    public async void ItemSelected_2(MenuEventArgs e)
+    {
+        StateHasChanged();
+        string tile = e.Item != null ? e.Item.Text : "";
+
+        if (tile == "Save")
+        {
+
+            AddItem("TransactionalItemTypeCharacteristics");
+
+        }
+
+        StateHasChanged();
+    }
+    public async void ItemSelected_3(MenuEventArgs e)
+    {
+        StateHasChanged();
+        string tile = e.Item != null ? e.Item.Text : "";
+
+        if (tile == "Save")
+        {
+
+            AddItem("InRecipeQualityModifiers");
+
+        }
+
+        StateHasChanged();
     }
 
 
@@ -662,68 +963,223 @@
         if (value == "TransactionalItemProcesses")
         {
             if (transactionalItemProcessSteps == null) transactionalItemProcessSteps = new();
-            transactionalItemProcessStep.TransactionalItemProcessTags = transactionalItemProcessTags;
-            transactionalItemProcessSteps.Add(transactionalItemProcessStep);
-            transactionalItemProcessStep = new();
-            transactionalItemProcessTags = new();
-        }
-        if (value == "TransactionalItemTypeCharacteristics")
-        {
-            if (transactionalItemTypeCharacteristics == null) transactionalItemTypeCharacteristics = new();
-           // transactionalItemTypeCharacteristic.PossibleValues = possibleValues;
-            transactionalItemTypeCharacteristics.Add(transactionalItemTypeCharacteristic);
-            transactionalItemTypeCharacteristic = new();
-            possibleValues = new();
-        }
-        if (value == "QualityParameters")
-        {
-            if (transactionalItemQualityPairs == null) transactionalItemQualityPairs = new();
-            transactionalItemQualityPair.TransactionalItemQuality = transactionalItemQuality;
-            transactionalItemQualityPairs.Add(transactionalItemQualityPair);
-            transactionalItemQualityPairsModel.Add(new TransactionalItemQualityPairModel
-                {
-                    Name = transactionalItemQualityPair.TransactionalItemQuality != null ? transactionalItemQualityPair.TransactionalItemQuality.Name : "",
-                    Code = transactionalItemQualityPair.TransactionalItemQuality != null ? transactionalItemQualityPair.TransactionalItemQuality.Code : "",
-                    Note = transactionalItemQualityPair.TransactionalItemQuality != null ? transactionalItemQualityPair.TransactionalItemQuality.Notes : "",
-                    DefaulValue = transactionalItemQualityPair.TransactionalItemQuality != null ? transactionalItemQualityPair.TransactionalItemQuality.DefaultValue : "",
-                    Id = transactionalItemQualityPair.Id,
-                    Value = transactionalItemQualityPair.Value
-                });
-            transactionalItemQualityPair = new();
-            transactionalItemQuality = new();
-        }
-        if (value == "InRecipeQualityModifiers")
-        {
-            if (inRecipeQualityModifiers == null) inRecipeQualityModifiers = new();
-            inRecipeQualityModifiers.Add(inRecipeQualityModifier);
-            inRecipeQualityModifier = new();
-        }
-
-        Msg("Added");
-
-    }
-
-
-
-    public void Onload(object args)
-    {
-        isLoading = false;
-        StateHasChanged();
-    }
-
-    public void AddTag()
-    {
-        if (transactionalItemProcessTag.Key != null)
-        {
-            if (transactionalItemProcessTag.Value != null)
+            if (Mode == "Edit")
             {
-                transactionalItemProcessTags.Add(transactionalItemProcessTag);
-                transactionalItemProcessTag = new();
-                Msg("Added");
+                if (transactionalItemProcessStep.Id != null)
+                {
+                    transactionalItemProcessStep.TransactionalItemProcessTags = transactionalItemProcessTags != null ? transactionalItemProcessTags : new();
+                    transactionalItemProcessStep.CostExceptionsByQuantity = costExceptionsByQuantitys != null ? costExceptionsByQuantitys : new();
+                    transactionalItemProcessStep.TypeOfComponentsToCharge = typeOfComponentsToCharge != null ? typeOfComponentsToCharge : new();
+                    transactionalItemProcessStep.ProcessType = processType != null ? processType : new();
+
+                    var remove = transactionalItemProcessSteps.Where(s => s.Id == transactionalItemProcessStep.Id).FirstOrDefault();
+                    int index = transactionalItemProcessSteps.LastIndexOf(remove);
+                    if (index > -1)
+                    {
+                        transactionalItemProcessSteps.RemoveAt(index);
+                        transactionalItemProcessSteps.Add(transactionalItemProcessStep);
+                        transactionalItemProcessStep = new();
+                        transactionalItemProcessTags = new();
+                        Msg("Updated");
+                    }
+
+                }
+                else
+                {
+                    Msg("Does not exist");
+                }
+
+            }
+
+            if (Mode == "Add")
+            {
+
+                transactionalItemProcessStep.TransactionalItemProcessTags = transactionalItemProcessTags != null ? transactionalItemProcessTags : new();
+                transactionalItemProcessStep.CostExceptionsByQuantity = costExceptionsByQuantitys != null ? costExceptionsByQuantitys : new();
+                transactionalItemProcessStep.TypeOfComponentsToCharge = typeOfComponentsToCharge != null ? typeOfComponentsToCharge : new();
+                transactionalItemProcessStep.ProcessType = processType != null ? processType : new();
+                transactionalItemProcessSteps.Add(transactionalItemProcessStep);
+                transactionalItemProcessStep = new();
+                transactionalItemProcessTags = new();
+
+            }
+
+        }
+        if (value == "TransactionalItemProcessesTag")
+        {
+            if (Mode == "Add")
+            {
+                if (transactionalItemProcessTag.Key != null)
+                {
+                    if (transactionalItemProcessTag.Value != null)
+                    {
+                        transactionalItemProcessTags.Add(transactionalItemProcessTag);
+                        transactionalItemProcessTag = new();
+                        Msg("Added");
+                    }
+                }
+            }
+
+            if (Mode == "Edit")
+            {
+                if (transactionalItemProcessTag.Id != null)
+                {
+
+                    Msg("Updated");
+                }
+                else
+                {
+                    Msg("Does not exist");
+                }
+
             }
         }
 
+        if (value == "CostExceptionsByQuantityProcessStep")
+        {
+
+            if (Mode == "Add")
+            {
+                costExceptionsByQuantitys.Add(costExceptionsByQuantity);
+                costExceptionsByQuantity = new();
+                Msg("Added");
+
+
+            }
+            if (Mode == "Edit")
+            {
+
+                if (costExceptionsByQuantity.Id != null)
+                {
+
+                    Msg("Updated");
+                }
+                else
+                {
+                    Msg("Does not exist");
+                }
+
+            }
+        }
+
+        if (value == "TransactionalItemTypeCharacteristics")
+        {
+            if (Mode == "Add")
+            {
+                if (transactionalItemTypeCharacteristics == null) transactionalItemTypeCharacteristics = new();
+                transactionalItemTypeCharacteristic.PossibleValues = possibleValues != null ? possibleValues : new();
+                transactionalItemTypeCharacteristics.Add(transactionalItemTypeCharacteristic);
+                transactionalItemTypeCharacteristic = new();
+                possibleValues = new();
+                Msg("Added");
+
+            }
+            if (Mode == "Edit")
+            {
+
+                if (transactionalItemTypeCharacteristic.Id != null)
+                {
+
+                    Msg("Updated");
+                }
+                else
+                {
+                    Msg("Does not exist");
+                }
+
+            }
+
+
+
+        }
+        if (value == "QualityParameters")
+        {
+            if (Mode == "Add")
+            {
+                if (transactionalItemQualitys == null) transactionalItemQualitys = new();
+                transactionalItemQualitys.Add(transactionalItemQuality);
+                transactionalItemQuality = new();
+                  Msg("Added");
+            }
+            if (Mode == "Edit")
+            {
+
+                if (transactionalItemQuality.Id != null)
+                {
+
+
+                    Msg("Updated");
+                }
+                else
+                {
+                    Msg("Does not exist");
+                }
+
+            }
+
+
+
+        }
+        if (value == "InRecipeQualityModifiers")
+        {
+
+            if (Mode == "Add")
+            {
+                if (inRecipeModifiers == null) inRecipeModifiers = new();
+                inRecipeModifier.RecipePossibleModifierValues = recipePossibleModifierValues;
+                inRecipeModifiers.Add(inRecipeModifier);
+                inRecipeModifier = new();
+                Msg("Added");
+            }
+            if (Mode == "Edit")
+            {
+
+                if (inRecipeModifier.Id!= null)
+                {                  
+
+                    Msg("Updated");
+                }
+                else
+                {
+                    Msg("Does not exist");
+                }
+
+            }
+
+        }
+        if (value == "RecipePossibleModifierValues")
+        {
+
+            if (Mode == "Add")
+            {
+                if (recipePossibleModifierValues == null) recipePossibleModifierValues = new();
+                recipePossibleModifierValues.Add(recipePossibleModifierValue);
+                recipePossibleModifierValue = new();
+                Msg("Added");
+            }
+            if (Mode == "Edit")
+            {
+
+                if (recipePossibleModifierValue.Id!= null)
+                {
+
+
+                    Msg("Updated");
+                }
+                else
+                {
+                    Msg("Does not exist");
+                }
+
+            }
+           
+        }
+
+      
+
     }
+
+
 
     public void DeleteTag(string value)
     {
@@ -735,23 +1191,27 @@
 
     public void AddPossibleValue()
     {
-        if (possibleValue != null && possibleValue != "")
+        if (possibleValue != null)
         {
             possibleValues.Add(possibleValue);
-            possibleValuesModel.Add(new PossibleValues { Name = transactionalItemTypeCharacteristic.Name, Value = possibleValue });
-            possibleValue = "";
+            //possibleValuesModel.Add(new PossibleValues {
+            //    Name = transactionalItemTypeCharacteristic.Name,
+            //    IsEnabled = possibleValue.IsEnabled,
+            //    AdditionalDescription = possibleValue.AdditionalDescription,
+            //    Id = possibleValue.Id });
+            possibleValue = new();
             Msg("Added");
         }
     }
 
     public void DeletePossibleValue(string value)
     {
-        var element = possibleValues.Where(e => e.Trim() == value.Trim()).FirstOrDefault();
-        var elemenModel = possibleValuesModel.Where(e => e.Name.Trim() == value.Trim()).FirstOrDefault();
-        if (element != null && possibleValue != null && possibleValue != "")
+        var element = possibleValues.Where(e => e.Id == value.Trim()).FirstOrDefault();
+        //var elemenModel = possibleValuesModel.Where(e => e.Name.Trim() == value.Trim()).FirstOrDefault();
+        if (element != null && possibleValue != null)
         {
             possibleValues.Remove(element);
-            possibleValuesModel.Remove(elemenModel);
+            //possibleValuesModel.Remove(elemenModel);
             Msg("Deleteed");
         }
     }
@@ -762,9 +1222,30 @@
         {
             if (childrenGroup.GroupClassificationCriteria != null)
             {
-                childrenGroups.Add(childrenGroup);
-                childrenGroup = new();
-                Msg("Added");
+                if (childrenGroup.Id == null)
+                {
+                    childrenGroups.Add(childrenGroup);
+                    childrenGroup = new();
+                    Msg("Added");
+                }
+                else
+                {
+                    var remove = childrenGroups.Where(s => s.Id == childrenGroup.Id).FirstOrDefault();
+                    int index = childrenGroups.IndexOf(remove);
+                    if (remove != null && index > -1)
+                    {
+
+                        childrenGroups[index] = childrenGroup;
+                        // childrenGroups.Add(childrenGroup);
+                        childrenGroup = new();
+                        Msg("Update");
+                    }
+
+
+
+
+                }
+
             }
 
         }
@@ -792,6 +1273,12 @@
         return Name;
     }
 
+    public void Onload(object args)
+    {
+        isLoading = false;
+        StateHasChanged();
+    }
+
     public void OpenAdd(string value)
     {
         pageView = value;
@@ -810,75 +1297,10 @@
     public void Closed(string value)
     {
         if (value == "control") Navigation.NavigateTo($"/{Page}/{filterItems}");
-
-
-
     }
 
 
-    public async void ItemSelected(MenuEventArgs e)
-    {
-        StateHasChanged();
-        string tile = e.Item != null ? e.Item.Text : "";
 
-        if (tile == "Save")
-        {
-            transactionalItemType.TransactionalItemProcesses = transactionalItemProcessSteps;
-            transactionalItemType.TransactionalItemTypeCharacteristics = transactionalItemTypeCharacteristics;
-            //transactionalItemType.QualityParameters = transactionalItemQualityPairs;
-          //  transactionalItemType.InRecipeQualityModifiers = inRecipeQualityModifiers;
-            transactionalItemType.Groups = childrenGroups;
-
-            var resul = await transactionalService.SaveTransactionalItemType(transactionalItemType);
-            Msg(resul);
-            if (resul)
-            {
-
-                childrenGroups = new();
-                transactionalItemType = new();
-                inRecipeQualityModifiers = new();
-                transactionalItemQualityPairs = new();
-                transactionalItemTypeCharacteristics = new();
-                transactionalItemProcessSteps = new();
-            }
-
-        }
-        if (tile == "Save as...")
-        {
-
-        }
-        StateHasChanged();
-    }
-
-    public async void ItemSelected_1(MenuEventArgs e)
-    {
-        StateHasChanged();
-        string tile = e.Item != null ? e.Item.Text : "";
-
-        if (tile == "Save")
-        {
-
-            AddItem("TransactionalItemProcessesGeneral");
-
-        }
-
-        StateHasChanged();
-    }
-
-    public async void ItemSelected_2(MenuEventArgs e)
-    {
-        StateHasChanged();
-        string tile = e.Item != null ? e.Item.Text : "";
-
-        if (tile == "Save")
-        {
-
-            AddItem("TransactionalItemTypeCharacteristics");
-
-        }
-
-        StateHasChanged();
-    }
 
     private void Msg(bool mode)
     {
@@ -892,11 +1314,13 @@
     }
 
 
-    public class PossibleValues
-    {
-        public string Name { get; set; }
-        public string Value { get; set; }
-    }
+    //public class PossibleValues
+    //{
+    //    public string Id { get; set; }
+    //    public string Name { get; set; }
+    //    public bool IsEnabled { get; set; }
+    //    public string AdditionalDescription { get; set; }
+    //}
 
     public class TransactionalItemQualityPairModel
     {

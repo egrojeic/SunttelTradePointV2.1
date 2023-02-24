@@ -331,6 +331,8 @@
     grid-row-gap: 12px;
     align-items: start;
     margin-top:20px;
+   
+    padding-right:40px;
 }
 
 .container-menu-g {
@@ -342,4 +344,7 @@
     margin-left: 20px;
     margin-top: 3px;
     cursor: pointer;
+}
+.c-red {
+    color: red;
 }
