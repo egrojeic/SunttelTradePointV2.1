@@ -21,6 +21,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         IMongoCollection<TransactionalItemStatus> _transactionalItemStatus;
         IMongoCollection<ConceptGroup> _transactionalItemGroup;
         IMongoCollection<ConceptGroup> _transactionalItemGroups;
+        IMongoCollection<AssemblyType> _assemblyType;
 
         /// <summary>
         /// Constructor of the service which rretrieves the connection string
@@ -40,6 +41,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             _transactionalItemStatus = mongoDatabase.GetCollection<TransactionalItemStatus>("TransactionalItemStatuses");
             _transactionalItemGroup = mongoDatabase.GetCollection<ConceptGroup>("TransactionalItemsGroups");
             _transactionalItemGroups = mongoDatabase.GetCollection<ConceptGroup>("TransactionalItemsGroups");
+            _assemblyType = mongoDatabase.GetCollection<AssemblyType>("AssemblyTypes");
         }
 
         /// <summary>
@@ -273,6 +275,37 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 else
                 {
                     return (true, resultTransactionalItemGroup, null);
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Retrieves a particular assembly type by its ID
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="assemblyTypeId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<(bool IsSuccess, AssemblyType? assemblyType, string? ErrorDescription)> GetAssemblyTypeByID(string userId, string ipAddress, string assemblyTypeId)
+        {
+            try
+            {
+                var filterAssemblyType = Builders<AssemblyType>.Filter.Eq(x => x.Id, assemblyTypeId);
+                var resultAssemblyType = await _assemblyType.Find(filterAssemblyType).FirstOrDefaultAsync();
+
+                if (resultAssemblyType == null)
+                {
+                    return (false, null, "Unpopulated Assembly Types");
+                }
+                else
+                {
+                    return (true, resultAssemblyType, null);
                 }
             }
             catch (Exception e)
@@ -621,20 +654,6 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
 
         /// <summary>
-        /// Retrieves a particular assembly type by its ID
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="ipAddress"></param>
-        /// <param name="assemblyTypeId"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public Task<(bool IsSuccess, AssemblyType? assemblyType, string? ErrorDescription)> GetAssemblyTypeByID(string userId, string ipAddress, string assemblyTypeId)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        /// <summary>
         /// Saves an assembly type
         /// </summary>
         /// <param name="userId"></param>
@@ -642,9 +661,24 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="assemblyType"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<(bool IsSuccess, AssemblyType? assemblyType, string? ErrorDescription)> SaveAssemblyTypeByID(string userId, string ipAddress, AssemblyType assemblyType)
+        public async Task<(bool IsSuccess, AssemblyType? assemblyType, string? ErrorDescription)> SaveAssemblyType(string userId, string ipAddress, AssemblyType assemblyType)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (assemblyType.Id == null)
+                {
+                    assemblyType.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterAssemblyType = Builders<AssemblyType>.Filter.Eq("_id", new ObjectId(assemblyType.Id));
+                var updateAssemblyType = new ReplaceOptions { IsUpsert = true };
+                var resultAssemblyType = await _assemblyType.ReplaceOneAsync(filterAssemblyType, assemblyType, updateAssemblyType);
+                return (true, assemblyType, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
     }
 }

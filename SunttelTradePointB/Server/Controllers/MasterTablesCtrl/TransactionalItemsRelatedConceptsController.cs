@@ -213,6 +213,29 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
 
 
         /// <summary>
+        /// Retrieves a particular assembly type by its ID
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="assemblyTypeId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetAssemblyTypeByID")]
+        public async Task<IActionResult> GetAssemblyTypeByID(string userId, string ipAddress, string assemblyTypeId)
+        {
+            var response = await _transactionalItemsRelatedConcepts.GetAssemblyTypeByID(userId, ipAddress, assemblyTypeId);
+            if (response.IsSuccess)
+            {
+                return Ok(response.assemblyType);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
         /// Saves a Box document. If it doesn't exists, it will be created
         /// </summary>
         /// <param name="box"></param>
@@ -415,6 +438,29 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
             if (response.IsSuccess)
             {
                 return Ok(response.recipeModifier);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Saves an assembly type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="assemblyType"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveAssemblyType")]
+        public async Task<IActionResult> SaveAssemblyType(string userId, string ipAddress, AssemblyType assemblyType)
+        {
+            var response = await _transactionalItemsRelatedConcepts.SaveAssemblyType(userId, ipAddress, assemblyType);
+            if (response.IsSuccess)
+            {
+                return Ok(response.assemblyType);
             }
             else
             {
