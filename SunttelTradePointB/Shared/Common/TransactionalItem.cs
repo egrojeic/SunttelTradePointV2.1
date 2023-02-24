@@ -535,6 +535,9 @@ namespace SunttelTradePointB.Shared.Common
 
     public class DataMaxLabelLineSpec {
 
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
         public LabelField  FieldInLabel { get; set; }
 
         public string Rotation { get; set; }
@@ -563,6 +566,9 @@ namespace SunttelTradePointB.Shared.Common
 
     public class ZebraLabelLineSpec
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
         public LabelField FieldInLabel { get; set; }
         public string CampoA {get; set;}
         public string CampoB {get; set;}

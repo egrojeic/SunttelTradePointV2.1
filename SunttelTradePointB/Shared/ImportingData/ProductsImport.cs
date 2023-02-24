@@ -199,7 +199,7 @@ namespace SunttelTradePointB.Shared.ImportingData
 
         public string LegacyIdObjectID { get; set; }
 
-        public string IDEstilosLabels {get; set;}
+        public int IDEstilosLabels {get; set;}
         public string LabelFieldName {get; set;}
         public string LabelFieldLegacyIdObjectID {get; set;}
         public string Rotation {get; set;}
@@ -218,7 +218,7 @@ namespace SunttelTradePointB.Shared.ImportingData
     public class ZebraFieldsImports {
 
         public string LegacyIdObjectID {get; set;}
-        public string IDEstilosLabels {get; set;}
+        public int IDEstilosLabels {get; set;}
         public string LabelFieldName {get; set;}
         public string LabelFieldLegacyIdObjectID {get; set;}
         public string CampoA {get; set;}
