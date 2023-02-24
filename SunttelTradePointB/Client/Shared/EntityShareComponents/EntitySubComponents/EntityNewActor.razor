@@ -1,10 +1,17 @@
-﻿@page "/Actors/NewActor"
+﻿
 @using Syncfusion.Blazor.Cards
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.DropDowns
 @using SunttelTradePointB.Shared.Common
 
-@inject IJSRuntime JSRuntime
+
+
+@using SunttelTradePointB.Client.Shared.ConceptSelectors
+@using SunttelTradePointB.Client.Shared.EntityShareComponents.EntitySubComponents
+@using SunttelTradePointB.Client.Shared.EntityShareComponents.EntityPopUpComponents
+
+
+@inject IJSRuntime jsRuntime
 @inject HttpClient httpClient
 @inject GeographicPlacesService geoPlaces
 @inject NavigationManager navigationManager
@@ -13,95 +20,122 @@
 <div class="control-section">
     <div class="row">
         <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
-            <SfCard>
+            <SfCard style="width:550px">
                 <CardHeader Title="Add a new entity" />
                 <CardContent>
-                    <form onsubmit="event.preventDefault();">
-                        <div class="form-group row">
-                            <label>Name:</label>
-                            <div class="col">
-                                <SfTooltip ID="Tooltip" Target="#name" Content="@ContentName">
-                                    <input type="text" class="form-control" @bind-value="entityActor.Name" />
-                                </SfTooltip>
+
+                    <div>
+                        <div class="row">
+                            <div class="col-sm">
+                                <div class="form-group py-2">
+                                    <label for="name">@lblName</label>
+                                    <input type="text" class="form-control" id="name" @bind-value="EntityNode.Name" />
+                                </div>
+
+                                <div class="form-group py-2">
+                                    <label for="eMailAddress">@lblEmail</label>
+                                    <input type="text" class="form-control" id="eMailAddress" @bind-value="EntityNode.EMailAddress" />
+                                </div>
+
+                                <div class="form-group py-2">
+                                    <label for="sunttelUserId">@lblSquarUser</label>
+                                    <input type="text" class="form-control" id="sunttelUserId" @bind-value="EntityNode.SunttelUserId" />
+                                </div>
+
+                                <div class="form-group py-2">
+                                    <label for="InvoicingAddress">@lblInvoicingAddress</label>
+                                    <span>@(EntityNode != null ? EntityNode.InvoicingAddress : "")</span>
+                                    <span @onclick="(() => NavigateToInvocingAddress())" class="px-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0     8 8">
+                                            <path fill="currentColor" d="M6 0L5 1l2 2    l1-1l-2-2zM4 2L0 6v2h2l4-4l-2-2z" />
+                                        </svg>
+                                    </span>
+                                </div>
                             </div>
-                        </div>
+                            <div class="col-sm">
+                                <div class="form-group py-2" id="shortCutCodeGroup">
+                                    <label for="shortcutCode">@lblShortcutCode</label>
+                                    <input type="text" class="form-control" id="shortcutCode" @bind-value="EntityNode.Code" />
+                                </div>
 
-                        <div class="form-group row py-2">
-                            <label>Codigo:</label>
-                            <div class="col">
-                                <SfTooltip ID="Tooltip" Target="#name" Content="@ContentCode">
-                                    <input type="number" class="form-control" @bind-value="entityActor.Code" />
-                                </SfTooltip>
-                            </div>
-                        </div>
+                                <div class="form-group py-2" id="legacyIdGroup">
+                                    <label for="legacyId">@lblLegacyId</label>
+                                    <input type="number" class="form-control" id="legacyId" @bind-value="EntityNode.LegacyId" />
+                                </div>
 
-                        <div class="form-group row py-2">
-                            <label>LegacyId:</label>
-                            <div class="col">
-                                <SfTooltip ID="Tooltip" Target="#name" Content="@ContentLegacyId">
-                                    <input type="number" class="form-control" @bind-value="entityActor.LegacyId" />
-                                </SfTooltip>
-                            </div>
-                        </div>
+                                <div class="form-group py-2">
+                                    <label for="sunttelUserId">@lblRole</label>
+                                    <div class="item-edit">
+                                        <label>@(role != null ? role.Name : "")</label>
+                                        <button type="button" style="float:right" @onclick='()=>SetViewElement("Roles")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                                    </div>
+                                    <InputTextSelector @ref="inputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectorInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewRoles">
+                                        @{
+                                            if (entityRoles != null)
+                                            {
+                                                foreach (var entity in entityRoles)
+                                                {
+                                                    <option value="@entity?.Id">@entity?.Name</option>
+                                                }
+                                            }
 
-                        <div class="form-group row py-2">
-                            <label>Address Line 1:</label>
-                            <div class="col">
-                                <SfTooltip ID="Tooltip" Target="#name" Content="@ContentLegacyId">
-                                    <input type="text" class="form-control" @bind-value="address.AddressLine1" />
-                                </SfTooltip>
-                            </div>
-                        </div>
+                                        }
+                                    </InputTextSelector>
+                                </div>
 
+                                <div class="form-group py-2">
+                                    <label for="ComercialGroup">@lblGroup</label>
+                                    <div>
+                                        <div class="conten-chip">
+                                            <SfChip @ref="referChip" EnableDelete="true" CssClass="chip-style" EnableRtl="false">
+                                                <ChipEvents Deleted="@onDeleted"></ChipEvents>
+                                                <ChipItems>
+                                                    @{
+                                                        if (FilterListGroups != null)
+                                                        {
+                                                            @foreach (var Group in FilterListGroups)
+                                                            {
+                                                                if (Group != null && Group.Name != null)
+                                                                {
+                                                                    <ChipItem Text="@Group?.Name" LeadingIconCss="anne"></ChipItem>
+                                                                }
 
+                                                            }
+                                                        }
+                                                    }
+                                                </ChipItems>
+                                            </SfChip>
+                                            <InputTextSelector @ref="inputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectorInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewGroups">
+                                                @{
+                                                    if (ListGroups != null)
+                                                    {
+                                                        foreach (var group in ListGroups)
+                                                        {
+                                                            <option value="@group?.Id">@group?.Name</option>
+                                                        }
 
-                        <div class="form-group row py-2">
-                            <label class="control-label col-md-12">Country: </label>
-                            <div class="col">
-                                <SfDropDownList TValue="string" TItem="Country" Placeholder="Select a country" AllowFiltering="true" DataSource="@countryList" @bind-Value="country1.Name">
-                                    <DropDownListEvents TItem="Country" TValue="string" ValueChange="@ValueChangeCountry"></DropDownListEvents>
-                                    <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
-                                </SfDropDownList>
-                            </div>
-                        </div>
-
-                        <div class="form-group row py-2">
-                            <label class="control-label col-md-12">Region: </label>
-                            <div class="col">
-                                <SfDropDownList TValue="string" TItem="GeoRegion" Placeholder="Select a region" AllowFiltering="true" DataSource="@regionsList" @bind-Value="geo.Name">
-                                    <DropDownListEvents TItem="GeoRegion" TValue="string" ValueChange="@ValueChangeRegion"></DropDownListEvents>
-                                    <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
-                                </SfDropDownList>
-                            </div>
-                        </div>
-
-                        <div class="form-group row py-2">
-                            <label class="control-label col-md-12">City: </label>
-                            <div class="col">
-                                <SfDropDownList TValue="string" TItem="City" Placeholder="Select a city" AllowFiltering="true" DataSource="@citiesList" @bind-Value="city.Name">
-                                    <DropDownListEvents TItem="City" TValue="string" ValueChange="@ValueChangeCity"></DropDownListEvents>
-                                    <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
-                                </SfDropDownList>
-                            </div>
-                        </div>
-
-                        <div class="form-group row py-2">
-                            <label class="control-label col-md-12">ZipCode: </label>
-                            <div class="col">
-                                <SfTooltip ID="Tooltip" Target="#zipCode" Content="@ContentZipCode">
-                                    <input id="zipCode" type="text" class="form-control" @bind-value="@address.ZipCode" required />
-                                </SfTooltip>
+                                                    }
+                                                }
+                                            </InputTextSelector>
+                                        </div>
+                                        <button type="button" @onclick='() => SetViewElement("Group")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <MessageSaveComponent message="@message" isVisible="visible"></MessageSaveComponent>
 
-                        <div class="py-2">
-                            <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveEntity(entityActor))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
-                            <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
-                        </div>
+                    </div>
 
-                    </form>
+
+
+
+
+
+
+
+
                 </CardContent>
             </SfCard>
         </div>
@@ -111,176 +145,189 @@
 
 
 @code {
-    private string ContentName = "e.g Walmart";
-    private string ContentCode = "e.g 123";
-    private string ContentLegacyId = "e.g 0123";
-    private string ContentZipCode = "e.g 0123";
-
-    EntityActor entityActor = new EntityActor();
-    Address address = new Address();
-    City city = new City();
-    GeoRegion geo = new GeoRegion();
-    Country country1 = new Country();
-
-
-    private bool showRegion { get; set; } = false;
-    private bool showCities { get; set; } = false;
+    public EntityActor? currentEntityActor { get; set; }
+    EntityActor EntityNode = new EntityActor();
+    [Parameter]
+    public string Id { get; set; }
+    [Parameter]
+    public string Page { get; set; } = "0";
+    [Parameter]
+    public bool ViewSelect { get; set; } = false;
 
     private bool visible { get; set; } = false;
     private string message { get; set; } = "";
 
+    private string userId { get; set; } = "";
+    private string ipAddress { get; set; } = "";
 
-    //Geographic Place Definition
-    private List<Country>? countryList;
+    SfChip? referChip;
+    EntityRoleSelector? entityRoleSelector;
 
-    private List<GeoRegion>? regionsList;
+    int verticalMenuOptionSelected = 0;
 
-    private List<City>? citiesList;
+    private InvocingAddressPopUp? invocingAddressPopUp;
+    Address InvocingAddress = new Address();
+    City city = new City();
+
+    InputTextSelector? inputTextSelector;
+
+    public bool PopupViewGroups = false;
+    public bool PopupViewRoles = false;
+    public string SearchValueMode = "";
+    public int ParamCountResul = 0;
+
+    List<ConceptGroup>? ListGroups = new List<ConceptGroup>();
+    List<ConceptGroup>? FilterListGroups = new List<ConceptGroup>();
 
 
-    private Country? currentCountry;
-    private GeoRegion? currentRegion;
+    //display
+    public string lblName = "";
+    public string lblEmail = "";
+    public string lblSquarUser = "";
+    public string lblGroup = "";
+    public string lblShortcutCode = "";
+    public string lblLegacyId = "";
+    public string lblRole = "";
+    public string lblInvoicingAddress = "";
 
-    bool loadingRegions = false;
+    EntityRole role = new EntityRole();
+    List<EntityRole>? entityRoles;
 
-    string _countriesFilter = "";
-    string _regionsFilter = "";
-    string _citiesFilter = "";
-
-
-
-
-    // Functions for Api GeoPlaces
-    public string countriesFilter
+    string entityRoleSelectedId = "";
+    private async Task GetRoles()
     {
-        get
-        {
-            return _countriesFilter;
-        }
-        set
-        {
-            _countriesFilter = value;
-            GetFilteredCountries(_countriesFilter);
-        }
+        var response = await actorsNodeServive.EntityRolesList();
+        if (response != null)
+            entityRoles = response;
     }
 
-    public string regionsFilter
-    {
-        get
-        {
-            return _regionsFilter;
-        }
-        set
-        {
-            _regionsFilter = value;
-            GetFilteredRegions(currentCountry, _regionsFilter);
-        }
-    }
 
-    public string citiesFilter
+
+    public string StyleClassItem(int item)
     {
-        get
-        {
-            return _citiesFilter;
-        }
-        set
-        {
-            _citiesFilter = value;
-            GetFilteredCities(currentRegion, _citiesFilter);
-        }
+        return (verticalMenuOptionSelected == item ? "menu-item selected" : "menu-item");
     }
 
     protected override async Task OnInitializedAsync()
     {
-        await GetFilteredCountries();
+        lblName = UICommonFunctions.GetDisplayName(new EntityActor(), "Name");
+        lblEmail = UICommonFunctions.GetDisplayName(new EntityActor(), "EMailAddress");
+        lblSquarUser = UICommonFunctions.GetDisplayName(new EntityActor(), "SunttelUserId");
+        lblGroup = UICommonFunctions.GetDisplayName(new EntityActor(), "Groups");
+        lblShortcutCode = UICommonFunctions.GetDisplayName(new EntityActor(), "Code");
+        lblLegacyId = UICommonFunctions.GetDisplayName(new EntityActor(), "LegacyId");
+        lblRole = UICommonFunctions.GetDisplayName(new EntityActor(), "DefaultEntityRole");
+        lblInvoicingAddress = UICommonFunctions.GetDisplayName(new EntityActor(), "InvoicingAddress");
+
+        await GetRoles();
+        await Refresh();
     }
 
-    private async Task GetFilteredCountries(string filterCountries = "")
+    async Task CreateEntityNodeFace()
     {
-        var response = await geoPlaces.GetCountries(filterCountries);
-
-        if (response != null)
-            countryList = response.Where(c => c.Id != "000000000000000000000000").ToList();
+        await actorsNodeServive.CreateNewEntityActor(currentEntityActor);
     }
 
-
-    private async Task LoadRegions(Country country)
+    async Task UpdateEntityNodeFace()
     {
+        await actorsNodeServive.UpdateEntityActor(currentEntityActor);
+    }
 
-        loadingRegions = true;
-        var response = await geoPlaces.GetRegions(country.Id, "", true);
-        currentCountry = country;
-
-        if (response != null)
-            regionsList = response;
-
-        loadingRegions = false;
-
+    private void onDeleted(ChipDeletedEventArgs args)
+    {
+        FilterListGroups?.RemoveAt(args.Index);
+        EntityNode.Groups = FilterListGroups;
         StateHasChanged();
     }
 
-    private async Task GetFilteredRegions(Country country, string filterRegions = "")
+    public void SetMenuOption(int item)
     {
-        regionsList = await geoPlaces.GetRegions(country.Id, filterRegions);
+        verticalMenuOptionSelected = item;
 
     }
 
-    private async Task SetCurrentRegion(GeoRegion geoRegion)
+    private async Task ActorEntityNode(string entityActorId)
     {
-        currentRegion = geoRegion;
-        citiesList = await geoPlaces.GetCities(geoRegion.Id, "", true);
+        currentEntityActor = await actorsNodeServive.GetEntityActor(entityActorId);
+        if (currentEntityActor != null)
+            EntityNode = currentEntityActor;
+        role = EntityNode.DefaultEntityRole;
         StateHasChanged();
     }
 
-    private async Task GetFilteredCities(GeoRegion geoRegion, string filterRegions = "")
+
+    public void SetViewElement(string Element)
     {
-        citiesList = await geoPlaces.GetCities(geoRegion.Id, filterRegions);
+        ViewSelect = false;
+        SearchValueMode = Element;
+        if (Element == "Group" && !PopupViewGroups) { PopupViewGroups = true; }
+        if (Element == "Roles" && !PopupViewRoles) { PopupViewRoles = true; }
+        Refresh();
+        StateHasChanged();
     }
 
-    private void ValueChangeCountry(ChangeEventArgs<string, Country> args)
+    protected async void EventSearcherValue(string group)
     {
-        country1 = args.ItemData;
-        LoadRegions(args.ItemData);
-        this.showRegion = true;
-    }
-
-    private void ValueChangeRegion(ChangeEventArgs<string, GeoRegion> args)
-    {
-        geo = args.ItemData;
-        SetCurrentRegion(args.ItemData);
-        this.showCities = true;
-    }
-
-    private void ValueChangeCity(ChangeEventArgs<string, City> args)
-    {
-        city = args.ItemData;
-    }
-
-    private async Task SaveEntity(EntityActor entityActor)
-    {
-        address.CityAddressRef = city.Id;
-        entityActor.InvoicingAddress = address;
-        var result = await actorsNodeServive.SaveEntity(null, entityActor);
-        if (result)
+        if (SearchValueMode == "Group")
         {
-            message = "New Entity Saved";
-            visible = true;
-            RefreshMe();
+            ListGroups = await actorsNodeServive.GetEntityGroups(group);
+            ParamCountResul = ListGroups.Count();
         }
+        if (SearchValueMode == "Roles")
+        {
+            entityRoles = await actorsNodeServive.GetListEntityRoles(group);
+            ParamCountResul = entityRoles.Count();
+        }
+        if (ParamCountResul > 0)
+        {
+            ViewSelect = true;
+        }
+        else
+        {
+            ViewSelect = false;
+        }
+        await Refresh();
     }
 
-    private void RefreshMe()
+    protected async void EventIdSelectorInput(string selectionId)
     {
-        entityActor = new EntityActor();
-        address = new Address();
-        city = new City();
-        geo = new GeoRegion();
-        country1 = new Country();
+        if (SearchValueMode == "Group")
+        {
+            FilterListGroups.Add(ListGroups.Where(c => c.Id == selectionId).FirstOrDefault());
+        }
+        if (SearchValueMode == "Roles")
+        {
+            role = entityRoles.Where(c => c.Id == selectionId).FirstOrDefault();
+        }
+        await Refresh();
     }
 
-    private void GoBack()
+
+    public async Task Refresh()
     {
-        navigationManager.NavigateTo($"/Actors");
+        if (inputTextSelector != null) await inputTextSelector.Refresh();
+        StateHasChanged();
+    }
+
+    public bool EmptyFolder(string path)
+    {
+        StateHasChanged();
+        return Directory.GetFiles(path).Length == 0;
+    }
+
+    public async Task NavigateToInvocingAddress()
+    {
+        navigationManager.NavigateTo($"/Actors/{Id}/InvocingAddress");
+    }
+
+    public async Task NavigateToTable()
+    {
+        navigationManager.NavigateTo($"/Actors/");
+    }
+
+    public async Task NavigateToImage()
+    {
+        navigationManager.NavigateTo($"/Actors/{Id}/Image");
     }
 
 }

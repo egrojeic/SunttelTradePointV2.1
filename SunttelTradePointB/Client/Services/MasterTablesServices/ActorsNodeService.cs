@@ -13,8 +13,10 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         private readonly HttpClient _httpClient;
 
         List<EntityActor>? entityNodesList;
+        EntityActor? tempEntityActor { get; set; }
+        Address? tempAddress { get; set; }
 
-        public string Host { get { return "https://localhost:7186/uploads/entityImages/"; } }
+        public string Host { get { return "https://localhost:7186/uploads/entityImages"; } }
 
         public enum UploadingFileTyoe
         {
@@ -399,7 +401,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task<ElectronicAddress> GetElectronicAddressById(string entityActorId)
+        public async Task<ElectronicAddress> GetElectronicAddressById(string electronicAddressId)
         {
             var userId = UIClientGlobalVariables.UserId;
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
@@ -407,7 +409,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             {
                 if (ipAddress == "")
                     ipAddress = "127.0.0.0";
-                var electronicList = await _httpClient.GetFromJsonAsync<ElectronicAddress>($"/api/EntityNodesMaintenance/GetElectronicAddresses?userId={userId}&ipAdress={ipAddress}&entityActorId={entityActorId}");
+                var electronicList = await _httpClient.GetFromJsonAsync<ElectronicAddress>($"/api/EntityNodesMaintenance/GetElectronicAddressById?userId={userId}&ipAdress={ipAddress}&electronicAddressId={electronicAddressId}");
                 return electronicList;
             }
             catch (Exception ex)
@@ -725,20 +727,21 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task<bool> UploadFiles(MultipartFormDataContent multipartFormDataContent)
+        public async Task<string> UploadFiles(MultipartFormDataContent multipartFormDataContent)
         {
             var userId = UIClientGlobalVariables.UserId;
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
                 var resul = await _httpClient.PostAsync($"api/UploadFiles", multipartFormDataContent);
-                return resul.IsSuccessStatusCode;
+                FilePath filePath = await resul.Content.ReadFromJsonAsync<FilePath>();
+                return filePath.filePath;
             }
             catch (Exception ex)
             {
                 string errMessage = ex.Message;
 
-                return false;
+                return "";
 
             }
         }
@@ -801,8 +804,40 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 return null;
 
             }
+        }
 
 
+
+        /// Temporal Object
+        
+        public async Task<EntityActor> NewEntityActor(EntityActor entityActor)
+        {
+            try
+            {
+                if(tempEntityActor == null)
+                    tempEntityActor = entityActor;
+                return tempEntityActor;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<Address> NewEntityActorAddress(Address address)
+        {
+            try
+            {
+                if(tempAddress == null)
+                    tempAddress = address;
+                return tempAddress;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
         }
 
         public Task<List<EntityActor>> GetEntityActorFaceList(string? nameLike = null, string? entityType = null, string? entityCode = null, bool forceRefresh = false)

@@ -114,13 +114,14 @@
 
     public async Task GetEAddresList(string entityId)
     {
-        if(electronicId != null)
+        if (entityId != null)
         {
             electronicById = await actorsNodeServive.GetElectronicAddressById(entityId);
             if(electronicById != null)
             {
                 electronicAddress = electronicById;
-                electronic = electronicById.EmitterEntity;   
+                electronic = electronicById.EmitterEntity;
+                StateHasChanged();
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿@page "/Actors/{Id}"
 @page "/Actors/{Id}/{Page}"
+@page "/Actors/NewActor"
 @using SunttelTradePointB.Client.Shared.ConceptSelectors
 @using SunttelTradePointB.Client.Shared.EntityShareComponents.EntitySubComponents
 @using SunttelTradePointB.Shared.Common
@@ -162,12 +163,14 @@
                         </div>
                     </div>
                 </div>
+                @if(Id != null)
+                {
                 <div class="col-sm">
                     @*@if (EmptyFolder("/uploads/entityImages"))
                     {
                         <img src="~/uploads/entityImages/8195193b-d768-4914-8747-0aa8f8815cbd.png" alt="Imagen" width="160px" height="150px">
                     }*@
-                    <img src="~/uploads/entityImages/avatar_male_man_person_user_icon.png" alt="Icon" width="160px" height="150px">
+                        <img src="@EntityNode.SkinImageName" alt="imagen" width="160px" height="150px">
 
                 </div>
                 <div class="col">
@@ -176,57 +179,63 @@
                             <path fill="currentColor" d="M6 0L5 1l2 2    l1-1l-2-2zM4 2L0 6v2h2l4-4l-2-2z" />
                         </svg>
                     </span>
-                </div>
+                </div>    
+                }
+                
             </div>
 
             <MessageSaveComponent message="@message" isVisible="visible"></MessageSaveComponent>
 
         </div>
 
+        @if(EntityNode == null || Id == null)
+        {
 
-        <div class="detailsContainer">
-            <div class="menuOptions">
-                <nav class="navVerticalOptions">
-                    <ul>
-                        <li class="@StyleClassItem(0)" @onclick="@(()=>SetMenuOption(0))">Shipping places<span class="arrowhead"></span></li>
-                        <li class="@StyleClassItem(1)" @onclick="@(()=>SetMenuOption(1))">Identifications<span class="arrowhead"></span></li>
-                        <li class="@StyleClassItem(2)" @onclick="@(()=>SetMenuOption(2))">Electronic addresses<span class="arrowhead"></span></li>
-                        <li class="@StyleClassItem(3)" @onclick="@(()=>SetMenuOption(3))">Phones<span class="arrowhead"></span></li>
-                        <li class="@StyleClassItem(4)" @onclick="@(()=>SetMenuOption(4))">Shipping setup<span class="arrowhead"></span></li>
-                        <li class="@StyleClassItem(5)" @onclick="@(()=>SetMenuOption(5))">Commercial Conditions<span class="arrowhead"></span></li>
-                    </ul>
-                </nav>
+        }
+        else
+        {
+            <div class="detailsContainer">
+                <div class="menuOptions">
+                    <nav class="navVerticalOptions">
+                        <ul>
+                            <li class="@StyleClassItem(0)" @onclick="@(()=>SetMenuOption(0))">Shipping places<span class="arrowhead"></span></li>
+                            <li class="@StyleClassItem(1)" @onclick="@(()=>SetMenuOption(1))">Identifications<span class="arrowhead"></span></li>
+                            <li class="@StyleClassItem(2)" @onclick="@(()=>SetMenuOption(2))">Electronic addresses<span class="arrowhead"></span></li>
+                            <li class="@StyleClassItem(3)" @onclick="@(()=>SetMenuOption(3))">Phones<span class="arrowhead"></span></li>
+                            <li class="@StyleClassItem(4)" @onclick="@(()=>SetMenuOption(4))">Shipping setup<span class="arrowhead"></span></li>
+                            <li class="@StyleClassItem(5)" @onclick="@(()=>SetMenuOption(5))">Commercial Conditions<span class="arrowhead"></span></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="workArea">
+                    @switch (verticalMenuOptionSelected)
+                    {
+                        case 0:
+                            <EntityShippingPlaces EntityId="@Id" Code="@EntityNode.Code" />
+                            break;
+                        case 1:
+                            <EntityIdentifications EntityId="@Id" />
+                            break;
+                        case 2:
+                            <EntityElectronicAddress EntityId="@Id" />
+                            break;
+                        case 3:
+                            <EntityPhones EntityId="@Id" />
+                            break;
+                        case 4:
+                            <EntityShippingSetUp EntityId="@Id" />
+                            break;
+                        case 5:
+                            <EntityComercialConditions EntityId="@Id" />
+                            break;
+                        default:
+                            <EntityShippingPlaces EntityId="@Id" />
+                            break;
+                    }
+
+                </div>
             </div>
-            <div class="workArea">
-            
-                @switch (verticalMenuOptionSelected)
-                {
-                    case 0:
-                        <EntityShippingPlaces EntityId="@Id" Code="@EntityNode.Code"/>
-                        break;
-                    case 1:
-                        <EntityIdentifications EntityId="@Id" />
-                        break;
-                    case 2:
-                        <EntityElectronicAddress EntityId="@Id" />
-                        break;
-                    case 3:
-                        <EntityPhones EntityId="@Id"/>
-                        break;
-                    case 4:
-                        <EntityShippingSetUp EntityId="@Id" />
-                        break;
-                    case 5:
-                        <EntityComercialConditions EntityId="@Id"/>
-                        break;
-                    default:
-                        <EntityShippingPlaces EntityId="@Id" />
-                        break;
-                }
-
-            </div>
-        </div>
-
+        }
     </form> 
 }
 
@@ -236,6 +245,8 @@
 @code {
     public EntityActor? currentEntityActor { get; set; }
     EntityActor EntityNode;
+    EntityActor actor;
+    Address addressNew;
     [Parameter]
     public string Id { get; set; }
     [Parameter]
@@ -307,18 +318,44 @@
         lblLegacyId = UICommonFunctions.GetDisplayName(new EntityActor(), "LegacyId");
         lblRole = UICommonFunctions.GetDisplayName(new EntityActor(), "DefaultEntityRole");
         lblInvoicingAddress = UICommonFunctions.GetDisplayName(new EntityActor(), "InvoicingAddress");
+        if(Id == null)
+        {
+            actor = await actorsNodeServive.NewEntityActor(EntityNode);
+            var address = await actorsNodeServive.NewEntityActorAddress(addressNew);
+            if (actor != null)
+            {
+                EntityNode = actor;
+                role = actor.DefaultEntityRole;
+                FilterListGroups = actor.Groups;
+                EntityNode.InvoicingAddress = address;
+            }
 
-        await ActorEntityNode(Id);
-        await GetRoles();
-        var a = await actorsNodeServive.GetImage(Id);
+            StateHasChanged();
+        }
+        if (Id != null)
+        {
+            await ActorEntityNode(Id);
+            await GetRoles();
+            //var a = await actorsNodeServive.GetImage(Id);
+        }
+        else
+        {
+            if(actor == null)
+                EntityNode = new EntityActor();
+        }
+
 
         if (currentEntityActor == null)
         {
             currentEntityActor = new EntityActor();
         }
+        else
+        {
+            EntityNode = currentEntityActor;
+            FilterListGroups = EntityNode.Groups;    
+        }
 
-        EntityNode = currentEntityActor;
-        FilterListGroups = EntityNode.Groups;
+
 
         await Refresh();
     }
@@ -472,7 +509,21 @@
 
     public async Task NavigateToInvocingAddress()
     {
-        navigationManager.NavigateTo($"/Actors/{Id}/InvocingAddress");
+        if(Id != null)
+        {
+            navigationManager.NavigateTo($"/Actors/{Id}/InvocingAddress");
+        }
+        else
+        {
+            if(EntityNode != null && Id == null)
+            {
+                EntityNode.DefaultEntityRole = role;
+                EntityNode.Groups = FilterListGroups;
+                actorsNodeServive.NewEntityActor(EntityNode);
+                navigationManager.NavigateTo("/Actors/NewActor/InvocingAddress");
+            }
+        }
+        
     }
 
     public async Task NavigateToTable()

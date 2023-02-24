@@ -170,8 +170,11 @@
             {
                 if (identifierList.Id == identificationId)
                 {
-                    identificationEntity.Code = identifierList.Code;
-                    identificationType.Name = identifierList.EntityTypeId.Name;
+                    //identificationEntity.Code = identifierList.Code;
+                    //identificationType = identifierList.EntityTypeId;
+                    //identificationType.Name = identifierList.EntityTypeId.Name;
+                    identificationEntity = identifierList;
+                    identificationType = identifierList.EntityTypeId;
                 }
             }
         }

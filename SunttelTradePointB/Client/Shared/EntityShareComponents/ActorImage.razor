@@ -58,6 +58,10 @@
 
     InputFile? referInputFile;
     TransactItemImage itemImage = new TransactItemImage();
+    EntityActor actor = new EntityActor();
+    private string entityImage { get; set; } = "";
+
+    public MultipartFormDataContent fileUpload { get; set; }
 
     private async Task LoadFile(InputFileChangeEventArgs e)
     {
@@ -76,7 +80,7 @@
 
             var file = e.File;
             string fileName = Guid.NewGuid().ToString();
-            itemImage.PathImage = "/" + Guid.NewGuid().ToString() + ".png";
+            entityImage = "/" + Guid.NewGuid().ToString() + ".png";
 
             var resizedFile = await file.RequestImageFileAsync("image/png", 300, 300);
 
@@ -89,6 +93,7 @@
                 content.Add(new StringContent(fileName), "photoName");
 
                 await actorsNodeServive.UploadFiles(content);
+                fileUpload = content;
             }
 
             bufer = null;
@@ -99,7 +104,14 @@
 
     public async void Save()
     {
-        itemImage = new TransactItemImage();
+
+        if(fileUpload != null)
+        {
+            actor = await actorsNodeServive.GetEntityActor(Id);
+            actor.SkinImageName = actorsNodeServive.Host + entityImage;
+            await actorsNodeServive.SaveEntity(Id, actor);
+            actor = new EntityActor();
+        }
         imgUrl = "/images/defaultImage.png";
         StateHasChanged();
     }

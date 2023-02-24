@@ -18,7 +18,7 @@
                 <CardContent>
                     <form onsubmit="event.preventDefault();">
                         <div class="form-group row">
-                            <div class="form-group row">
+                            <div>
                                 <label class="control-label col-md-12">@lblCode: </label>
                                 <div class="col">
                                     <input type="number" class="form-control" @bind-value="identificationEntity.Code" required />
@@ -26,12 +26,14 @@
                             </div>
                         </div>
 
-                        <div class="form-group row py-2">
+                        <div class="form-group row">
                             <label class="control-label col-md-12">@lblEntityIssuer: </label>
                             <div class="col">
                                 <input type="Text" class="form-control" @bind-value="identificationEntity.Name" required />
                             </div>
                         </div>
+
+                        <MessageSaveComponent message="@message" isVisible="visible"></MessageSaveComponent>
                         <div class="py-2">
                             <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveIdentification(identificationId, identificationEntity))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
                             <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
@@ -56,6 +58,9 @@
     public bool PopupViewIdentification = false;
     public string SearchValueMode = "";
     public int ParamCountResul = 0;
+
+    private string message { get; set; } = "";
+    private bool visible { get; set; } = false;
 
     AtomConcept identificationEntity = new AtomConcept();
     IdentificationType identificationType = new IdentificationType();
@@ -87,21 +92,24 @@
 
     private async void SaveIdentification(string entityId, AtomConcept identificationEntitySave)
     {
-        if (entityId != null && identificationEntitySave != null)
-        {
-            if (identificationId != null)
-            {
-                identificationEntitySave.Id = identificationId;
-            }
-            identificationEntitySave = identificationType;
-            await actorsNodeServive.SaveIdentificationType(identificationEntitySave);
-        }
         if(entityId == null && identificationEntitySave != null)
         {
             identificationEntitySave = identificationEntity;
             await actorsNodeServive.SaveIdentificationType(identificationEntitySave);
+            message = "Identification Saved";
+            visible = true;
+            StateHasChanged();
+            Reload();
         }
-
+        else
+        {
+            identificationEntitySave.Id = entityId;
+            await actorsNodeServive.SaveIdentificationType(identificationEntitySave);
+            message = "Identification Saved";
+            visible = true;
+            StateHasChanged();
+            Reload();
+        }
     }
 
     public async Task GetEntityIdentifierType(string entityId)

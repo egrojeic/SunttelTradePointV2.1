@@ -52,7 +52,7 @@
 
     [Parameter]
     public string? EntityId { get; set; }
-    List<PhoneNumber> entityPhonesList;
+    List<PhoneNumber> entityPhonesList = new List<PhoneNumber>();
     IList<PhoneNumber> selectedPhones;
     private PhonePopUp? phonePopUp;
     RadzenDataGrid<PhoneNumber>? radzenDataGrid;

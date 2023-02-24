@@ -1,4 +1,5 @@
 ﻿@page "/Actors/{Id}/InvocingAddress"
+@page "/Actors/NewActors/InvocingAddress"
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.DropDowns
 @using SunttelTradePointB.Shared.Common
@@ -8,7 +9,8 @@
 
 @inject IJSRuntime JSRuntime
 @inject GeographicPlacesService geoPlaces
-@inject ActorsNodeService actorsNodeServive;
+@inject ActorsNodeService actorsNodeServive
+@inject NavigationManager navigationManager
 
 
 <div class="control-section">
@@ -74,7 +76,14 @@
                         <MessageSaveComponent message="Invoicing Address Saved" isVisible="visible"></MessageSaveComponent>
 
                         <div class="py-2">
-                            <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveInvoicingAddres(Id, entityActor))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                            @if (saveInvoicing)
+                            {
+                                <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => Save(address))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                            }
+                            @if (save)
+                            {
+                                <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveInvoicingAddres(Id, entityActor))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                            }
                             <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
                         </div>
                     </form>
@@ -87,6 +96,9 @@
 
 
 @code {
+    [Parameter]
+    public string Id { get; set; } = "";
+
     private bool showRegion { get; set; } = false;
 
     private bool showCities { get; set; } = false;
@@ -99,11 +111,10 @@
 
     public bool visible = false;
 
-    [Parameter]
-    public EventCallback<Address> saveInvocingAddress { get; set; }
+    public bool saveInvoicing { get; set; } = false;
+    public bool save { get; set; } = false;
 
-    [Parameter]
-    public string Id { get; set; }
+    EntityActor actor = new EntityActor(); 
 
     //Geographic Place Definition
     private List<Country>? countryList;
@@ -185,7 +196,16 @@
         lblRegion = UICommonFunctions.GetDisplayName(new GeoRegion(), "Name");
         lblCity = UICommonFunctions.GetDisplayName(new City(), "Name");
         lblZipCode = UICommonFunctions.GetDisplayName(new Address(), "ZipCode");
-        GetEntityId(Id);
+        if(Id != "NewActor")
+        {
+            await GetEntityId(Id);
+            save = true;
+        }
+        else
+        {
+            saveInvoicing = true;
+        }
+
         await GetFilteredCountries();
     }
 
@@ -253,26 +273,27 @@
         showCities = false;
     }
 
-    private void saveData()
-    {
-        address.CityAddress = city;
-        address.CityAddress.RegionCity = geo;
-        address.CityAddress.RegionCity.CountryRegion = country1;
-        saveInvocingAddress.InvokeAsync(address);
-        sfDialog.RefreshPositionAsync();
-    }
-
-    public async void GetEntityId(string entityId)
+    public async Task GetEntityId(string entityId)
     {
         entityActor = await actorsNodeServive.GetEntityActor(entityId);
     }
 
-    public async void SaveInvoicingAddres(string entityId, EntityActor entityActor)
+    public async void SaveInvoicingAddres(string? entityId, EntityActor? entityActor)
     {
         address.CityAddressRef = city.Id;
         entityActor.InvoicingAddress = address;
-        await actorsNodeServive.SaveEntity(entityId, entityActor);
-        visible = true;
+        if(Id != null)
+        {
+            await actorsNodeServive.SaveEntity(entityId, entityActor);
+            visible = true;    
+        }
+
+    }
+    private async void Save(Address addressSave)
+    {
+        address.CityAddressRef = city.Id;
+        await actorsNodeServive.NewEntityActorAddress(addressSave);
+        GoBack();
     }
 
     private void GoBack()
