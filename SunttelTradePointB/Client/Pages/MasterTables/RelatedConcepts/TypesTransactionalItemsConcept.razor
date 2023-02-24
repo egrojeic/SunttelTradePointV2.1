@@ -1005,6 +1005,7 @@
             }
 
         }
+
         if (value == "TransactionalItemProcessesTag")
         {
             if (Mode == "Add")
@@ -1024,8 +1025,17 @@
             {
                 if (transactionalItemProcessTag.Id != null)
                 {
+                    var remove = transactionalItemProcessTags.Where(s => s.Id == transactionalItemProcessTag.Id).FirstOrDefault();
+                    int index = transactionalItemProcessTags.LastIndexOf(remove);
+                    if (index > -1)
+                    {
+                        transactionalItemProcessTags.RemoveAt(index);
+                        transactionalItemProcessTags[index] = transactionalItemProcessTag;
+                        Msg("Updated");
+                    }
 
-                    Msg("Updated");
+
+
                 }
                 else
                 {
@@ -1051,7 +1061,14 @@
 
                 if (costExceptionsByQuantity.Id != null)
                 {
-
+                    var remove = costExceptionsByQuantitys.Where(s => s.Id == costExceptionsByQuantity.Id).FirstOrDefault();
+                    int index = costExceptionsByQuantitys.LastIndexOf(remove);
+                    if (index > -1)
+                    {
+                        costExceptionsByQuantitys.RemoveAt(index);
+                        costExceptionsByQuantitys[index] = costExceptionsByQuantity;
+                        Msg("Updated");
+                    }
                     Msg("Updated");
                 }
                 else
@@ -1079,7 +1096,14 @@
 
                 if (transactionalItemTypeCharacteristic.Id != null)
                 {
-
+                    var remove = transactionalItemTypeCharacteristics.Where(s => s.Id == transactionalItemTypeCharacteristic.Id).FirstOrDefault();
+                    int index = transactionalItemTypeCharacteristics.LastIndexOf(remove);
+                    if (index > -1)
+                    {
+                        transactionalItemTypeCharacteristics.RemoveAt(index);
+                        transactionalItemTypeCharacteristics[index] = transactionalItemTypeCharacteristic;
+                        Msg("Updated");
+                    }
                     Msg("Updated");
                 }
                 else
@@ -1092,6 +1116,7 @@
 
 
         }
+
         if (value == "QualityParameters")
         {
             if (Mode == "Add")
@@ -1099,7 +1124,7 @@
                 if (transactionalItemQualitys == null) transactionalItemQualitys = new();
                 transactionalItemQualitys.Add(transactionalItemQuality);
                 transactionalItemQuality = new();
-                  Msg("Added");
+                Msg("Added");
             }
             if (Mode == "Edit")
             {
@@ -1107,7 +1132,14 @@
                 if (transactionalItemQuality.Id != null)
                 {
 
-
+                    var remove = transactionalItemQualitys.Where(s => s.Id == transactionalItemQuality.Id).FirstOrDefault();
+                    int index = transactionalItemQualitys.LastIndexOf(remove);
+                    if (index > -1)
+                    {
+                        transactionalItemQualitys.RemoveAt(index);
+                        transactionalItemQualitys[index] = transactionalItemQuality;
+                        Msg("Updated");
+                    }
                     Msg("Updated");
                 }
                 else
@@ -1120,6 +1152,7 @@
 
 
         }
+
         if (value == "InRecipeQualityModifiers")
         {
 
@@ -1134,9 +1167,16 @@
             if (Mode == "Edit")
             {
 
-                if (inRecipeModifier.Id!= null)
-                {                  
-
+                if (inRecipeModifier.Id != null)
+                {
+                    var remove = inRecipeModifiers.Where(s => s.Id == inRecipeModifier.Id).FirstOrDefault();
+                    int index = inRecipeModifiers.LastIndexOf(remove);
+                    if (index > -1)
+                    {
+                        inRecipeModifiers.RemoveAt(index);
+                        inRecipeModifiers[index] = inRecipeModifier;
+                        Msg("Updated");
+                    }
                     Msg("Updated");
                 }
                 else
@@ -1160,9 +1200,16 @@
             if (Mode == "Edit")
             {
 
-                if (recipePossibleModifierValue.Id!= null)
+                if (recipePossibleModifierValue.Id != null)
                 {
-
+                    var remove = recipePossibleModifierValues.Where(s => s.Id == recipePossibleModifierValue.Id).FirstOrDefault();
+                    int index = recipePossibleModifierValues.LastIndexOf(remove);
+                    if (index > -1)
+                    {
+                        recipePossibleModifierValues.RemoveAt(index);
+                        recipePossibleModifierValues[index] = recipePossibleModifierValue;
+                        Msg("Updated");
+                    }
 
                     Msg("Updated");
                 }
@@ -1172,10 +1219,10 @@
                 }
 
             }
-           
+
         }
 
-      
+
 
     }
 
@@ -1222,25 +1269,27 @@
         {
             if (childrenGroup.GroupClassificationCriteria != null)
             {
-                if (childrenGroup.Id == null)
+                if (childrenGroup.Id == null && Mode == "Add")
                 {
                     childrenGroups.Add(childrenGroup);
                     childrenGroup = new();
                     Msg("Added");
                 }
-                else
+
+                if (Mode == "Edit")
                 {
-                    var remove = childrenGroups.Where(s => s.Id == childrenGroup.Id).FirstOrDefault();
-                    int index = childrenGroups.IndexOf(remove);
-                    if (remove != null && index > -1)
+                    if (childrenGroup.Id != null)
                     {
-
-                        childrenGroups[index] = childrenGroup;
-                        // childrenGroups.Add(childrenGroup);
-                        childrenGroup = new();
-                        Msg("Update");
+                        var remove = childrenGroups.Where(s => s.Id == childrenGroup.Id).FirstOrDefault();
+                        int index = childrenGroups.IndexOf(remove);
+                        if (remove != null && index > -1)
+                        {
+                            childrenGroups[index] = childrenGroup;
+                            // childrenGroups.Add(childrenGroup);
+                            childrenGroup = new();
+                            Msg("Update");
+                        }
                     }
-
 
 
 
