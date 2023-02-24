@@ -26,7 +26,7 @@
                             <label>Select an image:</label>
                             <div class="col">
                                 <img src="@imgUrl" style="height:120px; width:180px; border-radius:10px 10px 0px 0px; margin-left:5px;" @ref="previewImageElem" /><br />
-                                <InputFile @ref="referInputFile" class="form-control" lang="en" OnChange="@LoadFile" />
+                                <InputFile @ref="referInputFile" class="form-control" lang="en" OnChange="@LoadFile" accept=".png" />
                             </div>
                         </div>
 
@@ -80,7 +80,7 @@
 
             var file = e.File;
             string fileName = Guid.NewGuid().ToString();
-            entityImage = "/" + Guid.NewGuid().ToString() + ".png";
+            entityImage = "/" + fileName + ".png";
 
             var resizedFile = await file.RequestImageFileAsync("image/png", 300, 300);
 
@@ -108,7 +108,7 @@
         if(fileUpload != null)
         {
             actor = await actorsNodeServive.GetEntityActor(Id);
-            actor.SkinImageName = actorsNodeServive.Host + entityImage;
+            actor.SkinImageName = entityImage;
             await actorsNodeServive.SaveEntity(Id, actor);
             actor = new EntityActor();
         }

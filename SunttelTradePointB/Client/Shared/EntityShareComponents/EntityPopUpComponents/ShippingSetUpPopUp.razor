@@ -126,6 +126,7 @@
                                 <SfCheckBox Label="Friday" @bind-Checked="isCheckedFriday"></SfCheckBox>
                                 <SfCheckBox Label="Saturday" @bind-Checked="isCheckedSaturday"></SfCheckBox>
                                 <SfCheckBox Label="Sunday" @bind-Checked="isCheckedSunday"></SfCheckBox>
+                                <SfCheckBox Label="All" @bind-Checked="isCheckedAll" @onchange="(e => HandleCheckBoxClick(isCheckedAll))"></SfCheckBox>
                             </div>
                         </div>
 
@@ -160,6 +161,7 @@
     private bool isCheckedFriday = false;
     private bool isCheckedSaturday = false;
     private bool isCheckedSunday = false;
+    private bool isCheckedAll { get; set; } = false;
 
     //Sender
     EntityActor entityActor = new EntityActor();
@@ -261,6 +263,31 @@
                 isCheckedSunday = getShippingInfo.Sunday;
             }
         }
+    }
+
+    public void HandleCheckBoxClick(bool value)
+    {
+        if (value)
+        {
+            CheckAll(true);
+        }
+        else
+        {
+            CheckAll(false);
+        }
+    }
+
+
+    private void CheckAll(bool value)
+    {
+        isCheckedMonday = value;
+        isCheckedTuesday = value;
+        isCheckedWednesday = value;
+        isCheckedThursday = value;
+        isCheckedFriday = value;
+        isCheckedSaturday = value;
+        isCheckedSunday = value;
+        StateHasChanged();
     }
 
     public void SetViewElemnt(string Element)
