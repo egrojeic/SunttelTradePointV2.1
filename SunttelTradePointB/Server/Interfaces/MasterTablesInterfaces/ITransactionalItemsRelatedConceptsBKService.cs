@@ -184,5 +184,35 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<(bool IsSuccess, AssemblyType? assemblyType, string? ErrorDescription)> SaveAssemblyType(string userId, string ipAddress, AssemblyType assemblyType);
 
+
+        /// <summary>
+        /// Retrieves information of a particular Label Style by its id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="labelStyleId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, LabelStyle?  labelStyle, string? ErrorDescription)> GetLabelStyle(string userId, string ipAddress, string labelStyleId);
+
+        /// <summary>
+        /// Save label style
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="labelStyle"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, LabelStyle? labelStyle, string? ErrorDescription)> SaveLabelStyle(string userId, string ipAddress, LabelStyle labelStyle);
+
+        
+        /// <summary>
+        /// Retrieves the list of  Label Styles
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="filterString"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<AtomConcept>? labelStyles, string? ErrorDescription)> GetLabelStyles(string userId, string ipAddress, string filterString);
+
+
     }
 }
