@@ -91,43 +91,26 @@
 
     <div class="flex-horizontal-center position-relative">
 
-        <SfTab Height="300px" HeaderPlacement="HeaderPosition.Left">
-            <TabAnimationSettings>
-                <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
-                <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
-            </TabAnimationSettings>
-            <TabItems>
-                <TabItem>
-                    <ChildContent>
-                        <TabHeader Text="@GetName( "Groups", new ConceptType())"></TabHeader>
-                    </ChildContent>
-                    <ContentTemplate>
-                        <div class="flex-horizontal-center">
-                            <div class="detailsTitleContainer">
-                                <h3 class="subTitleDetailForm">Children Groups</h3>
-                                <svg @onclick='()=>ClosedAdd("Groups")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
-                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                                </svg>
-                                @*<img class="img-style" src="/images/save-2.png" @onclick='()=>AddItem("Groups")' />*@
-                            </div>
-                            @if (childrenGroups == null) childrenGroups = new();
+        <div class="flex-horizontal-center">
+            <div class="detailsTitleContainer">
+                <h3 class="subTitleDetailForm">Children Groups</h3>
+                <svg @onclick='()=>ClosedAdd("Groups")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                </svg>
+                @*<img class="img-style" src="/images/save-2.png" @onclick='()=>AddItem("Groups")' />*@
+            </div>
+            @if (childrenGroups == null) childrenGroups = new();
 
-                            <DataGrid TParameter="ConceptGroup"
-                                      EventCallbackMenu="OnContextMenuClick"
-                                      parameterList="childrenGroups"
-                                      GridColumnsList="gridColumnListchildrenGroups"
-                                      EventCallbackOnLoad="Onload"
-                                      Width="800">
-                            </DataGrid>
+            <DataGrid TParameter="ConceptGroup"
+                      EventCallbackMenu="OnContextMenuClick"
+                      parameterList="childrenGroups"
+                      GridColumnsList="gridColumnListchildrenGroups"
+                      EventCallbackOnLoad="Onload"
+                      Width="100%">
+            </DataGrid>
 
-                        </div>
-                    </ContentTemplate>
-                </TabItem>
-            </TabItems>
-        </SfTab>
-
-     
+        </div>
     </div>
 </div>
 @code {
@@ -156,8 +139,15 @@
     {
         if (Mode == "Edit")
         {
-            conceptGroup = transactionalService.ConceptGroupSelectedItems;
-            if (conceptGroup == null) { Closed("control"); }
+            if (transactionalService?.ConceptGroupSelectedItems != null)
+            {
+                conceptGroup = transactionalService.ConceptGroupSelectedItems;
+            }
+            else
+            {
+                Closed("control");
+            }
+
 
             childrenGroups = conceptGroup.ChildrenGroups;
         }

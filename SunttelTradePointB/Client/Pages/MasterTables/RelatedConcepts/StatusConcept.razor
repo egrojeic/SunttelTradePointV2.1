@@ -35,6 +35,7 @@
         <div>
             <SfSwitch @bind-Checked="@transactionalItemStatus.IsAvailableToBuy"></SfSwitch>
         </div>
+        <div></div>
         <div>
             <div class="flex-horizontal-end">
                 <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
@@ -63,7 +64,16 @@
     {
         if (Mode == "Edit")
         {
-            transactionalItemStatus = transactionalService.ConceptStatusSelectedItems;
+
+            if (transactionalService?.ConceptStatusSelectedItems != null)
+            {
+                transactionalItemStatus = transactionalService.ConceptStatusSelectedItems;
+            }
+            else
+            {
+                Closed("control");
+            }
+                    
         }
         if (Mode == "Add")
         {
@@ -79,10 +89,11 @@
     }
 
     public async void Save()
-    {       
+    {
         var resul = await transactionalService.SaveStatus(transactionalItemStatus);
         if (resul) transactionalItemStatus = new();
         Msg(resul);
+
 
     }
 
@@ -90,11 +101,13 @@
     {
         msg = mode ? "Saved" : "No saved";
         viewMsg = true;
+        StateHasChanged();
     }
     private void Msg(string? Msg)
     {
         msg = Msg;
         viewMsg = true;
+        StateHasChanged();
     }
     public string GetName(string Name, Object Obj)
     {

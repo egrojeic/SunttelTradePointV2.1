@@ -426,6 +426,10 @@
     <div class="grid-columns-header ">
         <div><label>@GetName( "Name", new AtomConcept())</label></div>
         <div><input type="text" @bind-value="transactionalItemType.Name" class="form-control" placeholder="Edit value" /></div>
+        <div><label>@GetName( "Code", new AtomConcept())</label></div>
+        <div><input type="text" @bind-value="transactionalItemType.Code" class="form-control" placeholder="Edit value" /></div>
+         <div><label>@GetName( "Notes", new AtomConcept())</label></div>
+        <div><input type="text" @bind-value="transactionalItemType.Notes" class="form-control" placeholder="Edit value" /></div>
         <div><label>@GetName( "HasProductionSpecs", new TransactionalItemType())</label></div>
         <div>
             <SfSwitch @bind-Checked="@transactionalItemType.HasProductionSpecs"></SfSwitch>

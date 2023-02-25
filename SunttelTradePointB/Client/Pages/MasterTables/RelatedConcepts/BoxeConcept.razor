@@ -119,8 +119,16 @@
     {
         if (Mode == "Edit")
         {
-            box = transactionalService.BoxSelectedItems;
-            if (box == null) Closed("control");
+            if (transactionalService?.BoxSelectedItems != null)
+            {
+                box = transactionalService.BoxSelectedItems;
+            }
+            else
+            {
+                Closed("control");
+            }
+
+           
         }
         if (Mode == "Add")
         {

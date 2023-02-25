@@ -61,7 +61,14 @@
         ParamCountResul = 0;
         ViewPopupCount = true;
         SearcherCountOff();
-        await EventSearcherValue.InvokeAsync(inputSearcherValue);       
+        if (inputSearcherValue != null && inputSearcherValue!="")
+        {
+            await EventSearcherValue.InvokeAsync(inputSearcherValue);
+        }
+        else
+        {
+            await EventSearcherValue.InvokeAsync("all");
+        }           
         backgroundSelection = "white";
         colorSelection = "black";       
        
@@ -109,12 +116,12 @@
         StateHasChanged();
     }
     public void Closed()
-    {
-        EventClosed.InvokeAsync();
+    {      
         ViewControl = false;
         ViewSelect = false;
         backgroundSelection = "";
         colorSelection = "";
+        EventClosed.InvokeAsync();
         Refresh();
     }
 }

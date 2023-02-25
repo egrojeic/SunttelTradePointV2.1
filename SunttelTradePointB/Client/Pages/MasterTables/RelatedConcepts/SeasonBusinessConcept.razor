@@ -52,8 +52,16 @@
     {
         if (Mode == "Edit")
         {
-            seasonBusiness = transactionalService.SeasonBusinessSelectedItems;
-            if (seasonBusiness == null) { Closed("control"); }
+            if (transactionalService?.SeasonBusinessSelectedItems != null)
+            {
+                seasonBusiness = transactionalService.SeasonBusinessSelectedItems;
+            }
+            else
+            {
+                Closed("control");
+            }          
+          
+            
         }
         if (Mode == "Add")
         {

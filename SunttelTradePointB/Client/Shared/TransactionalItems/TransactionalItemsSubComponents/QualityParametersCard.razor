@@ -152,7 +152,8 @@
 
         if (ModeSearcher == "QualityParameters")
         {
-            transactionalItemQualityPairView = await transactionalService.GetTransactionalItemDetailsQualityParameters(_transactionalItemId);
+            var data = await transactionalService.GetTransactionalItemTypes("all");
+           // transactionalItemQualityPairView = await data..GetTransactionalItemDetailsQualityParameters(_transactionalItemId);
             if (transactionalItemQualityPairView != null)
             {
                 transactionalItemQualityPairView = transactionalItemQualityPairView.Where(s => s.TransactionalItemQuality.Name.ToLower().Contains(value.ToLower())).ToList();

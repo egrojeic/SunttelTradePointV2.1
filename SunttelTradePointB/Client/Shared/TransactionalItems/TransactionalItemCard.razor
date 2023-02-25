@@ -90,7 +90,7 @@
                 <div class="form-group">
                     <div style="display:flex; flex-direction:row;">
                         <div class="conten-chip margin-left-control">
-                            <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewAddImg">
+                            <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventClosed="ClosedInputText" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewAddImg">
                                 @{
                                     if (transactItemImages != null)
                                     {
@@ -395,7 +395,7 @@
     public void SetStatus()
     {
         modeStatus = modeStatus ? false : true;
-       
+
         ConceptStatus statust = new();
         if (modeStatus)
         {
@@ -424,6 +424,12 @@
         if (currentItem!=null) currentItemStatus = currentItem.Status !=null ? currentItem.Status.Name:"";
     }
 
+    public void ClosedInputText()
+    {
+        PopupViewAddImg = false;
+        ViewSelect = false;
+        StateHasChanged();
+    }
 
     public string GetName(string Name, Object Obj)
     {
