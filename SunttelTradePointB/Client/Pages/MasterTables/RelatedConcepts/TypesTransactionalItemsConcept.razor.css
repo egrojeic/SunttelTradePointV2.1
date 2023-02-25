@@ -98,3 +98,20 @@
     margin-left:10px;
     cursor:pointer;
 }
+.div-alert-save{
+    position:relative;  
+}
+.msg-save {
+    position: absolute;
+    background-color: orangered;
+    color: white;
+    height: 20px;
+    width: 119px;
+    font-size: 12px;
+    padding: 0px 5px 0px 15px;
+    border-radius: 8px 8px 8px 1px;
+    box-shadow:inset -1px -1px 3px 0px;
+    top: -18px;
+    left: 80px;
+    z-index: 12;
+}

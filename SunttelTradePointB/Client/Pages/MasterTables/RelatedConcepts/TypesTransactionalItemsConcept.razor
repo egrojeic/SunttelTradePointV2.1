@@ -61,6 +61,7 @@
             <nav>
                 <button @onclick='()=>OpenAdd("ProcessTag")' class="general-menu-button" style="text-align:center;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
+
                 <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
                     <SplitButtonEvents ItemSelected="ItemSelected_1">
                     </SplitButtonEvents>
@@ -73,6 +74,7 @@
                         <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
                     </DropDownMenuItems>
                 </SfSplitButton>
+
             </nav>
         </div>
 
@@ -403,19 +405,21 @@
     <div class="container-menu-g">
         <nav>
             <button @onclick='()=>Closed("control")' class="general-menu-button" style="text-align:center;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-
-            <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
-                <SplitButtonEvents ItemSelected="ItemSelected">
-                </SplitButtonEvents>
-                <DropDownMenuItems>
-                    <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
-                    <DropDownMenuItem Separator="true"></DropDownMenuItem>
-                    <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
-                    <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
-                    <DropDownMenuItem Separator="true"></DropDownMenuItem>
-                    <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
-                </DropDownMenuItems>
-            </SfSplitButton>
+            <div class="div-alert-save">
+                <p style="display:@(requiereSave?"block":"none");" class="msg-save">¡ Require save !</p>
+                <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+                    <SplitButtonEvents ItemSelected="ItemSelected">
+                    </SplitButtonEvents>
+                    <DropDownMenuItems>
+                        <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                        <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                        <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                        <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                        <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                        <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+                    </DropDownMenuItems>
+                </SfSplitButton>
+            </div>
         </nav>
     </div>
 
@@ -598,6 +602,9 @@
     public string Mode { get; set; } = "Add";
     [Parameter]
     public string filterItems { get; set; } = "";
+
+    bool requiereSave = false;
+
     public TransactionalItemType transactionalItemType = new();
     public List<ConceptGroup> childrenGroups = new();
     public ConceptGroup childrenGroup = new();
@@ -734,9 +741,6 @@
         #endregion Column
 
     }
-
-
-
 
     #region Event
     public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemQuality> args)
@@ -891,17 +895,22 @@
 
             var resul = await transactionalService.SaveTransactionalItemType(transactionalItemType);
 
-            Msg(resul);
-
-            if (resul && Mode == "Add")
+            if (resul)
             {
-                inRecipeModifiers = new();
-                childrenGroups = new();
-                transactionalItemQualitys = new();
-                transactionalItemTypeCharacteristics = new();
-                transactionalItemProcessSteps = new();
-                transactionalItemType = new();
+                requiereSave = false;
+                Msg(resul);
 
+                if (Mode == "Add")
+                {
+                    inRecipeModifiers = new();
+                    childrenGroups = new();
+                    transactionalItemQualitys = new();
+                    transactionalItemTypeCharacteristics = new();
+                    transactionalItemProcessSteps = new();
+                    transactionalItemType = new();
+
+
+                }
             }
             StateHasChanged();
 
@@ -960,6 +969,7 @@
 
     public void AddItem(string value)
     {
+        requiereSave = true;
         if (value == "TransactionalItemProcesses")
         {
             if (transactionalItemProcessSteps == null) transactionalItemProcessSteps = new();
@@ -972,16 +982,8 @@
                     transactionalItemProcessStep.TypeOfComponentsToCharge = typeOfComponentsToCharge != null ? typeOfComponentsToCharge : new();
                     transactionalItemProcessStep.ProcessType = processType != null ? processType : new();
 
-                    var remove = transactionalItemProcessSteps.Where(s => s.Id == transactionalItemProcessStep.Id).FirstOrDefault();
-                    int index = transactionalItemProcessSteps.LastIndexOf(remove);
-                    if (index > -1)
-                    {
-                        transactionalItemProcessSteps.RemoveAt(index);
-                        transactionalItemProcessSteps.Add(transactionalItemProcessStep);
-                        transactionalItemProcessStep = new();
-                        transactionalItemProcessTags = new();
-                        Msg("Updated");
-                    }
+                    Msg("Updated");
+
 
                 }
                 else
@@ -1025,17 +1027,7 @@
             {
                 if (transactionalItemProcessTag.Id != null)
                 {
-                    var remove = transactionalItemProcessTags.Where(s => s.Id == transactionalItemProcessTag.Id).FirstOrDefault();
-                    int index = transactionalItemProcessTags.LastIndexOf(remove);
-                    if (index > -1)
-                    {
-                        transactionalItemProcessTags.RemoveAt(index);
-                        transactionalItemProcessTags[index] = transactionalItemProcessTag;
-                        Msg("Updated");
-                    }
-
-
-
+                    Msg("Updated");
                 }
                 else
                 {
@@ -1061,15 +1053,8 @@
 
                 if (costExceptionsByQuantity.Id != null)
                 {
-                    var remove = costExceptionsByQuantitys.Where(s => s.Id == costExceptionsByQuantity.Id).FirstOrDefault();
-                    int index = costExceptionsByQuantitys.LastIndexOf(remove);
-                    if (index > -1)
-                    {
-                        costExceptionsByQuantitys.RemoveAt(index);
-                        costExceptionsByQuantitys[index] = costExceptionsByQuantity;
-                        Msg("Updated");
-                    }
                     Msg("Updated");
+
                 }
                 else
                 {
@@ -1096,15 +1081,9 @@
 
                 if (transactionalItemTypeCharacteristic.Id != null)
                 {
-                    var remove = transactionalItemTypeCharacteristics.Where(s => s.Id == transactionalItemTypeCharacteristic.Id).FirstOrDefault();
-                    int index = transactionalItemTypeCharacteristics.LastIndexOf(remove);
-                    if (index > -1)
-                    {
-                        transactionalItemTypeCharacteristics.RemoveAt(index);
-                        transactionalItemTypeCharacteristics[index] = transactionalItemTypeCharacteristic;
-                        Msg("Updated");
-                    }
+
                     Msg("Updated");
+
                 }
                 else
                 {
@@ -1129,23 +1108,7 @@
             if (Mode == "Edit")
             {
 
-                if (transactionalItemQuality.Id != null)
-                {
-
-                    var remove = transactionalItemQualitys.Where(s => s.Id == transactionalItemQuality.Id).FirstOrDefault();
-                    int index = transactionalItemQualitys.LastIndexOf(remove);
-                    if (index > -1)
-                    {
-                        transactionalItemQualitys.RemoveAt(index);
-                        transactionalItemQualitys[index] = transactionalItemQuality;
-                        Msg("Updated");
-                    }
-                    Msg("Updated");
-                }
-                else
-                {
-                    Msg("Does not exist");
-                }
+                Msg("Updated");
 
             }
 
@@ -1167,22 +1130,7 @@
             if (Mode == "Edit")
             {
 
-                if (inRecipeModifier.Id != null)
-                {
-                    var remove = inRecipeModifiers.Where(s => s.Id == inRecipeModifier.Id).FirstOrDefault();
-                    int index = inRecipeModifiers.LastIndexOf(remove);
-                    if (index > -1)
-                    {
-                        inRecipeModifiers.RemoveAt(index);
-                        inRecipeModifiers[index] = inRecipeModifier;
-                        Msg("Updated");
-                    }
-                    Msg("Updated");
-                }
-                else
-                {
-                    Msg("Does not exist");
-                }
+                Msg("Updated");
 
             }
 
@@ -1200,23 +1148,8 @@
             if (Mode == "Edit")
             {
 
-                if (recipePossibleModifierValue.Id != null)
-                {
-                    var remove = recipePossibleModifierValues.Where(s => s.Id == recipePossibleModifierValue.Id).FirstOrDefault();
-                    int index = recipePossibleModifierValues.LastIndexOf(remove);
-                    if (index > -1)
-                    {
-                        recipePossibleModifierValues.RemoveAt(index);
-                        recipePossibleModifierValues[index] = recipePossibleModifierValue;
-                        Msg("Updated");
-                    }
+                Msg("Updated");
 
-                    Msg("Updated");
-                }
-                else
-                {
-                    Msg("Does not exist");
-                }
 
             }
 
@@ -1230,6 +1163,7 @@
 
     public void DeleteTag(string value)
     {
+        requiereSave = true;
         var tag = transactionalItemProcessTags.Where(r => r.Key == value).FirstOrDefault();
         transactionalItemProcessTags.Remove(tag);
         Msg("Deleteed");
@@ -1240,6 +1174,7 @@
     {
         if (possibleValue != null)
         {
+            requiereSave = true;
             possibleValues.Add(possibleValue);
             //possibleValuesModel.Add(new PossibleValues {
             //    Name = transactionalItemTypeCharacteristic.Name,
@@ -1257,6 +1192,7 @@
         //var elemenModel = possibleValuesModel.Where(e => e.Name.Trim() == value.Trim()).FirstOrDefault();
         if (element != null && possibleValue != null)
         {
+            requiereSave = true;
             possibleValues.Remove(element);
             //possibleValuesModel.Remove(elemenModel);
             Msg("Deleteed");
@@ -1273,27 +1209,16 @@
                 {
                     childrenGroups.Add(childrenGroup);
                     childrenGroup = new();
+                    requiereSave = true;
                     Msg("Added");
                 }
 
                 if (Mode == "Edit")
                 {
-                    if (childrenGroup.Id != null)
-                    {
-                        var remove = childrenGroups.Where(s => s.Id == childrenGroup.Id).FirstOrDefault();
-                        int index = childrenGroups.IndexOf(remove);
-                        if (remove != null && index > -1)
-                        {
-                            childrenGroups[index] = childrenGroup;
-                            // childrenGroups.Add(childrenGroup);
-                            childrenGroup = new();
-                            Msg("Update");
-                        }
-                    }
-
-
-
+                    requiereSave = true;
+                    Msg("Update");
                 }
+
 
             }
 
@@ -1309,6 +1234,7 @@
             if (remove != null)
             {
                 childrenGroups.Remove(remove);
+                requiereSave = true;
                 Msg("Deleteed");
             }
 
