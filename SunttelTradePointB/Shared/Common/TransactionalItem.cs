@@ -372,6 +372,8 @@ namespace SunttelTradePointB.Shared.Common
         public string Id { get; set; }
         public string LegacyId { get; set; }
         public string Name { get; set; }
+
+        [DisplayName("Possible Values of Quality Modifier")]
         public List<ProductRecipeQualityModifier> RecipePossibleModifierValues { get; set; }
 
     }
