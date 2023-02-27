@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Shared.Common;
+using System.Diagnostics.Contracts;
 
 namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
 {
@@ -236,6 +237,52 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
 
 
         /// <summary>
+        /// Retrieves information of a particular Label Style by its id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="labelStyleId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetLabelStyle")]
+        public async Task<IActionResult> GetLabelStyle(string userId, string ipAddress, string labelStyleId)
+        {
+            var response = await _transactionalItemsRelatedConcepts.GetLabelStyle(userId, ipAddress, labelStyleId);
+            if (response.IsSuccess)
+            {
+                return Ok(response.labelStyle);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Retrieves the list of  Label Styles
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="filterString"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetLabelStyles")]
+        public async Task<IActionResult> GetLabelStyles(string userId, string ipAddress, string filterString)
+        {
+            var response = await _transactionalItemsRelatedConcepts.GetLabelStyles(userId, ipAddress, filterString);
+            if (response.IsSuccess)
+            {
+                return Ok(response.labelStyles);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
         /// Saves a Box document. If it doesn't exists, it will be created
         /// </summary>
         /// <param name="box"></param>
@@ -461,6 +508,29 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
             if (response.IsSuccess)
             {
                 return Ok(response.assemblyType);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Save label style
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="labelStyle"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveLabelStyle")]
+        public async Task<IActionResult> SaveLabelStyle(string userId, string ipAddress, LabelStyle labelStyle)
+        {
+            var response = await _transactionalItemsRelatedConcepts.SaveLabelStyle(userId, ipAddress, labelStyle);
+            if (response.IsSuccess)
+            {
+                return Ok(response.labelStyle);
             }
             else
             {
