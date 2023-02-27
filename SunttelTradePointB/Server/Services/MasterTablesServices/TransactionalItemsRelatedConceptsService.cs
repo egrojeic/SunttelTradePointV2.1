@@ -691,7 +691,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             throw new NotImplementedException();
         }
 
-        public Task<(bool IsSuccess, List<AtomConcept>? labelStyles, string? ErrorDescription)> GetLabelStyles(string userId, string ipAddress, string filterString)
+        public Task<(bool IsSuccess, List<LabelStyle>? labelStyles, string? ErrorDescription)> GetLabelStyles(string userId, string ipAddress, string? filterString)
         {
             throw new NotImplementedException();
         }

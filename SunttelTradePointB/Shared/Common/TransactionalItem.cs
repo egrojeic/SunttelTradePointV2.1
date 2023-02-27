@@ -372,6 +372,8 @@ namespace SunttelTradePointB.Shared.Common
         public string Id { get; set; }
         public string LegacyId { get; set; }
         public string Name { get; set; }
+
+        [DisplayName("Possible Values of Quality Modifier")]
         public List<ProductRecipeQualityModifier> RecipePossibleModifierValues { get; set; }
 
     }
@@ -501,17 +503,21 @@ namespace SunttelTradePointB.Shared.Common
     }
     public class LabelStyle: AtomConcept
     {
-        
+
+        [DisplayName("Purpose")]
         public LabelPurpose Purpose { get; set; }
 
         [DisplayName("PDF Report")]
+        [BsonIgnoreIfNull]
         public string PDFReportName { get; set; }
         public LabelPaper Paper { get; set; }
 
         [DisplayName("DataMax Label Settings")]
+        [BsonIgnoreIfNull]
         public DataMaxLabelSpecs  DataMaxLabelSettings { get; set; }
 
         [DisplayName("Zebra Label Settings")]
+        [BsonIgnoreIfNull]
         public ZebraLabelSpecs  ZebraLabelSettings { get; set; }
     }
 
