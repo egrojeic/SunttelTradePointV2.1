@@ -324,6 +324,52 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
 
 
         /// <summary>
+        /// Retrieves the posible values for an specific recipe modifier
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="modifierId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetProductRecipeQualityModifiersByModifierId")]
+        public async Task<IActionResult> GetProductRecipeQualityModifiersByModifierId(string userId, string ipAddress, string modifierId)
+        {
+            var response = await _selectorDatasource.GetProductRecipeQualityModifiersByModifierId(userId, ipAddress, modifierId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.productRecipeQualityModifiers);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Retrieves thelist of products used as packing material
+        /// </summary>
+        /// <param name="filterString"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetSelectorListPackingMaterials")]
+        public async Task<IActionResult> GetSelectorListPackingMaterials(string filterString)
+        {
+            var response = await _selectorDatasource.GetSelectorListPackingMaterials(filterString);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.materialsList);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
         /// Retrieves a list of assembly types
         /// </summary>
         /// <param name="filterString"></param>
@@ -343,5 +389,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
                 return NotFound(response.ErrorDescription);
             }
         }
+
+
     }
 }

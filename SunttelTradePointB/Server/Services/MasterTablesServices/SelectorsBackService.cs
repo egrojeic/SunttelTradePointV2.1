@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Client.Shared.EntityShareComponents.RelatedConcepts;
@@ -623,9 +624,40 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="modifierId"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<(bool IsSuccess, List<ProductRecipeQualityModifier>? productRecipeQualityModifiers, string? ErrorDescription)> GetProductRecipeQualityModifiersByModifierId(string userId, string ipAddress, string modifierId)
+        public async Task<(bool IsSuccess, List<ProductRecipeQualityModifier>? productRecipeQualityModifiers, string? ErrorDescription)> GetProductRecipeQualityModifiersByModifierId(string userId, string ipAddress, string modifierId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument("$unwind", "$InRecipeModifiers")
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("InRecipeModifiers._id", new ObjectId(modifierId)))
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$project", new BsonDocument("InRecipeModifiers", 1))
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$replaceRoot", new BsonDocument("newRoot", "$InRecipeModifiers"))
+                );
+
+                var resultPrev = await _transactionalItemsTypes.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+
+                List<ProductRecipeQualityModifier> result = resultPrev.Select(d => BsonSerializer.Deserialize<ProductRecipeQualityModifier>(d)).ToList();
+
+
+                return (true, result, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
 
 
@@ -635,9 +667,31 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="filterString"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<(bool IsSuccess, List<AtomConcept>? materialsList, string? ErrorDescription)> GetSelectorListPackingMaterials(string filterString)
+        public async Task<(bool IsSuccess, List<AtomConcept>? materialsList, string? ErrorDescription)> GetSelectorListPackingMaterials(string filterString)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument {
+                        { "$project",
+                            new BsonDocument {
+                                { "Code", 1 },
+                                { "Name", 1 }
+                            }
+                        }
+                    }
+                );
+
+                List<AtomConcept> results = await _transactionalItemsTypes.Aggregate<AtomConcept>(pipeline).ToListAsync();
+
+                return (true, results, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
 
 

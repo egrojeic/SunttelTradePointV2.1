@@ -680,5 +680,20 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 return (false, null, e.Message);
             }
         }
+
+        public Task<(bool IsSuccess, LabelStyle? labelStyle, string? ErrorDescription)> GetLabelStyle(string userId, string ipAddress, string labelStyleId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<(bool IsSuccess, LabelStyle? labelStyle, string? ErrorDescription)> SaveLabelStyle(string userId, string ipAddress, LabelStyle labelStyle)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<(bool IsSuccess, List<AtomConcept>? labelStyles, string? ErrorDescription)> GetLabelStyles(string userId, string ipAddress, string filterString)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
