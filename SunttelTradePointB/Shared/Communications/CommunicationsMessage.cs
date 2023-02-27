@@ -41,6 +41,8 @@ namespace SunttelTradePointB.Shared.Communications
         public EntityNodeCommunications SenderEntity { get; set; }
         public DateTime SendDateTime { get; set; }
         public string Message { get; set; }
+
+        [BsonIgnoreIfNull]
         public List<ReceiverMessage> Receivers { get; set; }
         public CommunicationsMessageType MessageTypeId { get; set; }
 

@@ -211,7 +211,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="ipAddress"></param>
         /// <param name="filterString"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<AtomConcept>? labelStyles, string? ErrorDescription)> GetLabelStyles(string userId, string ipAddress, string filterString);
+        Task<(bool IsSuccess, List<LabelStyle>? labelStyles, string? ErrorDescription)> GetLabelStyles(string userId, string ipAddress, string? filterString);
 
 
     }
