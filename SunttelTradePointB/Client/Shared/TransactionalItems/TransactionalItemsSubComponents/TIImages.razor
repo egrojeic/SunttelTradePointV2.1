@@ -14,6 +14,13 @@
     </svg>
 </div>
 
+@if (@viewMsg)
+{
+    <MessageSaveComponent isVisible="viewMsg" message="@msg">
+    </MessageSaveComponent>
+}
+
+
 <SfDialog @ref="GridImg" Visible="@ImgOpen" Header="Image view" EnableResize="true" AllowDragging="true" CloseOnEscape="true" ShowCloseIcon="true" Width="300px">
     <ChildContent>
         <div class="view-img">
@@ -24,8 +31,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <SfGrid @ref="GridImge" DataSource="@PathImagesView" AllowTextWrap="false" AllowPaging="true" EnableStickyHeader="true"
-              >
+        <SfGrid @ref="GridImge" DataSource="@PathImagesView" AllowTextWrap="false" AllowPaging="true" EnableStickyHeader="true">
             <GridTemplates>
                 <RowTemplate>
                     <div class="grid-image">
@@ -36,10 +42,10 @@
                                 <img class="img-style" src="@(transactionalService.Host+elemnt.PathImage)" />
                             </div>
                             <div class="description">
-                                <p id="@elemnt.Id" > @elemnt.Name</p>
+                                <p id="@elemnt.Id"> @elemnt.Name</p>
                             </div>
                             <div>
-                                <img src="/images//delete.png" class="btn btn-color btn-delete" @onclick='()=>Delete(elemnt.Id)'>                               
+                                <img src="/images//delete.png" class="btn btn-color btn-delete" @onclick='()=>Delete(elemnt?.Id)'>
                             </div>
                         }
                     </div>
@@ -51,7 +57,7 @@
                 <GridColumn HeaderText="@Name" Width="210"></GridColumn>
                 <GridColumn HeaderText="" Width="110"></GridColumn>
             </GridColumns>
-          
+
         </SfGrid>
 
     </div>
@@ -70,6 +76,10 @@
     public string Name { get; set; }
     public string PathImage { get; set; }
     #endregion TitleName
+
+    bool viewMsg = false;
+    string msg = "";
+    int status = 0;
 
     protected override void OnInitialized()
     {
@@ -112,23 +122,28 @@
 
     public void Delete(string value)
     {
-        var resul = PathImagesView.Where(s => s.Id.Trim() == value.Trim()).FirstOrDefault();
-        if (resul != null)
-        {
-            PathImagesView.Remove(resul); Refresh();
-            if (transactionalService.TransactionalItems != null)
-            {
-                if (transactionalService.TransactionalItems.PathImages == null)
-                {
-                    transactionalService.TransactionalItems.PathImages = new List<TransactItemImage>();
-                }
-                var image = transactionalService.TransactionalItems.PathImages.Where(s => s.Id.Trim() == value.Trim()).FirstOrDefault();
-                if (image!=null) transactionalService.TransactionalItems.PathImages.Remove(image);
 
+        if (value != null)
+        {
+            var resul = PathImagesView.Where(s => s.Id.Trim() == value.Trim()).FirstOrDefault();
+            if (resul != null)
+            {
+                PathImagesView.Remove(resul); Refresh();
+                if (transactionalService.TransactionalItems != null)
+                {
+                    if (transactionalService.TransactionalItems.PathImages == null)
+                    {
+                        transactionalService.TransactionalItems.PathImages = new List<TransactItemImage>();
+                    }
+                    var image = transactionalService.TransactionalItems.PathImages.Where(s => s.Id.Trim() == value.Trim()).FirstOrDefault();
+                    if (image != null) transactionalService.TransactionalItems.PathImages.Remove(image);
+                    Msg("Removed",1);
+
+                }
             }
+            ImagenUrlOpen = "";
+            ImgOpen = false;
         }
-        ImagenUrlOpen = "";
-        ImgOpen = false;
     }
     public void SetOpenImg(string value)
     {
@@ -136,16 +151,22 @@
         ImgOpen = true;
     }
 
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactItemImage> args)
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactItemImage>
+    args)
     {
         TransactItemImage ObjModel = new();
         ObjModel = args.RowInfo.RowData;
         if (args.Item.Id == "Edit")
         {
-            
+
         }
     }
 
+    void Msg(string _msg, int _status)
+    {
+        viewMsg = true;
+        msg = _msg;
+        status = _status; 
+    }
 
-   
 }

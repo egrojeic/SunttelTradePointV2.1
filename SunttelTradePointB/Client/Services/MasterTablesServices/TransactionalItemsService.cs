@@ -357,7 +357,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             try
             {
                 boxes = await _httpClient.GetFromJsonAsync<List<Box>>($"api/TransactionalItemsRelatedConcepts/GetBoxTable");
-                return boxes != null ? boxes.Where(s => s.Name.ToLower().Contains(nameLike.ToLower())).ToList(): new List<Box>();
+                return boxes != null ? boxes.Where(s =>s.Name != null &&  s.Name.ToLower().Contains(nameLike.ToLower())).ToList(): new List<Box>();
             }
             catch (Exception ex)
             {

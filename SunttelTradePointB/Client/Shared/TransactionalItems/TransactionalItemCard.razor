@@ -21,19 +21,21 @@
 <form>
     <div class="panelMenuContainer" style="max-width:95%;">
         <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-        <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
-            <SplitButtonEvents ItemSelected="ItemSelected">
-            </SplitButtonEvents>
-            <DropDownMenuItems>
-                <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
-                <DropDownMenuItem Separator="true"></DropDownMenuItem>
-                <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
-                <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
-                <DropDownMenuItem Separator="true"></DropDownMenuItem>
-                <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
-            </DropDownMenuItems>
+        
+            <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+                <SplitButtonEvents ItemSelected="ItemSelected">
+                </SplitButtonEvents>
+                <DropDownMenuItems>
+                    <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                    <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                    <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+                </DropDownMenuItems>
 
-        </SfSplitButton>
+            </SfSplitButton>
+     
 
         <SfSplitButton Content="Related Concepts" IconCss="e-icons e-user-defined" CssClass="splitButtonsStyle">
             <SplitButtonEvents ItemSelected="ItemSelected">
@@ -77,13 +79,35 @@
             </div>
             <div>
                 <input type="number" class="form-control" @bind="currentItem.ReferenceCost" autocomplete="off" />
+            </div>           
+            <div><label>@GetName("TypeOfConcept", new Concept())</label></div>
+            <div>
+                <div style="position:relative;">
+
+                    <div class="item-edit">
+                        <label>@(typeOfConcept != null ? typeOfConcept.Name : "")</label>
+                        <button type="button" @onclick='()=>SetViewElemnt("TypeOfConcept")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                    </div>
+
+                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventClosed="ClosedInputText" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewTypeProduct">
+                        @{
+                            if (typeOfConcepts != null)
+                            {
+                                foreach (var Box in typeOfConcepts)
+                                {
+                                    <option value="@Box?.Id">@Box?.Name</option>
+                                }
+                            }
+                        }
+                    </InputTextSelector>
+                </div>
             </div>
+
             <div class="lineFormGroup">
                 <TransactionalItemGroupSelector @ref="referGroup" Groups="@currentItem.Groups" EventAddGroups="AddGroup"></TransactionalItemGroupSelector>
             </div>
-
         </div>
-        <div >
+        <div>
             <label for="shortcutCode">@GetName("SkinImageName", new Concept())</label>
             <br />
             <div class="lineFormGroup" style="position:relative;">
@@ -107,15 +131,16 @@
                             @if (transactItemImages == null) transactItemImages = new List<TransactItemImage>();
                             <img class="style-img" src="@(transactItemImage.PathImage !=null?transactionalService.Host+transactItemImage.PathImage:"/images/defaultImage.png")" @onclick='()=> SetViewElemnt("img")' />
                         </div>
-                     
+
 
                     </div>
 
                 </div>
             </div>
         </div>
+
+
     </div>
-   
 
     <hr />
     <div class="detailsContainer">
@@ -188,6 +213,7 @@
     public int status = 0;
     public bool AlertOpen = false;
     bool modeStatus = false;
+    bool requiereSave = false;
     Alert? referAlert;
 
     InputTextSelector? ReferInputTextSelector;
@@ -200,17 +226,22 @@
     List<TransactItemImage> pathImages = new();
     List<TransactionalItemQualityPair> qualityParameters = new();
     List<TransactionalItemTag> transactionalItemTags = new();
+    Concept typeOfConcept = new();
+    List<Concept> typeOfConcepts = new();
     TransactItemImage transactItemImage = new();
     List<TransactItemImage> transactItemImages = new();
     TransactionalItemGroupSelector? referGroup;
+
+
     int verticalMenuOptionSelected = 0;
     int ParamCountResul = 0;
     public string transactionalItemId { get; set; }
     public string currentItemStatus { get; set; }
-    public string nameTemp { get; set; }   
+    public string nameTemp { get; set; }
     string colorStatus = "gray", SearcherValueMode = "";
     bool ViewSelect = false;
     bool PopupViewAddImg = false;
+    bool PopupViewTypeProduct = false;
 
     protected override void OnParametersSet()
     {
@@ -232,7 +263,7 @@
         }
 
 
-        if (Mode == "Add" || currentItem==null)
+        if (Mode == "Add" || currentItem == null)
         {
             transactionalService.transactionalItemId = null;
             currentItem = new();
@@ -277,7 +308,7 @@
             if (currentItem.ItemCatalog == null) currentItem.ItemCatalog = new CatalogItem();
             if (currentItem.ItemCharacteristics == null) currentItem.ItemCharacteristics = new List<TransactionalItemCharacteristicPair>();
             if (currentItem.ProductPackingSpecs == null) currentItem.ProductPackingSpecs = new List<PackingSpecs>();
-            if (currentItem.ProductionSpecs == null) currentItem.ProductionSpecs = new List<TransactionalItemProcessStep>();           
+            if (currentItem.ProductionSpecs == null) currentItem.ProductionSpecs = new List<TransactionalItemProcessStep>();
             if (currentItem.PathImages == null) currentItem.PathImages = new List<TransactItemImage>();
             if (currentItem.PriceOverridenByPriceList == null) currentItem.PriceOverridenByPriceList = new PriceListTransactionalItems();
             if (currentItem.QualityParameters == null) currentItem.QualityParameters = new List<TransactionalItemQualityPair>();
@@ -336,15 +367,43 @@
     {
         if (SearcherValueMode == "img")
         {
-            transactItemImages = await transactionalService.GetTransactionalItemDetailsPathImages(transactionalItemId);    
-            if (transactItemImages==null) transactItemImages = new List<TransactItemImage>();
+            transactItemImages = await transactionalService.GetTransactionalItemDetailsPathImages(transactionalItemId);
+            if (transactItemImages == null) transactItemImages = new List<TransactItemImage>();
 
             transactItemImages = transactItemImages.Where(s => s.Name != null && s.Name.ToLower().Contains(value.ToLower())).ToList();
             ParamCountResul = transactItemImages != null ? transactItemImages.Count() : 0;
             ViewSelect = ParamCountResul > 0;
-            if (ReferInputTextSelector!=null) ReferInputTextSelector.Refresh();
+            if (ReferInputTextSelector != null) ReferInputTextSelector.Refresh();
             StateHasChanged();
 
+        }
+
+        if (SearcherValueMode == "TypeOfConcept")
+        {
+            if (typeOfConcepts == null) typeOfConcepts = new();
+            var data = await transactionalService.GetTransactionalItemTypes(value);
+            if (data != null)
+            {
+                foreach (var item in data)
+                {
+                    typeOfConcepts.Add(new Concept
+                        {
+                            Name = item.Name,
+                            Notes = item.Notes,
+                            Groups = item.Groups,
+                            AuditRecord = item.AuditRecord,
+                            HasChanged = item.HasChanged,
+                            Code = item.Code,
+                            Id = item.Id,
+                            IsLoadingData = item.IsLoadingData,
+                            IsSelected = item.IsSelected
+                        });
+                }
+            }
+
+            ParamCountResul = typeOfConcepts != null ? typeOfConcepts.Count() : 0;
+            ViewSelect = ParamCountResul > 0;
+            if (ReferInputTextSelector != null) ReferInputTextSelector.Refresh();
         }
 
     }
@@ -363,6 +422,16 @@
 
         }
 
+        if (SearcherValueMode == "TypeOfConcept")
+        {
+            if (typeOfConcepts == null) typeOfConcepts = new();
+            typeOfConcept = typeOfConcepts.Where(s => s.Id == selectionId).FirstOrDefault();
+            if (typeOfConcepts == null) typeOfConcepts = new();
+            ParamCountResul = typeOfConcepts != null ? typeOfConcepts.Count() : 0;
+            ViewSelect = false;
+            PopupViewTypeProduct = false;
+        }
+
         if (ReferInputTextSelector != null) ReferInputTextSelector.Refresh();
         StateHasChanged();
 
@@ -373,7 +442,7 @@
         ViewSelect = false;
         SearcherValueMode = Element;
         if (Element == "img") { PopupViewAddImg = true; }
-
+        if (Element == "TypeOfConcept") { PopupViewTypeProduct = true; }
         StateHasChanged();
     }
 
@@ -421,7 +490,7 @@
                 };
             colorStatus = "gary";
         }
-        if (currentItem!=null) currentItemStatus = currentItem.Status !=null ? currentItem.Status.Name:"";
+        if (currentItem != null) currentItemStatus = currentItem.Status != null ? currentItem.Status.Name : "";
     }
 
     public void ClosedInputText()
@@ -435,5 +504,10 @@
     {
         Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
+    }
+
+    public void RequiredSave(bool status)
+    {
+        requiereSave = status;
     }
 }

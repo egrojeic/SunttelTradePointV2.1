@@ -122,6 +122,7 @@
             if (transactionalService?.BoxSelectedItems != null)
             {
                 box = transactionalService.BoxSelectedItems;
+               // transactionalItem  = transactionalService.BoxSelectedItems.LinkedTransactionalItem;
             }
             else
             {
@@ -218,7 +219,7 @@
         if (tile == "Save")
         {
             bool validate = Validate.GetValidate(box);
-            if (validate)
+            if (validate || true)
             {
                 box.LinkedTransactionalItem = linkedTransactionalItem;
                 string boxId = box.Id;
