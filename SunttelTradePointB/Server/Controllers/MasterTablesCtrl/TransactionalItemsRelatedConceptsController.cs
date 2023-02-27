@@ -268,7 +268,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetLabelStyles")]
-        public async Task<IActionResult> GetLabelStyles(string userId, string ipAddress, string filterString)
+        public async Task<IActionResult> GetLabelStyles(string userId, string ipAddress, string? filterString)
         {
             var response = await _transactionalItemsRelatedConcepts.GetLabelStyles(userId, ipAddress, filterString);
             if (response.IsSuccess)

@@ -753,7 +753,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="filterString"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, List<AtomConcept>? labelStyles, string? ErrorDescription)> GetLabelStyles(string userId, string ipAddress, string filterString)
+        public async Task<(bool IsSuccess, List<LabelStyle>? labelStyles, string? ErrorDescription)> GetLabelStyles(string userId, string ipAddress, string? filterString)
         {
             try
             {
@@ -770,7 +770,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                             )
                         )
                     );
-                    List<AtomConcept> results = await _labelStyle.Aggregate<AtomConcept>(pipeline).ToListAsync();
+                    List<LabelStyle> results = await _labelStyle.Aggregate<LabelStyle>(pipeline).ToListAsync();
                     return (true, results, null);
                 }
                 else
