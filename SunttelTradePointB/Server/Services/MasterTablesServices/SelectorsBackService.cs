@@ -423,8 +423,20 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
+                var pipeline = new List<BsonDocument>();
 
-                List<Box> results = await _boxes.Find<Box>(new BsonDocument()).ToListAsync();
+                pipeline.Add(
+                    new BsonDocument{
+                        { "$project",
+                            new BsonDocument{
+                                { "Code", 1 },
+                                { "Name", 1 }
+                            }
+                        }
+                    }
+                );
+
+                List<Box> results = await _boxes.Aggregate<Box>(pipeline).ToListAsync();
 
                 return (true, results, null);
             }
