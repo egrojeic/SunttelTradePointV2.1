@@ -19,7 +19,7 @@
                     <form onsubmit="event.preventDefault();">
                         <div class="form-group row">
                             <div class="form-group row">
-                                <label class="control-label col-md-12">@lblCode: </label>
+                                <label class="control-label col-md-12">@lblCode*: </label>
                                 <div class="col">
                                     <input type="number" class="form-control" @bind-value="identificationEntity.Code" required/>
                                 </div>
@@ -28,7 +28,7 @@
 
                         <div class="form-group row py-2">
                             <div class="form-group row">
-                                <label class="control-label col-md-12">@lblEntityIssuer: </label>
+                                <label class="control-label col-md-12">@lblEntityIssuer*: </label>
                                 <div class="col">
                                     <div class="item-edit">
                                         <label>@(identificationType != null ? identificationType.Name : "")</label>
@@ -40,7 +40,7 @@
                                             {
                                                 foreach (var entity in identificationTypesList)
                                                 {
-                                                    <option value="@entity?.Id">@entity?.Name</option>
+                                                    <option value="@entity?.Name">@entity?.Name</option>
                                                 }
                                             }
 
@@ -85,6 +85,7 @@
     List<IdentificationEntity> identificationEntityList = new List<IdentificationEntity>();
     IdentificationType identificationType = new IdentificationType();
     List<IdentificationType> identificationTypesList = new List<IdentificationType>();
+    List<IdentificationType> identificationTypesListTest = new List<IdentificationType>();
     InputTextSelector? refInputTextSelector;
 
     public string lblCode = "";
@@ -120,6 +121,7 @@
             identificationEntity.EntityTypeId = identificationType;
             await actorsNodeServive.SaveIdentificationCode(entityId, identificationEntity);
             visible = true;
+            Reload();
             StateHasChanged();  
         }
 
@@ -137,7 +139,8 @@
     {
         if (SearchValueMode == "Identification")
         {
-            identificationTypesList = await actorsNodeServive.GetIdentificationTypes();
+            identificationTypesListTest = await actorsNodeServive.GetIdentificationTypes();
+            identificationTypesList = identificationTypesListTest.Where(e => e.Name.ToLower().Contains(value.ToLower())).ToList();
             ParamCountResul = identificationTypesList != null ? identificationTypesList.Count() : 0;
         }
         if (ParamCountResul > 0) { ViewSelect = true; } else { ViewSelect = false; }
@@ -170,9 +173,6 @@
             {
                 if (identifierList.Id == identificationId)
                 {
-                    //identificationEntity.Code = identifierList.Code;
-                    //identificationType = identifierList.EntityTypeId;
-                    //identificationType.Name = identifierList.EntityTypeId.Name;
                     identificationEntity = identifierList;
                     identificationType = identifierList.EntityTypeId;
                 }

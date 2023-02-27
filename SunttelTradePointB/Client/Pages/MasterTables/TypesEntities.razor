@@ -1,6 +1,8 @@
 ﻿@page "/TypesEntities"
-@using SunttelTradePointB.Client.Shared.TransactionalItems
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Navigations
 @using SunttelTradePointB.Shared.Common
+@using SunttelTradePointB.Client.Shared.TransactionalItems
 
 @inject IJSRuntime JSRuntime
 @inject ContextMenuService ContextMenuService
@@ -25,30 +27,24 @@
     }else{
         @if(entityTypesList != null)
         {
-            <RadzenDataGrid AllowFiltering="true"
-                    AllowColumnResize="true"
-                    AllowAlternatingRows="true"
-                    FilterMode="FilterMode.Advanced"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    AllowSorting="true"
-                    PageSize="50"
-                    AllowPaging="true"
-                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    Data="@entityTypesList"
-                    TItem="EntityType"
-                    ColumnWidth="300px"
-                    SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"
-                    @bind-Value=@selectedEntityType Class="m-4"
-                    CellContextMenu="@ShowContextMenuWithContent">
+            <SfGrid DataSource="entityTypesList"
+            Height="auto"
+            Width="auto"
+            TValue="EntityType"
+            AllowFiltering="true"
+            AllowTextWrap="false"
+            AllowPaging="true"
+            AllowResizing="true"
+            ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" } })">
+                <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
+                <GridColumns>
+                    <GridColumn Field="@nameof(EntityType.Code)" HeaderText="Code" Width="110"></GridColumn>
+                    <GridColumn Field="@nameof(EntityType.LegacyId)" HeaderText="LegacyId" Width="110"></GridColumn>
+                    <GridColumn Field="@nameof(EntityType.Name)" HeaderText="Name" Width="110"></GridColumn>
+                </GridColumns>
+                <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="EntityType"></GridEvents>
+            </SfGrid>
 
-                <Columns>
-                    <RadzenDataGridColumn TItem="EntityType" Property="Code" Title="Code" Frozen="true" Width="30px" />
-                    <RadzenDataGridColumn TItem="EntityType" Property="LegacyId" Title="LegacyId" Frozen="true" Width="30px" />
-                    <RadzenDataGridColumn TItem="EntityType" Property="Name" Filterable="true" Title="Name" Frozen="true" Width="180px" TextAlign="TextAlign.Center" />
-                </Columns>
-            </RadzenDataGrid>
         }
     }
 </div>
@@ -102,26 +98,16 @@
         }
     }
 
-    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<EntityType> args) => ContextMenuService.Open(args, ds =>
-    @<RadzenMenu Click="OnMenuItemClick">
-        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-
-    </RadzenMenu>
-    );
-
-    void OnMenuItemClick(MenuItemEventArgs args)
+    public void OnContextMenuClick(ContextMenuClickEventArgs<EntityType> args)
     {
-        EntityType argObj = (EntityType)args.Value;
+        EntityType _EntityType = new();
+        _EntityType = args.RowInfo.RowData;
 
-        if (args.Text == "Edit")
-            navigationManager.NavigateTo($"/EntityType/{argObj.Id}/Edit");
-
-        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        if (args.Item.Text == "Edit")
         {
-            ContextMenuService.Close();
+            navigationManager.NavigateTo($"/EntityType/{_EntityType.Id}/Edit");
         }
     }
-
 
 
 }

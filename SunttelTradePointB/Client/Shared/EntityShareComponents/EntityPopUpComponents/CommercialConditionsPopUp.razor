@@ -19,7 +19,7 @@
                 <CardContent>
                     <form onsubmit="event.preventDefault();">
                         <div class="form-group row">
-                            <label>@lblRelatedEntity:</label>
+                            <label>@lblRelatedEntity*:</label>
                             <div class="col">
                                 <div class="position:relative;">
                                     <div class="item-edit">
@@ -43,21 +43,21 @@
                         </div>
 
                         <div class="form-group row py-2">
-                            <label class="control-label col-md-12">@lblLimitCreditDays: </label>
+                            <label class="control-label col-md-12">@lblLimitCreditDays*: </label>
                             <div class="col">
                                 <input type="number" class="form-control" @bind-value="entitiesCommercialRelationShip.LimitCreditDays" required />
                             </div>
                         </div>
 
                         <div class="form-group row py-2">
-                            <label class="control-label col-md-12">@lblLimitCreditAmount: </label>
+                            <label class="control-label col-md-12">@lblLimitCreditAmount*: </label>
                             <div class="col">
                                 <input type="number" class="form-control" @bind-value="entitiesCommercialRelationShip.LimitCreditAmount" required />
                             </div>
                         </div>
 
                         <div class="form-group row">
-                            <label class="control-label col-md-12">@lblRelationType: </label>
+                            <label class="control-label col-md-12">@lblRelationType*: </label>
                             <div class="col">
                                 <SfDropDownList TValue="string" TItem="EntitiyRelationshipType" Placeholder="Select a relation type" AllowFiltering="true" DataSource="@entitiyRelationshipTypeList" @bind-Value="entitiyRelationshipType.Name">
                                     <DropDownListEvents TItem="EntitiyRelationshipType" TValue="string" ValueChange="@ValueChangeRelation"></DropDownListEvents>

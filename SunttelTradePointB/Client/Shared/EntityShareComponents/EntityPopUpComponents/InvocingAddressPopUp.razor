@@ -21,7 +21,7 @@
                 <CardContent>
                     <form onsubmit="event.preventDefault();">
                         <div class="form-group row">
-                            <label class="control-label col-md-12">@lblAddresLine1: </label>
+                            <label class="control-label col-md-12">@lblAddresLine1*: </label>
                             <div class="col">
                                 <SfTooltip ID="Tooltip" Target="#addres1" Content="@ContentAddres1">
                                     <input id="addres1" type="text" class="form-control" @bind-value="@address.AddressLine1" required />
@@ -30,7 +30,7 @@
                         </div>
 
                         <div class="form-group row py-2">
-                            <label class="control-label col-md-12">@lblCountry: </label>
+                            <label class="control-label col-md-12">@lblCountry*: </label>
                             <div class="col">
                                 <SfDropDownList TValue="string" TItem="Country" Placeholder="Select a country" AllowFiltering="true" DataSource="@countryList" @bind-Value="country1.Name">
                                     <DropDownListEvents TItem="Country" TValue="string" ValueChange="@ValueChangeCountry"></DropDownListEvents>
@@ -42,7 +42,7 @@
                         @if (showRegion)
                         {
                             <div class="form-group row py-2">
-                                <label class="control-label col-md-12">@lblRegion: </label>
+                                <label class="control-label col-md-12">@lblRegion*: </label>
                                 <div class="col">
                                     <SfDropDownList TValue="string" TItem="GeoRegion" Placeholder="Select a region" AllowFiltering="true" DataSource="@regionsList" @bind-Value="geo.Name">
                                         <DropDownListEvents TItem="GeoRegion" TValue="string" ValueChange="@ValueChangeRegion"></DropDownListEvents>
@@ -55,7 +55,7 @@
                         @if (showCities)
                         {
                             <div class="form-group row py-2">
-                                <label class="control-label col-md-12">@lblCity: </label>
+                                <label class="control-label col-md-12">@lblCity*: </label>
                                 <div class="col">
                                     <SfDropDownList TValue="string" TItem="City" Placeholder="Select a city" AllowFiltering="true" DataSource="@citiesList" @bind-Value="city.Id">
                                         <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
@@ -65,7 +65,7 @@
                         }
 
                         <div class="form-group row py-2">
-                            <label class="control-label col-md-12">@lblZipCode: </label>
+                            <label class="control-label col-md-12">@lblZipCode*: </label>
                             <div class="col">
                                 <SfTooltip ID="Tooltip" Target="#zipCode" Content="@ContentZipCode">
                                     <input id="zipCode" type="text" class="form-control" @bind-value="@address.ZipCode" required />

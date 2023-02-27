@@ -17,7 +17,7 @@
                     <form onsubmit="event.preventDefault();">
                         <div class="form-group row">
                             <div class="form-group row">
-                                <label class="control-label col-md-12">@lblAddresKey: </label>
+                                <label class="control-label col-md-12">@lblAddresKey*: </label>
                                 <div class="col">
                                     <input type="text" class="form-control" @bind-value="electronicAddress.AddressKey" required/>
                                 </div>
@@ -26,7 +26,7 @@
 
                         <div class="form-group row py-2">
                             <div class="form-group row">
-                                <label class="control-label col-md-12">@lblEmitter: </label>
+                                <label class="control-label col-md-12">@lblEmitter*: </label>
                                 <div class="col">
                                     <div class="item-edit">
                                         <label>@(electronic != null ? electronic.Name : "")</label>

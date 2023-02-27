@@ -22,7 +22,7 @@
                 <CardContent>
                     <form onsubmit="event.preventDefault();">
                         <div class="form-group row">
-                            <label class="control-label col-md-12">@lblName: </label>
+                            <label class="control-label col-md-12">@lblName*: </label>
                             <div class="col">
                                 <SfTooltip ID="Tooltip" Target="#name" Content="@ContentName">
                                     <input id="name" type="text" class="form-control" @bind-value="@address.Name" required />
@@ -31,7 +31,7 @@
                         </div>
 
                         <div class="form-group row py-2">
-                            <label class="control-label col-md-12">@lblAddressLine1: </label>
+                            <label class="control-label col-md-12">@lblAddressLine1*: </label>
                             <div class="col">
                                 <input id="addres1" type="text" class="form-control" @bind-value="@address.AddressLine1" required />
                             </div>
@@ -47,7 +47,7 @@
                         </div>
 
                         <div class="form-group row py-2">
-                            <label class="control-label col-md-12">@lblCountry: </label>
+                            <label class="control-label col-md-12">@lblCountry*: </label>
                             <div class="col">
                                 <SfDropDownList TValue="string" TItem="Country" Placeholder="Select a country" AllowFiltering="true" DataSource="@countryList" @bind-Value="country1.Name">
                                     <DropDownListEvents TItem="Country" TValue="string" ValueChange="@ValueChangeCountry"></DropDownListEvents>
@@ -57,7 +57,7 @@
                         </div>
 
                         <div class="form-group row py-2">
-                            <label class="control-label col-md-12">@lblRegion: </label>
+                            <label class="control-label col-md-12">@lblRegion*: </label>
                             <div class="col">
                                 <SfDropDownList TValue="string" TItem="GeoRegion" Placeholder="Select a region" AllowFiltering="true" DataSource="@regionsList" @bind-Value="geo.Name">
                                     <DropDownListEvents TItem="GeoRegion" TValue="string" ValueChange="@ValueChangeRegion"></DropDownListEvents>
@@ -67,7 +67,7 @@
                         </div>
 
                         <div class="form-group row py-2">
-                            <label class="control-label col-md-12">@lblCity: </label>
+                            <label class="control-label col-md-12">@lblCity*: </label>
                             <div class="col">
                                 <SfDropDownList TValue="string" TItem="City" Placeholder="Select a city" AllowFiltering="true" DataSource="@citiesList" @bind-Value="city.Name">
                                     <DropDownListEvents TItem="City" TValue="string" ValueChange="@ValueChangeCity"></DropDownListEvents>
@@ -77,7 +77,7 @@
                         </div>
 
                         <div class="form-group row py-2">
-                            <label class="control-label col-md-12">@lblZipCode: </label>
+                            <label class="control-label col-md-12">@lblZipCode*: </label>
                             <div class="col">
                                 <SfTooltip ID="Tooltip" Target="#zipCode" Content="@ContentZipCode">
                                     <input id="zipCode" type="text" class="form-control" @bind-value="@address.ZipCode" required />
@@ -322,39 +322,4 @@
     {
         navigationManager.NavigateTo($"/Actors/{Id}");
     }
-
-    /*
-    private async Task<string> GetIp()
-    {
-    return await httpClient.GetStringAsync("https://api.ipify.org/");
-    }
-
-    private async Task<Root> GetCountry(string ip)
-    {
-    return await httpClient.GetFromJsonAsync<Root>("https://www.iplocate.io/api/lookup/" + ip);
-    }
-
-
-
-    public class Root
-    {
-        public string ip { get; set; }
-        public string country { get; set; }
-        public string country_code { get; set; }
-        public bool is_eu { get; set; }
-        public string city { get; set; }
-        public string continent { get; set; }
-        public double latitude { get; set; }
-        public double longitude { get; set; }
-        public string time_zone { get; set; }
-        public string postal_code { get; set; }
-        public string subdivision { get; set; }
-        public object subdivision2 { get; set; }
-        public string network { get; set; }
-        public string org { get; set; }
-        public string asn { get; set; }
-        public string asn_network { get; set; }
-    }*/
-
-
 }

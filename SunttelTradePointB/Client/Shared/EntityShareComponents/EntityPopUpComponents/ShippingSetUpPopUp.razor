@@ -20,7 +20,7 @@
                 <CardContent>
                     <form onsubmit="event.preventDefault();">
                         <div class="form-group row">
-                            <label>@lblSender:</label>
+                            <label>@lblSender*:</label>
                             <div class="col">
                                 <div class="position:relative;">
                                     <div class="item-edit">
@@ -45,7 +45,7 @@
 
 
                         <div class="form-group py-2">
-                            <label>@lblCarrier:</label>
+                            <label>@lblCarrier*:</label>
                             <div class="col">
                                 <div class="position:relative;">
                                     <div class="item-edit">
@@ -69,25 +69,25 @@
                         </div>
 
                         <div class="form-group py-2">
-                            <label>@lblDeliveryAddress:</label>
+                            <label>@lblDeliveryAddress*:</label>
                             <div class="col">
                                 <input type="text" class="form-control" placeholder="Address" @bind-value="@deliver.Name" required />
                             </div>
                         </div>
                         <div class="form-group py-2">
-                            <label>@lblCutOff24Hours:</label>
+                            <label>@lblCutOff24Hours*:</label>
                             <div class="col">                                
                                 <input type="number" class="form-control" placeholder="Cut of 24 hours" @bind-value="@shippingInfo.CutOff24Hour" required />
                             </div>                            
                         </div>
                         <div class="form-group py-2">
-                            <label>@lblCutOffMinute:</label>
+                            <label>@lblCutOffMinute*:</label>
                             <div class="col">
                                 <input type="number" class="form-control" placeholder="Cut of minute" @bind-value="@shippingInfo.CutOffMinute" required />
                             </div>
                         </div>
                         <div class="form-group py-2">
-                            <label>@lblDalayTimeDays:</label>
+                            <label>@lblDalayTimeDays*:</label>
                             <div class="col">
                                 <input type="number" class="form-control" placeholder="Time Days" @bind-value="@shippingInfo.DelayTimeDays" required />
                             </div>
@@ -95,7 +95,7 @@
 
                         
                         <div class="form-group py-2">
-                            <label>@lblPalletTypeShipping:</label>
+                            <label>@lblPalletTypeShipping*:</label>
                             <div class="col">
                                 <div class="position:relative;">
                                     <div class="item-edit">
@@ -108,7 +108,7 @@
                                             {
                                                 foreach (var entity in palletTypeList)
                                                 {
-                                                    <option value="@entity?.Id">@entity?.Name</option>
+                                                    <option value="@entity?.Name">@entity?.Name</option>
                                                 }
                                             }
                                         }
@@ -117,7 +117,7 @@
                             </div>
                         </div>
                         <div class="form-group py-2">
-                            <label>Days:</label>
+                            <label>Days*:</label>
                             <div class="col">
                                 <SfCheckBox Label="Monday" @bind-Checked="isCheckedMonday"></SfCheckBox>
                                 <SfCheckBox Label="Tuesday" @bind-Checked="isCheckedTuesday"></SfCheckBox>
@@ -172,6 +172,7 @@
     //Pallet
     PalletType entityActorPallet = new PalletType();
     List<PalletType> palletTypeList = new List<PalletType>();
+    List<PalletType> palletTypeListTest = new List<PalletType>();
 
     AtomConcept sender = new AtomConcept();
     AtomConcept carrier = new AtomConcept();
@@ -314,7 +315,8 @@
         }
         if (SearcherValueMode == "Pallet")
         {
-            palletTypeList = await actorsNodeServive.GetPalletTypes();
+            palletTypeListTest = await actorsNodeServive.GetPalletTypes();
+            palletTypeList = palletTypeListTest.Where(e => e.Name.ToLower().Contains(value.ToLower())).ToList();
             ParamCountResul = palletTypeList != null ? palletTypeList.Count() : 0;
         }
         if (ParamCountResul > 0) { ViewSelect = true; } else { ViewSelect = false; }
