@@ -51,8 +51,22 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             try
             {
                 string strNameFiler = nameLike == null ? "" : nameLike;
- ;
-                List<Country> countriesList = await _CountryCollection.Find(c=>c.Name.Contains(strNameFiler)).SortBy(c=>c.Name).ToListAsync();
+
+                List<BsonDocument> pipeline = new List<BsonDocument>();
+                BsonRegularExpression regexPattern = new BsonRegularExpression(strNameFiler, "i"); // "i" makes the search case-insensitive
+
+                var matchByName = new BsonDocument("$match", new BsonDocument("Name", regexPattern));
+
+
+                if (strNameFiler.Length > 0)
+                    pipeline.Add(matchByName);
+
+                var projectElement = new BsonDocument(
+                   "$project", new BsonDocument("Name", 1)
+                   );
+                pipeline.Add(projectElement);
+
+                List<Country> countriesList = await _CountryCollection.Aggregate<Country>(pipeline).ToListAsync<Country>();
                 return (true, countriesList, null);
             }
             catch (Exception e) {

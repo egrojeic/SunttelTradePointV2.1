@@ -118,6 +118,9 @@ namespace SunttelTradePointB.Shared.Common
 
 
     public class IpRangeCountry {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
         public string StartIp { get; set; }
         public string FinalIp { get; set; }
 
