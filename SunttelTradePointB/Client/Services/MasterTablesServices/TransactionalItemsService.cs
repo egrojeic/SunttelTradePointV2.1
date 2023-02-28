@@ -26,6 +26,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         public TransactionalItemStatus? ConceptStatusSelectedItems { get; set; }
         public TransactionalItemType? ConceptTransactionalItemType { get; set; }
         public PackingSpecs? ConceptTransactionalItemPackingSpecs { get; set; }
+        public TransactionalItemQualityPair? ConceptTransactionalItemQualityPair { get; set; }
         public enum UploadingFileType
         {
             TransactionalItemImage,
@@ -50,6 +51,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         List<SeasonBusiness> seasonBusiness;
         List<TransactionalItemType> transactionalItemTypes;
         List<TransactionalItemStatus> transactionalItemStatuss;
+        List<TransactionalItemCharacteristicPair> transactionalItemCharacteristicPair;
+        List<LabelStyle> labelStyles;
         public TransactionalItemsService(HttpClient httpClient, IWebAssemblyHostEnvironment environment)
         {
             _httpClient = httpClient;
@@ -341,7 +344,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             try
             {
                 transactionalItemQualityPairsList = await _httpClient.GetFromJsonAsync<List<TransactionalItemQualityPair>>($"api/TransactionalItems/GetTransactionalItemDetailsQualityParameters?userId={userId}&ipAddress={ipAddress}&transactionalItemId={transactionalItemId}");
-                return transactItemImagesList != null ? transactionalItemQualityPairsList : new List<TransactionalItemQualityPair>();
+                return transactionalItemQualityPairsList != null ? transactionalItemQualityPairsList : new List<TransactionalItemQualityPair>();
             }
             catch (Exception ex)
             {
@@ -368,6 +371,47 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+        //---
+        public async Task<List<Box>> GetSelectorListBoxes(string? nameLike = null)
+        {
+            transactionalItemId = transactionalItemId != null ? transactionalItemId : "";
+            nameLike = nameLike != null ? nameLike : "";
+            try
+            {
+                boxes = await _httpClient.GetFromJsonAsync<List<Box>>($"api/ConceptsSelector/GetSelectorListBoxes");
+                return boxes != null ? boxes.Where(s => s.Name != null && s.Name.ToLower().Contains(nameLike.ToLower())).ToList() : new List<Box>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+
+                return null;
+
+            }
+
+        }
+        
+        //---
+        public async Task<List<LabelStyle>> GetLabelStyles(string? filterString)
+        {
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+          
+            try
+            {
+                 labelStyles = await _httpClient.GetFromJsonAsync<List<LabelStyle>>($"api/TransactionalItemsRelatedConcepts/GetLabelStyles?userId={userId}&ipAddress={ipAddress}&filterString={filterString}");
+                return labelStyles != null ? labelStyles : new();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+
+                return null;
+
+            }
+
+        }
+
         public async Task<Box> GetBox(string? boxID)
         {
             string userId = UIClientGlobalVariables.UserId;
@@ -529,6 +573,29 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+
+
+        //---
+        public async Task<List<TransactionalItemCharacteristicPair>> GetCharacteristic(string? transactionalItemTypeId = null)
+        {
+           
+            try
+            {
+                transactionalItemCharacteristicPair = await _httpClient.GetFromJsonAsync<List<TransactionalItemCharacteristicPair>>($"api/TransactionalItemsRelatedConcepts/GetTransactionalStatusesTable");
+                return transactionalItemCharacteristicPair != null ? transactionalItemCharacteristicPair : new List<TransactionalItemCharacteristicPair>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+
+                return null;
+
+            }
+
+        }
+
+
+
         public async Task<bool> SaveProductPackingSpec(string transactionalItemId, PackingSpecs packingSpecs)
         {
             string userId = UIClientGlobalVariables.UserId;
@@ -617,6 +684,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+
+      
 
         //---
         public async Task<bool> SaveCharacteristics(string? transactionalItemId, TransactionalItemCharacteristicPair transactionalItemCharacteristicPair)

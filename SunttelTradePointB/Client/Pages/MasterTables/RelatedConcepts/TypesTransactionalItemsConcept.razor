@@ -666,11 +666,12 @@
             if (transactionalService.ConceptTransactionalItemType != null)
             {
                 transactionalItemType = transactionalService.ConceptTransactionalItemType;
-                transactionalItemProcessSteps = transactionalItemType.TransactionalItemProcesses;
-                childrenGroups = transactionalItemType.Groups;
-                transactionalItemTypeCharacteristics = transactionalItemType.TransactionalItemTypeCharacteristics;
-                transactionalItemQualitys = transactionalItemType.QualityParameters;
-                inRecipeModifiers = transactionalItemType.InRecipeModifiers;
+                transactionalItemProcessSteps = transactionalItemType.TransactionalItemProcesses !=null ? transactionalItemType.TransactionalItemProcesses:new();
+                childrenGroups = transactionalItemType.Groups !=null ? transactionalItemType.Groups:new();
+                transactionalItemTypeCharacteristics =transactionalItemType.TransactionalItemTypeCharacteristics!=null ?  transactionalItemType.TransactionalItemTypeCharacteristics:new();
+                transactionalItemQualitys = transactionalItemType.QualityParameters !=null ?  transactionalItemType.QualityParameters:new();
+                inRecipeModifiers = transactionalItemType.InRecipeModifiers !=null?transactionalItemType.InRecipeModifiers:new();
+                StateHasChanged();
             }
             else
             {
@@ -1102,16 +1103,17 @@
 
         if (value == "QualityParameters")
         {
-            if (Mode == "Add")
+            List<TransactionalItemQuality> exist = transactionalItemQualitys.Where(s => s.Id == transactionalItemQuality.Id).ToList();
+            if (Mode == "Add" || ( exist ==null  || exist?.Count()<=0))
             {
                 if (transactionalItemQualitys == null) transactionalItemQualitys = new();
                 transactionalItemQualitys.Add(transactionalItemQuality);
                 transactionalItemQuality = new();
                 Msg("Added");
             }
-            if (Mode == "Edit")
+            if (Mode == "Edit" && (exist != null && exist?.Count() >0))
             {
-
+               
                 Msg("Updated");
 
             }

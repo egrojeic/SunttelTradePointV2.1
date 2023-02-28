@@ -4,6 +4,13 @@
 @inject NavigationManager Navigation
 @inject TransactionalItemsService transactionalService;
 
+
+@if (@viewMsg)
+{
+    <MessageSaveComponent isVisible="viewMsg" message="@msg">
+    </MessageSaveComponent>
+}
+
 <PageTitleComponent Title=" Characteristics " IconName=""
                     Description="Here you can add characteristics">
 </PageTitleComponent>
@@ -21,10 +28,10 @@
                 <div style="position:relative;">
                     <div class="item-edit">
                         <label>@(transactionalItemTypeCharacteristic != null ? transactionalItemTypeCharacteristic.Name : "")</label>
-                        <button @onclick='()=>SetViewElemnt("TransactionalItemTypeCharacteristic")' class="btn color-btn">+</button>
+                        <button @onclick='()=>SetViewElemnt("TransactionalItemTypeCharacteristic")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                     </div>
 
-                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" ViewSelect="ViewPopupCount" ViewControl="CharacteristicControlInput">
+                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" ViewSelect="ViewPopupCount" EventClosed="ClosedInput" ViewControl="CharacteristicControlInput">
                         @{
                             if (transactionalItemTypeCharacteristics != null)
                             {
@@ -59,7 +66,9 @@
     TransactionalItemTypeCharacteristic transactionalItemTypeCharacteristic = new();
     InputTextSelector? ReferInputTextSelector;
 
-
+    bool viewMsg = false;
+    string msg = "";
+    int status = 0;
     public int ParamCountResul = 0;
     bool CharacteristicControlInput = false;
     bool ViewPopupCount = false;
@@ -82,11 +91,14 @@
 
     private async void Save()
     {
-        ////SetQualityParameter.CreationTime = DateTime.UtcNow;
-        //SetQualityParameter.DefaultValue = "";
-        //var resul = await transactionalService.SaveQualityParameters(_transactionalItemId, transactionalItemQualityPair);
+        transactionalItemCharacteristicPair.TransactionalItemCharacteristic = transactionalItemTypeCharacteristic;
+        var resul = await transactionalService.SaveCharacteristics(_transactionalItemId, transactionalItemCharacteristicPair);
+        if (resul)
+        {
+            MsgOpen("Saved",1);
+            StateHasChanged();
+        }
 
-        Closed("control");
     }
 
     public async Task Refresh()
@@ -103,7 +115,7 @@
     protected async void EventIdSelection(string filter)
     {
         //transactionalItemTypeCharacteristics = await transactionalService.GetTransactionalItemDetailsQualityParameters();
-        transactionalItemTypeCharacteristic = transactionalItemTypeCharacteristics.Where(c => c.Name == filter).FirstOrDefault();
+        transactionalItemTypeCharacteristic = transactionalItemTypeCharacteristics.Where(c => c.Name == filter || c.Id == filter).FirstOrDefault();
         if (transactionalItemTypeCharacteristic == null) transactionalItemTypeCharacteristic = new();
         ParamCountResul = 0;
         CharacteristicControlInput = false;
@@ -118,14 +130,26 @@
 
         if (ModeSearcher == "TransactionalItemTypeCharacteristic")
         {
-            //transactionalItemTypeCharacteristics = await transactionalService.GetTransactionalItemDetailsQualityParameters(_transactionalItemId);
+
+            var transactionalItems = transactionalService.TransactionalItems;
+            transactionalItemTypeCharacteristics = new();
+            if (transactionalItems != null)
+            {
+                ConceptType type = transactionalItems.TypeOfConcept;
+                if (type != null)
+                {
+                    var itemTypes = await transactionalService.GetTransactionalItemTypes(type.Name);
+                    var resul = itemTypes.Where(s => s.Id == type.Id).FirstOrDefault();
+                    transactionalItemTypeCharacteristics = resul.TransactionalItemTypeCharacteristics.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList(); ;
+
+                }
+            }
+
+          
             if (transactionalItemTypeCharacteristics != null)
             {
                 transactionalItemTypeCharacteristics = transactionalItemTypeCharacteristics.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
-            }
-
-            if (transactionalItemTypeCharacteristics != null)
-            {
+           
                 ParamCountResul = transactionalItemTypeCharacteristics.Count();
                 ViewPopupCount = ParamCountResul > 0;
             }
@@ -136,6 +160,13 @@
             }
         }
         await Refresh();
+    }
+
+
+    public void ClosedInput()
+    {
+        ViewPopupCount = false;
+        CharacteristicControlInput = false;
     }
 
     public void SetViewElemnt(string Element)
@@ -149,5 +180,12 @@
     {
         Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
+    }
+
+    public void MsgOpen(string _msg, int _status)
+    {
+        viewMsg = true;
+        msg = _msg;
+        status = _status;
     }
 }

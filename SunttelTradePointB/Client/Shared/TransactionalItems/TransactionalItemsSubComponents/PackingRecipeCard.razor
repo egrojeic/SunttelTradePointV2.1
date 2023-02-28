@@ -559,7 +559,7 @@
                                     <div style="position:relative;">
                                         <div class="item-edit">
                                             <label>@(totalPriceItemTypeBasedOn != null ? totalPriceItemTypeBasedOn.Name : "")</label>
-                                            <button type="button" @onclick='()=>SetViewElemnt("TypeOfConcept")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                                            <button type="button" @onclick='()=>SetViewElemnt("TotalPriceItemTypeBasedOn")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                         </div>
 
                                         <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEdittotalPrice">
@@ -937,7 +937,7 @@
         if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
         {
             transactionalItemId = transactionalService.transactionalItemId;
-            OnInitializedModel();
+
         }
         if (Mode == "Edit")
         {
@@ -959,10 +959,7 @@
         }
     }
 
-    protected async void OnInitializedModel()
-    {
-        SetModels = await transactionalService.GetSelectorListEntityProductModel(transactionalItemId);
-    }
+
 
     public async void ItemSelected(MenuEventArgs e)
     {
@@ -1132,10 +1129,10 @@
         if (Element == "MaterialAssembly") { PopupViewMaterialAssembly = true; }
         if (Element == "RecipeQualityModifier") { PopupViewEditItemModifier = true; }
         if (Element == "TotalPriceItemTypeBasedOn") { PopupViewEdittotalPrice = true; }
-       
 
 
         
+
         StateHasChanged();
     }
 
@@ -1150,6 +1147,7 @@
         if (SearcherValueMode == "Model")
         {
             if (SetModels == null) SetModels = new();
+            SetModels = await transactionalService.GetSelectorListEntityProductModel(transactionalItemId);
             GetModelView = SetModels.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
             ParamCountResul = GetModelView.Count();
         }
@@ -1160,7 +1158,7 @@
         }
         if (SearcherValueMode == "BoxToSale")
         {
-            GetBoxToSaleView = await transactionalService.GetBoxTable(value);
+            GetBoxToSaleView = await transactionalService.GetSelectorListBoxes(value);
             ParamCountResul = GetBoxToSaleView != null ? GetBoxToSaleView.Count() : 0;
         }
         if (SearcherValueMode == "BoxToBuy")
@@ -1242,12 +1240,15 @@
         }
         if (SearcherValueMode == "BoxToSale")
         {
-            BoxToSale = GetBoxToSaleView.Where(c => c.Id == selectionId).FirstOrDefault();
+            BoxToSale = await transactionalService.GetBox(selectionId);
+            if (BoxToSale == null) BoxToSale = new();
+           
         }
         if (SearcherValueMode == "BoxToBuy")
         {
-            BoxToBuy = GetBoxToBuyView.Where(c => c.Id == selectionId).FirstOrDefault();
-            ParamCountResul = GetBoxToBuyView.Count();
+            BoxToBuy = await transactionalService.GetBox(selectionId);
+            if (BoxToSale == null) BoxToSale = new();
+          
         }
         if (SearcherValueMode == "PalletLabelStyle")
         {

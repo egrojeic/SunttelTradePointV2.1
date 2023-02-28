@@ -226,8 +226,8 @@
     List<TransactItemImage> pathImages = new();
     List<TransactionalItemQualityPair> qualityParameters = new();
     List<TransactionalItemTag> transactionalItemTags = new();
-    Concept typeOfConcept = new();
-    List<Concept> typeOfConcepts = new();
+    ConceptType typeOfConcept = new();
+    List<ConceptType> typeOfConcepts = new();
     TransactItemImage transactItemImage = new();
     List<TransactItemImage> transactItemImages = new();
     TransactionalItemGroupSelector? referGroup;
@@ -255,10 +255,14 @@
             transactionalItemId = transactionalService.transactionalItemId != null ? transactionalService.transactionalItemId : "";
             currentItem = transactionalService.TransactionalItems;
 
+
             if (currentItem != null)
             {
                 nameTemp = currentItem.Name;
+                typeOfConcept = currentItem.TypeOfConcept;
+                transactItemImage.PathImage = currentItem.SkinImageName;
                 currentItemStatus = currentItem.Status != null ? currentItem.Status.Name : "";
+                StateHasChanged();
             }
         }
 
@@ -313,8 +317,9 @@
             if (currentItem.PriceOverridenByPriceList == null) currentItem.PriceOverridenByPriceList = new PriceListTransactionalItems();
             if (currentItem.QualityParameters == null) currentItem.QualityParameters = new List<TransactionalItemQualityPair>();
             if (currentItem.TransactionalItemTags == null) currentItem.TransactionalItemTags = new List<TransactionalItemTag>();
+            if (currentItem.TypeOfConcept == null) currentItem.TypeOfConcept = new();
 
-
+            currentItem.TypeOfConcept  = typeOfConcept !=null ? typeOfConcept : new();
             TransactionalItem item = await transactionalService.SaveTransactionalItem(currentItem);
             bool resul = (item != null ? true : false);
             if (resul)
@@ -386,7 +391,7 @@
             {
                 foreach (var item in data)
                 {
-                    typeOfConcepts.Add(new Concept
+                    typeOfConcepts.Add(new ConceptType
                         {
                             Name = item.Name,
                             Notes = item.Notes,
@@ -396,7 +401,8 @@
                             Code = item.Code,
                             Id = item.Id,
                             IsLoadingData = item.IsLoadingData,
-                            IsSelected = item.IsSelected
+                            IsSelected = item.IsSelected,
+                            
                         });
                 }
             }
@@ -416,7 +422,7 @@
         {
             if (transactItemImages == null) transactItemImages = new();
             transactItemImage = transactItemImages.Where(c => c.Id == selectionId).FirstOrDefault();
-            currentItem.SkinImageName = transactItemImage.Name;
+            currentItem.SkinImageName = transactItemImage.PathImage;
             ViewSelect = false;
             PopupViewAddImg = false;
 

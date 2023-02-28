@@ -45,9 +45,9 @@
                 </div>
 
                 <div></div>
-                <div>
-                    <button @onclick='Addtag' class="size-btn color-btn margin-left" style="background-color:#00ccff;"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                <div>                   
                     <button @onclick='()=>OpenAdd("TransactionalItemTag")' class="size-btn color-btn margin-left" style="background-color:#00ccff;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                    <button @onclick='Addtag' class="size-btn color-btn margin-left" style="background-color:#00ccff;"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                 </div>
             </div>
 
@@ -314,7 +314,7 @@
                 if (resul )
                 {
                     OpenAlert("Saved", 1);
-                   
+
                     if (transactionalService.TransactionalItems != null)
                     {
                         if (transactionalService.TransactionalItems.ProductionSpecs == null)
@@ -322,9 +322,14 @@
                             transactionalService.TransactionalItems.ProductionSpecs = new List<TransactionalItemProcessStep>();
                         }
                         transactionalService.TransactionalItems.ProductionSpecs.Add(_TransactionalItemProcessStep);
-                        
+
                     }
-                  
+
+
+                }
+                else
+                {
+                    OpenAlert("No saved", 1);
 
                 }
             }

@@ -1,0 +1,117 @@
+﻿@page "/LabelStyles"
+@page "/LabelStyles/{_filterItems}"
+@using SunttelTradePointB.Client.Shared.TransactionalItems
+@using SunttelTradePointB.Shared.Common
+@using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Navigations
+@inject HttpClient Http
+@inject TransactionalItemsService transactItemsService;
+@inject IJSRuntime JSRuntime
+@inject ContextMenuService ContextMenuService
+@inject DialogService DialogService
+@inject NavigationManager Navigation
+
+<PageTitleComponent Title=" Label Style" IconName="palette.png"
+                    Description="Here you can add label style">
+</PageTitleComponent>
+
+<div class="panelMenuContainer">
+    <MenuConcet></MenuConcet>
+    <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
+
+</div>
+@if (isLoading)
+{
+
+    <WaitingProcessIndicator loadingTopic="Transactional Items"></WaitingProcessIndicator>
+
+}
+else
+{
+    @if (@labelStyles != null)
+    {
+           <div class="flex-horizontal-center ">
+            <DataGrid TParameter="LabelStyle"
+              EventCallbackMenu="OnContextMenuClick"
+              parameterList="labelStyles"
+              GridColumnsList="ListGridlabelStyles"
+              Width="100%">
+            </DataGrid>
+        </div>
+    }
+
+}
+
+@code {
+    [Parameter]
+    public string _filterItems { get; set; } = "";
+    public List<LabelStyle> labelStyles = new();
+
+    List<GridColumn> ListGridlabelStyles = new();
+    SfGrid<Box>? referDataGrid;
+
+    bool isLoading = false;
+
+
+
+    public string? conceptFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        if (_filterItems != "" && _filterItems != null)
+        {
+            LoadData();
+        }
+        transactItemsService.Page = "LabelStyles";
+
+        ListGridlabelStyles = new List<GridColumn>
+        {
+               new GridColumn() { Field=nameof(LabelStyle.Name) ,  HeaderText = @GetName( "Name", new AtomConcept()) , Width="300" },
+                 new GridColumn() { Field=nameof(LabelStyle.Code) ,  HeaderText = @GetName( "Name", new AtomConcept()), Width="80px"  },
+                  new GridColumn() { Field=nameof(LabelStyle.Notes) ,  HeaderText = @GetName( "Notes", new AtomConcept())  },
+                   new GridColumn() { Field=nameof(LabelStyle.PDFReportName) ,  HeaderText = @GetName( "PDFReportName", new LabelStyle())  },
+                    new GridColumn() { Field=nameof(LabelStyle.Purpose) ,  HeaderText = @GetName( "Purpose", new LabelStyle())  }           
+
+
+        };
+
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name) != null ? UICommonFunctions.GetDisplayName(Obj, Name) : Name;
+        return Name;
+    }
+
+    private async Task LoadData()
+    {
+        isLoading = true;
+        labelStyles = await transactItemsService.GetLabelStyles(_filterItems);
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<LabelStyle> args)
+    {
+        LabelStyle itemBox = null;
+        itemBox = args.RowInfo.RowData;
+       
+        if (args.Item.Id == "Edit")
+        {
+            Navigation.NavigateTo($"/LabelStylesConcept/LabelStyles/Edit/{_filterItems}");
+        }
+    }
+
+
+
+
+}
