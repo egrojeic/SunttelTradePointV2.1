@@ -1,4 +1,5 @@
 ﻿@page "/PackingRecipeCard"
+@page "/PackingRecipeCard/{Mode}"
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.Grids
 @using Syncfusion.Blazor.Data
@@ -6,6 +7,7 @@
 @using Syncfusion.Blazor.Navigations
 @using Syncfusion.Blazor.SplitButtons
 @using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents
+@using SunttelTradePointB.Client.Shared.ConceptSelectors
 @inject TransactionalItemsService transactionalService;
 @inject NavigationManager Navigation
 
@@ -21,6 +23,10 @@
 
         @if (@pageView == "ListOfMaterials")
         {
+
+            <PageTitleComponent Title="@GetName( "Material", new MaterialRecipeItem())" IconName="TransactionalTypes.png"
+                            Description="@($"Here you can add {GetName( "Material", new MaterialRecipeItem()).ToLower()}")">
+            </PageTitleComponent>
             <div>
                 <div class="flex-horizontal-center">
                     <div class="grid-columns-2 box-shadow-mode">
@@ -48,10 +54,90 @@
                         </div>
 
                         <div><label>@GetName( "Quantity",new MaterialRecipeItem())</label></div>
-                        <div><input type="number" @bind="materialRecipeItem.Quantity" class="form-control" style="border-color:gray;" required /></div>
+                        <div><input type="number" @bind="materialRecipeItem.Quantity" class="form-control border-color" required /></div>
                         <div></div>
                         <div class="flex-horizontal-end">
-                            <button type="button" @onclick='()=>ClosedAdd("ChildrenGroups")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                            <button type="button" @onclick='()=>OpenAdd("Material")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                            <button type="button" @onclick='AddMaterials' class="size-btn color-btn "><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        }
+
+        @if (@pageView == "Material")
+        {
+            <PageTitleComponent Title="@GetName( "Material", new MaterialRecipeItem())" IconName="TransactionalTypes.png"
+                            Description="@($"Here you can create {GetName( "Material", new MaterialRecipeItem()).ToLower()}")">
+            </PageTitleComponent>
+            <div class="grid-columns-2-img">
+                <div class="grid-columns-header">
+                    <div>
+                        <label for="name">Name</label>
+                    </div>
+                    <div>
+                        <input type="text" class="form-control" id="name" @bind-value="@MateriaoNew.Name" autocomplete="off" />
+                    </div>
+
+                    <div id="shortCutCodeGroup">
+                        <label for="shortcutCode">Identifier Code</label>
+                    </div>
+                    <div>
+                        <input type="text" class="form-control" @bind="MateriaoNew.Code" autocomplete="off" />
+                    </div>
+                    <div><label for="shortcutCode">@GetName("Status", new Concept())</label></div>
+                    <div @onclick="SetStatus">
+                        <label id="statusConcept" class="style-status" style="background-color:@colorStatus;">@(MateriaoNew.Status != null ? MateriaoNew.Status : "")</label>
+                    </div>
+                  
+                    <div class="lineFormGroup">
+                        <TransactionalItemGroupSelector @ref="referGroup" Groups="@MateriaoNew.Groups" EventAddGroups="AddGroup"></TransactionalItemGroupSelector>
+                    </div>
+
+                </div>
+                <div>
+                    <label for="shortcutCode">@GetName("SkinImageName", new Concept())</label>
+                    <br />
+                    <div class="lineFormGroup" style="position:relative;">
+                        <div class="form-group">
+                            <div style="display:flex; flex-direction:row;">
+                                <div class="conten-chip margin-left-control">
+                                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventClosed="ClosedInputText" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewAddImg">
+                                        @{
+                                            if (transactItemImages != null)
+                                            {
+                                                foreach (var group in transactItemImages)
+                                                {
+                                                    <option value="@group?.Id">@group?.Name</option>
+                                                }
+                                            }
+
+                                        }
+                                    </InputTextSelector>
+                                </div>
+                                <div>
+                                    @if (transactItemImages == null) transactItemImages = new List<TransactItemImage>();
+                                    <img class="style-img" src="@(transactItemImage.PathImage !=null?transactionalService.Host+transactItemImage.PathImage:"/images/defaultImage.png")" @onclick='()=> SetViewElemnt("img")' />
+                                </div>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="flex-horizontal-center">
+                    <div class="grid-columns-2 box-shadow-mode">
+
+                        <div><label>@GetName( "Quantity",new MaterialRecipeItem())</label></div>
+                        <div><input type="number" @bind="materialRecipeItem.Quantity" class="form-control border-color" required /></div>
+                        <div></div>
+                        <div class="flex-horizontal-end">
+                            <button type="button" @onclick='()=>ClosedAdd("ListOfMaterials")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
                             <button type="button" @onclick='AddMaterials' class="size-btn color-btn "><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                         </div>
 
@@ -134,7 +220,7 @@
                 </div>
 
                 <div><label>@GetName( "Quantity",new MaterialRecipeItem())</label></div>
-                <div><input type="number" @bind="assemblyRecipeItem.Quantity" class="form-control" style="border-color:gray;" required /></div>
+                <div><input type="number" @bind="assemblyRecipeItem.Quantity" class="form-control border-color" required /></div>
             </div>
 
             <SfTab Height="300px" HeaderPlacement="HeaderPosition.Left">
@@ -237,7 +323,7 @@
                             @GetName( "Quantity", new MaterialRecipeItem())
                         </label>
                     </div>
-                    <div><input type="number" @bind="materialRecipeItem.Quantity" class="form-control" style="border-color:gray;" maxlength="4" min="1" /></div>
+                    <div><input type="number" @bind="materialRecipeItem.Quantity" class="form-control border-color" maxlength="4" min="1" /></div>
 
                     <div></div>
                     <div class="flex-horizontal-end">
@@ -273,7 +359,6 @@
 
     </div>
 
-
     <div class="content-new-packing-recipe" style=' display:@(modeEdit?"block":"none"); };'>
         <PageTitleComponent Title="@GetName("ProductPackingSpecs", new TransactionalItem())" IconName="TransactionalTypes.png"
                             Description="@($"Here you can add {@GetName("ProductPackingSpecs", new TransactionalItem())}")">
@@ -293,6 +378,15 @@
                         <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
                         <DropDownMenuItem Separator="true"></DropDownMenuItem>
                         <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+                    </DropDownMenuItems>
+                </SfSplitButton>
+
+                <SfSplitButton Content="Concept" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+                    <SplitButtonEvents ItemSelected="ItemSelectedConcept">
+                    </SplitButtonEvents>
+                    <DropDownMenuItems>
+                        <DropDownMenuItem Text="Material" IconCss="fa-solid fa-file"></DropDownMenuItem>
+
                     </DropDownMenuItems>
                 </SfSplitButton>
             </nav>
@@ -334,8 +428,8 @@
                                     </div>
                                 </div>
 
-                                <div><label>@GetName( "Code", new PackingSpecs())</label></div>
-                                <div> <label>@(Customer != null ? Customer.Code : "")</label></div>
+                                <div><label>@GetName( "Code", new AtomConcept())</label></div>
+                                <div> <b><h6>@(Customer != null ? Customer.Code : "")</h6></b></div>
                                 <div>
                                     <label>
                                         @GetName( "Season", new PackingSpecs())
@@ -392,9 +486,9 @@
                                         @GetName( "PackLayersToSale", new PackingSpecs())
                                     </label>
                                 </div>
-                                <div><input type="number" @bind="_PackingSpecs.PackLayersToSale" class="form-control" style="border-color:gray;" autofocus required /></div>
+                                <div><input type="number" @bind="_PackingSpecs.PackLayersToSale" class="form-control border-color" autofocus required /></div>
                                 <div><label>@GetName( "PackLayersToBuy",new PackingSpecs())</label></div>
-                                <div><input type="number" @bind="_PackingSpecs.PackLayersToBuy" class="form-control" style="border-color:gray;" required /></div>
+                                <div><input type="number" @bind="_PackingSpecs.PackLayersToBuy" class="form-control border-color" required /></div>
                                 <div>
                                     <label>
                                         @GetName( "PackingBoxToSale", new PackingSpecs())
@@ -448,9 +542,39 @@
                                         @GetName( "PackPerBoxLayer", new PackingSpecs())
                                     </label>
                                 </div>
-                                <div><input type="number" @bind="_PackingSpecs.PackPerBoxLayer" class="form-control" style="border-color:gray;" maxlength="4" min="1" /></div>
+                                <div><input type="number" @bind="_PackingSpecs.PackPerBoxLayer" class="form-control border-color" maxlength="4" min="1" /></div>
                                 <div><label> @GetName("UnitPrice", new PriceInfo() )</label></div>
-                                <div><input @bind="PriceInfo.UnitPrice" type="number" class="form-control" style="border-color:gray;" /></div>
+                                <div><input @bind="PriceInfo.UnitPrice" type="number" class="form-control border-color" /></div>
+                                <div><label> @GetName("RetailPrice", new PriceInfo() )</label></div>
+                                <div><input @bind="PriceInfo.RetailPrice" type="number" class="form-control border-color" /></div>
+                                <div><label> @GetName("RetailBulkNumberOfItems", new PriceInfo() )</label></div>
+                                <div><input @bind="PriceInfo.RetailBulkNumberOfItems" type="number" class="form-control border-color" /></div>
+                                <div><label> @GetName("RetailBulkPrice", new PriceInfo() )</label></div>
+                                <div><input @bind="PriceInfo.RetailBulkPrice" type="number" class="form-control border-color" /></div>
+                                <div><label> @GetName("TotalPrice", new PriceInfo() )</label></div>
+                                <div><input @bind="PriceInfo.TotalPrice" type="number" class="form-control border-color" /></div>
+
+                                <div><label>@GetName( "TypeOfConcept", new Concept())</label></div>
+                                <div>
+                                    <div style="position:relative;">
+                                        <div class="item-edit">
+                                            <label>@(totalPriceItemTypeBasedOn != null ? totalPriceItemTypeBasedOn.Name : "")</label>
+                                            <button type="button" @onclick='()=>SetViewElemnt("TotalPriceItemTypeBasedOn")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                                        </div>
+
+                                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEdittotalPrice">
+                                            @{
+                                                if (totalPriceItemTypeBasedOns != null)
+                                                {
+                                                    foreach (var Box in totalPriceItemTypeBasedOns)
+                                                    {
+                                                        <option value="@Box?.Id">@Box?.Name</option>
+                                                    }
+                                                }
+                                            }
+                                        </InputTextSelector>
+                                    </div>
+                                </div>
 
                             </div>
                         </div>
@@ -463,7 +587,6 @@
                     <ContentTemplate>
 
                         <div id="add-recipe">
-                            @*// Control David LabelStyle PalletLabelStyle (Selector PalletLabelStyles)*@
                             <div class="grid-columns-4">
                                 <div>
                                     <label>
@@ -492,7 +615,6 @@
                                         @GetName( "BoxLabelStyle", new LabelInstruction())
                                     </label>
                                 </div>
-                                @*// Control David LabelStyle BoxLabelStyle (Selector BoxLabelStyles)*@
                                 <div style="position:relative;">
                                     <div class="item-edit">
                                         <label>@(BoxLabelStyle != null ? BoxLabelStyle.Name : "")</label>
@@ -512,7 +634,7 @@
                                 </div>
                                 @* string UPCName*@
                                 <div><label> @GetName("UPCName", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.UPCComments" class="form-control" style="border-color:gray;" required /></div>
+                                <div><input @bind="labelInstruction.UPCComments" class="form-control border-color" required /></div>
                                 @*// Control David LabelStyle InnerProductLabelStyleByDeafult (Selector UPCLabelStyles)*@
                                 <div>
                                     <label>
@@ -537,60 +659,37 @@
                                         }
                                     </InputTextSelector>
                                 </div>
-                                @*// string UPCComments *@
+
                                 <div><label> @GetName("UPCComments", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.UPCComments" class="form-control" style="border-color:gray;" required /></div>
-
-                                @*// string BoxUPCCode *@
+                                <div><input @bind="labelInstruction.UPCComments" class="form-control border-color border-color" required /></div>
                                 <div><label> @GetName("BoxUPCCode", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.BoxUPCCode" class="form-control" style="border-color:gray;" required /></div>
-                                @*// string InnerProductUPCCode *@
+                                <div><input @bind="labelInstruction.BoxUPCCode" class="form-control border-color" required /></div>
                                 <div><label> @GetName("InnerProductUPCCode", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.InnerProductUPCCode" class="form-control" style="border-color:gray;" required /></div>
-
-                                @*// int UPCDateCodeFormat (Numeric Input)*@
+                                <div><input @bind="labelInstruction.InnerProductUPCCode" class="form-control border-color" required /></div>
                                 <div><label> @GetName("UPCDateCodeFormat", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.UPCDateCodeFormat" type="number" class="form-control" style="border-color:gray;" required /></div>
-
-                                @*// Control David  DatesReferenceType UPCDateCodeBasedOn (Selector DatesReferenceType)*@
+                                <div><input @bind="labelInstruction.UPCDateCodeFormat" type="number" class="form-control border-color" required /></div>
                                 <div>
                                     <label>
                                         @GetName( "UPCDateCodeBasedOn", new LabelInstruction())
                                     </label>
                                 </div>
                                 <div style="position:relative;">
-                                    <div class="item-edit">
-                                        <label>@(uPCDateCodeBasedOn != null ? uPCDateCodeBasedOn.Name : "")</label>
-                                        <button type="button" @onclick='()=>SetViewElemnt("UPCDateCodeBasedOn")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                    </div>
-                                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditUPCDateCodeBasedOn">
-                                        @{
-                                            if (UPCDateCodeBasedOnsView != null)
-                                            {
-                                                foreach (var Element in UPCDateCodeBasedOnsView)
-                                                {
-                                                    <option value="@Element?.Id">@Element?.Name</option>
-                                                }
-                                            }
-                                        }
-                                    </InputTextSelector>
+                                    <select class="form-control" @bind="labelInstruction.UPCDateCodeBasedOn" placeholder="Edit value">
+                                        <option value="@DatesReferenceType.ProductionDate">@DatesReferenceType.ProductionDate.ToString()</option>
+                                        <option value="@DatesReferenceType.BuyDate">@DatesReferenceType.BuyDate.ToString()</option>
+                                        <option value="@DatesReferenceType.NotDefined">@DatesReferenceType.NotDefined.ToString()</option>
+                                        <option value="@DatesReferenceType.DeliveryDate">@DatesReferenceType.DeliveryDate.ToString()</option>
+                                        <option value="@DatesReferenceType.ShipDate">@DatesReferenceType.ShipDate.ToString()</option>
+                                    </select>
                                 </div>
-                                @*// int UPCDateCodeDaysAfterReferenceDate*@
                                 <div><label> @GetName("UPCDateCodeDaysAfterReferenceDate", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.UPCDateCodeFormat" type="number" class="form-control" style="border-color:gray;" required /></div>
-
-                                @*// string OriginCountryLegend *@
+                                <div><input @bind="labelInstruction.UPCDateCodeFormat" type="number" class="form-control border-color" required /></div>
                                 <div><label> @GetName("OriginCountryLegend", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.OriginCountryLegend" class="form-control" style="border-color:gray;" required /></div>
-
-                                @*// string SKU *@
+                                <div><input @bind="labelInstruction.OriginCountryLegend" class="form-control border-color" required /></div>
                                 <div><label> @GetName("SKU", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.SKU" class="form-control" style="border-color:gray;" required /></div>
-
-                                @* // Stwitch Boolean ShowRetailPriceUPCInfo *@
+                                <div><input @bind="labelInstruction.SKU" class="form-control border-color" required /></div>
                                 <div><label> @GetName("ShowRetailPriceUPCInfo", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.ShowRetailPriceUPCInfo" class="form-control" style="border-color:gray;" required /></div>
-
+                                <div><input @bind="labelInstruction.ShowRetailPriceUPCInfo" class="form-control border-color" required /></div>
                                 <div>
                                     <label>
                                         @GetName("ItemAssemblyType",new PackingSpecs())
@@ -620,7 +719,6 @@
 
                             </div>
                         </div>
-
                     </ContentTemplate>
                 </TabItem>
                 <TabItem>
@@ -686,7 +784,6 @@
                 </TabItem>
             </TabItems>
         </SfTab>
-
     </div>
 
 
@@ -706,6 +803,7 @@
     string msg = "";
     string pageView = "";
     SfTab? referTag;
+    TransactionalItemGroupSelector? referGroup;
     SfGrid<MaterialRecipeItemView>? DataGrid;
     SfGrid<PackRecipeItemView>? DataGrid1;
     ComponentItemRecipeChildrenCard? recipeChildren;
@@ -727,15 +825,14 @@
     public bool PopupViewEditBoxToSale = false;
     public bool PopupViewEditBoxToBuy = false;
     public bool PopupViewEditPalletLabelStyle = false;
+    public bool PopupViewEdittotalPrice = false;
     public bool PopupViewEditBoxLabelStyle = false;
     public bool PopupViewEditUPCDateCodeBasedOn { get; set; }
     public string PopupViewEditInnerProductLabelStyleByDeafult { get; set; }
     public bool PopupViewEditAssembly = false;
     public bool PopupViewMaterialAssembly = false;
     public bool PopupViewEditItemModifier = false;
-
-
-
+    public bool PopupViewAddImg = false;
 
     public int ParamCountResul = 0;
     #endregion Control Input Tex
@@ -751,6 +848,9 @@
 
     public AssemblyType assemblyType = new();
     public List<AssemblyType> assemblyTypes = new();
+
+    List<TransactionalItemType> totalPriceItemTypeBasedOns = new();
+    TransactionalItemType totalPriceItemTypeBasedOn = new();
 
 
     PackingSpecs _PackingSpecs = new PackingSpecs();
@@ -781,6 +881,11 @@
     List<MaterialRecipeItemView> ListOfMaterialsView = new List<MaterialRecipeItemView>();
     List<Concept> MaterialsConcept = new List<Concept>();
     Concept MaterialConcept = new Concept();
+    Concept MateriaoNew = new();
+    string colorStatus = "";
+    bool modeStatus = false;
+    TransactItemImage transactItemImage = new();
+    List<TransactItemImage> transactItemImages = new();
     #endregion Tag 3
 
     #region Tag 4
@@ -832,14 +937,13 @@
         if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
         {
             transactionalItemId = transactionalService.transactionalItemId;
-            OnInitializedModel();
+
         }
         if (Mode == "Edit")
         {
             _PackingSpecs = transactionalService.ConceptTransactionalItemPackingSpecs;
             if (_PackingSpecs != null)
             {
-
                 Customer = _PackingSpecs.Customer != null ? _PackingSpecs.Customer : new Concept();
                 Season = _PackingSpecs.Season != null ? _PackingSpecs.Season : new SeasonBusiness();
                 ModelRecipe = _PackingSpecs.ModelRecipe != null ? _PackingSpecs.ModelRecipe : new ProductModel();
@@ -847,15 +951,15 @@
                 BoxToBuy = _PackingSpecs.PackingBoxToBuy != null ? _PackingSpecs.PackingBoxToBuy : new Box(); ;
                 BoxToSale = _PackingSpecs.PackingBoxToSale != null ? _PackingSpecs.PackingBoxToSale : new Box();
                 listOfMaterials = _PackingSpecs.ListOfMaterials != null ? _PackingSpecs.ListOfMaterials : new List<MaterialRecipeItem>();
+                SetMaterialToView();
+                labelInstruction = _PackingSpecs.CustomerLabelInstructions != null ? _PackingSpecs.CustomerLabelInstructions : new LabelInstruction();
+                assemblyRecipeItems = _PackingSpecs.AssemblyRecipeItems != null ? _PackingSpecs.AssemblyRecipeItems : new();
                 StateHasChanged();
             }
         }
     }
 
-    protected async void OnInitializedModel()
-    {
-        SetModels = await transactionalService.GetSelectorListEntityProductModel(transactionalItemId);
-    }
+
 
     public async void ItemSelected(MenuEventArgs e)
     {
@@ -864,25 +968,25 @@
         if (tile == "Save")
         {
 
-            bool status = false;           
+            bool status = false;
 
-            _PackingSpecs.Customer = Customer;
-            _PackingSpecs.Season = Season;
-            _PackingSpecs.ModelRecipe = ModelRecipe;
-            _PackingSpecs.Price = PriceInfo;
-            _PackingSpecs.PackingBoxToBuy = BoxToBuy;
-            _PackingSpecs.PackingBoxToSale = BoxToSale;
-            _PackingSpecs.ListOfMaterials = listOfMaterials;
-            _PackingSpecs.CustomerLabelInstructions =  labelInstruction;
-            assemblyRecipeItem.ItemComponent = itemComponent;
+            _PackingSpecs.Customer = Customer != null ? Customer : new();
+            _PackingSpecs.Season = Season != null ? Season : new();
+            _PackingSpecs.ModelRecipe = ModelRecipe != null ? ModelRecipe : new();
+            _PackingSpecs.Price = PriceInfo != null ? PriceInfo : new();
+            _PackingSpecs.PackingBoxToBuy = BoxToBuy != null ? BoxToBuy : new();
+            _PackingSpecs.PackingBoxToSale = BoxToSale != null ? BoxToSale : new();
+            _PackingSpecs.ListOfMaterials = listOfMaterials != null ? listOfMaterials : new();
+            _PackingSpecs.CustomerLabelInstructions = labelInstruction;
+            assemblyRecipeItem.ItemComponent = itemComponent != null ? itemComponent : new();
             if (assemblyRecipeItem.ComponentItemRecipe == null) assemblyRecipeItem.ComponentItemRecipe = new();
-            assemblyRecipeItem.ComponentItemRecipe.Add(recipeChildren.assemblyRecipeItemGeneral);
-            materialRecipeItemsAssembly.Material = ConceptMaterialAssembly;
-            assemblyRecipeItem.ListOfMaterials = materialsRecipeItemsAssembly;
-            assemblyRecipeItem.RecipeQualityModifier = recipeQualityModifier;
+            if (recipeChildren != null && recipeChildren.assemblyRecipeItemGeneral != null) assemblyRecipeItem.ComponentItemRecipe.Add(recipeChildren.assemblyRecipeItemGeneral);
+            materialRecipeItemsAssembly.Material = ConceptMaterialAssembly != null ? ConceptMaterialAssembly : new();
+            assemblyRecipeItem.ListOfMaterials = materialsRecipeItemsAssembly != null ? materialsRecipeItemsAssembly : new();
+            assemblyRecipeItem.RecipeQualityModifier = recipeQualityModifier != null ? recipeQualityModifier : new();
             assemblyRecipeItems.Add(assemblyRecipeItem);
-            _PackingSpecs.AssemblyRecipeItems = assemblyRecipeItems;
-            _PackingSpecs.ItemAssemblyType = assemblyType;
+            _PackingSpecs.AssemblyRecipeItems = assemblyRecipeItems != null ? assemblyRecipeItems : new();
+            _PackingSpecs.ItemAssemblyType = assemblyType != null ? assemblyType : new();
 
 
 
@@ -936,6 +1040,25 @@
 
             Msg("Addded");
 
+
+        }
+        if (tile == "Save as...")
+        {
+
+        }
+
+
+        StateHasChanged();
+
+
+    }
+
+    public async void ItemSelectedConcept(MenuEventArgs e)
+    {
+
+        string tile = e.Item != null ? e.Item.Text : "";
+        if (tile == "Material")
+        {
 
         }
         if (tile == "Save as...")
@@ -1004,7 +1127,12 @@
         if (Element == "Material") { PopupViewEditItemComponent = true; }
         if (Element == "ItemAssemblyType") { PopupViewEditAssembly = true; }
         if (Element == "MaterialAssembly") { PopupViewMaterialAssembly = true; }
-        if (Element ==  "RecipeQualityModifier") { PopupViewEditItemModifier = true; }
+        if (Element == "RecipeQualityModifier") { PopupViewEditItemModifier = true; }
+        if (Element == "TotalPriceItemTypeBasedOn") { PopupViewEdittotalPrice = true; }
+
+
+        
+
         StateHasChanged();
     }
 
@@ -1019,6 +1147,7 @@
         if (SearcherValueMode == "Model")
         {
             if (SetModels == null) SetModels = new();
+            SetModels = await transactionalService.GetSelectorListEntityProductModel(transactionalItemId);
             GetModelView = SetModels.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
             ParamCountResul = GetModelView.Count();
         }
@@ -1029,7 +1158,7 @@
         }
         if (SearcherValueMode == "BoxToSale")
         {
-            GetBoxToSaleView = await transactionalService.GetBoxTable(value);
+            GetBoxToSaleView = await transactionalService.GetSelectorListBoxes(value);
             ParamCountResul = GetBoxToSaleView != null ? GetBoxToSaleView.Count() : 0;
         }
         if (SearcherValueMode == "BoxToBuy")
@@ -1076,7 +1205,14 @@
         }
         if (SearcherValueMode == "RecipeQualityModifier")
         {
-            
+
+        }
+
+        if (SearcherValueMode == "TotalPriceItemTypeBasedOn")
+        {
+            if (totalPriceItemTypeBasedOns == null) totalPriceItemTypeBasedOns = new();
+            totalPriceItemTypeBasedOns = await transactionalService.GetTransactionalItemTypes(value);
+            ParamCountResul = totalPriceItemTypeBasedOns != null ? totalPriceItemTypeBasedOns.Count() : 0;
         }
 
 
@@ -1104,12 +1240,15 @@
         }
         if (SearcherValueMode == "BoxToSale")
         {
-            BoxToSale = GetBoxToSaleView.Where(c => c.Id == selectionId).FirstOrDefault();
+            BoxToSale = await transactionalService.GetBox(selectionId);
+            if (BoxToSale == null) BoxToSale = new();
+           
         }
         if (SearcherValueMode == "BoxToBuy")
         {
-            BoxToBuy = GetBoxToBuyView.Where(c => c.Id == selectionId).FirstOrDefault();
-            ParamCountResul = GetBoxToBuyView.Count();
+            BoxToBuy = await transactionalService.GetBox(selectionId);
+            if (BoxToSale == null) BoxToSale = new();
+          
         }
         if (SearcherValueMode == "PalletLabelStyle")
         {
@@ -1149,6 +1288,12 @@
 
         }
 
+        if (SearcherValueMode == "TotalPriceItemTypeBasedOn")
+        {
+            if (totalPriceItemTypeBasedOns == null) totalPriceItemTypeBasedOns = new();
+            totalPriceItemTypeBasedOn = totalPriceItemTypeBasedOns.Where(c => c.Id == selectionId).FirstOrDefault();
+        }
+
 
 
         Reload();
@@ -1168,6 +1313,15 @@
 
 
 
+    public void AddGroup(List<ConceptGroup> conceptGroups)
+    {
+        if (MaterialConcept.Groups == null) MaterialConcept.Groups = new();
+        MaterialConcept.Groups = conceptGroups;
+        StateHasChanged();
+        //OpenAlert("Added", 0);
+    }
+
+
     public void Reload()
     {
         PopupViewAddCustomer = false;
@@ -1177,6 +1331,7 @@
         PopupViewEditBoxToBuy = false;
         PopupViewEditAssembly = false;
         PopupViewMaterialAssembly = false;
+        PopupViewEdittotalPrice = false;
         ParamCountResul = 0;
     }
 
@@ -1244,7 +1399,63 @@
 
     }
 
+     public void ClosedInputText()
+    {
+        PopupViewAddImg = false;
+        ViewSelect = false;
+        StateHasChanged();
+    }
 
+    public void SetMaterialToView()
+    {
+        ListOfMaterialsView = new();
+        foreach (var item in listOfMaterials)
+        {
+            ListOfMaterialsView.Add(
+       new MaterialRecipeItemView
+           {
+               Id = item.Material.Id,
+               Name = item.Material.Name,
+               FullClassName = item.Material.FullClassName,
+               Code = item.Material.Code,
+               Quantity = item.Quantity.ToString()
+           }
+       );
+        }
+
+    }
+
+    public void SetStatus()
+    {
+        modeStatus = modeStatus ? false : true;
+
+        ConceptStatus statust = new();
+        if (modeStatus)
+        {
+            MateriaoNew.Status = statust = new ConceptStatus
+                {
+                    Id = "000000000000000000000001",
+                    LegacyId = "1",
+                    Code = "name",
+                    Name = "ACTIVE",
+                    IsEnabledForTransactions = true
+                };
+            colorStatus = "#008080";
+        }
+        else
+        {
+            MateriaoNew.Status = statust = new ConceptStatus
+                {
+                    Id = "",
+                    LegacyId = "",
+                    Code = "",
+                    Name = "....",
+                    IsEnabledForTransactions = false
+                };
+            colorStatus = "gary";
+        }
+       
+    }
 
     class MaterialRecipeItemView
     {

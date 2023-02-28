@@ -4,6 +4,7 @@ using SixLabors.ImageSharp.ColorSpaces;
 using SunttelTradePointB.Client.Shared.ConceptSelectors;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Shared.Common;
+using System.Net.WebSockets;
 
 namespace SunttelTradePointB.Server.Services.MasterTablesServices
 {
@@ -22,6 +23,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         IMongoCollection<ConceptGroup> _transactionalItemGroup;
         IMongoCollection<ConceptGroup> _transactionalItemGroups;
         IMongoCollection<AssemblyType> _assemblyType;
+        IMongoCollection<LabelStyle> _labelStyle;
 
         /// <summary>
         /// Constructor of the service which rretrieves the connection string
@@ -42,6 +44,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             _transactionalItemGroup = mongoDatabase.GetCollection<ConceptGroup>("TransactionalItemsGroups");
             _transactionalItemGroups = mongoDatabase.GetCollection<ConceptGroup>("TransactionalItemsGroups");
             _assemblyType = mongoDatabase.GetCollection<AssemblyType>("AssemblyTypes");
+            _labelStyle = mongoDatabase.GetCollection<LabelStyle>("LabelStyles");
         }
 
         /// <summary>
@@ -681,19 +684,113 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
         }
 
-        public Task<(bool IsSuccess, LabelStyle? labelStyle, string? ErrorDescription)> GetLabelStyle(string userId, string ipAddress, string labelStyleId)
+
+        /// <summary>
+        /// Retrieves information of a particular Label Style by its id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="labelStyleId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<(bool IsSuccess, LabelStyle? labelStyle, string? ErrorDescription)> GetLabelStyle(string userId, string ipAddress, string labelStyleId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var filterLabelStyle = Builders<LabelStyle>.Filter.Eq(x => x.Id, labelStyleId);
+                var resultLabelStyle = await _labelStyle.Find(filterLabelStyle).FirstOrDefaultAsync();
+
+                if (resultLabelStyle == null)
+                {
+                    return (false, null, "Unpopulated Label Style");
+                }
+                else
+                {
+                    return (true, resultLabelStyle, null);
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
 
-        public Task<(bool IsSuccess, LabelStyle? labelStyle, string? ErrorDescription)> SaveLabelStyle(string userId, string ipAddress, LabelStyle labelStyle)
+
+        /// <summary>
+        /// Save label style
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="labelStyle"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<(bool IsSuccess, LabelStyle? labelStyle, string? ErrorDescription)> SaveLabelStyle(string userId, string ipAddress, LabelStyle labelStyle)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (labelStyle.Id == null)
+                {
+                    labelStyle.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterlabelStyle = Builders<LabelStyle>.Filter.Eq("_id", new ObjectId(labelStyle.Id));
+                var updatelabelStyle = new ReplaceOptions { IsUpsert = true };
+                var resultlabelStyle = await _labelStyle.ReplaceOneAsync(filterlabelStyle, labelStyle, updatelabelStyle);
+                return (true, labelStyle, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
 
-        public Task<(bool IsSuccess, List<LabelStyle>? labelStyles, string? ErrorDescription)> GetLabelStyles(string userId, string ipAddress, string? filterString)
+
+        /// <summary>
+        /// Retrieves the list of  Label Styles
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="filterString"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<(bool IsSuccess, List<LabelStyle>? labelStyles, string? ErrorDescription)> GetLabelStyles(string userId, string ipAddress, string? filterString)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string filter = filterString == null ? "" : filterString;
+
+                if (filter.Length > 0)
+                {
+                    var pipeline = new List<BsonDocument>();
+
+                    pipeline.Add(
+                        new BsonDocument(
+                            "$match", new BsonDocument(
+                                "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filter}/i"))
+                            )
+                        )
+                    );
+                    List<LabelStyle> results = await _labelStyle.Aggregate<LabelStyle>(pipeline).ToListAsync();
+                    return (true, results, null);
+                }
+                else
+                {
+                    var labelStyles = await _labelStyle.Find<LabelStyle>(new BsonDocument()).ToListAsync();
+
+                    if (labelStyles == null || labelStyles.Count == 0)
+                    {
+                        return (false, null, "Unpopulated Label Styles");
+                    }
+                    else
+                    {
+                        return (true, labelStyles, null);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
     }
 }

@@ -6,7 +6,9 @@
         <img id="btn-img" src="images/search.svg" @onclick="SearcherValue"  />
     </div>
     <div id="div-Popup"  >
+      
         <select @onchange="SelectedCarsChanged" style="display:@(ViewSelect?"block":"none");  background-color:@backgroundSelection; color:@colorSelection;  border-color:gray; ">
+            <option value=""> select </option>
             @if (ChildContent != null)
             {
                 @ChildContent

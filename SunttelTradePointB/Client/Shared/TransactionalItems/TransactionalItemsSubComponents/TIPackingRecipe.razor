@@ -151,13 +151,13 @@
     }
 
 
-    public void OnContextMenuClick(ContextMenuClickEventArgs<PackingSpecsView> args)
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<PackingSpecsView> args)
     {
         PackingSpecsView _PackingSpecs = new();
         _PackingSpecs = args.RowInfo.RowData;
 
         if (args.Item.Text == "Edit")
-        {
+        {          
             transactionalService.ConceptTransactionalItemPackingSpecs = productPackingSpecs.Where(s => s.Id == _PackingSpecs.Id).FirstOrDefault();
             if (transactionalService.ConceptTransactionalItemPackingSpecs !=null)
             {

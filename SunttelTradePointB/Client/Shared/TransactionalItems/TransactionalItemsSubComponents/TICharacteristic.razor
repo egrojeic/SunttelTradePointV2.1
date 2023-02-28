@@ -18,7 +18,7 @@
 
 @if (transactionalItemTypeCharacteristics == null) transactionalItemTypeCharacteristics = new();
 
-<DataGrid TParameter="TransactionalItemTypeCharacteristic"
+<DataGrid TParameter="TransactionalItemCharacteristicPair"
           EventCallbackMenu="OnContextMenuClick"
           parameterList="transactionalItemTypeCharacteristics"
           GridColumnsList="gridColumnListCharacteristic"        
@@ -27,13 +27,13 @@
 
 
 @code {
-    public List<TransactionalItemTypeCharacteristic> transactionalItemTypeCharacteristics = new();
-    public TransactionalItemTypeCharacteristic transactionalItemTypeCharacteristic = new();
+    public List<TransactionalItemCharacteristicPair> transactionalItemTypeCharacteristics = new();
+    public TransactionalItemCharacteristicPair transactionalItemTypeCharacteristicPair = new();
     public List<GridColumn> gridColumnListCharacteristic = new();
 
     #region TileName
     public string transactionalItemId { get; set; }
-  
+
     #endregion TitleName
 
     protected override void OnInitialized()
@@ -51,28 +51,23 @@
 
     }
 
-   
+
 
     protected async void OnInitializedTags()
     {
-        //if (transactionalItemId != null && transactionalItemId != "")
-        //{
-        //    TransactionalItemTags = await transactionalService.GetSelectorListTag(transactionalItemId);
-        //    if (TransactionalItemTags != null)
-        //    {               
-        //        DataGrid.DataSource = TransactionalItemTags.Where(s => s.Id != "" || s.Id != null).ToList();
-        //        StateHasChanged();
-        //        DataGrid.Refresh();
-        //    }
+        if (transactionalItemId != null && transactionalItemId != "")
+        {
+            transactionalItemTypeCharacteristics = await transactionalService.GetCharacteristic(transactionalItemId);
+            StateHasChanged();
 
-        //}
+        }
     }
    
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemTypeCharacteristic> args)
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemCharacteristicPair> args)
     {
-        TransactionalItemTypeCharacteristic ObjModel = null;
+        TransactionalItemCharacteristicPair ObjModel = null;
         ObjModel = args.RowInfo.RowData;
-        transactionalItemTypeCharacteristic = ObjModel;
+        transactionalItemTypeCharacteristicPair = ObjModel;
         if (args.Item.Id == "Edit")
         {
            

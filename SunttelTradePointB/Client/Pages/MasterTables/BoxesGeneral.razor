@@ -55,6 +55,8 @@ else
                 <GridColumn Field="@nameof(Box.ContainersNumber)" HeaderText="@GetName("ContainersNumber", new Box())" Width="10%"></GridColumn>
                 <GridColumn Field="@nameof(Box.FlagWet)" HeaderText="@GetName("FlagWet", new Box())" ></GridColumn>
                 <GridColumn Field="@nameof(Box.Length)" HeaderText="@GetName("Length", new Box())" ></GridColumn>
+                <GridColumn Field="@nameof(Box.Width)" HeaderText="@GetName("Width", new Box())"></GridColumn>
+                <GridColumn Field="@nameof(Box.Height)" HeaderText="@GetName("Height", new Box())"></GridColumn>
                 <GridColumn Field="@nameof(Box.Notes)" HeaderText="@GetName("Notes", new Box())"></GridColumn>
             </GridColumns>
             <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="Box"></GridEvents>
