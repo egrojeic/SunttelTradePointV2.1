@@ -71,7 +71,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 var pipeline = new List<BsonDocument>();
 
-                pipeline.Add(
+                if(!(strNameFiler.ToLower()=="all" || strNameFiler.ToLower() == "todos"))
+                {
+                    pipeline.Add(
                     new BsonDocument{
                         { "$match",  new BsonDocument {
                             { "$text",
@@ -85,6 +87,8 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         }}
                     }
                 );
+                }
+                
 
                 pipeline.Add(
                     new BsonDocument(
@@ -99,7 +103,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         { "$project",
                             new BsonDocument {
                                 { "ProductionSpecs", 0 },
-                                { "ProductPackingSpecs", 0 }
+                                { "ProductPackingSpecs", 0 },
+                                { "ItemCharacteristics", 0},
+                                { "PathImages", 0},
+                                { "QualityParameters", 0},
+                                { "TransactionalItemModels", 0}
                             }
                         }
                     }
