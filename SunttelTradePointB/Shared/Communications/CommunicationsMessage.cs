@@ -98,7 +98,6 @@ namespace SunttelTradePointB.Shared.Communications
     /// </summary>
     public class EntityNodeCommunications {
         [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
         [MinLength(3)]

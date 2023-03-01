@@ -30,6 +30,7 @@ namespace SunttelTradePointB.Server.Interfaces.Communications
         Task<(bool IsSuccess, CommunicationsMessage communicationsMessage, string? ErrorDescription)> SaveMessage(CommunicationsMessage communicationsMessage);
 
 
+
         /// <summary>
         /// Adds a message reaction
         /// </summary>
