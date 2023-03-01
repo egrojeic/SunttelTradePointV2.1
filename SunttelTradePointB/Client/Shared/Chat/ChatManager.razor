@@ -7,6 +7,7 @@
 
 @inject NavigationManager NavigationManager
 @inject ActorsNodeService actorsNodeService
+@inject CommunicationService communicationService 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <style>
@@ -135,6 +136,8 @@
     public string imageGroup { get; set; } = "";
 
     private List<CommunicationsMessage> communicationsMessages { get; set; } = new List<CommunicationsMessage>();
+    ChannelCommunicationsGroup channelCommunicationsGroup = new ChannelCommunicationsGroup();
+
     ChatMessageWriter? refChatMessageWriter;
     private ChatMenuBar chatMenuBar = new ChatMenuBar();
 
@@ -177,8 +180,14 @@
             }
             communicationsMessages.Add(new CommunicationsMessage
             {
+                SenderEntity = new EntityNodeCommunications
+                {
+                    Id = UIClientGlobalVariables.UserId,
+                    Name = UIClientGlobalVariables.UserName
+                },
                 Message = message
             });
+
             StateHasChanged();
         });
 
