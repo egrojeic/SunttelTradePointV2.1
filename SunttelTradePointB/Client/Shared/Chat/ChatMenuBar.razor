@@ -1,6 +1,7 @@
 ﻿@using SunttelTradePointB.Shared.Communications
 
 @inject ActorsNodeService actorsNodeServide
+@inject CommunicationService communicationService
 
 <style>
     .iconStyle {
@@ -109,11 +110,41 @@
 
     private void addGroup(string groupName)
     {
-        channelCommunicationsGroup.Add(new ChannelCommunicationsGroup
+        var participant = new CommunicationsGroupParticipant()
+        {
+            Participant = new EntityNodeCommunications()
+            {
+                Name = UIClientGlobalVariables.UserName,
+                SkinImageName = ""
+            },
+            InvitationRequestAnswered = false,
+            InvitationRequestApprovedByOwner = false,
+            InvitationRequestApprovedByParticipant = false,
+            InvitationRequestSent = false,
+            IsActive = false
+        };
+        ChannelCommunicationsGroup communicationsGroup = new ChannelCommunicationsGroup()
+        {
+            Name = groupName,
+            Owner = new EntityNodeCommunications()
+            {
+                Id = UIClientGlobalVariables.UserId,
+                Name = UIClientGlobalVariables.UserName,
+                SkinImageName = ""
+            },
+            Participants = new List<CommunicationsGroupParticipant>()
+            {
+                participant
+            }
+        };
+
+        communicationService.SaveChannelCommunicationsGroup(communicationsGroup);
+
+        /*channelCommunicationsGroup.Add(new ChannelCommunicationsGroup
         {
             SkinImageName = image,
             Name = groupName
-        });
+        });*/
         communicationsGroup.Name = "";
         newGroup = false;
     }

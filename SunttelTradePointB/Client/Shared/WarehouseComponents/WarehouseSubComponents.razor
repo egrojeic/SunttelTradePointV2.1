@@ -1,12 +1,14 @@
 ﻿@page "/WarehousesGeneral/NewWarehouse"
 @page "/WarehousesGeneral/{id}/Edit"
 
-@using Syncfusion.Blazor.Popups
-@using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Cards
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.DropDowns
+@using SunttelTradePointB.Shared.Common
 
 @inject NavigationManager navigationManager
-
+@inject WarehouseService warehouseService
+@inject TransactionalItemsService transactionalItemsService
 
 <div class="control-section">
     <div class="row">
@@ -17,25 +19,28 @@
                     <form onsubmit="event.preventDefault();">
                         <div class="form-group row">
                             <div class="form-group row">
-                                <label class="control-label col-md-12">@lblWareHouseParent*: </label>
+                                <label class="control-label col-md-12">@lblWareHouseParent: </label>
                                 <div class="col">
-                                    <input type="text" class="form-control" @bind-value="warehouse.WareHouseParent" required />
+                                    <SfDropDownList TValue="string" TItem="Warehouse" Placeholder="Select a associated entity" AllowFiltering="true" DataSource="@warehouseList">
+                                        <DropDownListEvents TItem="Warehouse" TValue="string" ValueChange="@ValueChangeAssociationEntity"></DropDownListEvents>
+                                        <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
+                                    </SfDropDownList>
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group row py-2">
                             <div class="form-group row">
-                                <label class="control-label col-md-12">@lblAssociatedEntity*: </label>
+                                <label class="control-label col-md-12">@lblAssociatedEntity: </label>
                                 <div class="col">
-                                    <input type="text" class="form-control" @bind-value="warehouse.AssociatedEntity" required />
+                                    <input type="text" class="form-control" required />
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group row py-2">
                             <div class="form-group row">
-                                <label class="control-label col-md-12">@lblIsExternal*: </label>
+                                <label class="control-label col-md-12">@lblIsExternal: </label>
                                 <div class="col">
                                     <SfSwitch @bind-Checked="isExternal"></SfSwitch>
                                 </div>
@@ -44,7 +49,7 @@
 
                         <div class="form-group row py-2">
                             <div class="form-group row">
-                                <label class="control-label col-md-12">@lblIsTransformationFacility*: </label>
+                                <label class="control-label col-md-12">@lblIsTransformationFacility: </label>
                                 <div class="col">
                                     <SfSwitch @bind-Checked="isTransformationFacility"></SfSwitch>
                                 </div>
@@ -53,7 +58,7 @@
 
                         <div class="form-group row py-2">
                             <div class="form-group row">
-                                <label class="control-label col-md-12">@lblScanSimulated*: </label>
+                                <label class="control-label col-md-12">@lblScanSimulated: </label>
                                 <div class="col">
                                     <SfSwitch @bind-Checked="scanSimulated"></SfSwitch>
                                 </div>
@@ -62,7 +67,7 @@
 
                         <div class="form-group row py-2">
                             <div class="form-group row">
-                                <label class="control-label col-md-12">@lblIsInventoryControlled*: </label>
+                                <label class="control-label col-md-12">@lblIsInventoryControlled: </label>
                                 <div class="col">
                                     <SfSwitch @bind-Checked="isInventoryControlled"></SfSwitch>
                                 </div>
@@ -71,34 +76,37 @@
 
                         <div class="form-group row">
                             <div class="form-group row">
-                                <label class="control-label col-md-12">@lblInventoryTransactionalItemType*: </label>
+                                <label class="control-label col-md-12">@lblInventoryTransactionalItemType: </label>
                                 <div class="col">
-                                    <input type="text" class="form-control" @bind-value="warehouse.InventoryTransactionalItemType" required />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="form-group row">
-                                <label class="control-label col-md-12">@lblWarehouseAddress*: </label>
-                                <div class="col">
-                                    <input type="text" class="form-control" @bind-value="warehouse.WarehouseAddress" required />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="form-group row">
-                                <label class="control-label col-md-12">@lblContactPerson*: </label>
-                                <div class="col">
-                                    <input type="text" class="form-control" @bind-value="warehouse.ContactPerson" required />
+                                    <SfDropDownList TValue="string" TItem="TransactionalItemType" Placeholder="Select a item type" AllowFiltering="true" DataSource="@itemType">
+                                        <DropDownListEvents TItem="TransactionalItemType" TValue="string" ValueChange="@ValueChangeItemType"></DropDownListEvents>
+                                        <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
+                                    </SfDropDownList>
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group row py-2">
                             <div class="form-group row">
-                                <label class="control-label col-md-12">@lblIsActive*: </label>
+                                <label class="control-label col-md-12">@lblWarehouseAddress: </label>
+                                <div class="col">
+                                    <input type="text" class="form-control" required />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="form-group row">
+                                <label class="control-label col-md-12">@lblContactPerson: </label>
+                                <div class="col">
+                                    <input type="text" class="form-control" required />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row py-2">
+                            <div class="form-group row">
+                                <label class="control-label col-md-12">@lblIsActive: </label>
                                 <div class="col">
                                     <SfSwitch @bind-Checked="isActive"></SfSwitch>
                                 </div>
@@ -128,6 +136,11 @@
     public string Id { get; set; }
 
     Warehouse warehouse = new Warehouse();
+
+    Warehouse WareHouseParent = new Warehouse();
+    List<Warehouse> warehouseList = new List<Warehouse>();
+    TransactionalItemType transactionalItemType = new TransactionalItemType();
+    List<TransactionalItemType> itemType = new List<TransactionalItemType>();
 
     private string lblWareHouseParent = "";
     private string lblAssociatedEntity = "";
@@ -160,7 +173,19 @@
         lblWarehouseAddress = UICommonFunctions.GetDisplayName(new Warehouse(), "WarehouseAddress");
         lblContactPerson = UICommonFunctions.GetDisplayName(new Warehouse(), "ContactPerson");
         lblIsActive = UICommonFunctions.GetDisplayName(new Warehouse(), "IsActive");
+        warehouseList = await warehouseService.GetWarehouseList("all");
+        itemType = await transactionalItemsService.GetSelectorListTransactionalItemTypes();
 
+    }
+
+    private void ValueChangeAssociationEntity(ChangeEventArgs<string, Warehouse> args)
+    {
+        WareHouseParent = args.ItemData;
+    }
+
+    private void ValueChangeItemType(ChangeEventArgs<string, TransactionalItemType> args)
+    {
+        transactionalItemType = args.ItemData;
     }
 
     private void GoBack()
