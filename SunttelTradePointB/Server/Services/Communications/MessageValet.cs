@@ -120,17 +120,18 @@ namespace SunttelTradePointB.Server.Services.Communications
             }
         }
 
-      
+
 
         /// <summary>
-        /// 
+        /// Retrieves a list of messages sent or received by an entity 
+        /// filtered by its date and an optional filter sentence
         /// </summary>
         /// <param name="entityId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="startingDate"></param>
         /// <param name="filterCriteria"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, List<CommunicationsMessage>? communicationsMessages, string? ErrorDescription)> GetMessagesOfAnEntity(string entityId, DateTime startingDate, string? filterCriteria = "")
+        public async Task<(bool IsSuccess, List<CommunicationsMessage>? communicationsMessages, string? ErrorDescription)> GetMessagesOfAnEntity(string entityId, string ipAdress, DateTime? startingDate = null, string? filterCriteria = "")
         {
             try
             {
@@ -138,7 +139,7 @@ namespace SunttelTradePointB.Server.Services.Communications
                
                 var pipeline = new List<BsonDocument>();
 
-                if (!(strNameFiler.ToLower() == "all" || strNameFiler.ToLower() == "todos"))
+                if (!(strNameFiler.ToLower() == "all" || strNameFiler.ToLower() == "todos") && strNameFiler !="")
                 {
                     pipeline.Add(
                     new BsonDocument{
@@ -151,36 +152,22 @@ namespace SunttelTradePointB.Server.Services.Communications
                                     { "$diacriticSensitive",false }
                                 }
                             }
-                        }}
+                        }
+                        }
                     }
                 );
                 }
 
+                DateTime startDate = startingDate?? DateTime.Now.AddDays(-1);
 
                 pipeline.Add(
-                    new BsonDocument(
-                        "$match",
-                        new BsonDocument("Status.IsEnabledForTransactions", true)
+                        new BsonDocument(
+                            "$match",
+                            new BsonDocument("SendDateTime",
+                            new BsonDocument("$gt", new BsonDateTime(startDate)))
 
-                    )
-                );
-
-                pipeline.Add(
-                    new BsonDocument {
-                        { "$project",
-                            new BsonDocument {
-                                { "ProductionSpecs", 0 },
-                                { "ProductPackingSpecs", 0 },
-                                { "ItemCharacteristics", 0},
-                                { "PathImages", 0},
-                                { "QualityParameters", 0},
-                                { "TransactionalItemModels", 0}
-                            }
-                        }
-                    }
-                );
-
-             
+                        ));
+               
 
                 List<CommunicationsMessage> results = await _messagedb.Aggregate<CommunicationsMessage>(pipeline).ToListAsync();
 
