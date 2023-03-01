@@ -1036,5 +1036,26 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 return (false, null, e.Message);
             }
         }
+
+        /// <summary>
+        /// Updates SkinImage of an entity
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="entityActorId"></param>
+        /// <param name="skinImage"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, string imageName, string? ErrorDescription)> SaveEntitySkinImage(string userId, string ipAdress, string entityActorId, string skinImage)
+        {
+            var filter = Builders<EntityActor>.Filter.Eq("_id", new ObjectId(entityActorId));
+
+            // define the update operation to set the SkinImageName property
+            var update = Builders<EntityActor>.Update.Set("SkinImageName", skinImage);
+
+            // update the matching documents in the collection
+            var updateResult = await _entityActorsCollection.UpdateManyAsync(filter, update);
+
+            return (true, skinImage, null);
+        }
     }
 }

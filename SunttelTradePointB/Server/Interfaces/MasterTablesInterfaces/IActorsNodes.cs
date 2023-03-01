@@ -213,6 +213,15 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         public Task<(bool IsSuccess, List<EntitiesCommercialRelationShip>  entitiesCommercialRelationShips, string? ErrorDescription)> GetCommercialConditiosOfEntity(string userId, string ipAdress, string entityActorId);
 
 
+        /// <summary>
+        /// UPDATES Field Skin Image
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="entityActorId"></param>
+        /// <param name="skinImage"></param>
+        /// <returns></returns>
+        public Task<(bool IsSuccess, string imageName, string? ErrorDescription)> SaveEntitySkinImage(string userId, string ipAdress, string entityActorId, string skinImage);
 
     }
 }

@@ -665,5 +665,52 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
             }
         }
 
+        /// <summary>
+        /// Retrieves Characteristics of a Transactional Item
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetTransactionalItemDetailsItemCharacteristics")]
+        public async Task<IActionResult> GetTransactionalItemDetailsItemCharacteristics(string userId, string ipAddress, string transactionalItemId)
+        {
+
+            var response = await _transactionalItems.GetTransactionalItemDetailsOf<TransactionalItemCharacteristicPair>(userId, ipAddress, transactionalItemId, TransactionalItemDetailsSection.Characteristics);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.TransactionalItemRelatedList);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+
+        }
+
+        /// <summary>
+        /// Saves (INSERT/UPDATE) A transactional item model
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="productModel"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveTransactionalItemModels")]
+        public async Task<IActionResult> SaveTransactionalItemModels(string userId, string ipAddress, string transactionalItemId, ProductModel productModel)
+        {
+            var response = await _transactionalItems.SaveTransactionalItemModels(userId, ipAddress, transactionalItemId, productModel);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.productModel);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
     }
 }

@@ -543,5 +543,30 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
                 return NotFound(response.ErrorDescription);
             }
         }
+
+
+        /// <summary>
+        /// Updates SkinImage of an entity
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="entityActorId"></param>
+        /// <param name="skinImage"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveEntitySkinImage")]
+        public async Task<IActionResult> SaveEntitySkinImage(string userId, string ipAdress, string entityActorId, string skinImage)
+        {
+            var response = await _entityNodes.SaveEntitySkinImage(userId, ipAdress, entityActorId, skinImage);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.imageName);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
     }
 }
