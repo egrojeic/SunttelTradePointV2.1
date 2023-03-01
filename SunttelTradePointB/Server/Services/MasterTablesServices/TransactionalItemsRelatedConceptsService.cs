@@ -419,10 +419,51 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
-                if(transactionalItemType.Id == null)
+                if (transactionalItemType.Id == null)
                 {
                     transactionalItemType.Id = ObjectId.GenerateNewId().ToString();
                 }
+
+                if (transactionalItemType.QualityParameters == null) {
+                    transactionalItemType.QualityParameters = new List<TransactionalItemQuality>();
+                }
+                transactionalItemType.QualityParameters.ForEach(e =>
+                {
+                    if(e.Id == null)
+                        e.Id = ObjectId.GenerateNewId().ToString();
+                });
+
+                if (transactionalItemType.Groups == null)
+                {
+                    transactionalItemType.Groups = new List<ConceptGroup>();
+                }
+
+                transactionalItemType.Groups.ForEach(e =>
+                {
+                    if (e.Id == null)
+                        e.Id = ObjectId.GenerateNewId().ToString();
+                });
+
+                if (transactionalItemType.TransactionalItemProcesses == null)
+                {
+                    transactionalItemType.TransactionalItemProcesses = new List<TransactionalItemProcessStep>();
+                }
+                transactionalItemType.TransactionalItemProcesses.ForEach(e =>
+                {
+                    if (e.Id == null)
+                        e.Id = ObjectId.GenerateNewId().ToString();
+                });
+
+                if (transactionalItemType.TransactionalItemTypeCharacteristics == null)
+                {
+                    transactionalItemType.TransactionalItemTypeCharacteristics = new List<TransactionalItemTypeCharacteristic>();
+                }
+                transactionalItemType.TransactionalItemTypeCharacteristics.ForEach(e =>
+                {
+                    if (e.Id == null)
+                        e.Id = ObjectId.GenerateNewId().ToString();
+                });
+
 
                 var filterTransactionalItemType = Builders<TransactionalItemType>.Filter.Eq("_id", new ObjectId(transactionalItemType.Id));
                 var updateTransactionalItemTypeOptions = new ReplaceOptions { IsUpsert = true };
