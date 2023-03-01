@@ -424,45 +424,45 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     transactionalItemType.Id = ObjectId.GenerateNewId().ToString();
                 }
 
-                if (transactionalItemType.QualityParameters == null) {
-                    transactionalItemType.QualityParameters = new List<TransactionalItemQuality>();
-                }
-                transactionalItemType.QualityParameters.ForEach(e =>
-                {
-                    if(e.Id == null)
-                        e.Id = ObjectId.GenerateNewId().ToString();
-                });
+                if (transactionalItemType.QualityParameters != null) {
+                    transactionalItemType.QualityParameters.ForEach(e =>
+                    {
+                        if (e.Id == null)
+                            e.Id = ObjectId.GenerateNewId().ToString();
+                    });
 
-                if (transactionalItemType.Groups == null)
-                {
-                    transactionalItemType.Groups = new List<ConceptGroup>();
                 }
 
-                transactionalItemType.Groups.ForEach(e =>
+                if (transactionalItemType.Groups != null)
                 {
-                    if (e.Id == null)
-                        e.Id = ObjectId.GenerateNewId().ToString();
-                });
-
-                if (transactionalItemType.TransactionalItemProcesses == null)
-                {
-                    transactionalItemType.TransactionalItemProcesses = new List<TransactionalItemProcessStep>();
+                    transactionalItemType.Groups.ForEach(e =>
+                    {
+                        if (e.Id == null)
+                            e.Id = ObjectId.GenerateNewId().ToString();
+                    });
                 }
-                transactionalItemType.TransactionalItemProcesses.ForEach(e =>
-                {
-                    if (e.Id == null)
-                        e.Id = ObjectId.GenerateNewId().ToString();
-                });
 
-                if (transactionalItemType.TransactionalItemTypeCharacteristics == null)
+               
+
+                if (transactionalItemType.TransactionalItemProcesses != null)
                 {
-                    transactionalItemType.TransactionalItemTypeCharacteristics = new List<TransactionalItemTypeCharacteristic>();
+                    transactionalItemType.TransactionalItemProcesses.ForEach(e =>
+                    {
+                        if (e.Id == null)
+                            e.Id = ObjectId.GenerateNewId().ToString();
+                    });
                 }
-                transactionalItemType.TransactionalItemTypeCharacteristics.ForEach(e =>
+               
+
+                if (transactionalItemType.TransactionalItemTypeCharacteristics != null)
                 {
-                    if (e.Id == null)
-                        e.Id = ObjectId.GenerateNewId().ToString();
-                });
+                    transactionalItemType.TransactionalItemTypeCharacteristics.ForEach(e =>
+                    {
+                        if (e.Id == null)
+                            e.Id = ObjectId.GenerateNewId().ToString();
+                    });
+                }
+               
 
 
                 var filterTransactionalItemType = Builders<TransactionalItemType>.Filter.Eq("_id", new ObjectId(transactionalItemType.Id));
@@ -772,6 +772,31 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 if (labelStyle.Id == null)
                 {
                     labelStyle.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                if (labelStyle.DataMaxLabelSettings != null) { 
+                    if(labelStyle.DataMaxLabelSettings.DataMaxFieldsSpecs != null)
+                    {
+                        labelStyle.DataMaxLabelSettings.DataMaxFieldsSpecs.ForEach(e => { 
+                            if(e.Id== null)
+                            {
+                                e.Id = ObjectId.GenerateNewId().ToString();
+                            }
+                        });
+                    }
+                }
+
+                if (labelStyle.ZebraLabelSettings != null)
+                {
+                    if (labelStyle.ZebraLabelSettings.ZebraFieldsSpecs != null)
+                    {
+                        labelStyle.ZebraLabelSettings.ZebraFieldsSpecs.ForEach(e => {
+                            if (e.Id == null)
+                            {
+                                e.Id = ObjectId.GenerateNewId().ToString();
+                            }
+                        });
+                    }
                 }
 
                 var filterlabelStyle = Builders<LabelStyle>.Filter.Eq("_id", new ObjectId(labelStyle.Id));

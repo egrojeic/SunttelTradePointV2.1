@@ -712,13 +712,17 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 {
                     var pipeline = new List<BsonDocument>();
 
-                    pipeline.Add(
-                        new BsonDocument(
-                            "$match", new BsonDocument(
-                                "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filter}/i"))
-                            )
-                        )
-                    );
+                    if(filter.ToLower() != "all")
+                    {
+                        pipeline.Add(
+                       new BsonDocument(
+                           "$match", new BsonDocument(
+                               "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filter}/i"))
+                           )
+                       )
+                   );
+                    }
+                   
 
                     List<TransactionalItemType> results = await _transactionalItemTypes.Aggregate<TransactionalItemType>(pipeline).ToListAsync();
                     return (true, results, null);
