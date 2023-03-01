@@ -1,6 +1,8 @@
-﻿@using SunttelTradePointB.Client.Shared.EntityShareComponents.EntityPopUpComponents
-@using SunttelTradePointB.Client.Shared.ConceptSelectors
+﻿@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Navigations
 @using SunttelTradePointB.Shared.Common
+@using SunttelTradePointB.Client.Shared.ConceptSelectors
+@using SunttelTradePointB.Client.Shared.EntityShareComponents.EntityPopUpComponents
 
 @inject ActorsNodeService actorsNodeServive
 @inject ContextMenuService ContextMenuService
@@ -19,37 +21,70 @@
 <div class="tableBodyContainer">
     @if(shippingInfoList != null)
     {
-        <RadzenDataGrid AllowFiltering="true"
-                    AllowColumnResize="true"
-                    AllowAlternatingRows="true"
-                    FilterMode="FilterMode.Advanced"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    AllowSorting="true"
-                    PageSize="5"
-                    AllowPaging="true"
-                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    Data="@shippingInfoList"
-                    TItem="ShippingInfo"
-                    ColumnWidth="300px"
-                    SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"
-                    @bind-Value=@selectedShippingInfo Class="m-4"
-                    CellContextMenu="@ShowContextMenuWithContent"
-                    @ref="radzenDataGrid">
+        <SfGrid DataSource="shippingInfoList"
+            Height="auto"
+            Width="auto"
+            TValue="ShippingInfo"
+            AllowFiltering="true"
+            AllowTextWrap="false"
+            AllowPaging="true"
+            AllowResizing="true"
+            ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" } })">
+            <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
+            <GridColumns>
+                <GridColumn Field="Sender.Name" HeaderText="Sender" Width="110"></GridColumn>
+                <GridColumn Field="Carrier.Name" HeaderText="Phone Number" Width="110"></GridColumn>
+                <GridColumn Field="DeliveryAddress.Name" HeaderText="Delivery Address" Width="110"></GridColumn>
+                <GridColumn Field="@nameof(ShippingInfo.CutOff24Hour)" HeaderText="Cut Off 24H" Width="110"></GridColumn>
+                <GridColumn Field="@nameof(ShippingInfo.CutOffMinute)" HeaderText="Cut Off Minute" Width="110"></GridColumn>
+                <GridColumn Field="@nameof(ShippingInfo.DelayTimeDays)" HeaderText="Delay Time Days" Width="110"></GridColumn>
+                <GridColumn Field="PalletTypeShipping.Name" HeaderText="Pallet Type Shipping" Width="110"></GridColumn>
+                <GridColumn HeaderText="Days" Width="110">
+                    <Template>
+                        @{
+                            var Monday = (bool)context.GetType().GetProperty(nameof(ShippingInfo.Monday)).GetValue(context);
+                            var Tuesday = (bool)context.GetType().GetProperty(nameof(ShippingInfo.Tuesday)).GetValue(context);
+                            var Wednesday = (bool)context.GetType().GetProperty(nameof(ShippingInfo.Wednesday)).GetValue(context);
+                            var Thursday = (bool)context.GetType().GetProperty(nameof(ShippingInfo.Thursday)).GetValue(context);
+                            var Friday = (bool)context.GetType().GetProperty(nameof(ShippingInfo.Friday)).GetValue(context);
+                            var Saturday = (bool)context.GetType().GetProperty(nameof(ShippingInfo.Saturday)).GetValue(context);
+                            var Sunday = (bool)context.GetType().GetProperty(nameof(ShippingInfo.Sunday)).GetValue(context);
+                            if (Monday)
+                            {
 
-            <Columns>
-                <RadzenDataGridColumn TItem="ShippingInfo" Property="Sender.Name" Title="Sender" Frozen="true" Width="100px" />
-                <RadzenDataGridColumn TItem="ShippingInfo" Property="Carrier.Name" Title="Carrier" Frozen="true" Width="100px" />
-                <RadzenDataGridColumn TItem="ShippingInfo" Property="DeliveryAddress.Name" Title="Delivery Address" Frozen="true" Width="100px" />
-                <RadzenDataGridColumn TItem="ShippingInfo" Property="CutOff24Hour" Title="Cut Off 24H" Frozen="true" Width="100px" />
-                <RadzenDataGridColumn TItem="ShippingInfo" Property="CutOffMinute" Title="Cut Off Minute" Frozen="true" Width="100px" />
-                <RadzenDataGridColumn TItem="ShippingInfo" Property="DelayTimeDays" Title="Delay Time Days" Frozen="true" Width="100px" />
-                <RadzenDataGridColumn TItem="ShippingInfo" Property="PalletTypeShipping.Name" Title="Pallet Type Shipping" Frozen="true" Width="100px" />
-            </Columns>
+                                <span>Monday </span>
+                            }
+                            if (Tuesday)
+                            {
+                                <span> Tuesday </span>
+                            }
+                            if (Wednesday)
+                            {
+                                <span> Wednesday </span>
+                            }
+                            if (Thursday)
+                            {
+                                <span> Thursday </span>
+                            }
+                            if (Friday)
+                            {
+                                <span> Friday </span>
+                            }
+                            if (Saturday)
+                            {
+                                <span> Saturday </span>
+                            }
+                            if (Sunday)
+                            {
+                                <span> Sunday </span>
+                            }
+                        }
+                    </Template>
+                </GridColumn>
+            </GridColumns>
+            <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="ShippingInfo"></GridEvents>
+        </SfGrid>
 
-
-        </RadzenDataGrid>
     }
 
 </div>
@@ -77,28 +112,14 @@
         }
     }
 
-
-    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<ShippingInfo> args) => ContextMenuService.Open(args, ds =>
-    @<RadzenMenu Click="OnMenuItemClick">
-        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-        <RadzenMenuItem Text="Delete" Value=args.Data Icon="delete"></RadzenMenuItem>
-        <RadzenMenuItem Text="Show in Map" Value=args.Data Icon="location_on"></RadzenMenuItem>
-
-        </RadzenMenu>
-    );
-
-    void OnMenuItemClick(MenuItemEventArgs args)
+    public void OnContextMenuClick(ContextMenuClickEventArgs<ShippingInfo> args)
     {
-        ShippingInfo argObj = (ShippingInfo)args.Value;
+        ShippingInfo _ShippingInfo = new();
+        _ShippingInfo = args.RowInfo.RowData;
 
-        if(args.Text == "Edit")
+        if (args.Item.Text == "Edit")
         {
-            navigationManager.NavigateTo($"/Actors/{EntityId}/ShippingInfo/{argObj.Id}/Edit");
-        }
-
-        if (!args.Value.Equals(3) && !args.Value.Equals(4))
-        {
-            ContextMenuService.Close();
+            navigationManager.NavigateTo($"/Actors/{EntityId}/ShippingInfo/{_ShippingInfo.Id}/Edit");
         }
     }
 

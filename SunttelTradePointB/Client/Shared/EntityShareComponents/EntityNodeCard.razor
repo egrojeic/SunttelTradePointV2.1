@@ -1,4 +1,5 @@
-﻿@page "/Actors/{Id}"
+﻿@page "/register/NewUser"
+@page "/Actors/{Id}"
 @page "/Actors/{Id}/{Page}"
 @page "/Actors/NewActor"
 @using SunttelTradePointB.Client.Shared.ConceptSelectors
@@ -64,27 +65,45 @@
 
             </SfSplitButton>
         </div>
+        
 
         <div class="container">
             <div class="row">
-                <div class="col-sm">
+                @if (EntityNode == null)
+                {
                     <div class="form-group">
-                        <label for="name">@lblName</label>
+                        <label for="name">UserName*</label>
                         <input type="text" class="form-control" id="name" @bind-value="EntityNode.Name" />
                     </div>
 
                     <div class="form-group">
-                        <label for="eMailAddress">@lblEmail</label>
+                        <label for="eMailAddress">Password*</label>
                         <input type="text" class="form-control" id="eMailAddress" @bind-value="EntityNode.EMailAddress" />
                     </div>
 
                     <div class="form-group">
-                        <label for="sunttelUserId">@lblSquarUser</label>
+                        <label for="sunttelUserId">Confirm Password*</label>
+                        <input type="text" class="form-control" id="sunttelUserId" @bind-value="EntityNode.SunttelUserId" />
+                    </div>
+                }
+                <div class="col-sm">
+                    <div class="form-group">
+                        <label for="name">@lblName*</label>
+                        <input type="text" class="form-control" id="name" @bind-value="EntityNode.Name" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eMailAddress">@lblEmail*</label>
+                        <input type="text" class="form-control" id="eMailAddress" @bind-value="EntityNode.EMailAddress" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sunttelUserId">@lblSquarUser*</label>
                         <input type="text" class="form-control" id="sunttelUserId" @bind-value="EntityNode.SunttelUserId" />
                     </div>
 
                     <div class="form-group">
-                        <label for="InvoicingAddress">@lblInvoicingAddress</label>
+                        <label for="InvoicingAddress">@lblInvoicingAddress*</label>
                         <span >@(EntityNode != null ? EntityNode.InvoicingAddress : "")</span>
                         <span @onclick="(() => NavigateToInvocingAddress())" class="px-3">
                             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0     8 8">
@@ -95,17 +114,17 @@
                 </div>
                 <div class="col-sm">
                     <div class="form-group" id="shortCutCodeGroup">
-                        <label for="shortcutCode">@lblShortcutCode</label>
+                        <label for="shortcutCode">@lblShortcutCode*</label>
                         <input type="text" class="form-control" id="shortcutCode" @bind-value="EntityNode.Code" />
                     </div>
 
                     <div class="form-group" id="legacyIdGroup">
-                        <label for="legacyId">@lblLegacyId</label>
+                        <label for="legacyId">@lblLegacyId *</label>
                         <input type="number" class="form-control" id="legacyId" @bind-value="EntityNode.LegacyId" />
                     </div>
 
                     <div class="form-group">
-                        <label for="sunttelUserId">@lblRole</label>
+                        <label for="sunttelUserId">@lblRole*</label>
                         <div class="item-edit">
                             <label>@(role != null ? role.Name : "")</label>
                             <button type="button" style="float:right" @onclick='()=>SetViewElement("Roles")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
@@ -125,7 +144,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="ComercialGroup">@lblGroup</label>
+                        <label for="ComercialGroup">@lblGroup*</label>
                         <div>
                             <div class="conten-chip">
                                 <SfChip @ref="referChip" EnableDelete="true" CssClass="chip-style" EnableRtl="false">
@@ -243,6 +262,7 @@
     public EntityActor? currentEntityActor { get; set; }
     EntityActor EntityNode;
     EntityActor actor;
+    List<EntityActor> newActor = new List<EntityActor>();
     Address addressNew;
     [Parameter]
     public string Id { get; set; }
@@ -388,7 +408,7 @@
             EntityNode = currentEntityActor;
         role = EntityNode.DefaultEntityRole;
         var rute = actorsNodeServive.Host;
-        if (EntityNode.SkinImageName == "")
+        if (EntityNode.SkinImageName == "" || EntityNode.SkinImageName == null)
         {
             imageRute = rute + imageDefault;
         }
@@ -459,6 +479,11 @@
                 message = "Entity Actor Saved";
                 visible = true;
                 StateHasChanged();    
+                if(actor != null)
+                {
+                    newActor = await actorsNodeServive.GetEntityActorFaceList(actor.Name);
+                    navigationManager.NavigateTo($"/Actors/{newActor[0].Id}");
+                }
             }
 
         }

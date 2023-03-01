@@ -1,4 +1,6 @@
-﻿@using SunttelTradePointB.Shared.Common
+﻿@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Navigations
+@using SunttelTradePointB.Shared.Common
 @using SunttelTradePointB.Client.Shared.EntityShareComponents.EntityPopUpComponents
 
 @inject ActorsNodeService actorsNodeServive;
@@ -20,39 +22,25 @@
 
     @if (entityCommercialCondition != null)
     {
-        <RadzenDataGrid AllowFiltering="true"
-                    AllowColumnResize="true"
-                    AllowAlternatingRows="true"
-                    FilterMode="FilterMode.Advanced"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    AllowSorting="true"
-                    PageSize="5"
-                    AllowPaging="true"
-                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    Data="@entityCommercialCondition"
-                    TItem="EntitiesCommercialRelationShip"
-                    ColumnWidth="300px"
-                    SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"
-                    @bind-Value=@selectedCommercialCondition Class="m-4"
-                    CellContextMenu="@ShowContextMenuWithContent"
-                    @ref="refDataGrid">
+        <SfGrid DataSource="entityCommercialCondition"
+            Height="auto"
+            Width="auto"
+            TValue="EntitiesCommercialRelationShip"
+            AllowFiltering="true"
+            AllowTextWrap="false"
+            AllowPaging="true"
+            AllowResizing="true"
+            ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" } })">
+            <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
+            <GridColumns>
+                <GridColumn Field="RelatedEntity.Name" HeaderText="Entity" Width="110"></GridColumn>
+                <GridColumn Field="@nameof(EntitiesCommercialRelationShip.LimitCreditDays)" HeaderText="Limit Credit Days" Width="110"></GridColumn>
+                <GridColumn Field="@nameof(EntitiesCommercialRelationShip.LimitCreditAmount)" HeaderText="Limit Credit Amount" Width="110"></GridColumn>
+                <GridColumn Field="EntitiyCommercialRelationShipType.Name" HeaderText="Relation Type" Width="110"></GridColumn>
+            </GridColumns>
+            <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="EntitiesCommercialRelationShip"></GridEvents>
+        </SfGrid>
 
-            <Columns>
-                <RadzenDataGridColumn TItem="EntitiesCommercialRelationShip" Property="RelatedEntity.Name" Title="Status" Frozen="false" Width="100px" />
-                <RadzenDataGridColumn TItem="EntitiesCommercialRelationShip" Property="RelatedEntity.Status.IsEnabledForTransactions" Title="Enable For Transactions" Frozen="false" Width="100px" />
-                <RadzenDataGridColumn TItem="EntitiesCommercialRelationShip" Property="RelatedEntity.Status.IsEditable" Title="Editable" Frozen="false" Width="100px" />
-                <RadzenDataGridColumn TItem="EntitiesCommercialRelationShip" Property="RelatedEntity.Status.SystemBlocked" Title="System Blocked" Frozen="false" Width="100px" />
-                <RadzenDataGridColumn TItem="EntitiesCommercialRelationShip" Property="LimitCreditDays" Title="Limit Credit Days" Frozen="false" Width="100px" />
-                <RadzenDataGridColumn TItem="EntitiesCommercialRelationShip" Property="LimitCreditAmount" Title="Limit Credit Amount" Frozen="false" Width="100px" />
-                <RadzenDataGridColumn TItem="EntitiesCommercialRelationShip" Property="EntitiyCommercialRelationShipType.Name" Title="Relation Type" Frozen="false" Width="100px" />
-              
-
-            </Columns>
-
-
-        </RadzenDataGrid>
     }
 
 
@@ -86,28 +74,14 @@
         }
     }
 
-
-    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<EntitiesCommercialRelationShip> args) => ContextMenuService.Open(args, ds =>
-    @<RadzenMenu Click="OnMenuItemClick">
-            <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-            <RadzenMenuItem Text="Delete" Value=args.Data Icon="delete"></RadzenMenuItem>
-            <RadzenMenuItem Text="Show in Map" Value=args.Data Icon="location_on"></RadzenMenuItem>
-
-        </RadzenMenu>
-    );
-
-    void OnMenuItemClick(MenuItemEventArgs args)
+    public void OnContextMenuClick(ContextMenuClickEventArgs<EntitiesCommercialRelationShip> args)
     {
-        EntitiesCommercialRelationShip argObj = (EntitiesCommercialRelationShip)args.Value;
+        EntitiesCommercialRelationShip _EntitiesCommercialRelationShip = new();
+        _EntitiesCommercialRelationShip = args.RowInfo.RowData;
 
-        if(args.Text == "Edit")
+        if (args.Item.Text == "Edit")
         {
-            navigationManager.NavigateTo($"/Actors/{EntityId}/ComercialConditions/{argObj.Id}/Edit");
-        }
-
-        if (!args.Value.Equals(3) && !args.Value.Equals(4))
-        {
-            ContextMenuService.Close();
+            navigationManager.NavigateTo($"/Actors/{EntityId}/ComercialConditions/{_EntitiesCommercialRelationShip.Id}/Edit");
         }
     }
 

@@ -53,24 +53,13 @@
                     <GridColumn Field="@nameof(EntityActor.Code)" HeaderText="Code" Width="110"></GridColumn>
                     <GridColumn Field="@nameof(EntityActor.Name)" HeaderText="Name" Width="110"></GridColumn>
                     <GridColumn Field="@nameof(EntityActor.EMailAddress)" HeaderText="Email Address" Width="110"></GridColumn>
-                    <GridColumn Field="@nameof(EntityActor.InvoicingAddress.CityAddress)" HeaderText="Geolocation" Width="110"></GridColumn>
+                    <GridColumn Field="InvoicingAddress.CityAddress" HeaderText="Geolocation" Width="110"></GridColumn>
                     <GridColumn Field="@nameof(EntityActor.GetFirstPhone)" HeaderText="Phone" Width="110"></GridColumn>
                     <GridColumn Field="@nameof(EntityActor.DefaultEntityRole)" HeaderText="Default Role" Width="110"></GridColumn>
                     <GridColumn Field="@nameof(EntityActor.FullClassName)" HeaderText="Groups" Width="110"></GridColumn>
                 </GridColumns>
                 <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="EntityActor"></GridEvents>
             </SfGrid>
-
-
-
-
-
-
-
-
-
-
-
         }
     }
 
@@ -89,6 +78,8 @@
     string filterText = "";
     List<EntityActor>? entityNodesList;
     IList<EntityActor> selectedEntities;
+
+    private string geolocation { get; set; }
 
     bool isLoading = false;
 

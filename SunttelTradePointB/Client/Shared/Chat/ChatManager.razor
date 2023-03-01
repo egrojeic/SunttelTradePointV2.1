@@ -1,87 +1,150 @@
 ﻿@using System;
 @using System.Timers;
 @using Microsoft.AspNetCore.SignalR.Client
+@using SunttelTradePointB.Shared.Communications
+@using System.Text.RegularExpressions;
+
+
 @inject NavigationManager NavigationManager
+@inject ActorsNodeService actorsNodeService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <style>
     .spans-container span {
         display: inline-block;
         margin-right: 10px;
     }
+
+    .chat {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-row-gap: 10px;
+        overflow-y: scroll;
+        height: 600px;
+    }
+
+    .dropdown-menu {
+        width: 100px;
+    }
+
+    .btn {
+        border: none;
+        background-color: transparent;
+        position: relative;
+        top: -5px;
+    }
+    span{
+        cursor:pointer;
+    }
 </style>
 
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+  </symbol>
+</svg>
+
 <div id ="ChatConatainerDiv">
+    
     <ChatUpperControl NumerCount="@NumberOfConnectedUsers">
 
     </ChatUpperControl>
-    
-    <div class="card-body" data-mdb-perfect-scrollbar="true" style="position: relative; height: 400px">
-        @foreach(var text in addedTexts)
-        {
-            <div class="d-flex justify-content-between">
-                <p class="small mb-1">User Name</p>
+    <div class="col-md-12">
+        <div class="form-group row">
+            <div class="col-md-3">
+            <ChatMenuBar></ChatMenuBar>
             </div>
-            <div class="d-flex flex-row justify-content-start">
-                <img src="https://localhost:7186/uploads/entityImages/avatar_male_man_person_user_icon.png"
-                     alt="avatar 1" style="width: 45px; height: 100%;">
-                <div>
-                    
-                    <p class="small p-2 ms-3 mb-3 rounded-3" style="background-color: #f5f6f7;">
-                        @text
-                        <br>
-                        <span class="small mb-1 text-muted">@CurrentDate.ToString("dd/mm/yy")</span>
-                        <span class="small mb-1 text-muted">@currentTime</span>
-                    </p>
-                    
+            <div class="col-md-9">
+
+                <div class="d-flex flex-row">
+                    <img src="@imageGroup" alt="avatar" class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
+                    <div class="pt-1">
+                        <p class="fw-bold mb-0">@chatGroup</p>
+                        <p class="small text-muted"></p>
+                    </div>
                 </div>
-            </div>    
-        }
+                
+                <section class="chat">
+                    <div class="card-body" data-mdb-perfect-scrollbar="true" style="position: relative; height: 400px">
+                        @{
+                            foreach (var text in communicationsMessages)
+                            {
+                                <div class="d-flex justify-content-between">
+                                    <p class="small mb-1">User Name</p>
+                                </div>
+                                <div class="d-flex flex-row justify-content-start">
+                                    <img src="https://localhost:7186/uploads/entityImages/avatar_male_man_person_user_icon.png"
+                                     alt="avatar 1" style="width: 45px; height: 100%;">
+                                    <div>
+                                        @if (refChatMessageWriter.urgent == true)
+                                        {
+                                            <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>
+                                                <div>
+                                                    @text.Message
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <p class="small p-2 ms-3 mb-3 rounded-3" style="background-color: #f5f6f7;">
+                                                @text.Message
+                                                <!-- Default dropend button -->
+                                                <div class="btn-group dropend" style="float:right">
+                                                    <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="fa-solid fa-bars"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <!-- Dropdown menu links -->
+                                                        <li><span @onclick="((e) => refChatMessageWriter.SetMessage(text.Message))"><i class="fa-sharp fa-solid fa-reply"></i>Replay</span></li>
+                                                        <li><span @onclick="((e) => refChatMessageWriter.forwardMessage(text.Message))"><i class="fa-solid fa-share"></i>Forward</span></li>
+                                                        <li><span><i class="fa-solid fa-check-double"></i>Confirm Read</span></li>
+                                                    </ul>
+                                                </div>
+                                            </p>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </section>
+                <ChatMessageWriter @ref="refChatMessageWriter" @bind-TextMessage="@entitiesFilter">
+                </ChatMessageWriter>
+            </div>
+        </div>
         
-        @foreach(var text2 in addedTextsPerson2)
-        {
-            <div class="d-flex justify-content-between">
-                <p class="small mb-1 text-muted"></p>
-                <p class="small mb-1">Johny Bullock</p>
-            </div>
-            <div class="d-flex flex-row justify-content-end mb-4 pt-1">
-                <div>
-                    <p class="small p-2 me-3 mb-3 text-white rounded-3 bg-warning">
-                        @text2
-                        <br>
-                        <span class="small mb-1 text-muted">@CurrentDate.ToString("dd/mm/yy")</span>
-                        <span class="small mb-1 text-muted">@currentTime</span>
-                    </p>
-                </div>
-                <img src="https://localhost:7186/uploads/entityImages/avatar_user_woman_female_person_icon.png"
-                     alt="avatar 1" style="width: 45px; height: 100%;">
-            </div>    
-        }
     </div>
 
-
-
-
-    <ChatMessageWriter @bind-TextMessage="@entitiesFilter">
-
-    </ChatMessageWriter>
+    
 </div>
 
 @code {
-
     private HubConnection? hubConnection;
     int NumberOfConnectedUsers = 0;
 
     private List<string> addedTexts = new List<string>();
-    private List<string> addedTextsPerson2 = new List<string>();
     string _textMessage = "";
+
     private string userName { get; set; } = "";
 
-    public DateTime CurrentDate { get; set; } = DateTime.Now;
-    private string currentTime { get; set; } = DateTime.Now.ToString("hh:mm:ss");
+    public string reply { get; set; } = "";
+    public string forward { get; set; } = "";
+
+    public string chatGroup { get; set; } = "Test Name";
+    public string imageGroup { get; set; } = "";
+
+    private List<CommunicationsMessage> communicationsMessages { get; set; } = new List<CommunicationsMessage>();
+    ChatMessageWriter? refChatMessageWriter;
+    private ChatMenuBar chatMenuBar = new ChatMenuBar();
+
+    private string userId = UIClientGlobalVariables.UserId;
+
 
     protected override async Task OnInitializedAsync()
     {
         userName = UIClientGlobalVariables.UserName;
+        imageGroup = actorsNodeService.Host + "/avatar_male_man_person_user_icon.png";
         // Initializing hub
         hubConnection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/hubs/userHub"), options =>
@@ -100,8 +163,22 @@
 
         hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
         {
-            addedTexts.Add($"{message}");
-            addedTextsPerson2.Add($"{message}");
+            if(refChatMessageWriter.tempReplyMessage != "")
+            {
+                reply = refChatMessageWriter.tempReplyMessage;
+                message = reply + "\n" + message;
+                refChatMessageWriter.tempReplyMessage = "";
+            }
+            if(refChatMessageWriter.tempForwardM != "")
+            {
+                forward = $"{user} say: " + refChatMessageWriter.tempForwardM;
+                message = forward + "\n" + message;
+                refChatMessageWriter.tempForwardM = "";
+            }
+            communicationsMessages.Add(new CommunicationsMessage
+            {
+                Message = message
+            });
             StateHasChanged();
         });
 
@@ -112,8 +189,8 @@
         catch (Exception e)
         {
             Console.WriteLine($"Error connecting: {e.Message}");
-        }   
-        
+        }
+        StateHasChanged();
     }
 
     public string? entitiesFilter
@@ -125,7 +202,6 @@
             addMessage(_textMessage);
         }
     }
-
 
     private async void addMessage(string messageChat) {
 

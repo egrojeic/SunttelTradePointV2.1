@@ -1,6 +1,8 @@
 ﻿@page "/IdentificationTyes"
-@using SunttelTradePointB.Client.Shared.TransactionalItems
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Navigations
 @using SunttelTradePointB.Shared.Common
+@using SunttelTradePointB.Client.Shared.TransactionalItems
 
 @inject IJSRuntime JSRuntime
 @inject NavigationManager navigationManager
@@ -23,28 +25,22 @@
     }else{
         @if(entityIdentificationTypeList != null)
         {
-            <RadzenDataGrid AllowFiltering="true"
-                    AllowColumnResize="true"
-                    AllowAlternatingRows="true"
-                    FilterMode="FilterMode.Advanced"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    AllowSorting="true"
-                    PageSize="50"
-                    AllowPaging="true"
-                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    Data="@entityIdentificationTypeList"
-                    TItem="IdentificationType"
-                    ColumnWidth="300px"
-                    SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"
-                    @bind-Value=@selectedIdentificationType Class="m-4"
-                    CellContextMenu="@ShowContextMenuWithContent">
-                <Columns>
-                    <RadzenDataGridColumn TItem="IdentificationType" Property="@nameof(EntityGroup.Code)" Title="Code" Frozen="true" Width="120px" />
-                    <RadzenDataGridColumn TItem="IdentificationType" Property="@nameof(EntityGroup.Name)" Title="Name" Frozen="true" Width="auto" />
-                </Columns>
-            </RadzenDataGrid>
+            <SfGrid DataSource="entityIdentificationTypeList"
+            Height="auto"
+            Width="auto"
+            TValue="IdentificationType"
+            AllowFiltering="true"
+            AllowTextWrap="false"
+            AllowPaging="true"
+            AllowResizing="true"
+            ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" } })">
+                <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
+                <GridColumns>
+                    <GridColumn Field="@nameof(IdentificationType.Code)" HeaderText="Code" Width="110"></GridColumn>
+                    <GridColumn Field="@nameof(IdentificationType.Name)" HeaderText="Name" Width="110"></GridColumn>
+                </GridColumns>
+                <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="IdentificationType"></GridEvents>
+            </SfGrid>
         }
     }
 </div>
@@ -91,23 +87,15 @@
         }
     }
 
-    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<IdentificationType> args) => ContextMenuService.Open(args, ds =>
-    @<RadzenMenu Click="OnMenuItemClick">
-            <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
 
-    </RadzenMenu>
-    );
-
-    void OnMenuItemClick(MenuItemEventArgs args)
+    public void OnContextMenuClick(ContextMenuClickEventArgs<IdentificationType> args)
     {
-        IdentificationType argObj = (IdentificationType)args.Value;
-        //Navigate(argObj.Id);
-        if (args.Text == "Edit")
-            navigationManager.NavigateTo($"/IdentificationTyes/{argObj.Id}/Edit");
+        IdentificationType _IdentificationType = new();
+        _IdentificationType = args.RowInfo.RowData;
 
-        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        if (args.Item.Text == "Edit")
         {
-            ContextMenuService.Close();
+            navigationManager.NavigateTo($"/IdentificationTyes/{_IdentificationType.Id}/Edit");
         }
     }
 

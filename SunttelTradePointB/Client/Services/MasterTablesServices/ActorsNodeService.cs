@@ -241,7 +241,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             {
                 if (ipAddress == "")
                     ipAddress = "127.0.0.0";
-                List<ConceptGroup>? groups = await _httpClient.GetFromJsonAsync<List<ConceptGroup>>($"/api/EntityNodesMaintenance/GetEntityGroups?userId={userId}&ipAdress={ipAddress}&filterCondition={filterCondition}");
+                //List<ConceptGroup>? groups = await _httpClient.GetFromJsonAsync<List<ConceptGroup>>($"/api/EntityNodesMaintenance/GetEntityGroups?userId={userId}&ipAdress={ipAddress}&filterCondition={filterCondition}");
+                List<ConceptGroup>? groups = await _httpClient.GetFromJsonAsync<List<ConceptGroup>>($"/api/ConceptsSelector/GetSelectorListEntityGroups?filterCondition={filterCondition}");
                 return groups;
             }
             catch (Exception ex)
@@ -803,6 +804,22 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
                 return null;
 
+            }
+        }
+
+        public async Task<bool> SaveEntitySkinImage(string entityActorId, string skinImage)
+        {
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+                var result = await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveEntitySkinImage?userId={userId}&ipAdress={ipAddress}&entityActorId={entityActorId}&skinImage={skinImage}", "");
+                return result.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
             }
         }
 

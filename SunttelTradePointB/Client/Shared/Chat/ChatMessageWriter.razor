@@ -1,14 +1,91 @@
 ﻿@using Syncfusion.Blazor.Inputs
 
-<div id="MessageWriterContainer">
-    <SfTextBox 
-        Placeholder="Type a message" 
-        Enabled="@CheckDisabled" 
-        Multiline="true"
-        @bind-Value="@textBoxValue" @onkeydown="@OnKeyDown"
-        @oninput="@OnTyping">
+<style>
+    .reply-message {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin: 10px;
+        padding: 10px;
+    }
 
-    </SfTextBox>
+        .reply-message .message-text {
+            margin-bottom: 10px;
+        }
+
+        .reply-message .reply-input textarea {
+            width: 100%;
+            height: 60px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            resize: none;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .reply-message .reply-input button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            float: right;
+        }
+
+            .reply-message .reply-input button:hover {
+                background-color: #45a049;
+            }
+</style>
+
+<div id="MessageWriterContainer">
+    @{
+        if(replyMessage != "" || forwardM != "")
+        {
+            <div class="reply-message">
+                <div class="message-text">
+                    @if(replyMessage.Length > 0)
+                    {
+                        <span>@replyMessage</span>
+                    }
+                    
+                    @if(forwardM.Length > 0)
+                    {
+                        <span>User say: @forwardM</span>
+                    }
+                    
+                </div>
+                <div class="reply-input">
+                    <SfTextBox Placeholder="Type a message"
+                       Enabled="@CheckDisabled"
+                       Multiline="true"
+                           @bind-Value="@textBoxValue" @onkeydown="@OnKeyDown"
+                           @oninput="@OnTyping">
+                    </SfTextBox>
+                </div>
+            </div>
+        }
+        else
+        {
+            <SfTextBox Placeholder="Type a message"
+               Enabled="@CheckDisabled"
+               Multiline="true"
+                   @bind-Value="@textBoxValue" @onkeydown="@OnKeyDown"
+                   @oninput="@OnTyping">
+            </SfTextBox>
+            <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-danger" @onclick="urgentButton">Urgent</button>
+            </div>
+            <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-success" @onclick="normalButton">Normal</button>
+            </div>
+
+        }
+    }
+    
+
+    
 
 </div>
 
@@ -17,10 +94,16 @@
     public EventCallback<string> TextMessageChanged { get; set; }
     [Parameter]
     public string? TextMessage { get; set; }
+    public string? replyMessage { get; set; } = "";
+    public string? tempReplyMessage { get; set; } = "";
+    public string? forwardM { get; set; } = "";
+    public string? tempForwardM { get; set; } = "";
 
     private bool CheckDisabled { get; set; } = true;
     private string textBoxValue = "";
-    
+
+    public bool urgent { get; set; } = false;
+    public bool normal { get; set; } = false;
 
     public void OnEnabledChange(Syncfusion.Blazor.Buttons.ChangeEventArgs<bool> args)
     {
@@ -42,9 +125,32 @@
             TextMessageChanged.InvokeAsync(TextMessage);
 
             textBoxValue = "";
-
+            tempReplyMessage = replyMessage;
+            tempForwardM = forwardM;
+            replyMessage = "";
+            forwardM = "";
             StateHasChanged();
-
         }
+    }
+
+    public void SetMessage(string message)
+    {
+        replyMessage = message;
+    }
+
+    public void forwardMessage(string message)
+    {
+        forwardM = message;
+    }
+
+    public void urgentButton()
+    {
+        urgent = true;
+        normal = false;
+    }
+    public void normalButton()
+    {
+        normal = true;
+        urgent = false;
     }
 }
