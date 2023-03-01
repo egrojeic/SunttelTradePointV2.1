@@ -5,6 +5,7 @@ using Microsoft.Extensions.FileProviders;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
+using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents;
 using SunttelTradePointB.Shared.Common;
 using System.Linq;
 using System.Net.Http;
@@ -27,6 +28,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         public TransactionalItemType? ConceptTransactionalItemType { get; set; }
         public PackingSpecs? ConceptTransactionalItemPackingSpecs { get; set; }
         public TransactionalItemQualityPair? ConceptTransactionalItemQualityPair { get; set; }
+        public LabelStyle ConceptLabelStyle { get; set; }
         public enum UploadingFileType
         {
             TransactionalItemImage,
@@ -53,6 +55,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         List<TransactionalItemStatus> transactionalItemStatuss;
         List<TransactionalItemCharacteristicPair> transactionalItemCharacteristicPair;
         List<LabelStyle> labelStyles;
+        List<ProductModel> productModel;
         public TransactionalItemsService(HttpClient httpClient, IWebAssemblyHostEnvironment environment)
         {
             _httpClient = httpClient;
@@ -431,6 +434,27 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+
+
+        public async Task<List<ProductModel>> GetSelectorListTransactionalItemModels(string? transactionalItemId)
+        {
+           
+            try
+            {
+                 productModel = await _httpClient.GetFromJsonAsync<List<ProductModel>>($"api/ConceptsSelector/GetSelectorListTransactionalItemModels?transactionalItemId={transactionalItemId}");
+                return productModel != null ? productModel : new();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+
+                return null;
+
+            }
+
+        }
+
+
         public async Task<List<SeasonBusiness>> GetSeasonsTable(int? page = 1, int? perPage = 10, string? nameLike = null)
         {
 
@@ -578,10 +602,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         //---
         public async Task<List<TransactionalItemCharacteristicPair>> GetCharacteristic(string? transactionalItemTypeId = null)
         {
-           
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                transactionalItemCharacteristicPair = await _httpClient.GetFromJsonAsync<List<TransactionalItemCharacteristicPair>>($"api/TransactionalItemsRelatedConcepts/GetTransactionalStatusesTable");
+                transactionalItemCharacteristicPair = await _httpClient.GetFromJsonAsync<List<TransactionalItemCharacteristicPair>>($"api/TransactionalItems/GetTransactionalItemTypeCharacteristicByTypeID?userId={userId}&ipAddress={ipAddress}&transactionalItemTypeId={transactionalItemTypeId}");
                 return transactionalItemCharacteristicPair != null ? transactionalItemCharacteristicPair : new List<TransactionalItemCharacteristicPair>();
             }
             catch (Exception ex)
@@ -738,6 +763,24 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+
+        //---
+        public async Task<bool> SaveLabelStyle(LabelStyle labelStyle)
+        {
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+                var resul = await _httpClient.PostAsJsonAsync<LabelStyle>($"api/TransactionalItemsRelatedConcepts/SaveLabelStyle?userId={userId}&ipAddress={ipAddress}", labelStyle);
+                return resul.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+        }
+
         public async Task<bool> SaveBox( Box box)
         {
             string userId = UIClientGlobalVariables.UserId;

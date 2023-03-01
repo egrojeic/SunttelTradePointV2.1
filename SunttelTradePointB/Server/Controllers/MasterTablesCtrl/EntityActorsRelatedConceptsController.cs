@@ -265,5 +265,9 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
                 return NotFound(response.ErrorDescription);
             }
         }
+
+
+       
+
     }
 }

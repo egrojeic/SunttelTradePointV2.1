@@ -37,6 +37,31 @@ namespace SunttelTradePointB.Server.Interfaces.Communications
         /// <returns></returns>
         Task<(bool IsSuccess, MessageReaction messageReaction, string? ErrorDescription)> AddMessageReaction(MessageReaction messageReaction);
 
+        /// <summary>
+        /// Saves (INSERT/UPDATE) a communication channel group
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="channelCommunicationsGroup"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, ChannelCommunicationsGroup? channelCommunicationsGroup, string? ErrorDescription)> SaveChannelCommunicationsGroup(string userId, string ipAdress, ChannelCommunicationsGroup  channelCommunicationsGroup);
+
+        /// <summary>
+        /// Retrieves a particular communication channel group
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="channelCommunicationsGroupId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, ChannelCommunicationsGroup? channelCommunicationsGroup, string? ErrorDescription)> GetChannelCommunicationsGroupById(string userId, string ipAdress, string channelCommunicationsGroupId);
+
+        /// <summary>
+        /// Retrieves all communication channels relevant for a user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<ChannelCommunicationsGroup>? channelCommunicationsGroups, string? ErrorDescription)> GetChannelCommunicationsGroups(string userId, string ipAdress);
 
     }
 }

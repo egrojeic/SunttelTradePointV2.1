@@ -34,6 +34,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         IMongoCollection<PalletType> _palletTypes;
         IMongoCollection<Shared.Common.EntityType> _entityTypes;
         IMongoCollection<AssemblyType> _assemblyTypes;
+        IMongoCollection<TransactionalItem> _transactionalItems;
 
         /// <summary>
         /// Service class initialize
@@ -59,6 +60,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             _palletTypes = mongoDatabase.GetCollection<PalletType>("PalletTypes");
             _entityTypes = mongoDatabase.GetCollection<Shared.Common.EntityType>("EntityTypes");
             _assemblyTypes = mongoDatabase.GetCollection<AssemblyType>("AssemblyTypes");
+            _transactionalItems = mongoDatabase.GetCollection<TransactionalItem>("TransactionalItems");
         }
 
         /// <summary>
@@ -466,30 +468,27 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 );
 
                 pipeline.Add(
-                    new BsonDocument(
-                        "$unwind",  "$ProductPackingSpecs"
-                    )
-                );
+                      new BsonDocument{
+                        {"$project", new BsonDocument( "TransactionalItemModels", 1)
+                        }
+                      }
+                  );
 
                 pipeline.Add(
-                    new BsonDocument(
-                        "$project",  new BsonDocument("ProductPackingSpecs.ModelRecipe", 1)
-                    )
-                );
+                     new BsonDocument{
+                        {"$unwind", "$TransactionalItemModels"
+                        }
+                     }
+                 );
 
                 pipeline.Add(
-                    new BsonDocument(
-                        "$group",  new BsonDocument("_id", "$ProductPackingSpecs.ModelRecipe")
-                    )
+                    new BsonDocument{
+                        {"$replaceRoot", new BsonDocument( "newRoot", "$TransactionalItemModels")
+                        }
+                    }
                 );
 
-                pipeline.Add(
-                    new BsonDocument(
-                        "$replaceRoot",  new BsonDocument("newRoot", "$_id")
-                    )
-                );
-
-                List<AtomConcept> results = await _transactionalItemsTypes.Aggregate<AtomConcept>(pipeline).ToListAsync();
+                List<AtomConcept> results = await _transactionalItems.Aggregate<AtomConcept>(pipeline).ToListAsync();
 
                 return (true, results, null);
             }

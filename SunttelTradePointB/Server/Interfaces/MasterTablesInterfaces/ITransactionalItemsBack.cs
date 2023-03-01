@@ -251,6 +251,14 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         Task<(bool IsSuccess, List<RecipeModifier>?  recipeModifiers, string? ErrorDescription)> GetRecipeModifiersByTypeID(string userId, string ipAddress, string transactionalItemTypeId);
 
 
-
+        /// <summary>
+        /// Saves (INSERT/UPDATE) A transactional item model
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="productModel"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, ProductModel? productModel, string? ErrorDescription)> SaveTransactionalItemModels(string userId, string ipAddress, string transactionalItemId, ProductModel productModel);
     }
 }

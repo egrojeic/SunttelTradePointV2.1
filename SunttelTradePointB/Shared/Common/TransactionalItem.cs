@@ -22,7 +22,8 @@ namespace SunttelTradePointB.Shared.Common
         ProductionSpecs = 1,
         QualityParameters = 2,
         PathImages = 3,
-        Tags = 4
+        Tags = 4,
+        Characteristics = 5
     }
 
     [BsonIgnoreExtraElements]
@@ -68,7 +69,10 @@ namespace SunttelTradePointB.Shared.Common
         [BsonIgnoreIfNull]
         public double ReferenceCost { get; set; }
 
-
+        [DisplayName("Models")]
+        [BsonIgnoreIfNull]
+        public List<ProductModel> TransactionalItemModels { get; set; }
+        
 
     }
 

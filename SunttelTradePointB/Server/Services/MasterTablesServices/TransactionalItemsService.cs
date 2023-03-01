@@ -198,6 +198,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 case TransactionalItemDetailsSection.Tags:
                     detailsArrayListName = "TransactionalItemTags";
                     break;
+                case TransactionalItemDetailsSection.Characteristics:
+                    detailsArrayListName = "ItemCharacteristics";
+                    break;
                 default:
                     return (false, null, "Not option Found");
             }
@@ -249,6 +252,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     case TransactionalItemDetailsSection.Tags:
                         var listTags = result.Select(d => BsonSerializer.Deserialize<TransactionalItemTag>(d)).ToList();
                         return (true, listTags.Cast<T>().ToList(), null);
+
+                    case TransactionalItemDetailsSection.Characteristics:
+                        var listTransactionalItemCharacteristicPair = result.Select(d => BsonSerializer.Deserialize<TransactionalItemCharacteristicPair>(d)).ToList();
+                        return (true, listTransactionalItemCharacteristicPair.Cast<T>().ToList(), null);
+
                     default:
                         return (false, null, "Not option Found");
 
@@ -333,7 +341,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 var filterPrev = Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId);
                 var resultPrev = await _TransactionalItemsCollection.Find(filterPrev).FirstOrDefaultAsync();
 
-                if (resultPrev != null && resultPrev.ItemCharacteristics.Any(x => x.Id == transactionalItemCharacteristicPair.Id))
+                if (resultPrev != null && resultPrev.ItemCharacteristics != null && resultPrev.ItemCharacteristics.Any(x => x.Id == transactionalItemCharacteristicPair.Id))
                 {
                     //Update Element
                     var filter = Builders<TransactionalItem>.Filter.And(
@@ -347,13 +355,86 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 {
                     //Add Element
                     var filter = Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId);
-                    var update = Builders<TransactionalItem>.Update.AddToSet(x => x.ItemCharacteristics, transactionalItemCharacteristicPair);
-                    await _TransactionalItemsCollection.UpdateOneAsync(filter, update);
+                    if(resultPrev.ItemCharacteristics == null)
+                    {
+                        var ItemCharacteristicsLst = new List<TransactionalItemCharacteristicPair>();
+                        ItemCharacteristicsLst.Add(transactionalItemCharacteristicPair);
+                        var updateWithoutList = Builders<TransactionalItem>.Update.Set(x => x.ItemCharacteristics, ItemCharacteristicsLst);
+                        await _TransactionalItemsCollection.UpdateOneAsync(filter, updateWithoutList);
+                    }
+                    else
+                    {
+                        var update = Builders<TransactionalItem>.Update.AddToSet(x => x.ItemCharacteristics, transactionalItemCharacteristicPair);
+                        await _TransactionalItemsCollection.UpdateOneAsync(filter, update);
+                    }
+                   
                 }
 
 
 
                 return (true, transactionalItemCharacteristicPair, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+
+        }
+
+
+
+        /// <summary>
+        /// Saves (INSERT/UPDATE) A transactional item model
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="productModel"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, ProductModel?  productModel, string? ErrorDescription)> SaveTransactionalItemModels(string userId, string ipAddress, string transactionalItemId, ProductModel  productModel)
+        {
+            try
+            {
+                if (productModel.Id == null)
+                {
+                    productModel.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterPrev = Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId);
+                var resultPrev = await _TransactionalItemsCollection.Find(filterPrev).FirstOrDefaultAsync();
+
+                if (resultPrev != null && resultPrev.TransactionalItemModels != null && resultPrev.TransactionalItemModels.Any(x => x.Id == productModel.Id))
+                {
+                    //Update Element
+                    var filter = Builders<TransactionalItem>.Filter.And(
+                        Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId),
+                        Builders<TransactionalItem>.Filter.ElemMatch(x => x.TransactionalItemModels, y => y.Id == productModel.Id)
+                    );
+                    var update = Builders<TransactionalItem>.Update.Set(x => x.TransactionalItemModels[-1], productModel);
+                    await _TransactionalItemsCollection.UpdateOneAsync(filter, update);
+                }
+                else
+                {
+                    //Add Element
+                    var filter = Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId);
+                    if (resultPrev.TransactionalItemModels == null)
+                    {
+                        var ItemModels = new List<ProductModel>();
+                        ItemModels.Add(productModel);
+                        var updateWithoutList = Builders<TransactionalItem>.Update.Set(x => x.TransactionalItemModels, ItemModels);
+                        await _TransactionalItemsCollection.UpdateOneAsync(filter, updateWithoutList);
+                    }
+                    else
+                    {
+                        var update = Builders<TransactionalItem>.Update.AddToSet(x => x.TransactionalItemModels, productModel);
+                        await _TransactionalItemsCollection.UpdateOneAsync(filter, update);
+                    }
+
+                }
+
+
+
+                return (true, productModel, null);
             }
             catch (Exception e)
             {
