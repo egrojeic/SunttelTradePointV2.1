@@ -19,9 +19,9 @@
             <GridColumns>
                 @foreach (var item in GridColumnsList)
                 {
-                    @if (item.Type == ColumnType.CheckBox)
+                    @if (item.DisplayAsCheckBox == true)
                     {
-                        <GridColumn Field="@item?.Field" HeaderText="@item?.HeaderText" Width="@item?.Width" Type="ColumnType.CheckBox"></GridColumn>
+                        <GridColumn Field="@item?.Field" HeaderText="@item?.HeaderText" Width="@item?.Width" DisplayAsCheckBox="true"></GridColumn>
                     }
                     else
                     {

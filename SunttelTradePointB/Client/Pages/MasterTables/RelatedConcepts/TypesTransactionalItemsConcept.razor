@@ -556,7 +556,7 @@
                                   parameterList="transactionalItemQualitys"
                                   GridColumnsList="gridColumnListQualityPair"
                                   EventCallbackOnLoad="Onload"
-                                  Width="970px">
+                                  Width="100%">
                         </DataGrid>
 
                     </div>
@@ -698,11 +698,11 @@
 
         gridColumnListQualityPair = new List<GridColumn>
         {
-             new GridColumn() { Field = nameof(TransactionalItemQualityPairModel.Name), HeaderText = GetName("Name", new AtomConcept())  },
-             new GridColumn() { Field = nameof(TransactionalItemQualityPairModel.Code), HeaderText = GetName("Code", new AtomConcept())  },
-             new GridColumn() { Field = nameof(TransactionalItemQualityPairModel.Note), HeaderText = GetName("Note", new AtomConcept())  },
-             new GridColumn() { Field = nameof(TransactionalItemQualityPairModel.Value), HeaderText = GetName("Value", new TransactionalItemQualityPair())  },
-             new GridColumn() { Field = nameof(TransactionalItemQualityPairModel.Code), HeaderText = GetName("DefaultValue", new TransactionalItemQuality())  },
+             new GridColumn() { Field = nameof(TransactionalItemQualityPairModel.Name), HeaderText = GetName("Name", new AtomConcept()) ,Width="300" },
+             new GridColumn() { Field = nameof(TransactionalItemQualityPairModel.Code), HeaderText = GetName("Code", new AtomConcept()), Width="90"  },
+             new GridColumn() { Field = nameof(TransactionalItemQualityPairModel.Note), HeaderText = GetName("Note", new AtomConcept()) , Width="100"  },
+             new GridColumn() { Field = nameof(TransactionalItemQualityPairModel.Value), HeaderText = GetName("Value", new TransactionalItemQualityPair()), Width="100"  },
+             new GridColumn() { Field = nameof(TransactionalItemQualityPairModel.Code), HeaderText = GetName("DefaultValue", new TransactionalItemQuality()), Width="100"  },
         };
 
         gridColumnListConceptGroup = new List<GridColumn>
@@ -913,7 +913,6 @@
                     transactionalItemTypeCharacteristics = new();
                     transactionalItemProcessSteps = new();
                     transactionalItemType = new();
-
 
                 }
             }

@@ -63,7 +63,7 @@
             </div>
             <div class="flex-horizontal-center ">
                 <DataGrid TParameter="LabelPurposeView"
-                      parameterList="zebraUsedForsView"
+                      parameterList="dataMaxUsedForsView"
                       GridColumnsList="gridColumnListzebraUsedFor"
                       Width="100%">
                 </DataGrid>
@@ -107,14 +107,7 @@
                         @GetName( "UsedFor", new LabelField())
                     </label>
                 </div>
-                <div style="position:relative;">
-                    <select class="form-control" @bind="labelStyle.Purpose" placeholder="Edit value">
-                        <option value="@LabelPurpose.Provider">@LabelPurpose.Provider.ToString()</option>
-                        <option value="@LabelPurpose.Customer">@LabelPurpose.Customer.ToString()</option>
-                        <option value="@LabelPurpose.Inventory">@LabelPurpose.Inventory.ToString()</option>
-                        <option value="@LabelPurpose.UPC">@LabelPurpose.UPC.ToString()</option>
-                    </select>
-                </div>
+                <button @onclick='()=>ClosedAdd("labelStyleDataMaxUserFor")' class="size-btn color-btn btn-add"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
 
             </div>
             <div class="grid-columns-2 box-shadow-mode width-page1">
@@ -136,7 +129,7 @@
         <div class="flex-verical-start">
             <div class="container-menu-g">
                 <nav>
-                    <button @onclick='()=>OpenAdd("ZebraLabelSpecs")' class="general-menu-button" style="text-align:center;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                    <button @onclick='()=>ClosedAdd("ZebraLabelSpecs")' class="general-menu-button" style="text-align:center;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
                     <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
                         <SplitButtonEvents ItemSelected="ItemSelected">
@@ -199,6 +192,8 @@
                 <div><input @bind-value="zebraLabelLineSpec.CampoD" class="form-control" placeholder="Edit value" /></div>
                 <div><label><strong class="c-red">*</strong> @GetName( "CampoEEE", new ZebraLabelLineSpec())</label> </div>
                 <div><input @bind-value="zebraLabelLineSpec.CampoEEE" class="form-control" placeholder="Edit value" /></div>
+                <div><label><strong class="c-red">*</strong> @GetName( "CampoFFFF", new ZebraLabelLineSpec())</label> </div>
+                <div><input @bind-value="zebraLabelLineSpec.CampoFFFF" class="form-control" placeholder="Edit value" /></div>
                 <div><label><strong class="c-red">*</strong> @GetName( "CampoGGGG", new ZebraLabelLineSpec())</label> </div>
                 <div><input @bind-value="zebraLabelLineSpec.CampoGGGG" class="form-control" placeholder="Edit value" /></div>
                 <div><label><strong class="c-red">*</strong> @GetName( "CampoHHHH", new ZebraLabelLineSpec())</label> </div>
@@ -222,20 +217,7 @@
                         @GetName( "UsedFor", new LabelField())
                     </label>
                 </div>
-                <div style="position:relative;">
-                    <select class="form-control" @bind="labelStylezebra.Purpose" placeholder="Edit value">
-                        <option value="@LabelPurpose.Provider">@LabelPurpose.Provider.ToString()</option>
-                        <option value="@LabelPurpose.Customer">@LabelPurpose.Customer.ToString()</option>
-                        <option value="@LabelPurpose.Inventory">@LabelPurpose.Inventory.ToString()</option>
-                        <option value="@LabelPurpose.UPC">@LabelPurpose.UPC.ToString()</option>
-                    </select>
-                </div>
-                <div>
-                    <label>
-                        @GetName( "UsedFor", new LabelField())
-                    </label>
-                </div>
-                <button @onclick='()=>ClosedAdd("labelStylezebraUserFor")' class="size-btn color-btn "><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                <button @onclick='()=>ClosedAdd("labelStylezebraUserFor")' class="size-btn color-btn btn-add"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
 
             </div>
             <div class="grid-columns-2 box-shadow-mode width-page1">
@@ -329,13 +311,7 @@
                                 <div><label><strong class="c-red">*</strong>@GetName( "Width", new LabelPaper())</label></div>
                                 <div><input @bind-value="labelPaper.Width" class="form-control" placeholder="Edit value" /></div>
                                 <div><label><strong class="c-red">*</strong>@GetName( "Height", new LabelPaper())</label></div>
-                                <div><input @bind-value="labelPaper.Height" class="form-control" placeholder="Edit value" /></div>
-                                @*  <div>
-                                </div>
-                                <div class="flex-horizontal-end">
-                                <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-                                <button @onclick='()=>Save("Paper")' class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
-                                </div>*@
+                                <div><input @bind-value="labelPaper.Height" class="form-control" placeholder="Edit value" /></div>                                                              
                             </div>
                         </div>
                     </ContentTemplate>
@@ -345,14 +321,12 @@
                         <TabHeader Text="@GetName( "DataMaxLabelSettings", new LabelStyle())"></TabHeader>
                     </ChildContent>
                     <ContentTemplate>
-                        <div class="flex-verical-start">
-                            <div class="detailsTitleContainer">
-                                <h3 class="subTitleDetailForm">@GetName(  "DataMaxLabelSettings", new LabelStyle())</h3>
-                            </div>
+                        <div class="flex-verical-start">                          
                             <div class="grid-columns-header ">
                                 <div><label><strong class="c-red">*</strong> @GetName( "ColumnSeparatorSpace", new DataMaxLabelSpecs())</label> </div>
                                 <div><input @bind-value="dataMaxLabelSettings.ColumnSeparatorSpace" class="form-control" placeholder="Edit value" /></div>
                             </div>
+                            <br />
                             <div class="detailsTitleContainer">
                                 <h3 class="subTitleDetailForm">@GetName( "DataMaxFieldsSpecs", new DataMaxLabelSpecs())</h3>
                                 <svg @onclick='()=>ClosedAdd("DataMaxLabelLineSpec")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
@@ -360,8 +334,6 @@
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                 </svg>
                             </div>
-
-
                             <div class="flex-horizontal-center ">
                                 <DataGrid TParameter="DataMaxLabelLineSpecView"
                                           EventCallbackMenu="OnContextMenuClick"
@@ -370,7 +342,6 @@
                                           Width="100%">
                                 </DataGrid>
                             </div>
-
                         </div>
                     </ContentTemplate>
                 </TabItem>
@@ -380,14 +351,12 @@
                     </ChildContent>
                     <ContentTemplate>
 
-                        <div class="flex-verical-start">
-                            <div class="detailsTitleContainer">
-                                <h3 class="subTitleDetailForm">@GetName(  "ZebraLabelSettings", new LabelStyle())</h3>
-                            </div>
+                        <div class="flex-verical-start">                          
                             <div class="grid-columns-header ">
                                 <div><label><strong class="c-red">*</strong> @GetName( "ColumnSeparatorSpace", new DataMaxLabelSpecs())</label> </div>
                                 <div><input @bind-value="zebraLabelSettings.ColumnSeparatorSpace" class="form-control" placeholder="Edit value" /></div>
                             </div>
+                            <br />
                             <div class="detailsTitleContainer">
                                 <h3 class="subTitleDetailForm">@GetName( "ZebraFieldsSpecs", new ZebraLabelSpecs())</h3>
                                 <svg @onclick='()=>ClosedAdd("ZebraLabelSpecs")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
@@ -638,33 +607,37 @@
         {
             if (dataMaxLabelLineSpecs == null) dataMaxLabelLineSpecs = new();
             dataMaxLabelLineSpec.FieldInLabel = dataMaxFieldInLabel != null ? dataMaxFieldInLabel : new();
-            //dataMaxLabelLineSpec.FieldInLabel.UsedFor = dataMaxUserFors;
+            dataMaxLabelLineSpec.FieldInLabel.UsedFor = dataMaxUsedFors;
             dataMaxLabelLineSpecs.Add(dataMaxLabelLineSpec);
             dataMaxLabelLineSpecsView.Add(ConverToDataMax(dataMaxLabelLineSpec));
             dataMaxFieldInLabel = new();
             dataMaxLabelLineSpec = new();
+            dataMaxFieldInLabel = new();
+            dataMaxUsedFor = new();
         }
 
         if (value == "ZebraLabelSpecs")
         {
             if (zebraLabelLineSpecs == null) zebraLabelLineSpecs = new();
             zebraLabelLineSpec.FieldInLabel = zebraFieldInLabel != null ? zebraFieldInLabel : new();
-            //zebraLabelLineSpec.FieldInLabel.UsedFor = zebraUsedFors;
+            zebraLabelLineSpec.FieldInLabel.UsedFor = zebraUsedFors;
             zebraLabelLineSpecs.Add(zebraLabelLineSpec);
             zebraLabelLineSpecsView.Add(ConverToZebraLabel(zebraLabelLineSpec));
             zebraLabelLineSpec = new();
+            zebraFieldInLabel = new();
+            zebraUsedFor = new();
 
         }
 
         if (value == "dataMaxUserFors")
         {
             dataMaxUsedFors.Add(dataMaxUsedFor);
-            dataMaxUsedForsView.Add(new LabelPurposeView { value = GetPupor(dataMaxUsedFor) });
+            dataMaxUsedForsView.Add(new LabelPurposeView { value = dataMaxUsedFor.ToString() });
         }
         if (value == "zebraUsedFors")
         {
             zebraUsedFors.Add(zebraUsedFor);
-            zebraUsedForsView.Add(new LabelPurposeView { value = GetPupor(zebraUsedFor)});
+            zebraUsedForsView.Add(new LabelPurposeView { value = zebraUsedFor.ToString() });
 
         }
 
@@ -699,11 +672,11 @@
     public async void OnContextMenuClick(ContextMenuClickEventArgs<ZebraLabelLineSpecView> args)
     {
         ZebraLabelLineSpecView dataMaxLabelSpecs = args.RowInfo.RowData;
-        zebraLabelLineSpec = zebraLabelLineSpecs.Where(s => s.Id != null && s.Id == dataMaxLabelSpecs.Id).FirstOrDefault();
-        zebraFieldInLabel = zebraLabelLineSpec.FieldInLabel != null ? zebraLabelLineSpec.FieldInLabel : new();
+        zebraLabelLineSpec = zebraLabelLineSpecs.Where(s => s.Id != null && s.Id == dataMaxLabelSpecs.Id).FirstOrDefault();      
 
         if (args.Item.Text == "Edit" && zebraLabelLineSpec != null)
         {
+            zebraFieldInLabel = zebraLabelLineSpec.FieldInLabel != null ? zebraLabelLineSpec.FieldInLabel : new();
             ClosedAdd("ZebraLabelSpecs");
         }
         else
@@ -716,9 +689,16 @@
     public async void OnContextMenuClick(ContextMenuClickEventArgs<DataMaxLabelLineSpecView> args)
     {
         DataMaxLabelLineSpecView dataMaxLabelSpecs = args.RowInfo.RowData;
-        if (args.Item.Text == "Edit")
+        dataMaxLabelLineSpec = dataMaxLabelLineSpecs.Where(s =>s.Id !=null && s.Id == dataMaxLabelSpecs.Id).FirstOrDefault();
+       
+        if (args.Item.Text == "Edit" && dataMaxLabelLineSpec !=null)
         {
-            ClosedAdd("PossibleValues");
+            dataMaxFieldInLabel = dataMaxLabelLineSpec.FieldInLabel != null ? dataMaxLabelLineSpec.FieldInLabel : new();
+            ClosedAdd("DataMaxLabelLineSpec");
+        }
+        else
+        {
+            Msg("Invalid ID", 1);
         }
 
     }
@@ -852,16 +832,7 @@
     }
 
 
-    public string GetPupor(LabelPurpose value)
-    {
-        if (value == LabelPurpose.Provider) return "Provider";
-        if (value ==LabelPurpose.Customer) return "Customer";
-        if (value == LabelPurpose.Inventory) return "Inventory";
-        if (value == LabelPurpose.UPC) return "UPC";
-        return "";
-    }
-
-
+    
 
     public class DataMaxLabelLineSpecView : DataMaxLabelLineSpec
     {
@@ -880,10 +851,10 @@
 
     class LabelPurposeView
     {
-          public string value { get; set; }
+        public string value { get; set; }
     }
 
 
-    
+
 
 }
