@@ -122,14 +122,14 @@
             if (transactionalService?.BoxSelectedItems != null)
             {
                 box = transactionalService.BoxSelectedItems;
-               // transactionalItem  = transactionalService.BoxSelectedItems.LinkedTransactionalItem;
+                // transactionalItem = box.LinkedTransactionalItem != null ? box.LinkedTransactionalItem : new();
             }
             else
             {
                 Closed("control");
             }
 
-           
+
         }
         if (Mode == "Add")
         {
@@ -223,7 +223,7 @@
             {
                 box.LinkedTransactionalItem = linkedTransactionalItem;
                 string boxId = box.Id;
-                var resul = await transactionalService.SaveBox( box);
+                var resul = await transactionalService.SaveBox(box);
                 if (resul) { box = new(); linkedTransactionalItem = new(); };
                 Msg(resul);
 
@@ -289,9 +289,9 @@
             if (box.WeightVolumeRate != null && box.WeightVolumeRate > 0) _Msg = $"{concept.GetName("WeightVolumeRate", new Box())} field required";
             if (box.ContainersNumber != null && box.ContainersNumber > 0) _Msg = $"{concept.GetName("ContainersNumber", new Box())} field required";
             if (box.PalletsEquivalent != null && box.PalletsEquivalent > 0) _Msg = $"{concept.GetName("PalletsEquivalent", new Box())} field required";
-           
+
             return _Msg == "" ? true : false;
         }
     }
-   
+
 }

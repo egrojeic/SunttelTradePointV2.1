@@ -69,12 +69,12 @@ else
 
     protected override void OnInitialized()
     {
-       
+
         gridColumnList = new List<GridColumn>()
         {
             new GridColumn() { Field = nameof(TransactionalItemType.Name), HeaderText = GetName("Name", new ConceptGroup())  },
             new GridColumn() { Field = nameof(TransactionalItemType.Code), HeaderText = GetName("Code", new ConceptGroup()) },
-            new GridColumn() { Field = nameof(TransactionalItemType.HasProductionSpecs), HeaderText = GetName("HasProductionSpecs", new TransactionalItemType()) }
+            new GridColumn() { Field = nameof(TransactionalItemType.HasProductionSpecs), HeaderText = GetName("HasProductionSpecs", new TransactionalItemType()), DisplayAsCheckBox=true }
 
         };
         if (_filterItems != "" && _filterItems != null)

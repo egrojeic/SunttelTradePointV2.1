@@ -39,7 +39,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 }
 
                 if (citiesGlobalList != null)
-                    return citiesGlobalList.FindAll(c => c.Name.Contains(nameLike)).ToList();
+                    return citiesGlobalList.FindAll(c => c.Name.Contains(nameLike, StringComparison.CurrentCultureIgnoreCase)).ToList();
                 else
                     return null;
             }
@@ -69,7 +69,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 nameLike = nameLike ?? string.Empty;
 
                 if(countriesGlobalList!=null)
-                    return countriesGlobalList.FindAll(c => c.Name.Contains(nameLike)).ToList();
+                    return countriesGlobalList.FindAll(c => c.Name.ToLower().Contains(nameLike.ToLower())).ToList();
                 else
                     return null;
 
@@ -97,7 +97,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 }
 
                 if (regionsGlobalList != null)
-                    return regionsGlobalList.FindAll(c => c.Name.Contains(nameLike)).ToList();
+                    return regionsGlobalList.FindAll(c => c.Name.ToLower().Contains(nameLike.ToLower())).ToList();
                 else
                     return null;
             }

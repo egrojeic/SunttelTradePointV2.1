@@ -36,28 +36,21 @@ else
         AllowTextWrap="false"
         AllowPaging="true"
         AllowResizing="true"
-        Width="200PX"
-        ContextMenuItems="@(new List<ContextMenuItemModel>() {
-        new ContextMenuItemModel {
-        Text = "selected",
-        Target = ".e-content",
-        Id = "Item"    ,
-        Items = new List<MenuItem>() {
-                                      new MenuItem { Text = "Edit", Id = "Edit",IconCss="/images/edit.png" }
-                                      } } }
-            )">
+        Width="100%"
+        ContextMenuItems="@(contextMenuItemModel)">
+
 
             <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
             <GridColumns>
                 <GridColumn Field="@nameof(Box.Name)" HeaderText="@GetName("Name", new AtomConcept())" Width="250px"></GridColumn>
-                <GridColumn Field="@nameof(Box.Code)" HeaderText="@GetName("Code", new AtomConcept())" Width="120px"></GridColumn>
-                <GridColumn Field="@nameof(Box.Cost)" HeaderText="@GetName("Cost", new Box())" Width="120px"></GridColumn>
-                <GridColumn Field="@nameof(Box.ContainersNumber)" HeaderText="@GetName("ContainersNumber", new Box())" Width="10%"></GridColumn>
-                <GridColumn Field="@nameof(Box.FlagWet)" HeaderText="@GetName("FlagWet", new Box())" ></GridColumn>
-                <GridColumn Field="@nameof(Box.Length)" HeaderText="@GetName("Length", new Box())" ></GridColumn>
-                <GridColumn Field="@nameof(Box.Width)" HeaderText="@GetName("Width", new Box())"></GridColumn>
-                <GridColumn Field="@nameof(Box.Height)" HeaderText="@GetName("Height", new Box())"></GridColumn>
-                <GridColumn Field="@nameof(Box.Notes)" HeaderText="@GetName("Notes", new Box())"></GridColumn>
+                <GridColumn Field="@nameof(Box.Code)" HeaderText="@GetName("Code", new AtomConcept())" Width="90px"></GridColumn>
+                <GridColumn Field="@nameof(Box.Cost)" HeaderText="@GetName("Cost", new Box())" Width="100px"></GridColumn>
+                <GridColumn Field="@nameof(Box.ContainersNumber)" HeaderText="@GetName("ContainersNumber", new Box())" Width="80px"></GridColumn>
+                <GridColumn Field="@nameof(Box.FlagWet)" HeaderText="@GetName("FlagWet", new Box())" Width="80px" DisplayAsCheckBox=true></GridColumn>
+                <GridColumn Field="@nameof(Box.Length)" HeaderText="@GetName("Length", new Box())" Width="80px"></GridColumn>
+                <GridColumn Field="@nameof(Box.Width)" HeaderText="@GetName("Width", new Box())" Width="80px"></GridColumn>
+                <GridColumn Field="@nameof(Box.Height)" HeaderText="@GetName("Height", new Box())" Width="80px"></GridColumn>
+                <GridColumn Field="@nameof(Box.Notes)" HeaderText="@GetName("Notes", new Box())" Width="100px"></GridColumn>
             </GridColumns>
             <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="Box"></GridEvents>
 
@@ -76,6 +69,10 @@ else
 
     bool isLoading = false;
 
+    List<ContextMenuItemModel> contextMenuItemModel = new List<ContextMenuItemModel>()
+    {
+        new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" }
+    };
 
 
     public string? conceptFilter
@@ -116,7 +113,7 @@ else
         Box itemBox = null;
         itemBox = args.RowInfo.RowData;
         transactItemsService.BoxSelectedItems = itemBox;
-        if (args.Item.Id == "Edit")
+        if (args.Item.Text == "Edit")
         {
             Navigation.NavigateTo($"/BoxeConcept/Boxes/Edit/{_filterItems}");
         }

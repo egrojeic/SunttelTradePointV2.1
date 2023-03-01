@@ -804,7 +804,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             
             try
             {
-                var resul = await _httpClient.PostAsJsonAsync<TransactionalItemType>($"api/TransactionalItems/SaveTransactionalItemType?userId={userId}&ipAddress={ipAddress}", transactionalItemType);
+                var resul = await _httpClient.PostAsJsonAsync<TransactionalItemType>($"api/TransactionalItemsRelatedConcepts/SaveTransactionalItemType?userId={userId}&ipAddress={ipAddress}", transactionalItemType);
                 return resul.IsSuccessStatusCode;
             }
             catch (Exception ex)
