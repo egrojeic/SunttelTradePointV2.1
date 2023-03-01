@@ -110,7 +110,7 @@
                         }
                     </div>
                 </section>
-                <ChatMessageWriter @ref="refChatMessageWriter" @bind-TextMessage="@entitiesFilter">
+                <ChatMessageWriter @ref="refChatMessageWriter" @bind-TextMessage="@textMessage">
                 </ChatMessageWriter>
             </div>
         </div>
@@ -136,7 +136,6 @@
     public string imageGroup { get; set; } = "";
 
     private List<CommunicationsMessage> communicationsMessages { get; set; } = new List<CommunicationsMessage>();
-    ChannelCommunicationsGroup channelCommunicationsGroup = new ChannelCommunicationsGroup();
 
     ChatMessageWriter? refChatMessageWriter;
     private ChatMenuBar chatMenuBar = new ChatMenuBar();
@@ -164,29 +163,21 @@
             StateHasChanged();
         });
 
-        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+        hubConnection.On<string, CommunicationsMessage>("ReceiveMessage", (user, message) =>
         {
-            if(refChatMessageWriter.tempReplyMessage != "")
-            {
-                reply = refChatMessageWriter.tempReplyMessage;
-                message = reply + "\n" + message;
-                refChatMessageWriter.tempReplyMessage = "";
-            }
-            if(refChatMessageWriter.tempForwardM != "")
-            {
-                forward = $"{user} say: " + refChatMessageWriter.tempForwardM;
-                message = forward + "\n" + message;
-                refChatMessageWriter.tempForwardM = "";
-            }
-            communicationsMessages.Add(new CommunicationsMessage
-            {
-                SenderEntity = new EntityNodeCommunications
-                {
-                    Id = UIClientGlobalVariables.UserId,
-                    Name = UIClientGlobalVariables.UserName
-                },
-                Message = message
-            });
+            //if(refChatMessageWriter.tempReplyMessage != "")
+            //{
+            //    reply = refChatMessageWriter.tempReplyMessage;
+            //    message = reply + "\n" + message;
+            //    refChatMessageWriter.tempReplyMessage = "";
+            //}
+            //if(refChatMessageWriter.tempForwardM != "")
+            //{
+            //    forward = $"{user} say: " + refChatMessageWriter.tempForwardM;
+            //    message = forward + "\n" + message;
+            //    refChatMessageWriter.tempForwardM = "";
+            //}
+            communicationsMessages.Add(message);
 
             StateHasChanged();
         });
@@ -202,7 +193,7 @@
         StateHasChanged();
     }
 
-    public string? entitiesFilter
+    public string? textMessage
     {
         get { return _textMessage; }
         set
@@ -214,7 +205,15 @@
 
     private async void addMessage(string messageChat) 
     {
-
+        CommunicationsMessage communicationsMessage = new CommunicationsMessage()
+        {
+            Message = messageChat,
+            SenderEntity = new EntityNodeCommunications
+            {
+                Id = UIClientGlobalVariables.UserId,
+                Name = UIClientGlobalVariables.UserName
+            }
+        };
         await hubConnection.SendAsync("SendMessage", "User a", messageChat);
 
     }
