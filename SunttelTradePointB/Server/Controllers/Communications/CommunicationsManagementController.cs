@@ -107,5 +107,30 @@ namespace SunttelTradePointB.Server.Controllers.Communications
         }
 
 
+        /// <summary>
+        /// Retrieves a list of messages sent or received by an entity 
+        /// filtered by its date and an optional filter sentence
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="startingDate"></param>
+        /// <param name="filterCriteria"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetMessagesOfAnEntity")]
+        public async Task<IActionResult> GetMessagesOfAnEntity(string userId, string ipAdress, DateTime? startingDate = null, string? filterCriteria = "")
+        {
+
+            var response = await _messagesValet.GetMessagesOfAnEntity(userId, ipAdress, startingDate, filterCriteria);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.communicationsMessages);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+
+        }
+        
     }
 }

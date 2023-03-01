@@ -16,10 +16,11 @@ namespace SunttelTradePointB.Server.Interfaces.Communications
         /// filtered by its date and an optional filter sentence
         /// </summary>
         /// <param name="entityId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="startingDate"></param>
         /// <param name="filterCriteria"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<CommunicationsMessage>? communicationsMessages, string? ErrorDescription)> GetMessagesOfAnEntity(string entityId, DateTime startingDate, string? filterCriteria = "");
+        Task<(bool IsSuccess, List<CommunicationsMessage>? communicationsMessages, string? ErrorDescription)> GetMessagesOfAnEntity(string entityId, string ipAdress, DateTime? startingDate = null, string? filterCriteria = "");
 
 
         /// <summary>
