@@ -8,6 +8,7 @@
 @inject ContextMenuService ContextMenuService
 @inject DialogService DialogService
 @inject WarehouseService warehouseService
+@inject NavigationManager navigationManager
 
 
 <PageTitleComponent Title="Warehouses" IconName="Warehouses.png"
@@ -162,7 +163,7 @@
 
         if (args.Item.Text == "Edit")
         {
-            //navigationManager.NavigateTo($"/Actors/{_EntityActor.Id}");
+            navigationManager.NavigateTo($"/WarehousesGeneral/{_Warehouse.Id}/Edit");
         }
     }
 
