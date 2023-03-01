@@ -212,7 +212,8 @@
         }
     }
 
-    private async void addMessage(string messageChat) {
+    private async void addMessage(string messageChat) 
+    {
 
         await hubConnection.SendAsync("SendMessage", "User a", messageChat);
 
