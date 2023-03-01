@@ -1,4 +1,5 @@
-﻿@page "/Actors/{Id}"
+﻿@page "/register/NewUser"
+@page "/Actors/{Id}"
 @page "/Actors/{Id}/{Page}"
 @page "/Actors/NewActor"
 @using SunttelTradePointB.Client.Shared.ConceptSelectors
@@ -64,9 +65,27 @@
 
             </SfSplitButton>
         </div>
+        
 
         <div class="container">
             <div class="row">
+                @if (EntityNode == null)
+                {
+                    <div class="form-group">
+                        <label for="name">UserName*</label>
+                        <input type="text" class="form-control" id="name" @bind-value="EntityNode.Name" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eMailAddress">Password*</label>
+                        <input type="text" class="form-control" id="eMailAddress" @bind-value="EntityNode.EMailAddress" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sunttelUserId">Confirm Password*</label>
+                        <input type="text" class="form-control" id="sunttelUserId" @bind-value="EntityNode.SunttelUserId" />
+                    </div>
+                }
                 <div class="col-sm">
                     <div class="form-group">
                         <label for="name">@lblName*</label>

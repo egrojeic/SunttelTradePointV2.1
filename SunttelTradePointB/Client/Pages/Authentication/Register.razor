@@ -1,6 +1,8 @@
 ﻿@page "/register"
 @using SunttelTradePointB.Client.Services
 @using SunttelTradePointB.Shared.Security
+@using SunttelTradePointB.Client.Shared.EntityShareComponents.EntitySubComponents
+
 @layout AuthLayout
 @inject NavigationManager navigationManager
 @inject CustomStateProvider authStateProvider
@@ -12,7 +14,7 @@
 <EditForm class="form-signin" OnValidSubmit="OnSubmit" Model="registerRequest">
     <DataAnnotationsValidator />
 
-    <label for="inputUsername" class="sr-only">User Name</label>
+    @*<label for="inputUsername" class="sr-only">User Name</label>
     <InputText id="inputUsername" class="form-control" placeholder="Username" autofocus @bind-Value="@registerRequest.UserName" />
     <ValidationMessage For="@(() => registerRequest.UserName)" />
 
@@ -29,7 +31,12 @@
     <label class="text-danger">@error</label>
     <NavLink href="login">
         <h6 class="font-weight-normal text-center">Already have an account? Click here to login</h6>
-    </NavLink>
+    </NavLink>*@
+
+    <EntityNewActor>
+
+    </EntityNewActor>
+
 </EditForm>
 
 @functions {

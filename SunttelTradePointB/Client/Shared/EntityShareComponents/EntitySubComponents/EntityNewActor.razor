@@ -21,10 +21,11 @@
     <div class="row">
         <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
             <SfCard style="width:550px">
-                <CardHeader Title="Add a new entity" />
+                <CardHeader Title="New User" />
                 <CardContent>
 
                     <div>
+                        
                         <div class="row">
                             <div class="col-sm">
                                 <div class="form-group py-2">
@@ -123,6 +124,18 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <label for="eMailAddress">Password*</label>
+                            <input type="password" class="form-control" id="eMailAddress" @bind-value="EntityNode.EMailAddress" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sunttelUserId">Confirm Password*</label>
+                            <input type="password" class="form-control" id="sunttelUserId" @bind-value="EntityNode.SunttelUserId" />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save</button>
 
                         <MessageSaveComponent message="@message" isVisible="visible"></MessageSaveComponent>
 

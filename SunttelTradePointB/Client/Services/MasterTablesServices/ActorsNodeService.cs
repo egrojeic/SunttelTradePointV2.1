@@ -241,7 +241,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             {
                 if (ipAddress == "")
                     ipAddress = "127.0.0.0";
-                List<ConceptGroup>? groups = await _httpClient.GetFromJsonAsync<List<ConceptGroup>>($"/api/EntityNodesMaintenance/GetEntityGroups?userId={userId}&ipAdress={ipAddress}&filterCondition={filterCondition}");
+                //List<ConceptGroup>? groups = await _httpClient.GetFromJsonAsync<List<ConceptGroup>>($"/api/EntityNodesMaintenance/GetEntityGroups?userId={userId}&ipAdress={ipAddress}&filterCondition={filterCondition}");
+                List<ConceptGroup>? groups = await _httpClient.GetFromJsonAsync<List<ConceptGroup>>($"/api/ConceptsSelector/GetSelectorListEntityGroups?filterCondition={filterCondition}");
                 return groups;
             }
             catch (Exception ex)
