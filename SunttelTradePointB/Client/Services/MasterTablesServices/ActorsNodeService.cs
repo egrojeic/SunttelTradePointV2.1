@@ -807,6 +807,22 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
+        public async Task<bool> SaveEntitySkinImage(string entityActorId, string skinImage)
+        {
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+                var result = await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveEntitySkinImage?userId={userId}&ipAdress={ipAddress}&entityActorId={entityActorId}&skinImage={skinImage}", "");
+                return result.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+        }
+
 
 
         /// Temporal Object

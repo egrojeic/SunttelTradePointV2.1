@@ -13,7 +13,7 @@
 @using SunttelTradePointB.Client.Shared.EntityShareComponents.EntityPopUpComponents
 
 @inject NavigationManager navigationManager
-@inject ActorsNodeService actorsNodeServive
+@inject ActorsNodeService actorsNodeService
 
 <div class="control-section">
     <div class="row">
@@ -58,7 +58,6 @@
 
     InputFile? referInputFile;
     TransactItemImage itemImage = new TransactItemImage();
-    EntityActor actor = new EntityActor();
     private string entityImage { get; set; } = "";
 
     public MultipartFormDataContent fileUpload { get; set; }
@@ -92,7 +91,7 @@
                 content.Add(new StringContent("1"), "uploadingFileType");
                 content.Add(new StringContent(fileName), "photoName");
 
-                await actorsNodeServive.UploadFiles(content);
+                await actorsNodeService.UploadFiles(content);
                 fileUpload = content;
             }
 
@@ -107,10 +106,8 @@
 
         if(fileUpload != null)
         {
-            actor = await actorsNodeServive.GetEntityActor(Id);
-            actor.SkinImageName = entityImage;
-            await actorsNodeServive.SaveEntity(Id, actor);
-            actor = new EntityActor();
+            await actorsNodeService.SaveEntitySkinImage(Id, entityImage);
+            entityImage = "";
         }
         imgUrl = "/images/defaultImage.png";
         StateHasChanged();
