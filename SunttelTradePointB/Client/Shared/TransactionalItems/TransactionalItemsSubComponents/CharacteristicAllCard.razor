@@ -1,0 +1,216 @@
+﻿@page "/CharacteristicAllCard"
+@using Syncfusion.Blazor.Popups
+@using SunttelTradePointB.Shared.Common
+@inject NavigationManager Navigation
+@inject TransactionalItemsService transactionalService;
+
+
+@if (@viewMsg)
+{
+    <MessageSaveComponent isVisible="viewMsg" message="@msg">
+    </MessageSaveComponent>
+}
+
+<PageTitleComponent Title=" Characteristics " IconName=""
+                    Description="Here you can add characteristics">
+</PageTitleComponent>
+
+<div id="add-recipe">
+    <div class="flex-verical-center">
+        @foreach (var characteristic in transactionalItemCharacteristicPairs)
+        {
+            <div class="grid-columns-2 box-shadow-mode">
+                <div>
+                    <label>
+                        @GetName( "ItemCharacteristics", new TransactionalItem())
+                    </label>
+                </div>
+                <div>
+                    <div style="position:relative;">
+                        <div class="item-edit form-control">
+                            <label>@(characteristic.TransactionalItemCharacteristic != null ? characteristic.TransactionalItemCharacteristic.Name : "")</label>
+                          @*  <button @onclick='()=>SetViewElemnt("TransactionalItemTypeCharacteristic")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>*@
+                        </div>
+
+                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" ViewSelect="ViewPopupCount" EventClosed="ClosedInput" ViewControl="CharacteristicControlInput">
+                            @{
+                                if (transactionalItemTypeCharacteristics != null)
+                                {
+                                    foreach (var Obj in transactionalItemTypeCharacteristics)
+                                    {
+                                        <option value="@Obj.Name">@Obj.Name</option>
+                                    }
+                                }
+
+                            }
+                        </InputTextSelector>
+                    </div>
+                </div>
+                <div><label> @GetName("Value", new TransactionalItemCharacteristicPair()) </label></div>
+                <div><input @bind="characteristic.Value" class="form-control" style="border-color:gray;" required /></div>
+                <div>
+                </div>
+                <div class="flex-horizontal-end">
+                    <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                    <button @onclick="Save" class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+@code {
+    public List<TransactionalItemCharacteristicPair> transactionalItemCharacteristicPairs = new();
+    public TransactionalItemCharacteristicPair transactionalItemCharacteristicPair = new();
+    List<TransactionalItemTypeCharacteristic> transactionalItemTypeCharacteristics = new();
+    TransactionalItemTypeCharacteristic transactionalItemTypeCharacteristic = new();
+    InputTextSelector? ReferInputTextSelector;
+
+    bool viewMsg = false;
+    string msg = "";
+    int status = 0;
+    public int ParamCountResul = 0;
+    bool CharacteristicControlInput = false;
+    bool ViewPopupCount = false;
+    string ModeSearcher = "";
+    public string _transactionalItemId { get; set; }
+
+    #region TileName
+    public string Title { get; set; }
+    public string transactionalItemId { get; set; }
+    public string Value { get; set; }
+    #endregion TitleName
+
+    protected async override void OnInitialized()
+    {
+        if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
+        {
+            _transactionalItemId = transactionalService.transactionalItemId != null ? transactionalService.transactionalItemId : "";
+        }
+
+        var transactionalItems = transactionalService.TransactionalItems;
+        transactionalItemTypeCharacteristics = new();
+        if (transactionalItems != null)
+        {
+            ConceptType type = transactionalItems.TypeOfConcept;
+            if (type != null)
+            {
+                var itemTypes = await transactionalService.GetTransactionalItemTypes(type.Name);
+                var resul = itemTypes.Where(s => s.Id == type.Id).FirstOrDefault();
+                transactionalItemTypeCharacteristics = resul.TransactionalItemTypeCharacteristics;
+                foreach (var characteristic in transactionalItemTypeCharacteristics)
+                {
+                    transactionalItemCharacteristicPairs.Add(new TransactionalItemCharacteristicPair
+                        {
+                            TransactionalItemCharacteristic = characteristic,
+                            Value = ""
+                        });
+                }
+            }
+        }
+        StateHasChanged();
+
+
+
+    }
+
+    private async void Save()
+    {
+        string Msg = "";
+        int count = 0;
+        foreach (var characteristic in transactionalItemCharacteristicPairs)
+        {
+            if (characteristic.Value != null && characteristic.Value != "")
+            {
+                var resul = await transactionalService.SaveCharacteristics(_transactionalItemId, characteristic);
+                if (resul)
+                {
+                    count++;
+                }
+            }
+        }
+        if (count > 0) MsgOpen("saved : "+count+" of "+transactionalItemCharacteristicPairs.Count(), 1);
+        if (count <= 0) MsgOpen("No saved", 1);
+       
+        StateHasChanged();
+
+    }
+
+    public async Task Refresh()
+    {
+        //ReferInputTextSelector.Refresh();
+        StateHasChanged();
+    }
+
+    public async Task Closed(string Element)
+    {
+        if (Element == "control") Navigation.NavigateTo("/TransactionalItemCard/5/Edit");
+    }
+
+    protected async void EventIdSelection(string filter)
+    {
+        //transactionalItemTypeCharacteristics = await transactionalService.GetTransactionalItemDetailsQualityParameters();
+        transactionalItemTypeCharacteristic = transactionalItemTypeCharacteristics.Where(c => c.Name == filter || c.Id == filter).FirstOrDefault();
+        if (transactionalItemTypeCharacteristic == null) transactionalItemTypeCharacteristic = new();
+        ParamCountResul = 0;
+        CharacteristicControlInput = false;
+        ViewPopupCount = false;
+
+        await Refresh();
+    }
+
+    protected async void EventSearcherValue(string value)
+    {
+        ViewPopupCount = true;
+
+        if (ModeSearcher == "TransactionalItemTypeCharacteristic")
+        {
+
+           
+
+
+            if (transactionalItemTypeCharacteristics != null)
+            {
+                transactionalItemTypeCharacteristics = transactionalItemTypeCharacteristics.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+
+                ParamCountResul = transactionalItemTypeCharacteristics.Count();
+                ViewPopupCount = ParamCountResul > 0;
+            }
+            else
+            {
+                ViewPopupCount = false;
+                ParamCountResul = 0;
+            }
+        }
+        await Refresh();
+    }
+
+
+    public void ClosedInput()
+    {
+        ViewPopupCount = false;
+        CharacteristicControlInput = false;
+    }
+
+    public void SetViewElemnt(string Element)
+    {
+        ModeSearcher = Element;
+        if (Element == "TransactionalItemTypeCharacteristic") { CharacteristicControlInput = true; }
+        Refresh();
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    public void MsgOpen(string _msg, int _status)
+    {
+        viewMsg = true;
+        msg = _msg;
+        status = _status;
+    }
+}

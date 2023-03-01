@@ -1,0 +1,825 @@
+﻿@page "/LabelStylesConcept/{Page}/{Mode}/{filterItems}"
+@page "/LabelStylesConcept/{Page}/{Mode}"
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+@using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Grids
+@inject NavigationManager Navigation
+@inject TransactionalItemsService transactionalService;
+
+
+@if (@viewMsg)
+{
+    <MessageSaveComponent isVisible="viewMsg" message="@msg">
+    </MessageSaveComponent>
+}
+
+<div class="flex-verical-center position-relative" style="display:@(!modeEdit?"flex":"none");">
+    @if (pageView == "DataMaxLabelSettings")
+    {
+        <PageTitleComponent Title="@GetName("DataMaxLabelSettings", new LabelStyle())" IconName="palette.png"
+                        Description='@($"Here you can add {GetName("DataMaxLabelSettings", new LabelStyle()).ToLower()}")'>
+        </PageTitleComponent>
+        <div class="flex-verical-start">
+            <div class="container-menu-g">
+                <nav>
+                    <button @onclick='()=>OpenAdd("DataMaxLabelSettings")' class="general-menu-button" style="text-align:center;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+
+                    <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+                        <SplitButtonEvents ItemSelected="ItemSelected">
+                        </SplitButtonEvents>
+                        <DropDownMenuItems>
+                            <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                            <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                            <DropDownMenuItem Text="Save" Id="DataMaxLabelSettings" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                            <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                            <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                            <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+                        </DropDownMenuItems>
+                    </SfSplitButton>
+                </nav>
+            </div>
+            <div class="grid-columns-header ">
+                <div><label><strong class="c-red">*</strong> @GetName( "ColumnSeparatorSpace", new DataMaxLabelSpecs())</label> </div>
+                <div><input @bind-value="dataMaxLabelSettings.ColumnSeparatorSpace" class="form-control" placeholder="Edit value" /></div>
+            </div>
+            <div class="detailsTitleContainer">
+                <h3 class="subTitleDetailForm">@GetName( "DataMaxFieldsSpecs", new DataMaxLabelSpecs())</h3>
+                <svg @onclick='()=>ClosedAdd("DataMaxLabelLineSpec")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                </svg>
+            </div>
+
+
+            <div class="flex-horizontal-center ">
+                <DataGrid TParameter="DataMaxLabelLineSpecView"
+                      EventCallbackMenu="OnContextMenuClick"
+                      parameterList="dataMaxLabelLineSpecsView"
+                      GridColumnsList="gridColumnListDataMaxLabelLineSpec"
+                      Width="100%">
+                </DataGrid>
+            </div>
+
+        </div>
+    }
+
+    @if (pageView == "DataMaxLabelLineSpec")
+    {
+        <PageTitleComponent Title="@GetName("DataMaxFieldsSpecs",new DataMaxLabelSpecs())" IconName="palette.png"
+                        Description="@($"Here you can add types of {GetName("DataMaxFieldsSpecs",new DataMaxLabelSpecs()).ToLower()}")">
+        </PageTitleComponent>
+        <div class="flex-horizontal-center">
+            <div class="grid-columns-2 box-shadow-mode width-page1">
+
+                <div><label><strong class="c-red">*</strong> @GetName( "Rotation", new DataMaxLabelLineSpec())</label> </div>
+                <div><input @bind-value="dataMaxLabelLineSpec.Rotation" class="form-control" placeholder="Edit value" /></div>
+                <div><label><strong class="c-red">*</strong> @GetName( "Font", new DataMaxLabelLineSpec())</label> </div>
+                <div><input @bind-value="dataMaxLabelLineSpec.Font" class="form-control" placeholder="Edit value" /></div>
+                <div><label><strong class="c-red">*</strong> @GetName( "Width", new DataMaxLabelLineSpec())</label> </div>
+                <div><input @bind-value="dataMaxLabelLineSpec.Width" class="form-control" placeholder="Edit value" /></div>
+                <div><label><strong class="c-red">*</strong> @GetName( "Height", new DataMaxLabelLineSpec())</label> </div>
+                <div><input @bind-value="dataMaxLabelLineSpec.Height" class="form-control" placeholder="Edit value" /></div>
+                <div><label><strong class="c-red">*</strong> @GetName( "FontSize", new DataMaxLabelLineSpec())</label> </div>
+                <div><input @bind-value="dataMaxLabelLineSpec.FontSize" class="form-control" placeholder="Edit value" /></div>
+                <div><label><strong class="c-red">*</strong> @GetName( "Row", new DataMaxLabelLineSpec())</label> </div>
+                <div><input @bind-value="dataMaxLabelLineSpec.Row" class="form-control" placeholder="Edit value" /></div>
+                <div><label><strong class="c-red">*</strong> @GetName( "GGColumn", new DataMaxLabelLineSpec())</label> </div>
+                <div><input @bind-value="dataMaxLabelLineSpec.GGColumn" class="form-control" placeholder="Edit value" /></div>
+                <div><label><strong class="c-red">*</strong> @GetName( "IIIColumn", new DataMaxLabelLineSpec())</label> </div>
+                <div><input @bind-value="dataMaxLabelLineSpec.IIIColumn" class="form-control" placeholder="Edit value" /></div>
+                <div><label><strong class="c-red">*</strong> @GetName( "JColumn", new DataMaxLabelLineSpec())</label> </div>
+                <div><input @bind-value="dataMaxLabelLineSpec.JColumn" class="form-control" placeholder="Edit value" /></div>
+
+            </div>
+            <div class="grid-columns-2 box-shadow-mode width-page1">
+                <div><label><strong class="c-red">*</strong> @GetName( "Name", new LabelField())</label> </div>
+                <div><input @bind-value="dataMaxFieldInLabel.Name" class="form-control" placeholder="Edit value" /></div>
+                <div>
+                    <label>
+                        @GetName( "UsedFor", new LabelField())
+                    </label>
+                </div>
+                <div style="position:relative;">
+                    <select class="form-control" @bind="labelStyle.Purpose" placeholder="Edit value">
+                        <option value="@LabelPurpose.Provider">@LabelPurpose.Provider.ToString()</option>
+                        <option value="@LabelPurpose.Customer">@LabelPurpose.Customer.ToString()</option>
+                        <option value="@LabelPurpose.Inventory">@LabelPurpose.Inventory.ToString()</option>
+                        <option value="@LabelPurpose.UPC">@LabelPurpose.UPC.ToString()</option>
+                    </select>
+                </div>
+
+            </div>
+            <div class="grid-columns-2 box-shadow-mode width-page1">
+                <div></div>
+                <div class="flex-horizontal-end">
+                    <button @onclick='()=>OpenAdd("DataMaxLabelSettings")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                    <button @onclick='()=>Add("DataMaxLabelLineSpec")' class="size-btn color-btn "><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                </div>
+
+            </div>
+        </div>
+    }
+
+    @if (pageView == "ZebraLabelSettings")
+    {
+        <PageTitleComponent Title="@GetName("ZebraLabelSettings", new LabelStyle())" IconName="palette.png"
+                        Description='@($"Here you can add {GetName("ZebraLabelSettings", new LabelStyle()).ToLower()}")'>
+        </PageTitleComponent>
+        <div class="flex-verical-start">
+            <div class="container-menu-g">
+                <nav>
+                    <button @onclick='()=>OpenAdd("ZebraLabelSettings")' class="general-menu-button" style="text-align:center;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+
+                    <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+                        <SplitButtonEvents ItemSelected="ItemSelected">
+                        </SplitButtonEvents>
+                        <DropDownMenuItems>
+                            <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                            <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                            <DropDownMenuItem Text="Save" Id="ZebraLabelSettings" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                            <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                            <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                            <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+                        </DropDownMenuItems>
+                    </SfSplitButton>
+                </nav>
+            </div>
+            <div class="grid-columns-header ">
+                <div><label><strong class="c-red">*</strong> @GetName( "ColumnSeparatorSpace", new DataMaxLabelSpecs())</label> </div>
+                <div><input @bind-value="zebraLabelSettings.ColumnSeparatorSpace" class="form-control" placeholder="Edit value" /></div>
+            </div>
+            <div class="detailsTitleContainer">
+                <h3 class="subTitleDetailForm">@GetName( "ZebraFieldsSpecs", new ZebraLabelSpecs())</h3>
+                <svg @onclick='()=>ClosedAdd("ZebraLabelSpecs")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                </svg>
+            </div>
+            <div class="flex-horizontal-center ">
+                <DataGrid TParameter="ZebraLabelLineSpecView"
+                      EventCallbackMenu="OnContextMenuClick"
+                      parameterList="zebraLabelLineSpecsView"
+                      GridColumnsList="gridColumnListZebraFieldInLabel"
+                      Width="100%">
+                </DataGrid>
+            </div>
+
+        </div>
+    }
+
+    @if (pageView == "ZebraLabelSpecs")
+    {
+        <PageTitleComponent Title="@GetName("ZebraLabelSettings",new LabelStyle())" IconName="palette.png"
+                        Description="@($"Here you can add types of {GetName("ZebraLabelSettings",new LabelStyle()).ToLower()}")">
+        </PageTitleComponent>
+
+        <div class="flex-horizontal-center">
+            <div class="grid-columns-2 box-shadow-mode width-page1">
+                <div><label><strong class="c-red">*</strong> @GetName( "CampoA", new ZebraLabelLineSpec())</label> </div>
+                <div><input @bind-value="zebraLabelLineSpec.CampoA" class="form-control" placeholder="Edit value" /></div>
+                <div><label><strong class="c-red">*</strong> @GetName( "CampoB", new ZebraLabelLineSpec())</label> </div>
+                <div><input @bind-value="zebraLabelLineSpec.CampoB" class="form-control" placeholder="Edit value" /></div>
+                <div><label><strong class="c-red">*</strong> @GetName( "CampoC", new ZebraLabelLineSpec())</label> </div>
+                <div><input @bind-value="zebraLabelLineSpec.CampoC" class="form-control" placeholder="Edit value" /></div>
+                <div><label><strong class="c-red">*</strong> @GetName( "CampoD", new ZebraLabelLineSpec())</label> </div>
+                <div><input @bind-value="zebraLabelLineSpec.CampoD" class="form-control" placeholder="Edit value" /></div>
+                <div><label><strong class="c-red">*</strong> @GetName( "CampoEEE", new ZebraLabelLineSpec())</label> </div>
+                <div><input @bind-value="zebraLabelLineSpec.CampoEEE" class="form-control" placeholder="Edit value" /></div>
+                <div><label><strong class="c-red">*</strong> @GetName( "CampoGGGG", new ZebraLabelLineSpec())</label> </div>
+                <div><input @bind-value="zebraLabelLineSpec.CampoGGGG" class="form-control" placeholder="Edit value" /></div>
+                <div><label><strong class="c-red">*</strong> @GetName( "CampoHHHH", new ZebraLabelLineSpec())</label> </div>
+                <div><input @bind-value="zebraLabelLineSpec.CampoHHHH" class="form-control" placeholder="Edit value" /></div>
+                <div><label><strong class="c-red">*</strong> @GetName( "CampoIIII", new ZebraLabelLineSpec())</label> </div>
+                <div><input @bind-value="zebraLabelLineSpec.CampoIIII" class="form-control" placeholder="Edit value" /></div>
+                <div><label><strong class="c-red">*</strong> @GetName( "CampoJ", new ZebraLabelLineSpec())</label> </div>
+                <div><input @bind-value="zebraLabelLineSpec.CampoJ" class="form-control" placeholder="Edit value" /></div>
+                <div><label><strong class="c-red">*</strong> @GetName( "CampoK", new ZebraLabelLineSpec())</label> </div>
+                <div><input @bind-value="zebraLabelLineSpec.CampoK" class="form-control" placeholder="Edit value" /></div>
+                <div><label><strong class="c-red">*</strong> @GetName( "Orden", new ZebraLabelLineSpec())</label> </div>
+                <div><input @bind-value="zebraLabelLineSpec.Orden" class="form-control" placeholder="Edit value" /></div>
+               
+            </div>
+
+            <div class="grid-columns-2 box-shadow-mode width-page1">
+                <div><label><strong class="c-red">*</strong> @GetName( "Name", new LabelField())</label> </div>
+                <div><input @bind-value="zebraFieldInLabel.Name" class="form-control" placeholder="Edit value" /></div>
+                <div>
+                    <label>
+                        @GetName( "UsedFor", new LabelField())
+                    </label>
+                </div>
+                <div style="position:relative;">
+                    <select class="form-control" @bind="labelStylezebra.Purpose" placeholder="Edit value">
+                        <option value="@LabelPurpose.Provider">@LabelPurpose.Provider.ToString()</option>
+                        <option value="@LabelPurpose.Customer">@LabelPurpose.Customer.ToString()</option>
+                        <option value="@LabelPurpose.Inventory">@LabelPurpose.Inventory.ToString()</option>
+                        <option value="@LabelPurpose.UPC">@LabelPurpose.UPC.ToString()</option>
+                    </select>
+                </div>
+
+            </div>
+            <div class="grid-columns-2 box-shadow-mode width-page1">
+                <div></div>
+                <div class="flex-horizontal-end">
+                    <button @onclick='()=>OpenAdd("ZebraLabelSettings")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                    <button @onclick='()=>Add("ZebraLabelSpecs")' class="size-btn color-btn "><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                </div>
+
+            </div>
+
+        </div>
+    }
+</div>
+
+
+<div class="flex-verical-center position-relative" style="display:@(modeEdit?"flex":"none");">
+
+
+    <PageTitleComponent Title=" Label Style" IconName="palette.png"
+                        Description="Here you can add label style">
+    </PageTitleComponent>
+
+    <div class="container-menu-g">
+        <nav>
+            <button @onclick='()=>Closed("control")' class="general-menu-button" style="text-align:center;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+
+            <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+                <SplitButtonEvents ItemSelected="ItemSelected">
+                </SplitButtonEvents>
+                <DropDownMenuItems>
+                    <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                    <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Save" Id="general" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                    <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+                </DropDownMenuItems>
+            </SfSplitButton>
+        </nav>
+    </div>
+
+    <div class="flex-horizontal-center">
+        <div class="grid-columns-header">
+            <div><label>@GetName( "Name", new AtomConcept())</label></div>
+            <div><input @bind-value="labelStyle.Name" class="form-control" placeholder="Edit value" /></div>
+            <div><label>@GetName( "Code", new LabelStyle())</label></div>
+            <div><input @bind-value="labelStyle.Code" class="form-control" placeholder="Edit value" /></div>
+              <div><label>@GetName( "Notes", new LabelStyle())</label></div>
+            <div><input @bind-value="labelStyle.Notes" class="form-control" placeholder="Edit value" /></div>
+              <div><label>@GetName( "PDFReportName", new LabelStyle())</label></div>
+            <div><input @bind-value="labelStyle.PDFReportName" class="form-control" placeholder="Edit value" /></div>
+            <div>
+                <label>
+                    @GetName( "Purpose", new LabelStyle())
+                </label>
+            </div>
+            <div style="position:relative;">
+                <select class="form-control" @bind="labelStyle.Purpose" placeholder="Edit value">
+                    <option value="@LabelPurpose.Provider">@LabelPurpose.Provider.ToString()</option>
+                    <option value="@LabelPurpose.Customer">@LabelPurpose.Customer.ToString()</option>
+                    <option value="@LabelPurpose.Inventory">@LabelPurpose.Inventory.ToString()</option>
+                    <option value="@LabelPurpose.UPC">@LabelPurpose.UPC.ToString()</option>
+                </select>
+            </div>
+
+        </div>
+
+        <SfTab Height="400px" HeaderPlacement="HeaderPosition.Left">
+            <TabAnimationSettings>
+                <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
+                <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
+            </TabAnimationSettings>
+            <TabItems>
+                <TabItem>
+                    <ChildContent>
+                        <TabHeader Text="@GetName( "Paper", new LabelStyle())"></TabHeader>
+                    </ChildContent>
+                    <ContentTemplate>
+                        <div class="flex-horizontal-center">
+                            <div class="detailsTitleContainer">
+                                <h3 class="subTitleDetailForm">@GetName( "Paper", new LabelStyle())</h3>
+                            </div>
+                            <div class="grid-columns-2 box-shadow-mode">
+                                <div><label><strong class="c-red">*</strong>@GetName( "Name", new AtomConcept())</label></div>
+                                <div><input @bind-value="labelPaper.Name" class="form-control" placeholder="Edit value" /></div>
+                                <div><label><strong class="c-red">*</strong>@GetName( "Code", new AtomConcept())</label></div>
+                                <div><input @bind-value="labelPaper.Code" class="form-control" placeholder="Edit value" /></div>
+                                <div><label><strong class="c-red">*</strong>@GetName( "Notes", new AtomConcept())</label></div>
+                                <div><input @bind-value="labelPaper.Notes" class="form-control" placeholder="Edit value" /></div>
+                                <div><label><strong class="c-red">*</strong>@GetName( "Width", new LabelPaper())</label></div>
+                                <div><input @bind-value="labelPaper.Width" class="form-control" placeholder="Edit value" /></div>
+                                <div><label><strong class="c-red">*</strong>@GetName( "Height", new LabelPaper())</label></div>
+                                <div><input @bind-value="labelPaper.Height" class="form-control" placeholder="Edit value" /></div>
+                                @*  <div>
+                                </div>
+                                <div class="flex-horizontal-end">
+                                <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                                <button @onclick='()=>Save("Paper")' class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
+                                </div>*@
+                            </div>
+                        </div>
+                    </ContentTemplate>
+                </TabItem>
+                <TabItem>
+                    <ChildContent>
+                        <TabHeader Text="@GetName( "DataMaxLabelSettings", new LabelStyle())"></TabHeader>
+                    </ChildContent>
+                    <ContentTemplate>
+                        <div class="flex-verical-start">
+                            <div class="detailsTitleContainer">
+                                <h3 class="subTitleDetailForm">@GetName(  "DataMaxLabelSettings", new LabelStyle())</h3>
+                            </div>
+                            <div class="grid-columns-header ">
+                                <div><label><strong class="c-red">*</strong> @GetName( "ColumnSeparatorSpace", new DataMaxLabelSpecs())</label> </div>
+                                <div><input @bind-value="dataMaxLabelSettings.ColumnSeparatorSpace" class="form-control" placeholder="Edit value" /></div>
+                            </div>
+                            <div class="detailsTitleContainer">
+                                <h3 class="subTitleDetailForm">@GetName( "DataMaxFieldsSpecs", new DataMaxLabelSpecs())</h3>
+                                <svg @onclick='()=>ClosedAdd("DataMaxLabelLineSpec")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                </svg>
+                            </div>
+
+
+                            <div class="flex-horizontal-center ">
+                                <DataGrid TParameter="DataMaxLabelLineSpecView"
+                                          EventCallbackMenu="OnContextMenuClick"
+                                          parameterList="dataMaxLabelLineSpecsView"
+                                          GridColumnsList="gridColumnListDataMaxLabelLineSpec"
+                                          Width="100%">
+                                </DataGrid>
+                            </div>
+
+                        </div>
+                    </ContentTemplate>
+                </TabItem>
+                <TabItem>
+                    <ChildContent>
+                        <TabHeader Text="@GetName( "ZebraLabelSettings", new LabelStyle())"></TabHeader>
+                    </ChildContent>
+                    <ContentTemplate>                    
+
+                        <div class="flex-verical-start">
+                            <div class="detailsTitleContainer">
+                                <h3 class="subTitleDetailForm">@GetName(  "ZebraLabelSettings", new LabelStyle())</h3>
+                            </div>
+                            <div class="grid-columns-header ">
+                                <div><label><strong class="c-red">*</strong> @GetName( "ColumnSeparatorSpace", new DataMaxLabelSpecs())</label> </div>
+                                <div><input @bind-value="zebraLabelSettings.ColumnSeparatorSpace" class="form-control" placeholder="Edit value" /></div>
+                            </div>
+                            <div class="detailsTitleContainer">
+                                <h3 class="subTitleDetailForm">@GetName( "ZebraFieldsSpecs", new ZebraLabelSpecs())</h3>
+                                <svg @onclick='()=>ClosedAdd("ZebraLabelSpecs")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                </svg>
+                            </div>
+                            <div class="flex-horizontal-center ">
+                                <DataGrid TParameter="ZebraLabelLineSpecView"
+                                          EventCallbackMenu="OnContextMenuClick"
+                                          parameterList="zebraLabelLineSpecsView"
+                                          GridColumnsList="gridColumnListZebraFieldInLabel"
+                                          Width="100%">
+                                </DataGrid>
+                            </div>
+
+                        </div>
+                    </ContentTemplate>
+                </TabItem>
+            </TabItems>
+        </SfTab>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Page { get; set; } = "";
+    [Parameter]
+    public string Mode { get; set; } = "Add";
+    [Parameter]
+    public string filterItems { get; set; } = "";
+
+    public bool ststus = false, ViewPopupCount = false, ViewSelect = false;
+    public int ParamCountResul = 0;
+    public string ModeSearcher = "";
+    int status = 0;
+    string nameString = "";
+    InputTextSelector? ReferInputTextSelector;
+
+    #region Tag 1
+    LabelStyle labelStyle = new();
+
+    LabelPaper labelPaper = new();
+    List<GridColumn> gridColumnListDataMaxLabelLineSpec = new();
+
+    #endregion Tag 1
+
+    #region Tag 2
+    List<DataMaxLabelSpecs> dataMaxLabelSettingss = new();
+    DataMaxLabelSpecs dataMaxLabelSettings = new();
+    DataMaxLabelLineSpec dataMaxLabelLineSpec = new();
+    List<DataMaxLabelLineSpec> dataMaxLabelLineSpecs = new();
+    List<DataMaxLabelLineSpecView> dataMaxLabelLineSpecsView = new();
+    List<GridColumn> gridColumnListDataMaxSettings = new();
+    LabelField dataMaxFieldInLabel = new();
+    #endregion Tag 2
+
+    #region Tag 3
+    List<ZebraLabelSpecs> zebraLabelSettingss = new();
+    ZebraLabelSpecs zebraLabelSettings = new();
+    List<ZebraLabelLineSpecView> zebraLabelLineSpecsView = new();
+    List<ZebraLabelLineSpec> zebraLabelLineSpecs = new();
+    ZebraLabelLineSpec zebraLabelLineSpec = new();
+    LabelField zebraFieldInLabel = new();
+    LabelStyle labelStylezebra = new();
+    List<GridColumn> gridColumnListZebraFieldInLabel = new();
+    List<GridColumn> gridColumnListZebraLabelSettings = new();
+    #endregion Tag 3
+
+
+
+    public bool modeEdit = true, viewMsg = false;
+    public string msg = "", pageView = "";
+
+    protected override void OnInitialized()
+    {
+        if (Mode == "Edit")
+        {
+
+
+            if (transactionalService.ConceptLabelStyle != null)
+            {
+                labelStyle = transactionalService.ConceptLabelStyle;
+                labelPaper = labelStyle.Paper != null ? labelStyle.Paper : new();               
+                zebraLabelSettings = labelStyle.ZebraLabelSettings != null ? labelStyle.ZebraLabelSettings : new();
+                zebraLabelLineSpecs = zebraLabelSettings.ZebraFieldsSpecs != null ? zebraLabelSettings.ZebraFieldsSpecs : new();
+                dataMaxLabelSettings = labelStyle.DataMaxLabelSettings != null ? labelStyle.DataMaxLabelSettings : new();
+                dataMaxLabelLineSpecs = dataMaxLabelSettings.DataMaxFieldsSpecs != null ? dataMaxLabelSettings.DataMaxFieldsSpecs : new();
+                dataMaxLabelLineSpecsView = new();
+                foreach (var item in dataMaxLabelLineSpecs)
+                {
+                    dataMaxLabelLineSpecsView.Add(ConverToDataMax(item));
+                }
+                zebraLabelLineSpecsView = new();
+                foreach (var item in zebraLabelLineSpecs)
+                {
+                    zebraLabelLineSpecsView.Add(ConverToZebraLabel(item));
+                }
+                StateHasChanged();
+
+            }
+            else
+            {
+                Closed("control");
+            }
+
+
+
+        }
+        if (Mode == "Add")
+        {
+
+        }
+
+        gridColumnListDataMaxSettings = new List<GridColumn>
+        {
+
+              new GridColumn() { Field=nameof(DataMaxLabelSpecs.ColumnSeparatorSpace) ,  HeaderText = @GetName( "ColumnSeparatorSpace", new DataMaxLabelSpecs())  },
+
+        };
+
+        gridColumnListDataMaxLabelLineSpec = new List<GridColumn>
+        {
+             new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.NameLabelField) ,  HeaderText = @GetName( "Name", new LabelField()), Width="200"  },
+               new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.Rotation) ,  HeaderText = @GetName( "Rotation", new DataMaxLabelLineSpec())  },
+                 new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.Font) ,  HeaderText = @GetName( "Font", new DataMaxLabelLineSpec())  },
+                  new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.Width) ,  HeaderText = @GetName( "Width", new DataMaxLabelLineSpec())  },
+                   new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.Height) ,  HeaderText = @GetName( "Height", new DataMaxLabelLineSpec())  },
+                     new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.FontSize) ,  HeaderText = @GetName( "FontSize", new DataMaxLabelLineSpec())  },
+                      new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.Row) ,  HeaderText = @GetName( "Row", new DataMaxLabelLineSpec())  },
+                       new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.GGColumn) ,  HeaderText = @GetName( "GGColumn", new DataMaxLabelLineSpec())  },
+                        new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.IIIColumn) ,  HeaderText = @GetName( "IIIColumn", new DataMaxLabelLineSpec())  },
+                         new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.JColumn) ,  HeaderText = @GetName( "JColumn", new DataMaxLabelLineSpec()) }
+
+        };
+
+
+        gridColumnListZebraLabelSettings = new List<GridColumn>
+        {
+
+              new GridColumn() { Field=nameof(zebraLabelSettings.ColumnSeparatorSpace) ,  HeaderText = @GetName( "ColumnSeparatorSpace", new ZebraLabelSpecs())  },
+
+        };
+
+        gridColumnListZebraFieldInLabel = new List<GridColumn>
+        {
+
+               new GridColumn() { Field=nameof(ZebraLabelLineSpecView.NameLabelField) ,  HeaderText = @GetName( "Name", new ZebraLabelLineSpec())  },
+              new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoA) ,  HeaderText = @GetName( "CampoA", new ZebraLabelLineSpec())  },
+                new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoB) ,  HeaderText = @GetName( "CampoB", new ZebraLabelLineSpec())  },
+                 new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoC) ,  HeaderText = @GetName( "CampoC", new ZebraLabelLineSpec())  },
+                  new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoD) ,  HeaderText = @GetName( "CampoD", new ZebraLabelLineSpec())  },
+                   new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoEEE) ,  HeaderText = @GetName( "CampoEEE", new ZebraLabelLineSpec())  },
+                     new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoFFFF) ,  HeaderText = @GetName( "CampoFFFF", new ZebraLabelLineSpec())  },
+                      new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoGGGG) ,  HeaderText = @GetName( "CampoGGGG", new ZebraLabelLineSpec())  },
+                       new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoHHHH) ,  HeaderText = @GetName( "CampoHHHH", new ZebraLabelLineSpec())  },
+                        new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoIIII) ,  HeaderText = @GetName( "CampoIIII", new ZebraLabelLineSpec())  },
+
+
+
+
+        };
+
+    }
+
+    protected override void OnParametersSet()
+    {
+        StateHasChanged();
+    }
+
+
+    public async void ItemSelected(MenuEventArgs e)
+    {
+        StateHasChanged();
+        string tile = e.Item != null ? e.Item.Text : "";
+        string id = e.Item != null ? e.Item.Id : "";
+
+
+        if (tile == "Save" && id == "general")
+        {
+            labelStyle.Paper = labelPaper;
+            if (zebraLabelSettings.ZebraFieldsSpecs == null) zebraLabelSettings.ZebraFieldsSpecs = new();
+            zebraLabelSettings.ZebraFieldsSpecs.Add(zebraLabelLineSpec);
+            zebraLabelSettingss.Add(zebraLabelSettings);
+            labelStyle.ZebraLabelSettings = zebraLabelSettings;
+            if (dataMaxLabelSettings.DataMaxFieldsSpecs == null) dataMaxLabelSettings.DataMaxFieldsSpecs = new();
+            dataMaxLabelSettings.DataMaxFieldsSpecs.Add(dataMaxLabelLineSpec);
+            dataMaxLabelSettingss.Add(dataMaxLabelSettings);
+            labelStyle.DataMaxLabelSettings = dataMaxLabelSettings;
+            zebraLabelSettings = new();
+            dataMaxLabelLineSpec = new();
+
+            if (labelStyle.Paper == null) labelStyle.Paper = new();
+            if (labelStyle.DataMaxLabelSettings == null) labelStyle.DataMaxLabelSettings = new();
+            if (labelStyle.DataMaxLabelSettings == null) labelStyle.DataMaxLabelSettings = new();
+            if (labelStyle.ZebraLabelSettings == null) labelStyle.ZebraLabelSettings = new();               
+
+            var resul = await transactionalService.SaveLabelStyle(labelStyle);
+            if (resul)
+            {
+                Msg("Saved", 1);
+            }
+            else
+            {
+                Msg("No saved", 1);
+            }
+
+        }
+
+        if (tile == "Save" && id == "DataMaxLabelSettings")
+        {
+
+            Msg("Added", 1);
+        }
+
+
+        if (tile == "Save" && id == "ZebraLabelSettings")
+        {
+
+
+            Msg("Added", 1);
+
+        }
+
+
+
+
+
+        if (tile == "Save as...")
+        {
+            Msg("Disable", 1);
+        }
+        StateHasChanged();
+    }
+
+
+    public void Add(string value)
+    {
+
+        if (value == "DataMaxLabelLineSpec")
+        {
+            if (dataMaxLabelSettings.DataMaxFieldsSpecs == null) dataMaxLabelSettings.DataMaxFieldsSpecs = new();
+            dataMaxLabelLineSpec.FieldInLabel = dataMaxFieldInLabel != null ? dataMaxFieldInLabel : new();
+            dataMaxLabelLineSpecsView.Add(ConverToDataMax(dataMaxLabelLineSpec));
+            dataMaxFieldInLabel = new();
+            dataMaxLabelLineSpec = new();
+        }
+
+        if (value == "ZebraLabelSpecs")
+        {
+
+            zebraLabelLineSpec.FieldInLabel = zebraFieldInLabel != null ? zebraFieldInLabel : new();
+            zebraLabelLineSpecs.Add(zebraLabelLineSpec);
+            zebraLabelLineSpecsView.Add(ConverToZebraLabel(zebraLabelLineSpec));
+            zebraLabelLineSpec = new();
+
+        }
+
+        Msg("Added", 1);
+        StateHasChanged();
+    }
+
+
+
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<DataMaxLabelSpecs> args)
+    {
+        DataMaxLabelSpecs dataMaxLabelSpecs = args.RowInfo.RowData;
+        if (args.Item.Text == "Edit")
+        {
+            ClosedAdd("PossibleValues");
+        }
+
+    }
+
+
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<ZebraLabelSpecs> args)
+    {
+        ZebraLabelSpecs dataMaxLabelSpecs = args.RowInfo.RowData;
+        if (args.Item.Text == "Edit")
+        {
+            ClosedAdd("PossibleValues");
+        }
+
+    }
+
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<ZebraLabelLineSpecView> args)
+    {
+        ZebraLabelLineSpecView dataMaxLabelSpecs = args.RowInfo.RowData;
+        if (args.Item.Text == "Edit")
+        {
+            ClosedAdd("PossibleValues");
+        }
+
+    }
+
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<DataMaxLabelLineSpecView> args)
+    {
+        DataMaxLabelLineSpecView dataMaxLabelSpecs = args.RowInfo.RowData;
+        if (args.Item.Text == "Edit")
+        {
+            ClosedAdd("PossibleValues");
+        }
+
+    }
+
+
+
+    public void Closed(string value)
+    {
+        if (value == "control") Navigation.NavigateTo($"/{Page}/{filterItems}");
+    }
+
+
+    protected async void EventIdSelection(string SelectionId)
+    {
+
+        ReferInputTextSelector.Refresh();
+        StateHasChanged();
+
+    }
+    protected async void EventSearcherValue(string value)
+    {
+        ViewPopupCount = true;
+
+        StateHasChanged();
+    }
+    public void SetViewElemnt(string Element)
+    {
+        ModeSearcher = Element;
+        if (Element == "LinkedTransactionalItem") { }
+
+
+    }
+
+    public void EventClosedInput()
+    {
+        ParamCountResul = 0;
+        ViewSelect = false;
+
+
+        StateHasChanged();
+    }
+
+
+
+    public void OpenAdd(string value)
+    {
+        pageView = value;
+        modeEdit = true;
+        viewMsg = false;
+
+    }
+
+    public void ClosedAdd(string value)
+    {
+        pageView = value;
+        modeEdit = false;
+        viewMsg = false;
+    }
+
+    public void Msg(bool mode)
+    {
+        msg = mode ? "Saved" : "No saved";
+        viewMsg = true;
+    }
+
+    public void Msg(string? Msg, int _status)
+    {
+        msg = Msg;
+        viewMsg = true;
+        status = _status;
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+
+
+    DataMaxLabelLineSpecView ConverToDataMax(DataMaxLabelLineSpec _dataMaxLabelLineSpec)
+    {
+        DataMaxLabelLineSpecView item = new();
+        var ObjFieldInLabel = _dataMaxLabelLineSpec.FieldInLabel != null ? _dataMaxLabelLineSpec.FieldInLabel : null;
+        var ObjDataMax = _dataMaxLabelLineSpec != null ? _dataMaxLabelLineSpec : null;
+
+
+        item = new DataMaxLabelLineSpecView()
+            {
+                NameLabelField = ObjFieldInLabel != null ? ObjFieldInLabel.Name : "",
+                Rotation = ObjDataMax.Rotation != null ? ObjDataMax.Rotation : "",
+                Font = ObjDataMax.Font != null ? ObjDataMax.Font : "",
+                Width = ObjDataMax.Width != null ? ObjDataMax.Width : "",
+                Height = ObjDataMax.Height != null ? ObjDataMax.Height : "",
+                FontSize = ObjDataMax.FontSize != null ? ObjDataMax.FontSize : "",
+                Row = ObjDataMax.Row != null ? ObjDataMax.Row : "",
+                GGColumn = ObjDataMax.GGColumn != null ? ObjDataMax.GGColumn : "",
+                IIIColumn = ObjDataMax.IIIColumn != null ? ObjDataMax.IIIColumn : "",
+                JColumn = ObjDataMax.JColumn != null ? ObjDataMax.JColumn : "",
+            };
+        return item;
+    }
+
+    ZebraLabelLineSpecView ConverToZebraLabel(ZebraLabelLineSpec _zebraLabelLineSpec)
+    {
+        ZebraLabelLineSpecView item = new();
+        var ObjFieldInLabel = _zebraLabelLineSpec.FieldInLabel != null ? _zebraLabelLineSpec.FieldInLabel : null;
+        var Obj = _zebraLabelLineSpec != null ? _zebraLabelLineSpec : null;
+
+
+        item = new ZebraLabelLineSpecView()
+            {
+                NameLabelField = ObjFieldInLabel != null ? ObjFieldInLabel.Name : "",
+                Id = Obj.Id,
+                CampoA = Obj.CampoA,
+                CampoB = Obj.CampoB,
+                CampoC = Obj.CampoC,
+                CampoD = Obj.CampoD,
+                CampoEEE = Obj.CampoEEE,
+                CampoFFFF = Obj.CampoFFFF,
+                CampoGGGG = Obj.CampoGGGG,
+                CampoHHHH = Obj.CampoHHHH,
+                CampoIIII = Obj.CampoIIII,
+                CampoJ = Obj.CampoJ,
+                CampoK = Obj.CampoK,
+                Orden = Obj.Orden
+
+
+            };
+        return item;
+    }
+
+
+
+
+    public class DataMaxLabelLineSpecView : DataMaxLabelLineSpec
+    {
+        public int ColumnSeparatorSpace { get; set; }
+        public string IdLabelField { get; set; }
+        public string NameLabelField { get; set; }
+    }
+
+
+    public class ZebraLabelLineSpecView : ZebraLabelLineSpec
+    {
+        public int ColumnSeparatorSpace { get; set; }
+        public string IdLabelField { get; set; }
+        public string NameLabelField { get; set; }
+    }
+
+}
