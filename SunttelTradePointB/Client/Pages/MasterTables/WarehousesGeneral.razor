@@ -1,13 +1,13 @@
 ﻿@page "/WarehousesGeneral"
-@using SunttelTradePointB.Client.Shared.TransactionalItems
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Navigations
+@using SunttelTradePointB.Client.Shared.EntityShareComponents
 @using SunttelTradePointB.Shared.Common
+@using SunttelTradePointB.Client.Services.MasterTablesServices
 
-@inject IJSRuntime JSRuntime
-@inject HttpClient Http
-@inject TransactionalItemsService transactItemsService;
 @inject ContextMenuService ContextMenuService
 @inject DialogService DialogService
-@inject ActorsNodeService actorsNodeServive
+@inject WarehouseService warehouseService
 
 
 <PageTitleComponent Title="Warehouses" IconName="Warehouses.png"
@@ -27,36 +27,88 @@
     }else{
         @if(warehouseList != null)
         {
-            <RadzenDataGrid AllowFiltering="true"
-                    AllowColumnResize="true"
-                    AllowAlternatingRows="true"
-                    FilterMode="FilterMode.Advanced"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    AllowSorting="true"
-                    PageSize="50"
-                    AllowPaging="true"
-                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    Data="@warehouseList"
-                    TItem="Warehouse"
-                    ColumnWidth="300px"
-                    SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"
-                    @bind-Value=@warehouseSelectList Class="m-4"
-                    CellContextMenu="@ShowContextMenuWithContent">
-                <Columns>
-                    <RadzenDataGridColumn TItem="Warehouse" Property="WareHouseParent" Title="WareHouse Parent" Frozen="true" Width="120px" />
-                    <RadzenDataGridColumn TItem="Warehouse" Property="AssociatedEntity.Name" Title="Associated Entity" Frozen="true" Width="120px" />
-                    <RadzenDataGridColumn TItem="Warehouse" Property="IsExternal" Title="Is External" Frozen="true" Width="120px" />
-                    <RadzenDataGridColumn TItem="Warehouse" Property="ScanSimulated" Title="Scan Simulated" Frozen="true" Width="120px" />
-                    <RadzenDataGridColumn TItem="Warehouse" Property="IsInventoryControlled" Title="Inventory Controlled" Frozen="true" Width="120px" />
-                    <RadzenDataGridColumn TItem="Warehouse" Property="InventoryTransactionalItemType.Name" Title="Inventory Transactional Item Type" Frozen="true" Width="120px" />
-                    <RadzenDataGridColumn TItem="Warehouse" Property="WarehouseAddress.CityAddress" Title="Address" Frozen="true" Width="120px" />
-                    <RadzenDataGridColumn TItem="Warehouse" Property="ContactPerson.Name" Title="Contact Person" Frozen="true" Width="120px" />
-                    <RadzenDataGridColumn TItem="Warehouse" Property="IsActive" Title="Is Active" Frozen="true" Width="120px" />
-                    
-                </Columns>
-            </RadzenDataGrid>
+            <SfGrid DataSource="warehouseList"
+            Height="auto"
+            Width="auto"
+            TValue="Warehouse"
+            AllowFiltering="true"
+            AllowTextWrap="false"
+            AllowPaging="true"
+            AllowResizing="true"
+            ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" } })">
+                <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
+                <GridColumns>
+                    <GridColumn Field="@nameof(Warehouse.WareHouseParent.AssociatedEntity.Name)" HeaderText="WareHouse Parent" Width="110"></GridColumn>
+                    <GridColumn Field="@nameof(Warehouse.AssociatedEntity.Name)" HeaderText="Associated Entity" Width="110"></GridColumn>
+                    <GridColumn Field="@nameof(Warehouse.IsExternal)" HeaderText="Is External" Width="110">
+                        <Template>
+                            @{
+                                var isExternal = (bool)context.GetType().GetProperty(nameof(Warehouse.IsExternal)).GetValue(context);
+                                if (isExternal)
+                                {
+                                    <input type="checkbox" checked="isExternal" />
+                                }
+                                else
+                                {
+                                    <input type="checkbox"  />
+                                }
+                             }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field="@nameof(Warehouse.ScanSimulated)" HeaderText="Scan Simulated" Width="110">
+                        <Template>
+                            @{
+                                var ScanSimulated = (bool)context.GetType().GetProperty(nameof(Warehouse.ScanSimulated)).GetValue(context);
+                                if (ScanSimulated)
+                                {
+                                    <input type="checkbox" checked="ScanSimulated" />
+                                }
+                                else
+                                {
+                                    <input type="checkbox" />
+                                }
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field="@nameof(Warehouse.IsInventoryControlled)" HeaderText="Inventory Controlled" Width="110">
+                        <Template>
+                            @{
+                                var isInventoryControlled = (bool)context.GetType().GetProperty(nameof(Warehouse.IsInventoryControlled)).GetValue(context);
+                                if (isInventoryControlled)
+                                {
+                                    <input type="checkbox" checked="isInventoryControlled" />
+                                }
+                                else
+                                {
+                                    <input type="checkbox" />
+                                }
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field="InventoryTransactionalItemType.Name" HeaderText="Inventory Transactional" Width="110"></GridColumn>
+                    <GridColumn Field="WarehouseAddress.AddressLine1" HeaderText="Address" Width="110"></GridColumn>
+                    <GridColumn Field="@nameof(Warehouse.ContactPerson.Name)" HeaderText="Contact Person" Width="110"></GridColumn>
+                    <GridColumn Field="@nameof(Warehouse.IsActive)" HeaderText="Is Active" Width="110">
+                        <Template>
+                            @{
+                                var isActive = (bool)context.GetType().GetProperty(nameof(Warehouse.IsActive)).GetValue(context);
+                                if (isActive)
+                                {
+                                    <input type="checkbox" checked="isActive" />
+                                }
+                                else
+                                {
+                                    <input type="checkbox" />
+                                }
+                            }
+                        </Template>
+                    </GridColumn>
+                </GridColumns>
+                <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="Warehouse"></GridEvents>
+            </SfGrid>
+
+
+
         }
     }
 
@@ -93,7 +145,7 @@
             isLoading = true;
             StateHasChanged();
 
-            var response = await actorsNodeServive.GetWarehouseList(filter);
+            var response = await warehouseService.GetWarehouseList(filter);
 
             if (response != null)
                 warehouseList = response;
@@ -103,22 +155,16 @@
         }
     }
 
-    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<Warehouse> args) => ContextMenuService.Open(args, ds =>
-    @<RadzenMenu Click="OnMenuItemClick">
-        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-
-    </RadzenMenu>
-    );
-
-    void OnMenuItemClick(MenuItemEventArgs args)
+    public void OnContextMenuClick(ContextMenuClickEventArgs<Warehouse> args)
     {
-        Warehouse argObj = (Warehouse)args.Value;
-        //Navigate(argObj.Id);
+        Warehouse _Warehouse = new();
+        _Warehouse = args.RowInfo.RowData;
 
-        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        if (args.Item.Text == "Edit")
         {
-            ContextMenuService.Close();
+            //navigationManager.NavigateTo($"/Actors/{_EntityActor.Id}");
         }
     }
+
 
 }

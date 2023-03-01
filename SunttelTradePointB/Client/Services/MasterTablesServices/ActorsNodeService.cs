@@ -456,24 +456,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task<List<Warehouse>> GetWarehouseList(string filterWarehouse)
-        {
-            var userId = UIClientGlobalVariables.UserId;
-            var ipAddress = UIClientGlobalVariables.PublicIpAddress;
-            try
-            {
-                if (ipAddress == "")
-                    ipAddress = "127.0.0.0";
-                var listWarehouse = await _httpClient.GetFromJsonAsync<List<Warehouse>>($"/api/GeographicPlaces/GetWarehouses?nameLike={filterWarehouse}");
-                return listWarehouse;
-            }
-            catch (Exception ex)
-            {
-                string errMessage = ex.Message;
-                return null;
-            }
-        }
-
         public async Task <List<EntitiyRelationshipType>> GetEntityRelationType()
         {
             var userId = UIClientGlobalVariables.UserId;

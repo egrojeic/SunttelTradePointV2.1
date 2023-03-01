@@ -1,0 +1,172 @@
+﻿@page "/WarehousesGeneral/NewWarehouse"
+@page "/WarehousesGeneral/{id}/Edit"
+
+@using Syncfusion.Blazor.Popups
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Cards
+
+@inject NavigationManager navigationManager
+
+
+<div class="control-section">
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
+            <SfCard>
+                <CardHeader Title="Add a new number phone" />
+                <CardContent>
+                    <form onsubmit="event.preventDefault();">
+                        <div class="form-group row">
+                            <div class="form-group row">
+                                <label class="control-label col-md-12">@lblWareHouseParent*: </label>
+                                <div class="col">
+                                    <input type="text" class="form-control" @bind-value="warehouse.WareHouseParent" required />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row py-2">
+                            <div class="form-group row">
+                                <label class="control-label col-md-12">@lblAssociatedEntity*: </label>
+                                <div class="col">
+                                    <input type="text" class="form-control" @bind-value="warehouse.AssociatedEntity" required />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row py-2">
+                            <div class="form-group row">
+                                <label class="control-label col-md-12">@lblIsExternal*: </label>
+                                <div class="col">
+                                    <SfSwitch @bind-Checked="isExternal"></SfSwitch>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row py-2">
+                            <div class="form-group row">
+                                <label class="control-label col-md-12">@lblIsTransformationFacility*: </label>
+                                <div class="col">
+                                    <SfSwitch @bind-Checked="isTransformationFacility"></SfSwitch>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row py-2">
+                            <div class="form-group row">
+                                <label class="control-label col-md-12">@lblScanSimulated*: </label>
+                                <div class="col">
+                                    <SfSwitch @bind-Checked="scanSimulated"></SfSwitch>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row py-2">
+                            <div class="form-group row">
+                                <label class="control-label col-md-12">@lblIsInventoryControlled*: </label>
+                                <div class="col">
+                                    <SfSwitch @bind-Checked="isInventoryControlled"></SfSwitch>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="form-group row">
+                                <label class="control-label col-md-12">@lblInventoryTransactionalItemType*: </label>
+                                <div class="col">
+                                    <input type="text" class="form-control" @bind-value="warehouse.InventoryTransactionalItemType" required />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="form-group row">
+                                <label class="control-label col-md-12">@lblWarehouseAddress*: </label>
+                                <div class="col">
+                                    <input type="text" class="form-control" @bind-value="warehouse.WarehouseAddress" required />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="form-group row">
+                                <label class="control-label col-md-12">@lblContactPerson*: </label>
+                                <div class="col">
+                                    <input type="text" class="form-control" @bind-value="warehouse.ContactPerson" required />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row py-2">
+                            <div class="form-group row">
+                                <label class="control-label col-md-12">@lblIsActive*: </label>
+                                <div class="col">
+                                    <SfSwitch @bind-Checked="isActive"></SfSwitch>
+                                </div>
+                            </div>
+                        </div>
+
+                        <MessageSaveComponent message="Electronic Address Saved" isVisible="visible"></MessageSaveComponent>
+
+                        <div class="py-2">
+                            <button type="submit" class="size-btn color-btn" style="float:right"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                            <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
+                        </div>
+                    </form>
+
+                </CardContent>
+            </SfCard>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    Warehouse warehouse = new Warehouse();
+
+    private string lblWareHouseParent = "";
+    private string lblAssociatedEntity = "";
+    private string lblIsExternal = "";
+    private string lblIsTransformationFacility = "";
+    private string lblScanSimulated = "";
+    private string lblIsInventoryControlled = "";
+    private string lblInventoryTransactionalItemType = "";
+    private string lblWarehouseAddress = "";
+    private string lblContactPerson = "";
+    private string lblIsActive = "";
+
+    private bool visible { get; set; } = false;
+
+    private bool isExternal { get; set; } = false;
+    private bool isTransformationFacility { get; set; } = false;
+    private bool scanSimulated { get; set; } = false;
+    private bool isInventoryControlled { get; set; } = false;
+    private bool isActive { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        lblWareHouseParent = UICommonFunctions.GetDisplayName(new Warehouse(), "WareHouseParent");
+        lblAssociatedEntity = UICommonFunctions.GetDisplayName(new Warehouse(), "AssociatedEntity");
+        lblIsExternal = UICommonFunctions.GetDisplayName(new Warehouse(), "IsExternal");
+        lblIsTransformationFacility = UICommonFunctions.GetDisplayName(new Warehouse(), "IsTransformationFacility");
+        lblScanSimulated = UICommonFunctions.GetDisplayName(new Warehouse(), "ScanSimulated");
+        lblIsInventoryControlled = UICommonFunctions.GetDisplayName(new Warehouse(), "IsInventoryControlled");
+        lblInventoryTransactionalItemType = UICommonFunctions.GetDisplayName(new Warehouse(), "InventoryTransactionalItemType");
+        lblWarehouseAddress = UICommonFunctions.GetDisplayName(new Warehouse(), "WarehouseAddress");
+        lblContactPerson = UICommonFunctions.GetDisplayName(new Warehouse(), "ContactPerson");
+        lblIsActive = UICommonFunctions.GetDisplayName(new Warehouse(), "IsActive");
+
+    }
+
+    private void GoBack()
+    {
+        navigationManager.NavigateTo($"/WarehousesGeneral");
+    }
+
+
+}

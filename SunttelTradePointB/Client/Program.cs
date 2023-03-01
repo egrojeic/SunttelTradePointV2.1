@@ -27,6 +27,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<SQuadService>();
 builder.Services.AddScoped<GeographicPlacesService>();
 builder.Services.AddScoped<ActorsNodeService>();
+builder.Services.AddScoped<WarehouseService>();
+builder.Services.AddScoped<CommunicationService>();
 builder.Services.AddScoped<TransactionalItemsService>();
 
 
