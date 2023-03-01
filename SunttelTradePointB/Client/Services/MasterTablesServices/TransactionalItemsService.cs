@@ -779,7 +779,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 string errMessage = ex.Message;
                 return false;
             }
-
         }
 
         public async Task<bool> SaveBox( Box box)
