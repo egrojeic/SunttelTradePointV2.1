@@ -1,10 +1,12 @@
-﻿using MongoDB.Bson;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Client.Shared.EntityShareComponents.RelatedConcepts;
 using SunttelTradePointB.Server.Interfaces.Communications;
 using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.Communications;
+using Syncfusion.PdfExport;
 
 namespace SunttelTradePointB.Server.Services.Communications
 {
@@ -118,6 +120,8 @@ namespace SunttelTradePointB.Server.Services.Communications
             }
         }
 
+      
+
         /// <summary>
         /// 
         /// </summary>
@@ -126,9 +130,68 @@ namespace SunttelTradePointB.Server.Services.Communications
         /// <param name="filterCriteria"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<(bool IsSuccess, List<CommunicationsMessage>? communicationsMessages, string? ErrorDescription)> GetMessagesOfAnEntity(string entityId, DateTime startingDate, string? filterCriteria = "")
+        public async Task<(bool IsSuccess, List<CommunicationsMessage>? communicationsMessages, string? ErrorDescription)> GetMessagesOfAnEntity(string entityId, DateTime startingDate, string? filterCriteria = "")
         {
-            throw new NotImplementedException();
+            try
+            {
+                string strNameFiler = filterCriteria == null ? "" : filterCriteria;
+               
+                var pipeline = new List<BsonDocument>();
+
+                if (!(strNameFiler.ToLower() == "all" || strNameFiler.ToLower() == "todos"))
+                {
+                    pipeline.Add(
+                    new BsonDocument{
+                        { "$match",  new BsonDocument {
+                            { "$text",
+                                new BsonDocument {
+                                    { "$search",strNameFiler },
+                                    { "$language","english" },
+                                    { "$caseSensitive",false },
+                                    { "$diacriticSensitive",false }
+                                }
+                            }
+                        }}
+                    }
+                );
+                }
+
+
+                pipeline.Add(
+                    new BsonDocument(
+                        "$match",
+                        new BsonDocument("Status.IsEnabledForTransactions", true)
+
+                    )
+                );
+
+                pipeline.Add(
+                    new BsonDocument {
+                        { "$project",
+                            new BsonDocument {
+                                { "ProductionSpecs", 0 },
+                                { "ProductPackingSpecs", 0 },
+                                { "ItemCharacteristics", 0},
+                                { "PathImages", 0},
+                                { "QualityParameters", 0},
+                                { "TransactionalItemModels", 0}
+                            }
+                        }
+                    }
+                );
+
+             
+
+                List<CommunicationsMessage> results = await _messagedb.Aggregate<CommunicationsMessage>(pipeline).ToListAsync();
+
+                //var results = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+                return (true, results, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
 
         /// <summary>
@@ -168,7 +231,11 @@ namespace SunttelTradePointB.Server.Services.Communications
             try
             {
                 if (communicationsMessage.Id == null)
+                {
                     communicationsMessage.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                communicationsMessage.SendDateTime=DateTime.UtcNow;
 
                 var filterCommunicationsMessage = Builders<CommunicationsMessage>.Filter.Eq("_id", new ObjectId(communicationsMessage.Id));
                 var updateCommunicationsMessage = new ReplaceOptions { IsUpsert = true };
