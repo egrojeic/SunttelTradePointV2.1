@@ -159,7 +159,7 @@
                     </label>
                 </div>
                 <div style="position:relative;">
-                    <select class="form-control" @bind="labelStylezebra.Purpose" placeholder="Edit value">
+                    <select class="form-control" @bind="zebraUsedFor" placeholder="Edit value">
                         <option value="@LabelPurpose.Provider">@LabelPurpose.Provider.ToString()</option>
                         <option value="@LabelPurpose.Customer">@LabelPurpose.Customer.ToString()</option>
                         <option value="@LabelPurpose.Inventory">@LabelPurpose.Inventory.ToString()</option>
@@ -172,13 +172,12 @@
                 <h3 class="subTitleDetailForm">@GetName( "ZebraFieldsSpecs", new ZebraLabelSpecs())</h3>
             </div>
             <div class="flex-horizontal-center ">
-                <DataGrid TParameter="LabelPurpose"
-                      parameterList="zebraUsedFors"
+                <DataGrid TParameter="LabelPurposeView"
+                      parameterList="zebraUsedForsView"
                       GridColumnsList="gridColumnListzebraUsedFor"
                       Width="100%">
                 </DataGrid>
             </div>
-
         </div>
     }
 
@@ -665,7 +664,7 @@
         if (value == "zebraUsedFors")
         {
             zebraUsedFors.Add(zebraUsedFor);
-            zebraUsedForsView.Add(new LabelPurposeView{value = GetPupor(zebraUsedFor)});
+            zebraUsedForsView.Add(new LabelPurposeView { value = GetPupor(zebraUsedFor)});
 
         }
 
@@ -855,10 +854,10 @@
 
     public string GetPupor(LabelPurpose value)
     {
-        if (value == LabelPurpose.Provider) return LabelPurpose.Provider.ToString();
-        if (value == LabelPurpose.Customer) return LabelPurpose.Customer.ToString();
-        if (value == LabelPurpose.Inventory) return LabelPurpose.Inventory.ToString();
-        if (value == LabelPurpose.UPC) return LabelPurpose.UPC.ToString();
+        if (value == LabelPurpose.Provider) return "Provider";
+        if (value ==LabelPurpose.Customer) return "Customer";
+        if (value == LabelPurpose.Inventory) return "Inventory";
+        if (value == LabelPurpose.UPC) return "UPC";
         return "";
     }
 
