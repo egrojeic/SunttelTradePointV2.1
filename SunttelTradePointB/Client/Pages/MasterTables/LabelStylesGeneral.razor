@@ -76,7 +76,7 @@ else
         ListGridlabelStyles = new List<GridColumn>
         {
                new GridColumn() { Field=nameof(LabelStyle.Name) ,  HeaderText = @GetName( "Name", new AtomConcept()) , Width="300" },
-                 new GridColumn() { Field=nameof(LabelStyle.Code) ,  HeaderText = @GetName( "Name", new AtomConcept()), Width="80px"  },
+                 new GridColumn() { Field=nameof(LabelStyle.Code) ,  HeaderText = @GetName( "Code", new AtomConcept()), Width="80px"  },
                   new GridColumn() { Field=nameof(LabelStyle.Notes) ,  HeaderText = @GetName( "Notes", new AtomConcept())  },
                    new GridColumn() { Field=nameof(LabelStyle.PDFReportName) ,  HeaderText = @GetName( "PDFReportName", new LabelStyle())  },
                     new GridColumn() { Field=nameof(LabelStyle.Purpose) ,  HeaderText = @GetName( "Purpose", new LabelStyle())  }           
@@ -102,10 +102,9 @@ else
 
     public async void OnContextMenuClick(ContextMenuClickEventArgs<LabelStyle> args)
     {
-        LabelStyle itemBox = null;
-        itemBox = args.RowInfo.RowData;
-       
-        if (args.Item.Id == "Edit")
+      
+        transactItemsService.ConceptLabelStyle = args.RowInfo.RowData;        
+        if (args.Item.Text == "Edit")
         {
             Navigation.NavigateTo($"/LabelStylesConcept/LabelStyles/Edit/{_filterItems}");
         }

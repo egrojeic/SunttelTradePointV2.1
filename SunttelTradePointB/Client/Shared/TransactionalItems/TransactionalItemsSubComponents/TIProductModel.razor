@@ -40,6 +40,7 @@
         if (transactionalService.transactionalItemId != null && transactionalService.transactionalItemId != "")
         {          
             transactionalItemId = transactionalService.transactionalItemId;
+            OnInitializedData();
 
         }
 
@@ -52,6 +53,11 @@
 
     }
 
+
+    public async void OnInitializedData()
+    {
+        ProductModels = await transactionalService.GetSelectorListTransactionalItemModels(transactionalItemId);
+    }
 
 
 
