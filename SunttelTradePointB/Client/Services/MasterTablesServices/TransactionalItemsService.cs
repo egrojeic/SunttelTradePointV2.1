@@ -27,6 +27,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         public TransactionalItemStatus? ConceptStatusSelectedItems { get; set; }
         public TransactionalItemType? ConceptTransactionalItemType { get; set; }
         public PackingSpecs? ConceptTransactionalItemPackingSpecs { get; set; }
+        public TransactionalItemProcessStep? ConceptTransactionalItemProcessStep { get; set; }  
         public TransactionalItemQualityPair? ConceptTransactionalItemQualityPair { get; set; }
         public LabelStyle ConceptLabelStyle { get; set; }
         public enum UploadingFileType
@@ -742,7 +743,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                var list = await _httpClient.GetFromJsonAsync<List<LabelPaper>>($"api/TransactionalItems/GetTransactionalItemDetailsItemCharacteristics?userId={userId}&ipAddress={ipAddress}&transactionalItemId={transactionalItemTypeId}");
+                var list = await _httpClient.GetFromJsonAsync<List<LabelPaper>>($"api/TransactionalItems/GetTransactionalItemDetailsItemCharacteristics?userId={userId}&ipAddress={ipAddress}&transactionalItemId={nameLike}");
                 return list != null ? list : new List<LabelPaper>();
             }
             catch (Exception ex)

@@ -115,6 +115,7 @@
                         <div class="form-group">
                             <div style="display:flex; flex-direction:row;">
                                 <div class="conten-chip margin-left-control">
+                                     <div class="position-input">
                                     <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventClosed="ClosedInputText" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewAddImg">
                                         @{
                                             if (transactItemImages != null)
@@ -127,6 +128,7 @@
 
                                         }
                                     </InputTextSelector>
+                                    </div>
                                 </div>
                                 <div>
                                     @if (transactItemImages == null) transactItemImages = new List<TransactItemImage>();
@@ -199,6 +201,7 @@
                         <label>@(itemComponent != null ? itemComponent.Name : "")</label>
                         <button type="button" @onclick='()=>SetViewElemnt("ItemComponent")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                     </div>
+                     <div class="position-input">
                     <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditItemComponent">
                         @{
                             if (itemComponents != null)
@@ -210,6 +213,7 @@
                             }
                         }
                     </InputTextSelector>
+                    </div>
                 </div>
                 <div>
                     <label>
@@ -222,6 +226,7 @@
                         <label>@(recipeModifier != null ? recipeModifier.Name : "")</label>
                         <button type="button" @onclick='()=>SetViewElemnt("RecipeQualityModifier")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                     </div>
+                    <div class="position-input">
                     <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditItemModifier">
                         @{
                             if (recipeModifiers != null)
@@ -233,6 +238,7 @@
                             }
                         }
                     </InputTextSelector>
+                </div>
                 </div>
 
                 <div><label>@GetName( "Quantity",new MaterialRecipeItem())</label></div>
@@ -319,7 +325,7 @@
                                 <label>@(ConceptMaterialAssembly != null ? ConceptMaterialAssembly.Name : "")</label>
                                 <button type="button" @onclick='()=>SetViewElemnt("MaterialAssembly")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                             </div>
-
+                             <div class="position-input">
                             <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewMaterialAssembly">
                                 @{
                                     if (ConceptMaterialsAssembly != null)
@@ -332,6 +338,7 @@
 
                                 }
                             </InputTextSelector>
+                            </div>
                         </div>
                     </div>
                     <div>

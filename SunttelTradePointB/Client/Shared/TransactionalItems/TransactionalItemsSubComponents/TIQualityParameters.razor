@@ -20,12 +20,14 @@
 {
     <div class="row">
         <div class="col-md-12">
-            <SfGrid @ref="GridQuality" DataSource="@QualityParametersView" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" EnableStickyHeader="true">
+            <SfGrid @ref="GridQuality" DataSource="@QualityParametersView" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" EnableStickyHeader="true"
+                ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader" } })">
                 <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
                 <GridColumns>
                     <GridColumn Field="@nameof(TransactionalItemQualityPairView.Name)" HeaderText="@GetName( "Name", new TransactionalItemQualityPairView())"></GridColumn>
                     <GridColumn Field="@nameof(TransactionalItemQualityPairView.Value)" HeaderText="@GetName( "Value", new TransactionalItemQualityPairView())"></GridColumn>
                 </GridColumns>
+                <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="TransactionalItemQualityPairView"></GridEvents>
             </SfGrid>
         </div>
     </div>
@@ -72,6 +74,23 @@
     {
         return Name != null ? Name : "-";
     }
+
+
+
+    public void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemQualityPairView> args)
+    {
+        TransactionalItemQualityPairView obj = args.RowInfo.RowData;
+        transactionalService.ConceptTransactionalItemQualityPair = qualityParameters.Where(s =>s.Id !=null && s.Id == obj.Id).FirstOrDefault();
+
+        if (args.Item.Text == "Edit" && transactionalService.ConceptTransactionalItemQualityPair != null)
+        {
+
+            Navigation.NavigateTo("/QualityParametersCard/TransactionalItemCard/3/Edit");
+
+        }
+    }
+
+
     protected async Task ConverTo(List<TransactionalItemQualityPair> _qualityParameters)
     {
         QualityParametersView = new();
@@ -80,7 +99,9 @@
             QualityParametersView.Add(new TransactionalItemQualityPairView
                 {
                     Name = Element?.TransactionalItemQuality !=null ? Element.TransactionalItemQuality?.Name:"",
-                    Value = Element?.Value
+                    Value = Element?.Value,
+                    Id = Element.Id,
+                    IdItemQuality = Element?.TransactionalItemQuality != null ? Element?.TransactionalItemQuality.Id:null
                 });
         }
 
@@ -94,14 +115,14 @@
 
     public void Refresh()
     {
-
         GridQuality.Refresh();
     }
 
-    public class TransactionalItemQualityPairView
-    {
+    public class TransactionalItemQualityPairView : TransactionalItemQualityPair
+    {      
         public string Name { get; set; }
-        public string Value { get; set; }
+        public string IdItemQuality { get; set; }
+      
     }
 
     public string GetName(string Name, Object Obj)
