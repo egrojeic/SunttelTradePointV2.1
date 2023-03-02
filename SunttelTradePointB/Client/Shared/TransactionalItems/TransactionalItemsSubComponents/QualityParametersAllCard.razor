@@ -16,7 +16,7 @@
 </PageTitleComponent>
 
 <div id="add-recipe">
-    <div class="flex-verical-center">
+    <div class="flex-verical-center-new">
         @foreach (var qualityPair in transactionalItemQualityPairView)
         {
             <div class="grid-columns-2 box-shadow-mode width-grid-2">
@@ -39,11 +39,13 @@
             </div>
 
         }
-        <div>
-        </div>
-        <div class="flex-horizontal-end">
-            <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-            <button @onclick="Save" class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
+        <div class="grid-columns-2 ">
+            <div>
+            </div>
+            <div class="flex-horizontal-end">
+                <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                <button @onclick="Save" style="display:@(transactionalItemQualityPairView.Count()>0?"block":"none");" class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
+            </div>
         </div>
     </div>
 
@@ -88,26 +90,30 @@
             transactionalItemQualitys = new();
             if (transactionalItems != null)
             {
-                ConceptType type = transactionalItems.TypeOfConcept;
+                ConceptType type = transactionalItems.TypeOfConcept != null ? transactionalItems.TypeOfConcept : null;
                 if (type != null)
                 {
                     var itemTypes = await transactionalService.GetTransactionalItemTypes(type.Name);
                     var resul = itemTypes.Where(s => s.Id == type.Id).FirstOrDefault();
-                    transactionalItemQualitys = resul.QualityParameters;
-                    transactionalItemQualityPairView = new List<TransactionalItemQualityPair>();
-                    foreach (var quality in transactionalItemQualitys)
+                    if (resul != null)
                     {
-                        transactionalItemQualityPairView.Add
-                            (
-                              new TransactionalItemQualityPair
-                                  {
-                                      Value = quality.DefaultValue != null ? quality.DefaultValue : "",
-                                      TransactionalItemQuality = quality,
+                        transactionalItemQualitys = resul.QualityParameters;
+                        transactionalItemQualityPairView = new List<TransactionalItemQualityPair>();
+                        foreach (var quality in transactionalItemQualitys)
+                        {
+                            transactionalItemQualityPairView.Add
+                                (
+                                  new TransactionalItemQualityPair
+                                      {
+                                          Value = quality.DefaultValue != null ? quality.DefaultValue : "",
+                                          TransactionalItemQuality = quality,
 
-                                  }
-                            );
+                                      }
+                                );
 
+                        }
                     }
+
                     StateHasChanged();
                 }
             }
@@ -170,8 +176,7 @@
     }
 
     public async Task Refresh()
-    {
-        //ReferInputTextSelector.Refresh();
+    { 
         StateHasChanged();
     }
 
@@ -199,9 +204,6 @@
 
         if (ModeSearcher == "QualityParameters")
         {
-
-
-
             if (transactionalItemQualitys != null)
             {
                 ParamCountResul = transactionalItemQualitys.Count();

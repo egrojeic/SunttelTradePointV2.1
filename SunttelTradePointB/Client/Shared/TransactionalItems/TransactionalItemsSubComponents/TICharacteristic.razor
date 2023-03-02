@@ -19,39 +19,46 @@
 
 @if (transactionalItemTypeCharacteristics == null) transactionalItemTypeCharacteristics = new();
 
-<DataGrid TParameter="TransactionalItemCharacteristicPair"
+<DataGrid @ref="dataGrid" TParameter="TransactionalItemCharacteristicPairView"
           EventCallbackMenu="OnContextMenuClick"
-          parameterList="transactionalItemTypeCharacteristics"
-          GridColumnsList="gridColumnListCharacteristic"        
+          parameterList="transactionalItemTypeCharacteristicsView"
+          GridColumnsList="gridColumnListCharacteristic"
           Width="100%">
 </DataGrid>
 
 
 @code {
+
     public List<TransactionalItemCharacteristicPair> transactionalItemTypeCharacteristics = new();
     public TransactionalItemCharacteristicPair transactionalItemTypeCharacteristicPair = new();
+    public List<TransactionalItemCharacteristicPairView> transactionalItemTypeCharacteristicsView = new();
     public List<GridColumn> gridColumnListCharacteristic = new();
-
+    DataGrid<TransactionalItemCharacteristicPairView>? dataGrid;
     #region TileName
     public string transactionalItemId { get; set; }
 
     #endregion TitleName
 
     protected override void OnInitialized()
-    {             
+    {
         if (transactionalService.transactionalItemId != null && transactionalService.transactionalItemId != "")
-        {          
+        {
             transactionalItemId = transactionalService.transactionalItemId;
-            OnInitializedCharacterisc();
+
         }
 
         gridColumnListCharacteristic = new List<GridColumn>
         {
-            new GridColumn() { Field = nameof(TransactionalItemTypeCharacteristic.Name), HeaderText = GetName("Name", new TransactionalItemTypeCharacteristic()), Width="300" }
-        };
+            new GridColumn() { Field = nameof(TransactionalItemCharacteristicPairView.Name), HeaderText = GetName("Name", new TransactionalItemCharacteristic()), Width="300" },
+            new GridColumn() { Field = nameof(TransactionalItemCharacteristicPairView.ValuePair), HeaderText = GetName("Name", new TransactionalItemCharacteristicPair()) }
 
+        };
     }
 
+    protected override void OnAfterRender(bool firstRender)
+    {
+        OnInitializedCharacterisc();
+    }
 
 
     protected async void OnInitializedCharacterisc()
@@ -59,19 +66,33 @@
         if (transactionalItemId != null && transactionalItemId != "")
         {
             transactionalItemTypeCharacteristics = await transactionalService.GetCharacteristic(transactionalItemId);
-            StateHasChanged();
+            transactionalItemTypeCharacteristicsView = new();
+            @foreach (var item in transactionalItemTypeCharacteristics)
+            {
+                transactionalItemTypeCharacteristicsView.Add(new TransactionalItemCharacteristicPairView
+                {
+                    IdPair = item.Id,
+                    ValuePair = item.Value,
+                    Name = item.TransactionalItemCharacteristic !=null ?  item.TransactionalItemCharacteristic.Name:""
+                });
+            }
+            if (dataGrid != null)
+            {                       
+                dataGrid.Refresh();
+            }           
 
+            if (dataGrid.parameterList.Count() != transactionalItemTypeCharacteristicsView.Count()) StateHasChanged();
         }
     }
-   
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemCharacteristicPair> args)
+
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemCharacteristicPairView> args)
     {
-        TransactionalItemCharacteristicPair ObjModel = null;
+        TransactionalItemCharacteristicPairView ObjModel = null;
         ObjModel = args.RowInfo.RowData;
-        transactionalItemTypeCharacteristicPair = ObjModel;
+        //transactionalItemTypeCharacteristicPair = ObjModel;
         if (args.Item.Id == "Edit")
         {
-           
+
         }
     }
 
@@ -86,4 +107,12 @@
         Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
     }
+
+
+    public class TransactionalItemCharacteristicPairView : TransactionalItemTypeCharacteristic
+    {
+        public string ValuePair { get; set; }
+        public string IdPair { get; set; }
+    }
+
 }

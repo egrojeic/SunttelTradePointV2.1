@@ -37,7 +37,7 @@
                             {
                                 foreach (var QualityParameter in transactionalItemQualitys)
                                 {
-                                    <option value="@QualityParameter.Name">@QualityParameter.Name</option>
+                                    <option value="@QualityParameter.Id">@QualityParameter.Name</option>
                                 }
                             }
 
@@ -155,6 +155,7 @@
             ClosedInput();
             await Refresh();
         }
+        
 
     }
     protected async void EventSearcherValue(string value)
@@ -167,12 +168,20 @@
             transactionalItemQualitys = new();
             if (transactionalItems != null)
             {
-                ConceptType type = transactionalItems.TypeOfConcept;
+                ConceptType type = transactionalItems.TypeOfConcept != null ? transactionalItems.TypeOfConcept : null ;
                 if (type !=null)
                 {
                     var itemTypes = await transactionalService.GetTransactionalItemTypes(type.Name);
                     var resul = itemTypes.Where(s => s.Id == type.Id).FirstOrDefault();
-                    transactionalItemQualitys = resul.QualityParameters.Where(s=>s.Name.ToLower().Contains(value.ToLower())).ToList();
+                    if (!value.ToLower().Contains("all") && !value.ToLower().Contains("todo"))
+                    {
+                        transactionalItemQualitys = resul.QualityParameters.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+                    }
+                    else
+                    {
+                        transactionalItemQualitys = resul.QualityParameters;
+                    }
+
 
                 }    
             }

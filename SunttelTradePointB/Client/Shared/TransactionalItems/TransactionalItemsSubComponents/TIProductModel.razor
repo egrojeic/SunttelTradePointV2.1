@@ -15,17 +15,17 @@
     </svg>
 </div>
 
-@if(ProductModels==null)ProductModels=new();
-<DataGrid TParameter="ProductModel"
+@if (ProductModels == null) { ProductModels = new(); }
+<DataGrid @ref="dataGrid" TParameter="ProductModel"
           EventCallbackMenu="OnContextMenuClick"
           parameterList="ProductModels"
-          GridColumnsList="gridColumnList"         
+          GridColumnsList="gridColumnList"
           Width="100%">
 </DataGrid>
 
 @code {
     List<ProductModel> ProductModels = new();
-
+    DataGrid<ProductModel>? dataGrid;
     public List<GridColumn> gridColumnList = new();
 
     string transactionalItemId = "";
@@ -34,30 +34,61 @@
     bool status = false;
 
 
+    protected override void OnParametersSet()
+    {
+        StateHasChanged();
+    }
+
     protected override void OnInitialized()
     {     
-
-        if (transactionalService.transactionalItemId != null && transactionalService.transactionalItemId != "")
-        {          
-            transactionalItemId = transactionalService.transactionalItemId;
-            OnInitializedData();
-
-        }
-
         gridColumnList = new List<GridColumn>
         {
-            new GridColumn() { Field = nameof(ProductModel.Name), HeaderText = GetName("Name", new TransactionalItemTypeCharacteristic()), Width="300" }
+            new GridColumn() { Field = nameof(ProductModel.Name), HeaderText = GetName("Name", new AtomConcept()), Width="300" },
+             new GridColumn() { Field = nameof(ProductModel.Code), HeaderText = GetName("Code", new AtomConcept()), Width="90" },
+              new GridColumn() { Field = nameof(ProductModel.Description), HeaderText = GetName("Description", new ProductModel()), Width="100" },
+              new GridColumn() { Field = nameof(ProductModel.Notes), HeaderText = GetName("Notes", new AtomConcept()), Width="100" }
 
         };
 
+        if (transactionalService.transactionalItemId != null && transactionalService.transactionalItemId != "")
+        {
+            transactionalItemId = transactionalService.transactionalItemId;     
+          
 
+        }
+
+
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        OnInitializedData();
+      
     }
 
 
     public async void OnInitializedData()
     {
-        ProductModels = await transactionalService.GetSelectorListTransactionalItemModels(transactionalItemId);
+
+        if (transactionalItemId != null && transactionalItemId != "")
+        {
+            ProductModels = await transactionalService.GetSelectorListTransactionalItemModels(transactionalItemId);     
+            if (dataGrid != null)
+            {
+                dataGrid.Refresh();
+            }
+
+            if (dataGrid.parameterList.Count() != ProductModels.Count()) StateHasChanged();
+        }
+       
     }
+
+
+    
+
+
+    
+
 
 
 
