@@ -1,0 +1,128 @@
+﻿@page "/PaperConcept/{Page}/{Mode}/{filterItems}"
+@page "/PaperConcept/{Page}/{Mode}"
+
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Buttons
+@inject NavigationManager Navigation
+@inject TransactionalItemsService transactionalService;
+
+@if (@viewMsg)
+{
+    <MessageSaveComponent isVisible="viewMsg" message="@msg">
+    </MessageSaveComponent>
+}
+
+<PageTitleComponent Title="@GetName("Paper", new LabelStyle())" IconName="paper.svg"
+                    Description="@($"Here you can add {GetName("Paper", new LabelStyle()).ToLower()} ")">
+</PageTitleComponent>
+
+<div class="flex-horizontal-center">    
+    <div class="grid-columns-2 box-shadow-mode">
+        <div><label><strong class="c-red">*</strong>@GetName( "Name", new AtomConcept())</label></div>
+        <div><input @bind-value="labelPaper.Name" class="form-control" placeholder="Edit value" /></div>
+        <div><label><strong class="c-red">*</strong>@GetName( "Code", new AtomConcept())</label></div>
+        <div><input @bind-value="labelPaper.Code" class="form-control" placeholder="Edit value" /></div>
+        <div><label><strong class="c-red">*</strong>@GetName( "Notes", new AtomConcept())</label></div>
+        <div><input @bind-value="labelPaper.Notes" class="form-control" placeholder="Edit value" /></div>
+        <div><label><strong class="c-red">*</strong>@GetName( "Width", new LabelPaper())</label></div>
+        <div><input @bind-value="labelPaper.Width" class="form-control" placeholder="Edit value" /></div>
+        <div><label><strong class="c-red">*</strong>@GetName( "Height", new LabelPaper())</label></div>
+        <div><input @bind-value="labelPaper.Height" class="form-control" placeholder="Edit value" /></div>
+
+        <div></div>
+        <div class="flex-horizontal-end">
+            <button @onclick='()=>Closed("control")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+            <button @onclick='Save' class="size-btn color-btn "><i class="fa-solid fa-floppy-disk"></i></button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Page { get; set; } = "";
+    [Parameter]
+    public string Mode { get; set; } = "Add";
+    [Parameter]
+    public string filterItems { get; set; } = "";
+    public bool modeEdit = true, viewMsg = false;
+    public string msg = "", pageView = "";
+    int status = 1;
+
+    LabelPaper labelPaper = new();
+
+    protected override void OnInitialized()
+    {
+        if (Mode == "Edit")
+        {
+
+            if (transactionalService?.ConceptStatusSelectedItems != null)
+            {
+
+            }
+            else
+            {
+                Closed("control");
+            }
+
+        }
+        if (Mode == "Add")
+        {
+
+        }
+        base.OnInitialized();
+    }
+
+
+
+    public async void Save()
+    {
+        if (labelPaper !=null)
+        {
+            msg = Validate();
+            if (msg=="")
+            {
+                var resul = await transactionalService.SaveConceptPaper(labelPaper);
+
+                if (!resul) Msg("Pendiente Api", 1);
+                if (resul) Msg("Saved", 1);
+            }
+            else
+            {
+                Msg(msg, 0);
+            }
+
+        }       
+
+    }
+
+    string Validate()
+    {
+        string msg = "";
+        if (labelPaper.Name != null) msg = " Name ";
+        if (labelPaper.Height != null) msg = " Height ";
+        if (labelPaper.Width != null) msg = " Width ";
+        if (msg != "") msg = " Required : " + msg;
+        return msg;
+    }
+
+
+
+    private void Msg(string? Msg, int _status)
+    {
+        msg = Msg;
+        viewMsg = true;
+        status = _status;
+        StateHasChanged();
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    public void Closed(string value)
+    {
+        if (value == "control") Navigation.NavigateTo($"/{Page}/{filterItems}");
+    }
+}

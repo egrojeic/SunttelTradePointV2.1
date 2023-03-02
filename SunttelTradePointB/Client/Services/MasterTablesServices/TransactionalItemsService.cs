@@ -735,6 +735,45 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
+        //---
+        public async Task<List<LabelPaper>> GetConceptPapers(string? nameLike = null)
+        {
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+                var list = await _httpClient.GetFromJsonAsync<List<LabelPaper>>($"api/TransactionalItems/GetTransactionalItemDetailsItemCharacteristics?userId={userId}&ipAddress={ipAddress}&transactionalItemId={transactionalItemTypeId}");
+                return list != null ? list : new List<LabelPaper>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+
+                return null;
+
+            }
+
+        }
+
+        //---
+        public async Task<LabelPaper> GetConceptPaperId(string? labelPaperId = null)
+        {
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+                var list = await _httpClient.GetFromJsonAsync<LabelPaper>($"api/TransactionalItems/GetTransactionalItemDetailsItemCharacteristics?userId={userId}&ipAddress={ipAddress}&transactionalItemId={labelPaperId}");
+                return list != null ? list : new LabelPaper();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+
+                return null;
+
+            }
+
+        }
 
 
         public async Task<bool> SaveProductPackingSpec(string transactionalItemId, PackingSpecs packingSpecs)
@@ -965,6 +1004,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+
         public async Task<bool> SaveStatus(TransactionalItemStatus transactionalItemStatus)
         {
             string userId = UIClientGlobalVariables.UserId;
@@ -973,6 +1013,25 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             try
             {
                 var resul = await _httpClient.PostAsJsonAsync<TransactionalItemStatus>($"api/TransactionalItemsRelatedConcepts/SaveStatus?userId={userId}&ipAddress={ipAddress}", transactionalItemStatus);
+                return resul.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+
+        }
+
+        //---
+        public async Task<bool> SaveConceptPaper(LabelPaper labelPaper)
+        {
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            try
+            {
+                var resul = await _httpClient.PostAsJsonAsync<LabelPaper>($"api/TransactionalItemsRelatedConcepts/SaveStatus?userId={userId}&ipAddress={ipAddress}", labelPaper);
                 return resul.IsSuccessStatusCode;
             }
             catch (Exception ex)
