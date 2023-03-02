@@ -214,5 +214,34 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         Task<(bool IsSuccess, List<LabelStyle>? labelStyles, string? ErrorDescription)> GetLabelStyles(string userId, string ipAddress, string? filterString);
 
 
+        /// <summary>
+        /// Retrieves the list of  Label Papers
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="filterString"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<LabelPaper>?  labelPapers, string? ErrorDescription)> GetLabelPapers(string userId, string ipAddress, string? filterString);
+
+        /// <summary>
+        /// Retrieves a particular Label Paper
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="labelPaperId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, LabelPaper? labelPaper, string? ErrorDescription)> GetLabelPaper(string userId, string ipAddress, string? labelPaperId);
+
+
+        /// <summary>
+        /// Saves (INSERT/UPDATE)  label paper
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="labelPaper"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, LabelPaper? labelPaper, string? ErrorDescription)> SaveLabelPaper(string userId, string ipAddress, LabelPaper labelPaper);
+
+
     }
 }

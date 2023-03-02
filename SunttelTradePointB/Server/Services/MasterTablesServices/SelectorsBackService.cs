@@ -36,6 +36,10 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         IMongoCollection<AssemblyType> _assemblyTypes;
         IMongoCollection<TransactionalItem> _transactionalItems;
 
+        IMongoCollection<LabelStyle> _labelStyle;
+        IMongoCollection<LabelPaper> _LabelPaper;
+
+
         /// <summary>
         /// Service class initialize
         /// </summary>
@@ -61,6 +65,13 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             _entityTypes = mongoDatabase.GetCollection<Shared.Common.EntityType>("EntityTypes");
             _assemblyTypes = mongoDatabase.GetCollection<AssemblyType>("AssemblyTypes");
             _transactionalItems = mongoDatabase.GetCollection<TransactionalItem>("TransactionalItems");
+
+
+            _labelStyle = mongoDatabase.GetCollection<LabelStyle>("LabelStyles");
+            _LabelPaper = mongoDatabase.GetCollection<LabelPaper>("LabelPaperTypes");
+
+
+
         }
 
         /// <summary>
@@ -732,6 +743,36 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 );
 
                 List<AtomConcept> results = await _assemblyTypes.Aggregate<AtomConcept>(pipeline).ToListAsync();
+
+                return (true, results, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves a selector list for paper label types
+        /// </summary>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<AtomConcept>? labelPapers, string? ErrorDescription)> GetSelectorListLabelPaper()
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument{
+                        { "$project",
+                            new BsonDocument{
+                                { "Name", 1 }
+                            }
+                        }
+                    }
+                );
+
+                List<AtomConcept> results = await _LabelPaper.Aggregate<AtomConcept>(pipeline).ToListAsync();
 
                 return (true, results, null);
             }

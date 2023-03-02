@@ -24,6 +24,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         IMongoCollection<ConceptGroup> _transactionalItemGroups;
         IMongoCollection<AssemblyType> _assemblyType;
         IMongoCollection<LabelStyle> _labelStyle;
+        IMongoCollection<LabelPaper> _LabelPaper;
 
         /// <summary>
         /// Constructor of the service which rretrieves the connection string
@@ -45,6 +46,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             _transactionalItemGroups = mongoDatabase.GetCollection<ConceptGroup>("TransactionalItemsGroups");
             _assemblyType = mongoDatabase.GetCollection<AssemblyType>("AssemblyTypes");
             _labelStyle = mongoDatabase.GetCollection<LabelStyle>("LabelStyles");
+            _LabelPaper = mongoDatabase.GetCollection<LabelPaper>("LabelPaperTypes");
         }
 
         /// <summary>
@@ -852,6 +854,70 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         return (true, labelStyles, null);
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Retrieves a list of label papers
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="filterString"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<LabelPaper>? labelPapers, string? ErrorDescription)> GetLabelPapers(string userId, string ipAddress, string? filterString)
+        {
+            try
+            {
+                var labelPapers = await _LabelPaper.Find<LabelPaper>(new BsonDocument()).ToListAsync();
+
+                if (labelPapers == null || labelPapers.Count == 0)
+                {
+                    return (false, null, "Unpopulated Label Papers");
+                }
+                else
+                {
+                    return (true, labelPapers, null);
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        public Task<(bool IsSuccess, LabelPaper? labelPaper, string? ErrorDescription)> GetLabelPaper(string userId, string ipAddress, string? labelPaperId)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Save Laabel Paper
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="labelPaper"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, LabelPaper? labelPaper, string? ErrorDescription)> SaveLabelPaper(string userId, string ipAddress, LabelPaper labelPaper)
+        {
+            try
+            {
+                if (labelPaper.Id == null)
+                {
+                    labelPaper.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterBox = Builders<LabelPaper>.Filter.Eq("_id", new ObjectId(labelPaper.Id));
+
+                var updateBoxOptions = new ReplaceOptions { IsUpsert = true };
+
+                var resultBox = await _LabelPaper.ReplaceOneAsync(filterBox, labelPaper, updateBoxOptions);
+
+                return (true, labelPaper, null);
             }
             catch (Exception e)
             {

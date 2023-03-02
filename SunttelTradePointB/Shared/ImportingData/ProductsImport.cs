@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 using System.Xml.Linq;
 using System.Reflection.Emit;
+using MongoDB.Bson;
 
 namespace SunttelTradePointB.Shared.ImportingData
 {
@@ -235,4 +236,14 @@ namespace SunttelTradePointB.Shared.ImportingData
         public string Orden { get; set; }
 
     }
+
+
+    public class LabelsPaperImports
+    {
+        public string LegacyIdObjectId {get;set;}
+        public string LegacyId {get;set;}
+        public string Nombe { get; set; }
+
+    }
+
 }

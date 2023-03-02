@@ -226,7 +226,6 @@
                     <button @onclick='()=>OpenAdd("ZebraLabelSettings")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
                     <button @onclick='()=>Add("ZebraLabelSpecs")' class="size-btn color-btn "><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                 </div>
-
             </div>
 
         </div>
@@ -283,6 +282,29 @@
                     <option value="@LabelPurpose.UPC">@LabelPurpose.UPC.ToString()</option>
                 </select>
             </div>
+            <div>
+                <label>@GetName( "Paper", new LabelStyle())</label>
+            </div>
+            <div style="position:relative;">
+                <div class="item-edit form-control">
+                    <label>@(labelPaper.Name != null ? labelPaper.Name : "")</label>
+                    <button @onclick='()=>SetViewElemnt("Paper")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                </div>
+                <div class="position-input">
+                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" ViewSelect="ViewPopupCount" EventClosed="ClosedInput" ViewControl="inputPaperView">
+                        @{
+                            if (labelPapers != null)
+                            {
+                                foreach (var Obj in labelPapers)
+                                {
+                                    <option value="@Obj.Name">@Obj.Name</option>
+                                }
+                            }
+
+                        }
+                    </InputTextSelector>
+                </div>
+            </div>
 
         </div>
 
@@ -294,34 +316,10 @@
             <TabItems>
                 <TabItem>
                     <ChildContent>
-                        <TabHeader Text="@GetName( "Paper", new LabelStyle())"></TabHeader>
-                    </ChildContent>
-                    <ContentTemplate>
-                        <div class="flex-horizontal-center">
-                            <div class="detailsTitleContainer">
-                                <h3 class="subTitleDetailForm">@GetName( "Paper", new LabelStyle())</h3>
-                            </div>
-                            <div class="grid-columns-2 box-shadow-mode">
-                                <div><label><strong class="c-red">*</strong>@GetName( "Name", new AtomConcept())</label></div>
-                                <div><input @bind-value="labelPaper.Name" class="form-control" placeholder="Edit value" /></div>
-                                <div><label><strong class="c-red">*</strong>@GetName( "Code", new AtomConcept())</label></div>
-                                <div><input @bind-value="labelPaper.Code" class="form-control" placeholder="Edit value" /></div>
-                                <div><label><strong class="c-red">*</strong>@GetName( "Notes", new AtomConcept())</label></div>
-                                <div><input @bind-value="labelPaper.Notes" class="form-control" placeholder="Edit value" /></div>
-                                <div><label><strong class="c-red">*</strong>@GetName( "Width", new LabelPaper())</label></div>
-                                <div><input @bind-value="labelPaper.Width" class="form-control" placeholder="Edit value" /></div>
-                                <div><label><strong class="c-red">*</strong>@GetName( "Height", new LabelPaper())</label></div>
-                                <div><input @bind-value="labelPaper.Height" class="form-control" placeholder="Edit value" /></div>                                                              
-                            </div>
-                        </div>
-                    </ContentTemplate>
-                </TabItem>
-                <TabItem>
-                    <ChildContent>
                         <TabHeader Text="@GetName( "DataMaxLabelSettings", new LabelStyle())"></TabHeader>
                     </ChildContent>
                     <ContentTemplate>
-                        <div class="flex-verical-start">                          
+                        <div class="flex-verical-start">
                             <div class="grid-columns-header ">
                                 <div><label><strong class="c-red">*</strong> @GetName( "ColumnSeparatorSpace", new DataMaxLabelSpecs())</label> </div>
                                 <div><input @bind-value="dataMaxLabelSettings.ColumnSeparatorSpace" class="form-control" placeholder="Edit value" /></div>
@@ -351,7 +349,7 @@
                     </ChildContent>
                     <ContentTemplate>
 
-                        <div class="flex-verical-start">                          
+                        <div class="flex-verical-start">
                             <div class="grid-columns-header ">
                                 <div><label><strong class="c-red">*</strong> @GetName( "ColumnSeparatorSpace", new DataMaxLabelSpecs())</label> </div>
                                 <div><input @bind-value="zebraLabelSettings.ColumnSeparatorSpace" class="form-control" placeholder="Edit value" /></div>
@@ -394,11 +392,14 @@
     public string ModeSearcher = "";
     int status = 0;
     string nameString = "";
+    string SearcherValue = "";
+    bool inputPaperView = false;
+
     InputTextSelector? ReferInputTextSelector;
 
     #region Tag 1
     LabelStyle labelStyle = new();
-
+    List<LabelPaper> labelPapers = new();
     LabelPaper labelPaper = new();
     List<GridColumn> gridColumnListDataMaxLabelLineSpec = new();
 
@@ -672,7 +673,7 @@
     public async void OnContextMenuClick(ContextMenuClickEventArgs<ZebraLabelLineSpecView> args)
     {
         ZebraLabelLineSpecView dataMaxLabelSpecs = args.RowInfo.RowData;
-        zebraLabelLineSpec = zebraLabelLineSpecs.Where(s => s.Id != null && s.Id == dataMaxLabelSpecs.Id).FirstOrDefault();      
+        zebraLabelLineSpec = zebraLabelLineSpecs.Where(s => s.Id != null && s.Id == dataMaxLabelSpecs.Id).FirstOrDefault();
 
         if (args.Item.Text == "Edit" && zebraLabelLineSpec != null)
         {
@@ -689,9 +690,9 @@
     public async void OnContextMenuClick(ContextMenuClickEventArgs<DataMaxLabelLineSpecView> args)
     {
         DataMaxLabelLineSpecView dataMaxLabelSpecs = args.RowInfo.RowData;
-        dataMaxLabelLineSpec = dataMaxLabelLineSpecs.Where(s =>s.Id !=null && s.Id == dataMaxLabelSpecs.Id).FirstOrDefault();
-       
-        if (args.Item.Text == "Edit" && dataMaxLabelLineSpec !=null)
+        dataMaxLabelLineSpec = dataMaxLabelLineSpecs.Where(s => s.Id != null && s.Id == dataMaxLabelSpecs.Id).FirstOrDefault();
+
+        if (args.Item.Text == "Edit" && dataMaxLabelLineSpec != null)
         {
             dataMaxFieldInLabel = dataMaxLabelLineSpec.FieldInLabel != null ? dataMaxLabelLineSpec.FieldInLabel : new();
             ClosedAdd("DataMaxLabelLineSpec");
@@ -710,9 +711,29 @@
         if (value == "control") Navigation.NavigateTo($"/{Page}/{filterItems}");
     }
 
+    public void ClosedInput()
+    {
+        ViewPopupCount = false;
+
+        inputPaperView = false;
+    }
+
 
     protected async void EventIdSelection(string SelectionId)
     {
+        if (SelectionId != null || SelectionId != "")
+        {
+            if (SearcherValue == "Paper")
+            {
+                labelPaper = await transactionalService.GetConceptPaperId(SelectionId);
+                ParamCountResul = labelPapers.Count();
+            }
+
+        }
+        else
+        {
+            Msg("invalid id", 1);
+        }
 
         ReferInputTextSelector.Refresh();
         StateHasChanged();
@@ -720,14 +741,26 @@
     }
     protected async void EventSearcherValue(string value)
     {
-        ViewPopupCount = true;
+        if (SearcherValue != "")
+        {
+            if (SearcherValue == "Paper")
+            {
+                labelPapers = await transactionalService.GetConceptPapers(value);
+                ParamCountResul = labelPapers.Count();
+            }
+        }
+        else
+        {
+            ClosedInput();
+        }
 
+        ViewPopupCount = ParamCountResul > 0;
         StateHasChanged();
     }
     public void SetViewElemnt(string Element)
     {
-        ModeSearcher = Element;
-        if (Element == "LinkedTransactionalItem") { }
+        SearcherValue = Element;
+        if (Element == "Paper") { inputPaperView = true; }
 
 
     }
@@ -832,7 +865,7 @@
     }
 
 
-    
+
 
     public class DataMaxLabelLineSpecView : DataMaxLabelLineSpec
     {

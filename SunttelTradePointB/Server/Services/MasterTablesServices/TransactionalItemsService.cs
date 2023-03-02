@@ -521,6 +521,13 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 }
 
 
+                if(transactionalItemProcessStep.TransactionalItemProcessTags !=null)
+                    transactionalItemProcessStep.TransactionalItemProcessTags.ForEach(t=> { if (t.Id == null) t.Id = ObjectId.GenerateNewId().ToString(); });
+
+                if (transactionalItemProcessStep.CostExceptionsByQuantity != null)
+                    transactionalItemProcessStep.CostExceptionsByQuantity.ForEach(t => { if (t.Id == null) t.Id = ObjectId.GenerateNewId().ToString(); });
+
+
                 var filterPrev = Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId);
                 var resultPrev = await _TransactionalItemsCollection.Find(filterPrev).FirstOrDefaultAsync();
 

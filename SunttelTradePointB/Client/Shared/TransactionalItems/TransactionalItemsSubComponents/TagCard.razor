@@ -1,9 +1,17 @@
-﻿@page "/TagCard"
+﻿@page "/TagCard/{Page}"
+@page "/TagCard/{Page}/{SubPage}/{Mode}"
 @using Syncfusion.Blazor.Popups
 @using SunttelTradePointB.Shared.Common
 @inject TransactionalItemsService transactionalService;
 @inject NavigationManager Navigation
 
+
+
+@if (@viewMsg)
+{
+    <MessageSaveComponent isVisible="viewMsg" message="@msg">
+    </MessageSaveComponent>
+}
 <PageTitleComponent Title="@Title" IconName=""
                     Description="Here you can add tags">
 </PageTitleComponent>
@@ -30,10 +38,15 @@
 
 
 @code {
-
+    [Parameter]
+    public string Mode { get; set; }
+    [Parameter]
+    public string Page { get; set; }
+    [Parameter]
+    public string SubPage { get; set; }
     [Parameter]
     public List<TransactionalItemTag> ParameterList { get; set; }
-   
+
     List<TransactionalItemTag> ParameterListView = new List<TransactionalItemTag>();
     TransactionalItemTag Tag = new TransactionalItemTag();
 
@@ -42,6 +55,9 @@
     public string SearcherValueMode = "";
     public int ParamCountResul = 0;
     public bool PopupViewAddTag = false;
+    bool viewMsg = false;
+    string msg = "";
+    int status = 0;
     InputTextSelector? ReferInputTextSelector;
 
     #region TileName
@@ -57,6 +73,15 @@
         {
             transactionalItemId = transactionalService.transactionalItemId ;
         }
+
+        if (Mode=="Edit")
+        {
+            if (transactionalService.ConceptTransactionalItemTag!=null)
+            {
+                Tag = transactionalService.ConceptTransactionalItemTag;
+            }
+        }
+
         return base.OnInitializedAsync();
     }
 
@@ -76,15 +101,16 @@
             var resul = await transactionalService.SaveTags(transactionalItemId, Tag);
 
             if (transactionalService.TransactionalItems != null && resul)
+            {         
+                MsgOpen("Saved",1);
+            }
+            else
             {
-                if (transactionalService.TransactionalItems.TransactionalItemTags == null)
-                {
-                    transactionalService.TransactionalItems.TransactionalItemTags = new List<TransactionalItemTag>();
-                }
-                transactionalService.TransactionalItems.TransactionalItemTags.Add(Tag);
+                MsgOpen("Saved", 1);
+                
             }
         }
-        Closed("control");
+       
     }
 
 
@@ -93,6 +119,11 @@
         if (Element == "control") Navigation.NavigateTo("/TransactionalItemCard/4/Edit");
         StateHasChanged();
     }
-
+    public void MsgOpen(string _msg, int _status)
+    {
+        viewMsg = true;
+        msg = _msg;
+        status = _status;
+    }
 
 }

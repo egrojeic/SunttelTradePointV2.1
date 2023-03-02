@@ -1,4 +1,5 @@
-﻿@page "/ProductionSpecsCard"
+﻿@page "/ProductionSpecsCard/{Page}"
+@page "/ProductionSpecsCard/{Page}/{SubPage}/{Mode}"
 
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.Navigations
@@ -155,6 +156,12 @@
 
 
 @code {
+    [Parameter]
+    public string Mode { get; set; } = "Add";
+    [Parameter]
+    public string Page { get; set; }
+    [Parameter]
+    public string SubPage { get; set; }
 
     TransactionalItemProcessStep _TransactionalItemProcessStep = new TransactionalItemProcessStep();
     List<TransactionalItemTag> TransactionalItemTagList = new List<TransactionalItemTag>();
@@ -197,12 +204,33 @@
             transactionalItemId = transactionalService.transactionalItemId;
         }
 
+        if (Mode == "Edit")
+        {
+            if (transactionalService.ConceptTransactionalItemProcessStep != null)
+            {
+                _TransactionalItemProcessStep = transactionalService.ConceptTransactionalItemProcessStep;
+
+                TransactionalItemTagList = _TransactionalItemProcessStep.TransactionalItemProcessTags != null ? _TransactionalItemProcessStep.TransactionalItemProcessTags : new();
+            }
+            else
+            {
+                Closed("control");
+            }
+        }
+        if (Mode == "Add")
+        {
+            _TransactionalItemProcessStep = new();
+
+        }
+
         gridColumnList = new List<GridColumn>
     {
     new GridColumn() { Field = nameof(TransactionalItemTag.Key), HeaderText = GetName("Name", new TransactionalItemTag())  },
     new GridColumn() { Field = nameof(TransactionalItemTag.Value), HeaderText = GetName("Code", new TransactionalItemTag())  }
 
     };
+
+
 
     }
 
@@ -254,7 +282,13 @@
 
     public async Task Closed(string Element)
     {
-        if (Element == "control") Navigation.NavigateTo("/TransactionalItemCard/1/Edit");
+        if (Element == "control") {
+            if(SubPage!=null && SubPage != "")Navigation.NavigateTo($"/{Page}/{SubPage}/{Mode}");
+        }
+        else
+        {
+            Navigation.NavigateTo($"/{Page}");
+        }
         StateHasChanged();
     }
 
@@ -310,6 +344,7 @@
 
             if (transactionalItemId != "" && transactionalItemId != null)
             {
+                
                 var resul = await transactionalService.SaveProductionSpecs(transactionalItemId, _TransactionalItemProcessStep);
                 if (resul )
                 {
@@ -330,7 +365,6 @@
                 else
                 {
                     OpenAlert("No saved", 1);
-
                 }
             }
             else { OpenAlert("No saved", 0); };

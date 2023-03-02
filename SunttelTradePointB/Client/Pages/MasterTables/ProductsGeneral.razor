@@ -9,6 +9,7 @@
 @inject NavigationManager Navigation
 
 
+
 <PageTitleComponent Title="Products, Services & Materials" IconName="goods.png"
                     Description="Here you'll find every product or service">
 </PageTitleComponent>
@@ -137,9 +138,9 @@
     {
         TransactionalItem argObj = (TransactionalItem)args.Value;
         OpenOrder(argObj);
-
+        transactItemsService.transactionalItemId = argObj.Id;
         Console.WriteLine($"Menu item with Value={argObj.Name} clicked");
-        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        if (!args.Value.Equals(3) && !args.Value.Equals(4) && transactItemsService.transactionalItemId!=null)
         {
             ContextMenuService.Close();
         }

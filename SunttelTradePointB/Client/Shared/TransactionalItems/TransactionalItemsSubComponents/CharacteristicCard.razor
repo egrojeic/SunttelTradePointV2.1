@@ -1,4 +1,5 @@
-﻿@page "/CharacteristicCard"
+﻿@page "/CharacteristicCard/{Page}"
+@page "/CharacteristicCard/{Page}/{SubPage}/{Mode}"
 @using Syncfusion.Blazor.Popups
 @using SunttelTradePointB.Shared.Common
 @inject NavigationManager Navigation
@@ -37,7 +38,7 @@
                             {
                                 foreach (var Obj in transactionalItemTypeCharacteristics)
                                 {
-                                    <option value="@Obj.Name">@Obj.Name</option>
+                                    <option value="@Obj.Id">@Obj.Name</option>
                                 }
                             }
 
@@ -46,7 +47,14 @@
                 </div>
             </div>
             <div><label> @GetName("Value", new TransactionalItemCharacteristicPair()) </label></div>
-            <div><input @bind="transactionalItemCharacteristicPair.Value"  class="form-control" style="border-color:gray;" required /></div>
+            <div>
+                <select @bind="transactionalItemCharacteristicPair.Value" class="form-control">
+                    @foreach (var item in possibleValues)
+                    {
+                        <option value="@item.Name">@item.Name</option>
+                    }
+                </select>
+            </div>
             <div>
             </div>
             <div class="flex-horizontal-end">
@@ -60,11 +68,20 @@
 
 
 @code {
+    [Parameter]
+    public string Mode { get; set; }
+    [Parameter]
+    public string Page { get; set; }
+    [Parameter]
+    public string SubPage { get; set; }
+
+
     public List<TransactionalItemCharacteristicPair> transactionalItemCharacteristicPairs = new();
     public TransactionalItemCharacteristicPair transactionalItemCharacteristicPair = new();
     List<TransactionalItemTypeCharacteristic> transactionalItemTypeCharacteristics = new();
     TransactionalItemTypeCharacteristic transactionalItemTypeCharacteristic = new();
     InputTextSelector? ReferInputTextSelector;
+    public List<TransactionalItemCharacteristic> possibleValues = new();
 
     bool viewMsg = false;
     string msg = "";
@@ -87,6 +104,25 @@
         {
             _transactionalItemId = transactionalService.transactionalItemId != null ? transactionalService.transactionalItemId : "";
         }
+
+        if (Mode=="Edit")
+        {
+            if (transactionalService.ConcepttransactionalItemCharacteristicPair!=null)
+            {
+                var item = transactionalService.ConcepttransactionalItemCharacteristicPair;
+                if (item != null)
+                {
+                    transactionalItemTypeCharacteristic = item.TransactionalItemCharacteristic;
+                    transactionalItemCharacteristicPair.Value = item.Value;
+                    string id = item.TransactionalItemCharacteristic.Id != null ? item.TransactionalItemCharacteristic.Id:"";
+                    ModeSearcher = "TransactionalItemTypeCharacteristic";
+                    transactionalItemCharacteristicPairs = await transactionalService.GetCharacteristic(_transactionalItemId);
+                    EventIdSelection(id);
+                }               
+
+            }
+        }
+
     }
 
     private async void Save()
@@ -95,7 +131,7 @@
         var resul = await transactionalService.SaveCharacteristics(_transactionalItemId, transactionalItemCharacteristicPair);
         if (resul)
         {
-            MsgOpen("Saved",1);
+            MsgOpen("Saved", 1);
             StateHasChanged();
         }
 
@@ -112,14 +148,20 @@
         if (Element == "control") Navigation.NavigateTo("/TransactionalItemCard/5/Edit");
     }
 
-    protected async void EventIdSelection(string filter)
-    {
-        //transactionalItemTypeCharacteristics = await transactionalService.GetTransactionalItemDetailsQualityParameters();
-        transactionalItemTypeCharacteristic = transactionalItemTypeCharacteristics.Where(c => c.Name == filter || c.Id == filter).FirstOrDefault();
+    protected async void EventIdSelection(string SelectedId)
+    {       
+        transactionalItemTypeCharacteristic = transactionalItemTypeCharacteristics.Where(c => c.Name == SelectedId || c.Id == SelectedId).FirstOrDefault();
         if (transactionalItemTypeCharacteristic == null) transactionalItemTypeCharacteristic = new();
         ParamCountResul = 0;
         CharacteristicControlInput = false;
         ViewPopupCount = false;
+
+        if (transactionalItemTypeCharacteristics != null)
+        {
+            var characteristic = transactionalItemTypeCharacteristics.Where(s => s.Id != null && s.Id.Trim() == SelectedId.Trim()).FirstOrDefault();
+            if (characteristic != null) possibleValues = characteristic.PossibleValues != null ? characteristic.PossibleValues : new();
+            StateHasChanged();
+        }
 
         await Refresh();
     }
@@ -135,21 +177,26 @@
             transactionalItemTypeCharacteristics = new();
             if (transactionalItems != null)
             {
-                ConceptType type = transactionalItems.TypeOfConcept;
+                ConceptType type = transactionalItems.TypeOfConcept != null ? transactionalItems.TypeOfConcept : null;
                 if (type != null)
                 {
                     var itemTypes = await transactionalService.GetTransactionalItemTypes(type.Name);
                     var resul = itemTypes.Where(s => s.Id == type.Id).FirstOrDefault();
-                    transactionalItemTypeCharacteristics = resul.TransactionalItemTypeCharacteristics.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList(); ;
-
+                    if (!value.ToLower().Contains("all") && !value.ToLower().Contains("todo"))
+                    {
+                        transactionalItemTypeCharacteristics = resul.TransactionalItemTypeCharacteristics.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+                    }
+                    else
+                    {
+                        transactionalItemTypeCharacteristics = resul.TransactionalItemTypeCharacteristics;
+                    }
                 }
             }
 
-          
+
             if (transactionalItemTypeCharacteristics != null)
-            {
-                transactionalItemTypeCharacteristics = transactionalItemTypeCharacteristics.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
-           
+            {               
+
                 ParamCountResul = transactionalItemTypeCharacteristics.Count();
                 ViewPopupCount = ParamCountResul > 0;
             }

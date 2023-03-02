@@ -18,7 +18,7 @@
         <SfGrid @ref="GridProductSpecs" DataSource="@ProductionSpecsView" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" EnableStickyHeader="true"
                 ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader" } })">
             <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
-            <GridColumns>                
+            <GridColumns>
                 <GridColumn Field="@nameof(TransactionalItemProcessStep.Name)" HeaderText="@Name" Width="110"> </GridColumn>
                 <GridColumn Field="@nameof(TransactionalItemProcessStep.GeneralInstructions)" HeaderText="@GeneralInstructions" Width="110"> </GridColumn>
                 <GridColumn Field="@nameof(TransactionalItemProcessStep.Cost)" HeaderText="@Cost" Width="110"> </GridColumn>
@@ -48,7 +48,7 @@
     #endregion TitleName
 
     protected override void OnInitialized()
-    {       
+    {
         InitializedUICommonFunctions();
         if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
         {
@@ -59,7 +59,7 @@
     protected async void OnInitializedProcessStep()
     {
         ProductionSpecsView = await transactionalService.GetTransactionalItemDetailsProductionSpecs(transactionalItemId);
-        if (ProductionSpecsView!=null)
+        if (ProductionSpecsView != null)
         {
             GridProductSpecs.DataSource = ProductionSpecsView;
             await GridProductSpecs.Refresh();
@@ -95,36 +95,34 @@
     {
         try
         {
-            ProductionSpecsView.Add(Obj);           
+            ProductionSpecsView.Add(Obj);
             Refresh();
         }
         catch (Exception e)
-        {            
+        {
             throw;
         }
-      
+
 
     }
 
     public void Refresh()
-    {       
+    {
         GridProductSpecs.Refresh();
 
     }
     public void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemProcessStep> args)
     {
-        TransactionalItemProcessStep _PackingSpecs = new();
-        _PackingSpecs = args.RowInfo.RowData;
+        transactionalService.ConceptTransactionalItemProcessStep = args.RowInfo.RowData;
 
-        if (args.Item.Text == "Edit")
-        {           
-            if (transactionalService.ConceptTransactionalItemPackingSpecs != null)
-            {
-                Navigation.NavigateTo("/ProductionSpecsCard/Edit");
-            }
+        if (args.Item.Text == "Edit" && transactionalService.ConceptTransactionalItemProcessStep !=null)
+        {
+           
+            Navigation.NavigateTo("/ProductionSpecsCard/TransactionalItemCard/1/Edit");
+           
         }
     }
 
-   
+
 
 }

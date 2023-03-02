@@ -87,7 +87,7 @@
                         <label>@(typeOfConcept != null ? typeOfConcept.Name : "")</label>
                         <button type="button" @onclick='()=>SetViewElemnt("TypeOfConcept")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                     </div>
-
+                    <div class="position-input">
                     <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventClosed="ClosedInputText" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewTypeProduct">
                         @{
                             if (typeOfConcepts != null)
@@ -99,6 +99,7 @@
                             }
                         }
                     </InputTextSelector>
+                    </div>
                 </div>
             </div>
 

@@ -537,5 +537,52 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
                 return NotFound(response.ErrorDescription);
             }
         }
+
+
+        /// <summary>
+        /// Retrieves the a table with label paper styles
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="filterString"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetLabelPapers")]
+        public async Task<IActionResult> GetLabelPapers(string userId, string ipAddress, string? filterString)
+        {
+            var response = await _transactionalItemsRelatedConcepts.GetLabelPapers(userId, ipAddress, filterString);
+            if (response.IsSuccess)
+            {
+                return Ok(response.labelPapers);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Saves (INSERT/UPDATE) Label paper
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="labelPaper"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveLabelPaper")]
+        public async Task<IActionResult> SaveLabelPaper(string userId, string ipAddress, LabelPaper labelPaper)
+        {
+            var response = await _transactionalItemsRelatedConcepts.SaveLabelPaper(userId, ipAddress, labelPaper);
+            if (response.IsSuccess)
+            {
+                return Ok(response.labelPaper);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
     }
 }

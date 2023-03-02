@@ -1,4 +1,5 @@
-﻿@page "/QualityParametersCard"
+﻿@page "/QualityParametersCard/{Page}"
+@page "/QualityParametersCard/{Page}/{SubPage}/{Mode}"
 @using Syncfusion.Blazor.Popups
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Grids
@@ -37,7 +38,7 @@
                             {
                                 foreach (var QualityParameter in transactionalItemQualitys)
                                 {
-                                    <option value="@QualityParameter.Name">@QualityParameter.Name</option>
+                                    <option value="@QualityParameter.Id">@QualityParameter.Name</option>
                                 }
                             }
 
@@ -63,6 +64,13 @@
 
 
 @code {
+    [Parameter]
+    public string Mode { get; set; } 
+    [Parameter]
+    public string Page { get; set; }
+    [Parameter]
+    public string SubPage { get; set; }
+
 
     InputTextSelector? ReferInputTextSelector;
     TransactionalItemQualityPair transactionalItemQualityPair = new TransactionalItemQualityPair();
@@ -97,6 +105,18 @@
 
             transactionalItemQualityPairView = await transactionalService.GetTransactionalItemDetailsQualityParameters();
         }
+
+
+        if (Mode == "Edit")
+        {
+            if (transactionalService.ConceptTransactionalItemQualityPair!=null)
+            {
+                transactionalItemQualityPair = transactionalService.ConceptTransactionalItemQualityPair;             
+                transactionalItemQuality = transactionalItemQualityPair.TransactionalItemQuality!=null ? transactionalItemQualityPair.TransactionalItemQuality:new();
+                StateHasChanged();
+            }
+
+        }
     }
 
     public async void InitializedUICommonFunctions()
@@ -123,12 +143,12 @@
                 transactionalService.TransactionalItems.QualityParameters = new List<TransactionalItemQualityPair>();
             }
             transactionalService.TransactionalItems.QualityParameters.Add(transactionalItemQualityPair);
-            MsgOpen("Added", 1);
+            MsgOpen("Saved", 1);
             StateHasChanged();
         }
         else
         {
-            MsgOpen("No added",1);
+            MsgOpen("No saved",1);
         }       
 
     }
@@ -140,8 +160,16 @@
     }
 
     public async Task Closed(string Element)
-    {
-        if (Element == "control") Navigation.NavigateTo("/TransactionalItemCard/2/Edit");
+    {      
+        if (Element == "control")
+        {
+            if (SubPage != null && SubPage != "") Navigation.NavigateTo($"/{Page}/{SubPage}/{Mode}");
+        }
+        else
+        {
+            Navigation.NavigateTo($"/{Page}");
+        }
+
         await Refresh();
         StateHasChanged();
     }
@@ -155,6 +183,7 @@
             ClosedInput();
             await Refresh();
         }
+        
 
     }
     protected async void EventSearcherValue(string value)
@@ -167,12 +196,20 @@
             transactionalItemQualitys = new();
             if (transactionalItems != null)
             {
-                ConceptType type = transactionalItems.TypeOfConcept;
+                ConceptType type = transactionalItems.TypeOfConcept != null ? transactionalItems.TypeOfConcept : null ;
                 if (type !=null)
                 {
                     var itemTypes = await transactionalService.GetTransactionalItemTypes(type.Name);
                     var resul = itemTypes.Where(s => s.Id == type.Id).FirstOrDefault();
-                    transactionalItemQualitys = resul.QualityParameters.Where(s=>s.Name.ToLower().Contains(value.ToLower())).ToList();
+                    if (!value.ToLower().Contains("all") && !value.ToLower().Contains("todo"))
+                    {
+                        transactionalItemQualitys = resul.QualityParameters.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+                    }
+                    else
+                    {
+                        transactionalItemQualitys = resul.QualityParameters;
+                    }
+
 
                 }    
             }
