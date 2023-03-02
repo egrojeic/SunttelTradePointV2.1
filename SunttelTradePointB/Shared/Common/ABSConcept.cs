@@ -37,10 +37,7 @@ namespace SunttelTradePointB.Shared.Common
         public string Notes { get; set; }
 
 
-        public RecordItem()
-        {
-            this.Id = ObjectId.GenerateNewId().ToString();
-        }
+        
 
     }
 
