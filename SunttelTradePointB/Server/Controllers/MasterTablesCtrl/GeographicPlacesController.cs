@@ -103,13 +103,15 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Retrieves a list of Warehouses with the posibility to receive an optional paremeter
         /// </summary>
+        /// <param name="entityId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="nameLike"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetWarehouses")]
-        public async Task<IActionResult> GetWarehouses(string? nameLike = null)
+        public async Task<IActionResult> GetWarehouses(string entityId, string ipAdress, string? nameLike = null)
         {
-            var response = await _geographicPlaces.GetWarehouses(nameLike);
+            var response = await _geographicPlaces.GetWarehouses(entityId, ipAdress, nameLike);
 
             if (response.IsSuccess)
             {
@@ -125,13 +127,15 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Retrieves a particular Warehouse by Id
         /// </summary>
+        /// <param name="entityId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="warehouseId"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetWarehouse")]
-        public async Task<IActionResult> GetWarehouse(string warehouseId)
+        public async Task<IActionResult> GetWarehouse(string entityId, string ipAdress, string warehouseId)
         {
-            var response = await _geographicPlaces.GetWarehouse(warehouseId);
+            var response = await _geographicPlaces.GetWarehouse(entityId, ipAdress, warehouseId);
 
             if (response.IsSuccess)
             {
@@ -147,13 +151,15 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Inserts / Updates a Warehouse object
         /// </summary>
+        /// <param name="entityId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="warehouse"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveWarehouse")]
-        public async Task<IActionResult> SaveWarehouse(Warehouse warehouse)
+        public async Task<IActionResult> SaveWarehouse(string entityId, string ipAdress, Warehouse warehouse)
         {
-            var response = await _geographicPlaces.SaveWarehouse(warehouse);
+            var response = await _geographicPlaces.SaveWarehouse(entityId, ipAdress, warehouse);
 
             if(response.IsSuccess)
             {
