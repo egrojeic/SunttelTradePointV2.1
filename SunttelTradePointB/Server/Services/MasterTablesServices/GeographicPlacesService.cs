@@ -143,9 +143,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Retrieves a list of Warehouses with the posibility to receive an optional paremeter
         /// </summary>
+        /// <param name="entityId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="nameLike"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<Warehouse>? warehouses, string? ErrorDescription)> GetWarehouses(string? nameLike = null)
+        public async Task<(bool IsSuccess, List<Warehouse>? warehouses, string? ErrorDescription)> GetWarehouses(string entityId, string ipAdress, string? nameLike = null)
         {
             try
             {
@@ -189,9 +191,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Retrieves a particular Warehouse by Id
         /// </summary>
+        /// <param name="entityId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="warehouseId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, Warehouse? warehouse, string? ErrorDescription)> GetWarehouse(string warehouseId)
+        public async Task<(bool IsSuccess, Warehouse? warehouse, string? ErrorDescription)> GetWarehouse(string entityId, string ipAdress, string warehouseId)
         {
             try
             {
@@ -217,10 +221,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Inserts / Updates a Warehouse object
         /// </summary>
+        /// <param name="entityId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="warehouse"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, Warehouse? warehouse, string? ErrorDescription)> SaveWarehouse(Warehouse warehouse)
+        public async Task<(bool IsSuccess, Warehouse? warehouse, string? ErrorDescription)> SaveWarehouse(string entityId, string ipAdress, Warehouse warehouse)
         {
             try
             {

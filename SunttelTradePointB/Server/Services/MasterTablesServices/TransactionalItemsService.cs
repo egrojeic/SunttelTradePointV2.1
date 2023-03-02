@@ -677,6 +677,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     transactionalItemTag.Id = ObjectId.GenerateNewId().ToString();
                 }
 
+
                 var filterPrev = Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId);
                 var resultPrev = await _TransactionalItemsCollection.Find(filterPrev).FirstOrDefaultAsync();
 
