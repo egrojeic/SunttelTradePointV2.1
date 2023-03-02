@@ -2,6 +2,7 @@
 
 @inject ActorsNodeService actorsNodeServide
 @inject CommunicationService communicationService
+@inject NavigationManager navigationManager
 
 <style>
     .iconStyle {
@@ -105,6 +106,7 @@
 
     private void optionNewGroup()
     {
+        navigationManager.NavigateTo("/ChatGeneral/NewGroup");
         newGroup = true;
     }
 
