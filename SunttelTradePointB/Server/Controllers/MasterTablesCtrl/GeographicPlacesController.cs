@@ -1,9 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
+using SunttelTradePointB.Server.Interfaces.UserTracking;
 using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.Security;
+using System.Reflection;
 
 namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
 {
+
 
     /// <summary>
     /// Author: Jorge Isaza
@@ -14,6 +19,9 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
     [ApiController]
     public class GeographicPlacesController : ControllerBase
     {
+        private readonly IUserTracking _userTracking;
+
+      
 
         private IGeographicPlaces _geographicPlaces;
         private readonly ILogger<GeographicPlacesController> _logger;
@@ -24,13 +32,36 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="_config"></param>
-        public GeographicPlacesController(ILogger<GeographicPlacesController> logger, IConfiguration _config, IGeographicPlaces geographicPlaces)
+        /// <param name="geographicPlaces"></param>
+        /// <param name="userTracking"></param>
+        public GeographicPlacesController(ILogger<GeographicPlacesController> logger, IConfiguration _config, IGeographicPlaces geographicPlaces, IUserTracking userTracking)
         {
             _logger = logger;
             config = _config;
             _geographicPlaces = geographicPlaces;
+            _userTracking = userTracking;
+
         }
 
+        /// <summary>
+        /// Saves Activity
+        /// </summary>
+        /// <param name="methodName"></param>
+        /// <returns></returns>
+        public async Task<ActionResult> SaveActivity(string methodName)
+        {
+            // Record user activity
+            var userActivity = new UserActivity
+            {
+                UserId = User.Identity.Name,
+                ControllerName = "GeographicPlaces",
+                MethodName = methodName,
+                TimeStamp = DateTime.UtcNow
+            };
+            await _userTracking.SaveUserActivityByController(userActivity);
+
+            return Ok();
+        }
 
         /// <summary>
         /// Returns all countries in the Database
@@ -41,7 +72,8 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         [ActionName("GetCountries")]
         public async Task<IActionResult> GetCountries(string? filterName = null)
         {
-            
+
+            await SaveActivity("GetCountries");
             var response = await _geographicPlaces.GetCountries(filterName);
 
             if (response.IsSuccess)

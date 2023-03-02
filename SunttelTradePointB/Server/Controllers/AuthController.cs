@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SunttelTradePointB.Server.Interfaces.UserTracking;
 using SunttelTradePointB.Server.Models;
 using SunttelTradePointB.Shared.Security;
 
@@ -12,11 +13,22 @@ namespace SunttelTradePointB.Server.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        private readonly IUserTracking _userTracking;
+
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="userManager"></param>
+        /// <param name="signInManager"></param>
+        /// <param name="userTracking"></param>
+        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IUserTracking userTracking)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _userTracking = userTracking;
         }
+
 
 
         [HttpPost]
