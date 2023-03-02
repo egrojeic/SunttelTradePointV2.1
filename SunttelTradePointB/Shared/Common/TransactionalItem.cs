@@ -135,6 +135,8 @@ namespace SunttelTradePointB.Shared.Common
         public string Id { get; set; }
         public string Name { get; set; }
 
+       
+
     }
 
     public class CostExceptionByQuantity {
@@ -148,6 +150,10 @@ namespace SunttelTradePointB.Shared.Common
         [DisplayName("Maximum Quantity")]
         public double MaximumQty { get; set; }
 
+        public CostExceptionByQuantity()
+        {
+            this.Id = ObjectId.GenerateNewId().ToString();
+        }
 
     }
 
@@ -159,8 +165,11 @@ namespace SunttelTradePointB.Shared.Common
         public string Key { get; set; }
         public string Value { get; set; }
 
+        public TransactionalItemTag()
+        {
+            this.Id = ObjectId.GenerateNewId().ToString();
+        }
 
-       
     }
 
     public class CatalogItem {
