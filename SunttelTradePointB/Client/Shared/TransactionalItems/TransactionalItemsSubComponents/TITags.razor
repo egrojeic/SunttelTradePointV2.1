@@ -17,12 +17,14 @@
 
 <div class="row">
     <div class="col-md-12">
-        <SfGrid @ref="DataGrid"  DataSource="@TransactionalItemTags" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" EnableStickyHeader="true">
+        <SfGrid @ref="DataGrid" DataSource="@TransactionalItemTags" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" EnableStickyHeader="true"
+                ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader" } })">
             <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
             <GridColumns>
                 <GridColumn Field="@nameof(TransactionalItemTag.Key)" HeaderText="@Key" Width="110"></GridColumn>
                 <GridColumn Field="@nameof(TransactionalItemTag.Value)" HeaderText="@Value" Width="110"></GridColumn>
             </GridColumns>
+            <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="TransactionalItemTag"></GridEvents>
         </SfGrid>
     </div>
 </div>
@@ -39,9 +41,9 @@
     protected override void OnInitialized()
     {
         InitializedUICommonFunctions();
-       
+
         if (transactionalService.transactionalItemId != null && transactionalService.transactionalItemId != "")
-        {          
+        {
             transactionalItemId = transactionalService.transactionalItemId;
             OnInitializedTags();
         }
@@ -60,7 +62,7 @@
         {
             TransactionalItemTags = await transactionalService.GetSelectorListTag(transactionalItemId);
             if (TransactionalItemTags != null)
-            {               
+            {
                 DataGrid.DataSource = TransactionalItemTags.Where(s => s.Id != "" || s.Id != null).ToList();
                 StateHasChanged();
                 DataGrid.Refresh();
@@ -68,9 +70,22 @@
 
         }
     }
-   
+
+
+    public void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemTag> args)
+    {
+         transactionalService.ConceptTransactionalItemTag = args.RowInfo.RowData;
+
+        if (args.Item.Text == "Edit" && transactionalService.ConceptTransactionalItemTag != null)
+        {
+            Navigation.NavigateTo("/TagCard/TransactionalItemCard/4/Edit");
+        }
+    }
+
+
+
     public void OpenAdd()
     {
-        Navigation.NavigateTo("/TagCard");
+        Navigation.NavigateTo("/TagCard/TransactionalItemCard/4/Add");
     }
 }
