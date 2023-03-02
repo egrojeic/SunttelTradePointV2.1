@@ -1,4 +1,5 @@
 ﻿@page "/Products"
+@page "/Products/{_filterItems}"
 @using SunttelTradePointB.Client.Shared.TransactionalItems
 @using SunttelTradePointB.Shared.Common
 @inject HttpClient Http
@@ -27,7 +28,6 @@
     {
 
         <WaitingProcessIndicator loadingTopic="Transactional Items"></WaitingProcessIndicator>
-
 
     }
     else
@@ -79,7 +79,8 @@
 
 @code {
     bool isLoading = false;
-    string _filterItems = "";
+    [Parameter]
+    public string _filterItems { get; set; }
 
     protected override void OnInitialized()
     {
@@ -129,7 +130,7 @@
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
 
-        </RadzenMenu>
+    </RadzenMenu>
     );
 
 
@@ -140,7 +141,7 @@
         OpenOrder(argObj);
         transactItemsService.transactionalItemId = argObj.Id;
         Console.WriteLine($"Menu item with Value={argObj.Name} clicked");
-        if (!args.Value.Equals(3) && !args.Value.Equals(4) && transactItemsService.transactionalItemId!=null)
+        if (!args.Value.Equals(3) && !args.Value.Equals(4) && transactItemsService.transactionalItemId != null)
         {
             ContextMenuService.Close();
         }
@@ -151,7 +152,7 @@
         transactItemsService.transactionalItemId = itemCard.Id;
         transactItemsService.TransactionalItems = itemCard;
         transactItemsService.Page = "TransactionalItemCard";
-        Navigation.NavigateTo("/TransactionalItemCard/0/Edit");      
+        Navigation.NavigateTo("/TransactionalItemCard/0/Edit");
     }
 
 

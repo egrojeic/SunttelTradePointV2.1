@@ -31,7 +31,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         public TransactionalItemQualityPair? ConceptTransactionalItemQualityPair { get; set; }
         public TransactionalItemTag? ConceptTransactionalItemTag { get; set; }
         public TransactionalItemCharacteristicPair ConcepttransactionalItemCharacteristicPair { get; set; }
-
+        public AssemblyType ConceptItemAssemblyType { get; set; }
 
 
         public LabelStyle ConceptLabelStyle { get; set; }
@@ -1037,6 +1037,25 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             try
             {
                 var resul = await _httpClient.PostAsJsonAsync<LabelPaper>($"api/TransactionalItemsRelatedConcepts/SaveStatus?userId={userId}&ipAddress={ipAddress}", labelPaper);
+                return resul.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+
+        }
+
+        //---
+        public async Task<bool> SaveAssemblyType(AssemblyType assemblyType)
+        {
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            try
+            {
+                var resul = await _httpClient.PostAsJsonAsync<AssemblyType>($"api/TransactionalItemsRelatedConcepts/SaveAssemblyType?userId={userId}&ipAddress={ipAddress}", assemblyType);
                 return resul.IsSuccessStatusCode;
             }
             catch (Exception ex)
