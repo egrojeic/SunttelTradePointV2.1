@@ -1,0 +1,151 @@
+﻿@page "/ChatGeneral/NewGroup"
+@using Syncfusion.Blazor.Cards
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.DropDowns
+@using SunttelTradePointB.Shared.Common
+@using SunttelTradePointB.Shared.Communications
+
+@inject NavigationManager navigationManager
+@inject ActorsNodeService actorsNodeServive
+
+<div class="control-section">
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
+            <SfCard>
+                <CardHeader Title="New Group" />
+                <CardContent>
+                    <form onsubmit="event.preventDefault();">
+                        <div class="form-group row">
+                            <div class="form-group row">
+                                <label class="control-label col-md-12">Group Name: </label>
+                                <div class="col">
+                                    <input type="text" class="form-control" @bind-value="channelCommunicationsGroup.Name" required/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group py-2">
+                            <label for="ComercialGroup">Participants</label>
+                            <div>
+                                <div class="conten-chip">
+                                    <SfChip @ref="referChip" EnableDelete="true" CssClass="chip-style" EnableRtl="false">
+                                        <ChipEvents Deleted="@onDeleted"></ChipEvents>
+                                        <ChipItems>
+                                            @{
+                                                if (participantList != null)
+                                                {
+                                                    @foreach (var participant in participantList)
+                                                    {
+                                                        if (participant != null && participant.Name != null)
+                                                        {
+                                                            <ChipItem Text="@participant?.Name" LeadingIconCss="anne"></ChipItem>
+                                                        }
+
+                                                    }
+                                                }
+                                            }
+                                        </ChipItems>
+                                    </SfChip>
+                                    <InputTextSelector @ref="inputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectorInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="participants">
+                                        @{
+                                            if (entityActorList != null)
+                                            {
+                                                foreach (var entity in entityActorList)
+                                                {
+                                                    <option value="@entity?.Id">@entity?.Name</option>
+                                                }
+
+                                            }
+                                        }
+                                    </InputTextSelector>
+                                </div>
+                                <button type="button" @onclick='() => SetViewElement("Participant")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                            </div>
+                        </div>
+
+
+
+                        <div class="py-2">
+                            <button type="submit" class="size-btn color-btn" style="float:right"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                            <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
+                        </div>
+                    </form>
+
+                </CardContent>
+            </SfCard>
+        </div>
+    </div>
+</div>
+
+
+
+@code{
+    [Parameter]
+    public bool ViewSelect { get; set; } = false;
+
+    ChannelCommunicationsGroup channelCommunicationsGroup = new ChannelCommunicationsGroup();
+    List<EntityActor> participantList = new List<EntityActor>();
+
+    SfChip? referChip;
+    InputTextSelector? inputTextSelector;
+    EntityActor entityActor = new EntityActor();
+    List<EntityActor> entityActorList = new List<EntityActor>();
+
+    public bool participants = false;
+    public string SearchValueMode = "";
+    public int ParamCountResul = 0;
+
+    public void SetViewElement(string Element)
+    {
+        ViewSelect = false;
+        SearchValueMode = Element;
+        if (Element == "Participant" && !participants) { participants = true; }
+        Refresh();
+        StateHasChanged();
+    }
+
+    protected async void EventSearcherValue(string participant)
+    {
+        if (SearchValueMode == "Participant")
+        {
+            entityActorList = await actorsNodeServive.GetEntityActorFaceList(participant);
+            ParamCountResul = entityActorList.Count();
+        }
+        if (ParamCountResul > 0)
+        {
+            ViewSelect = true;
+        }
+        else
+        {
+            ViewSelect = false;
+        }
+        await Refresh();
+    }
+
+    protected async void EventIdSelectorInput(string selectionId)
+    {
+        if (SearchValueMode == "Participant")
+        {
+            participantList.Add(entityActorList.Where(c => c.Id == selectionId).FirstOrDefault());
+        }
+        await Refresh();
+    }
+
+    public async Task Refresh()
+    {
+        if (inputTextSelector != null) await inputTextSelector.Refresh();
+        StateHasChanged();
+    }
+
+    private void onDeleted(ChipDeletedEventArgs args)
+    {
+        participantList?.RemoveAt(args.Index);
+        StateHasChanged();
+    }
+
+    private void GoBack()
+    {
+        navigationManager.NavigateTo($"/ChatGeneral");
+    }
+
+}
