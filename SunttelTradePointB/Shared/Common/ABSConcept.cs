@@ -13,13 +13,36 @@ namespace SunttelTradePointB.Shared.Common
 {
 
     [BsonIgnoreExtraElements]
-    public class AtomConcept {
+    public class RecordItem
+    {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
         [BsonIgnoreIfNull]
         public string LegacyId { get; set; }
+
+
+        [BsonIgnore]
+        public bool? IsSelected { get; set; }
+
+        [BsonIgnore]
+        [DisplayName("Has Changed")]
+        public bool? IsLoadingData { get; set; }
+
+        [BsonIgnore]
+        public bool? HasChanged { get; set; }
+
+        [BsonIgnoreIfNull]
+        public string Notes { get; set; }
+
+
+    }
+
+    [BsonIgnoreExtraElements]
+    public class AtomConcept: RecordItem
+    {
+      
         
         [BsonIgnoreIfNull]
         public string Code { get; set; }
@@ -32,19 +55,6 @@ namespace SunttelTradePointB.Shared.Common
         [BsonIgnoreIfNull]
         public InfoAuditRecord AuditRecord { get; set; }
      
-
-
-        [BsonIgnore]
-        public bool? IsSelected { get; set; }
-
-        [BsonIgnore]
-        public bool? IsLoadingData { get; set; }
-
-        [BsonIgnore]
-        public bool? HasChanged { get; set; }
-
-        [BsonIgnoreIfNull]
-        public string Notes { get; set; }
 
         public AtomConcept()
         {

@@ -390,6 +390,25 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
             }
         }
 
+        /// <summary>
+        /// Retrives a selector list of label papers
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetSelectorListLabelPaper")]
+        public async Task<IActionResult> GetSelectorListLabelPaper()
+        {
+            var response = await _selectorDatasource.GetSelectorListLabelPaper();
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.labelPapers) ;
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
 
     }
 }

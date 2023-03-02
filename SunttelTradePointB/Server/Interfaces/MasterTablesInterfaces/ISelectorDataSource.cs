@@ -141,5 +141,13 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<(bool IsSuccess, List<AtomConcept>? assemblyTypes, string? ErrorDescription)> GetSelectorListAssemblyTypes(string filterString);
 
+
+
+        /// <summary>
+        /// Retrieves a list of papers fro labels
+        /// </summary>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<AtomConcept>? labelPapers, string? ErrorDescription)> GetSelectorListLabelPaper();
+
     }
 }
