@@ -34,7 +34,7 @@
         <div class="input-group">
             <input class="form-control border rounded-pill" type="search" placeholder="search" id="example-search-input">
         </div>
-        <div style="height: 660px; overflow-y: scroll;">
+        <div style="height: 660px; overflow-y: auto;">
             @foreach (var group in channelCommunicationsGroup)
             {
                 @if (group != null)
@@ -138,13 +138,13 @@
             }
         };
 
-        communicationService.SaveChannelCommunicationsGroup(communicationsGroup);
+        //communicationService.SaveChannelCommunicationsGroup(communicationsGroup);
 
-        /*channelCommunicationsGroup.Add(new ChannelCommunicationsGroup
+        channelCommunicationsGroup.Add(new ChannelCommunicationsGroup
         {
             SkinImageName = image,
             Name = groupName
-        });*/
+        });
         communicationsGroup.Name = "";
         newGroup = false;
     }
