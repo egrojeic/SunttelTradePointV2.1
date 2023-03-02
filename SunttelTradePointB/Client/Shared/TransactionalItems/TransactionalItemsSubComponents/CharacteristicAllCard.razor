@@ -16,7 +16,7 @@
 </PageTitleComponent>
 
 <div id="add-recipe">
-    <div class="flex-verical-center">
+    <div class="flex-verical-center-new">
         @foreach (var characteristic in transactionalItemCharacteristicPairs)
         {
             <div class="grid-columns-2 box-shadow-mode">
@@ -29,7 +29,7 @@
                     <div style="position:relative;">
                         <div class="item-edit form-control">
                             <label>@(characteristic.TransactionalItemCharacteristic != null ? characteristic.TransactionalItemCharacteristic.Name : "")</label>
-                          @*  <button @onclick='()=>SetViewElemnt("TransactionalItemTypeCharacteristic")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>*@
+                            @*  <button @onclick='()=>SetViewElemnt("TransactionalItemTypeCharacteristic")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>*@
                         </div>
 
                         <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" ViewSelect="ViewPopupCount" EventClosed="ClosedInput" ViewControl="CharacteristicControlInput">
@@ -47,15 +47,25 @@
                     </div>
                 </div>
                 <div><label> @GetName("Value", new TransactionalItemCharacteristicPair()) </label></div>
-                <div><input @bind="characteristic.Value" class="form-control" style="border-color:gray;" required /></div>
                 <div>
+                    <select @bind="characteristic.Value" class="form-control">
+                        @foreach (var item in GetPosibleValues(characteristic.TransactionalItemCharacteristic.Id))
+                        {
+                            <option value="@item.Name">@item.Name</option>
+                        }
+                    </select>
                 </div>
-                <div class="flex-horizontal-end">
-                    <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-                    <button @onclick="Save" class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
-                </div>
+
             </div>
         }
+        <div class="grid-columns-2 ">
+            <div>
+            </div>
+            <div class="flex-horizontal-end">
+                <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                <button @onclick="Save" class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -67,7 +77,7 @@
     List<TransactionalItemTypeCharacteristic> transactionalItemTypeCharacteristics = new();
     TransactionalItemTypeCharacteristic transactionalItemTypeCharacteristic = new();
     InputTextSelector? ReferInputTextSelector;
-
+    public List<TransactionalItemCharacteristic> possibleValues = new();
     bool viewMsg = false;
     string msg = "";
     int status = 0;
@@ -94,20 +104,28 @@
         transactionalItemTypeCharacteristics = new();
         if (transactionalItems != null)
         {
-            ConceptType type = transactionalItems.TypeOfConcept;
+            ConceptType type = transactionalItems.TypeOfConcept != null ? transactionalItems.TypeOfConcept : null;
             if (type != null)
             {
                 var itemTypes = await transactionalService.GetTransactionalItemTypes(type.Name);
                 var resul = itemTypes.Where(s => s.Id == type.Id).FirstOrDefault();
-                transactionalItemTypeCharacteristics = resul.TransactionalItemTypeCharacteristics;
-                foreach (var characteristic in transactionalItemTypeCharacteristics)
-                {
-                    transactionalItemCharacteristicPairs.Add(new TransactionalItemCharacteristicPair
+                if (resul != null)
+                {                  
+                    transactionalItemTypeCharacteristics = resul.TransactionalItemTypeCharacteristics != null ? resul.TransactionalItemTypeCharacteristics : new();
+                    foreach (var characteristic in transactionalItemTypeCharacteristics)
+                    {
+                        if (characteristic.Name !="" && characteristic.Name !=null)
                         {
-                            TransactionalItemCharacteristic = characteristic,
-                            Value = ""
-                        });
+                            transactionalItemCharacteristicPairs.Add(new TransactionalItemCharacteristicPair
+                                {
+                                    TransactionalItemCharacteristic = characteristic,
+                                    Value = ""
+                                });
+                        }
+                       
+                    }
                 }
+
             }
         }
         StateHasChanged();
@@ -131,9 +149,9 @@
                 }
             }
         }
-        if (count > 0) MsgOpen("saved : "+count+" of "+transactionalItemCharacteristicPairs.Count(), 1);
+        if (count > 0) MsgOpen("saved : " + count + " of " + transactionalItemCharacteristicPairs.Count(), 1);
         if (count <= 0) MsgOpen("No saved", 1);
-       
+
         StateHasChanged();
 
     }
@@ -149,6 +167,22 @@
         if (Element == "control") Navigation.NavigateTo("/TransactionalItemCard/5/Edit");
     }
 
+
+    public List<TransactionalItemCharacteristic>  GetPosibleValues(string Id)
+    {
+        if (transactionalItemTypeCharacteristics != null)
+        {
+            var characteristic = transactionalItemTypeCharacteristics.Where(s => s.Id != null && s.Id.Trim() == Id.Trim()).FirstOrDefault();
+            if (characteristic != null) return possibleValues = characteristic.PossibleValues != null ? characteristic.PossibleValues : new();
+            return new List<TransactionalItemCharacteristic>();
+            StateHasChanged();
+        }
+        else
+        {
+            return new List<TransactionalItemCharacteristic>();
+        }
+    }
+
     protected async void EventIdSelection(string filter)
     {
         //transactionalItemTypeCharacteristics = await transactionalService.GetTransactionalItemDetailsQualityParameters();
@@ -157,7 +191,8 @@
         ParamCountResul = 0;
         CharacteristicControlInput = false;
         ViewPopupCount = false;
-
+     
+  
         await Refresh();
     }
 
@@ -168,12 +203,10 @@
         if (ModeSearcher == "TransactionalItemTypeCharacteristic")
         {
 
-           
-
-
             if (transactionalItemTypeCharacteristics != null)
             {
-                transactionalItemTypeCharacteristics = transactionalItemTypeCharacteristics.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+                if (!value.ToLower().Contains("all") && !value.ToLower().Contains("todo")) transactionalItemTypeCharacteristics = transactionalItemTypeCharacteristics.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+                if (!value.ToLower().Contains("all") && !value.ToLower().Contains("todo")) transactionalItemTypeCharacteristics = transactionalItemTypeCharacteristics;
 
                 ParamCountResul = transactionalItemTypeCharacteristics.Count();
                 ViewPopupCount = ParamCountResul > 0;

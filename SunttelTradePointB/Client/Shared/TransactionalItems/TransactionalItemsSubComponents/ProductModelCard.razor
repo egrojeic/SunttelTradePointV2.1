@@ -4,6 +4,15 @@
 @inject TransactionalItemsService transactionalService;
 @inject NavigationManager Navigation
 
+
+
+
+@if (@viewMsg)
+{
+    <MessageSaveComponent isVisible="viewMsg" message="@msg">
+    </MessageSaveComponent>
+}
+
 <PageTitleComponent Title="@GetName("ModelRecipe", new PackingSpecs())" IconName=""
                     Description="Here you can add tags">
 </PageTitleComponent>
@@ -41,6 +50,9 @@
 @code {
     string transactionalItemId = "";
     ProductModel productModel = new();
+    bool viewMsg = false;
+    string msg = "";
+    int status = 0;
 
     protected override Task OnInitializedAsync()
     {
@@ -52,9 +64,22 @@
     }
 
 
-    public void Save()
+    public async void Save()
     {
-        
+        if (productModel.Name != null)
+        {
+            var resul = await transactionalService.SaveCharacteristics(transactionalItemId, productModel);
+            if (resul)
+            {
+                Msg("Saved", 1);
+            }
+            else
+            {
+                Msg("No saved", 1);
+            }
+            StateHasChanged();
+        }
+
     }
 
 
@@ -69,5 +94,12 @@
     {
         Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
+    }
+
+    void Msg(string _msg, int _status)
+    {
+        viewMsg = true;
+        msg = _msg;
+        status = _status;
     }
 }

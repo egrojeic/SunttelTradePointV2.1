@@ -1,0 +1,40 @@
+﻿
+.content-item {
+    background-color: #f5f5f5;
+    padding: 1px;
+    padding-right: 5px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 2px gray;
+    margin-top: 10px;
+}
+
+.tag {
+    border-radius: 0px 10px 0px 10px;
+    background-color: #f5f5f5;
+    min-width: 350px;
+    margin: 10px;
+    padding: 1px 2px 1px 15px;
+    box-shadow: -2px 2px 5px -2px gray;
+    position: relative;
+}
+
+.tagEnd {
+    background-color: #00ccff;
+    margin: 10px;
+    padding: 1px 2px 1px 15px;
+    box-shadow: 0px 0px 2px 1px gray;
+}
+
+.delete {
+    height: 20px;
+    width: 22px;
+    font-size: 10px;
+    position: absolute;
+    color: white;
+    border-radius: 10px;
+    text-align: center;
+    top: 1px;
+    right: 2px;
+    box-shadow: 0px 0px 7px -2px gray;
+    cursor: pointer;
+}
