@@ -67,8 +67,10 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             _transactionalItems = mongoDatabase.GetCollection<TransactionalItem>("TransactionalItems");
 
 
-            _assemblyTypes = mongoDatabase.GetCollection<AssemblyType>("LabelStyles");
-            _transactionalItems = mongoDatabase.GetCollection<TransactionalItem>("LabelPaperTypes");
+            _labelStyle = mongoDatabase.GetCollection<LabelStyle>("LabelStyles");
+            _LabelPaper = mongoDatabase.GetCollection<LabelPaper>("LabelPaperTypes");
+
+
 
         }
 
