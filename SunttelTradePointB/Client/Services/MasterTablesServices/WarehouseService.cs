@@ -25,7 +25,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             {
                 if (ipAddress == "")
                     ipAddress = "127.0.0.0";
-                var warehouse = await _httpClient.GetFromJsonAsync<Warehouse>($"/api/GeographicPlaces/GetWarehouse?warehouseId={warehouseId}");
+                var warehouse = await _httpClient.GetFromJsonAsync<Warehouse>($"/api/GeographicPlaces/GetWarehouse?entityId={userId}&ipAdress={ipAddress}&warehouseId={warehouseId}");
                 return warehouse;
             }
             catch (Exception ex)
@@ -43,7 +43,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             {
                 if (ipAddress == "")
                     ipAddress = "127.0.0.0";
-                var listWarehouse = await _httpClient.GetFromJsonAsync<List<Warehouse>>($"/api/GeographicPlaces/GetWarehouses?nameLike={filterWarehouse}");
+                var listWarehouse = await _httpClient.GetFromJsonAsync<List<Warehouse>>($"/api/GeographicPlaces/GetWarehouses?entityId={userId}&ipAdress={ipAddress}&nameLike={filterWarehouse}");
                 return listWarehouse;
             }
             catch (Exception ex)
@@ -65,7 +65,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             {
                 if (ipAddress == "")
                     ipAddress = "127.0.0.0";
-                var result = await _httpClient.PostAsJsonAsync($"/api/GeographicPlaces/SaveWarehouse", warehouse);
+                var result = await _httpClient.PostAsJsonAsync($"/api/GeographicPlaces/SaveWarehouse?entityId={userId}&ipAdress={ipAddress}", warehouse);
                 return result.IsSuccessStatusCode;
                     
             }
