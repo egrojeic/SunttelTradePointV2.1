@@ -41,23 +41,29 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// Retrieves the list of warehouses.
         /// If the filter condition is empty, it shoukd return all
         /// </summary>
+        /// <param name="entityId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="nameLike"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<Warehouse>?  warehouses, string? ErrorDescription)> GetWarehouses(string? nameLike = null);
+        Task<(bool IsSuccess, List<Warehouse>?  warehouses, string? ErrorDescription)> GetWarehouses(string entityId, string ipAdress, string? nameLike = null);
 
         /// <summary>
-        /// Retrieves a perticular warehouse
+        ///  Retrieves a perticular warehouse
         /// </summary>
+        /// <param name="entityId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="warehouseId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, Warehouse? warehouse, string? ErrorDescription)> GetWarehouse(string warehouseId);
+        Task<(bool IsSuccess, Warehouse? warehouse, string? ErrorDescription)> GetWarehouse(string entityId, string ipAdress, string warehouseId);
 
         /// <summary>
         /// Insert/ Updates a Warehouse
         /// </summary>
+        /// <param name="entityId"></param>
+        /// <param name="ipAdress"></param>
         /// <param name="warehouse"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, Warehouse? warehouse, string? ErrorDescription)> SaveWarehouse(Warehouse warehouse);
+        Task<(bool IsSuccess, Warehouse? warehouse, string? ErrorDescription)> SaveWarehouse(string entityId, string ipAdress, Warehouse warehouse);
 
 
     }
