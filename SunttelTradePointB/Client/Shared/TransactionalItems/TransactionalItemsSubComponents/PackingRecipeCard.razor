@@ -27,6 +27,15 @@
             <PageTitleComponent Title="@GetName( "Material", new MaterialRecipeItem())" IconName="TransactionalTypes.png"
                             Description="@($"Here you can add {GetName( "Material", new MaterialRecipeItem()).ToLower()}")">
             </PageTitleComponent>
+            <div class="panelMenuContainer">
+                <div class="flex-horizontal-start">
+                   
+                        <div class="nav-link-style">
+                            <a target="_blank" href="/Products"><i class="fa-sharp fa-solid fa-circle-plus"></i> Material </a>
+                        </div>
+                    
+                </div>
+            </div>
             <div>
                 <div class="flex-horizontal-center">
                     <div class="grid-columns-2 box-shadow-mode">
@@ -72,6 +81,8 @@
             <PageTitleComponent Title="@GetName( "Material", new MaterialRecipeItem())" IconName="TransactionalTypes.png"
                             Description="@($"Here you can create {GetName( "Material", new MaterialRecipeItem()).ToLower()}")">
             </PageTitleComponent>
+
+
             <div class="grid-columns-2-img">
                 <div class="grid-columns-header">
                     <div>
@@ -169,6 +180,11 @@
                             <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
                         </DropDownMenuItems>
                     </SfSplitButton>
+
+                    <div class="nav-link-style">
+                        <a target="_blank" href="/Products"><i class="fa-sharp fa-solid fa-circle-plus"></i> Product </a>
+                    </div>
+
                 </nav>
             </div>
 
@@ -380,15 +396,7 @@
                         <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
                     </DropDownMenuItems>
                 </SfSplitButton>
-
-                <SfSplitButton Content="Concept" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
-                    <SplitButtonEvents ItemSelected="ItemSelectedConcept">
-                    </SplitButtonEvents>
-                    <DropDownMenuItems>
-                        <DropDownMenuItem Text="Material" IconCss="fa-solid fa-file"></DropDownMenuItem>
-
-                    </DropDownMenuItems>
-                </SfSplitButton>
+              
             </nav>
         </div>
 
@@ -837,7 +845,7 @@
     public bool PopupViewEditItemModifier = false;
     public bool PopupViewAddImg = false;
     public bool PopupViewEditInnerProduct = false;
-    bool PopupViewEditMaterial = true;
+    bool PopupViewEditMaterial = false;
 
 
 
@@ -1062,6 +1070,12 @@
         {
 
         }
+
+        if (tile == "Product")
+        {
+            Navigation.NavigateTo("target='_blank', /Products");
+        }
+
         if (tile == "Save as...")
         {
 
@@ -1210,7 +1224,7 @@
                     ParamCountResul = recipeModifiers.Count();
                 }
             }
-           
+
 
         }
         if (SearcherValueMode == "TotalPriceItemTypeBasedOn")
@@ -1312,9 +1326,9 @@
         if (SearcherValueMode == "RecipeQualityModifier")
         {
             if (recipeModifiers != null)
-            {                
-                 recipeModifier = recipeModifiers.Where(s => s.Id != null && s.Id.Trim() == selectionId.Trim()).FirstOrDefault();
-                
+            {
+                recipeModifier = recipeModifiers.Where(s => s.Id != null && s.Id.Trim() == selectionId.Trim()).FirstOrDefault();
+
                 StateHasChanged();
             }
         }
