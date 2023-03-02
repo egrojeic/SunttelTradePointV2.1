@@ -43,25 +43,25 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
 
         }
 
-        /// <summary>
-        /// Saves Activity
-        /// </summary>
-        /// <param name="methodName"></param>
-        /// <returns></returns>
-        public async Task<ActionResult> SaveActivity(string methodName)
-        {
-            // Record user activity
-            var userActivity = new UserActivity
-            {
-                UserId = User.Identity.Name,
-                ControllerName = "GeographicPlaces",
-                MethodName = methodName,
-                TimeStamp = DateTime.UtcNow
-            };
-            await _userTracking.SaveUserActivityByController(userActivity);
+        ///// <summary>
+        ///// Saves Activity
+        ///// </summary>
+        ///// <param name="methodName"></param>
+        ///// <returns></returns>
+        //public async Task<ActionResult> SaveActivity(string methodName)
+        //{
+        //    // Record user activity
+        //    var userActivity = new UserActivity
+        //    {
+        //        UserId = User.Identity.Name,
+        //        ControllerName = "GeographicPlaces",
+        //        MethodName = methodName,
+        //        TimeStamp = DateTime.UtcNow
+        //    };
+        //    await _userTracking.SaveUserActivityByController(userActivity);
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
 
         /// <summary>
         /// Returns all countries in the Database
@@ -73,7 +73,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         public async Task<IActionResult> GetCountries(string? filterName = null)
         {
 
-            await SaveActivity("GetCountries");
+            //await SaveActivity("GetCountries");
             var response = await _geographicPlaces.GetCountries(filterName);
 
             if (response.IsSuccess)

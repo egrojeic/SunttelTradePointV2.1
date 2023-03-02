@@ -304,22 +304,28 @@
     {
         if (warehouseId != "" && warehouseId != "NewWarehouse")
         {
-            var warehouseById = await warehouseService.GetWarehouseById(warehouseId);
-            if (warehouseById != null)
-            {
-                warehouse.Name = warehouseById.Name;
-                WareHouseParent = warehouseById.WareHouseParent;
-                Parent = warehouseById.WareHouseParent;
-                isExternal = warehouseById.IsExternal;
-                isTransformationFacility = warehouseById.IsTransformationFacility;
-                scanSimulated = warehouseById.ScanSimulated;
-                isInventoryControlled = warehouseById.IsInventoryControlled;
-                Contact = warehouseById.ContactPerson;
-                isActive = warehouseById.IsActive;
-                transactionalItemType.Name = warehouseById.InventoryTransactionalItemType.Name;
-                address = warehouseById.WarehouseAddress;
-                StateHasChanged();
+            try{
+                var warehouseById = await warehouseService.GetWarehouseById(warehouseId);
+                if (warehouseById != null)
+                {
+                    warehouse.Name = warehouseById.Name;
+                    WareHouseParent = warehouseById.WareHouseParent;
+                    Parent = warehouseById.WareHouseParent;
+                    isExternal = warehouseById.IsExternal;
+                    isTransformationFacility = warehouseById.IsTransformationFacility;
+                    scanSimulated = warehouseById.ScanSimulated;
+                    isInventoryControlled = warehouseById.IsInventoryControlled;
+                    Contact = warehouseById.ContactPerson;
+                    isActive = warehouseById.IsActive;
+                    transactionalItemType.Name = warehouseById.InventoryTransactionalItemType.Name;
+                    address = warehouseById.WarehouseAddress;
+                    StateHasChanged();
+                }
             }
+            catch(Exception e){
+                string errDescription = e.Message;
+            }
+           
         }
     }
 
