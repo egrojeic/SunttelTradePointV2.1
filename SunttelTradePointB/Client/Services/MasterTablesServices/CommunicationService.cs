@@ -6,7 +6,7 @@ using System.Net.Http.Json;
 
 namespace SunttelTradePointB.Client.Services.MasterTablesServices
 {
-    public class CommunicationService
+    public class CommunicationService: ICommunicationChat
     {
         private readonly HttpClient _httpClient;
         public CommunicationService(HttpClient httpClient)
@@ -57,8 +57,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 return null;
             }
         }
-
-
 
 
         ///Post

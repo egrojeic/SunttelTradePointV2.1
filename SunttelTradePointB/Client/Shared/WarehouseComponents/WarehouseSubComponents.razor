@@ -8,6 +8,7 @@
 
 @inject NavigationManager navigationManager
 @inject WarehouseService warehouseService
+@inject ActorsNodeService actorsNodeServive
 @inject TransactionalItemsService transactionalItemsService
 
 <div class="control-section">
@@ -21,7 +22,16 @@
                             <div class="form-group row">
                                 <label class="control-label col-md-12">@lblWareHouseParent: </label>
                                 <div class="col">
-                                    <SfDropDownList TValue="string" TItem="Warehouse" Placeholder="Select a associated entity" AllowFiltering="true" DataSource="@warehouseList">
+                                    <input type="text" class="form-control" @bind-value="warehouse.Name"  required/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row py-2">
+                            <div class="form-group row">
+                                <label class="control-label col-md-12">@lblWareHouseParent: </label>
+                                <div class="col">
+                                    <SfDropDownList TValue="string" TItem="Warehouse" Placeholder="Select a associated entity" AllowFiltering="true" DataSource="@warehouseList" @bind-Value="WareHouseParent.Name">
                                         <DropDownListEvents TItem="Warehouse" TValue="string" ValueChange="@ValueChangeAssociationEntity"></DropDownListEvents>
                                         <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
                                     </SfDropDownList>
@@ -32,8 +42,23 @@
                         <div class="form-group row py-2">
                             <div class="form-group row">
                                 <label class="control-label col-md-12">@lblAssociatedEntity: </label>
-                                <div class="col">
-                                    <input type="text" class="form-control" required />
+                                <div class="position:relative;">
+                                    <div class="item-edit">
+                                        <label>@(Parent != null ? Parent.Name : "")</label>
+                                        <button type="button" style="float:right" @onclick='()=>SetViewElemnt("WareHouseParent")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                                    </div>
+                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEntitiesWarehouseParent">
+                                        @{
+                                            if (WareHouseParentList != null)
+                                            {
+                                                foreach (var entity in WareHouseParentList)
+                                                {
+                                                    <option value="@entity?.Id">@entity?.Name</option>
+                                                }
+                                            }
+
+                                        }
+                                    </InputTextSelector>
                                 </div>
                             </div>
                         </div>
@@ -78,7 +103,7 @@
                             <div class="form-group row">
                                 <label class="control-label col-md-12">@lblInventoryTransactionalItemType: </label>
                                 <div class="col">
-                                    <SfDropDownList TValue="string" TItem="TransactionalItemType" Placeholder="Select a item type" AllowFiltering="true" DataSource="@itemType">
+                                    <SfDropDownList TValue="string" TItem="TransactionalItemType" Placeholder="Select a item type" AllowFiltering="true" DataSource="@itemType" @bind-Value="transactionalItemType.Name">
                                         <DropDownListEvents TItem="TransactionalItemType" TValue="string" ValueChange="@ValueChangeItemType"></DropDownListEvents>
                                         <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
                                     </SfDropDownList>
@@ -90,16 +115,31 @@
                             <div class="form-group row">
                                 <label class="control-label col-md-12">@lblWarehouseAddress: </label>
                                 <div class="col">
-                                    <input type="text" class="form-control" required />
+                                    <AddressComponent oldAddress="address"></AddressComponent>
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group row">
                             <div class="form-group row">
-                                <label class="control-label col-md-12">@lblContactPerson: </label>
-                                <div class="col">
-                                    <input type="text" class="form-control" required />
+                                <div class="position:relative;">
+                                    <label class="control-label col-md-12">@lblContactPerson: </label>
+                                    <div class="item-edit">
+                                        <label>@(Contact != null ? Contact.Name : "")</label>
+                                        <button type="button" style="float:right" @onclick='()=>SetViewElemnt("Contact")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                                    </div>
+                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEntitiesContact">
+                                        @{
+                                            if (ContactList != null)
+                                            {
+                                                foreach (var entity in ContactList)
+                                                {
+                                                    <option value="@entity?.Id">@entity?.Name</option>
+                                                }
+                                            }
+
+                                        }
+                                    </InputTextSelector>
                                 </div>
                             </div>
                         </div>
@@ -116,7 +156,7 @@
                         <MessageSaveComponent message="Electronic Address Saved" isVisible="visible"></MessageSaveComponent>
 
                         <div class="py-2">
-                            <button type="submit" class="size-btn color-btn" style="float:right"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                            <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveWareHouse(Id, warehouse))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
                             <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
                         </div>
                     </form>
@@ -128,19 +168,22 @@
 </div>
 
 
-
-
-
 @code {
     [Parameter]
     public string Id { get; set; }
+    [Parameter]
+    public bool ViewSelect { get; set; } = false;
 
     Warehouse warehouse = new Warehouse();
-
+    AtomConcept Parent = new AtomConcept();
+    AtomConcept Contact = new AtomConcept();
     Warehouse WareHouseParent = new Warehouse();
+    List<EntityActor> WareHouseParentList = new List<EntityActor>();
+    List<EntityActor> ContactList = new List<EntityActor>();
     List<Warehouse> warehouseList = new List<Warehouse>();
     TransactionalItemType transactionalItemType = new TransactionalItemType();
     List<TransactionalItemType> itemType = new List<TransactionalItemType>();
+    InputTextSelector? refInputTextSelector;
 
     private string lblWareHouseParent = "";
     private string lblAssociatedEntity = "";
@@ -153,6 +196,11 @@
     private string lblContactPerson = "";
     private string lblIsActive = "";
 
+    public string SearcherValueMode = "";
+    public bool PopupViewEntitiesWarehouseParent = false;
+    public bool PopupViewEntitiesContact = false;
+    public int ParamCountResul = 0;
+
     private bool visible { get; set; } = false;
 
     private bool isExternal { get; set; } = false;
@@ -160,6 +208,8 @@
     private bool scanSimulated { get; set; } = false;
     private bool isInventoryControlled { get; set; } = false;
     private bool isActive { get; set; } = false;
+
+    private Address address { get; set; } = new Address();
 
     protected override async Task OnInitializedAsync()
     {
@@ -173,9 +223,71 @@
         lblWarehouseAddress = UICommonFunctions.GetDisplayName(new Warehouse(), "WarehouseAddress");
         lblContactPerson = UICommonFunctions.GetDisplayName(new Warehouse(), "ContactPerson");
         lblIsActive = UICommonFunctions.GetDisplayName(new Warehouse(), "IsActive");
+        if (Id != null)
+        {
+            await GetWarehouseById(Id);
+
+        }
+
         warehouseList = await warehouseService.GetWarehouseList("all");
         itemType = await transactionalItemsService.GetSelectorListTransactionalItemTypes();
 
+    }
+
+    public void SetViewElemnt(string Element)
+    {
+        ViewSelect = false;
+        SearcherValueMode = Element;
+        if (Element == "WareHouseParent" && !PopupViewEntitiesWarehouseParent) { PopupViewEntitiesWarehouseParent = true; }
+        if (Element == "Contact" && !PopupViewEntitiesContact) { PopupViewEntitiesContact = true; }
+        StateHasChanged();
+    }
+
+    protected async void EventSearcherValue(string value)
+    {
+        if (SearcherValueMode == "WareHouseParent")
+        {
+            WareHouseParentList = await actorsNodeServive.GetEntityActorFaceList(value);
+            ParamCountResul = WareHouseParentList != null ? WareHouseParentList.Count() : 0;
+        }
+
+        if (SearcherValueMode == "Contact")
+        {
+            ContactList = await actorsNodeServive.GetEntityActorFaceList(value);
+            ParamCountResul = ContactList != null ? ContactList.Count() : 0;
+        }
+
+        if (ParamCountResul > 0) { ViewSelect = true; } else { ViewSelect = false; }
+        await Refresh();
+    }
+
+    protected async void EventIdSelectionInput(string selectionId)
+    {
+        if (SearcherValueMode == "WareHouseParent")
+        {
+            Parent = WareHouseParentList.Where(c => c.Id == selectionId).FirstOrDefault();
+        }
+
+        if (SearcherValueMode == "Contact")
+        {
+            Contact = ContactList.Where(c => c.Id == selectionId).FirstOrDefault();
+        }
+        Reload();
+        await Refresh();
+    }
+
+
+    public async Task Refresh()
+    {
+        if (refInputTextSelector != null) await refInputTextSelector.Refresh();
+        StateHasChanged();
+    }
+
+
+    private void Reload()
+    {
+        PopupViewEntitiesWarehouseParent = false;
+        PopupViewEntitiesContact = false;
     }
 
     private void ValueChangeAssociationEntity(ChangeEventArgs<string, Warehouse> args)
@@ -186,6 +298,66 @@
     private void ValueChangeItemType(ChangeEventArgs<string, TransactionalItemType> args)
     {
         transactionalItemType = args.ItemData;
+    }
+
+    private async Task GetWarehouseById(string warehouseId)
+    {
+        if (warehouseId != "" && warehouseId != "NewWarehouse")
+        {
+            var warehouseById = await warehouseService.GetWarehouseById(warehouseId);
+            if (warehouseById != null)
+            {
+                warehouse.Name = warehouseById.Name;
+                WareHouseParent = warehouseById.WareHouseParent;
+                Parent = warehouseById.WareHouseParent;
+                isExternal = warehouseById.IsExternal;
+                isTransformationFacility = warehouseById.IsTransformationFacility;
+                scanSimulated = warehouseById.ScanSimulated;
+                isInventoryControlled = warehouseById.IsInventoryControlled;
+                Contact = warehouseById.ContactPerson;
+                isActive = warehouseById.IsActive;
+                transactionalItemType.Name = warehouseById.InventoryTransactionalItemType.Name;
+                address = warehouseById.WarehouseAddress;
+                StateHasChanged();
+            }
+        }
+    }
+
+    private async void SaveWareHouse(string warehouseId, Warehouse warehouse)
+    {
+        if((warehouseId == null || warehouseId != null ) && warehouse != null)
+        {
+            if (Id != "" || Id != "NewWarehouse")
+                warehouse.Id = Id;
+            var city = actorsNodeServive.tempCity;
+            var region = actorsNodeServive.tempRegion;
+            var country = actorsNodeServive.tempCountry;
+            var address = actorsNodeServive.tempAddress;
+            //if (city != null)
+            //    warehouse.WarehouseAddress = city.Id;
+            if (address != null)
+            {
+                if(city != null && region != null && country != null)
+                {
+                    address.CityAddressRef = city.Id;
+                    address.CityAddress = city;
+                    address.CityAddress.RegionCity = region;
+                    address.CityAddress.RegionCity.CountryRegion = country;
+                    warehouse.WarehouseAddress = address;
+                }
+            }
+            warehouse.WareHouseParent = WareHouseParent;
+            warehouse.AssociatedEntity = Parent;
+            warehouse.IsExternal = isExternal;
+            warehouse.IsTransformationFacility = isTransformationFacility;
+            warehouse.ScanSimulated = scanSimulated;
+            warehouse.InventoryTransactionalItemType = transactionalItemType;
+            warehouse.ContactPerson = Contact;
+            warehouse.IsActive = isActive;
+            await warehouseService.SaveWarehuse(warehouse);
+            StateHasChanged();
+        }
+        
     }
 
     private void GoBack()

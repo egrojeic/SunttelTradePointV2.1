@@ -1,0 +1,166 @@
+﻿@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.DropDowns
+@using SunttelTradePointB.Shared.Common
+
+@inject GeographicPlacesService geoPlaces
+@inject ActorsNodeService actorsNodeService
+
+<div class="form-group row py-2">
+    <label class="control-label col-md-12">@lblAddresLine1*: </label>
+    <div class="col">
+        <input id="addres1" type="text" class="form-control" @bind-value="@address.AddressLine1" required />
+    </div>
+</div>
+
+<div class="form-group row py-2">
+   <label class="control-label col-md-12">@lblCountry*: </label>
+   <div class="col">
+      <SfDropDownList TValue="string" TItem="Country" Placeholder="Select a country" AllowFiltering="true" DataSource="@countryList" @bind-Value="country1.Name">
+         <DropDownListEvents TItem="Country" TValue="string" ValueChange="@ValueChangeCountry"></DropDownListEvents>
+         <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
+      </SfDropDownList>
+   </div>
+</div>
+
+<div class="form-group row py-2">
+   <label class="control-label col-md-12">@lblRegion*: </label>
+   <div class="col">
+      <SfDropDownList TValue="string" TItem="GeoRegion" Placeholder="Select a region" AllowFiltering="true" DataSource="@regionsList" @bind-Value="geo.Name">
+         <DropDownListEvents TItem="GeoRegion" TValue="string" ValueChange="@ValueChangeRegion"></DropDownListEvents>
+         <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
+      </SfDropDownList>
+   </div>
+</div>
+
+<div class="form-group row py-2">
+   <label class="control-label col-md-12">@lblCity*: </label>
+   <div class="col">
+        <SfDropDownList TValue="string" TItem="City" Placeholder="Select a city" AllowFiltering="true" DataSource="@citiesList" @bind-Value="city.Name">
+            <DropDownListEvents TItem="City" TValue="string" ValueChange="@ValueChangeCity"></DropDownListEvents>
+            <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
+        </SfDropDownList>
+   </div>
+</div>
+
+<div class="form-group row py-2">
+   <label class="control-label col-md-12">@lblZipCode*: </label>
+   <div class="col">
+        <input id="zipCode" type="text" class="form-control" @bind-value="@address.ZipCode" required />
+   </div>
+</div>
+
+
+@code{
+    [Parameter]
+    public Address? oldAddress { get; set; } = null;
+
+    //Geographic Place Definition
+    private List<Country>? countryList;
+
+    private List<GeoRegion>? regionsList;
+
+    private List<City>? citiesList;
+
+    private Country? currentCountry;
+    private GeoRegion? currentRegion;
+
+
+    string _countriesFilter = "";
+    string _regionsFilter = "";
+    string _citiesFilter = "";
+
+    public string lblAddresLine1 = "";
+    public string lblCountry = "";
+    public string lblRegion = "";
+    public string lblCity = "";
+    public string lblZipCode = "";
+
+    Address address = new Address();
+    City city = new City();
+    GeoRegion geo = new GeoRegion();
+    Country country1 = new Country();
+
+    protected override async Task OnInitializedAsync()
+    {
+        lblAddresLine1 = UICommonFunctions.GetDisplayName(new Address(), "AddressLine1");
+        lblCountry = UICommonFunctions.GetDisplayName(new Country(), "Name");
+        lblRegion = UICommonFunctions.GetDisplayName(new GeoRegion(), "Name");
+        lblCity = UICommonFunctions.GetDisplayName(new City(), "Name");
+        lblZipCode = UICommonFunctions.GetDisplayName(new Address(), "ZipCode");
+        await GetFilteredCountries();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if(oldAddress != null)
+        {
+            address = oldAddress;
+            if (address?.CityAddress != null)
+                city = address.CityAddress;
+            if (address?.CityAddress?.RegionCity != null)
+                geo = address.CityAddress.RegionCity;
+            if (address?.CityAddress?.RegionCity?.CountryRegion != null)
+                country1 = address.CityAddress.RegionCity.CountryRegion;
+            StateHasChanged();
+        }
+    }
+
+    private async Task GetFilteredCountries(string filterCountries = "")
+    {
+        var response = await geoPlaces.GetCountries(filterCountries);
+
+        if (response != null)
+            countryList = response.Where(c => c.Id != "000000000000000000000000").ToList();
+    }
+
+
+    private async Task LoadRegions(Country country)
+    {
+
+        var response = await geoPlaces.GetRegions(country.Id, "", true);
+        currentCountry = country;
+
+        if (response != null)
+            regionsList = response;
+
+        StateHasChanged();
+    }
+
+    private async Task GetFilteredRegions(Country country, string filterRegions = "")
+    {
+        regionsList = await geoPlaces.GetRegions(country.Id, filterRegions);
+
+    }
+
+    private async Task SetCurrentRegion(GeoRegion geoRegion)
+    {
+        currentRegion = geoRegion;
+        citiesList = await geoPlaces.GetCities(geoRegion.Id, "", true);
+        StateHasChanged();
+    }
+
+    private async Task GetFilteredCities(GeoRegion geoRegion, string filterRegions = "")
+    {
+        citiesList = await geoPlaces.GetCities(geoRegion.Id, filterRegions);
+    }
+
+    private void ValueChangeCountry(ChangeEventArgs<string, Country> args)
+    {
+        LoadRegions(args.ItemData);
+        actorsNodeService.NewCountry(args.ItemData);
+    }
+
+    private void ValueChangeRegion(ChangeEventArgs<string, GeoRegion> args)
+    {
+        SetCurrentRegion(args.ItemData);
+        actorsNodeService.NewGeoRegion(args.ItemData);
+    }
+
+    private void ValueChangeCity(ChangeEventArgs<string, City> args)
+    {
+        city = args.ItemData;
+        actorsNodeService.NewCity(args.ItemData);
+        actorsNodeService.NewEntityActorAddress(address);
+    }
+
+}

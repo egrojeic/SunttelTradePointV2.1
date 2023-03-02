@@ -39,9 +39,9 @@
             ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" } })">
                 <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
                 <GridColumns>
-                    <GridColumn Field="@nameof(Warehouse.WareHouseParent.AssociatedEntity.Name)" HeaderText="WareHouse Parent" Width="110"></GridColumn>
-                    <GridColumn Field="@nameof(Warehouse.AssociatedEntity.Name)" HeaderText="Associated Entity" Width="110"></GridColumn>
-                    <GridColumn Field="@nameof(Warehouse.IsExternal)" HeaderText="Is External" Width="110">
+                    <GridColumn Field="@nameof(Warehouse.WareHouseParent.AssociatedEntity.Name)" HeaderText="@lblWareHouseParent" Width="110"></GridColumn>
+                    <GridColumn Field="@nameof(Warehouse.AssociatedEntity.Name)" HeaderText="@lblAssociatedEntity" Width="110"></GridColumn>
+                    <GridColumn Field="@nameof(Warehouse.IsExternal)" HeaderText="@lblIsExternal" Width="110">
                         <Template>
                             @{
                                 var isExternal = (bool)context.GetType().GetProperty(nameof(Warehouse.IsExternal)).GetValue(context);
@@ -56,7 +56,7 @@
                              }
                         </Template>
                     </GridColumn>
-                    <GridColumn Field="@nameof(Warehouse.ScanSimulated)" HeaderText="Scan Simulated" Width="110">
+                    <GridColumn Field="@nameof(Warehouse.ScanSimulated)" HeaderText="@lblScanSimulated" Width="110">
                         <Template>
                             @{
                                 var ScanSimulated = (bool)context.GetType().GetProperty(nameof(Warehouse.ScanSimulated)).GetValue(context);
@@ -71,7 +71,7 @@
                             }
                         </Template>
                     </GridColumn>
-                    <GridColumn Field="@nameof(Warehouse.IsInventoryControlled)" HeaderText="Inventory Controlled" Width="110">
+                    <GridColumn Field="@nameof(Warehouse.IsInventoryControlled)" HeaderText="@lblIsInventoryControlled" Width="110">
                         <Template>
                             @{
                                 var isInventoryControlled = (bool)context.GetType().GetProperty(nameof(Warehouse.IsInventoryControlled)).GetValue(context);
@@ -86,10 +86,10 @@
                             }
                         </Template>
                     </GridColumn>
-                    <GridColumn Field="InventoryTransactionalItemType.Name" HeaderText="Inventory Transactional" Width="110"></GridColumn>
-                    <GridColumn Field="WarehouseAddress.AddressLine1" HeaderText="Address" Width="110"></GridColumn>
-                    <GridColumn Field="@nameof(Warehouse.ContactPerson.Name)" HeaderText="Contact Person" Width="110"></GridColumn>
-                    <GridColumn Field="@nameof(Warehouse.IsActive)" HeaderText="Is Active" Width="110">
+                    <GridColumn Field="InventoryTransactionalItemType.Name" HeaderText="@lblInventoryTransactionalItemType" Width="110"></GridColumn>
+                    <GridColumn Field="WarehouseAddress.AddressLine1" HeaderText="@lblWarehouseAddress" Width="110"></GridColumn>
+                    <GridColumn Field="@nameof(Warehouse.ContactPerson.Name)" HeaderText="@lblContactPerson" Width="110"></GridColumn>
+                    <GridColumn Field="@nameof(Warehouse.IsActive)" HeaderText="@lblIsActive" Width="110">
                         <Template>
                             @{
                                 var isActive = (bool)context.GetType().GetProperty(nameof(Warehouse.IsActive)).GetValue(context);
@@ -124,6 +124,17 @@
     bool isLoading = false;
     string _filterItems = "";
 
+    private string lblWareHouseParent = "";
+    private string lblAssociatedEntity = "";
+    private string lblIsExternal = "";
+    private string lblIsTransformationFacility = "";
+    private string lblScanSimulated = "";
+    private string lblIsInventoryControlled = "";
+    private string lblInventoryTransactionalItemType = "";
+    private string lblWarehouseAddress = "";
+    private string lblContactPerson = "";
+    private string lblIsActive = "";
+
     public string? conceptFilter
     {
         get { return _filterItems; }
@@ -136,6 +147,16 @@
 
     protected override async Task OnInitializedAsync()
     {
+        lblWareHouseParent = UICommonFunctions.GetDisplayName(new Warehouse(), "WareHouseParent");
+        lblAssociatedEntity = UICommonFunctions.GetDisplayName(new Warehouse(), "AssociatedEntity");
+        lblIsExternal = UICommonFunctions.GetDisplayName(new Warehouse(), "IsExternal");
+        lblIsTransformationFacility = UICommonFunctions.GetDisplayName(new Warehouse(), "IsTransformationFacility");
+        lblScanSimulated = UICommonFunctions.GetDisplayName(new Warehouse(), "ScanSimulated");
+        lblIsInventoryControlled = UICommonFunctions.GetDisplayName(new Warehouse(), "IsInventoryControlled");
+        lblInventoryTransactionalItemType = UICommonFunctions.GetDisplayName(new Warehouse(), "InventoryTransactionalItemType");
+        lblWarehouseAddress = UICommonFunctions.GetDisplayName(new Warehouse(), "WarehouseAddress");
+        lblContactPerson = UICommonFunctions.GetDisplayName(new Warehouse(), "ContactPerson");
+        lblIsActive = UICommonFunctions.GetDisplayName(new Warehouse(), "IsActive");
         await GetFilterWarehouse();
     }
 

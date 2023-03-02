@@ -14,7 +14,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         List<EntityActor>? entityNodesList;
         EntityActor? tempEntityActor { get; set; }
-        Address? tempAddress { get; set; }
+        public Address? tempAddress { get; set; }
+
+        public City? tempCity { get; set; }
+        public GeoRegion tempRegion { get; set; }
+        public Country tempCountry { get; set; }
 
         public string Host { get { return "https://localhost:7186/uploads/entityImages"; } }
 
@@ -831,6 +835,51 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 if(tempAddress == null)
                     tempAddress = address;
                 return tempAddress;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<Country> NewCountry(Country country)
+        {
+            try
+            {
+                if (tempCountry == null || tempCountry != null)
+                    tempCountry = country;
+                return tempCountry;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<GeoRegion> NewGeoRegion(GeoRegion geoRegion)
+        {
+            try
+            {
+                if (tempRegion == null || tempRegion != null)
+                    tempRegion = geoRegion;
+                return tempRegion;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<City> NewCity(City? city)
+        {
+            try
+            {
+                if (tempCity == null || tempCity != null )
+                    tempCity = city;
+                return tempCity;
             }
             catch (Exception ex)
             {

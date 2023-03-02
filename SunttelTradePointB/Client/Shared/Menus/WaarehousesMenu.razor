@@ -1,9 +1,11 @@
 ﻿@using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.SplitButtons
 
+@inject NavigationManager Navigation
+
 <div id="container-menu-general">
     <nav>
-        <button class="general-menu-button"><i class="fa-solid fa-file"></i> Create New...</button>
+        <button class="general-menu-button" @onclick="NewWarehouse"><i class="fa-solid fa-file"></i> Create New...</button>
 
         <SfSplitButton Content="Import Data" IconCss="fa-solid fa-file-import" CssClass="splitButtonsStyle">
             <DropDownMenuItems>
@@ -49,5 +51,9 @@
         }
     }
 
+    public void NewWarehouse()
+    {
+        Navigation.NavigateTo("/WarehousesGeneral/NewWarehouse");
+    }
 }
 

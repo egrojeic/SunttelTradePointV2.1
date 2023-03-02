@@ -7,7 +7,7 @@ using System.Net.Http;
 
 namespace SunttelTradePointB.Client.Services.MasterTablesServices
 {
-    public class WarehouseService
+    public class WarehouseService: IWarehouse
     {
         private readonly HttpClient _httpClient;
 
