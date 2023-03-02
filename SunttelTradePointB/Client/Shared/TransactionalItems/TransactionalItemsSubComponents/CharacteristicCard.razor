@@ -109,15 +109,15 @@
         {
             if (transactionalService.ConcepttransactionalItemCharacteristicPair!=null)
             {
-                var item = transactionalService.ConcepttransactionalItemCharacteristicPair;
-                if (item != null)
+
+                transactionalItemCharacteristicPair = transactionalService.ConcepttransactionalItemCharacteristicPair;
+                if (transactionalItemCharacteristicPair != null)
                 {
-                    transactionalItemTypeCharacteristic = item.TransactionalItemCharacteristic;
-                    transactionalItemCharacteristicPair.Value = item.Value;
-                    string id = item.TransactionalItemCharacteristic.Id != null ? item.TransactionalItemCharacteristic.Id:"";
-                    ModeSearcher = "TransactionalItemTypeCharacteristic";
-                    transactionalItemCharacteristicPairs = await transactionalService.GetCharacteristic(_transactionalItemId);
-                    EventIdSelection(id);
+                    transactionalItemTypeCharacteristic = transactionalItemCharacteristicPair.TransactionalItemCharacteristic;
+                    transactionalItemCharacteristicPair.Value = transactionalItemCharacteristicPair.Value;
+                    string id = transactionalItemCharacteristicPair.TransactionalItemCharacteristic.Id != null ? transactionalItemCharacteristicPair.TransactionalItemCharacteristic.Id : "";
+                    ModeSearcher = "TransactionalItemTypeCharacteristic";   
+                    possibleValues = transactionalItemCharacteristicPair.TransactionalItemCharacteristic.PossibleValues != null ? transactionalItemCharacteristicPair.TransactionalItemCharacteristic.PossibleValues : new();
                 }               
 
             }

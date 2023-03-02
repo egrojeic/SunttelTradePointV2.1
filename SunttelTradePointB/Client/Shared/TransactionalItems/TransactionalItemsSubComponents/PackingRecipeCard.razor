@@ -29,11 +29,11 @@
             </PageTitleComponent>
             <div class="panelMenuContainer">
                 <div class="flex-horizontal-start">
-                   
-                        <div class="nav-link-style">
-                            <a target="_blank" href="/Products"><i class="fa-sharp fa-solid fa-circle-plus"></i> Material </a>
-                        </div>
-                    
+
+                    <div class="nav-link-style">
+                        <a target="_blank" href="/Products"><i class="fa-sharp fa-solid fa-circle-plus"></i> Material </a>
+                    </div>
+
                 </div>
             </div>
             <div>
@@ -115,19 +115,19 @@
                         <div class="form-group">
                             <div style="display:flex; flex-direction:row;">
                                 <div class="conten-chip margin-left-control">
-                                     <div class="position-input">
-                                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventClosed="ClosedInputText" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewAddImg">
-                                        @{
-                                            if (transactItemImages != null)
-                                            {
-                                                foreach (var group in transactItemImages)
+                                    <div class="position-input">
+                                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventClosed="ClosedInputText" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewAddImg">
+                                            @{
+                                                if (transactItemImages != null)
                                                 {
-                                                    <option value="@group?.Id">@group?.Name</option>
+                                                    foreach (var group in transactItemImages)
+                                                    {
+                                                        <option value="@group?.Id">@group?.Name</option>
+                                                    }
                                                 }
-                                            }
 
-                                        }
-                                    </InputTextSelector>
+                                            }
+                                        </InputTextSelector>
                                     </div>
                                 </div>
                                 <div>
@@ -201,18 +201,18 @@
                         <label>@(itemComponent != null ? itemComponent.Name : "")</label>
                         <button type="button" @onclick='()=>SetViewElemnt("ItemComponent")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                     </div>
-                     <div class="position-input">
-                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditItemComponent">
-                        @{
-                            if (itemComponents != null)
-                            {
-                                foreach (var Element in itemComponents)
+                    <div class="position-input">
+                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditItemComponent">
+                            @{
+                                if (itemComponents != null)
                                 {
-                                    <option value="@Element?.Id">@Element?.Name</option>
+                                    foreach (var Element in itemComponents)
+                                    {
+                                        <option value="@Element?.Id">@Element?.Name</option>
+                                    }
                                 }
                             }
-                        }
-                    </InputTextSelector>
+                        </InputTextSelector>
                     </div>
                 </div>
                 <div>
@@ -227,18 +227,18 @@
                         <button type="button" @onclick='()=>SetViewElemnt("RecipeQualityModifier")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                     </div>
                     <div class="position-input">
-                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditItemModifier">
-                        @{
-                            if (recipeModifiers != null)
-                            {
-                                foreach (var Element in recipeModifiers)
+                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditItemModifier">
+                            @{
+                                if (recipeModifiers != null)
                                 {
-                                    <option value="@Element?.Id">@Element?.Name</option>
+                                    foreach (var Element in recipeModifiers)
+                                    {
+                                        <option value="@Element?.Id">@Element?.Name</option>
+                                    }
                                 }
                             }
-                        }
-                    </InputTextSelector>
-                </div>
+                        </InputTextSelector>
+                    </div>
                 </div>
 
                 <div><label>@GetName( "Quantity",new MaterialRecipeItem())</label></div>
@@ -325,19 +325,19 @@
                                 <label>@(ConceptMaterialAssembly != null ? ConceptMaterialAssembly.Name : "")</label>
                                 <button type="button" @onclick='()=>SetViewElemnt("MaterialAssembly")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                             </div>
-                             <div class="position-input">
-                            <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewMaterialAssembly">
-                                @{
-                                    if (ConceptMaterialsAssembly != null)
-                                    {
-                                        foreach (var customer in ConceptMaterialsAssembly)
+                            <div class="position-input">
+                                <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewMaterialAssembly">
+                                    @{
+                                        if (ConceptMaterialsAssembly != null)
                                         {
-                                            <option value="@customer?.Id">@customer?.Name</option>
+                                            foreach (var customer in ConceptMaterialsAssembly)
+                                            {
+                                                <option value="@customer?.Id">@customer?.Name</option>
+                                            }
                                         }
-                                    }
 
-                                }
-                            </InputTextSelector>
+                                    }
+                                </InputTextSelector>
                             </div>
                         </div>
                     </div>
@@ -403,7 +403,7 @@
                         <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
                     </DropDownMenuItems>
                 </SfSplitButton>
-              
+
             </nav>
         </div>
 
@@ -677,7 +677,7 @@
                                 </div>
                                 @* string UPCName*@
                                 <div><label> @GetName("UPCName", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.UPCComments" class="form-control border-color" required /></div>
+                                <div><input @bind="labelInstruction.UPCName" class="form-control border-color" required /></div>
 
                                 <div>
                                     <label>
@@ -732,9 +732,9 @@
                                 <div><label> @GetName("SKU", new LabelInstruction()) </label></div>
                                 <div><input @bind="labelInstruction.SKU" class="form-control border-color" required /></div>
                                 <div><label> @GetName("ShowRetailPriceUPCInfo", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.ShowRetailPriceUPCInfo" class="form-control border-color" required /></div>
-
-
+                                <div>
+                                    <SfSwitch @bind-Checked="@labelInstruction.ShowRetailPriceUPCInfo"></SfSwitch>
+                                </div>
                             </div>
                         </div>
                     </ContentTemplate>
@@ -967,6 +967,7 @@
             _PackingSpecs = transactionalService.ConceptTransactionalItemPackingSpecs;
             if (_PackingSpecs != null)
             {
+                #region Tag1
                 Customer = _PackingSpecs.Customer != null ? _PackingSpecs.Customer : new Concept();
                 Season = _PackingSpecs.Season != null ? _PackingSpecs.Season : new SeasonBusiness();
                 ModelRecipe = _PackingSpecs.ModelRecipe != null ? _PackingSpecs.ModelRecipe : new ProductModel();
@@ -974,9 +975,29 @@
                 BoxToBuy = _PackingSpecs.PackingBoxToBuy != null ? _PackingSpecs.PackingBoxToBuy : new Box(); ;
                 BoxToSale = _PackingSpecs.PackingBoxToSale != null ? _PackingSpecs.PackingBoxToSale : new Box();
                 listOfMaterials = _PackingSpecs.ListOfMaterials != null ? _PackingSpecs.ListOfMaterials : new List<MaterialRecipeItem>();
-                SetMaterialToView();
                 labelInstruction = _PackingSpecs.CustomerLabelInstructions != null ? _PackingSpecs.CustomerLabelInstructions : new LabelInstruction();
                 assemblyRecipeItems = _PackingSpecs.AssemblyRecipeItems != null ? _PackingSpecs.AssemblyRecipeItems : new();
+                assemblyType = _PackingSpecs.ItemAssemblyType != null ? _PackingSpecs.ItemAssemblyType : new();
+                if (_PackingSpecs.Price != null)
+                {
+                    totalPriceItemTypeBasedOn = _PackingSpecs.Price.TotalPriceItemTypeBasedOn != null ? _PackingSpecs.Price.TotalPriceItemTypeBasedOn : new();
+                }
+
+                SetMaterialToView();
+                #endregion Tag1
+
+                #region Tag 2
+                if (_PackingSpecs.CustomerLabelInstructions != null)
+                {
+                    labelInstruction = _PackingSpecs.CustomerLabelInstructions;
+                    palletLabelStyle = labelInstruction.PalletLabelStyle != null ? labelInstruction.PalletLabelStyle : new();
+                    BoxLabelStyle = labelInstruction.BoxLabelStyle !=null?labelInstruction.BoxLabelStyle: new();
+                    InnerProductLabelStyleByDeafult = labelInstruction.InnerProductLabelStyleByDeafult != null ? labelInstruction.InnerProductLabelStyleByDeafult : new();
+                }
+
+
+                #endregion Tag 2
+
                 StateHasChanged();
             }
         }
@@ -992,11 +1013,12 @@
         {
 
             bool status = false;
-
+            #region Tag 1
             _PackingSpecs.Customer = Customer != null ? Customer : new();
             _PackingSpecs.Season = Season != null ? Season : new();
             _PackingSpecs.ModelRecipe = ModelRecipe != null ? ModelRecipe : new();
             _PackingSpecs.Price = PriceInfo != null ? PriceInfo : new();
+            _PackingSpecs.Price.TotalPriceItemTypeBasedOn = totalPriceItemTypeBasedOn;
             _PackingSpecs.PackingBoxToBuy = BoxToBuy != null ? BoxToBuy : new();
             _PackingSpecs.PackingBoxToSale = BoxToSale != null ? BoxToSale : new();
             _PackingSpecs.ListOfMaterials = listOfMaterials != null ? listOfMaterials : new();
@@ -1010,6 +1032,20 @@
             assemblyRecipeItems.Add(assemblyRecipeItem);
             _PackingSpecs.AssemblyRecipeItems = assemblyRecipeItems != null ? assemblyRecipeItems : new();
             _PackingSpecs.ItemAssemblyType = assemblyType != null ? assemblyType : new();
+
+
+            #endregion Tag 1
+
+            #region Tag 2
+            _PackingSpecs.CustomerLabelInstructions = labelInstruction != null ? labelInstruction : new();
+            _PackingSpecs.CustomerLabelInstructions.PalletLabelStyle = palletLabelStyle != null ? palletLabelStyle : new();
+            _PackingSpecs.CustomerLabelInstructions.BoxLabelStyle = BoxLabelStyle != null ? BoxLabelStyle : new();
+            _PackingSpecs.CustomerLabelInstructions.InnerProductLabelStyleByDeafult = InnerProductLabelStyleByDeafult != null ? InnerProductLabelStyleByDeafult : new();
+
+
+            #endregion Tag 2
+
+
 
 
 

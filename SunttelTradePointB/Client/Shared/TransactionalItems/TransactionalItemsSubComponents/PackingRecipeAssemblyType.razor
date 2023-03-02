@@ -1,0 +1,128 @@
+﻿@page "/ItemAssemblyType/{Page}/{Mode}"
+@page "/ItemAssemblyType/{Page}/{SubPage}/{Mode}"
+@using Syncfusion.Blazor.Popups
+@using SunttelTradePointB.Shared.Common
+@inject TransactionalItemsService transactionalService;
+@inject NavigationManager Navigation
+
+
+
+@if (@viewMsg)
+{
+    <MessageSaveComponent isVisible="viewMsg" message="@msg">
+    </MessageSaveComponent>
+}
+<PageTitleComponent Title="@GetName("ItemAssemblyType", new PackingSpecs())" IconName=""
+                    Description="Here you can add tags">
+</PageTitleComponent>
+
+
+
+<div class="flex-horizontal-center">
+    <div class="grid-mode-row">
+        <div><label>@GetName("Name", new AtomConcept())</label></div>
+        <div> <input @bind-value="itemAssemblyType.Name" class="form-control" placeholder="Edit key" /></div>
+        <div> <label>@GetName("Code", new AtomConcept())</label></div>
+        <div> <input @bind-value="itemAssemblyType.Code" class="form-control" placeholder="Edit value" /></div>
+        <div> <label>@GetName("Notes", new AtomConcept())</label></div>
+        <div> <input @bind-value="itemAssemblyType.Notes" class="form-control" placeholder="Edit value" /></div>
+        <div></div>
+        <div class="flex-horizontal-end">
+            <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+            <button @onclick="Save" class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+@code {
+    [Parameter]
+    public string Mode { get; set; }
+    [Parameter]
+    public string Page { get; set; }
+    [Parameter]
+    public string SubPage { get; set; }
+    [Parameter]
+   public string filter { get; set; }
+
+    public AssemblyType itemAssemblyType = new();
+    public List<AssemblyType> itemAssemblysType = new();
+
+    bool viewMsg = false;
+    string msg = "";
+    int status = 0;
+    string transactionalItemId = "";
+
+    protected override Task OnInitializedAsync()
+    {
+
+        if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
+        {
+            transactionalItemId = transactionalService.transactionalItemId;
+        }
+
+        if (Mode == "Edit")
+        {
+
+        }
+
+        if (Mode == "Add")
+        {
+            itemAssemblyType = new();
+        }
+
+
+
+        return base.OnInitializedAsync();
+    }
+
+
+
+
+    private async void Save()
+    {
+        var result = await transactionalService.SaveAssemblyType(itemAssemblyType);
+        if (result)
+        {
+            MsgOpen("Saved", 1);
+        }
+        else
+        {
+            MsgOpen("No saved", 1);
+        }
+        StateHasChanged();
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    public async Task Closed(string Element)
+    {
+        if (Element == "control")
+        {
+            if (SubPage== "")
+            {
+                Navigation.NavigateTo($"/{Page}/0/{Mode}");
+            }
+            else
+            {
+                Navigation.NavigateTo($"/{Page}/{filter}");                
+            }
+
+        }
+        StateHasChanged();
+    }
+    public void MsgOpen(string _msg, int _status)
+    {
+        viewMsg = true;
+        msg = _msg;
+        status = _status;
+    }
+
+}
