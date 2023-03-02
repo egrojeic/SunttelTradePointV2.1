@@ -866,7 +866,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-
         //---
         public async Task<bool> SaveCharacteristics(string? transactionalItemId, ProductModel productModel)
         {
