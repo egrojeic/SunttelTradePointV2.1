@@ -24,7 +24,7 @@
         @if (@pageView == "ListOfMaterials")
         {
 
-            <PageTitleComponent Title="@GetName( "Material", new MaterialRecipeItem())" IconName="TransactionalTypes.png"
+            <PageTitleComponent Title="@GetName( "Material", new MaterialRecipeItem())" IconName="material.png"
                             Description="@($"Here you can add {GetName( "Material", new MaterialRecipeItem()).ToLower()}")">
             </PageTitleComponent>
             <div class="panelMenuContainer">
@@ -79,7 +79,7 @@
 
         @if (@pageView == "Material")
         {
-            <PageTitleComponent Title="@GetName( "Material", new MaterialRecipeItem())" IconName="TransactionalTypes.png"
+            <PageTitleComponent Title="@GetName( "Material", new MaterialRecipeItem())" IconName="material.png"
                             Description="@($"Here you can create {GetName( "Material", new MaterialRecipeItem()).ToLower()}")">
             </PageTitleComponent>
 
@@ -163,7 +163,7 @@
 
         @if (@pageView == "AssemblyRecipeItems")
         {
-            <PageTitleComponent Title="@GetName("AssemblyRecipeItems", new PackingSpecs())" IconName="TransactionalTypes.png"
+            <PageTitleComponent Title="@GetName("AssemblyRecipeItems", new PackingSpecs())" IconName="assemblyRecipe.png"
                             Description="@($"Here you can add {GetName("AssemblyRecipeItems", new PackingSpecs())}")">
             </PageTitleComponent>
 
@@ -313,7 +313,7 @@
 
         @if (@pageView == "ListOfMaterialsAssembly")
         {
-            <PageTitleComponent Title="@GetName( "MaterialRecipeItem", new PackRecipeItem())" IconName="TransactionalTypes.png"
+            <PageTitleComponent Title="@GetName( "MaterialRecipeItem", new PackRecipeItem())" IconName="material.png"
                             Description="@($"Here you can add {GetName( "MaterialRecipeItem", new PackRecipeItem()).ToLower()}")">
             </PageTitleComponent>
 
@@ -361,7 +361,7 @@
 
         @if (@pageView == "ComponentItemRecipeAssembly")
         {
-            <PageTitleComponent Title="@GetName( "ComponentItemRecipe", new PackRecipeItem())" IconName="TransactionalTypes.png"
+            <PageTitleComponent Title="@GetName( "ComponentItemRecipe", new PackRecipeItem())" IconName="assemblyRecipe.png"
                             Description="@($"Here you can add {GetName( "ComponentItemRecipe", new MaterialRecipeItem())}")">
             </PageTitleComponent>
 
@@ -385,7 +385,7 @@
     </div>
 
     <div class="content-new-packing-recipe" style=' display:@(modeEdit?"block":"none"); };'>
-        <PageTitleComponent Title="@GetName("ProductPackingSpecs", new TransactionalItem())" IconName="TransactionalTypes.png"
+        <PageTitleComponent Title="@GetName("ProductPackingSpecs", new TransactionalItem())" IconName="PackingSpecs.png"
                             Description="@($"Here you can add {@GetName("ProductPackingSpecs", new TransactionalItem())}")">
         </PageTitleComponent>
 
@@ -420,6 +420,7 @@
                         <TabHeader Text="@GetName("ProductPackingSpecs", new TransactionalItem())"></TabHeader>
                     </ChildContent>
                     <ContentTemplate>
+                        @(pageView = "ProductPackingSpecs");
                         <div id="add-recipe">
                             <div class="grid-columns-4">
                                 <div><label>@GetName( "Customer", new PackingSpecs())</label></div>
@@ -630,7 +631,7 @@
                         <TabHeader Text="@GetName( "CustomerLabelInstructions", new PackingSpecs())"></TabHeader>
                     </ChildContent>
                     <ContentTemplate>
-
+                        @(pageView = "PalletLabelStyle");
                         <div id="add-recipe">
                             <div class="grid-columns-4">
                                 <div>
@@ -746,6 +747,7 @@
                         <TabHeader Text="@GetName( "ListOfMaterials",new PackingSpecs())"></TabHeader>
                     </ChildContent>
                     <ContentTemplate>
+                        @(pageView ="ListOfMaterials");
                         <div style="display:flex; flex-direction:column; justify-content:center;">
 
                             <div class="detailsTitleContainer">
@@ -1313,6 +1315,7 @@
         if (SearcherValueMode == "ItemAssemblyType")
         {
             if (assemblyTypes == null) assemblyTypes = new();
+
             assemblyTypes = await transactionalService.GetSelectorListAssemblyTypes(value);
             ParamCountResul = assemblyTypes != null ? assemblyTypes.Count() : 0;
         }
@@ -1324,22 +1327,20 @@
         }
         if (SearcherValueMode == "RecipeQualityModifier")
         {
-
-            var transactionalItems = transactionalService.TransactionalItems;
             recipeQualityModifiers = new();
-            if (transactionalItems != null)
+            if (itemComponents != null)
             {
-                ConceptType type = transactionalItems.TypeOfConcept != null ? transactionalItems.TypeOfConcept : null;
+               
+                ConceptType type = itemComponent.TypeOfConcept != null ? itemComponent.TypeOfConcept : null;
                 if (type != null)
                 {
                     var itemTypes = await transactionalService.GetTransactionalItemTypes(type.Name);
                     var resul = itemTypes.Where(s => s.Id == type.Id).FirstOrDefault();
-                    // GetProductRecipeQualityModifiersByModifierId();
-
+            
                     if (!value.ToLower().Contains("all") && !value.ToLower().Contains("todo"))
                     {
                         recipeModifiers = resul.InRecipeModifiers.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
-                       
+                      
                     }
                     else
                     {
@@ -1388,8 +1389,30 @@
         }
         if (SearcherValueMode == "ItemComponent")
         {
-            itemComponents = await transactionalService.GetConceptProduct(value);
-            ParamCountResul = itemComponents.Count();
+            var data = await transactionalService.GetTransactionalItemsList(1, 250, value);
+            //itemComponents = await transactionalService.GetConceptProduct(value);
+         
+            foreach (TransactionalItem item in data)
+            {
+                itemComponents.Add(new Concept
+                    {
+                        Name = item.Name != null ? item.Name : "",
+                        Id = item.Id != null ? item.Id : "",
+                        AuditRecord = item.AuditRecord != null ? item.AuditRecord : new(),
+                        Code = item.Code != null ? item.Code : "",
+                        SkinImageName = item.SkinImageName != null ? item.SkinImageName : "",
+                        Status = item.Status != null ? item.Status : new(),
+                        IsSelected = item.IsSelected != null ? item.IsSelected : false,
+                        Groups = item.Groups != null ? item.Groups : new(),
+                        HasChanged = item.HasChanged != null ? item.HasChanged : false,
+                        IsLoadingData = item.IsLoadingData != null ? item.IsLoadingData : default(bool),
+                        LegacyId = item.LegacyId != null ? item.LegacyId : "",
+                        Notes = item.Notes != null ? item.Notes : "",
+                        TypeOfConcept = item.TypeOfConcept != null ? item.TypeOfConcept : new(),
+
+                    });
+            }
+            ParamCountResul = itemComponents !=null?itemComponents.Count():0;
         }
 
         if (ParamCountResul > 0) { ViewSelect = true; } else { ViewSelect = false; }

@@ -53,7 +53,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// </summary>
         /// <param name="nameLike"></param>       
         /// <returns></returns>
-        Task<List<TransactionalItemTag>> GetSelectorListTag(string? nameLike = null);      
+        Task<List<TransactionalItemTag>> GetSelectorListTag(string? nameLike = null);
 
         /// <summary>
         /// Retrives a list with Path Images Items meeting search criteria
@@ -87,7 +87,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <returns></returns>
-        Task<List<Box>> GetBoxTable( string? nameLike = null);
+        Task<List<Box>> GetBoxTable(string? nameLike = null);
 
         /// <summary>
         /// Retrives Boxsed  with search criteria
@@ -118,7 +118,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// </summary>
         /// <param name="nameLike"></param>              
         /// <returns></returns>
-        Task<List<TransactionalItemType>> GetTransactionalItemType( string? nameLike = null);
+        Task<List<TransactionalItemType>> GetTransactionalItemType(string? nameLike = null);
 
         /// <summary>
         /// Retrives a list with Transactional Statuses meeting search criteria
@@ -126,6 +126,173 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <param name="nameLike"></param>              
         /// <returns></returns>
         Task<List<TransactionalItemStatus>> GetTransactionalStatusesTable(string? nameLike = null);
+
+
+        /// <summary>
+        /// Retrives a list with transactional item status meeting search criteria
+        /// </summary>
+        /// <param name="filterString"></param>              
+        /// <returns></returns>
+        Task<TransactionalItemStatus> GetSelectorListPackingMaterials(string? filterString = null);
+
+        /// <summary>
+        /// Retrives a list with transactional item status meeting search criteria
+        /// </summary>
+        /// <param name="transactionalItemTypeId"></param>              
+        /// <returns></returns>
+        Task<List<RecipeModifier>> GetRecipeModifiersByTypeID(string? transactionalItemTypeId = null);
+
+        /// <summary>
+        /// Retrives a list with assembly type meeting search criteria
+        /// </summary>
+        /// <param name="filterString"></param>              
+        /// <returns></returns>
+        Task<List<AssemblyType>> GetSelectorListAssemblyTypes(string? filterString = null);
+
+        /// <summary>
+        /// Retrives a transactional item meeting search criteria
+        /// </summary>
+        /// <param name="transactionalItemId"></param>              
+        /// <returns></returns>
+        Task<TransactionalItem> GetTransactionalItemById(string? transactionalItemId = null);
+
+        /// <summary>
+        /// No parameter                
+        /// <returns></returns>
+        Task<List<Box>> GetBoxes();
+
+        /// <summary>
+        /// Retrives a list with label style meeting search criteria
+        /// </summary>
+        /// <param name="labelStyleId"></param>              
+        /// <returns></returns>
+        Task<LabelStyle> GetLabelStyle(string? labelStyleId = null);
+
+        /// <summary>
+        /// Retrives a list with concept group meeting search criteria
+        /// </summary>
+        /// <param name="filterCondition"></param>              
+        /// <returns></returns>
+        Task<List<ConceptGroup>> GetSelectorListTransactionalItemGroups(string? filterCondition = null);
+
+        /// <summary>
+        /// Retrives a list with label style  meeting search criteria
+        /// </summary>
+        /// <param name="filterCondition"></param>              
+        /// <returns></returns>
+        Task<List<LabelStyle>> GetLabelStyles(string? filterCondition = null);
+
+
+        /// <summary>
+        /// Retrives a list with product model  meeting search criteria
+        /// </summary>
+        /// <param name="transactionalItemId"></param>              
+        /// <returns></returns>
+        Task<List<ProductModel>> GetSelectorListTransactionalItemModels(string? transactionalItemId = null);
+
+
+        /// <summary>
+        /// Retrives a list with transactionalItem type  meeting search criteria
+        /// </summary>
+        /// <param name="filterCondition"></param>              
+        /// <returns></returns>
+        Task<List<TransactionalItemType>> GetSelectorListTransactionalItemTypes(string? filterCondition = null);
+
+        /// <summary>
+        /// Retrives a list with transactionalItem type  meeting search criteria
+        /// </summary>
+        /// <param name="modifierId"></param>              
+        /// <returns></returns>
+        Task<List<TransactionalItemType>> GetProductRecipeQualityModifiersByModifierId(string? modifierId = null);
+
+        /// <summary>
+        /// Retrives a list with transactionalItem characteristic pair  meeting search criteria
+        /// </summary>
+        /// <param name="transactionalItemTypeId"></param>              
+        /// <returns></returns>
+        Task<List<TransactionalItemCharacteristicPair>> GetCharacteristic(string? transactionalItemTypeId = null);
+
+        /// <summary>
+        /// Retrives a list with label paper  meeting search criteria
+        /// </summary>
+        /// <param name="filterCondition"></param>              
+        /// <returns></returns>
+        Task<List<LabelPaper>> GetSelectorListLabelPaper(string? filterCondition = null);
+
+        /// <summary>
+        /// Retrives a list with label paper  meeting search criteria
+        /// </summary>
+        /// <param name="labelPaperId"></param>              
+        /// <returns></returns>
+        Task<LabelPaper> GetConceptPaperId(string? labelPaperId = null);
+
+
+
+        /// <summary>
+        /// Retrives a list with transactionalItem type  meeting search criteria
+        /// </summary>
+        /// <param name="filterCondition"></param>              
+        /// <returns></returns>
+        Task<List<TransactionalItemType>> GetTransactionalItemTypes(string? filterCondition = null);
+
+
+
+        /// <summary>
+        /// Retrives a list with season business  meeting search criteria
+        /// </summary>
+        /// <param name="filterCondition"></param>              
+        /// <returns></returns>
+        Task<List<SeasonBusiness>> GetSeasons(string? filterCondition = null);
+
+
+        /// <summary>
+        /// Retrives a list with box meeting search criteria
+        /// </summary>
+        /// <param name="filterCondition"></param>              
+        /// <returns></returns>
+        Task<List<Box>> GetSelectorListBoxes(string? filterCondition = null);
+
+        /// <summary>
+        /// Save a  assembly type
+        /// </summary>       
+        /// <param name="assemblyType"></param>              
+        /// <returns></returns>
+        Task<bool> SaveAssemblyType(AssemblyType assemblyType);
+        
+
+        /// <summary>
+        /// Save a  label paper
+        /// </summary>       
+        /// <param name="LabelPaper"></param>              
+        /// <returns></returns>
+        Task<bool> SaveConceptPaper(LabelPaper labelPaper);
+
+
+        /// <summary>
+        /// Save a  label style
+        /// </summary>       
+        /// <param name="labelStyle"></param>              
+        /// <returns></returns>
+        Task<bool> SaveLabelStyle(LabelStyle labelStyle);
+
+        /// <summary>
+        /// Save a  product model
+        /// </summary>
+        /// <param name="transactionalItemId"></param>              
+        ///   /// <param name="productModel"></param>              
+        /// <returns></returns>
+        Task<bool> SaveTransactionalItemModels(string? transactionalItemId, ProductModel productModel);
+
+
+        /// <summary>
+        /// save a  characteristics
+        /// </summary>
+        /// <param name="transactionalItemId"></param>              
+        /// <param name="transactionalItemCharacteristicPair"></param>              
+        /// <returns></returns>
+        Task<bool> SaveCharacteristics(string? transactionalItemId, TransactionalItemCharacteristicPair transactionalItemCharacteristicPair);
+
+
 
         /// save a Packing Spec
         /// </summary>
@@ -160,7 +327,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <param name="transactionalItemId"></param>
         /// <param name="transactionalItemQualityPair"></param>   
         /// <returns></returns>
-        Task<bool> SaveQualityParameters(string transactionalItemId,TransactionalItemQualityPair transactionalItemQualityPair);
+        Task<bool> SaveQualityParameters(string transactionalItemId, TransactionalItemQualityPair transactionalItemQualityPair);
 
         /// Save Transactional Item
         /// </summary>      
@@ -186,13 +353,13 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// </summary>
         /// <param name="transactionalItemType"></param>   
         /// <returns></returns>
-        Task<bool> SaveTransactionalItemType( TransactionalItemType transactionalItemType);
+        Task<bool> SaveTransactionalItemType(TransactionalItemType transactionalItemType);
 
         /// Save Transactional Item Group
         /// </summary>       
         /// <param name="conceptGroup"></param>   
         /// <returns></returns>
-        Task<bool> SaveTransactionalItemGroup( ConceptGroup conceptGroup);
+        Task<bool> SaveTransactionalItemGroup(ConceptGroup conceptGroup);
 
         /// Save Status
         /// </summary>

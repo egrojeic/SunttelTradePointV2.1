@@ -152,12 +152,11 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border-width: 10px;
-    box-shadow: 0px 0px 1px 1px #ced4da;
-    border-radius:4px;
-    border-color: #ced4da;
+    box-shadow: 0px 0px 0.1px #ced4da;
+    border-radius: 4px;
     min-width: 270px;
-    height: 47px;
+    height: 40px;
+    border-width: 0.1px;
     padding-right: 1px;
 }
 
@@ -269,8 +268,9 @@
     align-items: center;
     align-content: center;
     min-height: 860px;
+    max-width:1100px;
     padding-bottom: 50px;
-    overflow: auto;
+    overflow: hidden;
 }
 
     .flex-horizontal-center .conten-new-imge {
