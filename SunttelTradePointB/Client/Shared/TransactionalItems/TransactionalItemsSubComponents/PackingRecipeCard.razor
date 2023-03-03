@@ -176,7 +176,7 @@
                         <DropDownMenuItems>
                             <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
                             <DropDownMenuItem Separator="true"></DropDownMenuItem>
-                            <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                            <DropDownMenuItem Text="Add" IconCss="fa-sharp fa-solid fa-circle-plus"></DropDownMenuItem>
                             <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
                             <DropDownMenuItem Separator="true"></DropDownMenuItem>
                             <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
@@ -268,12 +268,12 @@
                                 @if (materialsRecipeItemsAssembly == null) { materialsRecipeItemsAssembly = new List<MaterialRecipeItem>(); }
 
 
-                                <DataGrid TParameter="MaterialRecipeItem"
+                                @*<DataGrid TParameter="MaterialRecipeItem"
                                       EventCallbackMenu="OnContextMenuClick"
                                       parameterList="materialsRecipeItemsAssembly"
                                       GridColumnsList="gridColumnListListOfMaterials"
                                       Width="100%">
-                                </DataGrid>
+                                </DataGrid>*@
                             </div>
 
                         </ContentTemplate>
@@ -296,12 +296,12 @@
                                 @if (materialsRecipeItemsAssembly == null) { materialsRecipeItemsAssembly = new List<MaterialRecipeItem>(); }
 
 
-                                <DataGrid TParameter="MaterialRecipeItem"
+                               @* <DataGrid TParameter="MaterialRecipeItem"
                                       EventCallbackMenu="OnContextMenuClick"
                                       parameterList="materialsRecipeItemsAssembly"
                                       GridColumnsList="gridColumnListListOfMaterials"
                                       Width="100%">
-                                </DataGrid>
+                                </DataGrid>*@
                             </div>
                         </ContentTemplate>
                     </TabItem>
@@ -360,7 +360,7 @@
         @if (@pageView == "ComponentItemRecipeAssembly")
         {
             <PageTitleComponent Title="@GetName( "ComponentItemRecipe", new PackRecipeItem())" IconName="TransactionalTypes.png"
-                            Description="@($"Here you can add {@GetName( "Material", new MaterialRecipeItem())}")">
+                            Description="@($"Here you can add {GetName( "ComponentItemRecipe", new MaterialRecipeItem())}")">
             </PageTitleComponent>
 
             <div class="flex-horizontal-center">
@@ -753,7 +753,8 @@
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                 </svg>
                             </div>
-                            <SfGrid @ref="DataGrid" DataSource="@ListOfMaterialsView" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" AllowResizing="true">
+                            <SfGrid @ref="DataGrid" DataSource="@ListOfMaterialsView" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" AllowResizing="true"
+                                    ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader" } })">
                                 <GridEvents Destroyed="AddMaterialsOff" TValue="MaterialRecipeItemView"></GridEvents>
                                 <GridFilterSettings Type=" Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
                                 <GridColumns>
@@ -763,6 +764,7 @@
                                     <GridColumn Field="@nameof(MaterialRecipeItemView.SkinImageName)" HeaderText="@GetName( "SkinImageName",new Concept())" Width="120px"></GridColumn>
                                     <GridColumn Field="@nameof(MaterialRecipeItemView.FullClassName)" HeaderText="@GetName( "FullClassName",new Concept())" Width="120px"></GridColumn>
                                 </GridColumns>
+                                <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="MaterialRecipeItemView"></GridEvents>
                             </SfGrid>
                         </div>
 
@@ -991,7 +993,7 @@
                 {
                     labelInstruction = _PackingSpecs.CustomerLabelInstructions;
                     palletLabelStyle = labelInstruction.PalletLabelStyle != null ? labelInstruction.PalletLabelStyle : new();
-                    BoxLabelStyle = labelInstruction.BoxLabelStyle !=null?labelInstruction.BoxLabelStyle: new();
+                    BoxLabelStyle = labelInstruction.BoxLabelStyle != null ? labelInstruction.BoxLabelStyle : new();
                     InnerProductLabelStyleByDeafult = labelInstruction.InnerProductLabelStyleByDeafult != null ? labelInstruction.InnerProductLabelStyleByDeafult : new();
                 }
 
@@ -1136,21 +1138,29 @@
     {
         if (materialRecipeItem != null)
         {
-            materialRecipeItem.Material = MaterialConcept;
-            listOfMaterials.Add(materialRecipeItem);
-            ListOfMaterialsView.Add(new MaterialRecipeItemView
-                {
-                    Id = materialRecipeItem.Material != null ? materialRecipeItem.Material.Id : "",
-                    Name = materialRecipeItem.Material != null ? materialRecipeItem.Material.Name : "",
-                    Code = materialRecipeItem.Material != null ? materialRecipeItem.Material.Code : "",
-                    FullClassName = materialRecipeItem.Material != null ? materialRecipeItem.Material.FullClassName : "",
-                    Quantity = materialRecipeItem.Quantity.ToString(),
-                    SkinImageName = materialRecipeItem.Material != null ? materialRecipeItem.Material.SkinImageName : ""
-                });
-            materialRecipeItem = new();
-            MaterialConcept = new();
-            DataGrid.Refresh();
-            Msg("Added");
+            if (materialRecipeItem.Material.Id ==null)
+            {
+                materialRecipeItem.Material = MaterialConcept;
+                listOfMaterials.Add(materialRecipeItem);
+                ListOfMaterialsView.Add(new MaterialRecipeItemView
+                    {
+                        Id = materialRecipeItem.Material != null ? materialRecipeItem.Material.Id : "",
+                        Name = materialRecipeItem.Material != null ? materialRecipeItem.Material.Name : "",
+                        Code = materialRecipeItem.Material != null ? materialRecipeItem.Material.Code : "",
+                        FullClassName = materialRecipeItem.Material != null ? materialRecipeItem.Material.FullClassName : "",
+                        Quantity = materialRecipeItem.Quantity.ToString(),
+                        SkinImageName = materialRecipeItem.Material != null ? materialRecipeItem.Material.SkinImageName : ""
+                    });
+                materialRecipeItem = new();
+                MaterialConcept = new();
+                DataGrid.Refresh();
+                Msg("Added");
+            }
+            else
+            {
+                Msg("Update");
+            }
+
         }
     }
 
@@ -1403,16 +1413,19 @@
         await Refresh();
     }
 
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<MaterialRecipeItem> args)
+    public async void OnContextMenuClick(ContextMenuClickEventArgs<MaterialRecipeItemView> args)
     {
-        MaterialRecipeItem ObjModel = null;
+        MaterialRecipeItemView ObjModel = null;
         ObjModel = args.RowInfo.RowData;
 
-        if (args.Item.Id == "Edit")
+        materialRecipeItem = listOfMaterials.Where(s => s.Material.Id == ObjModel.Id).FirstOrDefault();
+        if (args.Item.Id == "Edit" && materialRecipeItem != null)
         {
-
+            ClosedAdd("ListOfMaterials");
         }
     }
+
+
 
 
 
@@ -1441,6 +1454,7 @@
         PopupViewEditItemComponent = false;
         PopupViewEditMaterial = false;
         PopupViewEditItemModifier = false;
+        PopupViewMaterialAssembly = false;
         ViewSelect = false;
         ParamCountResul = 0;
     }
@@ -1570,7 +1584,7 @@
 
     }
 
-    class MaterialRecipeItemView
+    public class MaterialRecipeItemView
     {
         public string Id { get; set; }
         public string Name { get; set; }
@@ -1581,7 +1595,7 @@
 
     }
 
-    class PackRecipeItemView
+    public class PackRecipeItemView
     {
         public string Name { get; set; }
         public string Quantity { get; set; }

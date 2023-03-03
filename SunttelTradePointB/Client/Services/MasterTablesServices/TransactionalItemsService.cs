@@ -31,8 +31,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         public TransactionalItemQualityPair? ConceptTransactionalItemQualityPair { get; set; }
         public TransactionalItemTag? ConceptTransactionalItemTag { get; set; }
         public TransactionalItemCharacteristicPair ConcepttransactionalItemCharacteristicPair { get; set; }
-        public AssemblyType ConceptItemAssemblyType { get; set; }
-
+        public AssemblyType ConceptItemAssemblyType { get; set; }       
 
         public LabelStyle ConceptLabelStyle { get; set; }
         public enum UploadingFileType
