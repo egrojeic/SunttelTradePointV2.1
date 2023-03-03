@@ -31,8 +31,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         public TransactionalItemQualityPair? ConceptTransactionalItemQualityPair { get; set; }
         public TransactionalItemTag? ConceptTransactionalItemTag { get; set; }
         public TransactionalItemCharacteristicPair ConcepttransactionalItemCharacteristicPair { get; set; }
-        public AssemblyType ConceptItemAssemblyType { get; set; }
-
+        public AssemblyType ConceptItemAssemblyType { get; set; }       
 
         public LabelStyle ConceptLabelStyle { get; set; }
         public enum UploadingFileType
@@ -681,6 +680,26 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+
+        //---
+        public async Task<List<TransactionalItemType>> GetProductRecipeQualityModifiersByModifierId(string? modifierId = null)
+        {          
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+                var list = await _httpClient.GetFromJsonAsync<List<TransactionalItemType>>($"api/ConceptsSelector/GetProductRecipeQualityModifiersByModifierId?userId={userId}&ipAddress={ipAddress}&modifierId={modifierId}");
+                return list;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+
+            }
+
+        }
+
         public async Task<List<TransactionalItemType>> GetTransactionalItemType(string? transactionalItemTypeId = null)
         {
             transactionalItemTypeId = transactionalItemTypeId != null ? transactionalItemTypeId : "";
