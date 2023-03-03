@@ -584,5 +584,28 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
             }
         }
 
+
+        /// <summary>
+        /// Retrieves a Label paper by its Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="labelPaperId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetLabelPaperById")]
+        public async Task<IActionResult> GetLabelPaperById(string userId, string ipAddress, string? labelPaperId)
+        {
+            var response = await _transactionalItemsRelatedConcepts.GetLabelPaper(userId, ipAddress, labelPaperId);
+            if (response.IsSuccess)
+            {
+                return Ok(response.labelPaper);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+       
     }
 }

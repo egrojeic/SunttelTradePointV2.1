@@ -890,9 +890,33 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
         }
 
-        public Task<(bool IsSuccess, LabelPaper? labelPaper, string? ErrorDescription)> GetLabelPaper(string userId, string ipAddress, string? labelPaperId)
+        /// <summary>
+        /// Retrieves a label paper by id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="labelPaperId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, LabelPaper? labelPaper, string? ErrorDescription)> GetLabelPaper(string userId, string ipAddress, string? labelPaperId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var filterLabelPaper = Builders<LabelPaper>.Filter.Eq(x => x.Id, labelPaperId);
+                var resultLabelStyle = await _LabelPaper.Find(filterLabelPaper).FirstOrDefaultAsync();
+
+                if (resultLabelStyle == null)
+                {
+                    return (false, null, "Label Paper NOT Found");
+                }
+                else
+                {
+                    return (true, resultLabelStyle, null);
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
 
         /// <summary>

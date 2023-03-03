@@ -20,7 +20,7 @@
                     <form onsubmit="event.preventDefault();">
                         <div class="form-group row">
                             <div class="form-group row">
-                                <label class="control-label col-md-12">@lblWareHouseParent: </label>
+                                <label class="control-label col-md-12">@lblWareHouseName: </label>
                                 <div class="col">
                                     <input type="text" class="form-control" @bind-value="warehouse.Name"  required/>
                                 </div>
@@ -185,6 +185,7 @@
     List<TransactionalItemType> itemType = new List<TransactionalItemType>();
     InputTextSelector? refInputTextSelector;
 
+    private string lblWareHouseName = "";
     private string lblWareHouseParent = "";
     private string lblAssociatedEntity = "";
     private string lblIsExternal = "";
@@ -213,6 +214,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        lblWareHouseName = UICommonFunctions.GetDisplayName(new Warehouse(), "Name");
         lblWareHouseParent = UICommonFunctions.GetDisplayName(new Warehouse(), "WareHouseParent");
         lblAssociatedEntity = UICommonFunctions.GetDisplayName(new Warehouse(), "AssociatedEntity");
         lblIsExternal = UICommonFunctions.GetDisplayName(new Warehouse(), "IsExternal");
@@ -305,20 +307,27 @@
         if (warehouseId != "" && warehouseId != "NewWarehouse")
         {
             try{
-                var warehouseById = await warehouseService.GetWarehouseById(warehouseId);
+                var warehouseByIdtemp = await warehouseService.GetWarehouseById(warehouseId);
+
+                var warehouseById = warehouseByIdtemp;
                 if (warehouseById != null)
                 {
                     warehouse.Name = warehouseById.Name;
-                    WareHouseParent = warehouseById.WareHouseParent;
-                    Parent = warehouseById.WareHouseParent;
+                    WareHouseParent = warehouseById.WareHouseParent ?? new Warehouse {
+                            Name = "NOT DEFINED"
+                    };
                     isExternal = warehouseById.IsExternal;
                     isTransformationFacility = warehouseById.IsTransformationFacility;
                     scanSimulated = warehouseById.ScanSimulated;
                     isInventoryControlled = warehouseById.IsInventoryControlled;
-                    Contact = warehouseById.ContactPerson;
+                    Contact = warehouseById.ContactPerson?? new AtomConcept { 
+                        Name = "NOT DEFINED"
+                    };
                     isActive = warehouseById.IsActive;
                     transactionalItemType.Name = warehouseById.InventoryTransactionalItemType.Name;
-                    address = warehouseById.WarehouseAddress;
+                    address = warehouseById.WarehouseAddress?? new Address{
+                        Name = "NOT DEFINED"
+                    };
                     StateHasChanged();
                 }
             }

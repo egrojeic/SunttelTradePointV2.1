@@ -301,12 +301,9 @@ namespace SunttelTradePointB.Shared.Common
     }
 
 
-    public class PackingSpecs
+    public class PackingSpecs : RecordItem
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
-        public string LegacyId { get; set; }
+      
 
         public Concept Customer { get; set; }
         public SeasonBusiness Season { get; set; }
@@ -350,7 +347,8 @@ namespace SunttelTradePointB.Shared.Common
     }
 
 
-    public class PackRecipeItem {
+    public class PackRecipeItem: RecordItem
+    {
 
         [DisplayName("Product")]
         public Concept ItemComponent { get; set; }

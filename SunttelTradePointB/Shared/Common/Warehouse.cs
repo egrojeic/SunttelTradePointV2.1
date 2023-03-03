@@ -14,7 +14,7 @@ namespace SunttelTradePointB.Shared.Common
     /// </summary>
     public class Warehouse: AtomConcept
     {
-        [DisplayName("Associated Entity")]
+        [DisplayName("Parent Warehouse")]
         [BsonIgnoreIfNull]
         public Warehouse WareHouseParent { get; set; }
 
