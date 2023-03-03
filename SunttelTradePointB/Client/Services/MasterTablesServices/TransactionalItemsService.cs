@@ -746,13 +746,13 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-        public async Task<List<TransactionalItemCharacteristicPair>> GetCharacteristic(string? transactionalItemTypeId = null)
+        public async Task<List<TransactionalItemCharacteristicPair>> GetCharacteristic(string? labelPaperId = null)
         {
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                transactionalItemCharacteristicPair = await _httpClient.GetFromJsonAsync<List<TransactionalItemCharacteristicPair>>($"api/TransactionalItems/GetTransactionalItemDetailsItemCharacteristics?userId={userId}&ipAddress={ipAddress}&transactionalItemId={transactionalItemTypeId}");
+                transactionalItemCharacteristicPair = await _httpClient.GetFromJsonAsync<List<TransactionalItemCharacteristicPair>>($"api/TransactionalItems/GetTransactionalItemDetailsItemCharacteristics?userId={userId}&ipAddress={ipAddress}&transactionalItemId={labelPaperId}");
                 return transactionalItemCharacteristicPair != null ? transactionalItemCharacteristicPair : new List<TransactionalItemCharacteristicPair>();
             }
             catch (Exception ex)
@@ -794,7 +794,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                var list = await _httpClient.GetFromJsonAsync<LabelPaper>($"api/TransactionalItems/GetTransactionalItemDetailsItemCharacteristics?userId={userId}&ipAddress={ipAddress}&transactionalItemId={labelPaperId}");
+                var list = await _httpClient.GetFromJsonAsync<LabelPaper>($"api/TransactionalItemsRelatedConcepts/GetLabelPaperById?userId={userId}&ipAddress={ipAddress}&labelPaperId={labelPaperId}");
                 return list != null ? list : new LabelPaper();
             }
             catch (Exception ex)
