@@ -76,6 +76,7 @@
             </div>
         }
 
+
         @if (@pageView == "Material")
         {
             <PageTitleComponent Title="@GetName( "Material", new MaterialRecipeItem())" IconName="TransactionalTypes.png"
@@ -223,15 +224,15 @@
 
                 <div style="position:relative;">
                     <div class="item-edit">
-                        <label>@(recipeModifier != null ? recipeModifier.Name : "")</label>
+                        <label>@(recipeQualityModifier != null ? recipeQualityModifier.Name : "")</label>
                         <button type="button" @onclick='()=>SetViewElemnt("RecipeQualityModifier")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                     </div>
                     <div class="position-input">
                         <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditItemModifier">
                             @{
-                                if (recipeModifiers != null)
+                                if (recipeQualityModifiers != null)
                                 {
-                                    foreach (var Element in recipeModifiers)
+                                    foreach (var Element in recipeQualityModifiers)
                                     {
                                         <option value="@Element?.Id">@Element?.Name</option>
                                     }
@@ -268,12 +269,12 @@
                                 @if (materialsRecipeItemsAssembly == null) { materialsRecipeItemsAssembly = new List<MaterialRecipeItem>(); }
 
 
-                                @*<DataGrid TParameter="MaterialRecipeItem"
+                                <DataGrid TParameter="MaterialRecipeItemView"
                                       EventCallbackMenu="OnContextMenuClick"
-                                      parameterList="materialsRecipeItemsAssembly"
+                                      parameterList="materialsRecipeItemsAssemblyView"
                                       GridColumnsList="gridColumnListListOfMaterials"
                                       Width="100%">
-                                </DataGrid>*@
+                                </DataGrid>
                             </div>
 
                         </ContentTemplate>
@@ -296,12 +297,12 @@
                                 @if (materialsRecipeItemsAssembly == null) { materialsRecipeItemsAssembly = new List<MaterialRecipeItem>(); }
 
 
-                               @* <DataGrid TParameter="MaterialRecipeItem"
-                                      EventCallbackMenu="OnContextMenuClick"
-                                      parameterList="materialsRecipeItemsAssembly"
-                                      GridColumnsList="gridColumnListListOfMaterials"
-                                      Width="100%">
-                                </DataGrid>*@
+                                @* <DataGrid TParameter="MaterialRecipeItem"
+                            EventCallbackMenu="OnContextMenuClick"
+                            parameterList="materialsRecipeItemsAssembly"
+                            GridColumnsList="gridColumnListListOfMaterials"
+                            Width="100%">
+                            </DataGrid>*@
                             </div>
                         </ContentTemplate>
                     </TabItem>
@@ -312,8 +313,8 @@
 
         @if (@pageView == "ListOfMaterialsAssembly")
         {
-            <PageTitleComponent Title="@GetName( "Material", new MaterialRecipeItem())" IconName="TransactionalTypes.png"
-                            Description="@($"Here you can add {@GetName( "Material", new MaterialRecipeItem())}")">
+            <PageTitleComponent Title="@GetName( "MaterialRecipeItem", new PackRecipeItem())" IconName="TransactionalTypes.png"
+                            Description="@($"Here you can add {GetName( "MaterialRecipeItem", new PackRecipeItem()).ToLower()}")">
             </PageTitleComponent>
 
             <div class="flex-horizontal-center">
@@ -322,7 +323,7 @@
                     <div>
                         <div style="position:relative;">
                             <div class="item-edit">
-                                <label>@(ConceptMaterialAssembly != null ? ConceptMaterialAssembly.Name : "")</label>
+                                <label>@(conceptMaterialAssembly != null ? conceptMaterialAssembly.Name : "")</label>
                                 <button type="button" @onclick='()=>SetViewElemnt("MaterialAssembly")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                             </div>
                             <div class="position-input">
@@ -330,9 +331,9 @@
                                     @{
                                         if (ConceptMaterialsAssembly != null)
                                         {
-                                            foreach (var customer in ConceptMaterialsAssembly)
+                                            foreach (var item in ConceptMaterialsAssembly)
                                             {
-                                                <option value="@customer?.Id">@customer?.Name</option>
+                                                <option value="@item?.Id">@item?.Name</option>
                                             }
                                         }
 
@@ -346,12 +347,13 @@
                             @GetName( "Quantity", new MaterialRecipeItem())
                         </label>
                     </div>
+                    @if (materialRecipeItem == null) materialRecipeItem = new();
                     <div><input type="number" @bind="materialRecipeItem.Quantity" class="form-control border-color" maxlength="4" min="1" /></div>
 
                     <div></div>
                     <div class="flex-horizontal-end">
                         <button type="button" @onclick='()=>ClosedAdd("AssemblyRecipeItems")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-                        <button type="button" class="size-btn color-btn "><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                        <button @onclick='AddMaterialsAssembly' type="button" class="size-btn color-btn "><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                     </div>
                 </div>
             </div>
@@ -920,13 +922,14 @@
     List<Concept> itemComponents = new();
     Concept itemComponent = new();
     List<RecipeModifier> recipeModifiers = new();
-    RecipeModifier recipeModifier = new();
+    //RecipeModifier recipeModifier = new();
     List<ProductRecipeQualityModifier> recipeQualityModifiers = new();
     ProductRecipeQualityModifier recipeQualityModifier = new();
     List<MaterialRecipeItem> materialsRecipeItemsAssembly = new();
+    List<MaterialRecipeItemView> materialsRecipeItemsAssemblyView = new();
     MaterialRecipeItem materialRecipeItemsAssembly = new();
     List<Concept> ConceptMaterialsAssembly = new();
-    Concept ConceptMaterialAssembly = new();
+    Concept conceptMaterialAssembly = new();
     #endregion Tag 4
 
     #region Add Material
@@ -1028,7 +1031,7 @@
             assemblyRecipeItem.ItemComponent = itemComponent != null ? itemComponent : new();
             if (assemblyRecipeItem.ComponentItemRecipe == null) assemblyRecipeItem.ComponentItemRecipe = new();
             if (recipeChildren != null && recipeChildren.assemblyRecipeItemGeneral != null) assemblyRecipeItem.ComponentItemRecipe.Add(recipeChildren.assemblyRecipeItemGeneral);
-            materialRecipeItemsAssembly.Material = ConceptMaterialAssembly != null ? ConceptMaterialAssembly : new();
+            materialRecipeItemsAssembly.Material = conceptMaterialAssembly != null ? conceptMaterialAssembly : new();
             assemblyRecipeItem.ListOfMaterials = materialsRecipeItemsAssembly != null ? materialsRecipeItemsAssembly : new();
             assemblyRecipeItem.RecipeQualityModifier = recipeQualityModifier != null ? recipeQualityModifier : new();
             assemblyRecipeItems.Add(assemblyRecipeItem);
@@ -1093,9 +1096,33 @@
     {
 
         string tile = e.Item != null ? e.Item.Text : "";
-        if (tile == "Save")
+        if (tile == "Add")
         {
-            Msg("Addded");
+            //assemblyRecipeItem.Id == null
+            if (true)
+            {
+                assemblyRecipeItem.ItemComponent = itemComponent;
+                assemblyRecipeItem.ListOfMaterials = materialsRecipeItemsAssembly;                
+                assemblyRecipeItem.RecipeQualityModifier = recipeQualityModifier !=null? recipeQualityModifier:new();
+
+                assemblyRecipeItems.Add(assemblyRecipeItem);
+                assemblyRecipeItemsView.Add(new PackRecipeItemView
+                    {
+                        Name = assemblyRecipeItem.ItemComponent != null ? assemblyRecipeItem.ItemComponent?.Name : "",
+                        Code = assemblyRecipeItem.ItemComponent.Code != null ? assemblyRecipeItem.ItemComponent?.Code : "",
+                        FullClassName = assemblyRecipeItem.ItemComponent.FullClassName != null ? assemblyRecipeItem.ItemComponent?.FullClassName : "",
+                        SkinImageName = assemblyRecipeItem.ItemComponent.SkinImageName != null ? assemblyRecipeItem.ItemComponent?.SkinImageName : "",
+                        Quantity = assemblyRecipeItem.Quantity != null ? assemblyRecipeItem.Quantity.ToString() : "",
+                    });
+                if (DataGrid1 != null) DataGrid1.Refresh();
+                StateHasChanged();
+                Msg("Added");
+            }
+            else
+            {
+
+            }
+
 
         }
         if (tile == "Save as...")
@@ -1138,10 +1165,29 @@
     {
         if (materialRecipeItem != null)
         {
-            if (materialRecipeItem.Material.Id ==null)
+            if (materialRecipeItem.Material.Id == null)
             {
                 materialRecipeItem.Material = MaterialConcept;
                 listOfMaterials.Add(materialRecipeItem);
+                ListOfMaterialsView.Add(new MaterialRecipeItemView
+                    {
+                        Id = materialRecipeItem.Material != null ? materialRecipeItem.Material.Id : "",
+                        Name = materialRecipeItem.Material != null ? materialRecipeItem.Material.Name : "",
+                        Code = materialRecipeItem.Material != null ? materialRecipeItem.Material.Code : "",
+                        FullClassName = materialRecipeItem.Material != null ? materialRecipeItem.Material.FullClassName : "",
+                        Quantity = materialRecipeItem.Quantity != null ? materialRecipeItem.Quantity.ToString() : "",
+                        SkinImageName = materialRecipeItem.Material != null ? materialRecipeItem.Material.SkinImageName : ""
+                    });
+                materialRecipeItem = new();
+                MaterialConcept = new();
+                DataGrid.Refresh();
+                Msg("Added");
+            }
+            else
+            {
+                materialRecipeItem.Material = MaterialConcept;
+                var removeView = ListOfMaterialsView.Where(s => s.Id == materialRecipeItem.Material.Id).FirstOrDefault();
+                ListOfMaterialsView.Remove(removeView);
                 ListOfMaterialsView.Add(new MaterialRecipeItemView
                     {
                         Id = materialRecipeItem.Material != null ? materialRecipeItem.Material.Id : "",
@@ -1154,17 +1200,37 @@
                 materialRecipeItem = new();
                 MaterialConcept = new();
                 DataGrid.Refresh();
-                Msg("Added");
-            }
-            else
-            {
                 Msg("Update");
             }
 
         }
     }
+    private void AddMaterialsAssembly()
+    {
+        if (materialRecipeItemsAssembly != null)
+        {
+            if (materialRecipeItemsAssembly.Material == null) materialRecipeItemsAssembly.Material = new();
+            if (materialRecipeItemsAssembly.Material.Id == null)
+            {
+                materialRecipeItemsAssembly.Material = conceptMaterialAssembly;
+                materialsRecipeItemsAssembly.Add(materialRecipeItem);
+                materialsRecipeItemsAssemblyView.Add(new MaterialRecipeItemView
+                    {
+                        Id = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.Id : "",
+                        Name = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.Name : "",
+                        Code = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.Code : "",
+                        FullClassName = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.FullClassName : "",
+                        Quantity = materialRecipeItemsAssembly.Quantity != null ? materialRecipeItemsAssembly.Quantity.ToString() : "",
+                        SkinImageName = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.SkinImageName : ""
+                    });
+                materialRecipeItemsAssembly = new();
+                conceptMaterialAssembly = new();
+                if (DataGrid != null) DataGrid.Refresh();
+                Msg("Added");
+            }
 
-
+        }
+    }
 
     public async Task Refresh()
     {
@@ -1268,13 +1334,25 @@
                 {
                     var itemTypes = await transactionalService.GetTransactionalItemTypes(type.Name);
                     var resul = itemTypes.Where(s => s.Id == type.Id).FirstOrDefault();
+                    // GetProductRecipeQualityModifiersByModifierId();
+
                     if (!value.ToLower().Contains("all") && !value.ToLower().Contains("todo"))
                     {
                         recipeModifiers = resul.InRecipeModifiers.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+                       
                     }
                     else
                     {
                         recipeModifiers = resul.InRecipeModifiers;
+                       
+                    }
+                    foreach (var item in recipeModifiers)
+                    {
+                        recipeQualityModifiers.Add(new ProductRecipeQualityModifier
+                            {
+                                Id = item.Id,
+                                Name = item.Name
+                            });
                     }
                     ParamCountResul = recipeModifiers.Count();
                 }
@@ -1375,14 +1453,23 @@
         if (SearcherValueMode == "MaterialAssembly")
         {
             if (ConceptMaterialsAssembly == null) ConceptMaterialsAssembly = new();
-            ConceptMaterialAssembly = ConceptMaterialsAssembly.Where(c => c.Id == selectionId).FirstOrDefault();
+            conceptMaterialAssembly = ConceptMaterialsAssembly.Where(c => c.Id == selectionId).FirstOrDefault();
             ParamCountResul = assemblyTypes.Count();
         }
         if (SearcherValueMode == "RecipeQualityModifier")
         {
             if (recipeModifiers != null)
             {
-                recipeModifier = recipeModifiers.Where(s => s.Id != null && s.Id.Trim() == selectionId.Trim()).FirstOrDefault();
+                var recipeModifier = recipeModifiers.Where(s => s.Id != null && s.Id.Trim() == selectionId.Trim()).FirstOrDefault();
+                if (recipeModifier != null)
+                {
+                    recipeQualityModifier = new ProductRecipeQualityModifier
+                        {
+                            Id = recipeModifier.Id,
+                            Name = recipeModifier.Name
+                        };
+                }
+               
 
                 StateHasChanged();
             }
@@ -1418,13 +1505,26 @@
         MaterialRecipeItemView ObjModel = null;
         ObjModel = args.RowInfo.RowData;
 
-        materialRecipeItem = listOfMaterials.Where(s => s.Material.Id == ObjModel.Id).FirstOrDefault();
-        if (args.Item.Id == "Edit" && materialRecipeItem != null)
+
+        if (args.Item.Text == "Edit" && pageView == "ListOfMaterials")
         {
+            materialRecipeItem = listOfMaterials.Where(s => s.Material.Id == ObjModel.Id).FirstOrDefault();
+            MaterialConcept = materialRecipeItem.Material != null ? materialRecipeItem.Material : new();
+            if (materialRecipeItem != null)
+            {
+
+            }
             ClosedAdd("ListOfMaterials");
+
+        }
+        if (args.Item.Text == "Edit" && materialRecipeItem != null && pageView == "ListOfMaterialsAssembly")
+        {
+            materialRecipeItemsAssembly = materialsRecipeItemsAssembly.Where(s => s.Material.Id == ObjModel.Id).FirstOrDefault();
+            conceptMaterialAssembly = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material : new();
+            ClosedAdd("ListOfMaterialsAssembly");
+
         }
     }
-
 
 
 
@@ -1464,7 +1564,7 @@
     public string GetName(string Name, Object Obj)
     {
         Name = UICommonFunctions.GetDisplayName(Obj, Name);
-        return Name;
+        return Name != null ? Name : "Sin nombre";
     }
     void ConverToMaterialToMateriaView(List<MaterialRecipeItem> Materials)
     {
