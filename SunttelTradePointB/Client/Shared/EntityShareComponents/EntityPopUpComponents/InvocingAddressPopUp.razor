@@ -12,6 +12,7 @@
 @inject ActorsNodeService actorsNodeServive
 @inject NavigationManager navigationManager
 
+   <MessageSaveComponent message="@msg" isVisible="@msgView"></MessageSaveComponent> 
 
 <div class="control-section">
     <div class="row">
@@ -30,21 +31,21 @@
                         </div>
 
                         <div class="form-group row py-2">
-                            <label class="control-label col-md-12">@lblCountry*: </label>
+                            <label class="control-label col-md-12">@lblCountry*: (<b>@(country1.Name != null ? country1.Name :"")</b>)</label>
                             <div class="col">
-                                <SfDropDownList TValue="string" TItem="Country" Placeholder="Select a country" AllowFiltering="true" DataSource="@countryList" @bind-Value="country1.Name">
+                                <SfDropDownList TValue="string" TItem="Country" Placeholder="Select a country" AllowFiltering="true" DataSource="@countryList" >
                                     <DropDownListEvents TItem="Country" TValue="string" ValueChange="@ValueChangeCountry"></DropDownListEvents>
                                     <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
                                 </SfDropDownList>
                             </div>
                         </div>
 
-                        @if (showRegion)
+                        @if (showRegion || geo!=null)
                         {
                             <div class="form-group row py-2">
-                                <label class="control-label col-md-12">@lblRegion*: </label>
+                                <label class="control-label col-md-12">@lblRegion*: (<b>@(geo.Name != null ? geo.Name:"")</b>)</label>
                                 <div class="col">
-                                    <SfDropDownList TValue="string" TItem="GeoRegion" Placeholder="Select a region" AllowFiltering="true" DataSource="@regionsList" @bind-Value="geo.Name">
+                                    <SfDropDownList TValue="string" TItem="GeoRegion" Placeholder="Select a region" AllowFiltering="true" DataSource="@regionsList" >
                                         <DropDownListEvents TItem="GeoRegion" TValue="string" ValueChange="@ValueChangeRegion"></DropDownListEvents>
                                         <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
                                     </SfDropDownList>
@@ -52,12 +53,12 @@
                             </div>
                         }
 
-                        @if (showCities)
+                        @if (showCities || city != null)
                         {
                             <div class="form-group row py-2">
-                                <label class="control-label col-md-12">@lblCity*: </label>
+                                <label class="control-label col-md-12">@lblCity*: (<b>@(city.Name!=null? city.Name:"")</b>)</label>
                                 <div class="col">
-                                    <SfDropDownList TValue="string" TItem="City" Placeholder="Select a city" AllowFiltering="true" DataSource="@citiesList" @bind-Value="city.Id">
+                                    <SfDropDownList TValue="string" TItem="City" Placeholder="Select a city" AllowFiltering="true" DataSource="@citiesList" >
                                         <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
                                     </SfDropDownList>
                                 </div>
@@ -129,6 +130,8 @@
     private EntityActor entityActor;
 
     bool loadingRegions = false;
+    bool msgView = false;
+    string msg = "";
 
     string _countriesFilter = "";
     string _regionsFilter = "";
@@ -273,6 +276,23 @@
     public async Task GetEntityId(string entityId)
     {
         entityActor = await actorsNodeServive.GetEntityActor(entityId);
+        if (entityActor !=null)
+        {
+            if (entityActor.InvoicingAddress!=null)
+            {
+                var invoicingAddress = entityActor.InvoicingAddress;
+                city = invoicingAddress.CityAddress != null ? invoicingAddress.CityAddress : new();
+                if (entityActor.InvoicingAddress.CityAddress == null) invoicingAddress.CityAddress.RegionCity = new();
+                geo = invoicingAddress.CityAddress.RegionCity != null ? invoicingAddress.CityAddress.RegionCity : new();
+                if (entityActor.InvoicingAddress.CityAddress.RegionCity == null) invoicingAddress.CityAddress.RegionCity.CountryRegion = new();
+                country1 = invoicingAddress.CityAddress.RegionCity.CountryRegion != null ? invoicingAddress.CityAddress.RegionCity.CountryRegion : new();
+                address.AddressLine1 = invoicingAddress.AddressLine1 != null ? invoicingAddress.AddressLine1 : "";
+                address.ZipCode = invoicingAddress.ZipCode != null ? invoicingAddress.ZipCode : "";
+
+                StateHasChanged();
+            }
+
+        }       
     }
 
     public async void SaveInvoicingAddres(string? entityId, EntityActor? entityActor)
@@ -281,9 +301,15 @@
         entityActor.InvoicingAddress = address;
         if(Id != null)
         {
-            await actorsNodeServive.SaveEntity(entityId, entityActor);
-            visible = true;    
+           var resul = await actorsNodeServive.SaveEntity(entityId, entityActor);
+            if (resul) Msg("Saved");
+            if (!resul) Msg("No save");
         }
+        else
+        {
+            Msg("No saved");
+        }
+        StateHasChanged();
 
     }
     private async void Save(Address addressSave)
@@ -296,6 +322,12 @@
     private void GoBack()
     {
         JSRuntime.InvokeVoidAsync("history.back");
+    }
+
+    public void Msg(string _msg)
+    {
+        msgView = true;
+        msg = _msg;
     }
 
 }

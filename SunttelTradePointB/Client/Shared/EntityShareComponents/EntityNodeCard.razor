@@ -110,7 +110,8 @@
                    
                     <div class="img-ico">
                         <div class="col-sm">
-                            <img src="@imageRute" alt="imagen" width="160px" height="150px">
+
+                            <img src="@(imageRute!=""? actorsNodeServive.Host+imageRute:"/avatar_male_man_person_user_icon.png")" alt="imagen" width="160px" height="150px">
 
                         </div>
                         <div class="col">
@@ -440,11 +441,11 @@
         var rute = actorsNodeServive.Host;
         if (EntityNode.SkinImageName == "" || EntityNode.SkinImageName == null)
         {
-            imageRute = rute + imageDefault;
+            imageRute = imageDefault;
         }
         else
         {
-            imageRute = rute + EntityNode.SkinImageName;
+            imageRute =  EntityNode.SkinImageName;
         }
         StateHasChanged();
     }
@@ -501,6 +502,7 @@
         string title = menuEventArgs != null ? menuEventArgs.Item.Text : "";
         if (title == "Save")
         {
+            EntityNode.SkinImageName = EntityNode.SkinImageName == null ? (imageRute != "" ? imageRute : "") : EntityNode.SkinImageName;
             EntityNode.DefaultEntityRole = role;
             EntityNode.Groups = FilterListGroups;
             var result = await actorsNodeServive.SaveEntity(Id, EntityNode);
