@@ -26,8 +26,8 @@
     @if (pageView == "TransactionalItemTag")
     {
 
-        <PageTitleComponent Title="Production Specs Tag" IconName="group.png"
-                        Description="Here you can add production specs tag">
+        <PageTitleComponent Title="@GetName("TransactionalItemProcessTags",new TransactionalItemTag() )" IconName="tag.png"
+                        Description="@($"Here you can add {@GetName("TransactionalItemProcessTags",new TransactionalItemTag() )}")">
         </PageTitleComponent>
         <div class="flex-horizontal-center ">
             <div class="grid-columns-2 box-shadow-mode width-page1">
@@ -61,7 +61,7 @@
 <div class="flex-verical-center position-relative" style="display:@(modeEdit?"flex":"none");">
 
 
-    <PageTitleComponent Title="Production Specs" IconName="group.png"
+    <PageTitleComponent Title="@GetName("ProductionSpecs",new TransactionalItem() )" IconName="productionSpecs.png"
                         Description="Here you can add production specs">
     </PageTitleComponent>
 

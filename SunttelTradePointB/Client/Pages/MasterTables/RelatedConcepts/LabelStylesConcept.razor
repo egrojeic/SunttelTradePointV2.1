@@ -286,10 +286,9 @@
                 <label>@GetName( "Paper", new LabelStyle())</label>
             </div>
             <div style="position:relative;">
-                <div class="item-edit form-control">
-                    
+                <div class="item-edit ">                    
                     <label>@(labelPaper.Name != null ? labelPaper.Name : "")</label>
-                    <button @onclick='()=>SetViewElemnt("Paper")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                    <button @onclick='()=>SetViewElemnt("Paper")' class="btn" ><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                 </div>
                 <div class="position-input">
                     <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" ViewSelect="ViewPopupCount" EventClosed="ClosedInput" ViewControl="inputPaperView">

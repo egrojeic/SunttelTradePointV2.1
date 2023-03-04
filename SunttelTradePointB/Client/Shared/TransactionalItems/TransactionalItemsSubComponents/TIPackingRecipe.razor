@@ -21,8 +21,6 @@
             AllowTextWrap="false"
             AllowPaging="true"
             AllowResizing="true"
-            EnableVirtualization="true"
-            EnableColumnVirtualization="true"
             Width="100%"
             ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader" } })">
 
@@ -30,20 +28,29 @@
         <GridColumns>
             <GridColumn Field="@nameof(PackingSpecsView.CustomerName)" HeaderText="@GetName("Concept",new PackingSpecs())" Width="250"></GridColumn>
             <GridColumn Field="@nameof(PackingSpecsView.CustomerCode)" HeaderText="@GetName("Code",new AtomConcept())" Width="100"> </GridColumn>
-            <GridColumn Field="@nameof(PackingSpecsView.SeasonName)" HeaderText="@GetName("Season",new PackingSpecs())" Width="100"> </GridColumn>
-            <GridColumn Field="@nameof(PackingSpecsView.ModelRecipeName)" HeaderText="@GetName("ModelRecipe",new PackingSpecs())" Width="100"> </GridColumn>
-            <GridColumn Field="@nameof(PackingSpecsView.PackPerBoxLayer)" HeaderText="@GetName("PackPerBoxLayer",new PackingSpecs())" Width="100"> </GridColumn>
-            <GridColumn Field="@nameof(PackingSpecsView.PackLayersToSale)" HeaderText="@GetName("PackLayersToSale",new PackingSpecs())" Width="100"> </GridColumn>
-            <GridColumn Field="@nameof(PackingSpecsView.PackLayersToBuy)" HeaderText="@GetName("PackLayersToBuy",new PackingSpecs())" Width="100"> </GridColumn>
-            <GridColumn Field="@nameof(PackingSpecsView.PackingBoxToSaleName)" HeaderText="@GetName("PackingBoxToSaleName",new PackingSpecs())" Width="100"> </GridColumn>
-            <GridColumn Field="@nameof(PackingSpecsView.PackingBoxToBuyName)" HeaderText="@GetName("PackingBoxToBuyName",new PackingSpecs())" Width="100"> </GridColumn>
-            <GridColumn Field="@nameof(PackingSpecsView.UnitPrice)" HeaderText="@GetName("UnitPrice",new PriceInfo())" Width="100"> </GridColumn>
+            <GridColumn Field="@nameof(PackingSpecsView.SeasonName)" HeaderText="@GetName("Season",new PackingSpecs())" Width="150"> </GridColumn>
+            <GridColumn Field="@nameof(PackingSpecsView.ModelRecipeName)" HeaderText="@GetName("ModelRecipe",new PackingSpecs())" Width="150"> </GridColumn>
+            <GridColumn Field="@nameof(PackingSpecsView.PackPerBoxLayer)" HeaderText="@GetName("PackPerBoxLayer",new PackingSpecs())" Width="150"> </GridColumn>
+            <GridColumn Field="@nameof(PackingSpecsView.PackLayersToSale)" HeaderText="@GetName("PackLayersToSale",new PackingSpecs())" Width="150"> </GridColumn>
+            <GridColumn Field="@nameof(PackingSpecsView.PackLayersToBuy)" HeaderText="@GetName("PackLayersToBuy",new PackingSpecs())" Width="150"> </GridColumn>
+            <GridColumn Field="@nameof(PackingSpecsView.PackingBoxToSaleName)" HeaderText="@GetName("PackingBoxToSaleName",new PackingSpecs())" Width="150"> </GridColumn>
+            <GridColumn Field="@nameof(PackingSpecsView.PackingBoxToBuyName)" HeaderText="@GetName("PackingBoxToBuyName",new PackingSpecs())" Width="150"> </GridColumn>
+            <GridColumn Field="@nameof(PackingSpecsView.UnitPrice)" HeaderText="@GetName("UnitPrice",new PriceInfo())" Width="150"> </GridColumn>
         </GridColumns>
         <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="PackingSpecsView"></GridEvents>
     </SfGrid>
 
 </div>
 
+<style>
+    .e-grid .e-headercelldiv {
+        font-size: 12px;
+    }
+
+  /*  .e-grid .e-rowcell {
+        font-size: 7px;
+    }*/
+</style>
 
 
 @code {

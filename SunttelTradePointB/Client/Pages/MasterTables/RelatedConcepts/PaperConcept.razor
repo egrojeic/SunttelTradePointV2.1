@@ -98,9 +98,9 @@
     string Validate()
     {
         string msg = "";
-        if (labelPaper.Name != null) msg = " Name ";
-        if (labelPaper.Height != null) msg = " Height ";
-        if (labelPaper.Width != null) msg = " Width ";
+        if (labelPaper.Name == null) msg = " Name ";
+        if (labelPaper.Height == null) msg = " Height ";
+        if (labelPaper.Width == null) msg = " Width ";
         if (msg != "") msg = " Required : " + msg;
         return msg;
     }

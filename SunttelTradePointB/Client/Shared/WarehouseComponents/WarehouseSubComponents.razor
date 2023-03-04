@@ -11,6 +11,13 @@
 @inject ActorsNodeService actorsNodeServive
 @inject TransactionalItemsService transactionalItemsService
 
+@if (@viewMsg)
+{
+    <MessageSaveComponent isVisible="viewMsg" message="@msg">
+    </MessageSaveComponent>
+}
+
+
 <div class="control-section">
     <div class="row">
         <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
@@ -155,14 +162,15 @@
 
                         <MessageSaveComponent message="Electronic Address Saved" isVisible="visible"></MessageSaveComponent>
 
-                        <div class="py-2">
-                            <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveWareHouse(Id, warehouse))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
-                            <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
-                        </div>
+                        
                     </form>
 
                 </CardContent>
             </SfCard>
+            <div class="py-2">
+                <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveWareHouse(Id, warehouse))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
+            </div>
         </div>
     </div>
 </div>
@@ -173,6 +181,10 @@
     public string Id { get; set; }
     [Parameter]
     public bool ViewSelect { get; set; } = false;
+
+    bool viewMsg = false;
+    string msg = "";
+    int status = 0;
 
     Warehouse warehouse = new Warehouse();
     AtomConcept Parent = new AtomConcept();
@@ -334,7 +346,7 @@
             catch(Exception e){
                 string errDescription = e.Message;
             }
-           
+
         }
     }
 
@@ -369,15 +381,30 @@
             warehouse.InventoryTransactionalItemType = transactionalItemType;
             warehouse.ContactPerson = Contact;
             warehouse.IsActive = isActive;
-            await warehouseService.SaveWarehuse(warehouse);
+            var resul =  await warehouseService.SaveWarehuse(warehouse);
+            if (resul)
+            {
+                Msg("Saved", 0);
+            }
+            else
+            {
+                Msg("No saved", 1);
+            }
             StateHasChanged();
         }
-        
+
     }
 
     private void GoBack()
     {
         navigationManager.NavigateTo($"/WarehousesGeneral");
+    }
+
+    public void Msg(string _msg, int _status)
+    {
+        viewMsg = true;
+        msg = _msg;
+        status = _status;
     }
 
 

@@ -135,6 +135,8 @@
                         </div>
                         <div>
                             @if (transactItemImages == null) transactItemImages = new List<TransactItemImage>();
+                           
+                            
                             <img class="style-img" src="@(transactItemImage.PathImage !=null?transactionalService.Host+transactItemImage.PathImage:"/images/defaultImage.png")" @onclick='()=> SetViewElemnt("img")' />
                         </div>
 
@@ -325,6 +327,7 @@
             if (currentItem.TransactionalItemTags == null) currentItem.TransactionalItemTags = new List<TransactionalItemTag>();
             if (currentItem.TypeOfConcept == null) currentItem.TypeOfConcept = new();
 
+            currentItem.SkinImageName = transactItemImage != null ? transactItemImage.PathImage : "/images/defaultImage.png";
             currentItem.TypeOfConcept  = typeOfConcept !=null ? typeOfConcept : new();
             TransactionalItem item = await transactionalService.SaveTransactionalItem(currentItem);
             bool resul = (item != null ? true : false);

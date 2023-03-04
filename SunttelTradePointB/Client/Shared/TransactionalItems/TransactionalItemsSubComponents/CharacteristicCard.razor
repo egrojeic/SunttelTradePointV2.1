@@ -12,8 +12,8 @@
     </MessageSaveComponent>
 }
 
-<PageTitleComponent Title=" Characteristics " IconName=""
-                    Description="Here you can add characteristics">
+<PageTitleComponent Title="@GetName("TransactionalItemTypeCharacteristics", new TransactionalItemType())" IconName="characteristics.png"
+                    Description="@($"Here you can add {GetName("TransactionalItemTypeCharacteristics", new TransactionalItemType())}")">
 </PageTitleComponent>
 
 <div id="add-recipe">
@@ -235,4 +235,6 @@
         msg = _msg;
         status = _status;
     }
+
+   
 }

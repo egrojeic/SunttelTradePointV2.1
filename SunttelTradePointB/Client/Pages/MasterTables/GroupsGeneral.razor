@@ -101,7 +101,7 @@ else
         ConceptGroup itemConceptGroup = null;
         itemConceptGroup = args.RowInfo.RowData;
         transactItemsService.ConceptGroupSelectedItems = itemConceptGroup;
-        if (args.Item.Id == "Edit")
+        if (args.Item.Text == "Edit" && transactItemsService.ConceptGroupSelectedItems !=null)
         {
             Navigation.NavigateTo($"/GroupConcept/Groups/Edit/{_filterItems}");
         }
