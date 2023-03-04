@@ -6,14 +6,17 @@ using System.Net.Http.Json;
 
 namespace SunttelTradePointB.Client.Services.MasterTablesServices
 {
+
+ 
    
     public class GeographicPlacesService : IGeographicPlaces
     {
         private readonly HttpClient _httpClient;
-
-        List<Country>? countriesGlobalList;
+        public Address address { get; set; }
+     List<Country>? countriesGlobalList;
         List<GeoRegion>? regionsGlobalList;
         List<City>? citiesGlobalList;
+
 
         public GeographicPlacesService(HttpClient httpClient)
         {
