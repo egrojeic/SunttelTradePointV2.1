@@ -86,42 +86,57 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="form-group row py-2">
-                                <div class="form-group row">
-                                    <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsExternal"): </label>
-                                    <div class="col">
-                                        <SfSwitch @bind-Checked="warehouse.IsExternal"></SfSwitch>
+                            <div class="grid-columns-2">
+                                <div class="form-group row py-2">
+                                    <div class="form-group row">
+                                        <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsExternal"): </label>
+                                        <div class="col">
+                                            <SfSwitch @bind-Checked="warehouse.IsExternal"></SfSwitch>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="form-group row py-2">
-                                <div class="form-group row">
-                                    <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsTransformationFacility"): </label>
-                                    <div class="col">
-                                        <SfSwitch @bind-Checked="warehouse.IsTransformationFacility"></SfSwitch>
+                                <div class="form-group row py-2">
+                                    <div class="form-group row">
+                                        <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsTransformationFacility"): </label>
+                                        <div class="col">
+                                            <SfSwitch @bind-Checked="warehouse.IsTransformationFacility"></SfSwitch>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group row py-2">
-                                <div class="form-group row">
-                                    <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "ScanSimulated"): </label>
-                                    <div class="col">
-                                        <SfSwitch @bind-Checked="warehouse.ScanSimulated"></SfSwitch>
+                                <div class="form-group row py-2">
+                                    <div class="form-group row">
+                                        <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "ScanSimulated"): </label>
+                                        <div class="col">
+                                            <SfSwitch @bind-Checked="warehouse.ScanSimulated"></SfSwitch>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group row py-2">
-                                <div class="form-group row">
-                                    <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsInventoryControlled"): </label>
-                                    <div class="col">
-                                        <SfSwitch @bind-Checked="warehouse.IsInventoryControlled"></SfSwitch>
+                                <div class="form-group row py-2">
+                                    <div class="form-group row">
+                                        <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsInventoryControlled"): </label>
+                                        <div class="col">
+                                            <SfSwitch @bind-Checked="warehouse.IsInventoryControlled"></SfSwitch>
+                                        </div>
                                     </div>
                                 </div>
+
+                                <div class="form-group row py-2">
+                                    <div class="form-group row">
+                                        <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsActive"): </label>
+                                        <div class="col">
+                                            <SfSwitch @bind-Checked="warehouse.IsActive"></SfSwitch>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
+                           
+
+                          
+
+                           
 
                             <div class="form-group row">
                                 <div class="form-group row">
@@ -184,14 +199,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row py-2">
-                                <div class="form-group row">
-                                    <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsActive"): </label>
-                                    <div class="col">
-                                        <SfSwitch @bind-Checked="warehouse.IsActive"></SfSwitch>
-                                    </div>
-                                </div>
-                            </div>
+                           
                         </div>
 
                     </form>
@@ -288,6 +296,7 @@
 
     protected async void EventSearcherValue(string value)
     {
+        ParamCountResul = 0;
         if (SearcherValueMode == "AssociatedEntity")
         {
             wareHouseParentListApi = await actorsNodeServive.GetEntityActorFaceList(value);
@@ -302,16 +311,17 @@
         if (SearcherValueMode == "WareHouseParent")
         {
             warehouseList = await warehouseService.GetWarehouseList("all");
-            warehouse.WareHouseParent = warehouseList.Where(s => s.Name != null != null && s.Name.ToLower().Contains(value.ToLower())).FirstOrDefault();
+            if (!value.ToLower().Contains("todo") && !value.ToLower().Contains("all")) { warehouseList = warehouseList.Where(s => s.Name != null != null && s.Name.ToLower().Contains(value.ToLower())).ToList(); }
+
             if (warehouse.WareHouseParent == null) warehouse.WareHouseParent = new();
-            ParamCountResul = ContactList != null ? ContactList.Count() : 0;
+            ParamCountResul = warehouseList != null ? warehouseList.Count() : 0;
         }
         if (SearcherValueMode == "InventoryTransactionalItemType")
         {
             itemType = await transactionalItemsService.GetSelectorListTransactionalItemTypes();
-            warehouse.InventoryTransactionalItemType = itemType.Where(s => s.Name!=null != null && s.Name.ToLower().Contains(value.ToLower())).FirstOrDefault();
-            if (warehouse.InventoryTransactionalItemType == null) warehouse.InventoryTransactionalItemType = new();
-            ParamCountResul = ContactList != null ? ContactList.Count() : 0;
+            if (!value.ToLower().Contains("todo") && !value.ToLower().Contains("all")) itemType = itemType.Where(s => s.Name != null != null && s.Name.ToLower().Contains(value.ToLower())).ToList();
+
+            ParamCountResul = itemType != null ? itemType.Count() : 0;
         }
 
 
@@ -353,6 +363,7 @@
         PopupViewEntitiesInventory = false;
         PopupViewWareHouseParent = false;
         ViewSelect = false;
+        ParamCountResul = 0;
         StateHasChanged();
     }
     #endregion Control Input

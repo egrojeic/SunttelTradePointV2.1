@@ -71,71 +71,99 @@
 
             @if (EntityNode == null)
             {
-                <div class="form-group">
+                <div>
                     <label for="name">UserName*</label>
                     <input type="text" class="form-control" id="name" @bind-value="EntityNode.Name" />
                 </div>
 
-                <div class="form-group">
+                <div>
                     <label for="eMailAddress">Password*</label>
                     <input type="text" class="form-control" id="eMailAddress" @bind-value="EntityNode.EMailAddress" />
                 </div>
 
-                <div class="form-group">
+                <div>
                     <label for="sunttelUserId">Confirm Password*</label>
                     <input type="text" class="form-control" id="sunttelUserId" @bind-value="EntityNode.SunttelUserId" />
                 </div>
             }
 
             <div class="grid-columns-2 box-shadow-mode width-form">
-
-                <div class="form-group">
-                    <label for="name">@lblName*</label>
+                @if (Id == null)
+                {
+                    <div>
+                        <label for="name">@lblName*</label>
+                    </div>
+                    <div>
+                        <input type="text" class="form-control" id="name" @bind-value="EntityNode.Name" />
                 </div>
-                <div class="form-group">
-                    <input type="text" class="form-control" id="name" @bind-value="EntityNode.Name" />
-                </div>
+                }
+                @if (Id != null)
+                {                    
+                    <div>
+                        <label for="name">@lblName*</label>
+                        <input type="text" class="form-control" id="name" @bind-value="EntityNode.Name" />
+                    </div>
+                     <div></div>
+                }
+                @if (Id != null)
+                {
+                   
+                    <div class="img-ico">
+                        <div class="col-sm">
+                            <img src="@imageRute" alt="imagen" width="160px" height="150px">
+
+                        </div>
+                        <div class="col">
+                            <span @onclick="NavigateToImage">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0     8 8">
+                                    <path fill="currentColor" d="M6 0L5 1l2 2    l1-1l-2-2zM4 2L0 6v2h2l4-4l-2-2z" />
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+
+                }
+
+              
 
 
-                <div class="form-group">
+                <div>
                     <label>@lblEmail*</label>
                 </div>
                 <div>
                     <input type="text" class="form-control" @bind-value="EntityNode.EMailAddress" />
                 </div>
-                <div class="form-group">
+                <div>
                     <label>@lblSquarUser*</label>
                 </div>
                 <div>
                     <input type="text" class="form-control" id="sunttelUserId" @bind-value="EntityNode.SunttelUserId" />
                 </div>
-                <div class="form-group">
+                <div>
                     <label>@lblInvoicingAddress*</label>
-
-                    <span>@(EntityNode != null ? EntityNode.InvoicingAddress : "")</span>
                 </div>
                 <div>
+                    <span>@(EntityNode != null ? EntityNode.InvoicingAddress : "")</span>
                     <span @onclick="(() => NavigateToInvocingAddress())" class="px-3">
                         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0     8 8">
                             <path fill="currentColor" d="M6 0L5 1l2 2    l1-1l-2-2zM4 2L0 6v2h2l4-4l-2-2z" />
                         </svg>
                     </span>
                 </div>
-                <div class="form-group" id="shortCutCodeGroup">
+                <div id="shortCutCodeGroup">
                     <label for="shortcutCode">@lblShortcutCode*</label>
                 </div>
                 <div>
                     <input type="text" class="form-control" @bind-value="EntityNode.Code" />
                 </div>
-                <div class="form-group" id="legacyIdGroup">
-                    <label for="legacyId">@lblLegacyId *</label>
-                </div>
-                <div>
-                    <input type="number" class="form-control" id="legacyId" @bind-value="EntityNode.LegacyId" />
-                </div>
-
-                <div class="form-group">
-                    <label for="sunttelUserId">@lblRole*</label>
+                @*  <div   id="legacyIdGroup">
+            <label for="legacyId">@lblLegacyId *</label>
+            </div>
+            <div>
+            <input type="number" class="form-control" id="legacyId" @bind-value="EntityNode.LegacyId" />
+            </div>*@
+                <div><label for="sunttelUserId">@lblRole*</label></div>
+                <div>                    
                     <div class="item-edit">
                         <label>@(role != null ? role.Name : "")</label>
                         <button type="button" style="float:right" @onclick='()=>SetViewElement("Roles")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
@@ -154,25 +182,6 @@
                     </InputTextSelector>
                 </div>
 
-
-
-
-
-                @if (Id != null)
-                {
-                    <div class="col-sm">
-                        <img src="@imageRute" alt="imagen" width="160px" height="150px">
-
-
-                    </div>
-                    <div class="col">
-                        <span @onclick="NavigateToImage">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0     8 8">
-                                <path fill="currentColor" d="M6 0L5 1l2 2    l1-1l-2-2zM4 2L0 6v2h2l4-4l-2-2z" />
-                            </svg>
-                        </span>
-                    </div>
-                }
 
             </div>
 
