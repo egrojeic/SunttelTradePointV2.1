@@ -327,17 +327,26 @@
             if (currentItem.TransactionalItemTags == null) currentItem.TransactionalItemTags = new List<TransactionalItemTag>();
             if (currentItem.TypeOfConcept == null) currentItem.TypeOfConcept = new();
 
-            currentItem.SkinImageName = transactItemImage != null ? transactItemImage.PathImage : "/images/defaultImage.png";
+            if (transactItemImage == null) transactItemImage = new();          
             currentItem.TypeOfConcept  = typeOfConcept !=null ? typeOfConcept : new();
-            TransactionalItem item = await transactionalService.SaveTransactionalItem(currentItem);
+            TransactionalItem item = null;
+            if (currentItem.Status != null) item = await transactionalService.SaveTransactionalItem(currentItem);
             bool resul = (item != null ? true : false);
-            if (resul)
+            if (resul && currentItem.Status !=null)
             {
                 currentItem = item;
                 transactionalService.TransactionalItems = item;
                 transactionalService.transactionalItemId = item.Id;
             }
-            msg = resul ? "save" : "no save";
+
+            if (currentItem.Status==null)
+            {
+                msg = "Required status";
+            }
+            else
+            {
+                msg = resul ? "save" : "no save";
+            }
             AlertOpen = true;
         }
         if (tile == "Save as...")
@@ -379,6 +388,7 @@
 
     protected async void EventSearcherValue(string value)
     {
+        ParamCountResul = 0;
         if (SearcherValueMode == "img")
         {
             transactItemImages = await transactionalService.GetTransactionalItemDetailsPathImages(transactionalItemId);
@@ -411,7 +421,7 @@
                             Id = item.Id,
                             IsLoadingData = item.IsLoadingData,
                             IsSelected = item.IsSelected,
-                            
+
                         });
                 }
             }
@@ -419,6 +429,7 @@
             ParamCountResul = typeOfConcepts != null ? typeOfConcepts.Count() : 0;
             ViewSelect = ParamCountResul > 0;
             if (ReferInputTextSelector != null) ReferInputTextSelector.Refresh();
+            StateHasChanged();
         }
 
     }
@@ -495,15 +506,8 @@
         }
         else
         {
-            currentItem.Status = statust = new ConceptStatus
-                {
-                    Id = "",
-                    LegacyId = "",
-                    Code = "",
-                    Name = "....",
-                    IsEnabledForTransactions = false
-                };
-            colorStatus = "gary";
+            currentItem.Status = null;
+            colorStatus = "gray";
         }
         if (currentItem != null) currentItemStatus = currentItem.Status != null ? currentItem.Status.Name : "";
     }
@@ -511,6 +515,8 @@
     public void ClosedInputText()
     {
         PopupViewAddImg = false;
+        PopupViewTypeProduct = false;
+        ParamCountResul = 0;
         ViewSelect = false;
         StateHasChanged();
     }
