@@ -13,36 +13,84 @@
 </div>
 
 <div class="form-group row py-2">
-    <label class="control-label col-md-12">@lblCountry* : (<b>@country1.Name</b>) </label>
+    <label class="control-label col-md-12">@lblCountry* :  </label>
     <div class="col">
         @if (countryList == null) countryList = new();
-        <SfDropDownList TValue="string" TItem="Country" Placeholder="Select a country" AllowFiltering="true" DataSource="@countryList" >
-            <DropDownListEvents TItem="Country" TValue="string" ValueChange="@ValueChangeCountry"></DropDownListEvents>
-            <DropDownListFieldSettings Value="@nameof(Country.Name)" Text="Name"></DropDownListFieldSettings>
-        </SfDropDownList>
+        <div>
+            <div style="position:relative;">
+                <div class="item-edit">
+                    @if (country1 == null) country1 = new();
+                    <label>@(country1 != null ? (country1?.Name != null ? country1?.Name : "") : "")</label>
+                    <button @onclick='()=>SetViewElemnt("Contry")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                </div>
+                <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" EventClosed="ClosedInput" ViewSelect="viewSelect" ViewControl="viewControlCountry1">
+                    @{
+                        if (countryList != null)
+                        {
+                            foreach (var Obj in countryList)
+                            {
+                                <option value="@Obj.Id">@Obj.Name</option>
+                            }
+                        }
+
+                    }
+                </InputTextSelector>
+            </div>
+        </div>      
     </div>
 </div>
 
 
-<div  class="form-group row py-2">
-    <label class="control-label col-md-12">@lblRegion* : (<b>@geo.Name</b>) </label>
+<div class="form-group row py-2">
+    <label class="control-label col-md-12">@lblRegion* :  </label>
     <div class="col">
         @if (regionsList == null) regionsList = new();
-        <SfDropDownList TValue="string" TItem="GeoRegion" Placeholder="Select a region" AllowFiltering="true" DataSource="@regionsList" >
-            <DropDownListEvents TItem="GeoRegion" TValue="string" ValueChange="@ValueChangeRegion"></DropDownListEvents>
-            <DropDownListFieldSettings Value="@nameof(GeoRegion.Name)" Text="Name"></DropDownListFieldSettings>
-        </SfDropDownList>
+        <div>
+            <div style="position:relative;">
+                <div class="item-edit">
+                    <label>@(geo != null ? (geo?.Name != null ? geo?.Name:"") : "")</label>
+                    <button @onclick='()=>SetViewElemnt("Geo")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                </div>
+                <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" EventClosed="ClosedInput" ViewSelect="viewSelect" ViewControl="viewControlGeo">
+                    @{
+                        if (regionsList != null)
+                        {
+                            foreach (var Obj in regionsList)
+                            {
+                                <option value="@Obj.Id">@Obj.Name</option>
+                            }
+                        }
+                    }
+                </InputTextSelector>
+            </div>
+        </div>      
     </div>
 </div>
 
-<div  class="form-group row py-2">
-    <label class="control-label col-md-12">@lblCity* : (<b>@city.Name</b>)</label>
+<div class="form-group row py-2">
+    <label class="control-label col-md-12">@lblCity* :</label>
     <div class="col">
         @if (citiesList == null) citiesList = new();
-        <SfDropDownList TValue="string" TItem="City" Placeholder="Select a city" AllowFiltering="true" DataSource="@citiesList" >
-            <DropDownListEvents TItem="City" TValue="string" ValueChange="@ValueChangeCity"></DropDownListEvents>
-            <DropDownListFieldSettings Value="@nameof(City.Name)" Text="Name"></DropDownListFieldSettings>
-        </SfDropDownList>
+        <div>
+            <div style="position:relative;">
+                <div class="item-edit">
+                    <label>@(city != null ? (city?.Name != null ? city?.Name:"") : "")</label>
+                    <button @onclick='()=>SetViewElemnt("City")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                </div>
+                <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" EventClosed="ClosedInput" ViewSelect="viewSelect" ViewControl="viewControlCity">
+                    @{
+                        if (citiesList != null)
+                        {
+                            foreach (var Obj in citiesList)
+                            {
+                                <option value="@Obj.Id">@Obj.Name</option>
+                            }
+                        }
+                    }
+                </InputTextSelector>
+            </div>
+        </div>
+      
     </div>
 </div>
 @if (status && _filterView == -1)
@@ -71,7 +119,8 @@
     public Address? oldAddress { get; set; } = null;
     [Parameter]
     public EventCallback<Address> EventAddress { get; set; }
-
+    [Parameter]
+    public string modePage { get; set; } = "";
     //Geographic Place Definition
     private List<Country>? countryList;
 
@@ -82,14 +131,18 @@
     private Country? currentCountry;
     private GeoRegion? currentRegion;
 
-    SfDropDownList<City,string> DrCity;
-    SfDropDownList<GeoRegion,string> DrRegi;
-    SfDropDownList<Country,string> DrContry;
+    SfDropDownList<City, string> DrCity;
+    SfDropDownList<GeoRegion, string> DrRegi;
+    SfDropDownList<Country, string> DrContry;
+    InputTextSelector ReferInputTextSelector;
 
 
+    int ParamCountResul = 0;
+    bool viewSelect = false;
     int _filterView = 3;
     bool status = false;
 
+    string SearcherValueMode = "";
     string _countriesFilter = "";
     string _regionsFilter = "";
     string _citiesFilter = "";
@@ -100,10 +153,16 @@
     public string lblCity = "";
     public string lblZipCode = "";
 
+    bool viewControlCountry1 = false;
+    bool viewControlGeo = false;
+    bool viewControlCity = false;
+    bool postBack = true;
+
     Address address = new Address();
     public City city = new City();
     public GeoRegion geo = new GeoRegion();
     public Country country1 = new Country();
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -120,17 +179,16 @@
 
     }
 
-
     protected override void OnAfterRender(bool firstRender)
     {
-        if (oldAddress != null)
+        if (oldAddress != null && postBack)
         {
             address = oldAddress;
 
             if (address?.CityAddress != null)
             {
                 city = address.CityAddress;
-                if (DrCity!=null) DrCity.RefreshDataAsync();
+                if (DrCity != null) DrCity.RefreshDataAsync();
 
                 if (address?.CityAddress?.RegionCity != null)
                 {
@@ -140,6 +198,7 @@
                     {
                         country1 = address.CityAddress.RegionCity.CountryRegion;
                         if (DrContry != null) DrContry.RefreshDataAsync();
+                        postBack = false;
 
                     }
                 }
@@ -148,7 +207,7 @@
             }
 
         }
-        
+
     }
 
 
@@ -165,7 +224,7 @@
 
     private async Task LoadRegions(Country country)
     {
-        if (country !=null)
+        if (country != null)
         {
             var response = await geoPlaces.GetRegions(country.Id, "", true);
             currentCountry = country;
@@ -180,12 +239,10 @@
 
     private async Task GetFilteredRegions(Country country, string filterRegions = "")
     {
-        if (country!=null)
+        if (country != null)
         {
             regionsList = await geoPlaces.GetRegions(country.Id, filterRegions);
         }
-
-
     }
 
     private async Task SetCurrentRegion(GeoRegion geoRegion)
@@ -250,5 +307,112 @@
         oldAddress.CityAddress.RegionCity.CountryRegion = currentCountry != null ? currentCountry : (oldAddress.CityAddress.RegionCity.CountryRegion != null ? oldAddress.CityAddress.RegionCity.CountryRegion : new());
         geoPlaces.address = oldAddress;
     }
+
+
+
+    #region InputControl
+    protected async void EventIdSelection(string SelectionId)
+    {
+        if (SearcherValueMode == "Contry")
+        {
+            country1 = countryList.Where(s => s.Id == SelectionId.Trim()).FirstOrDefault();
+            LoadRegions(country1);
+            geo = new();
+            city = new();
+        }
+        if (SearcherValueMode == "Geo")
+        {
+            geo = regionsList.Where(s => s.Id == SelectionId.Trim()).FirstOrDefault();
+            if (geo != null)
+            {
+                city = new();
+                await GetFilteredCities(geo, "all");
+            }
+
+        }
+        if (SearcherValueMode == "City")
+        {
+            city = citiesList.Where(s => s.Id == SelectionId.Trim()).FirstOrDefault();
+
+        }
+
+
+        if (modePage == "ShippingPlaces")
+        {            
+            geoPlaces.addressShippingPlaces = geoPlaces.address == null ? new() : geoPlaces.address;
+            geoPlaces.addressShippingPlaces.CityAddress = city != null ? city : new();
+            geoPlaces.addressShippingPlaces.CityAddress.RegionCity = geo != null ? geo : new();
+            geoPlaces.addressShippingPlaces.CityAddress.RegionCity.CountryRegion = country1 != null ? country1 : new();
+        }
+        else
+        {
+            geoPlaces.address = geoPlaces.address == null ? new() : geoPlaces.address;
+            geoPlaces.address.CityAddress = city != null ? city : new();
+            geoPlaces.address.CityAddress.RegionCity = geo != null ? geo : new();
+            geoPlaces.address.CityAddress.RegionCity.CountryRegion = country1 != null ? country1 : new();
+        }
+      
+
+    ClosedInput();
+    }
+    protected async void EventSearcherValue(string value)
+    {
+        if (SearcherValueMode == "Contry")
+        {
+            await GetFilteredCountries();
+            if (!value.ToLower().Contains("all") && !value.ToLower().Contains("todo"))
+            {
+                countryList = countryList.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+            }
+
+            if (countryList != null)
+            {
+                ParamCountResul = countryList.Count();                
+            }
+
+        }
+        if (SearcherValueMode == "Geo")
+        {
+            if (!value.ToLower().Contains("all") && !value.ToLower().Contains("todo"))
+            {
+                regionsList = regionsList.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+            }
+            ParamCountResul = regionsList !=null?  regionsList.Count():0;
+        }
+        if (SearcherValueMode == "City")
+        {
+            if (!value.ToLower().Contains("all") && !value.ToLower().Contains("todo"))
+            {
+                citiesList = citiesList.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+            }
+
+            ParamCountResul = citiesList != null ? citiesList.Count() : 0;
+        }
+
+        viewSelect = ParamCountResul > 0; 
+    }
+
+
+    public void ClosedInput()
+    {
+        viewControlCountry1 = false;
+        viewSelect = false;
+        viewControlGeo = false;
+        viewControlCity = false;
+        ParamCountResul = 0;
+
+    }
+
+    public void SetViewElemnt(string Element)
+    {
+        SearcherValueMode = Element;
+        ClosedInput();
+        if (Element == "Contry") { viewControlCountry1 = true; }
+        if (Element == "Geo") viewControlGeo = true;
+        if (Element == "City") viewControlCity = true;
+
+
+    }
+    #endregion Input Control
 
 }

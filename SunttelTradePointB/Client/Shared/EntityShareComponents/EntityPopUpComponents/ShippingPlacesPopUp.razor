@@ -47,32 +47,11 @@
                         </div>
 
                         <div class="form-group row py-2">
-                            <label class="control-label col-md-12">@lblCountry*: </label>
-                            <div class="col">
-                                <SfDropDownList TValue="string" TItem="Country" Placeholder="Select a country" AllowFiltering="true" DataSource="@countryList" @bind-Value="country1.Name">
-                                    <DropDownListEvents TItem="Country" TValue="string" ValueChange="@ValueChangeCountry"></DropDownListEvents>
-                                    <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
-                                </SfDropDownList>
-                            </div>
-                        </div>
-
-                        <div class="form-group row py-2">
-                            <label class="control-label col-md-12">@lblRegion*: </label>
-                            <div class="col">
-                                <SfDropDownList TValue="string" TItem="GeoRegion" Placeholder="Select a region" AllowFiltering="true" DataSource="@regionsList" @bind-Value="geo.Name">
-                                    <DropDownListEvents TItem="GeoRegion" TValue="string" ValueChange="@ValueChangeRegion"></DropDownListEvents>
-                                    <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
-                                </SfDropDownList>
-                            </div>
-                        </div>
-
-                        <div class="form-group row py-2">
-                            <label class="control-label col-md-12">@lblCity*: </label>
-                            <div class="col">
-                                <SfDropDownList TValue="string" TItem="City" Placeholder="Select a city" AllowFiltering="true" DataSource="@citiesList" @bind-Value="city.Name">
-                                    <DropDownListEvents TItem="City" TValue="string" ValueChange="@ValueChangeCity"></DropDownListEvents>
-                                    <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
-                                </SfDropDownList>
+                            <div class="form-group row">
+                                <div class="col">
+                                    @if (address == null) address = new();
+                                    <AddressComponent oldAddress="address" modePage="ShippingPlaces"></AddressComponent>
+                                </div>
                             </div>
                         </div>
 
@@ -92,7 +71,7 @@
                             <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
                         </div>
                     </form>
-                    
+
                 </CardContent>
             </SfCard>
         </div>
@@ -205,6 +184,7 @@
         lblCity = UICommonFunctions.GetDisplayName(new City(), "Name");
         lblZipCode = UICommonFunctions.GetDisplayName(new Address(), "ZipCode");
         RefreshMe();
+
         await GetFilteredCountries();
         await GetEntityAddressList(Id);
     }
@@ -288,33 +268,47 @@
             {
                 address.Id = addressId;
             }
-            address.Code = Code;
-            address.CityAddressRef = city.Id;
-            address.Code = identificationEntity.Code;
-            await actorsNodeServive.SaveEntityAddress(EntityActorId, address);
-            visible = true;
+            //address.Code = Code;
+            //address.CityAddressRef = city.Id;
+            //address.Code = identificationEntity.Code;
+            address.CityAddress = geoPlaces.addressShippingPlaces.CityAddress != null ? geoPlaces.addressShippingPlaces.CityAddress : new();
+            address.CityAddress.RegionCity = geoPlaces.addressShippingPlaces.CityAddress.RegionCity != null ? geoPlaces.addressShippingPlaces.CityAddress.RegionCity : new();
+            address.CityAddress.RegionCity.CountryRegion = geoPlaces.addressShippingPlaces.CityAddress.RegionCity.CountryRegion != null ? geoPlaces.addressShippingPlaces.CityAddress.RegionCity.CountryRegion : new();
+           var resul  = await actorsNodeServive.SaveEntityAddress(EntityActorId, address);
+
+            if (resul) visible = true;
             StateHasChanged();
         }
     }
 
     public async Task GetEntityAddressList(string entityId)
     {
-        if(addressId != null)
+        if (addressId != null)
         {
             addresList = await actorsNodeServive.GetEntityDetailsAddressList(entityId);
-            foreach(var addressL in addresList)
+            if (addresList != null)
             {
-                if(addressL.Id == addressId)
+                var addressL = addresList.Where(s => s.Id == addressId).FirstOrDefault();
+                if (addressL != null)
                 {
-                    address.Name = addressL.Name;
-                    address.AddressLine1 = addressL.AddressLine1;
-                    address.AddressLine2 = addressL.AddressLine2;
-                    country1 = addressL.CityAddress.RegionCity.CountryRegion;
-                    geo = addressL.CityAddress.RegionCity;
-                    city = addressL.CityAddress;
-                    address.ZipCode = addressL.ZipCode;
+                    if (addressL.Id == addressId)
+                    {
+                        address.Name = addressL.Name;
+                        address.AddressLine1 = addressL.AddressLine1;
+                        address.AddressLine2 = addressL.AddressLine2;
+                        country1 = addressL.CityAddress.RegionCity.CountryRegion;
+                        geo = addressL.CityAddress.RegionCity;
+                        city = addressL.CityAddress;
+                        address.ZipCode = addressL.ZipCode;
+                    }
+                    address = addressL;
+                    StateHasChanged();
                 }
+
+
             }
+
+
         }
     }
 

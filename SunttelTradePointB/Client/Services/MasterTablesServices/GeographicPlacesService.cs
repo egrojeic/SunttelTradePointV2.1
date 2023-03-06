@@ -13,7 +13,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
     {
         private readonly HttpClient _httpClient;
         public Address address { get; set; }
-     List<Country>? countriesGlobalList;
+        public Address addressShippingPlaces { get; set; }
+        List<Country>? countriesGlobalList;
         List<GeoRegion>? regionsGlobalList;
         List<City>? citiesGlobalList;
 
@@ -41,10 +42,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
                 }
 
-                if (citiesGlobalList != null)
-                    return citiesGlobalList.FindAll(c => c.Name.Contains(nameLike, StringComparison.CurrentCultureIgnoreCase)).ToList();
-                else
-                    return null;
+                return citiesGlobalList != null ? citiesGlobalList : new();
             }
             catch(Exception ex)
             {

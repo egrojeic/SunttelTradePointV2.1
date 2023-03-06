@@ -3,7 +3,7 @@ using SunttelTradePointB.Client.Shared.EntityShareComponents.EntitySubComponents
 using SunttelTradePointB.Shared.Common;
 using System.Net;
 using System.Net.Http.Json;
-
+using System.Net.WebSockets;
 
 namespace SunttelTradePointB.Client.Services.MasterTablesServices
 {
@@ -116,10 +116,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 if (ipAddress == "")
                     ipAddress = "127.0.0.0";
                 entityNodesList = await _httpClient.GetFromJsonAsync<List<EntityActor>>($"/api/EntityNodesMaintenance/GetEntityNodes?userId={userId}&ipAdress={ipAddress}&filterName={nameToFind}");
-#pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo.
                 return entityNodesList;
-#pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo.
-
+                
                 //if (entityNodesList != null)
                 //    return entityNodesList.FindAll(c => c.EntityFace.Name.Contains(namteToFind)).ToList();
                 //else
@@ -128,9 +126,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             catch (Exception ex)
             {
                 string errMessage = ex.Message;
-#pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo.
                 return null;
-#pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo.
+
             }
         }
 
@@ -624,11 +621,13 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         }
 
 
-        public async Task SaveEntityAddress(string EntityActorId, Address address)
+        public async Task<bool> SaveEntityAddress(string EntityActorId, Address address)
         {
             var userId = UIClientGlobalVariables.UserId;
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
-            await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveEntityAddress?userId={userId}&ipAdress={ipAddress}&entityActorId={EntityActorId}", address);
+            var resul =   await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveEntityAddress?userId={userId}&ipAdress={ipAddress}&entityActorId={EntityActorId}", address);
+
+            return resul.IsSuccessStatusCode;
         }
 
         public async Task SavePhone(string EntityActorId, PhoneNumber phoneNumber)

@@ -12,7 +12,7 @@
 @inject ActorsNodeService actorsNodeServive
 @inject NavigationManager navigationManager
 
-   <MessageSaveComponent message="@msg" isVisible="@msgView"></MessageSaveComponent> 
+<MessageSaveComponent message="@msg" isVisible="@msgView"></MessageSaveComponent>
 
 <div class="control-section">
     <div class="row">
@@ -28,42 +28,16 @@
                                     <input id="addres1" type="text" class="form-control" @bind-value="@address.AddressLine1" required />
                                 </SfTooltip>
                             </div>
-                        </div>
+                        </div>                      
 
                         <div class="form-group row py-2">
-                            <label class="control-label col-md-12">@lblCountry*: (<b>@(country1.Name != null ? country1.Name :"")</b>)</label>
-                            <div class="col">
-                                <SfDropDownList TValue="string" TItem="Country" Placeholder="Select a country" AllowFiltering="true" DataSource="@countryList" >
-                                    <DropDownListEvents TItem="Country" TValue="string" ValueChange="@ValueChangeCountry"></DropDownListEvents>
-                                    <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
-                                </SfDropDownList>
+                            <div class="form-group row">
+                                <div class="col">
+                                    @if (entityActor == null) entityActor = new();
+                                    <AddressComponent oldAddress="entityActor.InvoicingAddress" ></AddressComponent>
+                                </div>
                             </div>
                         </div>
-
-                        @if (showRegion || geo!=null)
-                        {
-                            <div class="form-group row py-2">
-                                <label class="control-label col-md-12">@lblRegion*: (<b>@(geo.Name != null ? geo.Name:"")</b>)</label>
-                                <div class="col">
-                                    <SfDropDownList TValue="string" TItem="GeoRegion" Placeholder="Select a region" AllowFiltering="true" DataSource="@regionsList" >
-                                        <DropDownListEvents TItem="GeoRegion" TValue="string" ValueChange="@ValueChangeRegion"></DropDownListEvents>
-                                        <DropDownListFieldSettings Value="Name" Text="Name"></DropDownListFieldSettings>
-                                    </SfDropDownList>
-                                </div>
-                            </div>
-                        }
-
-                        @if (showCities || city != null)
-                        {
-                            <div class="form-group row py-2">
-                                <label class="control-label col-md-12">@lblCity*: (<b>@(city.Name!=null? city.Name:"")</b>)</label>
-                                <div class="col">
-                                    <SfDropDownList TValue="string" TItem="City" Placeholder="Select a city" AllowFiltering="true" DataSource="@citiesList" >
-                                        <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
-                                    </SfDropDownList>
-                                </div>
-                            </div>
-                        }
 
                         <div class="form-group row py-2">
                             <label class="control-label col-md-12">@lblZipCode*: </label>
@@ -115,7 +89,7 @@
     public bool saveInvoicing { get; set; } = false;
     public bool save { get; set; } = false;
 
-    EntityActor actor = new EntityActor(); 
+    EntityActor actor = new EntityActor();
 
     //Geographic Place Definition
     private List<Country>? countryList;
@@ -196,7 +170,7 @@
         lblRegion = UICommonFunctions.GetDisplayName(new GeoRegion(), "Name");
         lblCity = UICommonFunctions.GetDisplayName(new City(), "Name");
         lblZipCode = UICommonFunctions.GetDisplayName(new Address(), "ZipCode");
-        if(Id != "NewActor")
+        if (Id != "NewActor")
         {
             await GetEntityId(Id);
             save = true;
@@ -276,9 +250,9 @@
     public async Task GetEntityId(string entityId)
     {
         entityActor = await actorsNodeServive.GetEntityActor(entityId);
-        if (entityActor !=null)
+        if (entityActor != null)
         {
-            if (entityActor.InvoicingAddress!=null)
+            if (entityActor.InvoicingAddress != null)
             {
                 var invoicingAddress = entityActor.InvoicingAddress;
                 city = invoicingAddress.CityAddress != null ? invoicingAddress.CityAddress : new();
@@ -292,16 +266,20 @@
                 StateHasChanged();
             }
 
-        }       
+        }
     }
 
     public async void SaveInvoicingAddres(string? entityId, EntityActor? entityActor)
     {
-        address.CityAddressRef = city.Id;
+     
+        address.CityAddress = geoPlaces.address.CityAddress != null ? geoPlaces.address.CityAddress : new();
+        address.CityAddress.RegionCity = geoPlaces.address.CityAddress.RegionCity != null ? geoPlaces.address.CityAddress.RegionCity : new();
+        address.CityAddress.RegionCity.CountryRegion = geoPlaces.address.CityAddress.RegionCity.CountryRegion != null ? geoPlaces.address.CityAddress.RegionCity.CountryRegion : new();
+        address.CityAddressRef = geoPlaces.address.CityAddress.Id;
         entityActor.InvoicingAddress = address;
-        if(Id != null)
+        if (Id != null)
         {
-           var resul = await actorsNodeServive.SaveEntity(entityId, entityActor);
+            var resul = await actorsNodeServive.SaveEntity(entityId, entityActor);
             if (resul) Msg("Saved");
             if (!resul) Msg("No save");
         }

@@ -233,6 +233,9 @@
     public bool PopupViewEntitiesInventory = false;
     public bool PopupViewWareHouseParent = false;
 
+  
+
+
     Warehouse warehouse = new Warehouse();
     List<Warehouse> warehouseList = new List<Warehouse>();
 
@@ -280,7 +283,7 @@
     }
 
 
-    #region Control Input
+ 
     public void SetViewElemnt(string Element)
     {
         ViewSelect = false;
@@ -366,10 +369,10 @@
         ParamCountResul = 0;
         StateHasChanged();
     }
-    #endregion Control Input
+ 
 
 
-  
+
 
 
     private void GoBack()
@@ -383,6 +386,9 @@
         msg = _msg;
         status = _status;
     }
+
+
+
 
 
 }
