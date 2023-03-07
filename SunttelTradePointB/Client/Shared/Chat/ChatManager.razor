@@ -2,6 +2,7 @@
 @using System.Timers;
 @using Microsoft.AspNetCore.SignalR.Client
 @using SunttelTradePointB.Shared.Communications
+@using SunttelTradePointB.Client.Shared.Chat.AuxiliarComponents
 @using System.Text.RegularExpressions;
 
 
@@ -10,34 +11,7 @@
 @inject CommunicationService communicationService 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<style>
-    .spans-container span {
-        display: inline-block;
-        margin-right: 10px;
-    }
 
-    .chat {
-        display: grid;
-        grid-template-columns: 1fr;
-        grid-row-gap: 10px;
-        overflow-y: auto;
-        height: 600px;
-    }
-
-    .dropdown-menu {
-        width: 100px;
-    }
-
-    .btn {
-        border: none;
-        background-color: transparent;
-        position: relative;
-        top: -5px;
-    }
-    span{
-        cursor:pointer;
-    }
-</style>
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
@@ -45,176 +19,61 @@
   </symbol>
 </svg>
 
+
 <div id ="ChatConatainerDiv">
     
     <ChatUpperControl NumerCount="@NumberOfConnectedUsers">
 
     </ChatUpperControl>
-    <div class="col-md-12">
-        <div class="form-group row">
-            <div class="col-md-3">
-            <ChatMenuBar></ChatMenuBar>
-            </div>
-            <div class="col-md-9">
 
-                <div class="d-flex flex-row">
-                    <img src="@imageGroup" alt="avatar" class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
-                    <div class="pt-1">
-                        <p class="fw-bold mb-0">@chatGroup</p>
-                        <p class="small text-muted"></p>
-                    </div>
+    @if (newPage == "newGroup")
+    {
+        <ChatGroupManager EventCallNewPage="SetNewPage"></ChatGroupManager>
+    }
+    else
+    {
+        <div class="col-md-12">
+            <div class="@modeMenu">
+                <div style="background-color:gray;">
+                    <ChatMenuGroup EventCallModeMenu="SetModeMenu" modeMenu="@modeMenu" EventCallNewPage="SetNewPage"></ChatMenuGroup>
                 </div>
-                
-                <section class="chat">
-                    <div class="card-body" data-mdb-perfect-scrollbar="true">
-                        @{
-                            foreach (var text in communicationsMessages)
-                            {
-                                <div class="d-flex justify-content-between">
-                                    <p class="small mb-1">User Name</p>
-                                </div>
-                                <div class="d-flex flex-row justify-content-start">
-                                    <img src="https://localhost:7186/uploads/entityImages/avatar_male_man_person_user_icon.png"
-                                     alt="avatar 1" style="width: 45px; height: 100%;">
-                                    <div>
-                                        @if (refChatMessageWriter.urgent == true)
-                                        {
-                                            <div class="alert alert-danger d-flex align-items-center" role="alert">
-                                                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>
-                                                <div>
-                                                    @text.Message
-                                                </div>
-                                            </div>
-                                        }
-                                        else
-                                        {
-                                            <p class="small p-2 ms-3 mb-3 rounded-3" style="background-color: #f5f6f7;">
-                                                @text.Message
-                                                <!-- Default dropend button -->
-                                                <div class="btn-group dropend" style="float:right">
-                                                    <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <i class="fa-solid fa-bars"></i>
-                                                    </button>
-                                                    <ul class="dropdown-menu">
-                                                        <!-- Dropdown menu links -->
-                                                        <li><span @onclick="((e) => refChatMessageWriter.SetMessage(text.Message))"><i class="fa-sharp fa-solid fa-reply"></i>Replay</span></li>
-                                                        <li><span @onclick="((e) => refChatMessageWriter.forwardMessage(text.Message))"><i class="fa-solid fa-share"></i>Forward</span></li>
-                                                        <li><span><i class="fa-solid fa-check-double"></i>Confirm Read</span></li>
-                                                    </ul>
-                                                </div>
-                                            </p>
-                                        }
-                                    </div>
-                                </div>
-                            }
-                        }
-                    </div>
-                </section>
-                <ChatMessageWriter @ref="refChatMessageWriter" @bind-TextMessage="@textMessage">
-                </ChatMessageWriter>
+                <div>
+                    <h1>chat</h1>
+                </div>
             </div>
         </div>
-        
-    </div>
+        <ChatMessageWriter @ref="refChatMessageWriter">
+        </ChatMessageWriter>
 
-    
+    }
+
+   
 </div>
 
 @code {
+    ChatMessageWriter? refChatMessageWriter;
+    ChatMenuGroup? chatMenuGroup;
+    string modeMenu { get; set; } = "grid-columns-2-chat-min";
+
     private HubConnection? hubConnection;
     int NumberOfConnectedUsers = 0;
 
-    private List<string> addedTexts = new List<string>();
-    string _textMessage = "";
-
-    private string userName { get; set; } = "";
-
-    public string reply { get; set; } = "";
-    public string forward { get; set; } = "";
-
-    public string chatGroup { get; set; } = "Test Name";
-    public string imageGroup { get; set; } = "";
-
-    private List<CommunicationsMessage> communicationsMessages { get; set; } = new List<CommunicationsMessage>();
-
-    ChatMessageWriter? refChatMessageWriter;
-    private ChatMenuBar chatMenuBar = new ChatMenuBar();
-
-    private string userId = UIClientGlobalVariables.UserId;
-
-
-    protected override async Task OnInitializedAsync()
+    string newPage = "";
+    protected override void OnAfterRender(bool firstRender)
     {
-        userName = UIClientGlobalVariables.UserName;
-        imageGroup = actorsNodeService.Host + "/avatar_male_man_person_user_icon.png";
-        // Initializing hub
-        hubConnection = new HubConnectionBuilder()
-            .WithUrl(NavigationManager.ToAbsoluteUri("/hubs/userHub"), options =>
-            {
-                options.AccessTokenProvider = () => Task.FromResult(UIClientGlobalVariables.UserId);
-            })
-            .Build();
+        if (chatMenuGroup!=null) chatMenuGroup.Reload();
+    }
 
-        hubConnection.On<string>("updateConnectedUsers", (usersConnectedCount) =>
-        {
-            Console.WriteLine(usersConnectedCount);
-
-            NumberOfConnectedUsers = int.Parse(usersConnectedCount);
-            StateHasChanged();
-        });
-
-        hubConnection.On<string, CommunicationsMessage>("ReceiveMessage", (user, message) =>
-        {
-            //if(refChatMessageWriter.tempReplyMessage != "")
-            //{
-            //    reply = refChatMessageWriter.tempReplyMessage;
-            //    message = reply + "\n" + message;
-            //    refChatMessageWriter.tempReplyMessage = "";
-            //}
-            //if(refChatMessageWriter.tempForwardM != "")
-            //{
-            //    forward = $"{user} say: " + refChatMessageWriter.tempForwardM;
-            //    message = forward + "\n" + message;
-            //    refChatMessageWriter.tempForwardM = "";
-            //}
-            communicationsMessages.Add(message);
-
-            StateHasChanged();
-        });
-
-        try
-        {
-            await hubConnection.StartAsync();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine($"Error connecting: {e.Message}");
-        }
+    public void SetModeMenu(string _modeMenu)
+    {
+        modeMenu = _modeMenu;
         StateHasChanged();
     }
-
-    public string? textMessage
+    public void SetNewPage(string Page)
     {
-        get { return _textMessage; }
-        set
-        {
-            _textMessage = value;
-            addMessage(_textMessage);
-        }
+        newPage = Page;
+        StateHasChanged();
+
     }
 
-    private async void addMessage(string messageChat) 
-    {
-        CommunicationsMessage communicationsMessage = new CommunicationsMessage()
-        {
-            Message = messageChat,
-            SenderEntity = new EntityNodeCommunications
-            {
-                Id = UIClientGlobalVariables.UserId,
-                Name = UIClientGlobalVariables.UserName
-            }
-        };
-        await hubConnection.SendAsync("SendMessage", "User a", communicationsMessage);
-
-    }
 }

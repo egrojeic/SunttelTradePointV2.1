@@ -4,15 +4,24 @@
 @using System.Reflection
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
+<style>
+    body html {
+        overflow: hidden;
+    }
 
+</style>
 
 <PageTitleComponent Title="Chat" IconName="ChatIco.png"
                     Description="Chat with your teammates, clients, and providers">
 </PageTitleComponent>
 
-<ChatManager>
+<div class="content-chat" >
+    <ChatManager>
 
-</ChatManager>
+    </ChatManager>
+
+</div>
+
 
 @code {
 

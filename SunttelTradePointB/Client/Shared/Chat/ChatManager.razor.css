@@ -1,13 +1,60 @@
-﻿#ChatConatainerDiv {
-    min-height: 700px;
-    min-width: 450px;
+﻿
+#ChatConatainerDiv {   
+    max-height: 490px;
+    min-width: 150px;
     background-color: #313338;
     border-radius: 10px;
-    margin-left: 20px;
-    margin-right: 20px;
     box-shadow: 10px 10px 5px #aaaaaa;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    
+}
+.spans-container span {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.chat {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-row-gap: 10px;
+    overflow-y: auto;
+    height: 600px;
+}
+
+.dropdown-menu {
+    width: 100px;
+}
+
+.btn {
+    border: none;
+    background-color: transparent;
+    position: relative;
+    top: -5px;
+}
+
+span {
+    cursor: pointer;
+}
+
+
+.grid-columns-2-chat-min {
+    display: grid;
+    grid-template-columns: 100px auto;
+    height: 411px;
+    background-color: #808080;
+}
+
+
+.grid-columns-2-chat-max {
+    display: grid;
+    grid-template-columns: 300px auto;
+    height: 411px;
+    background-color: #808080;
+}
+
+.ico-menu{
+    height: 40px;
+    width: 40px;
+    border-radius:5px;
+    position:absolute;
+    left:0px;
+   
 }
