@@ -267,7 +267,7 @@
 
     public async void Save()
     {
-        Address adress =geoPlaces.address !=null?  geoPlaces.address:new();
+        Address adress = warehouse.WarehouseAddress != null ? warehouse.WarehouseAddress : new();
         if (warehouse.WarehouseAddress == null) warehouse.WarehouseAddress = new();
         warehouse.WarehouseAddress.CityAddress = adress.CityAddress != null ? adress.CityAddress : new() ;
         var resul = await warehouseService.SaveWarehuse(warehouse);
