@@ -114,3 +114,32 @@
     padding-left: 0px;
     margin: 0;
 }
+
+.img-ico{
+    display:flex;
+    flex-direction:column;   
+    align-items:center;
+}
+.flex-horizontal-center-node{
+   width:400px;
+}
+.width-form {
+    width: 700px;
+    align-items: start;
+    margin-top:-15px;
+}
+.width-form-1 {
+    width: 800px;
+    margin-left: 100px;    
+}
+.flex-content {
+    display:flex;
+    flex-direction:row;
+align-content:center;
+
+}
+
+.vertical-position {    
+    align-items: start;
+
+}

@@ -53,9 +53,12 @@
         if (transactionalService.transactionalItemId != null && transactionalService.transactionalItemId != "")
         {
             transactionalItemId = transactionalService.transactionalItemId;     
-          
+
 
         }
+
+
+       
 
 
     }
@@ -63,7 +66,7 @@
     protected override void OnAfterRender(bool firstRender)
     {
         OnInitializedData();
-      
+
     }
 
 
@@ -80,14 +83,14 @@
 
             if (dataGrid.parameterList.Count() != ProductModels.Count()) StateHasChanged();
         }
-       
+
     }
 
 
-    
 
 
-    
+
+
 
 
 
@@ -106,7 +109,11 @@
 
     public async void OnContextMenuClick(ContextMenuClickEventArgs<ProductModel> args)
     {
-       
+        transactionalService.ConceptProductModel = args.RowInfo.RowData;
+        if (transactionalService.ConceptProductModel !=null)
+        {
+            Navigation.NavigateTo("/ProductModelCard/Edit");
+        }
     }
 
     public string GetName(string Name, Object Obj)

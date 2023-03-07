@@ -100,7 +100,7 @@ else
         TransactionalItemStatus Obj = null;
         Obj = args.RowInfo.RowData;
         transactItemsService.ConceptStatusSelectedItems = Obj;
-        if (args.Item.Id == "Edit")
+        if (args.Item.Text == "Edit")
         {
             Navigation.NavigateTo($"/StatusConcept/Status/Edit/{_filterItems}");
         }

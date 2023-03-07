@@ -122,7 +122,19 @@
             if (transactionalService?.BoxSelectedItems != null)
             {
                 box = transactionalService.BoxSelectedItems;
-                // transactionalItem = box.LinkedTransactionalItem != null ? box.LinkedTransactionalItem : new();
+                var concept = box.LinkedTransactionalItem != null ? box.LinkedTransactionalItem : new();
+                transactionalItem = new TransactionalItem
+                    {
+                        Name = concept.Name != null ? concept.Name : "",
+                        Id = concept.Id != null ? concept.Id : "",
+                        AuditRecord = concept.AuditRecord != null ? concept.AuditRecord : new(),
+                        Notes = concept.Notes != null ? concept.Notes : "",
+                        HasChanged = concept.HasChanged != null ? concept.HasChanged : false,
+                        IsLoadingData = concept.IsLoadingData != null ? concept.IsLoadingData : false,
+                        IsSelected = concept.IsSelected != null ? concept.IsSelected : false,
+                        LegacyId = concept.LegacyId != null ? concept.LegacyId : ""
+                    };
+
             }
             else
             {
@@ -154,6 +166,23 @@
     {
         // transactionalItems = await transactionalService.GetTransactionalItemDetailsQualityParameters();
         transactionalItem = transactionalItems.Where(c => c.Id == SelectionId).FirstOrDefault();
+        if (transactionalItem != null)
+        {
+            if (box == null) box = new();
+            box.LinkedTransactionalItem = new AtomConcept
+            {
+                    Name = transactionalItem.Name != null ? transactionalItem.Name : "",
+                    Id = transactionalItem.Id != null ? transactionalItem.Id : "",
+                    AuditRecord = transactionalItem.AuditRecord != null ? transactionalItem.AuditRecord : new(),
+                    Notes = transactionalItem.Notes != null ? transactionalItem.Notes : "",
+                    HasChanged = transactionalItem.HasChanged != null ? transactionalItem.HasChanged : false,
+                    IsLoadingData = transactionalItem.IsLoadingData != null ? transactionalItem.IsLoadingData : false,
+                    IsSelected = transactionalItem.IsSelected != null ? transactionalItem.IsSelected : false,
+                    LegacyId = transactionalItem.LegacyId != null ? transactionalItem.LegacyId : ""
+
+            };
+        }
+
         ViewSelect = false;
         transactionalItemLinked = false;
         transactionalItems = null;
@@ -168,7 +197,7 @@
         transactionalItems = new List<TransactionalItem>();
         if (ModeSearcher == "LinkedTransactionalItem")
         {
-            transactionalItems = await transactionalService.GetTransactionalItemsList(0, 20, value);
+            transactionalItems = await transactionalService.GetTransactionalItemsList(1, 20, value);
             if (transactionalItems != null) transactionalItems = transactionalItems.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
 
             ParamCountResul = transactionalItems != null ? transactionalItems.Count() : 0;
@@ -221,10 +250,10 @@
             bool validate = Validate.GetValidate(box);
             if (validate || true)
             {
-                box.LinkedTransactionalItem = linkedTransactionalItem;
+                
                 string boxId = box.Id;
                 var resul = await transactionalService.SaveBox(box);
-                if (resul) { box = new(); linkedTransactionalItem = new(); };
+                if (resul) { box = new(); };
                 Msg(resul);
 
             }

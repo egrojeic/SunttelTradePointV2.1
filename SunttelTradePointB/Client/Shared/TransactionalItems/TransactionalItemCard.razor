@@ -41,9 +41,15 @@
             <SplitButtonEvents ItemSelected="ItemSelected">
             </SplitButtonEvents>
             <DropDownMenuItems>
-                <DropDownMenuItem Text="Boxes" IconCss="fa-solid fa-cloud-arrow-up"></DropDownMenuItem>
-                <DropDownMenuItem Text="Seasons" IconCss="fa-solid fa-file-csv"></DropDownMenuItem>
-                <DropDownMenuItem Text="Types and Groups" IconCss="fa-solid fa-file-csv"></DropDownMenuItem>
+                <DropDownMenuItem Id="TypesTransactionalItems" Text="Types" IconCss="fa-solid fa-sitemap"></DropDownMenuItem>
+                <DropDownMenuItem Id="Groups" Text="Groups" IconCss="fa-solid fa-group-arrows-rotate"></DropDownMenuItem>
+                <DropDownMenuItem Id="Boxes" Text="Box Types" IconCss="fa-solid fa-box"></DropDownMenuItem>
+                <DropDownMenuItem Id="SeasonsGeneral" Text="Seasons" IconCss="fa-solid fa-tree"></DropDownMenuItem>
+                <DropDownMenuItem Id="Status" Text="Status" IconCss="fa-solid fa-signal"></DropDownMenuItem>
+                <DropDownMenuItem Id="LabelStyles" Text="Label Styles" IconCss="fa-solid fa-palette"></DropDownMenuItem>
+                <DropDownMenuItem Id="Duties" Text="Duties" IconCss="fa-solid fa-comments-dollar"></DropDownMenuItem>
+                <DropDownMenuItem Id="PaperConcept/TransactionalItemCard/Add" Text="Paper" IconCss="fa-sharp fa-solid fa-circle-plus"></DropDownMenuItem>
+                <DropDownMenuItem Id="ItemAssemblyType/TransactionalItemCard/Add" Text="Assembly Type" IconCss="fa-sharp fa-solid fa-circle-plus"></DropDownMenuItem>
             </DropDownMenuItems>
 
         </SfSplitButton>
@@ -129,6 +135,8 @@
                         </div>
                         <div>
                             @if (transactItemImages == null) transactItemImages = new List<TransactItemImage>();
+                           
+                            
                             <img class="style-img" src="@(transactItemImage.PathImage !=null?transactionalService.Host+transactItemImage.PathImage:"/images/defaultImage.png")" @onclick='()=> SetViewElemnt("img")' />
                         </div>
 
@@ -319,16 +327,26 @@
             if (currentItem.TransactionalItemTags == null) currentItem.TransactionalItemTags = new List<TransactionalItemTag>();
             if (currentItem.TypeOfConcept == null) currentItem.TypeOfConcept = new();
 
+            if (transactItemImage == null) transactItemImage = new();          
             currentItem.TypeOfConcept  = typeOfConcept !=null ? typeOfConcept : new();
-            TransactionalItem item = await transactionalService.SaveTransactionalItem(currentItem);
+            TransactionalItem item = null;
+            if (currentItem.Status != null) item = await transactionalService.SaveTransactionalItem(currentItem);
             bool resul = (item != null ? true : false);
-            if (resul)
+            if (resul && currentItem.Status !=null)
             {
                 currentItem = item;
                 transactionalService.TransactionalItems = item;
                 transactionalService.transactionalItemId = item.Id;
             }
-            msg = resul ? "save" : "no save";
+
+            if (currentItem.Status==null)
+            {
+                msg = "Required status";
+            }
+            else
+            {
+                msg = resul ? "save" : "no save";
+            }
             AlertOpen = true;
         }
         if (tile == "Save as...")
@@ -370,6 +388,7 @@
 
     protected async void EventSearcherValue(string value)
     {
+        ParamCountResul = 0;
         if (SearcherValueMode == "img")
         {
             transactItemImages = await transactionalService.GetTransactionalItemDetailsPathImages(transactionalItemId);
@@ -402,7 +421,7 @@
                             Id = item.Id,
                             IsLoadingData = item.IsLoadingData,
                             IsSelected = item.IsSelected,
-                            
+
                         });
                 }
             }
@@ -410,6 +429,7 @@
             ParamCountResul = typeOfConcepts != null ? typeOfConcepts.Count() : 0;
             ViewSelect = ParamCountResul > 0;
             if (ReferInputTextSelector != null) ReferInputTextSelector.Refresh();
+            StateHasChanged();
         }
 
     }
@@ -486,15 +506,8 @@
         }
         else
         {
-            currentItem.Status = statust = new ConceptStatus
-                {
-                    Id = "",
-                    LegacyId = "",
-                    Code = "",
-                    Name = "....",
-                    IsEnabledForTransactions = false
-                };
-            colorStatus = "gary";
+            currentItem.Status = null;
+            colorStatus = "gray";
         }
         if (currentItem != null) currentItemStatus = currentItem.Status != null ? currentItem.Status.Name : "";
     }
@@ -502,6 +515,8 @@
     public void ClosedInputText()
     {
         PopupViewAddImg = false;
+        PopupViewTypeProduct = false;
+        ParamCountResul = 0;
         ViewSelect = false;
         StateHasChanged();
     }

@@ -1,0 +1,69 @@
+﻿@if (modeMenu == "grid-columns-2-chat-max")
+{
+    <div class="content-search">
+        <input class="input-mode">
+        <img class="img-ico-search" src="/images//search.svg">
+    </div>
+    <div class="group-max">
+        <div class="item-group">
+            <img @onclick='()=>SetModeMenu("grid-columns-2-chat-min")' src="/images//menu.png">
+        </div>      
+        <div class="item-group-column">
+            <img src="/images/ActorsIco.png" />
+            <p class="title-normal">msg</p>
+        </div>
+    </div>
+}
+@if (modeMenu == "grid-columns-2-chat-min")
+{
+    
+
+    <div class="group-min">
+
+        <div class="item-group">
+            <img @onclick='()=>SetModeMenu("grid-columns-2-chat-max")' src="/images//menu.png">
+        </div>
+        <div class="item-group">
+            <img @onclick='()=>SetNewPage("newGroup")' src="/images/add.png" />
+            <p class="title-float">Add group</p>
+        </div>
+        <div class="item-group">
+            <img src="/images/ActorsIco.png" />
+            <p class="title-float">msg</p>
+        </div>
+    </div>
+    }
+    @code {
+    [Parameter]
+    public EventCallback<string> EventCallModeMenu { get; set; }
+    [Parameter]
+    public EventCallback<string> EventCallNewPage { get; set; }
+    [Parameter]
+    public string modeMenu { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        var r = modeMenu;
+        StateHasChanged();
+    }
+
+    public async void SetModeMenu(string _modeMenu)
+    {
+        await EventCallModeMenu.InvokeAsync(_modeMenu);
+        modeMenu = _modeMenu;
+        StateHasChanged();
+    }
+
+    public void SetNewPage(string Page)
+    {
+        EventCallNewPage.InvokeAsync(Page);
+        StateHasChanged();
+
+    }
+    public void Reload()
+    {
+        StateHasChanged();
+    }
+
+
+}

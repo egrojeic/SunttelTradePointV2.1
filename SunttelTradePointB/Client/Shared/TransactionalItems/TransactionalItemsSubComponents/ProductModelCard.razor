@@ -1,4 +1,6 @@
 ﻿@page "/ProductModelCard"
+@page "/ProductModelCard/{Mode}"
+
 @using Syncfusion.Blazor.Popups
 @using SunttelTradePointB.Shared.Common
 @inject TransactionalItemsService transactionalService;
@@ -13,7 +15,7 @@
     </MessageSaveComponent>
 }
 
-<PageTitleComponent Title="@GetName("ModelRecipe", new PackingSpecs())" IconName=""
+<PageTitleComponent Title="@GetName("ModelRecipe", new PackingSpecs())" IconName="recipeModel.png"
                     Description="Here you can add tags">
 </PageTitleComponent>
 
@@ -48,6 +50,8 @@
 
 
 @code {
+    [Parameter]
+    public string Mode { get; set; } = "Add";
     string transactionalItemId = "";
     ProductModel productModel = new();
     bool viewMsg = false;
@@ -60,6 +64,24 @@
         {
             transactionalItemId = transactionalService.transactionalItemId;
         }
+
+        if (Mode == "Edit")
+        {
+            if (transactionalService.ConceptProductModel != null)
+            {
+                productModel = transactionalService.ConceptProductModel;
+            }
+            else
+            {
+                Closed("Control");
+            }
+        }
+
+        if (Mode == "Add")
+        {
+
+        }
+
         return base.OnInitializedAsync();
     }
 
@@ -68,7 +90,7 @@
     {
         if (productModel.Name != null)
         {
-            var resul = await transactionalService.SaveCharacteristics(transactionalItemId, productModel);
+            var resul = await transactionalService.SaveTransactionalItemModels(transactionalItemId, productModel);
             if (resul)
             {
                 Msg("Saved", 1);

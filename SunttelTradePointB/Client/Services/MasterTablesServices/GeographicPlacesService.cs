@@ -6,14 +6,18 @@ using System.Net.Http.Json;
 
 namespace SunttelTradePointB.Client.Services.MasterTablesServices
 {
+
+ 
    
     public class GeographicPlacesService : IGeographicPlaces
     {
         private readonly HttpClient _httpClient;
-
+        public Address address { get; set; }
+        public Address addressShippingPlaces { get; set; }
         List<Country>? countriesGlobalList;
         List<GeoRegion>? regionsGlobalList;
         List<City>? citiesGlobalList;
+
 
         public GeographicPlacesService(HttpClient httpClient)
         {
@@ -38,10 +42,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
                 }
 
-                if (citiesGlobalList != null)
-                    return citiesGlobalList.FindAll(c => c.Name.Contains(nameLike, StringComparison.CurrentCultureIgnoreCase)).ToList();
-                else
-                    return null;
+                return citiesGlobalList != null ? citiesGlobalList : new();
             }
             catch(Exception ex)
             {

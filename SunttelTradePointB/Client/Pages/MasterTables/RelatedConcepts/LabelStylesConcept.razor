@@ -286,9 +286,9 @@
                 <label>@GetName( "Paper", new LabelStyle())</label>
             </div>
             <div style="position:relative;">
-                <div class="item-edit form-control">
+                <div class="item-edit ">                    
                     <label>@(labelPaper.Name != null ? labelPaper.Name : "")</label>
-                    <button @onclick='()=>SetViewElemnt("Paper")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+                    <button @onclick='()=>SetViewElemnt("Paper")' class="btn" ><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                 </div>
                 <div class="position-input">
                     <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" ViewSelect="ViewPopupCount" EventClosed="ClosedInput" ViewControl="inputPaperView">
@@ -333,12 +333,14 @@
                                 </svg>
                             </div>
                             <div class="flex-horizontal-center ">
-                                <DataGrid TParameter="DataMaxLabelLineSpecView"
-                                          EventCallbackMenu="OnContextMenuClick"
-                                          parameterList="dataMaxLabelLineSpecsView"
-                                          GridColumnsList="gridColumnListDataMaxLabelLineSpec"
-                                          Width="100%">
-                                </DataGrid>
+                               
+                                    <DataGrid TParameter="DataMaxLabelLineSpecView"
+                                              EventCallbackMenu="OnContextMenuClick"
+                                              parameterList="dataMaxLabelLineSpecsView"
+                                              GridColumnsList="gridColumnListDataMaxLabelLineSpec"
+                                              Width="100%">
+                                    </DataGrid>
+                             
                             </div>
                         </div>
                     </ContentTemplate>
@@ -489,16 +491,16 @@
 
         gridColumnListDataMaxLabelLineSpec = new List<GridColumn>
         {
-             new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.NameLabelField) ,  HeaderText = @GetName( "Name", new LabelField()), Width="200"  },
-               new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.Rotation) ,  HeaderText = @GetName( "Rotation", new DataMaxLabelLineSpec())  },
-                 new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.Font) ,  HeaderText = @GetName( "Font", new DataMaxLabelLineSpec())  },
-                  new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.Width) ,  HeaderText = @GetName( "Width", new DataMaxLabelLineSpec())  },
-                   new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.Height) ,  HeaderText = @GetName( "Height", new DataMaxLabelLineSpec())  },
-                     new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.FontSize) ,  HeaderText = @GetName( "FontSize", new DataMaxLabelLineSpec())  },
-                      new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.Row) ,  HeaderText = @GetName( "Row", new DataMaxLabelLineSpec())  },
-                       new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.GGColumn) ,  HeaderText = @GetName( "GGColumn", new DataMaxLabelLineSpec())  },
-                        new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.IIIColumn) ,  HeaderText = @GetName( "IIIColumn", new DataMaxLabelLineSpec())  },
-                         new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.JColumn) ,  HeaderText = @GetName( "JColumn", new DataMaxLabelLineSpec()) }
+             new GridColumn() { Field=nameof(ZebraLabelLineSpecView.NameLabelField) ,  HeaderText = @GetName( "Name", new DataMaxLabelLineSpec()), Width="300"   },
+               new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.Rotation) ,  HeaderText = @GetName( "Rotation", new DataMaxLabelLineSpec()), Width="100"  },
+                 new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.Font) ,  HeaderText = @GetName( "Font", new DataMaxLabelLineSpec()) ,Width="100" },
+                  new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.Width) ,  HeaderText = @GetName( "Width", new DataMaxLabelLineSpec()) ,Width="100" },
+                   new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.Height) ,  HeaderText = @GetName( "Height", new DataMaxLabelLineSpec()),Width="100"  },
+                     new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.FontSize) ,  HeaderText = @GetName( "FontSize", new DataMaxLabelLineSpec()),Width="100"  },
+                      new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.Row) ,  HeaderText = @GetName( "Row", new DataMaxLabelLineSpec()),Width="100"  },
+                       new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.GGColumn) ,  HeaderText = @GetName( "GGColumn", new DataMaxLabelLineSpec()),Width="100"  },
+                        new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.IIIColumn) ,  HeaderText = @GetName( "IIIColumn", new DataMaxLabelLineSpec()),Width="100"  },
+                         new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.JColumn) ,  HeaderText = @GetName( "JColumn", new DataMaxLabelLineSpec()),Width="100" }
 
         };
 
@@ -513,16 +515,16 @@
         gridColumnListZebraFieldInLabel = new List<GridColumn>
         {
 
-               new GridColumn() { Field=nameof(ZebraLabelLineSpecView.NameLabelField) ,  HeaderText = @GetName( "Name", new ZebraLabelLineSpec())  },
-              new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoA) ,  HeaderText = @GetName( "CampoA", new ZebraLabelLineSpec())  },
-                new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoB) ,  HeaderText = @GetName( "CampoB", new ZebraLabelLineSpec())  },
-                 new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoC) ,  HeaderText = @GetName( "CampoC", new ZebraLabelLineSpec())  },
-                  new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoD) ,  HeaderText = @GetName( "CampoD", new ZebraLabelLineSpec())  },
-                   new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoEEE) ,  HeaderText = @GetName( "CampoEEE", new ZebraLabelLineSpec())  },
-                     new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoFFFF) ,  HeaderText = @GetName( "CampoFFFF", new ZebraLabelLineSpec())  },
-                      new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoGGGG) ,  HeaderText = @GetName( "CampoGGGG", new ZebraLabelLineSpec())  },
-                       new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoHHHH) ,  HeaderText = @GetName( "CampoHHHH", new ZebraLabelLineSpec())  },
-                        new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoIIII) ,  HeaderText = @GetName( "CampoIIII", new ZebraLabelLineSpec())  },
+               new GridColumn() { Field=nameof(ZebraLabelLineSpecView.NameLabelField) ,  HeaderText = @GetName( "Name", new ZebraLabelLineSpec()) , Width="300"   },
+              new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoA) ,  HeaderText = @GetName( "CampoA", new ZebraLabelLineSpec()) ,Width="100" },
+                new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoB) ,  HeaderText = @GetName( "CampoB", new ZebraLabelLineSpec()) ,Width="100" },
+                 new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoC) ,  HeaderText = @GetName( "CampoC", new ZebraLabelLineSpec()) ,Width="100" },
+                  new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoD) ,  HeaderText = @GetName( "CampoD", new ZebraLabelLineSpec()),Width="100"  },
+                   new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoEEE) ,  HeaderText = @GetName( "CampoEEE", new ZebraLabelLineSpec()) ,Width="100" },
+                     new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoFFFF) ,  HeaderText = @GetName( "CampoFFFF", new ZebraLabelLineSpec()) ,Width="100" },
+                      new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoGGGG) ,  HeaderText = @GetName( "CampoGGGG", new ZebraLabelLineSpec()) ,Width="100" },
+                       new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoHHHH) ,  HeaderText = @GetName( "CampoHHHH", new ZebraLabelLineSpec()) ,Width="100" },
+                        new GridColumn() { Field=nameof(ZebraLabelLineSpecView.CampoIIII) ,  HeaderText = @GetName( "CampoIIII", new ZebraLabelLineSpec()) ,Width="100" },
 
 
 
@@ -745,7 +747,7 @@
         {
             if (SearcherValue == "Paper")
             {
-                labelPapers = await transactionalService.GetConceptPapers(value);
+                labelPapers = await transactionalService.GetSelectorListLabelPaper(value);
                 ParamCountResul = labelPapers.Count();
             }
         }

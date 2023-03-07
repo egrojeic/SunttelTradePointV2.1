@@ -1,3 +1,9 @@
 ﻿.btn-add {
     width:80px;
 }
+.scroll-horizontal{
+    width:1200px;
+    max-height:800px;
+    padding-left:50px;
+    overflow:auto;
+}

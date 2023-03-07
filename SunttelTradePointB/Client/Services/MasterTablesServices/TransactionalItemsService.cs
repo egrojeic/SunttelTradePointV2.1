@@ -7,6 +7,7 @@ using MongoDB.Bson.IO;
 using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents;
 using SunttelTradePointB.Shared.Common;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -27,12 +28,12 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         public TransactionalItemStatus? ConceptStatusSelectedItems { get; set; }
         public TransactionalItemType? ConceptTransactionalItemType { get; set; }
         public PackingSpecs? ConceptTransactionalItemPackingSpecs { get; set; }
-        public TransactionalItemProcessStep? ConceptTransactionalItemProcessStep { get; set; }  
+        public TransactionalItemProcessStep? ConceptTransactionalItemProcessStep { get; set; }
         public TransactionalItemQualityPair? ConceptTransactionalItemQualityPair { get; set; }
         public TransactionalItemTag? ConceptTransactionalItemTag { get; set; }
         public TransactionalItemCharacteristicPair ConcepttransactionalItemCharacteristicPair { get; set; }
-        public AssemblyType ConceptItemAssemblyType { get; set; }       
-
+        public AssemblyType ConceptItemAssemblyType { get; set; }
+        public ProductModel ConceptProductModel { get; set; }
         public LabelStyle ConceptLabelStyle { get; set; }
         public enum UploadingFileType
         {
@@ -43,6 +44,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         #endregion Property
 
         private readonly HttpClient _httpClient;
+
+        #region Mode Edit
+
         public IWebAssemblyHostEnvironment environment { get; set; }
         List<TransactionalItem>? transactionalItemsList;
         List<Concept> conceptList;
@@ -61,6 +65,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         List<TransactionalItemCharacteristicPair> transactionalItemCharacteristicPair;
         List<LabelStyle> labelStyles;
         List<ProductModel> productModel;
+        #endregion
+
         public TransactionalItemsService(HttpClient httpClient, IWebAssemblyHostEnvironment environment)
         {
             _httpClient = httpClient;
@@ -86,8 +92,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-
-        //---
         public async Task<List<Concept>> GetSelectorListPackingMaterials(string? filterString = null)
         {
 
@@ -109,9 +113,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-   
-
-        //---
         public async Task<List<RecipeModifier>> GetRecipeModifiersByTypeID(string? transactionalItemTypeId = null)
         {
 
@@ -132,7 +133,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             }
         }
-
         //---
         public async Task<List<Concept>> GetConceptProduct(string? filterString = null)
         {
@@ -141,9 +141,13 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                var list = await _httpClient.GetFromJsonAsync<List<Concept>>($"api/ConceptsSelector/GetSelectorListPackingMaterials?filterString={filterString}");
+                var list = await GetTransactionalItemsList(1,250,filterString);
+                if (list == null) list = new();
+                // var list = await _httpClient.GetFromJsonAsync<List<Concept>>($"api/ConceptsSelector/GetSelectorListPackingMaterials?filterString={filterString}");
 
-                return list != null ? list : new List<Concept>();
+             
+
+                return  new List<Concept>();
 
             }
             catch (Exception ex)
@@ -155,10 +159,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        //---
         public async Task<List<AssemblyType>> GetSelectorListAssemblyTypes(string? filterString = null)
         {
-          
+
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
@@ -176,7 +179,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             }
         }
-
 
         public async Task<TransactionalItem> GetTransactionalItemById(string? transactionalItemId = null)
         {
@@ -198,6 +200,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             }
         }
+
         public async Task<List<Concept>> GetSelectorListEntityActors(string? nameLike = null, string roleName = null)
         {
             string namteToFind = nameLike != null ? nameLike : "";
@@ -217,6 +220,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             }
         }
+
         public async Task<List<ProductModel>> GetSelectorListEntityProductModel(string? transactionalItemId = null)
         {
 
@@ -234,6 +238,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             }
         }
+
         public async Task<List<Box>> GetSelectorListEntityBoxToSale()
         {
             try
@@ -251,6 +256,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             }
         }
+
         public async Task<List<Box>> GetSelectorListEntityBoxToBuy()
         {
 
@@ -270,7 +276,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        //---
         public async Task<List<Box>> GetBoxes()
         {
             string userId = UIClientGlobalVariables.UserId;
@@ -290,6 +295,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             }
         }
+
         public async Task<List<SeasonBusiness>> GetSelectorListSeasonBusiness(string? nameLike = null)
 
         {
@@ -308,6 +314,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             }
         }
+
         public async Task<List<TransactionalItemTag>> GetSelectorListTag(string? transactionalItemId = null)
 
         {
@@ -330,7 +337,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-        //---
         public async Task<LabelStyle> GetLabelStyle(string? labelStyleId = null)
 
         {
@@ -352,7 +358,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
 
         }
-     
+
 
         public async Task<List<ConceptGroup>> GetSelectorListTransactionalItemGroups(string? nameLike = null)
 
@@ -417,6 +423,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
 
         }
+
         public async Task<List<PackingSpecs>> GetTransactionalItemDetailsPackingRecipe(string? transactionalItemId = null)
 
         {
@@ -438,6 +445,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
 
         }
+
         public async Task<List<TransactionalItemProcessStep>> GetTransactionalItemDetailsProductionSpecs(string? transactionalItemId = null)
         {
             transactionalItemId = transactionalItemId != null ? transactionalItemId : "";
@@ -458,6 +466,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
 
         }
+
         public async Task<List<TransactionalItemQualityPair>> GetTransactionalItemDetailsQualityParameters(string? transactionalItemId = null)
 
         {
@@ -476,6 +485,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+
         public async Task<List<Box>> GetBoxTable(string? nameLike = null)
         {
             transactionalItemId = transactionalItemId != null ? transactionalItemId : "";
@@ -494,7 +504,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
-        //---
+
         public async Task<List<Box>> GetSelectorListBoxes(string? nameLike = null)
         {
             transactionalItemId = transactionalItemId != null ? transactionalItemId : "";
@@ -514,7 +524,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-        //---
         public async Task<List<LabelStyle>> GetLabelStyles(string? filterString)
         {
             string userId = UIClientGlobalVariables.UserId;
@@ -555,7 +564,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-
         public async Task<List<ProductModel>> GetSelectorListTransactionalItemModels(string? transactionalItemId)
         {
 
@@ -573,7 +581,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
-
 
         public async Task<List<SeasonBusiness>> GetSeasonsTable(int? page = 1, int? perPage = 10, string? nameLike = null)
         {
@@ -603,7 +610,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-        //---
         public async Task<List<SeasonBusiness>> GetSeasons(string? filterCondition = null)
         {
             string userId = UIClientGlobalVariables.UserId;
@@ -623,6 +629,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+
         public async Task<SeasonBusiness> GetSeason(string seasonId)
         {
             seasonId = seasonId != null ? seasonId : "";
@@ -642,6 +649,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+
         public async Task<List<TransactionalItemType>> GetSelectorListTransactionalItemTypes(string? nameLike = null)
         {
             nameLike = nameLike != null ? nameLike : "";
@@ -661,7 +669,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-        //---
         public async Task<List<TransactionalItemType>> GetTransactionalItemTypes(string? nameLike = null)
         {
             nameLike = nameLike != null ? nameLike : "";
@@ -681,9 +688,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-        //---
         public async Task<List<TransactionalItemType>> GetProductRecipeQualityModifiersByModifierId(string? modifierId = null)
-        {          
+        {
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
@@ -719,6 +725,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+
         public async Task<List<TransactionalItemStatus>> GetTransactionalStatusesTable(string? nameLike = null)
         {
             nameLike = nameLike != null ? nameLike : "";
@@ -739,15 +746,13 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-
-        //---
-        public async Task<List<TransactionalItemCharacteristicPair>> GetCharacteristic(string? transactionalItemTypeId = null)
+        public async Task<List<TransactionalItemCharacteristicPair>> GetCharacteristic(string? labelPaperId = null)
         {
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                transactionalItemCharacteristicPair = await _httpClient.GetFromJsonAsync<List<TransactionalItemCharacteristicPair>>($"api/TransactionalItems/GetTransactionalItemDetailsItemCharacteristics?userId={userId}&ipAddress={ipAddress}&transactionalItemId={transactionalItemTypeId}");
+                transactionalItemCharacteristicPair = await _httpClient.GetFromJsonAsync<List<TransactionalItemCharacteristicPair>>($"api/TransactionalItems/GetTransactionalItemDetailsItemCharacteristics?userId={userId}&ipAddress={ipAddress}&transactionalItemId={labelPaperId}");
                 return transactionalItemCharacteristicPair != null ? transactionalItemCharacteristicPair : new List<TransactionalItemCharacteristicPair>();
             }
             catch (Exception ex)
@@ -760,14 +765,17 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-        //---
-        public async Task<List<LabelPaper>> GetConceptPapers(string? nameLike = null)
+        public async Task<List<LabelPaper>> GetSelectorListLabelPaper(string? nameLike = null)
         {
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                var list = await _httpClient.GetFromJsonAsync<List<LabelPaper>>($"api/TransactionalItems/GetTransactionalItemDetailsItemCharacteristics?userId={userId}&ipAddress={ipAddress}&transactionalItemId={nameLike}");
+                var list = await _httpClient.GetFromJsonAsync<List<LabelPaper>>($"api/ConceptsSelector/GetSelectorListLabelPaper");
+                if (nameLike.ToLower().Contains("all") || nameLike.ToLower().Contains("todo"))
+                {
+                    list = list.Where(s => s.Name.ToLower().Contains(nameLike)).ToList();
+                }
                 return list != null ? list : new List<LabelPaper>();
             }
             catch (Exception ex)
@@ -780,14 +788,13 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-        //---
         public async Task<LabelPaper> GetConceptPaperId(string? labelPaperId = null)
         {
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                var list = await _httpClient.GetFromJsonAsync<LabelPaper>($"api/TransactionalItems/GetTransactionalItemDetailsItemCharacteristics?userId={userId}&ipAddress={ipAddress}&transactionalItemId={labelPaperId}");
+                var list = await _httpClient.GetFromJsonAsync<LabelPaper>($"api/TransactionalItemsRelatedConcepts/GetLabelPaperById?userId={userId}&ipAddress={ipAddress}&labelPaperId={labelPaperId}");
                 return list != null ? list : new LabelPaper();
             }
             catch (Exception ex)
@@ -799,7 +806,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
-
 
         public async Task<bool> SaveProductPackingSpec(string transactionalItemId, PackingSpecs packingSpecs)
         {
@@ -819,6 +825,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+
         public async Task<bool> SaveTags(string transactionalItemId, TransactionalItemTag transactionalItemTag)
         {
             string userId = UIClientGlobalVariables.UserId;
@@ -837,6 +844,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+
         public async Task<bool> SaveProductionSpecs(string transactionalItemId, TransactionalItemProcessStep transactionalItemProcessStep)
         {
             string userId = UIClientGlobalVariables.UserId;
@@ -855,6 +863,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+
         public async Task<bool> SaveImage(string transactionalItemId, TransactItemImage transactItemImage)
         {
             string userId = UIClientGlobalVariables.UserId;
@@ -873,6 +882,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+
         public async Task<bool> SaveQualityParameters(string? transactionalItemId, TransactionalItemQualityPair transactionalItemQualityPair)
         {
             string userId = UIClientGlobalVariables.UserId;
@@ -890,8 +900,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-        //---
-        public async Task<bool> SaveCharacteristics(string? transactionalItemId, ProductModel productModel)
+        public async Task<bool> SaveTransactionalItemModels(string? transactionalItemId, ProductModel productModel)
         {
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
@@ -908,8 +917,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-
-        //---
         public async Task<bool> SaveCharacteristics(string? transactionalItemId, TransactionalItemCharacteristicPair transactionalItemCharacteristicPair)
         {
             string userId = UIClientGlobalVariables.UserId;
@@ -926,6 +933,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+
         public async Task<TransactionalItem> SaveTransactionalItem(TransactionalItem transactionalItem)
         {
 
@@ -944,6 +952,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+
         public async Task<bool> SaveSeason(SeasonBusiness seasonBusiness)
         {
             string userId = UIClientGlobalVariables.UserId;
@@ -961,7 +970,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-        //---
         public async Task<bool> SaveLabelStyle(LabelStyle labelStyle)
         {
             string userId = UIClientGlobalVariables.UserId;
@@ -994,6 +1002,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+
         public async Task<bool> SaveTransactionalItemType(TransactionalItemType transactionalItemType)
         {
             string userId = UIClientGlobalVariables.UserId;
@@ -1011,6 +1020,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+
         public async Task<bool> SaveTransactionalItemGroup(ConceptGroup conceptGroup)
         {
             string userId = UIClientGlobalVariables.UserId;
@@ -1047,7 +1057,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-        //---
         public async Task<bool> SaveConceptPaper(LabelPaper labelPaper)
         {
             string userId = UIClientGlobalVariables.UserId;
@@ -1055,7 +1064,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             try
             {
-                var resul = await _httpClient.PostAsJsonAsync<LabelPaper>($"api/TransactionalItemsRelatedConcepts/SaveStatus?userId={userId}&ipAddress={ipAddress}", labelPaper);
+                var resul = await _httpClient.PostAsJsonAsync<LabelPaper>($"api/TransactionalItemsRelatedConcepts/SaveLabelPaper?userId={userId}&ipAddress={ipAddress}", labelPaper);
                 return resul.IsSuccessStatusCode;
             }
             catch (Exception ex)
@@ -1065,8 +1074,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
-
-        //---
+    
         public async Task<bool> SaveAssemblyType(AssemblyType assemblyType)
         {
             string userId = UIClientGlobalVariables.UserId;
@@ -1107,6 +1115,10 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
+        Task<TransactionalItemStatus> ITransactionalItems.GetSelectorListPackingMaterials(string? filterString)
+        {
+            throw new NotImplementedException();
+        }
 
     }
 

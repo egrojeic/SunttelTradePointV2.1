@@ -119,7 +119,7 @@
     private async Task LoadData()
     {
         isLoading = true;
-        var data = await transactItemsService.GetTransactionalItemsList(currentPage, 250, _filterItems);
+        var data = await transactItemsService.GetTransactionalItemsList(currentPage, 50, _filterItems);
         itemList = data;
         isLoading = false;
         StateHasChanged();

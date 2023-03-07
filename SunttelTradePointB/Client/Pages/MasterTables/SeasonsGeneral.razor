@@ -106,7 +106,7 @@ else
         SeasonBusiness itemSeasonBusiness = null;
         itemSeasonBusiness = args.RowInfo.RowData;
         transactItemsService.SeasonBusinessSelectedItems = itemSeasonBusiness;
-        if (args.Item.Id == "Edit")
+        if (args.Item.Text == "Edit" && transactItemsService.SeasonBusinessSelectedItems !=null)
         {
             Navigation.NavigateTo($"/SeasonBusinessConcept/SeasonsGeneral/Edit/{_filterItems}");
         }
