@@ -256,12 +256,12 @@
         StateHasChanged();
     }
 
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
         if (Mode == "Edit")
         {
             transactionalItemId = transactionalService.transactionalItemId != null ? transactionalService.transactionalItemId : "";
-            currentItem = transactionalService.TransactionalItems;
+            currentItem = await transactionalService.GetTransactionalItemById(transactionalItemId);
 
 
             if (currentItem != null)
