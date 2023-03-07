@@ -159,7 +159,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 var resultPrev = await _TransactionalItemsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
 
 
-                EntityActor result = resultPrev.Select(d => BsonSerializer.Deserialize<EntityActor>(d)).ToList()[0];
+                TransactionalItem result = resultPrev.Select(d => BsonSerializer.Deserialize<TransactionalItem>(d)).ToList()[0];
 
 
                 return (true, result, null);
