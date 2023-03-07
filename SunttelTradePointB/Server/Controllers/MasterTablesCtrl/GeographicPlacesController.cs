@@ -4,6 +4,7 @@ using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Server.Interfaces.UserTracking;
 using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.Security;
+using System.Net;
 using System.Reflection;
 
 namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
@@ -84,6 +85,26 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
                 return NotFound(response.ErrorDescription);
         }
 
+        /// <summary>
+        ///  Gets the Country ID, Name and Language of the country matching the IP
+        /// </summary>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetCountryByIPAddress")]
+        public async Task<IActionResult> GetCountryByIPAddress(string ipAddress)
+        {
+
+            //await SaveActivity("GetCountries");
+            var response = await _geographicPlaces.GetCountryByIPAddress(ipAddress);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.country);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
 
 
         /// <summary>

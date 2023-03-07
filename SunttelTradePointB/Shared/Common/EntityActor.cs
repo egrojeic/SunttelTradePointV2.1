@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using SunttelTradePointB.Shared;
 
 namespace SunttelTradePointB.Shared.Common
 {
@@ -97,8 +98,10 @@ namespace SunttelTradePointB.Shared.Common
         [BsonIgnoreIfNull]
         public string LastName { get; set; }
 
+        [ObjectPropertyAttributes(ObjectPropertyAttributes.EditModes.Details)]
         public List<IdentificationEntity> Identifications { get; set; }
 
+        [ObjectPropertyAttributes(ObjectPropertyAttributes.EditModes.Address)]
         [BsonIgnoreIfNull]
 
         [DisplayName("Invoicing Address")]
@@ -109,6 +112,7 @@ namespace SunttelTradePointB.Shared.Common
         [DisplayName("Role by Default")]
         public EntityRole DefaultEntityRole { get; set; }
 
+        [ObjectPropertyAttributes(ObjectPropertyAttributes.EditModes.Details)]
         [BsonIgnoreIfNull]
         public List<EntityTag> Tags { get; set; }
 
@@ -122,23 +126,30 @@ namespace SunttelTradePointB.Shared.Common
         [BsonIgnoreIfNull]
         public string EMailAddress { get; set; }
 
+        [ObjectPropertyAttributes(ObjectPropertyAttributes.EditModes.Details)]
         [DisplayName("Address List")]
         [BsonIgnoreIfNull]
         public List<Address> AddressList { get; set; }
+
+        [ObjectPropertyAttributes(ObjectPropertyAttributes.EditModes.Details)]
 
         [DisplayName("Electronic Addresses")]
         [BsonIgnoreIfNull]
         public List<ElectronicAddress> ElectronicAddresses { get; set; }
 
+        [ObjectPropertyAttributes(ObjectPropertyAttributes.EditModes.Details)]
+
         [DisplayName("Phone Numbers")]
         [BsonIgnoreIfNull]
         public List<PhoneNumber> PhoneNumbers { get; set; }
+
+        [ObjectPropertyAttributes(ObjectPropertyAttributes.EditModes.Details)]
 
         [BsonIgnoreIfNull]
         [DisplayName("Shipping Setup")]
         public List<ShippingInfo> ShippingInformation { get; set; }
 
-        public string GetFirstPhone
+        public virtual string GetFirstPhone
         {
             get
             {
@@ -153,6 +164,8 @@ namespace SunttelTradePointB.Shared.Common
             }
 
         }
+
+        [ObjectPropertyAttributes(ObjectPropertyAttributes.EditModes.Details)]
 
         [DisplayName("Entity Relationships")]
         [BsonIgnoreIfNull]

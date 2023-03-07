@@ -113,17 +113,9 @@ namespace SunttelTradePointB.Shared.Common
         public string BaseLanguageName { get; set; }
 
         [BsonIgnoreIfNull]
-        public List<IpRangeCountry> IpRange { get; set; }
+        public List<string> IPAddresses { get; set; }
     }
 
 
-    public class IpRangeCountry {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
-        public string StartIp { get; set; }
-        public string FinalIp { get; set; }
-
-    }
 
 }

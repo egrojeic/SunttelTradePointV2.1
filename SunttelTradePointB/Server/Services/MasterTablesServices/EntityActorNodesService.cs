@@ -140,7 +140,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 var pipeline = new List<BsonDocument>();
 
-                pipeline.Add(
+                if(strNameFiler.ToLower() != "all")
+                {
+                    pipeline.Add(
                     new BsonDocument(
                         "$match",
                         new BsonDocument(
@@ -150,6 +152,8 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                             )
                     )
                 );
+                }
+                
 
                 pipeline.Add(
                     new BsonDocument
@@ -188,22 +192,47 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 );
 
                 pipeline.Add(
-                    new BsonDocument("$unwind", "$InvoicingAddress.CityAddress")
-                );
+                     new BsonDocument("$unwind", new BsonDocument
+                     {
+                        { "path", "$InvoicingAddress.CityAddress" },
+                        { "preserveNullAndEmptyArrays", true },
+                     })
+                 );
 
                 pipeline.Add(
                     new BsonDocument {
                         { "$project",
                             new BsonDocument {
-                                { "AddressList", 0 }
+                                {"AddressList", 0 },
+                                {"Identifications", 0 },
+                                {"Tags", 0 },
+                                {"ElectronicAddresses",0 },
+                                {"PhoneNumbers", 0 },
+                                {"ShippingInformation", 0 },
+                                {"EntitiesRelationShips", 0 }
+
+
                             }
                         }
                     }
                 );
 
-                List<EntityActor> results = await _entityActorsCollection.Aggregate<EntityActor>(pipeline).ToListAsync();
 
-                //var results = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                // Add a pipe step so we can get paginated results
+
+                int page = 1;
+                int limit = 50;
+
+                pipeline.Add(
+                    new BsonDocument("$skip", (page-1)*limit)
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$limit", limit)
+                    );
+               List<EntityActor> results = await _entityActorsCollection.Aggregate<EntityActor>(pipeline).ToListAsync();
+
+               //var results = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
 
                 return (true, results, null);
             }

@@ -90,10 +90,14 @@
 
         try
         {
-            var response = await HttpClient.GetStringAsync("https://api.ipify.org");
-            if (response == null || response == "")
-                response = "127.0.0.0";
-            UIClientGlobalVariables.PublicIpAddress = response;
+            if (UIClientGlobalVariables.PublicIpAddress==""){
+                var response = await HttpClient.GetStringAsync("https://api.ipify.org");
+                if (response == null || response == "")
+                    response = "127.0.0.0";
+
+                UIClientGlobalVariables.PublicIpAddress = response;
+            }
+           
         }
         catch (Exception)
         {

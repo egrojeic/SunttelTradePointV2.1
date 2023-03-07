@@ -11,7 +11,7 @@ using System.ComponentModel;
 namespace SunttelTradePointB.Shared.Sales
 {
 
-    public class SalesDocumentType: BasicConcept
+    public class CommercialDocumentType : BasicConcept
     {
         [DisplayName("Affect Inventory")]
         public bool AffectInventory { get; set; }
@@ -53,10 +53,10 @@ namespace SunttelTradePointB.Shared.Sales
         public bool EditingAllowed { get; set; }
     }
 
-    public class SalesDocument: RecordItem
+    public class CommercialDocument: RecordItem
     {
 
-        public SalesDocumentType DocumentType { get; set; }
+        public CommercialDocumentType DocumentType { get; set; }
         
         [DisplayName("Business Line")]
         public BusinessLine BusinessLineDoc { get; set; }
@@ -87,7 +87,7 @@ namespace SunttelTradePointB.Shared.Sales
         public FinanceStatus FinanceStatusDocument { get; set; }
 
         [DisplayName("Origin Document")]
-        public SalesDocument OriginDocument { get; set; }
+        public CommercialDocument OriginDocument { get; set; }
 
         [DisplayName("Vendor Warehouse")]
         public BasicConcept VendorWarehouse { get; set; }

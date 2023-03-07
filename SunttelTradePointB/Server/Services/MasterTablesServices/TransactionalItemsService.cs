@@ -294,6 +294,13 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     transactionalItem.Id = ObjectId.GenerateNewId().ToString();
                 }
 
+
+                // For each list inside the object, we will update the list setting the null Id of each element 
+                // with a new ObjectId
+                GeneralServerUtilities.SetListIds(transactionalItem);
+
+
+
                 var type = transactionalItem.GetType();
                 var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
 

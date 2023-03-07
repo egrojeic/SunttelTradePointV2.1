@@ -17,6 +17,15 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<(bool IsSuccess, List<Country>? CountryList, string? ErrorDescription)> GetCountries(string? nameLike = null);
 
+
+        /// <summary>
+        /// Retrieves the country matching with the IP parameter
+        /// </summary>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, Country?  country, string? ErrorDescription)> GetCountryByIPAddress(string ipAddress);
+
+
         /// <summary>
         ///  Returns a list of Regions
         /// </summary>

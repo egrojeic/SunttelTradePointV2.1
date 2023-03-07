@@ -245,5 +245,38 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 return (false, null, e.Message);
             }
         }
+
+
+        /// <summary>
+        /// Retrieves the country matching with the IP parameter
+        /// </summary>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, Country? country, string? ErrorDescription)> GetCountryByIPAddress(string ipAddress)
+        {
+
+            string ipAddressFormated = "";
+
+            var ip1= ipAddress.Split(".")[0].PadLeft(3,'0');
+            var ip2 = ipAddress.Split(".")[1].PadLeft(3, '0');
+            var ip3 = ipAddress.Split(".")[2].PadLeft(3, '0');
+           
+            ipAddressFormated = ip1+ ip2+ ip3;
+
+            var filter = Builders<Country>.Filter.Eq("IPAddresses", ipAddressFormated);
+            var projection = Builders<Country>.Projection.Exclude(d => d.IPAddresses);
+
+            try
+            {
+                var result = await _CountryCollection.Find(filter).Project<Country>(projection).FirstAsync<Country>();
+
+                return (true, result, null);
+            }
+            catch(Exception e)
+            {
+                return (false, null, e.Message);
+            }
+            
+        }
     }
 }

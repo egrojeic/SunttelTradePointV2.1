@@ -1,0 +1,32 @@
+﻿@using SunttelTradePointB.Shared.Common;
+<!--
+    Component intended to be used as a selector for a concept.
+    This recieves a list of concepts and a concept id and displays the concept name.
+-->
+<div>
+
+
+</div>
+
+@code {
+
+    public class MyComponent<T> : ComponentBase where T : AtomConcept
+    {
+        [Parameter]
+        public List<T> conceptList { get; set; }
+
+        [Parameter]
+        public string conceptId { get; set; }
+
+        public string conceptName { get; set; }
+
+        protected override void OnInitialized()
+        {
+            conceptName = conceptList.Where(x => x.Id == conceptId).FirstOrDefault().Name;
+        }
+    }
+       
+     
+
+
+}
