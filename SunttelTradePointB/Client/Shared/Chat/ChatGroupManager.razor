@@ -4,6 +4,8 @@
 @using Syncfusion.Blazor.DropDowns
 @using SunttelTradePointB.Shared.Common
 @using SunttelTradePointB.Shared.Communications
+@using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents
+@using Syncfusion.Blazor.Grids
 
 @inject NavigationManager navigationManager
 @inject ActorsNodeService actorsNodeServive
@@ -20,13 +22,12 @@
             <input type="text" class="form-control" @bind-value="channelCommunicationsGroup.Name" required />
         </div>
 
-        <div >
+        <div>
             <div>
                 <label for="ComercialGroup">Participants</label>
                 <button type="button" @onclick='() => SetViewElement("Participant")' class="btn btn-color"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
 
             </div>
-
             <div class="position-input">
                 <InputTextSelector @ref="inputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectorInput" EventClosed="EventClosedInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="participants">
                     @{
@@ -36,18 +37,25 @@
                             {
                                 <option value="@entity?.Id">@entity?.Name</option>
                             }
-
                         }
-
                     }
                 </InputTextSelector>
             </div>
-
-
-
+        </div>
+        <div>
         </div>
     </div>
 
+    @if (@participantList != null)
+    {
+           <div class="flex-horizontal-center ">
+            <DataGrid TParameter="EntityActor"
+                  parameterList="participantList"
+                  GridColumnsList="ListGridParticipant"
+              Width="100%">
+            </DataGrid>
+        </div>
+    }
 
 
 
@@ -81,6 +89,7 @@
     ChannelCommunicationsGroup channelCommunicationsGroup = new ChannelCommunicationsGroup();
     List<EntityActor> participantList = new List<EntityActor>();
 
+    List<GridColumn> ListGridParticipant = new();
 
     SfChip? referChip;
     InputTextSelector? inputTextSelector;
@@ -92,6 +101,22 @@
     public string SearchValueMode = "";
     public int ParamCountResul = 0;
     public bool viewControlNodeCommunications = false;
+
+
+    protected override void OnInitialized()
+    {
+        ListGridParticipant = new List<GridColumn>
+        {
+               new GridColumn() { Field=nameof(EntityActor.Name) ,  HeaderText = @GetName( "Name", new AtomConcept()) , Width="300" },
+                 new GridColumn() { Field=nameof(EntityActor.Code) ,  HeaderText = @GetName( "Code", new AtomConcept()), Width="80px"  },
+                  new GridColumn() { Field=nameof(EntityActor.FullClassName) ,  HeaderText = @GetName( "FullClassName", new EntityActor())  },
+                   new GridColumn() { Field=nameof(EntityActor.Status) ,  HeaderText = @GetName( "Status", new LabelStyle())  }
+         
+
+
+        };
+
+    }
 
     public void SetViewElement(string Element)
     {
