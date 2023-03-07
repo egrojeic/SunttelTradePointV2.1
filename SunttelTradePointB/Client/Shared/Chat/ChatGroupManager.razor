@@ -8,78 +8,72 @@
 @inject NavigationManager navigationManager
 @inject ActorsNodeService actorsNodeServive
 
-<div class="control-section">
-    <div class="row">
-        <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
-            <SfCard>
-                <CardHeader Title="New Group" />
-                <CardContent>
-                    <form onsubmit="event.preventDefault();">
-                        <div class="form-group row">
-                            <div class="form-group row">
-                                <label class="control-label col-md-12">Group Name: </label>
-                                <div class="col">
-                                    <input type="text" class="form-control" @bind-value="channelCommunicationsGroup.Name" required/>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="form-group py-2">
-                            <label for="ComercialGroup">Participants</label>
-                            <div>
-                                <div class="conten-chip">
-                                    <SfChip @ref="referChip" EnableDelete="true" CssClass="chip-style" EnableRtl="false">
-                                        <ChipEvents Deleted="@onDeleted"></ChipEvents>
-                                        <ChipItems>
-                                            @{
-                                                if (participantList != null)
-                                                {
-                                                    @foreach (var participant in participantList)
-                                                    {
-                                                        if (participant != null && participant.Name != null)
-                                                        {
-                                                            <ChipItem Text="@participant?.Name" LeadingIconCss="anne"></ChipItem>
-                                                        }
 
-                                                    }
-                                                }
-                                            }
-                                        </ChipItems>
-                                    </SfChip>
-                                    <InputTextSelector @ref="inputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectorInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="participants">
-                                        @{
-                                            if (entityActorList != null)
-                                            {
-                                                foreach (var entity in entityActorList)
-                                                {
-                                                    <option value="@entity?.Id">@entity?.Name</option>
-                                                }
+<SfCard>
+    @* <CardHeader Title="New Group" />
+    <CardContent>*@
 
-                                            }
-                                        }
-                                    </InputTextSelector>
-                                </div>
-                                <button type="button" @onclick='() => SetViewElement("Participant")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                            </div>
-                        </div>
+    <div class="content grid-columns-4">
+        <div>
+            <label class="control-label col-md-12">Group Name: </label>
+            <input type="text" class="form-control" @bind-value="channelCommunicationsGroup.Name" required />
+        </div>
+
+        <div >
+            <div>
+                <label for="ComercialGroup">Participants</label>
+                <button type="button" @onclick='() => SetViewElement("Participant")' class="btn btn-color"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+
+            </div>
+
+            <div class="position-input">
+                <InputTextSelector @ref="inputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectorInput" EventClosed="EventClosedInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="participants">
+                    @{
+                        if (entityActorList != null)
+                        {
+                            foreach (var entity in entityActorList)
+                            {
+                                <option value="@entity?.Id">@entity?.Name</option>
+                            }
+
+                        }
+
+                    }
+                </InputTextSelector>
+            </div>
 
 
 
-                        <div class="py-2">
-                            <button type="submit" class="size-btn color-btn" style="float:right"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
-                            <button type="button" class="btn" style="float:right" @onclick='()=>SetNewPage("")'><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
-                        </div>
-                    </form>
-
-                </CardContent>
-            </SfCard>
         </div>
     </div>
-</div>
 
 
 
-@code{
+
+    <div class="content-img">
+        <a href="@($"/Image/{UIClientGlobalVariables.UserId}/NewGroup")" target="_blank">
+            @if (entityActor == null) entityActor = new();
+            <img class="img" src="@(entityActor.SkinImageName !=null ? actorsNodeServive.Host+entityActor.SkinImageName:"/images//ActorsIco.png")" />
+        </a>
+        <div> <label class="control-label col-md-12">@GetName("SkinImageName", new EntityNodeCommunications()): </label></div>
+    </div>
+
+
+    <div class="py-2">
+        <button type="submit" class="size-btn color-btn" style="float:right"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+        <button type="button" class="btn" style="float:right" @onclick='()=>SetNewPage("")'><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
+    </div>
+
+
+    @* </CardContent>*@
+</SfCard>
+
+
+
+
+
+@code {
     [Parameter]
     public bool ViewSelect { get; set; } = false;
     [Parameter]
@@ -87,26 +81,32 @@
     ChannelCommunicationsGroup channelCommunicationsGroup = new ChannelCommunicationsGroup();
     List<EntityActor> participantList = new List<EntityActor>();
 
+
     SfChip? referChip;
     InputTextSelector? inputTextSelector;
     EntityActor entityActor = new EntityActor();
     List<EntityActor> entityActorList = new List<EntityActor>();
 
     public bool participants = false;
+    public string imgUrl = "";
     public string SearchValueMode = "";
     public int ParamCountResul = 0;
+    public bool viewControlNodeCommunications = false;
 
     public void SetViewElement(string Element)
     {
-        ViewSelect = false;
+        EventClosedInput();
         SearchValueMode = Element;
-        if (Element == "Participant" && !participants) { participants = true; }
+        if (Element == "Participant") { participants = true; }
+        if (Element == "EntityNodeCommunications") { viewControlNodeCommunications = true; }
+
         Refresh();
         StateHasChanged();
     }
 
     protected async void EventSearcherValue(string participant)
     {
+
         if (SearchValueMode == "Participant")
         {
             entityActorList = await actorsNodeServive.GetEntityActorFaceList(participant);
@@ -148,11 +148,35 @@
     {
         navigationManager.NavigateTo($"/ChatGeneral");
     }
+    private void Navigation(string page)
+    {
+        navigationManager.NavigateTo(page);
+    }
     public void SetNewPage(string Page)
     {
         EventCallNewPage.InvokeAsync(Page);
         StateHasChanged();
 
+    }
+
+    public void EventClosedInput()
+    {
+        ViewSelect = false;
+        ParamCountResul = 0;
+        participants = false;
+        viewControlNodeCommunications = false;
+    }
+
+
+
+
+
+
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
     }
 
 }

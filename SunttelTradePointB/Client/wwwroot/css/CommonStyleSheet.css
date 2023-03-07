@@ -103,10 +103,11 @@
         background-color: #00cbfe;
         border-color: transparent;
         border-radius: 0px 10px 1px 0px;
+        padding-top:0px;
         color: white;
-        height: 26px;
+        height: 27px;
         width: 35px;
-        margin-top: -42px;
+        margin-top: -43px;
         margin-left: 270px;
         position: absolute;
         box-shadow: inset 0px 20px 25px -25px gray;
@@ -121,6 +122,7 @@
         width: 35px;
         margin-top: -16px;
         margin-left: 270px;
+        x 1px 0px;
         position: absolute;
         box-shadow: inset 0px 20px 25px -20px white;
     }

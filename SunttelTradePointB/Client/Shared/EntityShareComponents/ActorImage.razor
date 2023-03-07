@@ -1,4 +1,5 @@
 ﻿@page "/Actors/{Id}/Image"
+@page "/Image/{Id}/{Page}"
 
 @using System.IO
 @using SixLabors.ImageSharp;
@@ -21,12 +22,14 @@
             <SfCard>
                 <CardHeader Title="Add a new skin image" />
                 <CardContent>
-                    <form onsubmit="event.preventDefault();">
-                        <div class="form-group row">
-                            <label>Select an image:</label>
-                            <div class="col">
-                                <img src="@imgUrl" style="height:120px; width:180px; border-radius:10px 10px 0px 0px; margin-left:5px;" @ref="previewImageElem" /><br />
-                                <InputFile @ref="referInputFile" class="form-control" lang="en" OnChange="@LoadFile" accept=".png" />
+                    <form onsubmit="event.preventDefault();">                       
+                        <div>
+                            <img src="@imgUrl" style="height:120px; width:180px; border-radius:10px 10px 0px 0px; margin-left:5px;" @ref="previewImageElem" /><br />
+                            <div class="btn color-btn width">
+                                <label class="btn-file" for="file-input">
+                                    <div><p> Choose your img </p></div>
+                                </label>                              
+                                <InputFile id="file-input" @ref="referInputFile" lang="en" OnChange="@LoadFile" accept="image/*" style="color:transparent;width:180px; border-radius:0px 0px 10px 10px; display:none;" />                               
                             </div>
                         </div>
 
@@ -50,7 +53,10 @@
     //private IFileListEntry selectedFile;
     [Parameter]
     public string Id { get; set; }
+    [Parameter]
+    public string Page { get; set; }
 
+    
     public bool visible = false;
 
     private ElementReference previewImageElem;
@@ -115,7 +121,8 @@
 
     public void GoBack()
     {
-        navigationManager.NavigateTo($"/Actors/{Id}");    
+        if (Page==null || Page=="") navigationManager.NavigateTo($"/Actors/{Id}");
+        if (Page != null && Page != "") navigationManager.NavigateTo($"/{Page}/{Id}");
     }
 
 
