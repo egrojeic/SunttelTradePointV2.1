@@ -4,29 +4,130 @@
     This recieves a list of concepts and a concept id and displays the concept name.
 -->
 <div>
+    <div class="item-edit">
+        <label>@(objectBinded != null ? objectBinded.Name : "")</label>
+        <button type="button" @onclick='()=>ShowList()' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+    </div>
+
+
+    <div class="component-input" style="@style; display:@(showListControl?"block":"none");  position:relative; width:278px;">
+        <div style=" flex-direction:row; display:@(!showListControl?"flex":"none"); ">
+            <input @bind="searchFilter" class="form-control" autocomplete="on" />
+            <img id="btn-img" src="images/search.svg" @onclick="Search" />
+        </div>
+        <div id="div-Popup">
+
+            <select @onchange="SelectedItemChanged" style="display:@(showListControl?"block":"none");  background-color:@backgroundSelection; color:@colorSelection;  border-color:gray; ">
+                <option value=""> select </option>
+                @if (ChildContent != null)
+                {
+                    @ChildContent
+                }
+            </select>
+            <div>
+                <p style="background-color:@(ParamCountResul>0?"#8affa8":"orange"); display:@(ShowPopupCount?"block":"none");">@(ParamCountResul > 0 ? ParamCountResul : "searching")</p>
+            </div>
+
+        </div>
+        <input type="button" value="✓" @onclick="SelectedItem" id="Success" />
+        <input type="button" value="X" @onclick="Closed" id="Closed" />
+    </div>
 
 
 </div>
 
 @code {
+    [Parameter]
+    public List<AtomConcept> bindingSourceList { get; set; }
+    [Parameter]
+    public AtomConcept objectBinded { get; set; }
 
-    public class MyComponent<T> : ComponentBase where T : AtomConcept
+    [Parameter]
+    public EventCallback<string> EventSearcherValue { get; set; }
+    [Parameter]
+    public EventCallback<string> EventIdSelection { get; set; }
+    [Parameter]
+    public EventCallback EventClosed { get; set; }
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string style { get; set; } = "";
+
+    [Parameter]
+    public int? ParamCountResul { get; set; }
+
+    public bool showListControl = false;
+
+    public string? searchFilter { get; set; }
+
+    bool ShowPopupCount = false;
+
+
+    string valueSelection = "", backgroundSelection = "", colorSelection = "";
+
+    protected override Task OnInitializedAsync()
     {
-        [Parameter]
-        public List<T> conceptList { get; set; }
 
-        [Parameter]
-        public string conceptId { get; set; }
+        return base.OnInitializedAsync();
 
-        public string conceptName { get; set; }
+    }
 
-        protected override void OnInitialized()
+    public void ShowList()
+    {
+        showListControl = true;
+    }
+
+    private void SelectedItem()
+    {
+        if (valueSelection != "")
         {
-            conceptName = conceptList.Where(x => x.Id == conceptId).FirstOrDefault().Name;
+            EventIdSelection.InvokeAsync(valueSelection);
+            valueSelection = "";
+            backgroundSelection = "";
+            colorSelection = "";
+            showListControl = false;
+         
+            StateHasChanged();
         }
     }
-       
-     
 
+
+    public async void Search()
+    {
+       
+        if (searchFilter != null && searchFilter != "")
+        {
+            await EventSearcherValue.InvokeAsync(searchFilter);
+        }
+        else
+        {
+            await EventSearcherValue.InvokeAsync("all");
+        }
+        backgroundSelection = "white";
+        colorSelection = "black";
+
+        StateHasChanged();
+    }
+
+
+     private void SelectedItemChanged(ChangeEventArgs e)
+    {
+        if (e.Value is not null)
+        {
+            valueSelection = e.Value.ToString();
+
+        }
+    }
+
+
+    public void Closed()
+    {      
+        showListControl = false;
+        backgroundSelection = "";
+        colorSelection = "";
+        EventClosed.InvokeAsync();
+       
+    }
 
 }
