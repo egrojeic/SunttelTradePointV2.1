@@ -1,6 +1,18 @@
-﻿.content{
-    width:90%;
-    background-color:red;
+﻿.conten-vertical-center{
+    display:flex;
+    flex-direction:column;
+     align-items:center;
+     height:350px;
+     overflow:auto;
+    width:100%;
+    position:relative;
+    background-color:white;
+
+}
+
+.content {
+    width: 90%;
+
 }
 
 
@@ -47,3 +59,7 @@
     width:40px;
     
     }
+.position-chat{
+ position:absolute;
+    
+}
