@@ -63,3 +63,9 @@
  position:absolute;
     
 }
+
+.py-2 {
+    position: sticky;
+    bottom: 10px;
+   right:0px;
+}

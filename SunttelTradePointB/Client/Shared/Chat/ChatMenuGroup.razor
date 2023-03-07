@@ -1,4 +1,18 @@
-﻿@if (modeMenu == "grid-columns-2-chat-max")
+﻿@using System;
+@using System.Timers;
+@using Microsoft.AspNetCore.SignalR.Client
+@using SunttelTradePointB.Shared.Communications
+@using SunttelTradePointB.Client.Shared.Chat.AuxiliarComponents
+@using System.Text.RegularExpressions;
+
+
+@inject NavigationManager NavigationManager
+@inject ActorsNodeService actorsNodeService
+@inject CommunicationService communicationService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+@if (modeMenu == "grid-columns-2-chat-max")
 {
     <div class="content-search">
         <input class="input-mode">
@@ -7,11 +21,16 @@
     <div class="group-max">
         <div class="item-group">
             <img @onclick='()=>SetModeMenu("grid-columns-2-chat-min")' src="/images//menu.png">
-        </div>      
-        <div class="item-group-column">
-            <img src="/images/ActorsIco.png" />
-            <p class="title-normal">msg</p>
         </div>
+        @if(channelCommunicationsGroups==null) channelCommunicationsGroups = new();
+        @foreach (var item in channelCommunicationsGroups)
+        {
+            <div class="item-group-column">
+                <img src="@(item.SkinImageName !=null ? item.SkinImageName:"/images/ActorsIco.png")" />
+                <p class="title-normal">@(item.Name != null ? item.Name : "Group")"</p>
+            </div>
+        }
+       
     </div>
 }
 @if (modeMenu == "grid-columns-2-chat-min")
@@ -27,13 +46,18 @@
             <img @onclick='()=>SetNewPage("newGroup")' src="/images/add.png" />
             <p class="title-float">Add group</p>
         </div>
-        <div class="item-group">
-            <img src="/images/ActorsIco.png" />
-            <p class="title-float">msg</p>
-        </div>
+        @if (channelCommunicationsGroups == null) channelCommunicationsGroups = new();
+        @foreach (var item in channelCommunicationsGroups)
+        {
+            <div class="item-group">
+                <img src="@(item.SkinImageName !=null ? item.SkinImageName:"/images/ActorsIco.png")" />
+                <p class="title-float">@(item.Name != null ? item.Name : "Group")"</p>
+            </div>
+        }
+     
     </div>
     }
-    @code {
+@code {
     [Parameter]
     public EventCallback<string> EventCallModeMenu { get; set; }
     [Parameter]
@@ -41,11 +65,32 @@
     [Parameter]
     public string modeMenu { get; set; }
 
+    List<ChannelCommunicationsGroup> channelCommunicationsGroups = new();
+    ChannelCommunicationsGroup channelCommunicationsGroup = new();
+    public List<CommunicationsGroupParticipant> participants { get; set; }
+    public EntityNodeCommunications Owner { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        OnInitializedAsync();
+    }
+
+    protected async void OnInitializedAsync()
+    {
+       // channelCommunicationsGroup = await actorsNodeService.GetChannelCommunicationsGroupById("");
+        channelCommunicationsGroups = await actorsNodeService.GetChannelCommunicationsGroups();
+    }
+
+
     protected override void OnParametersSet()
     {
+
+
         var r = modeMenu;
         StateHasChanged();
     }
+
 
     public async void SetModeMenu(string _modeMenu)
     {

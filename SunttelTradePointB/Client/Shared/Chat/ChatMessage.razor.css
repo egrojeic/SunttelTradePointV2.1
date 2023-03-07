@@ -1,2 +1,181 @@
-﻿body {
+﻿.content-msg{
+    background-color:white;
+    overflow-y:auto;
+    height:405px;
+    padding-bottom:100px;
+    padding:0px 10px 0px 8px;
 }
+
+.msg-mode-client-1 {
+    background-color: #0ea0b6;
+    box-shadow: 0px 0px 5px white;
+    width: 100%;
+    padding-left: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    padding-top: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 1px 2px 1px;
+}
+
+    .msg-mode-client-1 .content-ico {       
+        display:flex;
+        flex-direction:row;
+        column-gap:5px;
+        align-items:center;
+        justify-content:start;
+        margin-bottom:5px;
+        
+    }
+    .msg-mode-client-1 .content-ico p{
+       margin:0px;
+      color:white;
+    }
+
+    .msg-mode-client-1 .content-ico .c-ico {
+        height: 35px;
+        width: 35px;
+        background-color: white;
+        border-radius: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2px;
+        box-shadow: -1px -1px 4px -1px black inset;
+    }
+
+        .msg-mode-client-1 .content-ico .hour-style {
+            margin-left: 10%;
+            text-align: center;
+            font-size: 10px;
+            color: #dfe4e6;
+        }
+
+    .msg-mode-client-1 .content-ico .c-ico img {
+        height: 25px;
+    }
+
+.msg-mode-client-1 .text{
+    font-size:15px;
+    color:white;
+    margin:0px;
+    white-space:nowrap;
+}
+
+
+    .msg-mode-client-1 .msg-menu {
+       
+        height:25px;
+        display:flex;
+        flex-direction:row;
+        justify-content:end;
+        width:100%;
+          
+    }
+        .msg-mode-client-1 .msg-menu img {
+            background-color: transparent;
+            box-shadow: 0px 0px 4px -1px white inset, 0px 0px 4px -1px gray ;
+            border-radius: 5px;
+            background-color: #a4b5b7;
+            padding: 3px;
+            height: 25px;
+            margin-right: 10px;
+        }
+
+
+        .msg-mode-client-1 .msg-menu .content-msg-menu {
+            margin-right: 20px;
+        }
+
+/*Cliente 2*/
+
+.msg-mode-client-2 {
+    background-color: #2561b1;
+    box-shadow: 0px 0px 5px white;
+    width: auto;
+    padding-right: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    padding-top: 10px;
+    border-radius: 5px;
+    box-shadow:0px 1px 2px 1px;
+}
+
+    .msg-mode-client-2 .content-ico {
+        display: flex;
+        flex-direction: row;
+        column-gap: 5px;
+        align-items: end;
+        justify-content: end;
+        margin-bottom: 5px;
+        width: 300px;      
+        align-items: center;
+        
+      
+    }
+
+    .msg-mode-client-2 .content-ico p {
+        margin: 0px;
+       color:white;
+    }
+
+    .msg-mode-client-2 .content-ico .c-ico {
+        height: 35px;
+        width: 35px;
+        background-color: white;
+        border-radius: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2px;
+        box-shadow: -1px -1px 4px -1px black inset;
+    }
+
+    .msg-mode-client-2 .content-ico .hour-style {
+        margin-right: 10%;
+        text-align: center;
+        font-size:10px;
+        color: #dfe4e6;
+    }
+
+    .msg-mode-client-2 .content-ico .c-ico img {
+        height: 25px;
+    }
+
+.msg-mode-client-2 .text {
+    font-size: 15px;
+    color:white;
+    margin: 0px;
+    white-space: nowrap;
+}
+
+
+.msg-mode-client-2 .msg-menu {
+    height: 25px;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;   
+    width:100%;
+  
+}
+
+    .msg-mode-client-2 .msg-menu img {
+        background-color: transparent;
+        box-shadow: 0px 0px 4px -1px white inset, 0px 0px 4px -1px gray;
+        border-radius: 5px;
+        background-color: #a4b5b7;
+        padding: 3px;
+        height: 25px;
+        margin-right: 10px;
+    }
+    .msg-mode-client-2 .msg-menu .content-msg-menu {
+        margin-right: 20px;
+     
+        margin-left:20px;
+    }

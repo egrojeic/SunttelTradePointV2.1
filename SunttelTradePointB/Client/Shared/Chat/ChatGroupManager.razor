@@ -11,9 +11,11 @@
 @inject ActorsNodeService actorsNodeServive
 
 
+<MessageSaveComponent isVisible="@isVisible" message="@msg">
 
+</MessageSaveComponent>
 
-    @* <CardHeader Title="New Group" />
+@* <CardHeader Title="New Group" />
     <CardContent>*@
 <div class="conten-vertical-center">
     <div class="content grid-columns-4">
@@ -42,16 +44,17 @@
                 </InputTextSelector>
             </div>
         </div>
-      
+
     </div>
 
     @if (@participantList != null)
     {
-           <div class="flex-horizontal-center ">
+        <div class="flex-horizontal-center ">
             <DataGrid TParameter="EntityActor"
                   parameterList="participantList"
                   GridColumnsList="ListGridParticipant"
-              Width="100%">
+                  Width="100%"
+                  Height="200">
             </DataGrid>
         </div>
     }
@@ -68,12 +71,12 @@
 
 
     <div class="py-2">
-        <button type="submit" class="size-btn color-btn" style="float:right"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+        <button type="button" @onclick="Save" class="size-btn color-btn" style="float:right"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
         <button type="button" class="btn" style="float:right" @onclick='()=>SetNewPage("")'><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
     </div>
 </div>
 
-    @* </CardContent>*@
+@* </CardContent>*@
 
 
 
@@ -95,6 +98,9 @@
     EntityActor entityActor = new EntityActor();
     List<EntityActor> entityActorList = new List<EntityActor>();
 
+    bool isVisible = false;
+    string msg = "";
+    int status = 0;
     public bool participants = false;
     public string imgUrl = "";
     public string SearchValueMode = "";
@@ -110,12 +116,63 @@
                  new GridColumn() { Field=nameof(EntityActor.Code) ,  HeaderText = @GetName( "Code", new AtomConcept()), Width="80px"  },
                   new GridColumn() { Field=nameof(EntityActor.FullClassName) ,  HeaderText = @GetName( "FullClassName", new EntityActor())  },
                    new GridColumn() { Field=nameof(EntityActor.Status) ,  HeaderText = @GetName( "Status", new LabelStyle())  }
-         
+
 
 
         };
 
     }
+
+
+    public async void Save()
+    {
+
+
+        if (entityActor == null || entityActor?.Id == null)
+        {
+            entityActor = await actorsNodeServive.GetEntityActor(UIClientGlobalVariables.UserId);
+            if (entityActor == null) entityActor = new();
+        }
+
+        if (channelCommunicationsGroup != null && channelCommunicationsGroup.Name != null)
+        {
+
+            if (channelCommunicationsGroup.Participants == null) channelCommunicationsGroup.Participants = new();
+            if (channelCommunicationsGroup.Owner == null) channelCommunicationsGroup.Owner = new();
+            foreach (var item in participantList)
+            {
+                channelCommunicationsGroup.Participants.Add(new CommunicationsGroupParticipant
+                    {
+                        Participant = new EntityNodeCommunications
+                        {
+                            Id = item.Id,
+                            Name = item.Name,
+                            SkinImageName = item.SkinImageName
+
+                        },
+                        IsActive = true
+                    });
+            }
+            channelCommunicationsGroup.Owner = new EntityNodeCommunications
+                {
+                    Name = entityActor.Name != null ? entityActor.Name : "",
+                    Id = entityActor.Id != null ? entityActor.Id : "",
+                    SkinImageName = entityActor.SkinImageName != null ? entityActor.SkinImageName : ""
+
+                };
+            var resul = await actorsNodeServive.SaveChannelCommunicationsGroup(channelCommunicationsGroup);
+            if (resul != null && resul.Id !=null)
+            {
+                Msg("Saved " + resul.Name, 0);
+            }
+            else
+            {
+                Msg("No saved", 1);
+            }
+        }
+
+    }
+
 
     public void SetViewElement(string Element)
     {
@@ -195,7 +252,12 @@
 
 
 
-
+    public void Msg(string _msg, int _status)
+    {
+        msg = _msg;
+        status = _status;
+        isVisible = true;
+    }
 
     public string GetName(string Name, Object Obj)
     {
