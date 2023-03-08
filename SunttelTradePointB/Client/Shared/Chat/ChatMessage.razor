@@ -1,45 +1,51 @@
-﻿
+﻿@using SunttelTradePointB.Shared.Communications
+
 <div class="content-msg">
-
-    @if (true)
+    @foreach (var msg in communicationsMessages)
     {
-        <div class="msg-mode-client-1">
-            <div class="content-ico" >
-                <div class="c-ico"><img src="/images//ActorsIco.png"></div>
-                <p class="name">David</p>
-                <p class="hour-style">12:08 pm</p>
-            </div>
-            <p class="text">asassasd asas</p>
-            <div class="msg-menu">               
-                <div class="content-msg-menu">                   
-                    <img class="ico-menu" src="/images//reply.svg">
-                    <img class="ico-menu" src="/images//responder.svg">
+        @if (msg.SenderEntity == null) msg.SenderEntity = new();      
+        @if (msg.SenderEntity.Id != null || true)
+        {
+            @if (msg.SenderEntity.Id != SenderEntityId)
+            {
+                <div class="msg-mode-client-1">
+                    <div class="content-ico">
+                        <div class="c-ico"><img src="@(msg.SenderEntity.SkinImageName!=null?msg.SenderEntity.SkinImageName: "/images/ActorIco.png")"></div>
+                        <p class="name">David</p>
+                        <p class="hour-style">12:08 pm</p>
+                    </div>
+                    <p class="text">@msg.Message</p>
+                    <div class="msg-menu">
+                        <div class="content-msg-menu">
+                            <img class="ico-menu" src="/images//reply.svg">
+                            <img class="ico-menu" src="/images//responder.svg">
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+            }else
+            {
 
+                <div class="msg-mode-client-2">
+                    <div class="content-ico">
 
+                        <p class="hour-style">@msg.SendDateTime</p>
+                        <p class="name">@msg.SenderEntity?.Name</p>
+                        <div class="c-ico"><img src="@(msg.SenderEntity.SkinImageName!=null?msg.SenderEntity.SkinImageName: "/images/ActorIco.png")"></div>
+                    </div>
+                    <p class="text">@msg.Message</p>
+                    <div class="msg-menu">
+                        <div class="content-msg-menu">
+                            <img class="ico-menu" src="/images//reply.svg">
+                            @*   <img class="ico-menu" src="/images//responder.svg">*@
+                        </div>
+                    </div>
+                </div>
 
+            }
+
+        }
     }
 
-    @if (true)
-    {
-        <div class="msg-mode-client-2">
-            <div class="content-ico">      
-                <p class="hour-style">12:08 pm</p>
-                <p class="name">David</p>
-                <div class="c-ico"><img src="/images//ActorsIco.png"></div>
-            </div>
-            <p class="text">asassasd asas</p>
-            <div class="msg-menu">
-                <div class="content-msg-menu">
-                   @* <img class="ico-menu" src="/images//check_1.svg">*@
-                    <img class="ico-menu" src="/images//reply.svg">
-                 @*   <img class="ico-menu" src="/images//responder.svg">*@
-                </div>
-            </div>
-        </div>
-    }
 
 
 </div>
@@ -47,5 +53,16 @@
 
 
 @code {
+    [Parameter]
+    public EventCallback<CommunicationsMessage> TextMessageChanged { get; set; }
+    [Parameter]
+    public List<CommunicationsMessage> communicationsMessages { get; set; } = new();
+    string SenderEntityId = "1";
+
+    protected override void OnParametersSet()
+    {
+
+        StateHasChanged();
+    }
 
 }

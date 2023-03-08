@@ -501,6 +501,7 @@
             EntityNode.SkinImageName = EntityNode.SkinImageName == null ? (imageRute != "" ? imageRute : "") : EntityNode.SkinImageName;
             EntityNode.DefaultEntityRole = role;
             EntityNode.Groups = FilterListGroups;
+           EntityNode.SkinImageName =  EntityNode.SkinImageName == null ? imageDefault : EntityNode.SkinImageName;
             var result = await actorsNodeServive.SaveEntity(Id, EntityNode);
             if (result)
             {

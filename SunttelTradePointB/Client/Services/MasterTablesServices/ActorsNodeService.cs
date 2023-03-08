@@ -22,6 +22,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         public City? tempCity { get; set; }
         public GeoRegion tempRegion { get; set; }
         public Country tempCountry { get; set; }
+        public string SkinImage {
+            get;
+            set; }
 
         public string Host { get { return "https://localhost:7186/uploads/entityImages"; } }
 
@@ -847,9 +850,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         }
 
 
+       
+
 
         /// Temporal Object
-        
+
         public async Task<EntityActor> NewEntityActor(EntityActor entityActor)
         {
             try

@@ -17,64 +17,76 @@
 
 @* <CardHeader Title="New Group" />
     <CardContent>*@
-<div class="conten-vertical-center">
-    <div class="content grid-columns-4">
-        <div>
-            <label class="control-label col-md-12">Group Name: </label>
-            <input type="text" class="form-control" @bind-value="channelCommunicationsGroup.Name" required />
-        </div>
 
-        <div style="position:relative;">
+@if (modeForm)
+{
+    <div class="conten-vertical-center">
+        <div class="content grid-columns-4">
             <div>
-                <label for="ComercialGroup">Participants</label>
-                <button type="button" @onclick='() => SetViewElement("Participant")' class="btn btn-color"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-
+                <label class="control-label col-md-12">Group Name: </label>
+                <input type="text" class="form-control" @bind-value="channelCommunicationsGroup.Name" required />
             </div>
-            <div class="position-chat">
-                <InputTextSelector @ref="inputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectorInput" EventClosed="EventClosedInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="participants">
-                    @{
-                        if (entityActorList != null)
-                        {
-                            foreach (var entity in entityActorList)
+
+            <div style="position:relative;">
+                <div>
+                    <label for="ComercialGroup">Participants</label>
+                    <button type="button" @onclick='() => SetViewElement("Participant")' class="btn btn-color"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+
+                </div>
+                <div class="position-chat">
+                    <InputTextSelector @ref="inputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectorInput" EventClosed="EventClosedInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="participants">
+                        @{
+                            if (entityActorList != null)
                             {
-                                <option value="@entity?.Id">@entity?.Name</option>
+                                foreach (var entity in entityActorList)
+                                {
+                                    <option value="@entity?.Id">@entity?.Name</option>
+                                }
                             }
                         }
-                    }
-                </InputTextSelector>
+                    </InputTextSelector>
+                </div>
             </div>
         </div>
 
-    </div>
-
-    @if (@participantList != null)
-    {
-        <div class="flex-horizontal-center ">
-            <DataGrid TParameter="EntityActor"
+        @if (@participantList != null)
+        {
+            <div class="flex-horizontal-center ">
+                <DataGrid TParameter="EntityActor"
                   parameterList="participantList"
                   GridColumnsList="ListGridParticipant"
                   Width="100%"
                   Height="200">
-            </DataGrid>
+                </DataGrid>
+            </div>
+        }
+
+        <div class="content-img">
+            <a @onclick='()=>ClosedPage("addIco")'>
+                @if (entityActor == null) entityActor = new();
+                <img class="img" src="@( channelCommunicationsGroup.SkinImageName !=null ? actorsNodeServive.Host+ channelCommunicationsGroup.SkinImageName:"/images//ActorsIco.png")" />
+            </a>
+            <div> <label class="control-label col-md-12">@GetName("SkinImageName", new EntityNodeCommunications()): </label></div>
         </div>
-    }
 
-
-
-    <div class="content-img">
-        <a href="@($"/Image/{UIClientGlobalVariables.UserId}/NewGroup")" target="_blank">
-            @if (entityActor == null) entityActor = new();
-            <img class="img" src="@(entityActor.SkinImageName !=null ? actorsNodeServive.Host+entityActor.SkinImageName:"/images//ActorsIco.png")" />
-        </a>
-        <div> <label class="control-label col-md-12">@GetName("SkinImageName", new EntityNodeCommunications()): </label></div>
+        <div class="py-2">
+            <button type="button" @onclick="Save" class="size-btn color-btn" style="float:right"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+            <button type="button" class="btn" style="float:right" @onclick='()=>SetNewPage("")'><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
+        </div>
     </div>
+}
+else
+{
+    <SunttelTradePointB.Client.Shared.EntityShareComponents.ActorImage Id="64085f220314820de346988b"
+                                                                   EventCallbackNameImg="SetIcoGroup"
+                                                                   EventCallbackOpenClosedPage="OpentPage"
+    Page="addIco"                                                               Component="true"
+    >
+    </SunttelTradePointB.Client.Shared.EntityShareComponents.ActorImage>
+}
 
 
-    <div class="py-2">
-        <button type="button" @onclick="Save" class="size-btn color-btn" style="float:right"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
-        <button type="button" class="btn" style="float:right" @onclick='()=>SetNewPage("")'><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
-    </div>
-</div>
+
 
 @* </CardContent>*@
 
@@ -97,6 +109,8 @@
     InputTextSelector? inputTextSelector;
     EntityActor entityActor = new EntityActor();
     List<EntityActor> entityActorList = new List<EntityActor>();
+
+    bool modeForm = true;
 
     bool isVisible = false;
     string msg = "";
@@ -127,11 +141,10 @@
     public async void Save()
     {
 
-
         if (entityActor == null || entityActor?.Id == null)
         {
             entityActor = await actorsNodeServive.GetEntityActor(UIClientGlobalVariables.UserId);
-            if (entityActor == null) entityActor = new();
+            // if (entityActor == null) entityActor = new();
         }
 
         if (channelCommunicationsGroup != null && channelCommunicationsGroup.Name != null)
@@ -153,23 +166,29 @@
                         IsActive = true
                     });
             }
-            channelCommunicationsGroup.Owner = new EntityNodeCommunications
-                {
-                    Name = entityActor.Name != null ? entityActor.Name : "",
-                    Id = entityActor.Id != null ? entityActor.Id : "",
-                    SkinImageName = entityActor.SkinImageName != null ? entityActor.SkinImageName : ""
+            if (entityActor != null)
+            {
+                channelCommunicationsGroup.Owner = new EntityNodeCommunications
+                    {
+                        Name = entityActor.Name != null ? entityActor.Name : "",
+                        Id = entityActor.Id != null ? entityActor.Id : "",
+                        SkinImageName = entityActor.SkinImageName != null ? entityActor.SkinImageName : ""
 
-                };
-            var resul = await actorsNodeServive.SaveChannelCommunicationsGroup(channelCommunicationsGroup);
-            if (resul != null && resul.Id !=null)
-            {
-                Msg("Saved " + resul.Name, 0);
+                    };
             }
-            else
-            {
-                Msg("No saved", 1);
-            }
+
+
+            //var resul = await actorsNodeServive.SaveChannelCommunicationsGroup(channelCommunicationsGroup);
+            //if (resul != null && resul.Id !=null)
+            //{
+            //    Msg("Saved " + resul.Name, 0);
+            //}
+            //else
+            //{
+            //    Msg("No saved", 1);
+            //}
         }
+        StateHasChanged();
 
     }
 
@@ -240,6 +259,23 @@
 
     }
 
+
+    protected void SetIcoGroup(string value)
+    {
+        channelCommunicationsGroup.SkinImageName = value;
+        StateHasChanged();
+    }
+    protected void OpentPage(string page)
+    {
+        if (page == "addIco") modeForm = true;
+        StateHasChanged();
+    }
+    protected void ClosedPage(string page)
+    {
+        if (page == "addIco") modeForm = false;
+        StateHasChanged();
+    }
+
     public void EventClosedInput()
     {
         ViewSelect = false;
@@ -247,7 +283,6 @@
         participants = false;
         viewControlNodeCommunications = false;
     }
-
 
 
 

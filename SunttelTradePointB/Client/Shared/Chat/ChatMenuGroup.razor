@@ -26,7 +26,7 @@
         @foreach (var item in channelCommunicationsGroups)
         {
             <div class="item-group-column">
-                <img src="@(item.SkinImageName !=null ? item.SkinImageName:"/images/ActorsIco.png")" />
+                <img src="@(item.SkinImageName !=null ?(item.SkinImageName!=""? item.SkinImageName:"/images/EntityGroups.png"):"/images/EntityGroups.png")" />
                 <p class="title-normal">@(item.Name != null ? item.Name : "Group")"</p>
             </div>
         }
@@ -34,9 +34,8 @@
     </div>
 }
 @if (modeMenu == "grid-columns-2-chat-min")
-{
-    
-
+{    
+   
     <div class="group-min">
 
         <div class="item-group">
@@ -50,12 +49,13 @@
         @foreach (var item in channelCommunicationsGroups)
         {
             <div class="item-group">
-                <img src="@(item.SkinImageName !=null ? item.SkinImageName:"/images/ActorsIco.png")" />
+                <img src="@(item.SkinImageName !=null ?(item.SkinImageName!=""? item.SkinImageName:"/images/EntityGroups.png"):"/images/EntityGroups.png")" />
                 <p class="title-float">@(item.Name != null ? item.Name : "Group")"</p>
             </div>
         }
      
     </div>
+ 
     }
 @code {
     [Parameter]
@@ -78,15 +78,14 @@
 
     protected async void OnInitializedAsync()
     {
-       // channelCommunicationsGroup = await actorsNodeService.GetChannelCommunicationsGroupById("");
+        // channelCommunicationsGroup = await actorsNodeService.GetChannelCommunicationsGroupById("");
         channelCommunicationsGroups = await actorsNodeService.GetChannelCommunicationsGroups();
+        StateHasChanged();
     }
 
 
     protected override void OnParametersSet()
     {
-
-
         var r = modeMenu;
         StateHasChanged();
     }
