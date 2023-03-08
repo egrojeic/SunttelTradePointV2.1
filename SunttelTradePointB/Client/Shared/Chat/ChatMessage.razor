@@ -3,26 +3,37 @@
 <div class="content-msg">
     @foreach (var msg in communicationsMessages)
     {
-        @if (msg.SenderEntity == null) msg.SenderEntity = new();      
+        @if (msg.SenderEntity == null) msg.SenderEntity = new();
         @if (msg.SenderEntity.Id != null || true)
         {
             @if (msg.SenderEntity.Id != SenderEntityId)
             {
                 <div class="msg-mode-client-1">
+                    <div class="label-color" style="background-color:@(GetColorMessageIconName(msg.MessageIconName))"></div>
                     <div class="content-ico">
-                        <div class="c-ico"><img src="@(msg.SenderEntity.SkinImageName!=null?msg.SenderEntity.SkinImageName: "/images/ActorIco.png")"></div>
-                        <p class="name">David</p>
-                        <p class="hour-style">12:08 pm</p>
+                        @if (msg.MessageTypeId == CommunicationsMessageType.SystemMessage)
+                        {
+                            <img class="ico-menu" src="/images//robot.svg">
+                        }
+                        else
+                        {
+                            <div class="c-ico"><img src="@(msg.SenderEntity.SkinImageName!=null?msg.SenderEntity.SkinImageName: "/images/ActorIco.png")"></div>
+                            <p class="name">David</p>
+                            <p class="hour-style">12:08 pm</p>
+                        }
+
                     </div>
                     <p class="text">@msg.Message</p>
                     <div class="msg-menu">
                         <div class="content-msg-menu">
-                            <img class="ico-menu" src="/images//reply.svg">
                             <img class="ico-menu" src="/images//responder.svg">
+                            <img class="ico-menu" src="/images//responder.svg">
+                            <img class="ico-menu" src="/images//Reaction.svg">
                         </div>
                     </div>
                 </div>
-            }else
+            }
+            else
             {
 
                 <div class="msg-mode-client-2">
@@ -36,7 +47,7 @@
                     <div class="msg-menu">
                         <div class="content-msg-menu">
                             <img class="ico-menu" src="/images//reply.svg">
-                            @*   <img class="ico-menu" src="/images//responder.svg">*@
+                            <img class="ico-menu" src="/images//Reaction.svg">
                         </div>
                     </div>
                 </div>
@@ -63,6 +74,16 @@
     {
 
         StateHasChanged();
+    }
+
+
+    public string GetColorMessageIconName(string value)
+    {
+        int item = Convert.ToInt32(value);
+        if (item == 0) return "#00ff00";
+        if (item == 1) return "#ff8040";
+        if (item == 2) return "#ee042e";
+        return "#00ff00";
     }
 
 }
