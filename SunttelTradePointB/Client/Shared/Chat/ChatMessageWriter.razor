@@ -47,6 +47,7 @@
 
     public void SendMsg()
     {
+        communicationsMessage.MessageTypeId = CommunicationsMessageType.ChatMessage;
         communicationsMessages.Add(communicationsMessage);
         TextMessageChanged.InvokeAsync(communicationsMessage);
         communicationsMessage = new();       
