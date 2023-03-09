@@ -2,9 +2,10 @@
     background-color: white;
     overflow-y: auto;
     height: 405px;
-    padding-bottom: 100px;
-    padding: 0px 10px 0px 8px;
-    overflow: hidden;
+    padding: 0px 10px 100px 8px;
+}
+
+.container-text-1 {
 }
 
 .msg-mode-client-1 {
@@ -64,6 +65,7 @@
         font-size: 15px;
         color: white;
         margin: 0px;
+        text-align: start;
         white-space: nowrap;
     }
 
@@ -103,15 +105,13 @@
                 display: none;
             }
 
-          .msg-mode-client-1 .msg-menu .content-msg-menu:hover > div {
-           
-            display: block;
-       }
+            .msg-mode-client-1 .msg-menu .content-msg-menu:hover > div {
+                display: block;
+            }
 
-        .msg-mode-client-1 .msg-menu .content-msg-menu div:hover {
-          
-            display: block;
-        }
+            .msg-mode-client-1 .msg-menu .content-msg-menu div:hover {
+                display: block;
+            }
 
     .msg-mode-client-1 .label-color {
         background-color: #00ff00;
@@ -141,7 +141,7 @@
 .msg-mode-client-2 {
     background-color: #2561b1;
     box-shadow: 0px 0px 5px white;
-    width: auto;
+    width: 100%;
     padding-right: 10px;
     display: flex;
     flex-direction: column;
@@ -151,7 +151,7 @@
     padding-top: 10px;
     border-radius: 5px;
     box-shadow: 0px 1px 2px 1px;
-    position:relative;
+    position: relative;
 }
 
     .msg-mode-client-2 .content-ico {
@@ -197,6 +197,8 @@
         font-size: 15px;
         color: white;
         margin: 0px;
+        min-width: 200px;
+        text-align: start;
         white-space: nowrap;
     }
 
@@ -222,7 +224,6 @@
         .msg-mode-client-2 .msg-menu .content-msg-menu {
             margin-right: 20px;
             margin-left: 20px;
-            
         }
 
             .msg-mode-client-2 .msg-menu .content-msg-menu .menu-view-1 {
@@ -241,29 +242,32 @@
                 display: none;
             }
 
-.msg-mode-client-2 .msg-menu .content-msg-menu:hover > div {
-    display: block;
-}
+            .msg-mode-client-2 .msg-menu .content-msg-menu:hover > div {
+                display: block;
+            }
 
-.msg-mode-client-2 .msg-menu .content-msg-menu div:hover {
-    display: block;
-}
+            .msg-mode-client-2 .msg-menu .content-msg-menu div:hover {
+                display: block;
+            }
 
-.msg-mode-client-2 .label-color {
-    background-color: #00ff00;
-    height: 20px;
-    width: 80px;
-    transform: rotate(-49deg);
-    position: absolute;
-    border-radius: 100px 100px 0px 0px;
-    box-shadow: 0px 0px 5px white inset, 0px 0px 2px 1px gray, 3px 0px 5px -2px inset gray, -3px 0px 5px -2px inset gray;
-    top: 16px;
-    left: -21px;
-}
+    .msg-mode-client-2 .label-color {
+        background-color: #00ff00;
+        height: 20px;
+        width: 80px;
+        transform: rotate(-49deg);
+        position: absolute;
+        border-radius: 100px 100px 0px 0px;
+        box-shadow: 0px 0px 5px white inset, 0px 0px 2px 1px gray, 3px 0px 5px -2px inset gray, -3px 0px 5px -2px inset gray;
+        top: 16px;
+        left: -21px;
+    }
 
-.msg-mode-client-2 .ico-menu-alert {
-    padding: 5px;
-    margin-left: 10px;
-    width: 30px;
-    border-radius: 5px;
+    .msg-mode-client-2 .ico-menu-alert {
+        padding: 5px;
+        margin-left: 10px;
+        width: 30px;
+        border-radius: 5px;
+    }
+
+.container-text-2 {
 }

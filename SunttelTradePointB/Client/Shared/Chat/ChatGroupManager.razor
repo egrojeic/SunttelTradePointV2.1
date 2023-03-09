@@ -24,6 +24,8 @@
         <div class="content grid-columns-4">
             <div>
                 <label class="control-label col-md-12">Group Name: </label>
+            </div>
+            <div>
                 <input type="text" class="form-control" @bind-value="channelCommunicationsGroup.Name" required />
             </div>
 
@@ -64,9 +66,9 @@
         <div class="content-img">
             <a @onclick='()=>ClosedPage("addIco")'>
                 @if (entityActor == null) entityActor = new();
-                <img class="img" src="@( channelCommunicationsGroup.SkinImageName !=null ? pathimages  + channelCommunicationsGroup.SkinImageName:"/images//ActorsIco.png")" />
+                <img class="img" src="@( channelCommunicationsGroup.SkinImageName !=null ? pathimages  + channelCommunicationsGroup.SkinImageName:"/images//defaultImage.png")" />
             </a>
-            <div> <label class="control-label col-md-12">@GetName("SkinImageName", new EntityNodeCommunications()): </label></div>
+            <div> <label class="control-label col-md-12">@GetName("SkinImageName", new EntityNodeCommunications()) </label></div>
         </div>
 
         <div class="py-2">
@@ -100,6 +102,9 @@ else
     public bool ViewSelect { get; set; } = false;
     [Parameter]
     public EventCallback<string> EventCallNewPage { get; set; }
+    [Parameter]
+    public EventCallback<string> EventCallRefresh { get; set; }
+   
     ChannelCommunicationsGroup channelCommunicationsGroup = new ChannelCommunicationsGroup();
     List<EntityActor> participantList = new List<EntityActor>();
 
@@ -179,15 +184,15 @@ else
             }
 
 
-            //var resul = await actorsNodeServive.SaveChannelCommunicationsGroup(channelCommunicationsGroup);
-            //if (resul != null && resul.Id !=null)
-            //{
-            //    Msg("Saved " + resul.Name, 0);
-            //}
-            //else
-            //{
-            //    Msg("No saved", 1);
-            //}
+            var resul = await actorsNodeServive.SaveChannelCommunicationsGroup(channelCommunicationsGroup);
+            if (resul != null && resul.Id !=null)
+            {
+                Msg("Saved " + resul.Name, 0);
+            }
+            else
+            {
+                Msg("No saved", 1);
+            }
         }
         StateHasChanged();
 

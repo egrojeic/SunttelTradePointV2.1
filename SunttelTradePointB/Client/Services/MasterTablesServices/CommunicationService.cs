@@ -59,6 +59,27 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         }
 
 
+        public async Task<List<CommunicationsMessage>> GetMessagesOfAnEntity(string startingDate, string filterCriteria)
+        {
+            var userId = UIClientGlobalVariables.UserId;
+            var ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+                if (ipAddress == null)
+                {
+                    ipAddress = "127.0.0.0";
+                }
+                var list = await _httpClient.GetFromJsonAsync<List<CommunicationsMessage>>($"api/CommunicationsManagement/GetMessagesOfAnEntity?userId={userId}&ipAdress={ipAddress}&startingDate={startingDate}&filterCriteria={filterCriteria}");
+                return list;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+
         ///Post
         public async Task<bool> SaveChannelCommunicationsGroup(ChannelCommunicationsGroup channelCommunicationsGroup)
         {
