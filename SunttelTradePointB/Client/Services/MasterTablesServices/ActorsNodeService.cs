@@ -771,6 +771,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
+
+
+
         public async Task<string> UploadFiles(MultipartFormDataContent multipartFormDataContent)
         {
             var userId = UIClientGlobalVariables.UserId;
