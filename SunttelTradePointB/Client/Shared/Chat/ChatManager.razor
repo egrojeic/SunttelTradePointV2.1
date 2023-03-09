@@ -22,13 +22,15 @@
 
 <div id ="ChatConatainerDiv">
     
-    <ChatUpperControl NumerCount="@NumberOfConnectedUsers">
+    <ChatUpperControl NumerCount="@NumberOfConnectedUsers"
+                      EventCallbackFilter="EventCallbackFilter"
+                      communicationsMessages="communicationsMessages">
 
     </ChatUpperControl>
 
     @if (newPage == "newGroup")
     {
-        <ChatGroupManager EventCallNewPage="SetNewPage"></ChatGroupManager>
+        <ChatGroupManager EventCallNewPage="SetNewPage"  ></ChatGroupManager>
     }
     else
     {
@@ -87,7 +89,15 @@
     }
     #endregion write
 
+    #region Filter
 
+    public void EventCallbackFilter(List<CommunicationsMessage> communicationsMessage)
+    {
+        this.communicationsMessages = communicationsMessage;
+        StateHasChanged();
+    }
+
+    #endregion Filter
 
     public void SetModeMenu(string _modeMenu)
     {

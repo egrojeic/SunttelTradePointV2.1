@@ -33,6 +33,7 @@
 
     SfTextBox? input;
     bool modeEnter = false;
+    bool onWrite = true;
 
     protected override void OnParametersSet()
     {
@@ -41,17 +42,25 @@
 
     protected override void OnInitialized()
     {
-        if (communicationsMessages == null) communicationsMessages = new();
+        Loading();
     }
 
 
     public void SendMsg()
     {
-        communicationsMessage.MessageTypeId = CommunicationsMessageType.ChatMessage;
-        communicationsMessages.Add(communicationsMessage);
-        TextMessageChanged.InvokeAsync(communicationsMessage);
-        communicationsMessage = new();       
-        StateHasChanged();
+        Loading();
+        if (onWrite && communicationsMessage.Message != null && communicationsMessage.Message !="")
+        {
+            onWrite = false;
+            communicationsMessage.MessageTypeId = CommunicationsMessageType.ChatMessage;
+            communicationsMessage.SenderEntity.Id = UIClientGlobalVariables.EntityUserId != null ? UIClientGlobalVariables.EntityUserId : "1";
+
+            communicationsMessages.Add(communicationsMessage);
+            TextMessageChanged.InvokeAsync(communicationsMessage);
+            communicationsMessage = new();
+            StateHasChanged();
+            onWrite = true;
+        }
     }
 
 
@@ -62,13 +71,21 @@
 
         if (args.Key == "Enter" )
         {
-           
+
             communicationsMessages.Add(communicationsMessage);
             TextMessageChanged.InvokeAsync(communicationsMessage);
-          //  communicationsMessage = new();
-         
+            //  communicationsMessage = new();
+
             modeEnter = false;
         }
 
+    }
+
+
+
+    private void Loading()
+    {
+        if (communicationsMessages == null) communicationsMessages = new();
+        if (communicationsMessage.SenderEntity == null) communicationsMessage.SenderEntity = new();
     }
 }

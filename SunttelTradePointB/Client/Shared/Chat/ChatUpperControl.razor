@@ -1,20 +1,55 @@
 ﻿@using SunttelTradePointB.Client.Shared.Chat.AuxiliarComponents
+@using SunttelTradePointB.Shared.Communications
 
 <div id ="ChatUpperConatainerDiv">
     <div id="ConnectedUsers">
         <label>Connected Users</label>
         <CounterBubble NumerCount="@NumerCount"></CounterBubble>
     </div>
+    <div class="title">
+        <label style="display:@(msg!=""?"block":"none")">@msg</label>
+    </div>
+    <SearchComponent @bind-FilterTextSet="@conceptFilter" ></SearchComponent>
     
-    <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
-
 </div>
 
 
 @code {
     [Parameter]
+    public EventCallback<List<CommunicationsMessage>> EventCallbackFilter{ get; set; }
+    [Parameter]
     public int NumerCount { get; set; }
-    string conceptFilter = "";
+    [Parameter]
+    public List<CommunicationsMessage> communicationsMessages { get; set; } = new();
+    string _filterItems = "";
 
+    string msg = "";
+
+    public string? conceptFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+    private async Task LoadData()
+    {
+
+        var data =  communicationsMessages.Where(s => s.Message.ToLower().Contains(_filterItems.ToLower())).ToList();
+        msg = "Results found : " + data.Count();
+        if (data.Count() == 0) data = communicationsMessages;      
+        EventCallbackFilter.InvokeAsync(data);      
+        StateHasChanged();
+
+    }
+
+
+    public void SearchFilter()
+    {
+        
+    }
 
 }

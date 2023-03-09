@@ -6,7 +6,7 @@
         @if (msg.SenderEntity == null) msg.SenderEntity = new();
         @if (msg.SenderEntity.Id != null || true)
         {
-            @if (msg.SenderEntity.Id != SenderEntityId)
+            @if (msg.SenderEntity.Id != SenderEntityId && false)
             {
                 <div class="msg-mode-client-1">
                     <div class="label-color" style="background-color:@(GetColorMessageIconName(msg.MessageIconName))"></div>
@@ -21,7 +21,7 @@
                             <p class="name">@msg.SenderEntity.Name</p>
                             <p class="hour-style">@msg.SendDateTime</p>
                         }
-                        <img class="ico-menu bg-warning" src="@msg.MessageIconName">
+                        <img style="background-color:@(GetColorMessageIconName(msg.MessageIconName))" class="ico-menu-alert" src="/images//exclamation.svg">
                     </div>
                     <p class="text">@msg.Message</p>
                     <div class="msg-menu">
@@ -30,9 +30,9 @@
                             <img class="ico-menu" src="/images//responder.svg">
                             <img @onclick="()=>ViewModalMenu(1)" class="ico-menu-3" src="/images//Reaction.svg">
                             <div class="menu-view-1" style="@(viewMenu1?"block":"none")" >
-                                <img class="ico-menu bg-warning" src="/images//exclamation.svg">
-                                <img class="ico-menu bg-danger" src="/images//exclamation.svg">
-                                <img class="ico-menu bg-success" src="/images//exclamation.svg">
+                                <img @onclick='()=>SetColorMessageIconName("warning")' class="ico-menu bg-warning" src="/images//exclamation.svg">
+                                <img @onclick='()=>SetColorMessageIconName("danger")' class="ico-menu bg-danger" src="/images//exclamation.svg">
+                                <img @onclick='()=>SetColorMessageIconName("success")' class="ico-menu bg-success" src="/images//exclamation.svg">
                             </div>
                         </div>
                     </div>
@@ -43,7 +43,8 @@
 
                 <div class="msg-mode-client-2">
                     <div class="content-ico">
-
+                        <div class="label-color" style="background-color:@(GetColorMessageIconName(msg.MessageIconName))"></div>
+                        <img style="background-color:@(GetColorMessageIconName(msg.MessageIconName))" class="ico-menu-alert" src="/images//exclamation.svg">
                         @if (msg.MessageTypeId == CommunicationsMessageType.SystemMessage)
                         {
                             <img class="ico-menu" src="/images//robot.svg">
@@ -54,21 +55,25 @@
                             <p class="name">@msg.SenderEntity?.Name</p>
                             <div class="c-ico"><img src="@(msg.SenderEntity.SkinImageName!=null?msg.SenderEntity.SkinImageName: "/images/ActorIco.png")"></div>
                         }
-                       
+                     
                     </div>
                     <p class="text">@msg.Message</p>
+
                     <div class="msg-menu">
                         <div class="content-msg-menu">
-                            <img class="ico-menu" src="/images//reply.svg">
-                            <img class="ico-menu" src="/images//Reaction.svg">
                             <img @onclick="()=>ViewModalMenu(1)" class="ico-menu-3" src="/images//Reaction.svg">
-                            <div class="menu-view-1" style="@(viewMenu1?"block":"none")">
-                                <img class="ico-menu" src="/images//responder.svg">
-                                <img class="ico-menu" src="/images//responder.svg">
-                                <img class="ico-menu" src="/images//Reaction.svg">
+                            <img class="ico-menu" src="/images//responder.svg">
+                            <img class="ico-menu" src="/images//responder.svg">
+                           
+                            <div class="menu-view-1">
+                                <img @onclick='()=>SetColorMessageIconName("warning")' class="ico-menu bg-warning" src="/images//exclamation.svg">
+                                <img @onclick='()=>SetColorMessageIconName("danger")' class="ico-menu bg-danger" src="/images//exclamation.svg">
+                                <img @onclick='()=>SetColorMessageIconName("success")' class="ico-menu bg-success" src="/images//exclamation.svg">
                             </div>
                         </div>
                     </div>
+
+                   
                 </div>
 
             }
@@ -91,7 +96,6 @@
     bool viewMenu1 = true;
     protected override void OnParametersSet()
     {
-
         StateHasChanged();
     }
 
@@ -100,13 +104,19 @@
         if (menu==1) viewMenu1  = true;
         StateHasChanged();
     }
-    public string GetColorMessageIconName(string value)
-    {
-        int item = Convert.ToInt32(value);
-        if (item == 0) { return "#00ff00"; }
-        if (item == 1) { return "#ff8040"; }
-        if (item == 2) {return "#ee042e"; }
-    return "#00ff00";
+    public string GetColorMessageIconName(string item)
+    {        
+        if (item == "warning") { return "#ff8040"; }
+        if (item == "danger") { return "#ff0000"; }
+        if (item == "success") { return "#80ff00"; }
+        return "#00ff00";
     }
-
+    public void SetColorMessageIconName(string value)
+    {
+        foreach (var item in communicationsMessages)
+        {
+            item.MessageIconName = value;
+        }
+        StateHasChanged();
+    }
 }
