@@ -16,13 +16,13 @@
 {
     <div class="content-search">
         <input class="input-mode">
-        <img class="img-ico-search" src="/images//search.svg">
+        <img @onclick="FilterGroup" class="img-ico-search" src="/images//search.svg">
     </div>
     <div class="group-max">
         <div class="item-group">
             <img @onclick='()=>SetModeMenu("grid-columns-2-chat-min")' src="/images//menu.png">
         </div>
-        @if(channelCommunicationsGroups==null) channelCommunicationsGroups = new();
+        @if (channelCommunicationsGroups == null) channelCommunicationsGroups = new();
         @foreach (var item in channelCommunicationsGroups)
         {
             <div class="item-group-column">
@@ -30,12 +30,12 @@
                 <p class="title-normal">@(item.Name != null ? item.Name : "Group")"</p>
             </div>
         }
-       
+
     </div>
 }
 @if (modeMenu == "grid-columns-2-chat-min")
-{    
-   
+{
+
     <div class="group-min">
 
         <div class="item-group">
@@ -53,10 +53,10 @@
                 <p class="title-float">@(item.Name != null ? item.Name : "Group")"</p>
             </div>
         }
-     
+
     </div>
- 
-    }
+
+}
 @code {
     [Parameter]
     public EventCallback<string> EventCallModeMenu { get; set; }
@@ -64,6 +64,8 @@
     public EventCallback<string> EventCallNewPage { get; set; }
     [Parameter]
     public string modeMenu { get; set; }
+
+    public string filter = "";
 
     List<ChannelCommunicationsGroup> channelCommunicationsGroups = new();
     ChannelCommunicationsGroup channelCommunicationsGroup = new();
@@ -80,6 +82,7 @@
     {
         // channelCommunicationsGroup = await actorsNodeService.GetChannelCommunicationsGroupById("");
         channelCommunicationsGroups = await actorsNodeService.GetChannelCommunicationsGroups();
+        if (channelCommunicationsGroups == null) OnInitializedAsync();
         StateHasChanged();
     }
 
@@ -104,6 +107,18 @@
         StateHasChanged();
 
     }
+
+    public void FilterGroup()
+    {
+        if (filter !="")
+        {
+            var data = channelCommunicationsGroups.Where(s => s.Name.ToLower().Contains(filter.ToLower())).ToList();
+            if (data != null && data.Count() > 0) channelCommunicationsGroups = data;
+            StateHasChanged();
+        }
+      
+    }
+
     public void Reload()
     {
         StateHasChanged();
