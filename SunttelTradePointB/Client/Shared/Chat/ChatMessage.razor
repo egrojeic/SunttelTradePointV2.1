@@ -1,4 +1,6 @@
 ﻿@using SunttelTradePointB.Shared.Communications
+@inject CommunicationService communicationService
+
 
 <div class="content-msg">
     @foreach (var msg in communicationsMessages)
@@ -54,7 +56,7 @@
                 <div class="msg-mode-client-2">
                     <div class="content-ico">
                         <div class="label-color" style="background-color:@(GetColorMessageIconName(msg.MessageIconName))"></div>
-                        <img style="background-color:@(GetColorMessageIconName(pathimages+msg.MessageIconName))" class="ico-menu-alert" src="/images//exclamation.svg">
+                        <img style="background-color:@(GetColorMessageIconName(msg.MessageIconName))" class="ico-menu-alert" src="/images//exclamation.svg">
                         @if (msg.MessageTypeId == CommunicationsMessageType.SystemMessage)
                         {
                             <img class="ico-menu" src="/images//robot.svg">
@@ -75,13 +77,13 @@
                                 {
                                     if (item != null)
                                     {
-                                       
+                                        <p class="text">@item</p>
                                     }
                                 }
                             }
                         }
                     </div>
-                    <p class="text">@msg.Message</p>
+                  
                     <div class="msg-menu">
                         <div class="content-msg-menu">
                             <img @onclick="()=>ViewModalMenu(1)" class="ico-menu-3" src="/images//Reaction.svg">
@@ -95,10 +97,7 @@
                             </div>
                         </div>
                     </div>
-
-
                 </div>
-
             }
 
         }
@@ -124,6 +123,7 @@
     protected override void OnInitialized()
     {
         LoadObj();
+        if (communicationsMessages != null) communicationsMessages = communicationsMessages.OrderByDescending(s => s.SendDateTime).ToList();
         pathimages = UIClientGlobalVariables.PathEntityImages + "/";
     }
 

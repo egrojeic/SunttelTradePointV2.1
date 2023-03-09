@@ -9,6 +9,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
     public class CommunicationService: ICommunicationChat
     {
         private readonly HttpClient _httpClient;
+        public List<CommunicationsMessage> communicationsMessages { get; set; } = new();
         public CommunicationService(HttpClient httpClient)
         {
             _httpClient = httpClient;

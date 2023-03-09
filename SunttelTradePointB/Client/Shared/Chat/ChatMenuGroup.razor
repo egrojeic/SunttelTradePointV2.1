@@ -16,8 +16,9 @@
     
     <div class="group-max">
         <div class="content-search">
-            <input @bind-value="filter" class="input-mode">
-            <img @onclick="FilterGroup" class="img-ico-search" src="/images//search.svg">
+            <input @bind-value="_filter" class="input-mode">
+            <img @onclick='()=>FilterGroup("filter")' class="img-ico-search" src="/images//search.svg">
+            <img @onclick='()=>FilterGroup("all")' class="img-ico-search" src="/images//reload.svg">
         </div>
         <div class="item-group">
             <img @onclick='()=>SetModeMenu("grid-columns-2-chat-min")' src="/images//menu.png">
@@ -27,7 +28,7 @@
         {
             <div class="item-group-column">
                 <div class="item-group">
-                    <img src="@(item.SkinImageName !=null ?(item.SkinImageName!=""? pathimages+item.SkinImageName:"/images/EntityGroups.png"):"/images/EntityGroups.png")" />
+                    <img class='@(groupEnablId==item.Id?"":"enable")' @onclick='()=>SetgroupEnable(item.Id)' src="@(item.SkinImageName !=null ?(item.SkinImageName!=""? pathimages+item.SkinImageName:"/images/EntityGroups.png"):"/images/EntityGroups.png")" />
                 </div>
                 <p class="title-normal">@(item.Name != null ? item.Name : "Group")"</p>
             </div>
@@ -51,7 +52,7 @@
         @foreach (var item in channelCommunicationsGroups)
         {
             <div class="item-group">
-                <img @onclick='()=>SetgroupEnable(item.Id)' src="@(item.SkinImageName !=null ?(item.SkinImageName!=""? pathimages+item.SkinImageName:"/images/EntityGroups.png"):"/images/EntityGroups.png")" />
+                <img class='@(groupEnablId==item.Id?"":"enable")' @onclick='()=>SetgroupEnable(item.Id)' src="@(item.SkinImageName !=null ?(item.SkinImageName!=""? pathimages+item.SkinImageName:"/images/EntityGroups.png"):"/images/EntityGroups.png")" />
                 <p class="title-float">@(item.Name != null ? item.Name : "Group")"</p>
             </div>
         }
@@ -69,8 +70,10 @@
     [Parameter]
     public string modeMenu { get; set; }
 
-    public string filter = "";
+    public string _filter = "";
     string pathimages = "";
+    string groupEnablId = "";
+
     List<ChannelCommunicationsGroup> channelCommunicationsGroups = new();
     ChannelCommunicationsGroup channelCommunicationsGroup = new();
     public List<CommunicationsGroupParticipant> participants { get; set; }
@@ -81,7 +84,8 @@
     {
         pathimages = UIClientGlobalVariables.PathEntityImages + "/";
         // channelCommunicationsGroup = await actorsNodeService.GetChannelCommunicationsGroupById("");
-        channelCommunicationsGroups = await actorsNodeService.GetChannelCommunicationsGroups();
+        groupEnablId = channelCommunicationsGroup != null ? (channelCommunicationsGroup.Id!=null?channelCommunicationsGroup.Id:"") : "";
+        await  FilterGroup("all");
         if (channelCommunicationsGroups == null) OnInitializedAsync();
         StateHasChanged();
     }
@@ -107,21 +111,30 @@
 
     }
 
-    public void FilterGroup()
+    public async Task FilterGroup(string filter)
     {
-        if (filter != "")
+        if (filter == "all")
         {
-            var data = channelCommunicationsGroups.Where(s => s.Name.ToLower().Contains(filter.ToLower())).ToList();
-            if (data != null && data.Count() > 0) channelCommunicationsGroups = data;
-            StateHasChanged();
+            channelCommunicationsGroups = await actorsNodeService.GetChannelCommunicationsGroups();
+        }else
+        {
+            if (_filter != "")
+            {
+                var data = channelCommunicationsGroups.Where(s => s.Name.ToLower().Contains(_filter.ToLower())).ToList();
+                if (data != null && data.Count() > 0) channelCommunicationsGroups = data;
+                StateHasChanged();
+            }
         }
+       
 
     }
 
     public void SetgroupEnable(string id)
     {
         var gropu = channelCommunicationsGroups.Where(s => s.Id == id).FirstOrDefault();
+        groupEnablId = gropu != null ? (gropu.Id != null ? gropu.Id : "") : "";
         EventCallSetgroupEnable.InvokeAsync(gropu);
+       
     }
 
     public void Reload()

@@ -15,7 +15,7 @@
 .group-max {
     background-color: #161616;
     height: 380px;
-    width:280px;
+    width:290px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -103,5 +103,8 @@
 }
 
 .grayscale-img {
+  
+}
+.enable {
     filter: grayscale(100%);
 }

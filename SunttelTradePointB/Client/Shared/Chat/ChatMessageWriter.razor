@@ -3,7 +3,7 @@
 @using Microsoft.AspNetCore.SignalR.Client
 
 @inject NavigationManager NavigationManager
-
+@inject CommunicationService communicationService
 
 
 
@@ -47,10 +47,6 @@
     public ChannelCommunicationsGroup groupEnable { get; set; } = new();
     public CommunicationsMessage communicationsMessage { get; set; } = new();
 
-
-    int NumberOfConnectedUsers = 0;
-    private HubConnection? hubConnection;
-
     SfTextBox? input;
     bool modeEnter = false;
     bool onWrite = true;
@@ -68,44 +64,26 @@
 
     protected async override void OnInitialized()
     {
-
-        // Initializing hub
-        hubConnection = new HubConnectionBuilder()
-            .WithUrl(NavigationManager.ToAbsoluteUri("/hubs/userHub"), options =>
-            {
-                options.AccessTokenProvider = () => Task.FromResult(UIClientGlobalVariables.UserId);
-            })
-            .Build();
-
-        hubConnection.On<string>("updateConnectedUsers", (usersConnectedCount) =>
-        {
-            Console.WriteLine(usersConnectedCount);
-
-            NumberOfConnectedUsers = int.Parse(usersConnectedCount);
-
-            StateHasChanged();
-        });
-
-        hubConnection.On<string, CommunicationsMessage>("ReceiveMessage", (user, message) =>
-        {
-           
-                TextMessageChanged.InvokeAsync(communicationsMessage);
-                //  EventCallRefresh.InvokeAsync();
-           
-
-        });
-
-        try
-        {
-            await hubConnection.StartAsync();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine($"Error connecting: {e.Message}");
-        }
+        if (communicationService.communicationsMessages == null) communicationService.communicationsMessages = new();
+        string n = UIClientGlobalVariables.UserSkinImage;
         StateHasChanged();
-        Loading();
+        onWrite = true;
+
+
     }
+
+
+    private string Validationbj()
+    {
+        string msg = "";
+        if (communicationsMessage.Message == null && communicationsMessage.Message == "") msg = "Required message";
+        if (communicationsMessage.DestinyGroupChannel.Id == null && communicationsMessage.DestinyGroupChannel.Id == "") msg = "Required message";
+
+        return msg;
+    }
+
+
+
 
 
     public async void SendMsg()
@@ -122,31 +100,31 @@
                     Message = message,
                     SenderEntity = new EntityNodeCommunications
                     {
+                        Id = UIClientGlobalVariables.EntityUserId != null ? (UIClientGlobalVariables.EntityUserId != "" ? UIClientGlobalVariables.EntityUserId:"1"):"1",
+                        Name = UIClientGlobalVariables.UserName != null ? (UIClientGlobalVariables.UserName != "" ? UIClientGlobalVariables.UserName : "Name") : "Name",
+                        SkinImageName = UIClientGlobalVariables.UserSkinImage != null ? (UIClientGlobalVariables.UserSkinImage != "" ? UIClientGlobalVariables.UserSkinImage : null) : null
+                    },
+                    DestinyGroupChannel = new EntityNodeCommunications
+                    {
                         Id = groupEnable.Id != null ? groupEnable.Id : "",
                         SkinImageName = groupEnable.SkinImageName,
                         Name = groupEnable.Name != null ? groupEnable.Name : "Group"
                     }
 
-            };
-          
-        communicationsMessages.Add(communicationsMessage);
+                };
+            TextMessageChanged.InvokeAsync(communicationsMessage);
 
-            if (msg == "") await hubConnection.SendAsync("SendMessage", "User a", communicationsMessage);
+            communicationsMessage = new();
+
             StateHasChanged();
             onWrite = true;
+            message = "";
         }
 
     }
 
 
-    private string Validationbj()
-    {
-        string msg = "";
-        if (communicationsMessage.Message == null && communicationsMessage.Message == "") msg = "Required message";
-        if (communicationsMessage.DestinyGroupChannel.Id == null && communicationsMessage.DestinyGroupChannel.Id == "") msg = "Required message";
 
-        return msg;
-    }
 
 
     private void OnTyping(Microsoft.AspNetCore.Components.ChangeEventArgs args)
@@ -161,7 +139,7 @@
                 if (message.Contains("\n".ToString()))
                 {
                     SendMsg();
-                    enter = "";
+                    message = enter = "";
                 }
             }
         }
@@ -201,7 +179,7 @@
 
     private void Loading()
     {
-        if (communicationsMessages == null) communicationsMessages = new();
+        //if (communicationsMessages == null) communicationsMessages = new();
         if (communicationsMessage.SenderEntity == null) communicationsMessage.SenderEntity = new();
         if (communicationsMessage.DestinyGroupChannel == null) communicationsMessage.DestinyGroupChannel = new();
         if (groupEnable == null) groupEnable = new();

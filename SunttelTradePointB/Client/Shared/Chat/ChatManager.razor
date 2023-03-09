@@ -76,14 +76,47 @@
     string newPage = "";
 
 
-
-    protected override void OnInitialized()
+    protected async override void OnInitialized()
     {
+        if (communicationsMessages == null) communicationsMessages = new();
+        // Initializing hub
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/hubs/userHub"), options =>
+            {
+                options.AccessTokenProvider = () => Task.FromResult(UIClientGlobalVariables.UserId);
+            })
+            .Build();
+
+        hubConnection.On<string>("updateConnectedUsers", (usersConnectedCount) =>
+        {
+            Console.WriteLine(usersConnectedCount);
+
+            NumberOfConnectedUsers = int.Parse(usersConnectedCount);
+
+            StateHasChanged();
+        });
+
+        hubConnection.On<string, CommunicationsMessage>("ReceiveMessage", (user, message) =>
+        {
+            communicationsMessages.Add(message);
+            StateHasChanged();
+
+        });
+
+        try
+        {
+            await hubConnection.StartAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Error connecting: {e.Message}");
+        }
+        EventCallbackFilter("all");
+        StateHasChanged();
 
         LoadObj();
-        base.OnInitialized();
-
     }
+
     protected override void OnAfterRender(bool firstRender)
     {
         if (chatMenuGroup != null) chatMenuGroup.Reload();
@@ -92,18 +125,19 @@
 
     #region write
 
-    public void TextWriteMessageChanged(CommunicationsMessage communicationsMessage)
-    {
-        communicationsMessages.Add(communicationsMessage);
+    public async void TextWriteMessageChanged(CommunicationsMessage communicationsMessage)
+    {       
+        await hubConnection.SendAsync("SendMessage", "User a", communicationsMessage);
         StateHasChanged();
-    }
+    } 
+
     #endregion write
 
     #region Filter
 
     public async void EventCallbackFilter(string filter)
     {
-        if (filter != "all") this.communicationsMessages = await communicationService.GetMessagesOfAnEntity("01/01/2023", filter);       
+        if (filter != "all" && communicationsMessages != null) this.communicationsMessages = communicationsMessages.Where(s => s.Message!=null && s.Message.ToLower().Contains(filter.ToLower())).ToList(); //await communicationService.GetMessagesOfAnEntity("01/01/2023", filter);
         if (filter == "all") this.communicationsMessages = await communicationService.GetMessagesOfAnEntity("01/01/2023", filter);
         if (communicationsMessages == null) communicationsMessages = new();
         StateHasChanged();
