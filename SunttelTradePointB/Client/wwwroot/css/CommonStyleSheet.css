@@ -74,7 +74,7 @@
     width: 278px;
     max-width: 278px;
     height: 55px;
-    background-color: white;
+   
 }
 
     .component-input select {
@@ -161,6 +161,7 @@
     height: 40px;
     border-width: 0.1px;
     padding-right: 1px;
+    
 }
 
     .item-edit button {

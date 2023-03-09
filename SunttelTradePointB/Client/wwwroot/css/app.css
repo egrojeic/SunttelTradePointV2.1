@@ -50,6 +50,7 @@ a, .btn-link {
 
 .content {
     padding: 0;
+    background-color: black;
 }
 
 .valid.modified:not([type=checkbox]) {

@@ -1,6 +1,11 @@
 ﻿
-html {
-    background-color: white;
+
+#pagecontainer {
+    background-color: red;
+    margin: 0;
+    background-image: url("images/bg-black-dots.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 label{

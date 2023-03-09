@@ -10,8 +10,13 @@
 
 @if (pathLogo != null)
 {
+    <div id="pagecontainer">
+
+    
     <div id="logingDivContainer">
-        <img src="@pathLogo" id="imgLogoSplash" />
+            <img src="/images/LogoSquad2U.png" id="imgLogoSplash" />
+
+        <h1>Hey!</h1>
 
         <EditForm class="form-signin" OnValidSubmit="OnSubmit" Model="loginRequest">
             <DataAnnotationsValidator />
@@ -47,7 +52,7 @@
 
 
     </div>
-
+    </div>
 }
 else
 {
