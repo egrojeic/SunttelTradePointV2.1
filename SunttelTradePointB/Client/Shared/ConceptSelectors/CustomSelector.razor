@@ -43,7 +43,10 @@
     public AtomConcept objectBinded { get; set; }
 
     [Parameter]
-    public EventCallback<string> EventSearcherValue { get; set; }
+    public string datasourceId { get; set; } = "";
+
+    [Parameter]
+    public EventCallback<string> EventSearch { get; set; }
     [Parameter]
     public EventCallback<string> EventIdSelection { get; set; }
     [Parameter]
@@ -52,10 +55,21 @@
     public RenderFragment? ChildContent { get; set; }
 
     [Parameter]
+    public EventCallback<string> objectBindedChanged { get; set; }
+
+
+    [Parameter]
     public string style { get; set; } = "";
 
     [Parameter]
     public int? ParamCountResul { get; set; }
+
+    [Parameter]
+    public string id { get; set; } = "";
+    
+    [Parameter]
+    public string name { get; set; } = "";
+
 
     public bool showListControl = false;
 
@@ -98,11 +112,11 @@
        
         if (searchFilter != null && searchFilter != "")
         {
-            await EventSearcherValue.InvokeAsync(searchFilter);
+            await EventSearch.InvokeAsync(searchFilter);
         }
         else
         {
-            await EventSearcherValue.InvokeAsync("all");
+            await EventSearch.InvokeAsync("all");
         }
         backgroundSelection = "white";
         colorSelection = "black";

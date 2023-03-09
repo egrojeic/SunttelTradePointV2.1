@@ -1,0 +1,25 @@
+﻿@page "/SelectorTesting"
+@inject TransactionalItemsService transactionalService;
+
+
+<h3>SelectorTesting</h3>
+
+<CustomSelector 
+    datasourceId="TypeOfConcept"  
+    bindingSourceList="@typeOfConcepts">
+
+</CustomSelector>
+@code {
+
+    List<AtomConcept> typeOfConcepts;
+    TransactionalItem transactionalItem;
+
+
+    override protected async Task OnInitializedAsync()
+    {
+        var lstTypeOfConceptTemporal = await transactionalService.GetTransactionalItemTypes("TypeOfConcept"); ;
+        transactionalItem = new TransactionalItem();
+    }
+
+
+}

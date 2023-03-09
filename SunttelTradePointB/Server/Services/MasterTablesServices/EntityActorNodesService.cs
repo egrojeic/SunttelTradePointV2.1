@@ -1086,5 +1086,36 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
             return (true, skinImage, null);
         }
+
+
+        /// <summary>
+        /// Retrieves the associated entity of a user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="userIdToQuery"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, (string entityId, string skinImage), string? ErrorDescription)> GetEntityActorByUserId(string userId, string ipAdress, string userIdToQuery)
+        {
+            var filter = Builders<EntityActor>.Filter.Eq("SunttelUserId", userIdToQuery);
+
+            var project = Builders<EntityActor>.Projection
+                .Include("Name")
+                .Include("SkinImageName");
+
+
+            // update the matching documents in the collection
+            var entityActorResponse = await _entityActorsCollection.Find(filter).FirstOrDefaultAsync();
+
+            if(entityActorResponse != null)
+            {
+                return (true, (entityActorResponse.Id, entityActorResponse.SkinImageName), null);
+            }
+            else
+            {
+                return (false, (null,null), "Entity NOT Found");
+            }
+            
+        }
     }
 }

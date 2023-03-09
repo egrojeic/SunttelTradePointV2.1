@@ -115,6 +115,11 @@
 
 
 @code {
+
+    [Parameter]
+    public Address? address { get; set; } = null;
+
+
     [Parameter]
     public Address? oldAddress { get; set; } = null;
     [Parameter]
@@ -158,7 +163,6 @@
     bool viewControlCity = false;
     bool postBack = true;
 
-    Address address = new Address();
     public City city = new City();
     public GeoRegion geo = new GeoRegion();
     public Country country1 = new Country();
@@ -255,7 +259,7 @@
 
     private async Task GetFilteredCities(GeoRegion geoRegion, string filterRegions = "")
     {
-        citiesList = await geoPlaces.GetCities(geoRegion.Id, filterRegions);
+        citiesList = await geoPlaces.GetCities(geoRegion.Id, filterRegions, true);
         if (citiesList != null && citiesList.Count() > 0) _filterView = 2;
         StateHasChanged();
     }
@@ -287,6 +291,8 @@
         if (args.ItemData != null)
         {
             city = args.ItemData != null ? args.ItemData : new();
+
+            address.CityAddress = city;
             actorsNodeService.NewCity(args.ItemData);
             actorsNodeService.NewEntityActorAddress(address);
             SetEventAddress();
@@ -333,6 +339,13 @@
         if (SearcherValueMode == "City")
         {
             city = citiesList.Where(s => s.Id == SelectionId.Trim()).FirstOrDefault();
+
+            if (city != null)
+            {
+                address.CityAddressRef = city.Id;
+                address.CityAddress = city;
+            }
+            
 
         }
 

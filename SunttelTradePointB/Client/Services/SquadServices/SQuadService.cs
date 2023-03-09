@@ -19,9 +19,9 @@ namespace SunttelTradePointB.Client.Services.SquadServices
         public async Task<Squad> SquadInfo()
         {
             var result = await _httpClient.GetFromJsonAsync<Squad>("api/Squad");
-#pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo.
+
             return result;
-#pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo.
+
         }
 
         public async Task<List<SystemTool>> SystemToolsByUser(Guid userId)

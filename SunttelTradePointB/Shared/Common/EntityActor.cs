@@ -175,7 +175,7 @@ namespace SunttelTradePointB.Shared.Common
         {
          
             this.Identifications = new List<IdentificationEntity>();
-           
+            this.InvoicingAddress = new Address();
             this.AddressList = new List<Address>();
             this.ElectronicAddresses = new List<ElectronicAddress>();
             this.EntitiesRelationShips = new List<EntitiesCommercialRelationShip>();

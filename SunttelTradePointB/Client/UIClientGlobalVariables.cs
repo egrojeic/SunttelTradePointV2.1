@@ -12,5 +12,16 @@
         public static string UserCountryId { get; set; } = "";
         public static string UserLanguage { get; set; } = "";
 
+
+        static string _pathEntityImages = "/uploads/entityImages";
+        static string _pathTransactionalItemsImages = "uploads/transactionalItemsImages";
+
+        public static string PathEntityImages { 
+            get { return _pathEntityImages; } 
+            set { _pathEntityImages = value; } 
+        } 
+        public static string PathTransactionalItemsImages { get; set; } = "/uploads/transactionalItemsImages";
+
+
     }
 }

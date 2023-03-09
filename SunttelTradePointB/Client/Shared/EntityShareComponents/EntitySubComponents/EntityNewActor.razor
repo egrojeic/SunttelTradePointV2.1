@@ -1,4 +1,5 @@
 ﻿
+@using SunttelTradePointB.Client.Models;
 @using Syncfusion.Blazor.Cards
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.DropDowns
@@ -39,19 +40,19 @@
                         <input type="text" class="form-control" id="sunttelUserId" @bind-value="EntityNode.SunttelUserId" />
                     </div>
 
-                    <AddressComponent></AddressComponent>
+                    <AddressComponent address="EntityNode.InvoicingAddress"></AddressComponent>
 
                     <div class="form-group">
-                        <label for="eMailAddress">Password*</label>
-                        <input type="password" class="form-control" id="eMailAddress" @bind-value="EntityNode.EMailAddress" />
+                        <label for="password1">Password*</label>
+                        <input type="text" class="form-control" id="password1" @bind-value="EntityNode.EMailAddress" />
                     </div>
 
                     <div class="form-group">
                         <label for="sunttelUserId">Confirm Password*</label>
-                        <input type="password" class="form-control" id="sunttelUserId" @bind-value="EntityNode.SunttelUserId" />
+                        <input type="password" class="form-control" id="sunttelUserId" @bind-value="passwordNewUser" />
                     </div>
 
-                    <button type="submit" class="btn btn-primary py-2">Save</button>
+                    <button type="submit" class="btn btn-primary py-2" @onclick="SaveEntity">Save</button>
 
                 </CardContent>
             </SfCard>
@@ -62,6 +63,10 @@
 
 
 @code {
+    [Parameter]
+    public EventCallback<NewUserResponse> EntitySaved { get; set; }
+
+
     public EntityActor? currentEntityActor { get; set; }
     EntityActor EntityNode = new EntityActor();
     [Parameter]
@@ -76,6 +81,9 @@
 
     private string userId { get; set; } = "";
     private string ipAddress { get; set; } = "";
+
+    private string passwordNewUser { get; set; } = "";
+
 
     SfChip? referChip;
     EntityRoleSelector? entityRoleSelector;
@@ -138,6 +146,22 @@
 
         await GetRoles();
         await Refresh();
+    }
+
+
+
+    async Task SaveEntity()
+    {
+        var response = await actorsNodeServive.SaveEntity("", EntityNode);
+
+        NewUserResponse newUserResponse = new NewUserResponse
+        {
+                EntityId = response.EntityId,
+                UserName = EntityNode.SunttelUserId,
+                Password = passwordNewUser
+        };
+        await EntitySaved.InvokeAsync(newUserResponse);
+
     }
 
     async Task CreateEntityNodeFace()

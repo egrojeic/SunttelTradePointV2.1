@@ -143,3 +143,16 @@ align-content:center;
     align-items: start;
 
 }
+
+
+#EntityImage {
+    width: 110px;
+    height: 110px;
+    -webkit-border-radius: 100px;
+    -moz-border-radius: 100px;
+    border-radius: 100px;
+    margin: -10px;
+    border: 4px solid #f7f7f7;
+}
+
+

@@ -367,7 +367,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveEntity")]
-        public async Task<IActionResult> SaveEntity(string userId, string ipAdress, EntityActor entity, string? entityActorId)
+        public async Task<IActionResult> SaveEntity(string userId, string ipAdress, EntityActor entity)
         {
             var response = await _entityNodes.SaveEntity(userId, ipAdress, entity);
 

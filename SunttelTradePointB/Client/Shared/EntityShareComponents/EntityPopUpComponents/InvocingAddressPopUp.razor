@@ -280,8 +280,8 @@
         if (Id != null)
         {
             var resul = await actorsNodeServive.SaveEntity(entityId, entityActor);
-            if (resul) Msg("Saved");
-            if (!resul) Msg("No save");
+            if (resul.IsSuccess) Msg("Saved");
+            if (!resul.IsSuccess) Msg("No save");
         }
         else
         {

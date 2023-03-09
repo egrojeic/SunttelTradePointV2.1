@@ -85,7 +85,7 @@
 
             var file = e.File;
             string fileName = Guid.NewGuid().ToString();
-            entityImage = "/" + fileName + ".png";
+            entityImage = $"{fileName}.png";
 
             var resizedFile = await file.RequestImageFileAsync("image/png", 300, 300);
 
@@ -95,7 +95,7 @@
                 content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
                 content.Add(new StreamContent(ms, Convert.ToInt32(resizedFile.Size)), "photo", file.Name);
                 content.Add(new StringContent("1"), "uploadingFileType");
-                content.Add(new StringContent(fileName), "photoName");
+                content.Add(new StringContent(entityImage), "photoName");
 
                 await actorsNodeService.UploadFiles(content);
                 fileUpload = content;

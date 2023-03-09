@@ -56,7 +56,7 @@ namespace SunttelTradePointB.Server.Controllers
         {
             string rootpath = AppDomain.CurrentDomain.BaseDirectory;
 
-            var strHostFolder = rootpath.Replace("\\Server\\bin\\Debug\\net6.0\\", "\\Client\\wwwroot\\uploads\\");
+            var strHostFolder = rootpath.Replace("\\Server\\bin\\Debug\\net7.0\\", "\\Client\\wwwroot\\uploads\\");
 
             var formCollection = await Request.ReadFormAsync();
             
@@ -98,7 +98,7 @@ namespace SunttelTradePointB.Server.Controllers
                 Directory.CreateDirectory(uploadPath);
             }
 
-            var fileName = photoName == "" ?Guid.NewGuid().ToString(): photoName + Path.GetExtension(photo.FileName);
+            var fileName = photoName == "" ?Guid.NewGuid().ToString(): photoName;
 
 
             var filePath = Path.Combine(uploadPath, fileName);

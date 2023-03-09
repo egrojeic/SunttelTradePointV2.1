@@ -17,7 +17,9 @@ namespace SunttelTradePointB.Shared
             FromSelector = 3,
             FromSelectorWithNew = 4,
             Details = 5,
-            Address = 6
+            Address = 6,
+            LogAuditory = 7,
+            Groups = 8
         }
         public EditModes EditMode { get; set; }
 

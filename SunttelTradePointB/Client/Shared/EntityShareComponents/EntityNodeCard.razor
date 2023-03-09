@@ -164,7 +164,9 @@
                             <div class="img-ico">
                                 <div class="col-sm">
 
-                                    <img src="@(imageRute!=""? actorsNodeServive.Host+imageRute:"/avatar_male_man_person_user_icon.png")" alt="imagen" width="80px" height="90px">
+                                    @*<img src="@(imageRute!=""? actorsNodeServive.Host+imageRute:"/avatar_male_man_person_user_icon.png")" alt="imagen" width="80px" height="90px">*@
+
+                                    <img src="@(imageRute!=""? imageRute:"/avatar_male_man_person_user_icon.png")" alt="imagen" id="EntityImage">
 
                                 </div>
                                 <div class="col">
@@ -333,7 +335,7 @@
     public string lblInvoicingAddress = "";
 
     private string imageRute { get; set; } = "";
-    private string imageDefault = "/avatar_male_man_person_user_icon.png";
+    private string imageDefault = $"/avatar_male_man_person_user_icon.png";
 
     EntityRole role = new EntityRole();
     List<EntityRole>? entityRoles;
@@ -441,7 +443,10 @@
         }
         else
         {
-            imageRute = EntityNode.SkinImageName;
+            var pathimages = UIClientGlobalVariables.PathEntityImages;
+            string fullPath = Path.Combine(pathimages, EntityNode.SkinImageName.Replace("/", ""));
+            imageRute =  fullPath;
+
         }
         StateHasChanged();
     }
@@ -502,7 +507,7 @@
             EntityNode.DefaultEntityRole = role;
             EntityNode.Groups = FilterListGroups;
             var result = await actorsNodeServive.SaveEntity(Id, EntityNode);
-            if (result)
+            if (result.IsSuccess)
             {
                 message = "Entity Actor Saved";
                 visible = true;
@@ -522,7 +527,7 @@
             EntityNode.Name = "New " + EntityNode.Name;
             EntityNode.Id = null;
             var result = await actorsNodeServive.SaveEntity(null, EntityNode);
-            if (result)
+            if (result.IsSuccess)
             {
                 message = "New Entity Actor Saved As: " + EntityNode.Name;
                 visible = true;

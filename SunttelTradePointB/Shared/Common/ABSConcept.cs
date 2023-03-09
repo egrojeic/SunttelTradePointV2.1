@@ -54,6 +54,8 @@ namespace SunttelTradePointB.Shared.Common
         [BsonIgnoreIfNull]
         public string Name { get; set; }
 
+
+        [ObjectPropertyAttributes(ObjectPropertyAttributes.EditModes.LogAuditory)]
         [BsonIgnoreIfNull]
         public InfoAuditRecord AuditRecord { get; set; }
      
@@ -85,6 +87,7 @@ namespace SunttelTradePointB.Shared.Common
         [BsonIgnoreIfNull]
         public string SkinImageName { get; set; }
 
+        [ObjectPropertyAttributes(ObjectPropertyAttributes.EditModes.Groups)]
         [BsonIgnoreIfNull]
         public List<ConceptGroup> Groups{ get; set; }
 
@@ -97,7 +100,7 @@ namespace SunttelTradePointB.Shared.Common
         public ConceptType? TypeOfConcept { get; set; }
 
         [BsonRepresentation(BsonType.String)]
-        public string FullClassName
+        public virtual string FullClassName
         {
             get
             {

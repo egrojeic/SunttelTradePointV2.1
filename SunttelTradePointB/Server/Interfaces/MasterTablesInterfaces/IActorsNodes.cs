@@ -34,6 +34,16 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
 
 
         /// <summary>
+        /// Retrieves the Entity Actor by the user Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="userIdToQuery"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, (string entityId, string skinImage), string? ErrorDescription)> GetEntityActorByUserId(string userId, string ipAdress, string userIdToQuery);
+
+
+        /// <summary>
         /// Retrieves any list of details of an Entity from an array in the collection
         /// </summary>
         /// <typeparam name="T"></typeparam>

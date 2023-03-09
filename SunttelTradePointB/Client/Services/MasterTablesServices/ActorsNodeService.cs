@@ -1,4 +1,5 @@
 ﻿using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
+using SunttelTradePointB.Client.Models;
 using SunttelTradePointB.Client.Shared.EntityShareComponents.EntitySubComponents;
 using SunttelTradePointB.Shared.Common;
 using System.Net;
@@ -603,20 +604,36 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         /// Save EntityAddress
         ///
 
-        public async Task<bool> SaveEntity(string? EntityActorId, EntityActor entityActor)
+        public async Task<(bool IsSuccess, string? EntityId, string? error)> SaveEntity(string? EntityActorId, EntityActor entityActor)
         {
             EntityActorId = EntityActorId != null ? EntityActorId : "";
             var userId = UIClientGlobalVariables.UserId;
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                var result = await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveEntity?userId={userId}&ipAdress={ipAddress}&entityActorId={EntityActorId}", entityActor);
-                return result.IsSuccessStatusCode;
+                userId = userId=="" ? "UX" : userId;
+                var result = await _httpClient.PostAsJsonAsync<EntityActor>($"/api/EntityNodesMaintenance/SaveEntity?userId={userId}&ipAdress={ipAddress}", entityActor);
+                
+                if(result.Content != null)
+                {
+                    EntityActor item = await result.Content.ReadFromJsonAsync<EntityActor>();
+
+                   
+                    return (result.IsSuccessStatusCode, item.Id, null);
+
+                }
+                else
+                {
+                    return (false, null, "Saving Error");
+                }
+                
+
+               
             }
             catch (Exception ex)
             {
                 string errMessage = ex.Message;
-                return false;
+                return (false, null, errMessage);
             }
         }
 

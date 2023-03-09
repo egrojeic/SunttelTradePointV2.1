@@ -1,5 +1,14 @@
 ﻿<h3>AddressSelector</h3>
 
 @code {
+    [Parameter]
+    public string id { get; set; } = "";
+    [Parameter]
+    public string name { get; set; } = "";
 
+    [Parameter]
+    public Address? address { get; set; }
+
+    [Parameter]
+    public EventCallback<string> addressChanged { get; set; }
 }

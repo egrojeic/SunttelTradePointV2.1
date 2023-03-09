@@ -76,14 +76,24 @@
 
         if (!(await AuthenticationState).User.Identity.IsAuthenticated)
         {
+
             navigationManager.NavigateTo("/login");
         }
         else {
 
+            //if (user.HasClaim(c => c.Type == "CustomProperty"))
+            //{
+            //    customProperty = user.FindFirst(c => c.Type == "CustomProperty").Value;
+            //}
+            //else
+            //{
+            //    customProperty = "Custom property not found";
+            //}
+
 
             UIClientGlobalVariables.UserName = user.Identity.Name;
             UIClientGlobalVariables.UserId = user.FindFirst(ClaimTypes.NameIdentifier).Value;
-
+           
             StateHasChanged();
         }
 
