@@ -1,4 +1,5 @@
 ﻿using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.Communications;
 
 namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
 {
@@ -53,11 +54,39 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<List<T>> GetEntityDetailsOf<T>(string entityActorId, EntityDetailsSection entityDetailsSection);
 
+        /// <summary>
+        /// Retrives the different related concepts to an Channel Communications Group
+        /// </summary>
+        /// <typeparam name="ChannelCommunicationsGroup"></typeparam>
+        /// <param name="channelCommunicationsGroupId"></param>
+        /// <returns></returns>
+        Task<ChannelCommunicationsGroup> GetChannelCommunicationsGroupById(string  channelCommunicationsGroupId);
+
+        /// <summary>
+        /// Retrives the different related concepts to an Channel Communications Group 
+        /// </summary>     
+        ///  No parameter
+        /// <returns></returns>
+        Task<List<ChannelCommunicationsGroup>> GetChannelCommunicationsGroups();
+
 
         /// <summary>
         /// Returns the list of possible Entity Roles
         /// </summary>
         /// <returns></returns>
         Task<List<EntityRole>> EntityRolesList();
+
+
+
+        /// <summary>
+        /// Retrives the different related concepts to an ChannelCommunicationsGroup
+        /// </summary>
+        /// <typeparam name="ChannelCommunicationsGroup"></typeparam>     
+        /// <param name="channelCommunicationsGroup"></param>
+        /// <returns></returns>
+        Task<ChannelCommunicationsGroup> SaveChannelCommunicationsGroup(ChannelCommunicationsGroup channelCommunicationsGroup);
+
+        
+
     }
 }

@@ -50,13 +50,18 @@
 
 
 @code {
-    //private IFileListEntry selectedFile;
+    [Parameter]
+    public EventCallback<string> EventCallbackNameImg { get; set; }
+    [Parameter]
+    public EventCallback<string> EventCallbackOpenClosedPage { get; set; }
+    [Parameter]
+    public bool Component { get; set; } = false;
     [Parameter]
     public string Id { get; set; }
     [Parameter]
     public string Page { get; set; }
 
-    
+
     public bool visible = false;
 
     private ElementReference previewImageElem;
@@ -97,7 +102,7 @@
                 content.Add(new StringContent("1"), "uploadingFileType");
                 content.Add(new StringContent(entityImage), "photoName");
 
-                await actorsNodeService.UploadFiles(content);
+                var resul = await actorsNodeService.UploadFiles(content);
                 fileUpload = content;
             }
 
@@ -112,8 +117,14 @@
 
         if(fileUpload != null)
         {
-            await actorsNodeService.SaveEntitySkinImage(Id, entityImage);
-            entityImage = "";
+            var resul = await actorsNodeService.UploadFiles(fileUpload);
+            if (resul !=null && resul !="")
+            {
+                await actorsNodeService.SaveEntitySkinImage(Id, entityImage);
+                if (Component == true) EventCallbackNameImg.InvokeAsync(entityImage+".png");
+                entityImage = "";
+            }          
+         
         }
         imgUrl = "/images/defaultImage.png";
         StateHasChanged();
@@ -121,8 +132,8 @@
 
     public void GoBack()
     {
-        if (Page==null || Page=="") navigationManager.NavigateTo($"/Actors/{Id}");
-        if (Page != null && Page != "") navigationManager.NavigateTo($"/{Page}/{Id}");
+        if (Component == false) navigationManager.NavigateTo($"/Actors/{Id}");
+        if (Component == true) EventCallbackOpenClosedPage.InvokeAsync(Page);
     }
 
 

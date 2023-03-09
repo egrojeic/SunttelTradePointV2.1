@@ -22,27 +22,31 @@
 
 <div id ="ChatConatainerDiv">
     
-    <ChatUpperControl NumerCount="@NumberOfConnectedUsers">
+    <ChatUpperControl NumerCount="@NumberOfConnectedUsers"
+                      EventCallbackFilter="EventCallbackFilter"
+                      communicationsMessages="communicationsMessages">
 
     </ChatUpperControl>
 
     @if (newPage == "newGroup")
     {
-        <ChatGroupManager EventCallNewPage="SetNewPage"></ChatGroupManager>
+        <ChatGroupManager EventCallNewPage="SetNewPage"  ></ChatGroupManager>
     }
     else
     {
         <div class="col-md-12">
             <div class="@modeMenu">
-                <div style="background-color:gray;">
+                <div style="background-color:white;">
                     <ChatMenuGroup EventCallModeMenu="SetModeMenu" modeMenu="@modeMenu" EventCallNewPage="SetNewPage"></ChatMenuGroup>
                 </div>
                 <div>
-                    <h1>chat</h1>
+                    <ChatMessage communicationsMessages="communicationsMessages">
+
+                   </ChatMessage>
                 </div>
             </div>
         </div>
-        <ChatMessageWriter @ref="refChatMessageWriter">
+        <ChatMessageWriter @ref="refChatMessageWriter" TextMessageChanged="TextWriteMessageChanged">
         </ChatMessageWriter>
 
     }
@@ -55,14 +59,45 @@
     ChatMenuGroup? chatMenuGroup;
     string modeMenu { get; set; } = "grid-columns-2-chat-min";
 
+    #region write
+    public List<CommunicationsMessage> communicationsMessages { get; set; } = new();
+    #endregion write
+
     private HubConnection? hubConnection;
     int NumberOfConnectedUsers = 0;
 
     string newPage = "";
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+    }  
     protected override void OnAfterRender(bool firstRender)
     {
         if (chatMenuGroup!=null) chatMenuGroup.Reload();
     }
+
+
+    #region write
+
+    public void TextWriteMessageChanged(CommunicationsMessage communicationsMessage)
+    {
+        communicationsMessages.Add(communicationsMessage);
+        StateHasChanged();
+    }
+    #endregion write
+
+    #region Filter
+
+    public void EventCallbackFilter(List<CommunicationsMessage> communicationsMessage)
+    {
+        this.communicationsMessages = communicationsMessage;
+        StateHasChanged();
+    }
+
+    #endregion Filter
 
     public void SetModeMenu(string _modeMenu)
     {

@@ -1,4 +1,5 @@
 ﻿@using Syncfusion.Blazor.Inputs
+@using SunttelTradePointB.Shared.Communications
 
 
 
@@ -6,25 +7,85 @@
 <div class="content">
     <div class="sub-content">
         <div class="content-input">
-            <textarea @bind="@textMsg" name="Text1" class="input-text" rows="5"></textarea>
+            <SfTextBox @ref="input" Placeholder="Enter an address"
+                       Enabled="true"                      
+                       @bind-Value="communicationsMessage.Message"
+                       @onkeypress="@KeyPressed"
+                       Multiline="true"
+                       
+                       CssClass="input-text"></SfTextBox>
+
         </div>
-        <div  class="content-img">
-            <img src="/images//send.png" />
+        <div class="content-img">
+            <img @onclick="SendMsg" src="/images//send.png" />
         </div>
 
     </div>
 </div>
 
 
-
-
-
-
-
 @code {
     [Parameter]
-    public EventCallback<string> TextMessageChanged { get; set; }
+    public EventCallback<CommunicationsMessage> TextMessageChanged { get; set; }
+    [Parameter]
+    public List<CommunicationsMessage> communicationsMessages { get; set; } = new();
+    public CommunicationsMessage communicationsMessage { get; set; } = new();
 
-    public string? textMsg { get; set; }
+    SfTextBox? input;
+    bool modeEnter = false;
+    bool onWrite = true;
 
+    protected override void OnParametersSet()
+    {
+        var f = communicationsMessage;
+    }
+
+    protected override void OnInitialized()
+    {
+        Loading();
+    }
+
+
+    public void SendMsg()
+    {
+        Loading();
+        if (onWrite && communicationsMessage.Message != null && communicationsMessage.Message !="")
+        {
+            onWrite = false;
+            communicationsMessage.MessageTypeId = CommunicationsMessageType.ChatMessage;
+            communicationsMessage.SenderEntity.Id = UIClientGlobalVariables.EntityUserId != null ? UIClientGlobalVariables.EntityUserId : "1";
+
+            communicationsMessages.Add(communicationsMessage);
+            TextMessageChanged.InvokeAsync(communicationsMessage);
+            communicationsMessage = new();
+            StateHasChanged();
+            onWrite = true;
+        }
+    }
+
+
+    public void KeyPressed(KeyboardEventArgs args)
+    {
+        if (args.Key == " ") modeEnter = true;
+
+
+        if (args.Key == "Enter" )
+        {
+
+            communicationsMessages.Add(communicationsMessage);
+            TextMessageChanged.InvokeAsync(communicationsMessage);
+            //  communicationsMessage = new();
+
+            modeEnter = false;
+        }
+
+    }
+
+
+
+    private void Loading()
+    {
+        if (communicationsMessages == null) communicationsMessages = new();
+        if (communicationsMessage.SenderEntity == null) communicationsMessage.SenderEntity = new();
+    }
 }

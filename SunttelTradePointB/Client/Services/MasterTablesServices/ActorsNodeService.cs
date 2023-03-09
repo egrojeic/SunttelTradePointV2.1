@@ -1,7 +1,10 @@
-﻿using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
+﻿using MongoDB.Driver.Linq;
+using Radzen;
+using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Client.Models;
 using SunttelTradePointB.Client.Shared.EntityShareComponents.EntitySubComponents;
 using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.Communications;
 using System.Net;
 using System.Net.Http.Json;
 using System.Net.WebSockets;
@@ -20,6 +23,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         public City? tempCity { get; set; }
         public GeoRegion tempRegion { get; set; }
         public Country tempCountry { get; set; }
+        public string SkinImage {
+            get;
+            set; }
 
         public string Host { get { return "https://localhost:7186/uploads/entityImages"; } }
 
@@ -49,18 +55,14 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                     return response;
                 }
                 else {
-#pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo.
                     return null;
-#pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo.
                 }
 
             }
             catch (Exception ex)
             {
                 string errMessage = ex.Message;
-#pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo.
                 return null;
-#pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo.
             }
         }
 
@@ -77,12 +79,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             {
                 if (ipAddress == "")
                     ipAddress = "127.0.0.0";
-#pragma warning disable CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
                 List<Address>  entityNodesAddressList = await _httpClient.GetFromJsonAsync<List<Address>>($"/api/EntityNodesMaintenance/GetEntityDetailsAddressList?userId={userId}&ipAdress={ipAddress}&EntityId={entityActorId}");
-#pragma warning restore CS8600 // Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL
-#pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo.
                 return entityNodesAddressList;
-#pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo.
 
                 //if (entityNodesList != null)
                 //    return entityNodesList.FindAll(c => c.EntityFace.Name.Contains(namteToFind)).ToList();
@@ -92,9 +90,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             catch (Exception ex)
             {
                 string errMessage = ex.Message;
-#pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo.
                 return null;
-#pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo.
             }
         }
 
@@ -141,9 +137,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         /// <returns></returns>
         public async Task<List<T>> GetEntityDetailsOf<T>(string entityActorId, EntityDetailsSection entityDetailsSection)
         {
-#pragma warning disable CS0472 // El resultado de la expresión siempre es 'true' porque un valor del tipo 'EntityDetailsSection' nunca es igual a 'NULL' de tipo 'EntityDetailsSection?'
             string patternToFind = entityDetailsSection != null ? entityDetailsSection.ToString() : "";
-#pragma warning restore CS0472 // El resultado de la expresión siempre es 'true' porque un valor del tipo 'EntityDetailsSection' nunca es igual a 'NULL' de tipo 'EntityDetailsSection?'
             var userId = UIClientGlobalVariables.UserId;
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
@@ -151,9 +145,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 if (ipAddress == "")
                     ipAddress = "127.0.0.0";
                 var entityNodesList = await _httpClient.GetFromJsonAsync<List<T>>($"api/EntityNodesMaintenance/GetEntityDetails{entityDetailsSection.ToString()}?filterName={patternToFind}");
-#pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo.
                 return entityNodesList;
-#pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo.
 
                 //if (entityNodesList != null)
                 //    return entityNodesList.FindAll(c => c.EntityFace.Name.Contains(namteToFind)).ToList();
@@ -163,9 +155,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             catch (Exception ex)
             {
                 string errMessage = ex.Message;
-#pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo.
                 return null;
-#pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo.
             }
         }
 
@@ -584,6 +574,41 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
+
+        public async Task<ChannelCommunicationsGroup> GetChannelCommunicationsGroupById(string channelCommunicationsGroupId)
+        {
+            var userId = UIClientGlobalVariables.UserId;
+            var ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+                var list = await _httpClient.GetFromJsonAsync<ChannelCommunicationsGroup>($"api/CommunicationsManagement/GetChannelCommunicationsGroupById?userId={userId}&ipAdress={ipAddress}&channelCommunicationsGroupId={channelCommunicationsGroupId}");
+                return list;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<List<ChannelCommunicationsGroup>> GetChannelCommunicationsGroups()
+        {
+            var userId = UIClientGlobalVariables.UserId;
+            var ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+                var list = await _httpClient.GetFromJsonAsync<List<ChannelCommunicationsGroup>>($"api/CommunicationsManagement/GetChannelCommunicationsGroups?userId={userId}&ipAdress={ipAddress}");
+                // list = list.Where(s => s.Owner.Id == UIClientGlobalVariables.UserId).ToList();
+                return  list;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+
         public async Task<PalletType> GetPalleTypeById(string palletTypeId)
         {
             var userId = UIClientGlobalVariables.UserId;
@@ -676,6 +701,22 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             {
                 var result = await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveEntityGroup?userId={userId}&ipAdress={ipAddress}&entityGroupId={entityGroupId}", entityGroup);
                 return result.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                throw;
+            }
+        }
+
+        public async Task<ChannelCommunicationsGroup> SaveChannelCommunicationsGroup(ChannelCommunicationsGroup channelCommunicationsGroup)
+        {
+            var userId = UIClientGlobalVariables.UserId;
+            var ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+                var result = await _httpClient.PostAsJsonAsync<ChannelCommunicationsGroup>($"api/CommunicationsManagement/SaveChannelCommunicationsGroup?userId={userId}&ipAdress={ipAddress}", channelCommunicationsGroup);
+                return await result.Content.ReadFromJsonAsync<ChannelCommunicationsGroup>();
             }
             catch (Exception ex)
             {
@@ -826,9 +867,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         }
 
 
+       
+
 
         /// Temporal Object
-        
+
         public async Task<EntityActor> NewEntityActor(EntityActor entityActor)
         {
             try
@@ -918,5 +961,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         {
             throw new NotImplementedException();
         }
+
     }
 }

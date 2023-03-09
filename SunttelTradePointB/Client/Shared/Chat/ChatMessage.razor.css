@@ -1,2 +1,269 @@
-﻿body {
+﻿.content-msg {
+    background-color: white;
+    overflow-y: auto;
+    height: 405px;
+    padding-bottom: 100px;
+    padding: 0px 10px 0px 8px;
+    overflow: hidden;
+}
+
+.msg-mode-client-1 {
+    background-color: #0ea0b6;
+    box-shadow: 0px 0px 5px white;
+    width: 100%;
+    padding-left: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    padding-top: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 1px 2px 1px;
+    position: relative;
+}
+
+    .msg-mode-client-1 .content-ico {
+        display: flex;
+        flex-direction: row;
+        column-gap: 5px;
+        align-items: center;
+        justify-content: start;
+        margin-bottom: 5px;
+    }
+
+        .msg-mode-client-1 .content-ico p {
+            margin: 0px;
+            color: white;
+        }
+
+        .msg-mode-client-1 .content-ico .c-ico {
+            height: 35px;
+            width: 35px;
+            background-color: white;
+            border-radius: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2px;
+            box-shadow: -1px -1px 4px -1px black inset;
+        }
+
+        .msg-mode-client-1 .content-ico .hour-style {
+            margin-left: 10%;
+            text-align: center;
+            font-size: 10px;
+            color: #dfe4e6;
+        }
+
+        .msg-mode-client-1 .content-ico .c-ico img {
+            height: 25px;
+        }
+
+    .msg-mode-client-1 .text {
+        font-size: 15px;
+        color: white;
+        margin: 0px;
+        white-space: nowrap;
+    }
+
+
+    .msg-mode-client-1 .msg-menu {
+        height: 25px;
+        display: flex;
+        flex-direction: row;
+        justify-content: end;
+        width: 100%;
+    }
+
+        .msg-mode-client-1 .msg-menu img {
+            background-color: transparent;
+            box-shadow: 0px 0px 4px -1px white inset, 0px 0px 4px -1px gray;
+            border-radius: 5px;
+            background-color: #a4b5b7;
+            padding: 3px;
+            height: 25px;
+            margin-right: 10px;
+        }
+
+
+        .msg-mode-client-1 .msg-menu .content-msg-menu {
+            margin-right: 20px;
+        }
+
+            .msg-mode-client-1 .msg-menu .content-msg-menu .menu-view-1 {
+                background-color: #808080da;
+                padding: 5px;
+                border-radius: 5px 0px 20px 5px;
+                position: absolute;
+                right: 40px;
+                bottom: -35px;
+                box-shadow: 0px 0px 5px -1px;
+                transition-delay: 500ms;
+                display: none;
+            }
+
+          .msg-mode-client-1 .msg-menu .content-msg-menu:hover > div {
+           
+            display: block;
+       }
+
+        .msg-mode-client-1 .msg-menu .content-msg-menu div:hover {
+          
+            display: block;
+        }
+
+    .msg-mode-client-1 .label-color {
+        background-color: #00ff00;
+        height: 20px;
+        width: 80px;
+        transform: rotate(42deg);
+        position: absolute;
+        border-radius: 100px 100px 0px 0px;
+        box-shadow: 0px 0px 5px white inset, 0px 0px 2px 1px gray, 3px 0px 5px -2px inset gray, -3px 0px 5px -2px inset gray;
+        top: 11px;
+        right: -16px;
+    }
+
+    .msg-mode-client-1 .ico-menu-alert {
+        padding: 5px;
+        margin-left: 10px;
+        width: 30px;
+        border-radius: 5px;
+    }
+
+
+
+
+
+
+/*Cliente 2*/
+.msg-mode-client-2 {
+    background-color: #2561b1;
+    box-shadow: 0px 0px 5px white;
+    width: auto;
+    padding-right: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    padding-top: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 1px 2px 1px;
+    position:relative;
+}
+
+    .msg-mode-client-2 .content-ico {
+        display: flex;
+        flex-direction: row;
+        column-gap: 5px;
+        align-items: end;
+        justify-content: end;
+        margin-bottom: 5px;
+        width: 300px;
+        align-items: center;
+    }
+
+        .msg-mode-client-2 .content-ico p {
+            margin: 0px;
+            color: white;
+        }
+
+        .msg-mode-client-2 .content-ico .c-ico {
+            height: 35px;
+            width: 35px;
+            background-color: white;
+            border-radius: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2px;
+            box-shadow: -1px -1px 4px -1px black inset;
+        }
+
+        .msg-mode-client-2 .content-ico .hour-style {
+            margin-right: 10%;
+            text-align: center;
+            font-size: 10px;
+            color: #dfe4e6;
+        }
+
+        .msg-mode-client-2 .content-ico .c-ico img {
+            height: 25px;
+        }
+
+    .msg-mode-client-2 .text {
+        font-size: 15px;
+        color: white;
+        margin: 0px;
+        white-space: nowrap;
+    }
+
+
+    .msg-mode-client-2 .msg-menu {
+        height: 25px;
+        display: flex;
+        flex-direction: row;
+        justify-content: start;
+        width: 100%;
+    }
+
+        .msg-mode-client-2 .msg-menu img {
+            background-color: transparent;
+            box-shadow: 0px 0px 4px -1px white inset, 0px 0px 4px -1px gray;
+            border-radius: 5px;
+            background-color: #a4b5b7;
+            padding: 3px;
+            height: 25px;
+            margin-right: 10px;
+        }
+
+        .msg-mode-client-2 .msg-menu .content-msg-menu {
+            margin-right: 20px;
+            margin-left: 20px;
+            
+        }
+
+            .msg-mode-client-2 .msg-menu .content-msg-menu .menu-view-1 {
+                background-color: #808080da;
+                padding: 5px;
+                padding-left: 17px;
+                border-radius: 0px 10px 5px 5px;
+                position: absolute;
+                right: 0px;
+                bottom: 0px;
+                box-shadow: 0px 0px 5px -1px;
+                transition-delay: 500ms;
+                width: 140px;
+                bottom: -34px;
+                left: 28px;
+                display: none;
+            }
+
+.msg-mode-client-2 .msg-menu .content-msg-menu:hover > div {
+    display: block;
+}
+
+.msg-mode-client-2 .msg-menu .content-msg-menu div:hover {
+    display: block;
+}
+
+.msg-mode-client-2 .label-color {
+    background-color: #00ff00;
+    height: 20px;
+    width: 80px;
+    transform: rotate(-49deg);
+    position: absolute;
+    border-radius: 100px 100px 0px 0px;
+    box-shadow: 0px 0px 5px white inset, 0px 0px 2px 1px gray, 3px 0px 5px -2px inset gray, -3px 0px 5px -2px inset gray;
+    top: 16px;
+    left: -21px;
+}
+
+.msg-mode-client-2 .ico-menu-alert {
+    padding: 5px;
+    margin-left: 10px;
+    width: 30px;
+    border-radius: 5px;
 }
