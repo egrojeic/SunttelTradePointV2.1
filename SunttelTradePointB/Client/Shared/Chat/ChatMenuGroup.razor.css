@@ -7,21 +7,21 @@
     justify-content:start;
     align-items:center;
     row-gap: 5px;
-    padding: 0px 15px 0px 10px;
+    padding: 0px 15px 100px 10px;
     padding-top: 5px;
     box-shadow: -1px 0px 5px 1px white inset;
 }
 
 .group-max {
     background-color: #161616;
-    height: 410px;
+    height: 380px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
     justify-content: start;
     align-items: start;
     row-gap: 5px;
-    padding: 0px 15px 0px 10px;
+    padding: 0px 15px 100px 10px;
     padding-top: 5px;
     box-shadow: -1px 0px 5px 1px white inset;
 }
