@@ -64,7 +64,7 @@
         <div class="content-img">
             <a @onclick='()=>ClosedPage("addIco")'>
                 @if (entityActor == null) entityActor = new();
-                <img class="img" src="@( channelCommunicationsGroup.SkinImageName !=null ? actorsNodeServive.Host+ channelCommunicationsGroup.SkinImageName:"/images//ActorsIco.png")" />
+                <img class="img" src="@( channelCommunicationsGroup.SkinImageName !=null ? pathimages  + channelCommunicationsGroup.SkinImageName:"/images//ActorsIco.png")" />
             </a>
             <div> <label class="control-label col-md-12">@GetName("SkinImageName", new EntityNodeCommunications()): </label></div>
         </div>
@@ -120,10 +120,11 @@ else
     public string SearchValueMode = "";
     public int ParamCountResul = 0;
     public bool viewControlNodeCommunications = false;
-
+    protected string pathimages ="";
 
     protected override void OnInitialized()
     {
+        pathimages = UIClientGlobalVariables.PathEntityImages+"/";
         ListGridParticipant = new List<GridColumn>
         {
                new GridColumn() { Field=nameof(EntityActor.Name) ,  HeaderText = @GetName( "Name", new AtomConcept()) , Width="300" },
