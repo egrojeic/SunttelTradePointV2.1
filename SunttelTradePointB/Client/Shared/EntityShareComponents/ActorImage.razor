@@ -121,7 +121,7 @@
             if (resul !=null && resul !="")
             {
                 await actorsNodeService.SaveEntitySkinImage(Id, entityImage);
-                if (Component == true) EventCallbackNameImg.InvokeAsync(entityImage+".png");
+                if (Component == true) EventCallbackNameImg.InvokeAsync(entityImage);
                 entityImage = "";
             }          
          
