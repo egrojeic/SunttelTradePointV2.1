@@ -56,6 +56,8 @@ namespace SunttelTradePointB.Shared.Communications
         public string MessageIconName { get; set; }
 
 
+        public EntityNodeCommunications DestinyGroupChannel { get; set; }
+
         public string GetOriginName()
         {
             return SenderEntity.Name;
