@@ -1,19 +1,31 @@
 ﻿@using Syncfusion.Blazor.Inputs
 @using SunttelTradePointB.Shared.Communications
+@using Microsoft.AspNetCore.SignalR.Client
 
+@inject NavigationManager NavigationManager
+@inject CommunicationService communicationService
 
 
 
 <div class="content">
     <div class="sub-content">
         <div class="content-input">
-            <SfTextBox @ref="input" Placeholder="Enter an address"
-                       Enabled="true"                      
-                       @bind-Value="communicationsMessage.Message"
-                       @onkeypress="@KeyPressed"
+
+            <SfTextBox @ref="input" Placeholder="Type a message"
+                       Enabled="true"
                        Multiline="true"
-                       
-                       CssClass="input-text"></SfTextBox>
+                       @bind-Value="message"
+                       @oninput="OnTyping"
+                       CssClass="input-text">
+            </SfTextBox>
+
+
+            @* <SfTextBox @ref="input" Placeholder="Enter an address"
+            Enabled="true"
+            @bind-Value="communicationsMessage.Message"
+            @onkeypress="@KeyPressed"
+            Multiline="true"
+            CssClass="input-text"></SfTextBox>*@
 
         </div>
         <div class="content-img">
@@ -29,38 +41,120 @@
     public EventCallback<CommunicationsMessage> TextMessageChanged { get; set; }
     [Parameter]
     public List<CommunicationsMessage> communicationsMessages { get; set; } = new();
+    [Parameter]
+    public EventCallback<string> EventCallRefresh { get; set; }
+    [Parameter]
+    public ChannelCommunicationsGroup groupEnable { get; set; } = new();
     public CommunicationsMessage communicationsMessage { get; set; } = new();
 
     SfTextBox? input;
     bool modeEnter = false;
     bool onWrite = true;
 
+    string message = "";
+
     protected override void OnParametersSet()
     {
         var f = communicationsMessage;
     }
 
-    protected override void OnInitialized()
+
+
+
+
+    protected async override void OnInitialized()
     {
-        Loading();
+        if (communicationService.communicationsMessages == null) communicationService.communicationsMessages = new();
+        string n = UIClientGlobalVariables.UserSkinImage;
+        StateHasChanged();
+        onWrite = true;
+
+
     }
 
 
-    public void SendMsg()
+    private string Validationbj()
+    {
+        string msg = "";
+        if (communicationsMessage.Message == null && communicationsMessage.Message == "") msg = "Required message";
+        if (communicationsMessage.DestinyGroupChannel.Id == null && communicationsMessage.DestinyGroupChannel.Id == "") msg = "Required message";
+
+        return msg;
+    }
+
+
+
+
+
+    public async void SendMsg()
     {
         Loading();
-        if (onWrite && communicationsMessage.Message != null && communicationsMessage.Message !="")
+        string msg = Validationbj();
+        if (onWrite && message != null && message != "")
         {
             onWrite = false;
-            communicationsMessage.MessageTypeId = CommunicationsMessageType.ChatMessage;
-            communicationsMessage.SenderEntity.Id = UIClientGlobalVariables.EntityUserId != null ? UIClientGlobalVariables.EntityUserId : "1";
 
-            communicationsMessages.Add(communicationsMessage);
+            communicationsMessage = new CommunicationsMessage()
+                {
+                    MessageTypeId = CommunicationsMessageType.ChatMessage,
+                    Message = message,
+                    SenderEntity = new EntityNodeCommunications
+                    {
+                        Id = UIClientGlobalVariables.EntityUserId != null ? (UIClientGlobalVariables.EntityUserId != "" ? UIClientGlobalVariables.EntityUserId:"1"):"1",
+                        Name = UIClientGlobalVariables.UserName != null ? (UIClientGlobalVariables.UserName != "" ? UIClientGlobalVariables.UserName : "Name") : "Name",
+                        SkinImageName = UIClientGlobalVariables.UserSkinImage != null ? (UIClientGlobalVariables.UserSkinImage != "" ? UIClientGlobalVariables.UserSkinImage : null) : null
+                    },
+                    DestinyGroupChannel = new EntityNodeCommunications
+                    {
+                        Id = groupEnable.Id != null ? groupEnable.Id : "",
+                        SkinImageName = groupEnable.SkinImageName,
+                        Name = groupEnable.Name != null ? groupEnable.Name : "Group"
+                    }
+
+                };
             TextMessageChanged.InvokeAsync(communicationsMessage);
+
             communicationsMessage = new();
+
             StateHasChanged();
             onWrite = true;
+            message = "";
         }
+
+    }
+
+
+
+
+
+    private void OnTyping(Microsoft.AspNetCore.Components.ChangeEventArgs args)
+    {
+        string enter = "";
+        if (args != null)
+        {
+            message = args.Value.ToString();
+            enter = args.Value.ToString();
+            if (message.Contains("."))
+            {
+                if (message.Contains("\n".ToString()))
+                {
+                    SendMsg();
+                    message = enter = "";
+                }
+            }
+        }
+
+    }
+
+
+    private void OnKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+
+
+        }
+
     }
 
 
@@ -69,7 +163,7 @@
         if (args.Key == " ") modeEnter = true;
 
 
-        if (args.Key == "Enter" )
+        if (args.Key == "Enter")
         {
 
             communicationsMessages.Add(communicationsMessage);
@@ -85,7 +179,9 @@
 
     private void Loading()
     {
-        if (communicationsMessages == null) communicationsMessages = new();
+        //if (communicationsMessages == null) communicationsMessages = new();
         if (communicationsMessage.SenderEntity == null) communicationsMessage.SenderEntity = new();
+        if (communicationsMessage.DestinyGroupChannel == null) communicationsMessage.DestinyGroupChannel = new();
+        if (groupEnable == null) groupEnable = new();
     }
 }

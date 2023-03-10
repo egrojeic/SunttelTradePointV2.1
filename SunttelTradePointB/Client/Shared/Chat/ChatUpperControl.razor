@@ -10,19 +10,22 @@
         <label style="display:@(msg!=""?"block":"none")">@msg</label>
     </div>
     <SearchComponent @bind-FilterTextSet="@conceptFilter" ></SearchComponent>
+    <div class="container-reload">
+        <img @onclick="ReloadMsg" class="img-reload" style="display:@(filterStatus?"block":"none");" src="/images//reload.svg" />
+    </div>
     
 </div>
 
 
 @code {
     [Parameter]
-    public EventCallback<List<CommunicationsMessage>> EventCallbackFilter{ get; set; }
+    public EventCallback<string> EventCallbackFilter{ get; set; }
     [Parameter]
     public int NumerCount { get; set; }
     [Parameter]
     public List<CommunicationsMessage> communicationsMessages { get; set; } = new();
     string _filterItems = "";
-
+    bool filterStatus = false;
     string msg = "";
 
     public string? conceptFilter
@@ -36,20 +39,18 @@
     }
 
     private async Task LoadData()
-    {
-
-        var data =  communicationsMessages.Where(s => s.Message.ToLower().Contains(_filterItems.ToLower())).ToList();
-        msg = "Results found : " + data.Count();
-        if (data.Count() == 0) data = communicationsMessages;      
-        EventCallbackFilter.InvokeAsync(data);      
+    {      
+        filterStatus = true;
+        EventCallbackFilter.InvokeAsync(_filterItems);
         StateHasChanged();
 
     }
 
 
-    public void SearchFilter()
+    public void ReloadMsg()
     {
-        
+        filterStatus = false;
+        EventCallbackFilter.InvokeAsync("all");
     }
 
 }

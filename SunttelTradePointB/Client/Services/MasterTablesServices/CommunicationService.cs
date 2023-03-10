@@ -9,6 +9,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
     public class CommunicationService: ICommunicationChat
     {
         private readonly HttpClient _httpClient;
+        public List<CommunicationsMessage> communicationsMessages { get; set; } = new();
         public CommunicationService(HttpClient httpClient)
         {
             _httpClient = httpClient;
@@ -50,6 +51,27 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 }
                 var listGroups = await _httpClient.GetFromJsonAsync<List<ChannelCommunicationsGroup>>($"/api/CommunicationsManagement/GetChannelCommunicationsGroups?userId={userId}&ipAdress={ipAddress}");
                 return listGroups;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+
+        public async Task<List<CommunicationsMessage>> GetMessagesOfAnEntity(string startingDate, string filterCriteria)
+        {
+            var userId = UIClientGlobalVariables.UserId;
+            var ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+                if (ipAddress == null)
+                {
+                    ipAddress = "127.0.0.0";
+                }
+                var list = await _httpClient.GetFromJsonAsync<List<CommunicationsMessage>>($"api/CommunicationsManagement/GetMessagesOfAnEntity?userId={userId}&ipAdress={ipAddress}&startingDate={startingDate}&filterCriteria={filterCriteria}");
+                return list;
             }
             catch (Exception ex)
             {

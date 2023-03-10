@@ -1,4 +1,6 @@
 ﻿@using SunttelTradePointB.Shared.Communications
+@inject CommunicationService communicationService
+
 
 <div class="content-msg">
     @foreach (var msg in communicationsMessages)
@@ -23,13 +25,23 @@
                         }
                         <img style="background-color:@(GetColorMessageIconName(msg.MessageIconName))" class="ico-menu-alert" src="/images//exclamation.svg">
                     </div>
-                    <p class="text">@msg.Message</p>
+                    <div class="container-text-1">
+                        @{
+                            foreach (var item in @msg.Message.Split("\n".ToString()))
+                            {
+                                if (item != null)
+                                {
+                                    <p class="text">@item</p>
+                                }
+                            }
+                        }
+                    </div>
                     <div class="msg-menu">
                         <div class="content-msg-menu">
                             <img class="ico-menu" src="/images//responder.svg">
                             <img class="ico-menu" src="/images//responder.svg">
                             <img @onclick="()=>ViewModalMenu(1)" class="ico-menu-3" src="/images//Reaction.svg">
-                            <div class="menu-view-1" style="@(viewMenu1?"block":"none")" >
+                            <div class="menu-view-1" style="@(viewMenu1?"block":"none")">
                                 <img @onclick='()=>SetColorMessageIconName("warning")' class="ico-menu bg-warning" src="/images//exclamation.svg">
                                 <img @onclick='()=>SetColorMessageIconName("danger")' class="ico-menu bg-danger" src="/images//exclamation.svg">
                                 <img @onclick='()=>SetColorMessageIconName("success")' class="ico-menu bg-success" src="/images//exclamation.svg">
@@ -53,18 +65,31 @@
                         {
                             <p class="hour-style">@msg.SendDateTime</p>
                             <p class="name">@msg.SenderEntity?.Name</p>
-                            <div class="c-ico"><img src="@(msg.SenderEntity.SkinImageName!=null?msg.SenderEntity.SkinImageName: "/images/ActorIco.png")"></div>
+                            <div class="c-ico"><img src="@(msg.SenderEntity.SkinImageName!=null?pathimages+msg.SenderEntity.SkinImageName: "/images/ActorIco.png")"></div>
                         }
-                     
-                    </div>
-                    <p class="text">@msg.Message</p>
 
+                    </div>
+                    <div class="container-text-2">
+                        @{
+                            if (@msg.Message != null)
+                            {
+                                foreach (var item in @msg.Message.Split("\n".ToString()))
+                                {
+                                    if (item != null)
+                                    {
+                                        <p class="text">@item</p>
+                                    }
+                                }
+                            }
+                        }
+                    </div>
+                  
                     <div class="msg-menu">
                         <div class="content-msg-menu">
                             <img @onclick="()=>ViewModalMenu(1)" class="ico-menu-3" src="/images//Reaction.svg">
                             <img class="ico-menu" src="/images//responder.svg">
                             <img class="ico-menu" src="/images//responder.svg">
-                           
+
                             <div class="menu-view-1">
                                 <img @onclick='()=>SetColorMessageIconName("warning")' class="ico-menu bg-warning" src="/images//exclamation.svg">
                                 <img @onclick='()=>SetColorMessageIconName("danger")' class="ico-menu bg-danger" src="/images//exclamation.svg">
@@ -72,10 +97,7 @@
                             </div>
                         </div>
                     </div>
-
-                   
                 </div>
-
             }
 
         }
@@ -92,20 +114,33 @@
     public EventCallback<CommunicationsMessage> TextMessageChanged { get; set; }
     [Parameter]
     public List<CommunicationsMessage> communicationsMessages { get; set; } = new();
+
     string SenderEntityId = "1";
+    string pathimages = "";
     bool viewMenu1 = true;
+
+
+    protected override void OnInitialized()
+    {
+        LoadObj();
+        if (communicationsMessages != null) communicationsMessages = communicationsMessages.OrderByDescending(s => s.SendDateTime).ToList();
+        pathimages = UIClientGlobalVariables.PathEntityImages + "/";
+    }
+
+
     protected override void OnParametersSet()
     {
         StateHasChanged();
     }
 
-    public void  ViewModalMenu(int menu){
+    public void ViewModalMenu(int menu)
+    {
         viewMenu1 = false;
-        if (menu==1) viewMenu1  = true;
+        if (menu == 1) viewMenu1 = true;
         StateHasChanged();
     }
     public string GetColorMessageIconName(string item)
-    {        
+    {
         if (item == "warning") { return "#ff8040"; }
         if (item == "danger") { return "#ff0000"; }
         if (item == "success") { return "#80ff00"; }
@@ -119,4 +154,12 @@
         }
         StateHasChanged();
     }
+
+
+    public void LoadObj()
+    {
+        if (communicationsMessages == null) communicationsMessages = new();
+    }
+
 }
+
