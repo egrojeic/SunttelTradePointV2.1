@@ -37,17 +37,7 @@ namespace SunttelTradePointB.Server.Services.Communications
         }
 
 
-        /// <summary>
-        /// Retrieves a list of messages sent or received by an entity 
-        /// filtered by its date and an optional filter sentence
-        /// </summary>
-        /// <param name="messageReaction"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public Task<(bool IsSuccess, MessageReaction messageReaction, string? ErrorDescription)> AddMessageReaction(MessageReaction messageReaction)
-        {
-            throw new NotImplementedException();
-        }
+        
 
         /// <summary>
         /// Retrieves a particular communication channel group

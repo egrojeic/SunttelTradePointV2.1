@@ -32,13 +32,7 @@ namespace SunttelTradePointB.Server.Interfaces.Communications
 
 
 
-        /// <summary>
-        /// Adds a message reaction
-        /// </summary>
-        /// <param name="messageReaction"></param>
-        /// <returns></returns>
-        Task<(bool IsSuccess, MessageReaction messageReaction, string? ErrorDescription)> AddMessageReaction(MessageReaction messageReaction);
-
+      
         /// <summary>
         /// Saves (INSERT/UPDATE) a communication channel group
         /// </summary>
