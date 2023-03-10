@@ -1,12 +1,13 @@
 ﻿using SunttelTradePointB.Shared.Security;
-using SunttelTradePointB.Shared.Squad;
+using SunttelTradePointB.Shared.SquadsMgr;
+using SunttelTradePointB.Shared.SquadsMgr;
 
 namespace SunttelTradePointB.Server.Interfaces
 {
-    public interface ISquad
+    public interface ISquadBack
     {
 
-        Task<Squad> SquadInfo();
+        Task<List<SquadsByUser>> SquadInfo(string userId);
         Task<List<SystemTool>> SystemToolsByUser(Guid userId);
 
     }

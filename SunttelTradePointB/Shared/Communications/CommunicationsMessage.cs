@@ -38,6 +38,10 @@ namespace SunttelTradePointB.Shared.Communications
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
+
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string ParentMessageId { get; set; }
+
         public EntityNodeCommunications SenderEntity { get; set; }
         public DateTime SendDateTime { get; set; }
         public string Message { get; set; }
@@ -49,8 +53,7 @@ namespace SunttelTradePointB.Shared.Communications
         [BsonIgnoreIfNull]
         public List<RelatedConcept>? RelatedLinks { get; set; }
 
-        [BsonIgnoreIfNull]
-        public List<MessageReaction> Reactions { get; set; }
+        
 
         [BsonIgnoreIfNull]
         public string MessageIconName { get; set; }
@@ -141,13 +144,5 @@ namespace SunttelTradePointB.Shared.Communications
     }
 
 
-    public class MessageReaction {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
-        public EntityNodeCommunications ReceiverEntity { get; set; }
-        CommunicationsMessage ReactionMessage { get; set; }
-
-    }
 
 }

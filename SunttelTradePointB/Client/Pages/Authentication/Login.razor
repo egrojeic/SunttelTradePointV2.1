@@ -1,7 +1,7 @@
 ﻿@page "/login"
 @using SunttelTradePointB.Client.Services
 @using SunttelTradePointB.Shared.Security
-@using SunttelTradePointB.Shared.Squad
+@using SunttelTradePointB.Shared.SquadsMgr
 @layout AuthLayout
 @inject NavigationManager navigationManager
 @inject CustomStateProvider authStateProvider
@@ -14,7 +14,7 @@
 
     
     <div id="logingDivContainer">
-            <img src="/images/LogoSquad2U.png" id="imgLogoSplash" />
+            <img src="@pathLogo" id="imgLogoSplash" />
 
         <h1>Hey!</h1>
 
@@ -95,8 +95,7 @@ else
 
 @code {
     LoginRequest loginRequest { get; set; } = new LoginRequest();
-    Squad squd { get; set; } = new Squad();
-
+    
     string error { get; set; }
 
     string pathLogo { get; set; }
@@ -107,6 +106,10 @@ else
         try
         {
             await authStateProvider.Login(loginRequest);
+            var idUser = authStateProvider.GetCurrentUser().Id;
+
+
+          
             navigationManager.NavigateTo("");
         }
         catch (Exception ex)
@@ -117,12 +120,13 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        squd = await squadService.SquadInfo();
+        
 
         Thread.Sleep(1000);
-        pathLogo = $"/SkinImagesByAccount/{squd.ID.ToString()}.jpg";
 
-        await JS.InvokeVoidAsync("localStorage.setItem", "IMCL", pathLogo);
+        pathLogo = "/images/LogoSquad2U.png";
+
+        //await JS.InvokeVoidAsync("localStorage.setItem", "IMCL", pathLogo);
 
     }
 }

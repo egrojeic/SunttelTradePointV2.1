@@ -1,7 +1,8 @@
 ﻿
 using SunttelTradePointB.Client.Interfaces.SquadInterfaces;
 using SunttelTradePointB.Shared.Security;
-using SunttelTradePointB.Shared.Squad;
+using SunttelTradePointB.Shared.SquadsMgr;
+
 using System.Net.Http.Json;
 
 namespace SunttelTradePointB.Client.Services.SquadServices
@@ -16,9 +17,9 @@ namespace SunttelTradePointB.Client.Services.SquadServices
             _httpClient = httpClient;
 
         }
-        public async Task<Squad> SquadInfo()
+        public async Task<List<SquadsByUser>> SquadInfo(string userId)
         {
-            var result = await _httpClient.GetFromJsonAsync<Squad>("api/Squad");
+            var result = await _httpClient.GetFromJsonAsync<List<SquadsByUser>>($"api/squad/GetSquadInfo/{userId}");
 
             return result;
 

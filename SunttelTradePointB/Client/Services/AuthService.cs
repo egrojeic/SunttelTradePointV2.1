@@ -16,10 +16,18 @@ namespace SunttelTradePointB.Client.Services
 
         public async Task<CurrentUser> CurrentUserInfo()
         {
-            var result = await _httpClient.GetFromJsonAsync<CurrentUser>("api/auth/currentuserinfo");
-#pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo.
-            return result;
-#pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo.
+            try
+            {
+                var result = await _httpClient.GetFromJsonAsync<CurrentUser>("api/Auth/CurrentUserInfo");
+
+                return result;
+            }
+            catch(Exception ex)
+            {
+                var errDesc = ex.Message;
+                return null;
+            }
+            
         }
 
         public async Task Login(LoginRequest loginRequest)

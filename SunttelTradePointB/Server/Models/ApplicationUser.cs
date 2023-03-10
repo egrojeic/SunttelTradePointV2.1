@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SunttelTradePointB.Server.Models
+namespace SunttelTradePointB.Shared.Models
 {
     /// <summary>
     /// User class

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using SunttelTradePointB.Server.Models;
+using SunttelTradePointB.Shared.Models;
 
 namespace SunttelTradePointB.Server.Data
 {

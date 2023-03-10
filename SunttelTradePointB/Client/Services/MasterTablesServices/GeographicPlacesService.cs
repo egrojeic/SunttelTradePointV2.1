@@ -1,6 +1,6 @@
 ﻿using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Shared.Common;
-using SunttelTradePointB.Shared.Squad;
+using SunttelTradePointB.Shared.SquadsMgr;
 using System.Net.Http;
 using System.Net.Http.Json;
 

@@ -11,18 +11,18 @@ namespace SunttelTradePointB.Server.Controllers
     public class SquadController : ControllerBase
     {
 
-        ISquad _squad;
+        ISquadBack _squad;
 
-        public SquadController(ISquad squad)
+        public SquadController(ISquadBack squad)
         {
             _squad = squad;
         }
 
 
-        [HttpGet]
-        public async Task<IActionResult> GetSquadInfo()
+        [HttpGet("GetSquadInfo/{userId}")]
+        public async Task<IActionResult> GetSquadInfo(string userId)
         {
-            var response = await _squad.SquadInfo();
+            var response = await _squad.SquadInfo(userId);
             return Ok(response);
         }
 

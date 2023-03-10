@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SunttelTradePointB.Client.Interfaces.SquadInterfaces;
+using SunttelTradePointB.Server.Interfaces;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Server.Interfaces.UserTracking;
-using SunttelTradePointB.Server.Models;
 using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.Models;
 using SunttelTradePointB.Shared.Security;
+using SunttelTradePointB.Shared.SquadsMgr;
 
 namespace SunttelTradePointB.Server.Controllers
 {
@@ -17,6 +20,7 @@ namespace SunttelTradePointB.Server.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IUserTracking _userTracking;
 
+        private ISquadBack _squad;
         private IActorsNodes _entityNodes;
 
 
@@ -27,14 +31,17 @@ namespace SunttelTradePointB.Server.Controllers
         /// <param name="signInManager"></param>
         /// <param name="userTracking"></param>
         /// <param name="entityNodes"></param>
-        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IUserTracking userTracking, IActorsNodes entityNodes)
+        /// <param name="squad"></param>
+        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IUserTracking userTracking, IActorsNodes entityNodes, ISquadBack squad)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _userTracking = userTracking;
             _entityNodes = entityNodes;
+            _squad = squad;
 
-            
+
+
         }
 
 
@@ -120,15 +127,21 @@ namespace SunttelTradePointB.Server.Controllers
 
 
         [HttpGet]
-        public CurrentUser CurrentUserInfo()
+        [ActionName("CurrentUserInfo")]
+        public async Task<IActionResult> CurrentUserInfo()
         {
-            return new CurrentUser
+
+            var squads = await _squad.SquadInfo(User.Identity.Name);
+
+            return Ok(new CurrentUser
             {
                 IsAuthenticated = User.Identity.IsAuthenticated,
                 UserName = User.Identity.Name,
-                Claims = User.Claims
-                .ToDictionary(c => c.Type, c => c.Value)
-            };
+                MySquads = squads,
+                Claims = User.Claims.ToDictionary(c => c.Type, c => c.Value)
+                
+
+            });
         }
 
 

@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using SunttelTradePointB.Server.Data;
-using SunttelTradePointB.Server.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Configuration;
 using SunttelTradePointB.Server.Services;
@@ -22,6 +21,7 @@ using SunttelTradePointB.Server.Interfaces.Communications;
 using SunttelTradePointB.Server.Services.Communications;
 using SunttelTradePointB.Server.Interfaces.UserTracking;
 using SunttelTradePointB.Server.Services.UserTracking;
+using SunttelTradePointB.Shared.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,7 +60,7 @@ builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-builder.Services.AddScoped<ISquad, SquadService>();
+builder.Services.AddTransient<ISquadBack, SquadService>();
 builder.Services.AddTransient<ISerDasFileEDI, SerDasFileEDI>();
 
 builder.Services.AddTransient<ISerBLFileEDI, SerBLFileEDI>();
@@ -76,6 +76,7 @@ builder.Services.AddTransient<ISelectorDataSource, SelectorsBackService>();
 builder.Services.AddTransient<ITransactionalItemsRelatedConceptsBKService, TransactionalItemsRelatedConceptsService>();
 builder.Services.AddTransient<IEntitiesRelatedConcepts, EntityActorsRelatedConceptsService>();
 builder.Services.AddTransient<IMessagesValet, MessageValet>();
+
 builder.Services.AddTransient<IUserTracking, UserTrackingService>();
 
 

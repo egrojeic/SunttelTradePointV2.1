@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SunttelTradePointB.Shared.Squad
+namespace SunttelTradePointB.Shared.SquadsMgr
 {
     public class SystemTool
     {

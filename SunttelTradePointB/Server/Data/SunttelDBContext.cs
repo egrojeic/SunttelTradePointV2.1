@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SunttelTradePointB.Shared.Squad;
+using SunttelTradePointB.Shared.SquadsMgr;
 
 namespace SunttelTradePointB.Server.Data
 {
@@ -7,6 +7,7 @@ namespace SunttelTradePointB.Server.Data
     {
         public SunttelDBContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
+
         }
 
         public virtual DbSet<Squad> Squads { get; set; }

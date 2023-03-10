@@ -1,4 +1,6 @@
-﻿namespace SunttelTradePointB.Client
+﻿using SunttelTradePointB.Shared.SquadsMgr;
+
+namespace SunttelTradePointB.Client
 {
     public static class UIClientGlobalVariables
     {
@@ -12,6 +14,7 @@
         public static string UserCountryId { get; set; } = "";
         public static string UserLanguage { get; set; } = "";
 
+        public static List<SquadsByUser>? CurrentUserSquads { get; set; }
 
         static string _pathEntityImages = "/uploads/entityImages";
         static string _pathTransactionalItemsImages = "uploads/transactionalItemsImages";
