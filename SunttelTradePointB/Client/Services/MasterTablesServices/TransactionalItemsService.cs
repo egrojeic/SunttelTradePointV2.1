@@ -40,7 +40,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             TransactionalItemImage,
             EntityImage
         }
-        public string Host { get { return "https://localhost:7186/uploads/transactionalItemsImages/"; } }
+        public string Host { get { return UIClientGlobalVariables.PathEntityImages+"/"; } }
         #endregion Property
 
         private readonly HttpClient _httpClient;

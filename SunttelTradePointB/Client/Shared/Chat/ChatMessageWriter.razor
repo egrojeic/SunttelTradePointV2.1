@@ -100,7 +100,7 @@
                     Message = message,
                     SenderEntity = new EntityNodeCommunications
                     {
-                        Id = UIClientGlobalVariables.EntityUserId != null ? (UIClientGlobalVariables.EntityUserId != "" ? UIClientGlobalVariables.EntityUserId:"1"):"1",
+                        Id = UIClientGlobalVariables.EntityUserId != null ? (UIClientGlobalVariables.EntityUserId != "" ? UIClientGlobalVariables.EntityUserId : "000000000000000000000001") : "000000000000000000000001",
                         Name = UIClientGlobalVariables.UserName != null ? (UIClientGlobalVariables.UserName != "" ? UIClientGlobalVariables.UserName : "Name") : "Name",
                         SkinImageName = UIClientGlobalVariables.UserSkinImage != null ? (UIClientGlobalVariables.UserSkinImage != "" ? UIClientGlobalVariables.UserSkinImage : null) : null
                     },
