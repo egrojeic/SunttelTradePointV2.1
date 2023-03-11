@@ -8,10 +8,20 @@
 
 
 <div class="content">
+    @if (msgResponder != null && msgResponder.Message!=null )
+    {
+       
+        <div class="msg-responder"  style="display:@(msgResponder.Message!=""?"block":"none");">
+            <p> <img @onclick='()=>ClosedAlert("responder")' class="ico-to-closed" src="/images//close.svg"> 
+                @(msgResponder.SenderEntity!=null?(msgResponder.SenderEntity.Name != null ? msgResponder.SenderEntity.Name : ""):"")</p>
+            <p>@(msgResponder.Message != null ? msgResponder.Message:"")</p>
+        </div>
+    }
     <div class="sub-content">
+
         @if (msg != "")
         {
-            <div class="msg" @onclick="ClosedAlert" style="display:@(msg!=""?"block":"none");">@msg</div>
+            <div class="msg" @onclick='()=>ClosedAlert("alert")' style="display:@(msg!=""?"block":"none");">@msg</div>
         }
 
         <div class="content-input">
@@ -42,7 +52,14 @@
     public EventCallback<string> EventCallRefresh { get; set; }
     [Parameter]
     public ChannelCommunicationsGroup groupEnable { get; set; } = new();
+    [Parameter]
+    public CommunicationsMessage msgResponder { get; set; } 
+    [Parameter]
+    public EventCallback<CommunicationsMessage> SetMsgResponder { get; set; }
+
     public CommunicationsMessage communicationsMessage { get; set; } = new();
+
+
 
     SfTextBox? input;
     bool modeEnter = false;
@@ -56,10 +73,6 @@
         var f = communicationsMessage;
     }
 
-
-
-
-
     protected async override void OnInitialized()
     {
         if (communicationService.communicationsMessages == null) communicationService.communicationsMessages = new();
@@ -70,31 +83,15 @@
 
     }
 
-
-    private string Validationbj()
-    {
-
-        if (communicationsMessage.Message == null || communicationsMessage.Message == "") msg = "Required message";
-        if (groupEnable == null || groupEnable.Id == null) { msg = " You must select a group "; }
-        return msg;
-    }
-
-
-
-
-
     public async void SendMsg()
     {
         Loading();
-        ClosedAlert();
-
-
-
-
+        ClosedAlert("alert");
         communicationsMessage = new CommunicationsMessage()
             {
                 MessageTypeId = CommunicationsMessageType.ChatMessage,
                 Message = message,
+                ParentMessageId = msgResponder.Id,
                 SenderEntity = new EntityNodeCommunications
                 {
                     Id = UIClientGlobalVariables.EntityUserId != null ? (UIClientGlobalVariables.EntityUserId != "" ? UIClientGlobalVariables.EntityUserId : "000000000000000000000001") : "000000000000000000000001",
@@ -120,6 +117,7 @@
             communicationsMessage = new();
 
             StateHasChanged();
+            ClosedAlert("responder");
             onWrite = true;
             message = "";
             message =
@@ -128,13 +126,17 @@
 
     }
 
+    private string Validationbj()
+    {
 
-
-
+        if (communicationsMessage.Message == null || communicationsMessage.Message == "") msg = "Required message";
+        if (groupEnable == null || groupEnable.Id == null) { msg = " You must select a group "; }
+        return msg;
+    }
 
     private void OnTyping(Microsoft.AspNetCore.Components.ChangeEventArgs args)
     {
-       
+
         if (args != null)
         {
             message = args.Value.ToString();
@@ -144,11 +146,28 @@
                 if (message.Contains("\n".ToString()))
                 {
                     SendMsg();
-                   
+
                 }
             }
         }
 
+    }
+
+    public void ClosedAlert(string value)
+    {
+        if (value == "alert") msg = "";
+        if (value == "responder") { msgResponder.Message = ""; msgResponder.Id = null; msgResponder.Message = ""; };
+        SetMsgResponder.InvokeAsync(msgResponder);
+       
+        StateHasChanged();
+    }
+
+    private void Loading()
+    {
+        //if (communicationsMessages == null) communicationsMessages = new();
+        if (communicationsMessage.SenderEntity == null) communicationsMessage.SenderEntity = new();
+        if (communicationsMessage.DestinyGroupChannel == null) communicationsMessage.DestinyGroupChannel = new();
+        if (groupEnable == null) groupEnable = new();
     }
 
 
@@ -161,7 +180,6 @@
         }
 
     }
-
 
     public void KeyPressed(KeyboardEventArgs args)
     {
@@ -181,18 +199,5 @@
     }
 
 
-    public void ClosedAlert()
-    {
-        msg = "";
-        EventCallRefresh.InvokeAsync();
-        StateHasChanged();
-    }
 
-    private void Loading()
-    {
-        //if (communicationsMessages == null) communicationsMessages = new();
-        if (communicationsMessage.SenderEntity == null) communicationsMessage.SenderEntity = new();
-        if (communicationsMessage.DestinyGroupChannel == null) communicationsMessage.DestinyGroupChannel = new();
-        if (groupEnable == null) groupEnable = new();
-    }
 }

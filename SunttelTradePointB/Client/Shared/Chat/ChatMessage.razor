@@ -10,91 +10,123 @@
         {
             @if (msg.SenderEntity.Id != SenderEntityId && false)
             {
-                <div class="msg-mode-client-1">
-                    <div class="label-color" style="background-color:@(GetColorMessageIconName(msg.MessageIconName))"></div>
-                    <div class="content-ico">
-                        @if (msg.MessageTypeId == CommunicationsMessageType.SystemMessage)
+
+                <div class="msg-responder color-2">
+                    @{
+                        var _msgResponder = GetMsgResponder(msg.ParentMessageId);
+                        if (_msgResponder != null)
                         {
-                            <img class="ico-menu" src="/images//robot.svg">
+                            <div class="item-responder">
+                                <p class="text">@(_msgResponder.SenderEntity != null ? (_msgResponder.SenderEntity.Name != null ? _msgResponder.SenderEntity.Name : "") : "")</p>
+                                <p class="text">@_msgResponder.Message</p>
+                            </div>
                         }
-                        else
-                        {
-                            <div class="c-ico"><img src="@(msg.SenderEntity.SkinImageName!=null?msg.SenderEntity.SkinImageName: "/images/ActorIco.png")"></div>
-                            <p class="name">@msg.SenderEntity.Name</p>
-                            <p class="hour-style">@msg.SendDateTime</p>
-                        }
-                        <img style="background-color:@(GetColorMessageIconName(msg.MessageIconName))" class="ico-menu-alert" src="/images//exclamation.svg">
-                    </div>
-                    <div class="container-text-1">
-                        @{
-                            foreach (var item in @msg.Message.Split("\n".ToString()))
+                    }
+                    <div class="msg-mode-client-1 color-2">
+
+                        <div class="content-ico-1 color-2">
+                          
+                           
+                            @if (msg.MessageTypeId == CommunicationsMessageType.SystemMessage)
                             {
-                                if (item != null)
-                                {
-                                    <p class="text">@item</p>
-                                }
+                                
+                                
+                                <div class="c-ico"><img src="@(msg.SenderEntity.SkinImageName!=null?pathimages+msg.SenderEntity.SkinImageName: "/images/ActorIco.png")"></div>
+                                <p class="hour-style">@msg.SendDateTime</p>
+                                <img class="ico-menu" src="/images//robot.svg">
                             }
-                        }
+                            else
+                            {
+                                
+                                
+                                <div class="c-ico"><img src="@(msg.SenderEntity.SkinImageName!=null?pathimages+msg.SenderEntity.SkinImageName: "/images/ActorIco.png")"></div>
+                                <p class="name">@msg.SenderEntity?.Name</p>
+                                <p class="hour-style">@msg.SendDateTime</p>
+                            }
+                            <img style="background-color:@(GetColorMessageIconName(msg.MessageIconName))" class="ico-menu-alert" src="/images//exclamation.svg">
+                        </div>
+
+
+
+                    </div>
+                    <div class="container-msg">
+                        <p class="text">@msg.Message</p>
                     </div>
                     <div class="msg-menu">
                         <div class="content-msg-menu">
-                            <img class="ico-menu" src="/images//responder.svg">
-                            <img class="ico-menu" src="/images//responder.svg">
-                            <img @onclick="()=>ViewModalMenu(1)" class="ico-menu-3" src="/images//Reaction.svg">
-                            <div class="menu-view-1" style="@(viewMenu1?"block":"none")">
-                                <img @onclick='()=>SetColorMessageIconName("warning")' class="ico-menu bg-warning" src="/images//exclamation.svg">
-                                <img @onclick='()=>SetColorMessageIconName("danger")' class="ico-menu bg-danger" src="/images//exclamation.svg">
-                                <img @onclick='()=>SetColorMessageIconName("success")' class="ico-menu bg-success" src="/images//exclamation.svg">
-                            </div>
+                            <img @onclick='()=>SetResponder(msg.Id)' class="ico-menu-menu" src="/images//responder.svg">
+                            <img @onclick='()=>ViewModalMenu(msg.Id,"menu-1")' class="ico-menu-menu" src="/images//Reaction.svg">
+                            @if (viewMenu1 && SelectionId == msg.Id)
+                            {
+                                <div class="menu-view-1">
+                                    <img @onclick='()=>SetColorMessageIconName("warning")' class="ico-menu bg-warning" src="/images//exclamation.svg">
+                                    <img @onclick='()=>SetColorMessageIconName("danger")' class="ico-menu bg-danger" src="/images//exclamation.svg">
+                                    <img @onclick='()=>SetColorMessageIconName("success")' class="ico-menu bg-success" src="/images//exclamation.svg">
+                                    <img @onclick='()=>ViewModalMenu("","")' class="ico-menu" src="/images//close.svg">
+                                </div>
+
+                            }
                         </div>
                     </div>
                 </div>
+
             }
             else
             {
 
-                <div class="msg-mode-client-2">
-                    <div class="content-ico">
-                        <div class="label-color" style="background-color:@(GetColorMessageIconName(msg.MessageIconName))"></div>
-                        <img style="background-color:@(GetColorMessageIconName(msg.MessageIconName))" class="ico-menu-alert" src="/images//exclamation.svg">
-                        @if (msg.MessageTypeId == CommunicationsMessageType.SystemMessage)
-                        {
-                            <img class="ico-menu" src="/images//robot.svg">
-                        }
-                        else
-                        {
-                            <p class="hour-style">@msg.SendDateTime</p>
-                            <p class="name">@msg.SenderEntity?.Name</p>
-                            <div class="c-ico"><img src="@(msg.SenderEntity.SkinImageName!=null?pathimages+msg.SenderEntity.SkinImageName: "/images/ActorIco.png")"></div>
-                        }
 
-                    </div>
-                    <div class="container-text-2">
-                        @{
-                            if (@msg.Message != null)
-                            {
-                                foreach (var item in @msg.Message.Split("\n".ToString()))
-                                {
-                                    if (item != null)
-                                    {
-                                        <p class="text">@item</p>
-                                    }
-                                }
-                            }
+                <div class="msg-responder">
+                    @{
+                        var _msgResponder = GetMsgResponder(msg.ParentMessageId);
+                        if (_msgResponder != null)
+                        {
+                            <div class="item-responder">
+                                <p class="text">@(_msgResponder.SenderEntity != null ? (_msgResponder.SenderEntity.Name != null ? _msgResponder.SenderEntity.Name : "") : "")</p>
+                                <p class="text">@_msgResponder.Message</p>
+                            </div>
                         }
+                    }
+                    <div class="msg-mode-client-2">
+
+                        <div class="content-ico">
+                           
+                            <img style="background-color:@(GetColorMessageIconName(msg.MessageIconName))" class="ico-menu-alert" src="/images//exclamation.svg">
+                            @if (msg.MessageTypeId == CommunicationsMessageType.SystemMessage)
+                            {
+                                <img class="ico-menu" src="/images//robot.svg">
+                                <p class="hour-style">@msg.SendDateTime</p>
+                                <div class="c-ico"><img src="@(msg.SenderEntity.SkinImageName!=null?pathimages+msg.SenderEntity.SkinImageName: "/images/ActorIco.png")"></div>
+                            }
+                            else
+                            {
+                                <p class="hour-style">@msg.SendDateTime</p>
+                                <p class="name">@msg.SenderEntity?.Name</p>
+                                <div class="c-ico"><img src="@(msg.SenderEntity.SkinImageName!=null?pathimages+msg.SenderEntity.SkinImageName: "/images/ActorIco.png")"></div>
+                            }
+
+                        </div>
+
+
+                        
                     </div>
-                  
+                    <div class="container-msg">
+                        <p class="text">@msg.Message</p>
+                    </div>
                     <div class="msg-menu">
                         <div class="content-msg-menu">
-                            <img @onclick="()=>ViewModalMenu(1)" class="ico-menu-3" src="/images//Reaction.svg">
-                            <img class="ico-menu" src="/images//responder.svg">
-                            <img class="ico-menu" src="/images//responder.svg">
+                            <img @onclick='()=>SetResponder(msg.Id)' class="ico-menu" src="/images//responder.svg">
+                            <img @onclick='()=>ViewModalMenu(msg.Id,"menu-1")' class="ico-menu-1" src="/images//Reaction.svg">
+                            @if (viewMenu1 && SelectionId == msg.Id)
+                            {
+                                <div class="menu-view-1">
+                                    <img @onclick='()=>SetColorMessageIconName("warning")' class="ico-menu bg-warning" src="/images//exclamation.svg">
+                                    <img @onclick='()=>SetColorMessageIconName("danger")' class="ico-menu bg-danger" src="/images//exclamation.svg">
+                                    <img @onclick='()=>SetColorMessageIconName("success")' class="ico-menu bg-success" src="/images//exclamation.svg">
+                                    <img @onclick='()=>ViewModalMenu("","")' class="ico-menu" src="/images//close.svg">
 
-                            <div class="menu-view-1">
-                                <img @onclick='()=>SetColorMessageIconName("warning")' class="ico-menu bg-warning" src="/images//exclamation.svg">
-                                <img @onclick='()=>SetColorMessageIconName("danger")' class="ico-menu bg-danger" src="/images//exclamation.svg">
-                                <img @onclick='()=>SetColorMessageIconName("success")' class="ico-menu bg-success" src="/images//exclamation.svg">
-                            </div>
+                                </div>
+
+                            }
                         </div>
                     </div>
                 </div>
@@ -114,7 +146,12 @@
     public EventCallback<CommunicationsMessage> TextMessageChanged { get; set; }
     [Parameter]
     public List<CommunicationsMessage> communicationsMessages { get; set; } = new();
+    [Parameter]
+    public EventCallback<CommunicationsMessage> SetMsgResponder { get; set; }
 
+
+
+    string SelectionId = "";
     string SenderEntityId = "1";
     string pathimages = "";
     bool viewMenu1 = true;
@@ -123,24 +160,25 @@
     protected override void OnInitialized()
     {
         LoadObj();
-      
-    // communicationsMessages = (from m in communicationsMessages orderby m.SendDateTime.Day ascending orderby m.SendDateTime.Hour ascending orderby m.SendDateTime.Minute ascending orderby m.SendDateTime.Second ascending select m).ToList();
-       
+
+        // communicationsMessages = (from m in communicationsMessages orderby m.SendDateTime.Day ascending orderby m.SendDateTime.Hour ascending orderby m.SendDateTime.Minute ascending orderby m.SendDateTime.Second ascending select m).ToList();
+
         pathimages = UIClientGlobalVariables.PathEntityImages + "/";
     }
 
 
     protected override void OnParametersSet()
     {
-        StateHasChanged();
+
     }
 
-    public void ViewModalMenu(int menu)
+    public void ViewModalMenu(string id, string _reques)
     {
-        viewMenu1 = false;
-        if (menu == 1) viewMenu1 = true;
-        StateHasChanged();
+        SelectionId = id;
+        if (_reques == "menu-1") viewMenu1 = true;
+
     }
+
     public string GetColorMessageIconName(string item)
     {
         if (item == "warning") { return "#ff8040"; }
@@ -148,6 +186,7 @@
         if (item == "success") { return "#80ff00"; }
         return "#00ff00";
     }
+
     public void SetColorMessageIconName(string value)
     {
         foreach (var item in communicationsMessages)
@@ -157,6 +196,19 @@
         StateHasChanged();
     }
 
+    public void SetResponder(string? Id)
+    {
+        CommunicationsMessage msg = null;
+        if (Id != null) msg = communicationsMessages.Where(s => s.Id == Id).FirstOrDefault();
+        if (msg != null) SetMsgResponder.InvokeAsync(msg);
+    }
+
+    public CommunicationsMessage GetMsgResponder(string? Id)
+    {
+        CommunicationsMessage msg = null;
+        if (Id != null) msg = communicationsMessages.Where(s => s.Id == Id).FirstOrDefault();
+        return msg;
+    }
 
     public void LoadObj()
     {
