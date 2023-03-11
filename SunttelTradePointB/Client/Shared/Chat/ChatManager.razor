@@ -45,7 +45,8 @@
                 </div>
                 <div>
                     <ChatMessage communicationsMessages="communicationsMessages"
-                             SetMsgResponder="SetMsgResponder">
+                             SetMsgResponder="SetMsgResponder"
+                             SetMsgRecord="SetMsgRecord">
 
                     </ChatMessage>
                 </div>
@@ -134,6 +135,11 @@
     public async void SetMsgResponder(CommunicationsMessage msgResponder)
     {
         this.msgResponder = msgResponder;
+    }
+
+    public async void SetMsgRecord(CommunicationsMessage msgRecord)
+    {
+        communicationsMessages = communicationsMessages.Where(s => s.ParentMessageId == msgRecord.Id || s.Id == msgRecord.Id).ToList();
     }
 
     #endregion ViewMsg

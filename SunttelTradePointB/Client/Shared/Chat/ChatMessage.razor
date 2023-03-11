@@ -150,6 +150,8 @@
     public List<CommunicationsMessage> communicationsMessages { get; set; } = new();
     [Parameter]
     public EventCallback<CommunicationsMessage> SetMsgResponder { get; set; }
+    [Parameter]
+    public EventCallback<CommunicationsMessage> SetMsgRecord { get; set; }
 
     public Stack<CommunicationsMessage> communicationsMessagesRecord { get; set; } = new ();
     public CommunicationsMessage communicationsMessageRecord { get; set; } = new();
@@ -205,14 +207,7 @@
         CommunicationsMessage msg = null;
         if (Id != null) msg = communicationsMessages.Where(s => s.Id == Id).FirstOrDefault();
         if (msg != null) SetMsgResponder.InvokeAsync(msg);
-    }
-
-    public void SetMsgRecord(string? Id)
-    {
-        CommunicationsMessage msg = null;
-        if (Id != null) msg = communicationsMessages.Where(s => s.Id == Id).FirstOrDefault();
-        if (msg!=null) communicationsMessagesRecord.Push(msg);
-    }
+    }   
 
     public void GetMsgRecord()
     {
