@@ -56,7 +56,7 @@
                         <div class="content-msg-menu">
                             <img @onclick='()=>SetResponder(msg.Id)' class="ico-menu-menu" src="/images//responder.svg">
                             <img @onclick='()=>ViewModalMenu(msg.Id,"menu-1")' class="ico-menu-menu" src="/images//Reaction.svg">
-                            <img @onclick='()=>SetMsgRecord(msg.Id)' class="ico-menu-1" src="/images//chat-menu.svg">
+                            <img @onclick='()=>SetMsgRecordView(msg.Id)' class="ico-menu-1" src="/images//chat-menu.svg">
                             @if (viewMenu1 && SelectionId == msg.Id)
                             {
                                 <div class="menu-view-1">
@@ -117,7 +117,7 @@
                         <div class="content-msg-menu">
                             <img @onclick='()=>SetResponder(msg.Id)' class="ico-menu" src="/images//responder.svg">
                             <img @onclick='()=>ViewModalMenu(msg.Id,"menu-1")' class="ico-menu-1" src="/images//Reaction.svg">
-                            <img @onclick='()=>SetMsgRecord(msg.Id)' class="ico-menu-1" src="/images//chat-menu.svg">
+                            <img @onclick='()=>SetMsgRecordView(msg.Id)' class="ico-menu-1" src="/images//chat-menu.svg">
                             @if (viewMenu1 && SelectionId == msg.Id)
                             {
                                 <div class="menu-view-1">
@@ -207,7 +207,14 @@
         CommunicationsMessage msg = null;
         if (Id != null) msg = communicationsMessages.Where(s => s.Id == Id).FirstOrDefault();
         if (msg != null) SetMsgResponder.InvokeAsync(msg);
-    }   
+    }
+
+    public void SetMsgRecordView(string? Id)
+    {
+        CommunicationsMessage msg = null;
+        if (Id != null) msg = communicationsMessages.Where(s => s.Id == Id).FirstOrDefault();
+        if (msg!=null) communicationsMessagesRecord.Push(msg);
+    }
 
     public void GetMsgRecord()
     {
