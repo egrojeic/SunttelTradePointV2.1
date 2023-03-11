@@ -17,7 +17,27 @@ namespace SunttelTradePointB.Server.Services
         {
             _sunttelDBContext = sunttelDBContext;
         }
-        public async Task<List<SquadsByUser>> SquadInfo(string userId)
+
+
+        /// <summary>
+        /// Retrieves the Squad ID by Squad Name
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="SquadName"></param>
+        /// <returns></returns>
+        public async Task<string> GetSquadIdByName(Guid userId, string SquadName)
+        {
+            var squadId = await _sunttelDBContext.Squads
+                .Where(s => s.Nombre == SquadName)
+                .Select(s => s.ID)
+                .FirstOrDefaultAsync();
+
+           
+            return squadId.ToString();
+        }
+      
+
+        public async Task<List<SquadsByUser>> SquadInfo(string? userId)
         {
             //var squadInfo = await _sunttelDBContext.Squads.FindAsync(Guid.Parse("7B66BBE8-C288-4BAD-8DB7-3DAA32108FED"));
 
@@ -25,6 +45,11 @@ namespace SunttelTradePointB.Server.Services
             string storedProcedureName = "GetSquadsByUser";
 
             List<SquadsByUser> squadsByUserList = new List<SquadsByUser>();
+
+            if(userId == null)
+            {
+                return squadsByUserList;
+            }
 
             try
             {
@@ -63,13 +88,23 @@ namespace SunttelTradePointB.Server.Services
             return squadsByUserList;
         }
 
-        public async Task<List<SystemTool>> SystemToolsByUser(Guid userId)
+
+
+        /// <summary>
+        /// Retrieves the list of tools for a given user and squad
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="squadId"></param>
+        /// <returns></returns>
+        public async Task<List<SystemTool>> SystemToolsByUser(Guid userId, string? squadId = "")
         {
             var systemTools = await _sunttelDBContext.SystemTools
-                .Include(s=>s.ToolSetsNavigation)
+                .Include(s => s.ToolSetsNavigation)
                 .ToListAsync();
-                                    
+
             return systemTools;
         }
+
+
     }
 }

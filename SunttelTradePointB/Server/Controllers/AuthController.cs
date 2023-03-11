@@ -59,6 +59,14 @@ namespace SunttelTradePointB.Server.Controllers
 
             user.SkingImage = responseCheck.skinImage;
             user.EntityID = responseCheck.entityId;
+            var defaultSquad = await _squad.GetSquadIdByName(Guid.Parse(user.Id), request.SquadName);
+
+            if(user.DefaultSquadId != defaultSquad)
+            {
+                user.DefaultSquadId = defaultSquad;
+                await _userManager.UpdateAsync(user);
+            }
+            
 
             await _signInManager.SignInAsync(user, request.RememberMe);
 
@@ -70,7 +78,7 @@ namespace SunttelTradePointB.Server.Controllers
 
         private async Task<(string entityId, string skinImage)> CheckUserEntity(string userId, string userName)
         {
-            var response = await _entityNodes.GetEntityActorByUserId(userId, "127.0.0.1", userId);
+            var response = await _entityNodes.GetEntityActorByUserId(userId, "127.0.0.1", userName);
             
             if(response.IsSuccess)
             {
@@ -131,13 +139,27 @@ namespace SunttelTradePointB.Server.Controllers
         public async Task<IActionResult> CurrentUserInfo()
         {
 
-            var squads = await _squad.SquadInfo(User.Identity.Name);
+            List<SquadsByUser> squads = new List<SquadsByUser>();
+            string LastSquadId = "";
+            
+            if (User != null && User.Identity !=null && User.Identity.Name != null)
+            {
+                squads = await _squad.SquadInfo(User.Identity.Name);
+                var userInfo = await _userManager.FindByNameAsync(User.Identity.Name);
+
+                LastSquadId = (userInfo != null && userInfo.DefaultSquadId != null) ? userInfo.DefaultSquadId:"";
+
+            }
+
+           
+
 
             return Ok(new CurrentUser
             {
                 IsAuthenticated = User.Identity.IsAuthenticated,
                 UserName = User.Identity.Name,
                 MySquads = squads,
+                LastSquadId = LastSquadId,
                 Claims = User.Claims.ToDictionary(c => c.Type, c => c.Value)
                 
 

@@ -56,6 +56,13 @@ namespace SunttelTradePointB.Client.Services
             UIClientGlobalVariables.UserName = _currentUser.UserName;
             UIClientGlobalVariables.CurrentUserSquads = _currentUser.MySquads;
 
+            var defaultSquadUserId = _currentUser.LastSquadId;
+
+            UIClientGlobalVariables.ActiveSquad = _currentUser.MySquads.Where(s => s.IDSquads == Guid.Parse(defaultSquadUserId)).FirstOrDefault();
+
+
+
+
 
             return _currentUser;
         }

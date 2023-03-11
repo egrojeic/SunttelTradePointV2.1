@@ -25,6 +25,11 @@
             <InputText id="inputUsername" class="form-control" @bind-Value="loginRequest.UserName" autofocus placeholder="Username" />
             <ValidationMessage For="@(() => loginRequest.UserName)" />
 
+            <label for="inputSquadName" class="lblSplash">Squad</label>
+                <InputText id="inputSquadName" class="form-control" @bind-Value="loginRequest.SquadName" autofocus placeholder="Squad Name" />
+            <ValidationMessage For="@(() => loginRequest.SquadName)" />
+
+
             <label for="inputPassword" class="lblSplash">Password</label>
             <InputText type="password" id="inputPassword" class="form-control" placeholder="Password" @bind-Value="loginRequest.Password" />
             <ValidationMessage For="@(() => loginRequest.Password)" />

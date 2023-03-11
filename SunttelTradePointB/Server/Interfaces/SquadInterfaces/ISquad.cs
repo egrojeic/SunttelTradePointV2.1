@@ -8,7 +8,9 @@ namespace SunttelTradePointB.Server.Interfaces
     {
 
         Task<List<SquadsByUser>> SquadInfo(string userId);
-        Task<List<SystemTool>> SystemToolsByUser(Guid userId);
+        Task<List<SystemTool>> SystemToolsByUser(Guid userId, string? squadId = "");
+        Task<string> GetSquadIdByName(Guid userId, string SquadName);
+
 
     }
 }

@@ -60,9 +60,9 @@
 
         if (UIClientGlobalVariables.CurrentUserSquads != null)
         {
-            if (UIClientGlobalVariables.CurrentUserSquads.Count() > 0)
+            if (UIClientGlobalVariables.ActiveSquad !=null)
             {
-                currentSquad = UIClientGlobalVariables.CurrentUserSquads.First();
+                currentSquad = UIClientGlobalVariables.ActiveSquad;
             }
         }
 

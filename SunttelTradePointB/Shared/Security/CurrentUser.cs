@@ -13,6 +13,9 @@ namespace SunttelTradePointB.Shared.Security
         public string UserName { get; set; }
         public Dictionary<string, string> Claims { get; set; }
 
+
+        public string? LastSquadId { get; set; } = "";
+
         public List<SquadsByUser>? MySquads { get; set; }
     }
 }

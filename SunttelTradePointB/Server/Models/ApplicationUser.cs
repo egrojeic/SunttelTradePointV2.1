@@ -20,5 +20,7 @@ namespace SunttelTradePointB.Shared.Models
         [NotMapped]
         public string? SkingImage { get; set; }
 
+        public string? DefaultSquadId { get; set; } = "11111111-1111-1111-1111-111111111111";
+
     }
 }

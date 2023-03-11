@@ -18,6 +18,10 @@ namespace SunttelTradePointB.Shared.SquadsMgr
 
         public int FlagEnabled { get; set; }
 
+        public string EntityID { get; set; }
+        public string SkinImage { get; set; }
+
+
     }
 
     public class SquadsByUser

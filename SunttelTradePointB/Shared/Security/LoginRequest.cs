@@ -14,5 +14,8 @@ namespace SunttelTradePointB.Shared.Security
         [Required]
         public string Password { get; set; }
         public bool RememberMe { get; set; }
+
+        public string SquadName { get; set; }
+
     }
 }
