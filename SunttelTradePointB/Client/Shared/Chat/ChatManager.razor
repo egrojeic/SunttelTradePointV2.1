@@ -6,6 +6,7 @@
 @using System.Text.RegularExpressions;
 
 
+
 @inject NavigationManager NavigationManager
 @inject ActorsNodeService actorsNodeService
 @inject CommunicationService communicationService
@@ -43,7 +44,8 @@
                                EventCallSetgroupEnable="EventCallSetgroupEnable"></ChatMenuGroup>
                 </div>
                 <div>
-                    <ChatMessage communicationsMessages="communicationsMessages">
+                    <ChatMessage communicationsMessages="communicationsMessages"
+                             SetMsgResponder="SetMsgResponder">
 
                     </ChatMessage>
                 </div>
@@ -52,6 +54,8 @@
         <ChatMessageWriter @ref="refChatMessageWriter"
                        TextMessageChanged="TextWriteMessageChanged"
                        EventCallRefresh="EventCallRefresh"
+                       SetMsgResponder="SetMsgResponder"
+                       msgResponder="@msgResponder"
                        groupEnable="groupEnable">
         </ChatMessageWriter>
 
@@ -68,6 +72,7 @@
 
     #region write
     public List<CommunicationsMessage> communicationsMessages { get; set; } = new();
+    CommunicationsMessage msgResponder = new();
     #endregion write
 
     private HubConnection? hubConnection;
@@ -124,6 +129,17 @@
     }
 
 
+
+    #region ViewMsg
+    public async void SetMsgResponder(CommunicationsMessage msgResponder)
+    {
+        this.msgResponder = msgResponder;
+    }
+
+    #endregion ViewMsg
+
+   
+   
     #region write
 
     public async void TextWriteMessageChanged(CommunicationsMessage communicationsMessage)
@@ -170,9 +186,11 @@
     }
 
 
+  
+
     public void EventCallRefresh()
     {
-       // StateHasChanged();
+        StateHasChanged();
     }
 
 
@@ -181,5 +199,8 @@
         if (groupEnable == null) groupEnable = new();
         if (communicationsMessages == null) communicationsMessages = new();
     }
+
+
+  
 
 }
