@@ -213,3 +213,21 @@ a, .btn-link {
 nav {
     display: inline-flex;
 }
+
+
+
+
+.form-button {
+    background-color: #00CCFF;
+    color: white;
+    border-radius: 10px;
+    border: none;
+    font-size: 1.1em;
+    width: 90%;
+}
+
+    .form-button:hover {
+        background-color: red;
+        color: white;
+        transition: background-color 0.5s;
+    }

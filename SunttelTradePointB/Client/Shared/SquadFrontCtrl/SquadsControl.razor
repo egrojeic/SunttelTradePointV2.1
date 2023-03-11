@@ -1,0 +1,86 @@
+﻿@using SunttelTradePointB.Shared.SquadsMgr;
+<div id="companyLogoContainer">
+    @if (currentSquad != null && currentSquad.SkinImage != null)
+    {
+        <img src="@pathLogo" id="imgLogoCompany" />
+       
+        <div class="label-wrapper">
+            <div class="label" @onclick="ToggleList">@(UICommonFunctions.CapitalizeFirstLetterOfWords(currentSquad.SquadName))</div>
+            @if (showList)
+            {
+                <ul class="list list--visible">
+                    @foreach (var item in UIClientGlobalVariables.CurrentUserSquads)
+                    {
+                        <li class="list-item"
+                            onclick="@(() => SelcetItem(item))">
+                            @(UICommonFunctions.CapitalizeFirstLetterOfWords(item.SquadName))
+                        </li>
+                       
+                    }
+                </ul>
+            }
+        </div>
+
+    }
+
+
+</div>
+
+@code {
+    [Parameter]
+    public SquadsByUser currentSquad { get; set; }
+
+    private bool showList = false;
+    public string pathLogo { get; set; }
+
+
+    [Parameter]
+    public string LabelText { get; set; }
+
+    [Parameter]
+    public List<string> Items { get; set; }
+
+    private void ToggleList()
+    {
+        showList = !showList;
+        StateHasChanged();
+    }
+
+
+    protected override Task OnInitializedAsync()
+    {
+        showList =false;
+        currentSquad = new SquadsByUser
+            {
+                ID = Guid.Parse("60BCB73D-F95C-4380-ADD0-4C0C28EC7478"),
+                SkinImage = "60BCB73D-F95C-4380-ADD0-4C0C28EC7478.jpg",
+                SquadName = "Squad2U"
+
+            };
+
+        if (UIClientGlobalVariables.CurrentUserSquads != null)
+        {
+            if (UIClientGlobalVariables.CurrentUserSquads.Count() > 0)
+            {
+                currentSquad = UIClientGlobalVariables.CurrentUserSquads.First();
+            }
+        }
+
+
+        pathLogo = $"/SkinImagesByAccount/{currentSquad.SkinImage}";
+
+        StateHasChanged();
+
+        return base.OnInitializedAsync();
+    }
+
+    public void SelcetItem(SquadsByUser squadsByUser)
+    {
+        currentSquad = squadsByUser;
+        UIClientGlobalVariables.ActiveSquad = squadsByUser;
+        pathLogo = $"/SkinImagesByAccount/{currentSquad.SkinImage}";
+        showList = false;
+        StateHasChanged();
+    }
+
+}

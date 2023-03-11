@@ -70,5 +70,34 @@ namespace SunttelTradePointB.Client
         }
 
 
+        public static string CapitalizeFirstLetterOfWords(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                return input;
+            }
+
+            // Split the input string into an array of words
+            string[] words = input.Split(' ');
+
+            // Capitalize the first letter of each word and convert the rest to lowercase
+            for (int i = 0; i < words.Length; i++)
+            {
+                string word = words[i];
+                if (!string.IsNullOrEmpty(word))
+                {
+                    words[i] = char.ToUpper(word[0]) + word.Substring(1).ToLower();
+                }
+            }
+
+            // Join the words back into a string
+            string result = string.Join(' ', words);
+            return result;
+        }
+
     }
+
+
+   
+
 }

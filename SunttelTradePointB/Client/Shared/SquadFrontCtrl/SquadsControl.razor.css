@@ -1,0 +1,102 @@
+﻿
+#imgLogoCompany {
+    width: 120px;
+    margin: auto;
+    border-radius: 100px;
+    border-block-color: red;
+    border-width: 5px;
+    border-style: solid;
+}
+
+#companyLogoContainer {
+    display: grid;
+    margin: auto;
+    margin-top: 20px;
+    width: 200px;
+    height: 200px;
+    padding-top: 5px;
+    align-content: center;
+    align-content: center;
+    border-radius: 50px;
+   
+}
+
+    #companyLogoContainer h2 {
+        margin-top: 10px;
+        font-size: 0.7em;
+        text-align: center;
+        color: #ffffff;
+    }
+
+#TradePointIdentifierDiv {
+    display: inline-flex;
+    width: 100%;
+    vertical-align: middle;
+}
+
+    #TradePointIdentifierDiv a {
+        width: 100%;
+        margin: auto;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+.label-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.label {
+    background-color: #00CCFF;
+    color: white;
+    padding: 2px 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+    width: 180px;
+    margin-top: 5px;
+    text-align: center;
+}
+
+    .label:hover {
+        background-color: #B200FF;
+    }
+
+.list {
+    margin-top: 10px;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: none;
+    width: 180px;
+}
+
+.list-item {
+    padding: 2px 5px;
+    background-color: #FF00CB;
+    border-bottom: 0px solid #ddd;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+    font-size: 14px;
+    border-top-right-radius: 60%;
+    margin-top: 3px;
+    transform: skew(-20deg);
+}
+
+    .list-item:last-child {
+        border-bottom: none;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
+    .list-item:hover {
+        background-color: #B200FF;
+        text-decoration:underline;
+    }
+
+.list--visible {
+    display: block;
+}

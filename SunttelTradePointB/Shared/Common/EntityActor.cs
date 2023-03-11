@@ -119,7 +119,7 @@ namespace SunttelTradePointB.Shared.Common
 
         // Contact Information
         [BsonIgnoreIfNull]
-        [DisplayName("Sunttel User Name")]
+        [DisplayName("User Name")]
         public string SunttelUserId { get; set; }
 
         [DisplayName("EMail")]

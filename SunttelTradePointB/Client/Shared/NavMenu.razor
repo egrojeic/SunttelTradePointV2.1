@@ -1,4 +1,5 @@
 ﻿@using SunttelTradePointB.Client.Services
+@using SunttelTradePointB.Client.Shared.SquadFrontCtrl
 @using SunttelTradePointB.Shared.SquadsMgr
 @inject SQuadService sqService;
 @inject CustomStateProvider authStateProvider;
@@ -9,7 +10,7 @@
 
         <div id="navMenuContainer">
 
-            <div id="companyLogoContainer">
+            @*<div id="companyLogoContainer">
                 @if (@pathLogo != null)
                 {
                     <img src="@pathLogo" id="imgLogoCompany" />
@@ -17,7 +18,9 @@
                 }
 
 
-            </div>
+            </div>*@
+
+            <SquadsControl></SquadsControl>
 
             <br />
 

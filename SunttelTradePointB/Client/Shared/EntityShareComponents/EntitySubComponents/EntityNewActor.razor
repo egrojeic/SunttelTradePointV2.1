@@ -19,22 +19,42 @@
 @inject ActorsNodeService actorsNodeServive
 
 <div class="control-section">
-    <div class="row">
-        <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
+    <div class="row align-items-center">
+        <div class="col-md-2">
+            <img src="/images/logo.png" id="tradePintLogo" />
+        </div>
+        <div class="col-md-10">
+            <h1>Feel the power of the bull being connected to the squads</h1>
+        </div>
+        
+    </div>
+    
+    <div id="RegistrationContainer">
+        <div id="regiterPrompt">
+            <h2>You are one step away from being connected to the world!</h2>
+            <p>
+                Welcome to our business network platform, where you can connect with like-minded professionals and grow your business to new heights! We're excited to have you join our community and start taking advantage of the many benefits that come with being a part of our network. By registering with us, you'll gain access to a powerful platform that allows you to connect with other professionals in your industry, find new business opportunities, and expand your reach to a wider audience. Our platform is designed to make networking and business growth easy and convenient, with tools and features that help you stay connected and stay on top of your game. Joining our network is easy - simply register with us today and start building connections with other professionals in your industry. Once you're part of our community, you'll have access to a range of resources and opportunities that can help you take your business to the next level. Whether you're looking to grow your network, find new clients or partners, or simply stay up-to-date with the latest industry trends, our business network platform is the perfect place for you. So why wait? Register with us today and start connecting with other professionals who share your passion for success!
+            </p>
+        
+        </div>
+        <div id="registerCardContainer">
             <SfCard style="width:550px">
-                <CardHeader Title="New User" />
+                
                 <CardContent>
 
-                    <div class="form-group py-2">
-                        <label for="name">@lblName</label>
-                        <input type="text" class="form-control" id="name" @bind-value="EntityNode.Name" />
-                    </div>
+                    <div class="row rowForm">
+                        <div class="form-group col-6">
+                            <label for="name">@lblName</label>
+                            <input type="text" class="form-control" id="name" @bind-value="EntityNode.Name" />
+                        </div>
 
-                    <div class="form-group py-2">
-                        <label for="eMailAddress">@lblEmail</label>
-                        <input type="text" class="form-control" id="eMailAddress" @bind-value="EntityNode.EMailAddress" />
-                    </div>
+                        <div class="form-group col-6">
+                            <label for="eMailAddress">@lblEmail</label>
+                            <input type="text" class="form-control" id="eMailAddress" @bind-value="EntityNode.EMailAddress" />
+                        </div>
 
+                    </div>
+                    
                     <div class="form-group py-2">
                         <label for="sunttelUserId">@lblSquarUser</label>
                         <input type="text" class="form-control" id="sunttelUserId" @bind-value="EntityNode.SunttelUserId" />
@@ -42,17 +62,31 @@
 
                     <AddressComponent address="EntityNode.InvoicingAddress"></AddressComponent>
 
-                    <div class="form-group">
-                        <label for="password1">Password*</label>
-                        <input type="text" class="form-control" id="password1" @bind-value="EntityNode.EMailAddress" />
-                    </div>
+                    <div class="row rowForm">
+                        <div class="form-group col-6">
+                            <label for="password1">Password*</label>
+                            <input autocomplete="off" type="password" class="form-control" id="password1" />
+                        </div>
 
-                    <div class="form-group">
-                        <label for="sunttelUserId">Confirm Password*</label>
-                        <input type="password" class="form-control" id="sunttelUserId" @bind-value="passwordNewUser" />
+                        <div class="form-group col-6">
+                            <label for="sunttelUserId">Confirm Password*</label>
+                            <input autocomplete="off" type="password" class="form-control" id="sunttelUserId" @bind-value="passwordNewUser" />
+                        </div>
                     </div>
+                   
+                    <hr />
 
-                    <button type="submit" class="btn btn-primary py-2" @onclick="SaveEntity">Save</button>
+                    <div class="row">
+                        <div class="col-3">
+                            <button type="submit" class="form-button" @onclick="SaveEntity">Let's do it</button>
+                        </div>
+                        <div class="col-3">
+                            <button class="form-button" @onclick="ReturnToLogin">No ready yet</button>
+                        </div>
+                       
+
+                    </div>
+                   
 
                 </CardContent>
             </SfCard>
@@ -271,4 +305,9 @@
         navigationManager.NavigateTo($"/Actors/{Id}/Image");
     }
 
+
+    public async Task ReturnToLogin()
+    {
+        navigationManager.NavigateTo($"");
+    }
 }

@@ -86,13 +86,12 @@
             {
                 UIClientGlobalVariables.UserName = user.Identity.Name;
                 UIClientGlobalVariables.UserId = user.FindFirst(ClaimTypes.NameIdentifier).Value;
-               
-
-                StateHasChanged();
-            
+             
             }
             
         }
+
+        StateHasChanged();
 
 
         try
