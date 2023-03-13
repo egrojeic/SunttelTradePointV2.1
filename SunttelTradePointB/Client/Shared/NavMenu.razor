@@ -39,7 +39,8 @@
                                     <i class="fa-solid fa-comments"></i><span class="innerlink">Chat</span>
                                 </NavLink>
 
-                                <NavLink class="nav-link" href="/">
+
+                                <NavLink class="nav-link" href="@(refProfilePage)">
                                     <i class="fa-solid fa-id-card"></i><span class="innerlink">My Profile</span>
                                 </NavLink>
 
@@ -95,6 +96,7 @@
     List<SystemTool>? optionsMenuList;
     List<ToolSet>? toolSet;
     string squadName = "";
+    string refProfilePage = "";
 
     private string pathLogo;
 
@@ -119,6 +121,8 @@
 
         var user = (await authStateProvider.GetAuthenticationStateAsync()).User;
         var userId = user.FindFirst(c => c.Type.Contains("nameidentifier"))?.Value;
+
+        refProfilePage = $"Actors/{UIClientGlobalVariables.EntityUserId}";
 
         var lstOptions = await sqService.SystemToolsByUser(Guid.Parse(userId));
 

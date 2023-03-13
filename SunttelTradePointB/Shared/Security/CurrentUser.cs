@@ -16,6 +16,8 @@ namespace SunttelTradePointB.Shared.Security
 
         public string? LastSquadId { get; set; } = "";
 
+        public string? EntityId { get; set; } = "";
+
         public List<SquadsByUser>? MySquads { get; set; }
     }
 }

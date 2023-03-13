@@ -11,6 +11,7 @@ namespace SunttelTradePointB.Shared
 
        public enum EditModes
         {
+            None = -1,
             Text = 0,
             Numeric = 1,
             Date = 2,
@@ -19,7 +20,8 @@ namespace SunttelTradePointB.Shared
             Details = 5,
             Address = 6,
             LogAuditory = 7,
-            Groups = 8
+            Groups = 8,
+            
         }
         public EditModes EditMode { get; set; }
 

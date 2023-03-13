@@ -1,24 +1,30 @@
 ﻿
+body {
+    position: relative; /* add this */
+    height: 100%; /* add this */
+}
+
 #imgLogoCompany {
     width: 120px;
     margin: auto;
-    border-radius: 100px;
+    border-radius: 50%;
     border-block-color: red;
     border-width: 5px;
     border-style: solid;
 }
 
 #companyLogoContainer {
-    display: grid;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
     margin: auto;
     margin-top: 20px;
     width: 200px;
     height: 200px;
     padding-top: 5px;
-    align-content: center;
-    align-content: center;
-    border-radius: 50px;
-   
+    align-content: start;
+    border-radius: 5px;
+    /*background-color: yellow;*/
 }
 
     #companyLogoContainer h2 {
@@ -28,11 +34,33 @@
         color: #ffffff;
     }
 
-#TradePointIdentifierDiv {
-    display: inline-flex;
-    width: 100%;
-    vertical-align: middle;
+
+.btnSquad {
+    padding: 1px;
+    width: 25px;
+    height: 25px;
+    background-color: #333333;
+    border-color: #F2F2F2;
+    margin-right: 3px;
 }
+
+    .btnSquad:hover {
+        padding: 1px;
+        width: 26px;
+        height: 26px;
+        background-color: #666666;
+        border-color: #F2F2F2;
+    }
+
+    .btnSquad i{
+        font-size: 1em;
+    }
+
+    #TradePointIdentifierDiv {
+        display: inline-flex;
+        width: 100%;
+        vertical-align: middle;
+    }
 
     #TradePointIdentifierDiv a {
         width: 100%;
@@ -45,6 +73,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    
+    width: 100%;
 }
 
 .label {
@@ -100,3 +130,20 @@
 .list--visible {
     display: block;
 }
+
+
+#squadsMenu{
+    display: inline-flex;
+    width: 100%;
+    height: 38px;
+    vertical-align: middle;
+    
+
+}
+
+    #squadsMenu a {
+        width: 100%;
+        margin: auto;
+        text-align: center;
+        vertical-align: middle;
+    }

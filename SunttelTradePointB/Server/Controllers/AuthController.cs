@@ -110,7 +110,10 @@ namespace SunttelTradePointB.Server.Controllers
         public async Task<IActionResult> Register(RegisterRequest parameters)
         {
             var user = new ApplicationUser();
+
             user.UserName = parameters.UserName;
+            user.EntityID = parameters.EntityId;
+
             var result = await _userManager.CreateAsync(user, parameters.Password);
             if (!result.Succeeded) return BadRequest(result.Errors.FirstOrDefault()?.Description);
 
@@ -141,14 +144,15 @@ namespace SunttelTradePointB.Server.Controllers
 
             List<SquadsByUser> squads = new List<SquadsByUser>();
             string LastSquadId = "";
-            
+            string EntityIdUser = "";
+
             if (User != null && User.Identity !=null && User.Identity.Name != null)
             {
                 squads = await _squad.SquadInfo(User.Identity.Name);
                 var userInfo = await _userManager.FindByNameAsync(User.Identity.Name);
 
                 LastSquadId = (userInfo != null && userInfo.DefaultSquadId != null) ? userInfo.DefaultSquadId:"";
-
+                EntityIdUser = (userInfo != null && userInfo.EntityID != null) ? userInfo.EntityID : "";
             }
 
            
@@ -160,6 +164,7 @@ namespace SunttelTradePointB.Server.Controllers
                 UserName = User.Identity.Name,
                 MySquads = squads,
                 LastSquadId = LastSquadId,
+                EntityId = EntityIdUser,
                 Claims = User.Claims.ToDictionary(c => c.Type, c => c.Value)
                 
 

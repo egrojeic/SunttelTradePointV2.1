@@ -1,0 +1,86 @@
+﻿@page "/SquadCard"
+@page "/SquadCard/{Id}"
+
+@using SunttelTradePointB.Shared.SquadsMgr;
+@using Syncfusion.Blazor.SplitButtons
+@inject NavigationManager Navigation
+
+<div class="formContainer">
+
+    <PageTitleComponent Title="Squads" IconName="ActorsIco.png"
+                        Description="With this tool you could create and keep updated your Squads. Think in a Squad as an organization">
+    </PageTitleComponent>
+
+     <div class="panelMenuContainer" style="max-width:95%;">
+        <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+
+        <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+            <SplitButtonEvents ItemSelected="ItemSelected">
+            </SplitButtonEvents>
+            <DropDownMenuItems>
+                <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+            </DropDownMenuItems>
+
+        </SfSplitButton>
+
+    </div>
+
+
+    <div class="row">
+        <label for="Nombre" class="LabelFieldStyle">Name</label>
+        <input type="text" id="Nombre" name="Nombre" class="InputFieldStyle" @bind="currentSquad.Nombre">
+    </div>
+    <div class="row">
+        <label for="FlagEnabled" class="LabelFieldStyle">Enabled</label>
+        <input type="number" id="FlagEnabled" name="FlagEnabled" class="InputFieldStyle" @bind="currentSquad.FlagEnabled">
+    </div>
+    <div class="row">
+        <label for="SkinImage" class="LabelFieldStyle">SkinImage</label>
+        <input type="text" id="SkinImage" name="SkinImage" class="InputFieldStyle" @bind="currentSquad.SkinImage">
+    </div>
+    <div class="row">
+        <label for="DomainName" class="LabelFieldStyle">Domain Name</label>
+        <input type="text" id="DomainName" name="DomainName" class="InputFieldStyle" @bind="currentSquad.DomainName">
+    </div>
+    <div>
+        <TabControl>
+            <TabPage text="SquadTag">
+                @*<SquadTagDetails currentSquad.Tags></SquadTagDetails>*@
+            </TabPage>
+        </TabControl>
+    </div>
+
+</div>
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+    public Squad currentSquad { get; set; } = new Squad();
+
+
+    public void Home()
+    {
+        Navigation.NavigateTo("");
+    }
+
+     public async void ItemSelected(MenuEventArgs e)
+    {
+
+        string tile = e.Item != null ? e.Item.Text : "";
+        if (tile == "Save")
+        {
+         
+            //var response = await transactionalService.SaveTransactionalItem(currentSquad);
+        
+        }
+       
+        StateHasChanged();
+
+
+    }
+
+}

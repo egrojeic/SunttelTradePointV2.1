@@ -11,7 +11,6 @@ namespace SunttelTradePointB.Shared.Models
         /// <summary>
         /// Associated Entity ID
         /// </summary>
-        [NotMapped]
         public string? EntityID { get; set; }
 
         /// <summary>

@@ -1,7 +1,18 @@
 ﻿@using SunttelTradePointB.Shared.SquadsMgr;
+@inject NavigationManager navigationManager
+
 <div id="companyLogoContainer">
     @if (currentSquad != null && currentSquad.SkinImage != null)
     {
+        <div id="squadsMenu">
+            <button type="button" class="btn btn-primary btnSquad" title="Squad Setup" @onclick="UpDateSquad">
+                <i class="fa-sharp fa-solid fa-gear"></i>
+            </button>
+
+            <button type="button" class="btn btn-primary btnSquad" title="Add Squad" @onclick="CreateSquad">
+                <i class="fa-solid fa-circle-plus"></i>
+            </button>
+        </div>
         <img src="@pathLogo" id="imgLogoCompany" />
        
         <div class="label-wrapper">
@@ -81,6 +92,18 @@
         pathLogo = $"/SkinImagesByAccount/{currentSquad.SkinImage}";
         showList = false;
         StateHasChanged();
+    }
+
+
+    private void CreateSquad()
+    {
+        navigationManager.NavigateTo($"/SquadCard/");
+    }
+
+
+    private void UpDateSquad()
+    {
+        navigationManager.NavigateTo($"/SquadCard/");
     }
 
 }

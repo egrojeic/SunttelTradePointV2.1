@@ -96,8 +96,8 @@ i{
 
 #navMenuContainer {
     display: block;
-   
-    
+    position: relative; /* add this */
+    height: 100%; /* add this */
     /*background-image: linear-gradient(180deg, #2D2D2E 0%, #171717 100%);*/
 }
 

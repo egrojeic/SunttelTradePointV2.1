@@ -30,15 +30,13 @@ namespace SunttelTradePointB.Client.Services.SquadServices
             try
             {
                 var result = await _httpClient.GetFromJsonAsync<List<SystemTool>>($"api/Squad/GetSystemTools/{userId}");
-#pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo.
                 return result;
-#pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo.
             }
             catch
             {
-#pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo.
-                return null;
-#pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo.
+
+                 return null;
+
             }
         }
     }

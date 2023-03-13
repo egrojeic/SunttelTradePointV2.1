@@ -45,6 +45,7 @@
             registerRequest.UserName = newUserResponse.UserName;
             registerRequest.PasswordConfirm = newUserResponse.Password;
             registerRequest.Password = newUserResponse.Password;
+            registerRequest.EntityId = newUserResponse.EntityId;
 
             await authStateProvider.Register(registerRequest);
             navigationManager.NavigateTo("");

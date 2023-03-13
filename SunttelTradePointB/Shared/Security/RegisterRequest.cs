@@ -16,5 +16,9 @@ namespace SunttelTradePointB.Shared.Security
         [Required]
         [Compare(nameof(Password), ErrorMessage = "Passwords do not match!")]
         public string PasswordConfirm { get; set; }
+        
+        [Required]
+        public string EntityId { get; set; }
+
     }
 }
