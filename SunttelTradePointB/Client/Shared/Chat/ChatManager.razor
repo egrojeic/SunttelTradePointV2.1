@@ -140,6 +140,7 @@
     public async void SetMsgRecord(CommunicationsMessage msgRecord)
     {
         communicationsMessages = communicationsMessages.Where(s => s.ParentMessageId == msgRecord.Id || s.Id == msgRecord.Id).ToList();
+        StateHasChanged();
     }
 
     #endregion ViewMsg

@@ -214,6 +214,7 @@
         CommunicationsMessage msg = null;
         if (Id != null) msg = communicationsMessages.Where(s => s.Id == Id).FirstOrDefault();
         if (msg!=null) communicationsMessagesRecord.Push(msg);
+        SetMsgRecord.InvokeAsync(msg);
     }
 
     public void GetMsgRecord()
