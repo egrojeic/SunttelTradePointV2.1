@@ -7,75 +7,8 @@
     {
         @if (msg.SenderEntity == null) msg.SenderEntity = new();
         @if (msg.SenderEntity.Id != null || true)
-        {
-            @if (msg.SenderEntity.Id != SenderEntityId && false)
-            {
-
-                <div class="msg-responder color-2">
-                    @{
-                        var _msgResponder = GetMsgResponder(msg.ParentMessageId);
-                        if (_msgResponder != null)
-                        {
-                            <div class="item-responder">
-                                <p class="text">@(_msgResponder.SenderEntity != null ? (_msgResponder.SenderEntity.Name != null ? _msgResponder.SenderEntity.Name : "") : "")</p>
-                                <p class="text">@_msgResponder.Message</p>
-                            </div>
-                        }
-                    }
-                    <div class="msg-mode-client-1 color-2">
-
-                        <div class="content-ico-1 color-2">
-                          
-                           
-                            @if (msg.MessageTypeId == CommunicationsMessageType.SystemMessage)
-                            {
-                                
-                                
-                                <div class="c-ico"><img src="@(msg.SenderEntity.SkinImageName!=null?pathimages+msg.SenderEntity.SkinImageName: "/images/ActorIco.png")"></div>
-                                <p class="hour-style">@msg.SendDateTime</p>
-                                <img class="ico-menu" src="/images//robot.svg">
-                            }
-                            else
-                            {
-                                
-                                
-                                <div class="c-ico"><img src="@(msg.SenderEntity.SkinImageName!=null?pathimages+msg.SenderEntity.SkinImageName: "/images/ActorIco.png")"></div>
-                                <p class="name">@msg.SenderEntity?.Name</p>
-                                <p class="hour-style">@msg.SendDateTime</p>
-                            }
-                            <img style="background-color:@(GetColorMessageIconName(msg.MessageIconName))" class="ico-menu-alert" src="/images//exclamation.svg">
-                        </div>
-
-
-
-                    </div>
-                    <div class="container-msg">
-                        <p class="text">@msg.Message</p>
-                    </div>
-                    <div class="msg-menu">
-                        <div class="content-msg-menu">
-                            <img @onclick='()=>SetResponder(msg.Id)' class="ico-menu-menu" src="/images//responder.svg">
-                            <img @onclick='()=>ViewModalMenu(msg.Id,"menu-1")' class="ico-menu-menu" src="/images//Reaction.svg">
-                            <img @onclick='()=>SetMsgRecordView(msg.Id)' class="ico-menu-1" src="/images//chat-menu.svg">
-                            @if (viewMenu1 && SelectionId == msg.Id)
-                            {
-                                <div class="menu-view-1">
-                                    <img @onclick='()=>SetColorMessageIconName("warning",msg.Id)' class="ico-menu bg-warning" src="/images//exclamation.svg">
-                                    <img @onclick='()=>SetColorMessageIconName("danger",msg.Id)' class="ico-menu bg-danger" src="/images//exclamation.svg">
-                                    <img @onclick='()=>SetColorMessageIconName("success",msg.Id)' class="ico-menu bg-success" src="/images//exclamation.svg">
-                                    <img @onclick='()=>ViewModalMenu("","")' class="ico-menu" src="/images//close.svg">
-                                </div>
-
-                            }
-                        </div>
-                    </div>
-                </div>
-
-            }
-            else
-            {
-
-
+        {          
+            
                 <div class="msg-responder" syle=" @(SelectionId == msg.Id?"position:sticky; top:-10px;":"") ">
                     @{
                         var _msgResponder = GetMsgResponder(msg.ParentMessageId);
@@ -87,7 +20,7 @@
                             </div>
                         }
                     }
-                    <div class="msg-mode-client-2">
+                    <div class="@(GetClassMode(msg.SenderEntity.Id))">
 
                         <div class="content-ico">
 
@@ -132,7 +65,7 @@
                         </div>
                     </div>
                 </div>
-            }
+            
 
         }
     }
@@ -166,7 +99,7 @@
     protected override void OnInitialized()
     {
         LoadObj();
-
+        SenderEntityId = UIClientGlobalVariables.EntityUserId;
         // communicationsMessages = (from m in communicationsMessages orderby m.SendDateTime.Day ascending orderby m.SendDateTime.Hour ascending orderby m.SendDateTime.Minute ascending orderby m.SendDateTime.Second ascending select m).ToList();
 
         pathimages = UIClientGlobalVariables.PathEntityImages + "/";
@@ -219,8 +152,19 @@
 
     public void GetMsgRecord()
     {
-       communicationsMessageRecord =  communicationsMessagesRecord.Pop();
+        communicationsMessageRecord =  communicationsMessagesRecord.Pop();
     }
+
+    public string GetClassMode(string _SenderEntityMsgId )
+    {
+        string _class = "msg-mode-client-2";
+        if (_SenderEntityMsgId != SenderEntityId)
+        {
+            _class = "msg-responder color-2";
+        }
+        return _class;
+    }
+
 
     public CommunicationsMessage GetMsgResponder(string? Id)
     {
