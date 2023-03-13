@@ -345,7 +345,7 @@
                 address.CityAddressRef = city.Id;
                 address.CityAddress = city;
             }
-            
+
 
         }
 
@@ -364,9 +364,9 @@
             geoPlaces.address.CityAddress.RegionCity = geo != null ? geo : new();
             geoPlaces.address.CityAddress.RegionCity.CountryRegion = country1 != null ? country1 : new();
         }
-      
 
-    ClosedInput();
+
+        ClosedInput();
     }
     protected async void EventSearcherValue(string value)
     {
@@ -413,7 +413,7 @@
         viewControlGeo = false;
         viewControlCity = false;
         ParamCountResul = 0;
-
+        StateHasChanged();
     }
 
     public void SetViewElemnt(string Element)
