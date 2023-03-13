@@ -56,12 +56,13 @@
                         <div class="content-msg-menu">
                             <img @onclick='()=>SetResponder(msg.Id)' class="ico-menu-menu" src="/images//responder.svg">
                             <img @onclick='()=>ViewModalMenu(msg.Id,"menu-1")' class="ico-menu-menu" src="/images//Reaction.svg">
+                            <img @onclick='()=>SetMsgRecordView(msg.Id)' class="ico-menu-1" src="/images//chat-menu.svg">
                             @if (viewMenu1 && SelectionId == msg.Id)
                             {
                                 <div class="menu-view-1">
-                                    <img @onclick='()=>SetColorMessageIconName("warning")' class="ico-menu bg-warning" src="/images//exclamation.svg">
-                                    <img @onclick='()=>SetColorMessageIconName("danger")' class="ico-menu bg-danger" src="/images//exclamation.svg">
-                                    <img @onclick='()=>SetColorMessageIconName("success")' class="ico-menu bg-success" src="/images//exclamation.svg">
+                                    <img @onclick='()=>SetColorMessageIconName("warning",msg.Id)' class="ico-menu bg-warning" src="/images//exclamation.svg">
+                                    <img @onclick='()=>SetColorMessageIconName("danger",msg.Id)' class="ico-menu bg-danger" src="/images//exclamation.svg">
+                                    <img @onclick='()=>SetColorMessageIconName("success",msg.Id)' class="ico-menu bg-success" src="/images//exclamation.svg">
                                     <img @onclick='()=>ViewModalMenu("","")' class="ico-menu" src="/images//close.svg">
                                 </div>
 
@@ -75,7 +76,7 @@
             {
 
 
-                <div class="msg-responder">
+                <div class="msg-responder" syle=" @(SelectionId == msg.Id?"position:sticky; top:-10px;":"") ">
                     @{
                         var _msgResponder = GetMsgResponder(msg.ParentMessageId);
                         if (_msgResponder != null)
@@ -89,7 +90,7 @@
                     <div class="msg-mode-client-2">
 
                         <div class="content-ico">
-                           
+
                             <img style="background-color:@(GetColorMessageIconName(msg.MessageIconName))" class="ico-menu-alert" src="/images//exclamation.svg">
                             @if (msg.MessageTypeId == CommunicationsMessageType.SystemMessage)
                             {
@@ -116,12 +117,13 @@
                         <div class="content-msg-menu">
                             <img @onclick='()=>SetResponder(msg.Id)' class="ico-menu" src="/images//responder.svg">
                             <img @onclick='()=>ViewModalMenu(msg.Id,"menu-1")' class="ico-menu-1" src="/images//Reaction.svg">
+                            <img @onclick='()=>SetMsgRecordView(msg.Id)' class="ico-menu-1" src="/images//chat-menu.svg">
                             @if (viewMenu1 && SelectionId == msg.Id)
                             {
                                 <div class="menu-view-1">
-                                    <img @onclick='()=>SetColorMessageIconName("warning")' class="ico-menu bg-warning" src="/images//exclamation.svg">
-                                    <img @onclick='()=>SetColorMessageIconName("danger")' class="ico-menu bg-danger" src="/images//exclamation.svg">
-                                    <img @onclick='()=>SetColorMessageIconName("success")' class="ico-menu bg-success" src="/images//exclamation.svg">
+                                    <img @onclick='()=>SetColorMessageIconName("warning",msg.Id)' class="ico-menu bg-warning" src="/images//exclamation.svg">
+                                    <img @onclick='()=>SetColorMessageIconName("danger",msg.Id)' class="ico-menu bg-danger" src="/images//exclamation.svg">
+                                    <img @onclick='()=>SetColorMessageIconName("success",msg.Id)' class="ico-menu bg-success" src="/images//exclamation.svg">
                                     <img @onclick='()=>ViewModalMenu("","")' class="ico-menu" src="/images//close.svg">
 
                                 </div>
@@ -148,7 +150,11 @@
     public List<CommunicationsMessage> communicationsMessages { get; set; } = new();
     [Parameter]
     public EventCallback<CommunicationsMessage> SetMsgResponder { get; set; }
+    [Parameter]
+    public EventCallback<CommunicationsMessage> SetMsgRecord { get; set; }
 
+    public Stack<CommunicationsMessage> communicationsMessagesRecord { get; set; } = new ();
+    public CommunicationsMessage communicationsMessageRecord { get; set; } = new();
 
 
     string SelectionId = "";
@@ -187,11 +193,11 @@
         return "#00ff00";
     }
 
-    public void SetColorMessageIconName(string value)
+    public void SetColorMessageIconName(string value, string id)
     {
         foreach (var item in communicationsMessages)
         {
-            item.MessageIconName = value;
+            if (id == item.Id) item.MessageIconName = value;
         }
         StateHasChanged();
     }
@@ -201,6 +207,18 @@
         CommunicationsMessage msg = null;
         if (Id != null) msg = communicationsMessages.Where(s => s.Id == Id).FirstOrDefault();
         if (msg != null) SetMsgResponder.InvokeAsync(msg);
+    }
+
+    public void SetMsgRecordView(string? Id)
+    {
+        CommunicationsMessage msg = null;
+        if (Id != null) msg = communicationsMessages.Where(s => s.Id == Id).FirstOrDefault();
+        if (msg!=null) communicationsMessagesRecord.Push(msg);
+    }
+
+    public void GetMsgRecord()
+    {
+       communicationsMessageRecord =  communicationsMessagesRecord.Pop();
     }
 
     public CommunicationsMessage GetMsgResponder(string? Id)
