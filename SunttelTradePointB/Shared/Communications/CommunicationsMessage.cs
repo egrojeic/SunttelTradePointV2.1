@@ -126,6 +126,9 @@ namespace SunttelTradePointB.Shared.Communications
 
         [BsonIgnoreIfNull]
         public EntityNodeCommunications Owner { get; set; }
+
+        [BsonIgnore]
+        public virtual int WeightByUser { get; set; }
     }
 
     /// <summary>

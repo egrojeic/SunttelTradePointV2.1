@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,5 +20,18 @@ namespace SunttelTradePointB.Shared.Security
         public string? EntityId { get; set; } = "";
 
         public List<SquadsByUser>? MySquads { get; set; }
+
+        [NotMapped]
+        public virtual string SkinImageName { get; set; }
+    }
+
+
+    public class UserEntity
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string SkinImageName { get; set; }
+
+
     }
 }

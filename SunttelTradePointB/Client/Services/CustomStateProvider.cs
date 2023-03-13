@@ -64,6 +64,8 @@ namespace SunttelTradePointB.Client.Services
 
             UIClientGlobalVariables.EntityUserId = EntityUserId??"";
 
+            UIClientGlobalVariables.UserSkinImage = _currentUser.SkinImageName;
+
 
 
             return _currentUser;

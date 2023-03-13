@@ -155,7 +155,9 @@ namespace SunttelTradePointB.Server.Controllers
                 EntityIdUser = (userInfo != null && userInfo.EntityID != null) ? userInfo.EntityID : "";
             }
 
-           
+            var response = await _entityNodes.GetEntityActorByUserId("sys", "127.0.0.1", User.Identity.Name);
+            var skinImage = response.IsSuccess ? response.Item2.skinImage : "";
+
 
 
             return Ok(new CurrentUser
@@ -165,6 +167,7 @@ namespace SunttelTradePointB.Server.Controllers
                 MySquads = squads,
                 LastSquadId = LastSquadId,
                 EntityId = EntityIdUser,
+                SkinImageName = skinImage,
                 Claims = User.Claims.ToDictionary(c => c.Type, c => c.Value)
                 
 

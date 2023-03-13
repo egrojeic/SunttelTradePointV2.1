@@ -1,6 +1,7 @@
 ﻿using SunttelTradePointB.Server.Migrations;
 using SunttelTradePointB.Server.Services.MasterTablesServices;
 using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.Security;
 
 namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
 {
@@ -32,6 +33,8 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<(bool IsSuccess, AtomConcept entityActorResponse, string? ErrorDescription)> GetEntityActorById(string userId, string ipAdress, string entityActorId);
 
+
+       
 
         /// <summary>
         /// Retrieves the Entity Actor by the user Id
