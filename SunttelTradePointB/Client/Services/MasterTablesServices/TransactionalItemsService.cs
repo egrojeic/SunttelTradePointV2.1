@@ -1176,13 +1176,13 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         public static async Task<List<TransactionalItem>> Gethttp(string Url)
         {
 
-            HttpClient httpGet = new HttpClient();          
-
-            var request = new HttpRequestMessage(HttpMethod.Get, Url);
-            request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad.ID.ToString());
+           
             try
             {
-               
+                HttpClient httpGet = new HttpClient();
+                var r = UIClientGlobalVariables.ActiveSquad.ID;
+                var request = new HttpRequestMessage(HttpMethod.Get, Url);
+                request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad.ID.ToString());
                 httpGet.BaseAddress = new Uri(Url);
                 
 
@@ -1193,7 +1193,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 {
                     return content;
                 }
-                else { return null; }
+                else { return new(); }
 
             }
             catch (Exception ex)
@@ -1202,7 +1202,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 System.Diagnostics.Debug.WriteLine(errMessage);
 
             }
-            return null;
+            return new();
 
         }
 
