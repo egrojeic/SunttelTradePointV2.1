@@ -7,6 +7,7 @@ using MongoDB.Bson.IO;
 using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents;
 using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.SquadsMgr;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -40,11 +41,23 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             TransactionalItemImage,
             EntityImage
         }
-        public string Host { get { return UIClientGlobalVariables.PathEntityImages+"/"; } }
+        public string Host { get { return UIClientGlobalVariables.PathEntityImages + "/"; } }
         #endregion Property
 
         private readonly HttpClient _httpClient;
+        private  HttpClient GethttpClient
+        {
+            get
+            {
+                var Clienthttp = new HttpClient();
+                Clienthttp.DefaultRequestHeaders.Add("SquadId", UIClientGlobalVariables.ActiveSquad.ID.ToString());
+               // Clienthttp.BaseAddress = "";
 
+
+                return Clienthttp;
+            }
+        }
+        
         #region Mode Edit
 
         public IWebAssemblyHostEnvironment environment { get; set; }
@@ -74,11 +87,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         }
         public async Task<List<TransactionalItem>> GetTransactionalItemsList(int? page = 1, int? perPage = 10, string? nameLike = null, string? className = null, string? Code = null, bool forceRefresh = false)
         {
-            string namteToFind = nameLike != null ? nameLike : "";
+            string namteToFind = nameLike != null ? nameLike : "";           
 
             try
             {
-                transactionalItemsList = await _httpClient.GetFromJsonAsync<List<TransactionalItem>>($"api/TransactionalItems/GetTransactionalItems?page={page}&perPage={perPage}&filterName={namteToFind}");
+                transactionalItemsList = await GethttpClient.GetFromJsonAsync<List<TransactionalItem>>($"api/TransactionalItems/GetTransactionalItems?page={page}&perPage={perPage}&filterName={namteToFind}");
                 page = page == 0 ? 1 : page;
                 return transactionalItemsList != null ? transactionalItemsList : new List<TransactionalItem>();
 
@@ -141,13 +154,13 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                var list = await GetTransactionalItemsList(1,250,filterString);
+                var list = await GetTransactionalItemsList(1, 250, filterString);
                 if (list == null) list = new();
                 // var list = await _httpClient.GetFromJsonAsync<List<Concept>>($"api/ConceptsSelector/GetSelectorListPackingMaterials?filterString={filterString}");
 
-             
 
-                return  new List<Concept>();
+
+                return new List<Concept>();
 
             }
             catch (Exception ex)
@@ -960,7 +973,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
-            
+
             transactionalItem.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
 
             try
@@ -1116,7 +1129,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
-    
+
         public async Task<bool> SaveAssemblyType(AssemblyType assemblyType)
         {
             string userId = UIClientGlobalVariables.UserId;
