@@ -92,7 +92,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             try
             {
-                transactionalItemsList = await GethttpClient.GetFromJsonAsync<List<TransactionalItem>>($"api/TransactionalItems/GetTransactionalItems?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}page={page}&perPage={perPage}&filterName={namteToFind}");
+                transactionalItemsList = await Gethttp($"api/TransactionalItems/GetTransactionalItems?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}page={page}&perPage={perPage}&filterName={namteToFind}");
+
+                   // .GetFromJsonAsync<List<TransactionalItem>>($"api/TransactionalItems/GetTransactionalItems?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}page={page}&perPage={perPage}&filterName={namteToFind}");
                 page = page == 0 ? 1 : page;
                 return transactionalItemsList != null ? transactionalItemsList : new List<TransactionalItem>();
 
@@ -1128,6 +1130,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             catch (Exception ex)
             {
                 string errMessage = ex.Message;
+                Console.WriteLine("error : "+ex.Message);
                 return false;
             }
 
@@ -1178,6 +1181,37 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         Task<TransactionalItemStatus> ITransactionalItems.GetSelectorListPackingMaterials(string? filterString)
         {
             throw new NotImplementedException();
+        }
+
+
+        public static async Task<List<TransactionalItem>> Gethttp(string Url)
+        {
+
+            HttpClient httpGet = new HttpClient();
+            string UrlGetMetodo = "";
+            try
+            {
+                var httpResponse = new HttpResponseMessage();
+                httpGet.DefaultRequestHeaders.Add("SquadId", UIClientGlobalVariables.ActiveSquad.ID.ToString());
+
+                httpGet.BaseAddress = new Uri(Url);
+
+                var response = await httpGet.GetFromJsonAsync<List<TransactionalItem>>(Url);
+
+                if (response != null)
+                {
+                    return response;
+                }
+                else { return null; }
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;              
+
+            }
+            return null;
+
         }
 
     }
