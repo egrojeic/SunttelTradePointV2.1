@@ -10,6 +10,7 @@ using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.SquadsMgr;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
@@ -91,7 +92,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             try
             {
-                transactionalItemsList = await GethttpClient.GetFromJsonAsync<List<TransactionalItem>>($"api/TransactionalItems/GetTransactionalItems?page={page}&perPage={perPage}&filterName={namteToFind}");
+                transactionalItemsList = await GethttpClient.GetFromJsonAsync<List<TransactionalItem>>($"api/TransactionalItems/GetTransactionalItems?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}page={page}&perPage={perPage}&filterName={namteToFind}");
                 page = page == 0 ? 1 : page;
                 return transactionalItemsList != null ? transactionalItemsList : new List<TransactionalItem>();
 
