@@ -48,9 +48,9 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         {
             var squadId = "";
 
-            if (Request.Headers.TryGetValue("X-Custom-Header", out var customHeaderValue))
+            if (Request.Headers.TryGetValue("SquadId", out var customHeaderValue))
             {
-                squadId = Request.Headers["SquadId"];
+                squadId = customHeaderValue; // Request.Headers["SquadId"];
 
             }
 
