@@ -46,18 +46,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         #endregion Property
 
         private readonly HttpClient _httpClient;
-        private  HttpClient GethttpClient
-        {
-            get
-            {
-                var Clienthttp = new HttpClient();
-                Clienthttp.DefaultRequestHeaders.Add("SquadId", UIClientGlobalVariables.ActiveSquad.ID.ToString());
-               // Clienthttp.BaseAddress = "";
-
-
-                return Clienthttp;
-            }
-        }
+      
         
         #region Mode Edit
 
