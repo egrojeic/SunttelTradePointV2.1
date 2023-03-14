@@ -1,0 +1,266 @@
+﻿.content-msg {
+    background-color: white;
+    overflow-y: auto;
+    height: 405px;
+    max-width:959px;
+    padding: 0px 10px 100px 8px;
+    transform: rotateY(0deg);
+}
+
+/*Cliente 2*/
+.msg-mode-client-2 {
+    min-width: 300px;
+    padding-right: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
+    column-gap: 5px;
+}
+
+.p-style {
+    margin: 0px;
+    font-size: 11px;
+}
+
+.position-client-1 {
+    min-width: 300px;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: start;
+    align-items: center;   
+    column-gap:5px;
+  
+}
+
+
+
+.content-ico {
+    display: flex;
+    flex-direction: row;
+    column-gap: 5px;
+    align-items: end;
+    justify-content: end;
+    margin-bottom: 5px;
+    width: 300px;
+    align-items: center;
+}
+
+
+
+    .content-ico p {
+        margin: 0px;
+        color: white;
+    }
+
+.c-ico {
+    height: 35px;
+    width: 35px;
+    background-color: white;
+    border-radius: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2px;
+    box-shadow: -1px -1px 4px -1px black inset;
+}
+
+
+
+    .c-ico img {
+        height: 25px;
+    }
+
+.text {
+    font-size: 15px;
+    color: white;
+    margin: 0px;
+    min-width: 200px;
+    text-align: start;
+    white-space: nowrap;
+}
+
+
+
+.label-color {
+    background-color: #00ff00;
+    height: 20px;
+    width: 120px;
+    transform: rotate(-49deg);
+    position: absolute;
+    border-radius: 100px 100px 0px 0px;
+    box-shadow: 0px 0px 5px white inset, 0px 0px 2px 1px gray, 3px 0px 5px -2px inset gray, -3px 0px 5px -2px inset gray;
+    top: 19px;
+    left: -35px;
+}
+
+.label-color-2 {
+    background-color: #00ff00;
+    height: 20px;
+    width: 120px;
+    transform: rotate(-49deg);
+    position: absolute;
+    border-radius: 100px 100px 0px 0px;
+    box-shadow: 0px 0px 5px white inset, 0px 0px 2px 1px gray, 3px 0px 5px -2px inset gray, -3px 0px 5px -2px inset gray;
+    top: 0px;
+    left: 120px;
+}
+
+
+
+
+.ico-menu-alert {
+    padding: 5px;
+    margin-left: 10px;
+    width: 30px;
+    border-radius: 5px;
+}
+
+.container-text-2 {
+    width: 100%;
+    padding-right: 2px;
+    white-space: break-spaces;
+}
+
+    .container-text-2 .text {
+        text-align: justify;
+        margin-left: 20px;
+        margin-right: 20px;
+        color: black;
+    }
+
+
+.msg-responder {
+    background-color: #7eaae4;
+    padding: 2px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;   
+   /* box-shadow: 0px 1px 2px 1px;*/
+    max-width: 1000px;
+    overflow: hidden;
+  
+}
+
+.msg-responder-style {
+    background-color: #7eaae4;
+    padding: 2px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    max-width: 1000px;
+    overflow: hidden;
+}
+
+.msg-menu-2 {
+    height: 25px;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    position: relative;
+    width: 100%;
+}
+
+.msg-menu-1 {
+    height: 25px;
+    display: flex;
+    flex-direction:row;
+    justify-content: start;
+    position: relative;
+    width: 100%;
+}
+
+.ico-img-menu {
+    background-color: transparent;
+    box-shadow: 0px 0px 4px -1px white inset, 0px 0px 4px -1px black;
+    border-radius: 5px;
+    background-color: #a4b5b7;
+    padding: 3px;
+    height: 25px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+
+.content-msg-menu {
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+
+.menu-view-client-1 {
+    background-color: #1e92af;
+    position: absolute;
+   
+    padding: 5px;
+    border-radius: 5px;
+    top: -30px;
+    left: 80px;
+}
+
+
+
+.item-responder {
+    background: white;
+    padding-left: 10px;
+    overflow: hidden;
+    border-radius: 10px 10px 1px 1px;
+    
+}
+
+    .item-responder p {
+        margin: 0px;
+        margin-top: 2px;
+        margin-bottom: 5px;
+    }
+
+.menu-view-1 {
+    position: absolute;
+    top: -30px;
+    left: 80px;
+    background-color: #bed3f1;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.container-msg-1 {
+    margin-left: 20px;
+    margin-right: 20px;
+    white-space: break-spaces;
+    max-width:800px;
+  
+}
+
+.container-msg-2 {
+    margin-left: 20px;
+    margin-right: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;   
+
+}
+
+
+p {
+    color: white;
+}
+
+.text {
+    font-size: 12px;
+    white-space:inherit;
+    text-align:justify;
+  
+}
+
+
+/* segun do cliente*/
+
+
+
+
+.color-2 {
+    background-color: #1eb939;
+}
+
+
+

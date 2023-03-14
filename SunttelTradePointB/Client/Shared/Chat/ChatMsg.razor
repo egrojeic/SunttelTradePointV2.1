@@ -1,0 +1,178 @@
+﻿@using SunttelTradePointB.Shared.Communications
+@inject CommunicationService communicationService
+
+
+@if(msg != null){
+    <div class="@(GetClassMode(msg.SenderEntity.Id,"container"))" style="  @(msg.ParentMessageId!=null? "box-shadow: 0px 0px 0px": "");   @(SelectionId == msg.Id?"position:sticky; top:-10px;":"") ">
+    <div class="@(GetClassMode(msg.SenderEntity.Id,"header"))">
+
+        <img style="background-color:@(GetColorMessageIconName(msg.MessageIconName))" class="ico-menu-alert" src="/images//exclamation.svg">
+        @if (msg.MessageTypeId == CommunicationsMessageType.SystemMessage)
+        {
+            <img class="ico-menu" src="/images//robot.svg">
+            <p class="p-style">@msg.SendDateTime</p>
+            <div class="c-ico"><img src="@(msg.SenderEntity.SkinImageName!=null?pathimages+msg.SenderEntity.SkinImageName: "/images/ActorIco.png")"></div>
+        }
+        else
+        {
+            <p class="p-style">@msg.SendDateTime</p>
+            <p class="p-style">@msg.SenderEntity?.Name</p>
+            <div class="c-ico"><img src="@(msg.SenderEntity.SkinImageName!=null?pathimages+msg.SenderEntity.SkinImageName: "/images/ActorIco.png")"></div>
+        }
+
+    </div>
+    <div class="@(GetClassMode(msg.SenderEntity.Id,"msg"))">
+        <div> <p class="text">@msg.Message</p></div>
+    </div>
+    <div class="@(GetClassMode(msg.SenderEntity.Id,"menu"))">
+        <div class="content-msg-menu">
+            <img @onclick='()=>SetModelResponder(msg.Id)' class="ico-img-menu" src="/images//responder.svg">
+            <img @onclick='()=>ViewModalMenu(msg.Id,"menu-1")' class="ico-img-menu" src="/images//Reaction.svg">
+            <img @onclick='()=>SetMsgRecordView(msg.Id)' class="ico-img-menu" src="/images//chat-menu.svg">
+            @if (viewMenu1 && SelectionId == msg.Id)
+            {
+                <div class="menu-view-1">
+                    <img @onclick='()=>SetColorMessageIconName("warning",msg.Id)' class="ico-menu bg-warning" src="/images//exclamation.svg">
+                    <img @onclick='()=>SetColorMessageIconName("danger",msg.Id)' class="ico-menu bg-danger" src="/images//exclamation.svg">
+                    <img @onclick='()=>SetColorMessageIconName("success",msg.Id)' class="ico-menu bg-success" src="/images//exclamation.svg">
+                    <img @onclick='()=>ViewModalMenu("","")' class="ico-menu" src="/images//close.svg">
+                </div>
+
+            }
+        </div>
+    </div>
+</div>
+}
+
+
+
+
+
+@code {
+    [Parameter]
+    public CommunicationsMessage msg { get; set; } = new();
+    [Parameter]
+    public List<CommunicationsMessage> communicationsMessages { get; set; } = new();
+    [Parameter]
+    public EventCallback<string> SetResponder { get; set; }
+    [Parameter]
+    public EventCallback<string> SetMsgRecordViewModel { get; set; }
+    [Parameter]
+    public bool viewHistory { get; set; } =  false;
+
+    public string SelectionId { get; set; }
+    [Parameter]
+    public bool ChildrenMessage { get; set; } = false;
+
+    bool viewMenu1 = false;
+   
+
+    public string SenderEntityId { get; set; }
+    string pathimages = "";
+
+    protected override void OnInitialized()
+    {
+        LoadObj();
+        SenderEntityId = UIClientGlobalVariables.EntityUserId;
+
+        pathimages = UIClientGlobalVariables.PathEntityImages + "/";
+    }
+
+
+    public void SetModelResponder(string? Id)
+    {
+        SetResponder.InvokeAsync(Id);
+    }
+
+    public void SetMsgRecordView(string? Id)
+    {
+        SetMsgRecordViewModel.InvokeAsync(Id);
+    }
+
+    public void GetMsgRecord()
+    {
+
+    }
+
+    public void SetColorMessageIconName(string value, string id)
+    {
+        foreach (var item in communicationsMessages)
+        {
+            if (id == item.Id) item.MessageIconName = value;
+        }
+        StateHasChanged();
+    }
+
+    public void ViewModalMenu(string id, string _reques)
+    {
+        SelectionId = id;
+        StateHasChanged();
+        if (_reques == "menu-1") viewMenu1 = true;
+        StateHasChanged();
+
+    }
+
+    public string GetColorMessageIconName(string item)
+    {
+        if (item == "warning") { return "#ff8040"; }
+        if (item == "danger") { return "#ff0000"; }
+        if (item == "success") { return "#80ff00"; }
+        return "#00ff00";
+    }
+
+    public string GetClassMode(string _SenderEntityMsgId, string value)
+    {
+        if (value == "header")
+        {
+            string _class = "msg-mode-client-2";
+            if (_SenderEntityMsgId != SenderEntityId)
+            {
+                _class = "position-client-1";
+            }
+            return _class;
+        }
+        if (value == "msg")
+        {
+            string _class = "container-msg-1";
+            if (_SenderEntityMsgId != SenderEntityId)
+            {
+                _class = "container-msg-2 ";
+            }
+            return _class;
+        }
+        if (value == "menu")
+        {
+            string _class = "msg-menu-2";
+            if (_SenderEntityMsgId != SenderEntityId)
+            {
+                _class = "msg-menu-1";
+            }
+            return _class;
+        }
+
+        if (value == "container")
+        {
+            string _class = "msg-responder ";
+            if (_SenderEntityMsgId != null && _SenderEntityMsgId != "" && _SenderEntityMsgId != SenderEntityId)
+            {
+                _class = "msg-responder-style color-2";
+            }
+            return _class;
+        }
+        return "";
+
+    }
+
+
+    public CommunicationsMessage GetMsgResponder(string? Id)
+    {
+        return communicationsMessages.Where(s => s.Id == Id).FirstOrDefault();
+    }
+
+    public void LoadObj()
+    {
+
+    }
+
+}
+
