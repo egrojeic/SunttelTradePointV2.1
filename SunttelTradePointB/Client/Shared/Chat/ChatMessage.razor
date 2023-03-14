@@ -3,7 +3,7 @@
 
 
 <div class="content-msg">
-    @if (modeMsg == "messageHistory")
+    @if (modeMsg == "messageHistory" && communicationsMessages.Count()>1)
     {
         <div class="margin-top"></div>
     }
@@ -21,7 +21,7 @@
                         <ChatMsg msg="@GetMsgResponder(msg.ParentMessageId)"
                              communicationsMessages="@communicationsMessages"
                              SetResponder="SetResponder"
-                 SetMsgRecordViewModel="SetMsgRecordView" ChildrenMessage="true">
+                             SetMsgRecordViewModel="SetMsgRecordView" ChildrenMessage="true">
                         </ChatMsg>
 
                     }
@@ -50,6 +50,7 @@
                  SetMsgRecordViewModel="SetMsgRecordView"
                  ChildrenMessage="true">
                     </ChatMsg>
+                    modeMsg = "";
                 }
                
 

@@ -64,7 +64,7 @@
     [Parameter]
     public EventCallback<string> EventCallModeMenu { get; set; }
     [Parameter]
-    public EventCallback<string> EventCallNewPage { get; set; }
+    public EventCallback<string> EventCallNewPage { get; set; }   
     [Parameter]
     public EventCallback<ChannelCommunicationsGroup> EventCallSetgroupEnable { get; set; }
     [Parameter]
@@ -111,6 +111,8 @@
         StateHasChanged();
 
     }
+
+
 
     public async Task FilterGroup(string filter)
     {

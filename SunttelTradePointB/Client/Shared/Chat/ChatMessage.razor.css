@@ -15,7 +15,7 @@
     margin-top: 15px;
     margin-bottom: 15px;
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
     row-gap:8px;
     border-radius: 10px;
 }
