@@ -20,7 +20,7 @@ namespace SunttelTradePointB.Server.Interfaces.Communications
         /// <param name="startingDate"></param>
         /// <param name="filterCriteria"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<CommunicationsMessage>? communicationsMessages, string? ErrorDescription)> GetMessagesOfAnEntity(string entityId, string ipAdress, DateTime? startingDate = null, string? filterCriteria = "");
+        Task<(bool IsSuccess, List<CommunicationsMessage>? communicationsMessages, string? ErrorDescription)> GetMessagesOfAnEntity(string entityId, string ipAdress, DateTime? startingDate = null, string? channelCommunicationGroupId = null, string? filterCriteria = "");
 
 
         /// <summary>

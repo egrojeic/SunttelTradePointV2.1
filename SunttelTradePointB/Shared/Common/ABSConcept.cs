@@ -36,8 +36,9 @@ namespace SunttelTradePointB.Shared.Common
         [BsonIgnoreIfNull]
         public string Notes { get; set; }
 
+        [BsonIgnoreIfNull]
+        public string SquadId { get; set; }
 
-        
 
     }
 

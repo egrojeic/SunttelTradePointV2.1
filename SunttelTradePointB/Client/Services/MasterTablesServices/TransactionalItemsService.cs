@@ -811,6 +811,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         {
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            packingSpecs.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
+
             try
             {
                 var resul = await _httpClient.PostAsJsonAsync<PackingSpecs>($"api/TransactionalItems/SaveProductPackingSpecs?userId={userId}&ipAddress={ipAddress}&transactionalItemId={transactionalItemId}", packingSpecs);
@@ -830,6 +833,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         {
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            transactionalItemTag.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
+
             try
             {
                 var resul = await _httpClient.PostAsJsonAsync<TransactionalItemTag>($"api/TransactionalItems/SaveTags?userId={userId}&ipAddress={ipAddress}&transactionalItemId={transactionalItemId}", transactionalItemTag);
@@ -849,6 +855,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         {
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            transactionalItemProcessStep.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
+
             try
             {
                 var resul = await _httpClient.PostAsJsonAsync<TransactionalItemProcessStep>($"api/TransactionalItems/SaveProductionSpecs?userId={userId}&ipAddress={ipAddress}&transactionalItemId={transactionalItemId}", transactionalItemProcessStep);
@@ -868,6 +877,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         {
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            transactItemImage.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
+
             try
             {
                 var resul = await _httpClient.PostAsJsonAsync<TransactItemImage>($"api/TransactionalItems/SaveImage?userId={userId}&ipAddress={ipAddress}&transactionalItemId={transactionalItemId}", transactItemImage);
@@ -887,6 +899,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         {
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            transactionalItemQualityPair.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
+
             try
             {
                 var resul = await _httpClient.PostAsJsonAsync<TransactionalItemQualityPair>($"api/TransactionalItems/SaveQualityParameters?userId={userId}&ipAddress={ipAddress}&transactionalItemId={transactionalItemId}", transactionalItemQualityPair);
@@ -904,6 +919,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         {
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            productModel.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
+
             try
             {
                 var resul = await _httpClient.PostAsJsonAsync<ProductModel>($"api/TransactionalItems/SaveTransactionalItemModels?userId={userId}&ipAddress={ipAddress}&transactionalItemId={transactionalItemId}", productModel);
@@ -921,6 +939,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         {
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            transactionalItemCharacteristicPair.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
+
             try
             {
                 var resul = await _httpClient.PostAsJsonAsync<TransactionalItemCharacteristicPair>($"api/TransactionalItems/SaveCharacteristics?userId={userId}&ipAddress={ipAddress}&transactionalItemId={transactionalItemId}", transactionalItemCharacteristicPair);
@@ -939,6 +960,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            
+            transactionalItem.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
+
             try
             {
                 var resul = await _httpClient.PostAsJsonAsync<TransactionalItem>($"api/TransactionalItems/SaveTransactionalItem?userId={userId}&ipAddress={ipAddress}", transactionalItem);
@@ -957,6 +981,10 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         {
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            seasonBusiness.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
+
+
             try
             {
                 var resul = await _httpClient.PostAsJsonAsync<SeasonBusiness>($"api/TransactionalItemsRelatedConcepts/SaveSeason?userId={userId}&ipAddress={ipAddress}", seasonBusiness);
@@ -974,6 +1002,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         {
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            labelStyle.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
+
             try
             {
                 var resul = await _httpClient.PostAsJsonAsync<LabelStyle>($"api/TransactionalItemsRelatedConcepts/SaveLabelStyle?userId={userId}&ipAddress={ipAddress}", labelStyle);
@@ -990,6 +1021,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         {
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            box.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
+
             try
             {
                 var resul = await _httpClient.PostAsJsonAsync<Box>($"api/TransactionalItemsRelatedConcepts/SaveBox?userId={userId}&ipAddress={ipAddress}", box);
@@ -1007,6 +1041,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         {
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            transactionalItemType.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
 
             try
             {
@@ -1026,6 +1062,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
 
+            conceptGroup.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
+
             try
             {
                 var resul = await _httpClient.PostAsJsonAsync<ConceptGroup>($"api/TransactionalItemsRelatedConcepts/SaveTransactionalItemGroup?userId={userId}&ipAddress={ipAddress}", conceptGroup);
@@ -1043,6 +1081,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         {
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            transactionalItemStatus.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
 
             try
             {
@@ -1062,6 +1102,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
 
+            labelPaper.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
+
             try
             {
                 var resul = await _httpClient.PostAsJsonAsync<LabelPaper>($"api/TransactionalItemsRelatedConcepts/SaveLabelPaper?userId={userId}&ipAddress={ipAddress}", labelPaper);
@@ -1079,6 +1121,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         {
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            assemblyType.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
 
             try
             {

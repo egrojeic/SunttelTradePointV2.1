@@ -121,7 +121,7 @@ namespace SunttelTradePointB.Server.Services.Communications
         /// <param name="startingDate"></param>
         /// <param name="filterCriteria"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<CommunicationsMessage>? communicationsMessages, string? ErrorDescription)> GetMessagesOfAnEntity(string entityId, string ipAdress, DateTime? startingDate = null, string? filterCriteria = "")
+        public async Task<(bool IsSuccess, List<CommunicationsMessage>? communicationsMessages, string? ErrorDescription)> GetMessagesOfAnEntity(string entityId, string ipAdress, DateTime? startingDate = null, string? channelCommunicationGroupId = null, string? filterCriteria = "")
         {
             try
             {
@@ -133,16 +133,17 @@ namespace SunttelTradePointB.Server.Services.Communications
                 {
                     pipeline.Add(
                     new BsonDocument{
-                        { "$match",  new BsonDocument {
-                            { "$text",
-                                new BsonDocument {
-                                    { "$search",strNameFiler },
-                                    { "$language","english" },
-                                    { "$caseSensitive",false },
-                                    { "$diacriticSensitive",false }
+                        { "$match",  
+                            new BsonDocument {
+                                { "$text",
+                                    new BsonDocument {
+                                        { "$search",strNameFiler },
+                                        { "$language","english" },
+                                        { "$caseSensitive",false },
+                                        { "$diacriticSensitive",false }
+                                    }
                                 }
                             }
-                        }
                         }
                     }
                 );
@@ -157,7 +158,13 @@ namespace SunttelTradePointB.Server.Services.Communications
                             new BsonDocument("$gt", new BsonDateTime(startDate)))
 
                         ));
-               
+
+                pipeline.Add(
+                        new BsonDocument(
+                            "$match",
+                            new BsonDocument("DestinyGroupChannel._id", new ObjectId(channelCommunicationGroupId))
+
+                        ));
 
                 List<CommunicationsMessage> results = await _messagedb.Aggregate<CommunicationsMessage>(pipeline).ToListAsync();
 

@@ -118,10 +118,10 @@ namespace SunttelTradePointB.Server.Controllers.Communications
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetMessagesOfAnEntity")]
-        public async Task<IActionResult> GetMessagesOfAnEntity(string userId, string ipAdress, DateTime? startingDate = null, string? filterCriteria = "")
+        public async Task<IActionResult> GetMessagesOfAnEntity(string userId, string ipAdress, DateTime? startingDate = null, string? channelCommunicationGroupId = null, string? filterCriteria = "")
         {
 
-            var response = await _messagesValet.GetMessagesOfAnEntity(userId, ipAdress, startingDate, filterCriteria);
+            var response = await _messagesValet.GetMessagesOfAnEntity(userId, ipAdress, startingDate, channelCommunicationGroupId, filterCriteria);
 
             if (response.IsSuccess)
             {

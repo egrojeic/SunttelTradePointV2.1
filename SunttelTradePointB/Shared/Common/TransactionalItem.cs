@@ -78,11 +78,9 @@ namespace SunttelTradePointB.Shared.Common
 
 
 
-    public class TransactItemImage {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
-
+    public class TransactItemImage: RecordItem
+    {
+        
         [BsonIgnoreIfNull]
         public string Name { get; set; }
 
@@ -155,10 +153,9 @@ namespace SunttelTradePointB.Shared.Common
     }
 
 
-    public class TransactionalItemTag {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
+    public class TransactionalItemTag: RecordItem
+    {
+        
         public string Key { get; set; }
         public string Value { get; set; }
 
@@ -250,11 +247,8 @@ namespace SunttelTradePointB.Shared.Common
     }
 
 
-    public class TransactionalItemCharacteristicPair {
-
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
+    public class TransactionalItemCharacteristicPair: RecordItem
+    {
 
         [DisplayName("Characteristic")]
         public TransactionalItemTypeCharacteristic TransactionalItemCharacteristic { get; set; }
@@ -272,12 +266,9 @@ namespace SunttelTradePointB.Shared.Common
         public string AdditionalDescription { get; set; }
     }
 
-    public class TransactionalItemQualityPair
+    public class TransactionalItemQualityPair: RecordItem
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
-
+        
         [DisplayName("Item Quality")]
         public TransactionalItemQuality TransactionalItemQuality { get; set; }
         public string Value { get; set; }
