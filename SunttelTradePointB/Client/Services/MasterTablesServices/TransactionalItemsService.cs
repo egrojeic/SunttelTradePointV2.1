@@ -1182,11 +1182,10 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
            
             try
             {
-                //HttpClient httpGet = _httpClient;
+               
                 var r = UIClientGlobalVariables.ActiveSquad.ID;
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
                 request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad.ID.ToString());
-                //_httpClient.BaseAddress = new Uri(Url);
                 
 
                 var response = await _httpClient.SendAsync(request);
