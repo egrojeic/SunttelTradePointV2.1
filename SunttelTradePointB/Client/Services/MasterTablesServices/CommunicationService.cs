@@ -60,7 +60,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         }
 
 
-        public async Task<List<CommunicationsMessage>> GetMessagesOfAnEntity(string startingDate, string filterCriteria)
+        public async Task<List<CommunicationsMessage>> GetMessagesOfAnEntity(string channelCommunicationGroupId, string? startingDate=null, string? filterCriteria=null)
         {
             var userId = UIClientGlobalVariables.UserId;
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
@@ -70,7 +70,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 {
                     ipAddress = "127.0.0.0";
                 }
-                var list = await _httpClient.GetFromJsonAsync<List<CommunicationsMessage>>($"api/CommunicationsManagement/GetMessagesOfAnEntity?userId={userId}&ipAdress={ipAddress}&startingDate={startingDate}&filterCriteria={filterCriteria}");
+                var list = await _httpClient.GetFromJsonAsync<List<CommunicationsMessage>>($"api/CommunicationsManagement/GetMessagesOfAnEntity?userId={userId}&ipAdress={ipAddress}&channelCommunicationGroupId={channelCommunicationGroupId}&filterCriteria={filterCriteria}");
                 return list;
             }
             catch (Exception ex)

@@ -46,18 +46,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         #endregion Property
 
         private readonly HttpClient _httpClient;
-        private  HttpClient GethttpClient
-        {
-            get
-            {
-                var Clienthttp = new HttpClient();
-                Clienthttp.DefaultRequestHeaders.Add("SquadId", UIClientGlobalVariables.ActiveSquad.ID.ToString());
-               // Clienthttp.BaseAddress = "";
-
-
-                return Clienthttp;
-            }
-        }
+      
         
         #region Mode Edit
 
@@ -92,7 +81,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             try
             {
-                transactionalItemsList = await Gethttp($"api/TransactionalItems/GetTransactionalItems?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}page={page}&perPage={perPage}&filterName={namteToFind}");
+                transactionalItemsList = await Gethttp($"api/TransactionalItems/GetTransactionalItems?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}&page={page}&perPage={perPage}&filterName={namteToFind}");
 
                    // .GetFromJsonAsync<List<TransactionalItem>>($"api/TransactionalItems/GetTransactionalItems?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}page={page}&perPage={perPage}&filterName={namteToFind}");
                 page = page == 0 ? 1 : page;
@@ -1187,30 +1176,33 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         public static async Task<List<TransactionalItem>> Gethttp(string Url)
         {
 
-            HttpClient httpGet = new HttpClient();
-            string UrlGetMetodo = "";
+           
             try
             {
-                var httpResponse = new HttpResponseMessage();
-                httpGet.DefaultRequestHeaders.Add("SquadId", UIClientGlobalVariables.ActiveSquad.ID.ToString());
-
+                HttpClient httpGet = new HttpClient();
+                var r = UIClientGlobalVariables.ActiveSquad.ID;
+                var request = new HttpRequestMessage(HttpMethod.Get, Url);
+                request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad.ID.ToString());
                 httpGet.BaseAddress = new Uri(Url);
+                
 
-                var response = await httpGet.GetFromJsonAsync<List<TransactionalItem>>(Url);
-
-                if (response != null)
+                var response = await httpGet.SendAsync(request);
+                var content  = await response.Content.ReadFromJsonAsync<List<TransactionalItem>>();
+                System.Diagnostics.Debug.WriteLine(response.IsSuccessStatusCode);
+                if (response.IsSuccessStatusCode)
                 {
-                    return response;
+                    return content;
                 }
-                else { return null; }
+                else { return new(); }
 
             }
             catch (Exception ex)
             {
-                string errMessage = ex.Message;              
+                string errMessage = ex.Message;
+                System.Diagnostics.Debug.WriteLine(errMessage);
 
             }
-            return null;
+            return new();
 
         }
 
