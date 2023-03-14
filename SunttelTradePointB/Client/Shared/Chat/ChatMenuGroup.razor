@@ -75,7 +75,6 @@
     string groupEnablId = "";
 
 
-
     List<ChannelCommunicationsGroup> channelCommunicationsGroups = new();
     ChannelCommunicationsGroup channelCommunicationsGroup = new();
     public List<CommunicationsGroupParticipant> participants { get; set; }
@@ -118,6 +117,7 @@
         if (filter == "all")
         {
             channelCommunicationsGroups = await actorsNodeService.GetChannelCommunicationsGroups();
+            if (channelCommunicationsGroups!=null) channelCommunicationsGroups = channelCommunicationsGroups.OrderBy(s => s.WeightByUser).ToList();
         }else
         {
             if (_filter != "")

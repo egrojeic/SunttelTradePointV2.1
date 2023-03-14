@@ -3,136 +3,61 @@
 
 
 <div class="content-msg">
+    @if (modeMsg == "messageHistory")
+    {
+        <div class="margin-top"></div>
+    }
     @foreach (var msg in communicationsMessages)
     {
         @if (msg.SenderEntity == null) msg.SenderEntity = new();
-        @if (msg.SenderEntity.Id != null || true)
+        @if (msg.SenderEntity.Id != null)
         {
-            @if (msg.SenderEntity.Id != SenderEntityId && false)
-            {
 
-                <div class="msg-responder color-2">
-                    @{
-                        var _msgResponder = GetMsgResponder(msg.ParentMessageId);
-                        if (_msgResponder != null)
-                        {
-                            <div class="item-responder">
-                                <p class="text">@(_msgResponder.SenderEntity != null ? (_msgResponder.SenderEntity.Name != null ? _msgResponder.SenderEntity.Name : "") : "")</p>
-                                <p class="text">@_msgResponder.Message</p>
-                            </div>
-                        }
+            <div class="msg-responder">
+                @{
+                    if (msg.ParentMessageId != null && modeMsg != "messageHistory")
+                    {
+
+                        <ChatMsg msg="@GetMsgResponder(msg.ParentMessageId)"
+                             communicationsMessages="@communicationsMessages"
+                             SetResponder="SetResponder"
+                 SetMsgRecordViewModel="SetMsgRecordView" ChildrenMessage="true">
+                        </ChatMsg>
+
                     }
-                    <div class="msg-mode-client-1 color-2">
-
-                        <div class="content-ico-1 color-2">
-                          
-                           
-                            @if (msg.MessageTypeId == CommunicationsMessageType.SystemMessage)
-                            {
-                                
-                                
-                                <div class="c-ico"><img src="@(msg.SenderEntity.SkinImageName!=null?pathimages+msg.SenderEntity.SkinImageName: "/images/ActorIco.png")"></div>
-                                <p class="hour-style">@msg.SendDateTime</p>
-                                <img class="ico-menu" src="/images//robot.svg">
-                            }
-                            else
-                            {
-                                
-                                
-                                <div class="c-ico"><img src="@(msg.SenderEntity.SkinImageName!=null?pathimages+msg.SenderEntity.SkinImageName: "/images/ActorIco.png")"></div>
-                                <p class="name">@msg.SenderEntity?.Name</p>
-                                <p class="hour-style">@msg.SendDateTime</p>
-                            }
-                            <img style="background-color:@(GetColorMessageIconName(msg.MessageIconName))" class="ico-menu-alert" src="/images//exclamation.svg">
-                        </div>
+                }
 
 
+                @if (msg.ParentMessageId == null && modeMsg == "messageHistory")
+                {
+                    <div class="messageHistory">
+
+                        <ChatMsg msg="@msg"
+                     communicationsMessages="@communicationsMessages"
+                     SetResponder="SetResponder"
+                     SetMsgRecordViewModel="SetMsgRecordView"
+                     viewHistory="true">
+                        </ChatMsg>
 
                     </div>
-                    <div class="container-msg">
-                        <p class="text">@msg.Message</p>
-                    </div>
-                    <div class="msg-menu">
-                        <div class="content-msg-menu">
-                            <img @onclick='()=>SetResponder(msg.Id)' class="ico-menu-menu" src="/images//responder.svg">
-                            <img @onclick='()=>ViewModalMenu(msg.Id,"menu-1")' class="ico-menu-menu" src="/images//Reaction.svg">
-                            <img @onclick='()=>SetMsgRecordView(msg.Id)' class="ico-menu-1" src="/images//chat-menu.svg">
-                            @if (viewMenu1 && SelectionId == msg.Id)
-                            {
-                                <div class="menu-view-1">
-                                    <img @onclick='()=>SetColorMessageIconName("warning",msg.Id)' class="ico-menu bg-warning" src="/images//exclamation.svg">
-                                    <img @onclick='()=>SetColorMessageIconName("danger",msg.Id)' class="ico-menu bg-danger" src="/images//exclamation.svg">
-                                    <img @onclick='()=>SetColorMessageIconName("success",msg.Id)' class="ico-menu bg-success" src="/images//exclamation.svg">
-                                    <img @onclick='()=>ViewModalMenu("","")' class="ico-menu" src="/images//close.svg">
-                                </div>
-
-                            }
-                        </div>
-                    </div>
-                </div>
-
-            }
-            else
-            {
+                    modeMsg = "";
+                }
+                else
+                {
+                  <ChatMsg msg="@msg"
+                 communicationsMessages="@communicationsMessages"
+                 SetResponder="SetResponder"
+                 SetMsgRecordViewModel="SetMsgRecordView"
+                 ChildrenMessage="true">
+                    </ChatMsg>
+                }
+               
 
 
-                <div class="msg-responder" syle=" @(SelectionId == msg.Id?"position:sticky; top:-10px;":"") ">
-                    @{
-                        var _msgResponder = GetMsgResponder(msg.ParentMessageId);
-                        if (_msgResponder != null)
-                        {
-                            <div class="item-responder">
-                                <p class="text">@(_msgResponder.SenderEntity != null ? (_msgResponder.SenderEntity.Name != null ? _msgResponder.SenderEntity.Name : "") : "")</p>
-                                <p class="text">@_msgResponder.Message</p>
-                            </div>
-                        }
-                    }
-                    <div class="msg-mode-client-2">
-
-                        <div class="content-ico">
-
-                            <img style="background-color:@(GetColorMessageIconName(msg.MessageIconName))" class="ico-menu-alert" src="/images//exclamation.svg">
-                            @if (msg.MessageTypeId == CommunicationsMessageType.SystemMessage)
-                            {
-                                <img class="ico-menu" src="/images//robot.svg">
-                                <p class="hour-style">@msg.SendDateTime</p>
-                                <div class="c-ico"><img src="@(msg.SenderEntity.SkinImageName!=null?pathimages+msg.SenderEntity.SkinImageName: "/images/ActorIco.png")"></div>
-                            }
-                            else
-                            {
-                                <p class="hour-style">@msg.SendDateTime</p>
-                                <p class="name">@msg.SenderEntity?.Name</p>
-                                <div class="c-ico"><img src="@(msg.SenderEntity.SkinImageName!=null?pathimages+msg.SenderEntity.SkinImageName: "/images/ActorIco.png")"></div>
-                            }
-
-                        </div>
+            </div>
 
 
-                        
-                    </div>
-                    <div class="container-msg">
-                        <p class="text">@msg.Message</p>
-                    </div>
-                    <div class="msg-menu">
-                        <div class="content-msg-menu">
-                            <img @onclick='()=>SetResponder(msg.Id)' class="ico-menu" src="/images//responder.svg">
-                            <img @onclick='()=>ViewModalMenu(msg.Id,"menu-1")' class="ico-menu-1" src="/images//Reaction.svg">
-                            <img @onclick='()=>SetMsgRecordView(msg.Id)' class="ico-menu-1" src="/images//chat-menu.svg">
-                            @if (viewMenu1 && SelectionId == msg.Id)
-                            {
-                                <div class="menu-view-1">
-                                    <img @onclick='()=>SetColorMessageIconName("warning",msg.Id)' class="ico-menu bg-warning" src="/images//exclamation.svg">
-                                    <img @onclick='()=>SetColorMessageIconName("danger",msg.Id)' class="ico-menu bg-danger" src="/images//exclamation.svg">
-                                    <img @onclick='()=>SetColorMessageIconName("success",msg.Id)' class="ico-menu bg-success" src="/images//exclamation.svg">
-                                    <img @onclick='()=>ViewModalMenu("","")' class="ico-menu" src="/images//close.svg">
 
-                                </div>
-
-                            }
-                        </div>
-                    </div>
-                </div>
-            }
 
         }
     }
@@ -153,7 +78,7 @@
     [Parameter]
     public EventCallback<CommunicationsMessage> SetMsgRecord { get; set; }
 
-    public Stack<CommunicationsMessage> communicationsMessagesRecord { get; set; } = new ();
+    public Stack<CommunicationsMessage> communicationsMessagesRecord { get; set; } = new();
     public CommunicationsMessage communicationsMessageRecord { get; set; } = new();
 
 
@@ -161,11 +86,13 @@
     string SenderEntityId = "1";
     string pathimages = "";
     bool viewMenu1 = true;
+    string modeMsg = "";
 
 
     protected override void OnInitialized()
     {
         LoadObj();
+        SenderEntityId = UIClientGlobalVariables.EntityUserId;
 
         // communicationsMessages = (from m in communicationsMessages orderby m.SendDateTime.Day ascending orderby m.SendDateTime.Hour ascending orderby m.SendDateTime.Minute ascending orderby m.SendDateTime.Second ascending select m).ToList();
 
@@ -213,14 +140,17 @@
     {
         CommunicationsMessage msg = null;
         if (Id != null) msg = communicationsMessages.Where(s => s.Id == Id).FirstOrDefault();
-        if (msg!=null) communicationsMessagesRecord.Push(msg);
+        if (msg != null) communicationsMessagesRecord.Push(msg);
+        modeMsg = "messageHistory";
         SetMsgRecord.InvokeAsync(msg);
     }
 
     public void GetMsgRecord()
     {
-       communicationsMessageRecord =  communicationsMessagesRecord.Pop();
+        communicationsMessageRecord = communicationsMessagesRecord.Pop();
     }
+
+
 
     public CommunicationsMessage GetMsgResponder(string? Id)
     {
