@@ -3,6 +3,10 @@
 
 @using SunttelTradePointB.Shared.SquadsMgr;
 @using Syncfusion.Blazor.SplitButtons
+@inject SQuadService squadService
+@inject NavigationManager navigationManager
+
+
 @inject NavigationManager Navigation
 
 <div class="formContainer">
@@ -21,6 +25,7 @@
                 <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
                 <DropDownMenuItem Separator="true"></DropDownMenuItem>
                 <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                <DropDownMenuItem Text="Edit Entiy Profile" IconCss="fa-solid fa-id-card"></DropDownMenuItem>
                 <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
                 <DropDownMenuItem Separator="true"></DropDownMenuItem>
                 <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
@@ -30,23 +35,62 @@
 
     </div>
 
+    <div id = "docHeader">
+        <div id="headerData" class="col-8">
+            <div class="row rowForm">
+                <div class="form-group col-8">
+                    <label for="Nombre" class="LabelFieldStyle">Name</label>
+                    <input type="text" id="Nombre" name="Nombre" class="form-control InputFieldStyle" @bind="currentSquad.Nombre">
+                </div>
 
-    <div class="row">
-        <label for="Nombre" class="LabelFieldStyle">Name</label>
-        <input type="text" id="Nombre" name="Nombre" class="InputFieldStyle" @bind="currentSquad.Nombre">
+                <div class="row col-4">
+                   
+                    <label class="cool-checkbox">
+                        <input type="checkbox"
+                               id="FlagEnabled"
+                               name="FlagEnabled"
+                               @bind="currentSquad.FlagEnabled" />
+                        <span class="checkmark"></span>
+                        <span class="label-text">Enable</span>
+                    </label>
+                       
+                   
+                </div>
+            </div>
+
+            <div class="row rowForm">
+                <div class="form-group col-8">
+                    <label for="DomainName" class="LabelFieldStyle">Domain Name</label>
+                    <input type="text" id="DomainName" name="DomainName" class="form-control InputFieldStyle" @bind="currentSquad.DomainName">
+                </div>
+            </div>
+           
+        </div>
+
+        <div id="headerImage" class="col-2">
+
+            <div class="img-ico">
+                <div class="col-sm">
+
+                    @*<img src="@(imageRute!=""? actorsNodeServive.Host+imageRute:"/avatar_male_man_person_user_icon.png")" alt="imagen" width="80px" height="90px">*@
+
+                    <img src="@(imageRute!=""? imageRute:"/avatar_male_man_person_user_icon.png")" alt="imagen" id="EntityImage">
+
+                </div>
+                <div class="col">
+                    <span @onclick="NavigateToImage">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0     8 8">
+                            <path fill="currentColor" d="M6 0L5 1l2 2    l1-1l-2-2zM4 2L0 6v2h2l4-4l-2-2z" />
+                        </svg>
+                    </span>
+                </div>
+            </div>
+          
+        </div>
     </div>
-    <div class="row">
-        <label for="FlagEnabled" class="LabelFieldStyle">Enabled</label>
-        <input type="number" id="FlagEnabled" name="FlagEnabled" class="InputFieldStyle" @bind="currentSquad.FlagEnabled">
-    </div>
-    <div class="row">
-        <label for="SkinImage" class="LabelFieldStyle">SkinImage</label>
-        <input type="text" id="SkinImage" name="SkinImage" class="InputFieldStyle" @bind="currentSquad.SkinImage">
-    </div>
-    <div class="row">
-        <label for="DomainName" class="LabelFieldStyle">Domain Name</label>
-        <input type="text" id="DomainName" name="DomainName" class="InputFieldStyle" @bind="currentSquad.DomainName">
-    </div>
+   
+
+   
     <div>
         <TabControl>
             <TabPage text="SquadTag">
@@ -61,6 +105,40 @@
     [Parameter]
     public string? Id { get; set; }
     public Squad currentSquad { get; set; } = new Squad();
+    private string imageRute { get; set; } = "";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        if (Id !=null && Id != "")
+        {
+            currentSquad = await squadService.GetSquad(Guid.Parse(Id));
+
+        }
+        else
+        {
+            currentSquad.IDAppUserOwner = Guid.Parse(UIClientGlobalVariables.UserId);
+        }
+
+
+
+        if (currentSquad.SkinImage == "" || currentSquad.SkinImage == null)
+        {
+            imageRute = currentSquad.SkinImage;
+        }
+        else
+        {
+            var pathimages = UIClientGlobalVariables.pathSquadsImages;
+            string fullPath = Path.Combine(pathimages, currentSquad.SkinImage.Replace("/", ""));
+            imageRute =  fullPath;
+
+        }
+        StateHasChanged();
+
+
+
+    }
 
 
 
@@ -69,20 +147,36 @@
         Navigation.NavigateTo("");
     }
 
-     public async void ItemSelected(MenuEventArgs e)
+
+
+    public async void ItemSelected(MenuEventArgs e)
     {
-
         string tile = e.Item != null ? e.Item.Text : "";
-        if (tile == "Save")
+        switch (tile)
         {
-         
-            //var response = await transactionalService.SaveTransactionalItem(currentSquad);
-        
+            case "New":
+                currentSquad = new Squad();
+                break;
+            case "Save":
+                var response = await squadService.SaveSquad(currentSquad);
+                break;
+            case "Edit Entiy Profile":
+
+                string currentPage = $"SquadCard/{currentSquad.ID}";
+                navigationManager.NavigateTo($"/ActorCard/{currentSquad.EntityID}");
+                break;
+
+            
         }
+        
        
+        
         StateHasChanged();
+    }
 
-
+    public async Task NavigateToImage()
+    {
+        Navigation.NavigateTo($"/Actors/{Id}/Image");
     }
 
 }

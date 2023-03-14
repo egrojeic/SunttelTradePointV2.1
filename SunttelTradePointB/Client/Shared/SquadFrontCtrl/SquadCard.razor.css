@@ -1,2 +1,45 @@
-﻿body {
+﻿
+.formContainer{
+   
 }
+
+.InputFieldStyle{
+    min-width: 220px;
+}
+
+#docHeader{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+   
+}
+
+#headerData {
+    display: flex;
+    flex-direction: column;
+   
+}
+.rowForm {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: left;
+    align-items: flex-end;
+    margin-bottom: 10px;
+}
+
+.img-ico {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+   
+}
+
+    .img-ico img {
+        width: 180px;
+        height: 180px;
+        border-radius: 5%;
+        background-size: cover;
+        transition: background-size .2s;
+    }
+

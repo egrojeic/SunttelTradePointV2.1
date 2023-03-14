@@ -33,7 +33,7 @@ namespace SunttelTradePointB.Shared.SquadsMgr
         public string SkinImage { get; set; }
 
         [ObjectPropertyAttributes(ObjectPropertyAttributes.EditModes.None)]
-        public string IDAppUserOwner { get; set; }
+        public Guid IDAppUserOwner { get; set; }
 
         [DisplayName("Domain Name")]
         public string DomainName { get; set; }

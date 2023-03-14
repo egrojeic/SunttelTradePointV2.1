@@ -75,6 +75,7 @@
     <Folder Include="Services\ProductionServices\" />
     <Folder Include="Services\QualityControlServices\" />
     <Folder Include="wwwroot\lib\microsoft\signalr\dist\browser\" />
+    <Folder Include="wwwroot\uploads\squadImages\" />
   </ItemGroup>
 
   <ItemGroup>

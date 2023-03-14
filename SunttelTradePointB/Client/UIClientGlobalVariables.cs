@@ -18,7 +18,7 @@ namespace SunttelTradePointB.Client
 
         public static SquadsByUser? ActiveSquad { get; set; }
 
-
+        public static string pathSquadsImages = "/SkinImagesByAccount";
         static string _pathEntityImages = "/uploads/entityImages";
         static string _pathTransactionalItemsImages = "uploads/transactionalItemsImages";
 

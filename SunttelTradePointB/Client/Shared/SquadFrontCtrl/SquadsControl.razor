@@ -97,13 +97,20 @@
 
     private void CreateSquad()
     {
+        navigationManager.NavigateTo("/");
         navigationManager.NavigateTo($"/SquadCard/");
     }
 
 
     private void UpDateSquad()
     {
-        navigationManager.NavigateTo($"/SquadCard/{currentSquad.IDSquads}");
+        if (currentSquad.IDSquads.ToString() != "00000000-0000-0000-0000-000000000000")
+        {
+            navigationManager.NavigateTo("/");
+            navigationManager.NavigateTo($"/SquadCard/{currentSquad.IDSquads}");
+            
+        }
+        
     }
 
 }

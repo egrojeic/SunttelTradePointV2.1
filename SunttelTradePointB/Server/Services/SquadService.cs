@@ -1,6 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using SunttelTradePointB.Server.Data;
 using SunttelTradePointB.Server.Interfaces;
+using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
+using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.SquadsMgr;
 using System.Data;
 using System.Data.SqlClient;
@@ -12,10 +18,40 @@ namespace SunttelTradePointB.Server.Services
     {
 
         SunttelDBContext _sunttelDBContext;
+        IActorsNodes _actorsNodes;
 
-        public SquadService(SunttelDBContext sunttelDBContext)
+        public SquadService(SunttelDBContext sunttelDBContext, IActorsNodes actorsNodes)
         {
             _sunttelDBContext = sunttelDBContext;
+            _actorsNodes = actorsNodes;
+
+
+
+        }
+
+
+        /// <summary>
+        /// Retrieves the Squad by Squad ID
+        /// </summary>
+        /// <param name="squadId"></param>
+        /// <returns></returns>
+        public async Task<Squad?> GetSquad(string squadId)
+        {
+            try
+            {
+                var squadGuid = Guid.Parse(squadId);
+                var response = await _sunttelDBContext.Squads
+                .Where(s => s.ID == squadGuid)
+                .ToListAsync();
+
+                return response.First();
+            }
+            catch (Exception ex)
+            {
+                string errDesc = ex.Message;
+                return null;
+            }
+            
         }
 
 
@@ -35,7 +71,48 @@ namespace SunttelTradePointB.Server.Services
            
             return squadId.ToString();
         }
-      
+
+        public async Task<(bool IsSuccess, Squad?  squad, string? error)> SaveSquad(string userId, string ipAdress, Squad squad)
+        {
+
+            var squadValid = _sunttelDBContext.Squads.Where(s => s.ID == squad.ID);
+
+            if (squadValid.Any())
+            {
+                _sunttelDBContext.Update(squad);
+            }
+            else
+            {
+
+                EntityActor entityActor = new EntityActor { 
+                    Name = squad.Nombre,
+                    SkinImageName =squad.SkinImage,
+                    TypeOfConcept = new ConceptType
+                    {
+                        Id = "000000000000000000000002",
+                        Name = "COMPANY"
+
+                    }
+                };
+
+                var responseEntityCreation = _actorsNodes.SaveEntity(userId, ipAdress, entityActor);
+
+                if (responseEntityCreation != null && responseEntityCreation.Result.IsSuccess)
+                {
+
+                    squad.EntityID = responseEntityCreation.Result.entityActorResponse.Id;
+                    await _sunttelDBContext.Squads.AddAsync(squad);
+                }
+
+                
+
+            }
+
+            _sunttelDBContext.SaveChanges();
+
+            return (true, squad, null);
+
+        }
 
         public async Task<List<SquadsByUser>> SquadInfo(string? userId)
         {
