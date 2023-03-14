@@ -1176,27 +1176,30 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         public static async Task<List<TransactionalItem>> Gethttp(string Url)
         {
 
-            HttpClient httpGet = new HttpClient();
-            string UrlGetMetodo = "";
+            HttpClient httpGet = new HttpClient();          
+
+            var request = new HttpRequestMessage(HttpMethod.Get, Url);
+            request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad.ID.ToString());
             try
             {
-                var httpResponse = new HttpResponseMessage();
-                httpGet.DefaultRequestHeaders.Add("SquadId", UIClientGlobalVariables.ActiveSquad.ID.ToString());
-
+               
                 httpGet.BaseAddress = new Uri(Url);
+                
 
-                var response = await httpGet.GetFromJsonAsync<List<TransactionalItem>>(Url);
-
-                if (response != null)
+                var response = await httpGet.SendAsync(request);
+                var content  = await response.Content.ReadFromJsonAsync<List<TransactionalItem>>();
+                System.Diagnostics.Debug.WriteLine(response.IsSuccessStatusCode);
+                if (response.IsSuccessStatusCode)
                 {
-                    return response;
+                    return content;
                 }
                 else { return null; }
 
             }
             catch (Exception ex)
             {
-                string errMessage = ex.Message;              
+                string errMessage = ex.Message;
+                System.Diagnostics.Debug.WriteLine(errMessage);
 
             }
             return null;
