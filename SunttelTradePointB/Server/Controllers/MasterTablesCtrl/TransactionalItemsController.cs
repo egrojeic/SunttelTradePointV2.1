@@ -38,23 +38,26 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
+        /// <param name="customHeaderValue"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="filterName"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetTransactionalItems")]
-        public async Task<IActionResult> GetTransactionalItems(string userId, string ipAddress,  int? page = 1, int? perPage = 10, string? filterName = null)
+        public async Task<IActionResult> GetTransactionalItems(
+            string userId, 
+            string ipAddress,
+            [FromHeader(Name = "SquadId")] string customHeaderValue,
+            int? page = 1, 
+            int? perPage = 10, 
+            string? filterName = null)
         {
             var squadId = "";
 
-            if (Request.Headers.TryGetValue("SquadId", out var customHeaderValue))
-            {
-                squadId = customHeaderValue; // Request.Headers["SquadId"];
+            squadId = customHeaderValue??""; // Request.Headers["SquadId"];
 
-            }
-
-            var response = await _transactionalItems.GetTransactionItemList(userId, ipAddress, squadId, page, perPage, squadId, filterName);
+            var response = await _transactionalItems.GetTransactionItemList(userId, ipAddress, squadId, page, perPage, filterName);
 
             if (response.IsSuccess)
             {
