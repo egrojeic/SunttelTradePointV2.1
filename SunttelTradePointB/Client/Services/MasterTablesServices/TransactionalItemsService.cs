@@ -187,6 +187,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
+                
                 var transactionalItem = await _httpClient.GetFromJsonAsync<TransactionalItem>($"api/TransactionalItems/GetTransactionalItemById?userId={userId}&ipAddress={ipAddress}&transactionalItemId={transactionalItemId}");
 
                 return transactionalItem != null ? transactionalItem : new TransactionalItem();
@@ -1084,6 +1085,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             transactionalItemStatus.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
 
+            
             try
             {
                 var resul = await _httpClient.PostAsJsonAsync<TransactionalItemStatus>($"api/TransactionalItemsRelatedConcepts/SaveStatus?userId={userId}&ipAddress={ipAddress}", transactionalItemStatus);

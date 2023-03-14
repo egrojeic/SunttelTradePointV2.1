@@ -52,17 +52,19 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
 
         }
-
         /// <summary>
-        /// Retrives a list of PRoducts, services, and all Transactional Items based on a search criteria
+        ///  Retrives a list of PRoducts, services, and all Transactional Items based on a search criteria
         /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="nameLike"></param>
         /// <param name="groupName"></param>
         /// <param name="code"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<TransactionalItem>? TransactionalItemRelatedList, string? ErrorDescription)> GetTransactionItemList(int? page = 1, int? perPage = 10, string? nameLike = null, string? groupName = null, string? code = null)
+        public async Task<(bool IsSuccess, List<TransactionalItem>? TransactionalItemRelatedList, string? ErrorDescription)> GetTransactionItemList(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? nameLike = null, string? groupName = null, string? code = null)
         {
             try
             {
