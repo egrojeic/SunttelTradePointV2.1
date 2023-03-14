@@ -81,7 +81,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             try
             {
-                transactionalItemsList = await Gethttp($"api/TransactionalItems/GetTransactionalItems?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}page={page}&perPage={perPage}&filterName={namteToFind}");
+                transactionalItemsList = await Gethttp($"api/TransactionalItems/GetTransactionalItems?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}&page={page}&perPage={perPage}&filterName={namteToFind}");
 
                    // .GetFromJsonAsync<List<TransactionalItem>>($"api/TransactionalItems/GetTransactionalItems?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}page={page}&perPage={perPage}&filterName={namteToFind}");
                 page = page == 0 ? 1 : page;
