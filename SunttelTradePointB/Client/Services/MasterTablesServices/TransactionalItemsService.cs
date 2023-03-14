@@ -81,9 +81,12 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             try
             {
-                transactionalItemsList = await Gethttp($"api/TransactionalItems/GetTransactionalItems?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}&page={page}&perPage={perPage}&filterName={namteToFind}");
+                transactionalItemsList = await Gethttp($"/api/TransactionalItems/GetTransactionalItems?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}&page={page}&perPage={perPage}&filterName={namteToFind}");
 
-                   // .GetFromJsonAsync<List<TransactionalItem>>($"api/TransactionalItems/GetTransactionalItems?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}page={page}&perPage={perPage}&filterName={namteToFind}");
+                //transactionalItemsList = await Gethttp($"/api/TransactionalItems/GetTransactionalItems/{UIClientGlobalVariables.UserId}/{UIClientGlobalVariables.PublicIpAddress}/{page}/{perPage}/{namteToFind}");
+
+
+                // .GetFromJsonAsync<List<TransactionalItem>>($"api/TransactionalItems/GetTransactionalItems?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}page={page}&perPage={perPage}&filterName={namteToFind}");
                 page = page == 0 ? 1 : page;
                 return transactionalItemsList != null ? transactionalItemsList : new List<TransactionalItem>();
 
@@ -1173,20 +1176,20 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         }
 
 
-        public static async Task<List<TransactionalItem>> Gethttp(string Url)
+        public async Task<List<TransactionalItem>> Gethttp(string Url)
         {
 
            
             try
             {
-                HttpClient httpGet = new HttpClient();
+                //HttpClient httpGet = _httpClient;
                 var r = UIClientGlobalVariables.ActiveSquad.ID;
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
                 request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad.ID.ToString());
-                httpGet.BaseAddress = new Uri(Url);
+                //_httpClient.BaseAddress = new Uri(Url);
                 
 
-                var response = await httpGet.SendAsync(request);
+                var response = await _httpClient.SendAsync(request);
                 var content  = await response.Content.ReadFromJsonAsync<List<TransactionalItem>>();
                 System.Diagnostics.Debug.WriteLine(response.IsSuccessStatusCode);
                 if (response.IsSuccessStatusCode)

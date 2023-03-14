@@ -48,14 +48,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         public async Task<IActionResult> GetTransactionalItems(
             string userId, 
             string ipAddress,
-            [FromHeader(Name = "SquadId")] string customHeaderValue,
             int? page = 1, 
             int? perPage = 10, 
             string? filterName = null)
         {
             var squadId = "";
 
-            squadId = customHeaderValue??""; // Request.Headers["SquadId"];
+            var customHeaderValue = Request.Headers["SquadId"];
+            squadId = customHeaderValue.ToString()??""; // Request.Headers["SquadId"];
 
             var response = await _transactionalItems.GetTransactionItemList(userId, ipAddress, squadId, page, perPage, filterName);
 
