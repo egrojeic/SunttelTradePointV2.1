@@ -30,7 +30,7 @@
                 <div class="item-group">
                     <img class='@(groupEnablId==item.Id?"":"enable")' @onclick='()=>SetgroupEnable(item.Id)' src="@(item.SkinImageName !=null ?(item.SkinImageName!=""? pathimages+item.SkinImageName:"/images/EntityGroups.png"):"/images/EntityGroups.png")" />
                 </div>
-                <p class="title-normal">@(item.Name != null ? item.Name : "Group")"</p>
+                <p @onclick='()=>SetgroupEnable(item.Id)' class="title-normal">@(item.Name != null ? item.Name : "Group")"</p>
             </div>
         }
 
@@ -53,7 +53,7 @@
         {
             <div class="item-group">
                 <img class='@(groupEnablId==item.Id?"":"enable")' @onclick='()=>SetgroupEnable(item.Id)' src="@(item.SkinImageName !=null ?(item.SkinImageName!=""? pathimages+item.SkinImageName:"/images/EntityGroups.png"):"/images/EntityGroups.png")" />
-                <p class="title-float">@(item.Name != null ? item.Name : "Group")"</p>
+               @* <p class="title-float" @onclick='()=>SetgroupEnable(item.Id)'>@(item.Name != null ? item.Name : "Group")"</p>*@
             </div>
         }
 
