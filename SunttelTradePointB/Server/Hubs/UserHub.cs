@@ -93,15 +93,22 @@ namespace SunttelTradePointB.Server.Hubs
         /// <returns></returns>
         public async Task SendMessage(string user, CommunicationsMessage message)
         {
-            await _messagesValet.SaveMessage(message);
+            try
+            {
+                await _messagesValet.SaveMessage(message);
 
-            //await _messagesValet.SaveMessage(new CommunicationsMessage
-            //{
-            //    Message = message,
-            //    MessageTypeId = CommunicationsMessageType.ChatMessage
-            //}); 
+                //await _messagesValet.SaveMessage(new CommunicationsMessage
+                //{
+                //    Message = message,
+                //    MessageTypeId = CommunicationsMessageType.ChatMessage
+                //}); 
 
-            await Clients.All.SendAsync("ReceiveMessage", user, message);
+                await Clients.All.SendAsync("ReceiveMessage", user, message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }
