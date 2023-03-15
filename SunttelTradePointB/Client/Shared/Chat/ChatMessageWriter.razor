@@ -71,6 +71,7 @@
     protected override void OnParametersSet()
     {
         var f = communicationsMessage;
+        StateHasChanged();
     }
 
     protected async override void OnInitialized()
