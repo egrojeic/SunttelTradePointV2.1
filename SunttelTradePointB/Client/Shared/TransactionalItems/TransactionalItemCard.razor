@@ -1,4 +1,5 @@
 ﻿@page "/TransactionalItemCard"
+@page "/TransactionalItemCard/{id}"
 @page "/TransactionalItemCard/{Page}/{Mode}"
 @using SunttelTradePointB.Client.Shared.ConceptSelectors
 @using SunttelTradePointB.Client.Shared.EntityShareComponents.EntitySubComponents
@@ -173,7 +174,7 @@
                     @switch (verticalMenuOptionSelected)
                     {
                         case 0:
-                            <TIPackingRecipe />
+                            <TIPackingRecipe  IdTransactionalItem="@Id"/>
                             break;
 
                         case 1:
@@ -217,6 +218,9 @@
     public string Page { get; set; } = "0";
     [Parameter]
     public string Mode { get; set; } = "Add";
+    [Parameter]
+    public string Id { get; set; }
+
     public string msg = "", backgroundColor = "";
     public int status = 0;
     public bool AlertOpen = false;
@@ -258,10 +262,10 @@
 
     protected override async void OnInitialized()
     {
-        if (Mode == "Edit")
+        if (Id != null)
         {
-            transactionalItemId = transactionalService.transactionalItemId != null ? transactionalService.transactionalItemId : "";
-            currentItem = await transactionalService.GetTransactionalItemById(transactionalItemId);
+           
+            currentItem = await transactionalService.GetTransactionalItemById(Id);
 
 
             if (currentItem != null)
@@ -273,9 +277,7 @@
                 StateHasChanged();
             }
         }
-
-
-        if (Mode == "Add" || currentItem == null)
+        else
         {
             transactionalService.transactionalItemId = null;
             currentItem = new();

@@ -38,7 +38,7 @@
         @if (entityNodesList != null)
         {
 
-            <SfGrid 
+          @*  <SfGrid 
                 DataSource="entityNodesList"
                 Height="auto"
                 Width="auto"
@@ -59,7 +59,39 @@
                     <GridColumn Field="@nameof(EntityActor.FullClassName)" HeaderText="Groups" Width="110"></GridColumn>
                 </GridColumns>
                 <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="EntityActor"></GridEvents>
-            </SfGrid>
+            </SfGrid>*@
+
+            <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="50"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@entityNodesList"
+                    TItem="EntityActor"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    @bind-Value=@selectedEntities Class="m-4"
+                    CellContextMenu="@ShowContextMenuWithContent">
+
+                <Columns>
+                    <RadzenDataGridColumn TItem="EntityActor" Property="Code" Title="Code" Frozen="true" Width="80px" />
+                    <RadzenDataGridColumn TItem="EntityActor" Property="Name" Filterable="true" Title="Name" Frozen="true" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                    <RadzenDataGridColumn TItem="EntityActor" Property="EMailAddress" Title="EMailAddress" Width="160px" />
+                    <RadzenDataGridColumn TItem="EntityActor" Property="InvoicingAddress.CityAddress" Title="Geolocation" Width="200px" />
+                    <RadzenDataGridColumn TItem="EntityActor" Property="GetFirstPhone" Title="Phone" Width="120px" />
+                    <RadzenDataGridColumn TItem="EntityActor" Property="DefaultEntityRole" Title="Default Role" Width="120px" />
+                    <RadzenDataGridColumn TItem="EntityActor" Property="FullClassName" Title="Groups" Width="120px" />
+
+                </Columns>
+            </RadzenDataGrid>
+
+
         }
     }
 
@@ -138,6 +170,30 @@
         }
     }
 
+     void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        EntityActor argObj = (EntityActor)args.Value;
+        Navigate(argObj.Id);
+
+        Console.WriteLine($"Menu item with Value={argObj.Name} clicked");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+     private async Task Navigate(string entityActor)
+    {
+        navigationManager.NavigateTo($"/Actors/{entityActor}");
+    }
+
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<EntityActor> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+
+    </RadzenMenu>
+    );
 
 
 }

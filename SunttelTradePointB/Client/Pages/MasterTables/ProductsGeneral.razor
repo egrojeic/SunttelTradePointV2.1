@@ -35,23 +35,36 @@
     {
         if (itemList != null)
         {
-            <SfGrid  DataSource="@itemList"
-            AllowFiltering="true"
-            AllowTextWrap="false"
-            AllowPaging="true"             
-            AllowResizing="true"
-            ContextMenuItems="@(contextMenuItemModel)">
+            <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="@itemsPerPage"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@itemList"
+                    TItem="TransactionalItem"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    @bind-Value=@selectedItems Class="m-4"
+                    CellContextMenu="@ShowContextMenuWithContent"
+                    PageNumbersCount="100">
 
-            <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
-            <GridColumns>
-                <GridColumn Field="@nameof(TransactionalItem.Code)" HeaderText="@GetName("Code", new AtomConcept())" Width="300px"></GridColumn>
-                <GridColumn Field="@nameof(TransactionalItem.Name)" HeaderText="@GetName("Name", new AtomConcept())" Width="90px"></GridColumn>
-                <GridColumn Field="@nameof(TransactionalItem.FullClassName)" HeaderText="@GetName("FullClassName", new TransactionalItem())" Width="120px"></GridColumn>
-                <GridColumn Field="@nameof(TransactionalItem.IsGeneric)" HeaderText="@GetName("IsGeneric", new TransactionalItem())" Width="120px" DisplayAsCheckBox="true"></GridColumn>
-                <GridColumn Field="@nameof(TransactionalItem.ReferenceCost)" HeaderText="@GetName("ReferenceCost", new TransactionalItem())" Width="120px" ></GridColumn>
-            </GridColumns>
-            <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="TransactionalItem"></GridEvents>
-        </SfGrid>
+                <Columns>
+                    <RadzenDataGridColumn TItem="TransactionalItem" Property="Code" Title="Code" Frozen="false" Width="80px" />
+                    <RadzenDataGridColumn TItem="TransactionalItem" Property="Name" Filterable="true" Title="Name" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                    <RadzenDataGridColumn TItem="TransactionalItem" Property="FullClassName" Title="Group" Width="160px" />
+                    <RadzenDataGridColumn TItem="TransactionalItem" Property="Status.Name" Title="Status" Width="200px" />
+                    <RadzenDataGridColumn TItem="TransactionalItem" Property="IsGeneric" Title="Is Generic" Width="120px" />
+                    <RadzenDataGridColumn TItem="TransactionalItem" Property="ReferenceCost" Title="Reference Cost" Width="120px" />
+
+
+                </Columns>
+            </RadzenDataGrid>
         }
 
     
@@ -132,8 +145,20 @@
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         TransactionalItem argObj = (TransactionalItem)args.Value;
-      
+        Navigate(argObj.Id);
+
+        Console.WriteLine($"Menu item with Value={argObj.Name} clicked");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
     }
+
+     private async Task Navigate(string productId)
+    {
+        Navigation.NavigateTo($"/TransactionalItemCard/{productId}");
+    }
+
 
     public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItem> argObj)
     {

@@ -1,4 +1,4 @@
-﻿@page "/PackingRecipe"
+﻿@page "/PackingRecipe/{IdTransactionalItem}"
 @using SunttelTradePointB.Client.Shared.TransactionalItems
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Navigations
@@ -54,6 +54,9 @@
 
 
 @code {
+    [Parameter]
+    public string IdTransactionalItem { get; set; }
+
     public List<PackingSpecs> productPackingSpecs { get; set; }
     public List<PackingSpecsView> ProductPackingSpecsView = new List<PackingSpecsView>();
     public TransactionalItem? currentItem { get; set; }
@@ -67,9 +70,9 @@
 
     protected override void OnInitialized()
     {
-        if (transactionalService.transactionalItemId != null && transactionalService.transactionalItemId != "")
+        if (IdTransactionalItem != null)
         {
-            transactionalItemId = transactionalService.transactionalItemId;
+            transactionalItemId = IdTransactionalItem;
             OnInitializedProductPackingSpecs();
         }
 
