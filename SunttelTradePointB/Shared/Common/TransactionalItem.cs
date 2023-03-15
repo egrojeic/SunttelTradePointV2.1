@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using Newtonsoft.Json;
 
 namespace SunttelTradePointB.Shared.Common
 {
@@ -31,46 +32,57 @@ namespace SunttelTradePointB.Shared.Common
     {
         [DisplayName("Catalog")]
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public CatalogItem ItemCatalog { get; set; }
 
         [DisplayName("Characteristics")]
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<TransactionalItemCharacteristicPair> ItemCharacteristics { get; set; }
 
         [DisplayName("Packing Specs")]
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<PackingSpecs> ProductPackingSpecs { get; set; }
 
         [DisplayName("Production Specs")]
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<TransactionalItemProcessStep> ProductionSpecs { get; set; }
 
         [DisplayName("Is Generic")]
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public bool IsGeneric { get; set; }
 
         [DisplayName("Images")]
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<TransactItemImage> PathImages { get; set; }
 
         [DisplayName("Price Lists")]
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public PriceListTransactionalItems PriceOverridenByPriceList { get; set; }
 
         [DisplayName("Quality Parameters")]
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<TransactionalItemQualityPair> QualityParameters { get; set; }
 
         [DisplayName("Tags")]
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<TransactionalItemTag> TransactionalItemTags { get; set; }
 
         [DisplayName("Reference Cost")]
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public double ReferenceCost { get; set; }
 
         [DisplayName("Models")]
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<ProductModel> TransactionalItemModels { get; set; }
         
 
@@ -112,15 +124,23 @@ namespace SunttelTradePointB.Shared.Common
 
         public double HolidayDayCost { get; set; }
 
+        [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         [DisplayName("Process Tags")]
         public List<TransactionalItemTag> TransactionalItemProcessTags { get; set; }
         public int Order { get; set; }
 
+        [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         [DisplayName("Costs exceptions by Quantity")]
         public List<CostExceptionByQuantity> CostExceptionsByQuantity { get; set; }
 
+        [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public ChargeableUnitsType TypeOfComponentsToCharge { get; set; }
 
+        [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public BasicConcept ProcessType { get; set; }
 
     }
@@ -142,8 +162,13 @@ namespace SunttelTradePointB.Shared.Common
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
+        [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         [DisplayName("Minimum Quantity")]
         public double MinimumQty { get; set; }
+
+        [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
 
         [DisplayName("Maximum Quantity")]
         public double MaximumQty { get; set; }
@@ -183,28 +208,34 @@ namespace SunttelTradePointB.Shared.Common
     {
         [DisplayName("Has Packing Recipe")]
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public bool? HasPackingRecipe { get; set; } = null;
 
         [DisplayName("Has Production Specs")]
 
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public bool? HasProductionSpecs { get; set; } = null;
 
         [DisplayName("Processes")]
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<TransactionalItemProcessStep> TransactionalItemProcesses { get; set; }
 
         [DisplayName("Characteristics")]
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<TransactionalItemTypeCharacteristic> TransactionalItemTypeCharacteristics { get; set; }
 
         [DisplayName("Quality Parameters")]
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<TransactionalItemQuality> QualityParameters { get; set; }
 
 
         [DisplayName("Recipe Quality Modifiers")]
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<RecipeModifier> InRecipeModifiers { get; set; }
 
         
@@ -262,6 +293,7 @@ namespace SunttelTradePointB.Shared.Common
     {
         [DisplayName("Default Value")]
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string DefaultValue { get; set; }
         public string AdditionalDescription { get; set; }
     }

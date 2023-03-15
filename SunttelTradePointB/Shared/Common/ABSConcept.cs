@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace SunttelTradePointB.Shared.Common
 {
@@ -20,6 +21,7 @@ namespace SunttelTradePointB.Shared.Common
         public string Id { get; set; }
 
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string LegacyId { get; set; }
 
 
@@ -34,9 +36,11 @@ namespace SunttelTradePointB.Shared.Common
         public bool? HasChanged { get; set; }
 
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string Notes { get; set; }
 
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string SquadId { get; set; }
 
 
@@ -58,6 +62,7 @@ namespace SunttelTradePointB.Shared.Common
 
         [ObjectPropertyAttributes(ObjectPropertyAttributes.EditModes.LogAuditory)]
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public InfoAuditRecord AuditRecord { get; set; }
      
 
@@ -86,18 +91,21 @@ namespace SunttelTradePointB.Shared.Common
     {
         [DisplayName("Skin Image")]
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string SkinImageName { get; set; }
 
         [ObjectPropertyAttributes(ObjectPropertyAttributes.EditModes.Groups)]
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<ConceptGroup> Groups{ get; set; }
 
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public ConceptStatus Status { get; set; }
 
         [DisplayName("Type of Concept")]
-
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public ConceptType? TypeOfConcept { get; set; }
 
         [BsonRepresentation(BsonType.String)]
@@ -128,6 +136,7 @@ namespace SunttelTradePointB.Shared.Common
     {
 
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<ConceptGroup> ChildrenGroups { get; set; }
         public string GroupClassificationCriteria { get; set; }
 
@@ -139,15 +148,21 @@ namespace SunttelTradePointB.Shared.Common
     {
 
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<ConceptGroup>? Groups { get; set; }
     }
 #nullable disable
 
     public class ConceptStatus : AtomConcept
     {
-
+        [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public bool IsEnabledForTransactions { get; set; }
+        [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public bool IsEditable { get; set; }
+        [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public bool SystemBlocked { get; set; }
 
     }

@@ -13,15 +13,25 @@ namespace SunttelTradePointB.Shared.Sales
 
     public class CommercialDocumentType : BasicConcept
     {
+
+        [BsonIgnoreIfNull]
         [DisplayName("Affect Inventory")]
         public bool AffectInventory { get; set; }
+
+        [BsonIgnoreIfNull]
 
         [DisplayName("Affect Finance")]
         public bool AffectFinance { get; set; }
 
+        [BsonIgnoreIfNull]
+
         [DisplayName("Check Prices Needed")]
         public bool NeedsCheckPrices { get; set; }
+
+        [BsonIgnoreIfNull]
         public List<EntityType> BuyerTypes { get; set; }
+
+        [BsonIgnoreIfNull]
         public List<EntityType> VendorTypes { get; set; }
     }
 
