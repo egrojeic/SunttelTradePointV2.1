@@ -7,6 +7,7 @@
 @using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents
 @inject TransactionalItemsService transactionalService;
 @inject NavigationManager Navigation
+@inject ContextMenuService ContextMenuService
 
 
 @if (@viewMsg)
@@ -114,15 +115,50 @@
                                     </svg>
                                 </div>
 
-                                @if (materialsRecipeItemsAssemblyView == null) { materialsRecipeItemsAssemblyView = new List<MaterialRecipeItemView>(); }
+                                @if (materialsRecipeItemsAssembly == null) { materialsRecipeItemsAssembly = new List<MaterialRecipeItem>(); }
 
 
-                                <DataGrid TParameter="MaterialRecipeItemView"
-                                      EventCallbackMenu="OnContextMenuClick"
-                                      parameterList="materialsRecipeItemsAssemblyView"
-                                      GridColumnsList="gridColumnListListOfMaterials"
-                                      Width="100%">
-                                </DataGrid>
+                                @if (isLoading)
+                                {
+
+                                    <WaitingProcessIndicator loadingTopic="Transactional Items"></WaitingProcessIndicator>
+
+                                }
+                                else
+                                {
+                                    if (materialsRecipeItemsAssembly != null)
+                                    {
+                                        <RadzenDataGrid AllowFiltering="true"
+                                            AllowColumnResize="true"
+                                            AllowAlternatingRows="true"
+                                            FilterMode="FilterMode.Advanced"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                            AllowSorting="true"
+                                            PageSize="5"
+                                            AllowPaging="true"
+                                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                            ShowPagingSummary="true"
+                                            Data="@materialsRecipeItemsAssembly"
+                                            TItem="MaterialRecipeItem"
+                                            ColumnWidth="300px"
+                                            SelectionMode="DataGridSelectionMode.Single"
+                                            LogicalFilterOperator="LogicalFilterOperator.Or"                                           
+                                            CellContextMenu="@ShowContextMenuWithContent"
+                                            PageNumbersCount="100">
+
+                                            <Columns>
+                                                <RadzenDataGridColumn TItem="TransactionalItem" Property="MaterialRecipeItem.Material.Name" Title="@GetName( "Material", new MaterialRecipeItem())" Frozen="false" Width="80px" />
+                                                <RadzenDataGridColumn TItem="TransactionalItem" Property="MaterialRecipeItem.Quantity" Filterable="true" Title="@GetName( "Quantity", new MaterialRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                               
+        
+                                            </Columns>
+                                        </RadzenDataGrid>
+                                    }
+
+
+                                }
+
+
                             </div>
 
                         </ContentTemplate>
@@ -275,16 +311,36 @@
                             <div class="content-btn">
                                 @* <button type="button" @onclick='()=>AddAssemblyControl(true)' class="size-btn color-btn" style=' display:@(btnAddMaterials?"block":"none");'>+</button>*@
                             </div>
-                            <SfGrid @ref="DatagridRecipeItems" DataSource="@assemblyRecipeItemsView" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" AllowResizing="true">
-                                <GridFilterSettings Type=" Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
-                                <GridColumns>
-                                    <GridColumn Field="@nameof(PackRecipeItemView.Name)" HeaderText="@GetName( "Name",new AtomConcept())" Width="200px"></GridColumn>
-                                    <GridColumn Field="@nameof(PackRecipeItemView.Quantity)" HeaderText="@GetName( "Quantity",new AtomConcept())" Width="100px"></GridColumn>
-                                    <GridColumn Field="@nameof(PackRecipeItemView.Code)" HeaderText="@GetName( "Code",new Concept())" Width="50px"></GridColumn>
-                                    <GridColumn Field="@nameof(PackRecipeItemView.FullClassName)" HeaderText="@GetName( "FullClassName",new Concept())" Width="100px"></GridColumn>
-                                    <GridColumn Field="@nameof(PackRecipeItemView.SkinImageName)" HeaderText="@GetName( "SkinImageName",new Concept())" Width="100px"></GridColumn>
-                                </GridColumns>
-                            </SfGrid>
+
+                            @if (assemblyRecipeItems != null)
+                            {
+                                <RadzenDataGrid AllowFiltering="true"
+                                            AllowColumnResize="true"
+                                            AllowAlternatingRows="true"
+                                            FilterMode="FilterMode.Advanced"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                            AllowSorting="true"
+                                            PageSize="4"
+                                            AllowPaging="true"
+                                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                            ShowPagingSummary="true"
+                                            Data="@assemblyRecipeItems"
+                                            TItem="PackRecipeItem"
+                                            SelectionMode="DataGridSelectionMode.Single"
+                                            LogicalFilterOperator="LogicalFilterOperator.Or"
+                                            CellContextMenu="@ShowContextMenuWithContent"
+                                            PageNumbersCount="100">
+
+                                    <Columns>
+                                        <RadzenDataGridColumn TItem="PackRecipeItem" Property="PackRecipeItem.Name" Title="@GetName( "Name",new AtomConcept())" Frozen="false" Width="80px" />
+                                        <RadzenDataGridColumn TItem="PackRecipeItem" Property="PackRecipeItem.Quantity" Filterable="true" Title="@GetName( "Quantity",new AtomConcept())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                        <RadzenDataGridColumn TItem="PackRecipeItem" Property="PackRecipeItem.Code" Title="@GetName( "Code",new Concept())" Width="160px" />
+                                        <RadzenDataGridColumn TItem="PackRecipeItem" Property="PackRecipeItem.FullClassName" Title="@GetName( "FullClassName",new Concept())" Width="200px" />
+
+                                    </Columns>
+                                </RadzenDataGrid>
+                            }
+
                         </div>
 
                     </ContentTemplate>
@@ -298,27 +354,29 @@
 </form>
 
 @code {
+    [Parameter]
+    public string transactionalItemId {get; set;}
     bool viewMsg = false, modeEdit = true, ViewSelect = false;
     bool PopupViewEditItemComponent = false;
     bool PopupViewMaterialAssembly = false;
     bool PopupViewEditItemModifier = false;
+    bool isLoading = false;
 
     string msg = "",
-    pageView = "",
-    transactionalItemId = "",
+    pageView = "",   
     SearcherValueMode = "",
     Mode = "";
     int ParamCountResul = 0;
     int status = 0;
-    SfGrid<PackRecipeItemView> DatagridRecipeItems;
+  
 
     [Parameter]
     public EventCallback<string> EventCallbackPage { get; set; }
     [Parameter]
     public EventCallback<List<PackRecipeItem>> EventCallAdd { get; set; }
-    List<GridColumn> gridColumnListListOfMaterials = new();
+  
 
-    public PackRecipeItem assemblyRecipeItemGeneral = new();
+   
     List<PackRecipeItem> assemblyRecipeItems = new();
     PackRecipeItem assemblyRecipeItem = new();
     List<PackRecipeItemView> assemblyRecipeItemsView = new();
@@ -327,7 +385,7 @@
 
 
     List<MaterialRecipeItem> materialsRecipeItemsAssembly = new();
-    List<MaterialRecipeItemView> materialsRecipeItemsAssemblyView = new();
+  
     MaterialRecipeItem materialRecipeItemsAssembly = new();
     List<Concept> conceptMaterialsAssembly = new();
     Concept conceptMaterialAssembly = new();
@@ -347,36 +405,16 @@
         StateHasChanged();
     }
 
-
     protected override void OnInitialized()
     {
-        InitializedAsync();
-
-        gridColumnListListOfMaterials = new List<GridColumn>()
-        {
-             new GridColumn() { Field=nameof(MaterialRecipeItemView.Name) ,  HeaderText = @GetName( "Name", new AtomConcept())  },
-              new GridColumn() { Field=nameof(MaterialRecipeItemView.Quantity) ,  HeaderText = @GetName( "Quantity", new AtomConcept())  }
-
-        };
+        InitializedAsync();      
 
     }
 
     protected async void InitializedAsync()
     {
 
-
-        if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
-        {
-            transactionalItemId = transactionalService.transactionalItemId;
-
-        }
-        if (Mode == "Edit")
-        {
-
-        }
     }
-
-
 
     public async void ItemSelected(MenuEventArgs e)
     {
@@ -461,7 +499,7 @@
                         SkinImageName = assemblyRecipeItem.ItemComponent.SkinImageName != null ? assemblyRecipeItem.ItemComponent?.SkinImageName : "",
                         Quantity = assemblyRecipeItem.Quantity != null ? assemblyRecipeItem.Quantity.ToString() : "",
                     });               
-                if(DatagridRecipeItems!=null)DatagridRecipeItems.Refresh();
+              
                 StateHasChanged();
                 Msg("Added",0);
             }
@@ -480,7 +518,7 @@
                         SkinImageName = assemblyRecipeItem.ItemComponent.SkinImageName != null ? assemblyRecipeItem.ItemComponent?.SkinImageName : "",
                         Quantity = assemblyRecipeItem.Quantity != null ? assemblyRecipeItem.Quantity.ToString() : "",
                     });               
-                if (DatagridRecipeItems != null) DatagridRecipeItems.Refresh();
+              
 
                 StateHasChanged();
                 Msg("Update",1);
@@ -522,16 +560,7 @@
             if (materialRecipeItemsAssembly.Material.Id == null)
             {                
                 materialRecipeItemsAssembly.Material = conceptMaterialAssembly;
-                materialsRecipeItemsAssembly.Add(materialRecipeItemsAssembly);
-                materialsRecipeItemsAssemblyView.Add(new MaterialRecipeItemView
-                    {
-                        Id = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.Id : "",
-                        Name = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.Name : "",
-                        Code = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.Code : "",
-                        FullClassName = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.FullClassName : "",
-                        Quantity = materialRecipeItemsAssembly.Quantity != null ? materialRecipeItemsAssembly.Quantity.ToString() : "",
-                        SkinImageName = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.SkinImageName : ""
-                    });
+                materialsRecipeItemsAssembly.Add(materialRecipeItemsAssembly);               
                 materialRecipeItemsAssembly = new();
                 conceptMaterialAssembly = new();
 
@@ -539,18 +568,7 @@
             }
             else
             {
-                materialRecipeItemsAssembly.Material = conceptMaterialAssembly;
-                var remove = materialsRecipeItemsAssemblyView.Where(s => s.Id == materialRecipeItem.Material.Id).FirstOrDefault();
-                materialsRecipeItemsAssemblyView.Remove(remove);
-                materialsRecipeItemsAssemblyView.Add(new MaterialRecipeItemView
-                    {
-                        Id = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.Id : "",
-                        Name = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.Name : "",
-                        Code = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.Code : "",
-                        FullClassName = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.FullClassName : "",
-                        Quantity = materialRecipeItemsAssembly.Quantity != null ? materialRecipeItemsAssembly.Quantity.ToString() : "",
-                        SkinImageName = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.SkinImageName : ""
-                    });
+                materialRecipeItemsAssembly.Material = conceptMaterialAssembly;               
                 Msg("Updated",1);
             }
 
@@ -711,17 +729,50 @@
     }
 
 
+   
 
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<MaterialRecipeItemView> args)
+    #region Grid
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<MaterialRecipeItem> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
     {
-        MaterialRecipeItemView ObjModel = null;
-        ObjModel = args.RowInfo.RowData;
-
-        if (args.Item.Id == "Edit")
+        MaterialRecipeItem argObj = (MaterialRecipeItem)args.Value;  
+        
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
-
+            ContextMenuService.Close();
         }
     }
+
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<PackRecipeItem> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick_1">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick_1(MenuItemEventArgs args)
+    {
+        PackRecipeItem argObj = (PackRecipeItem)args.Value;
+        if (argObj.Id != null)
+        {
+            assemblyRecipeItem = assemblyRecipeItems.Where(s => s.Id != null && s.Id == argObj.Id).FirstOrDefault();
+
+           
+
+        }
+        else
+        {
+            Msg("Invalid id",1);
+        }
+    }
+
+
+    #endregion grid
 
 
 

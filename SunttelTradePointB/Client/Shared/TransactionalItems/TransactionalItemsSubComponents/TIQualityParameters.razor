@@ -2,7 +2,8 @@
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Navigations
 @using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Popups
+
+@inject ContextMenuService ContextMenuServices
 @inject NavigationManager Navigation
 @inject TransactionalItemsService transactionalService;
 
@@ -16,29 +17,45 @@
   
 </div>
 
-@if (qualityParameters != null)
-{
+
     <div class="row">
-        <div class="col-md-12">
-            <SfGrid @ref="GridQuality" DataSource="@QualityParametersView" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" EnableStickyHeader="true"
-                ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader" } })">
-                <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
-                <GridColumns>
-                    <GridColumn Field="@nameof(TransactionalItemQualityPairView.Name)" HeaderText="@GetName( "Name", new TransactionalItemQualityPairView())"></GridColumn>
-                    <GridColumn Field="@nameof(TransactionalItemQualityPairView.Value)" HeaderText="@GetName( "Value", new TransactionalItemQualityPairView())"></GridColumn>
-                </GridColumns>
-                <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="TransactionalItemQualityPairView"></GridEvents>
-            </SfGrid>
+    <div class="grid-width">
+
+            @if (qualityParameters != null)
+            {
+            <RadzenDataGrid AllowFiltering="true"
+                        AllowColumnResize="true"
+                        AllowAlternatingRows="true"
+                        FilterMode="FilterMode.Advanced"
+                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        AllowSorting="true"                       
+                        AllowPaging="true"
+                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                        ShowPagingSummary="true"
+                        Data="@qualityParameters"
+                        TItem="TransactionalItemQualityPair"
+                        SelectionMode="DataGridSelectionMode.Single"
+                        LogicalFilterOperator="LogicalFilterOperator.Or"                     
+                        CellContextMenu="@ShowContextMenuWithContent"
+                        PageNumbersCount="100">
+
+                <Columns>
+                    <RadzenDataGridColumn TItem="TransactionalItemQualityPair" Property="TransactionalItemQualityPair.TransactionalItemQuality.Name" Title="@GetName( "TransactionalItemQuality", new TransactionalItemQualityPair())" />
+                    <RadzenDataGridColumn TItem="TransactionalItemQualityPair" Property="TransactionalItemQualityPair.Value" Title="@GetName( "Value", new TransactionalItemQualityPair())" />
+
+                </Columns>
+            </RadzenDataGrid>
+            }
+           
         </div>
     </div>
-}
+
 
 @code {
     List<TransactionalItemQualityPair> qualityParameters { get; set; }
-    List<TransactionalItemQualityPairView> QualityParametersView = new List<TransactionalItemQualityPairView>();
-    SfGrid<TransactionalItemQualityPairView> GridQuality;
 
-    public string transactionalItemId { get; set; }
+    [Parameter]
+    public string IdTransactionalItem { get; set; }
     #region TileName
     public string Title { get; set; }
     public string Name { get; set; }
@@ -48,19 +65,20 @@
     protected override void OnInitialized()
     {
         InitializedUICommonFunctions();
-        if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
-        {
-            transactionalItemId = transactionalService.transactionalItemId != null ? transactionalService.transactionalItemId : null;
-            InitializedQualityParameters();
-        }
+
+        InitializedQualityParameters();
+
     }
 
     protected async void InitializedQualityParameters()
     {
-        qualityParameters = await transactionalService.GetTransactionalItemDetailsQualityParameters(transactionalItemId);
-        await ConverTo(qualityParameters);
-        //await GridQuality.Refresh();
-        StateHasChanged();
+        if (IdTransactionalItem != null)
+        {
+            qualityParameters = await transactionalService.GetTransactionalItemDetailsQualityParameters(IdTransactionalItem);
+
+            StateHasChanged();
+        }
+        if (qualityParameters == null) qualityParameters = new();
     }
 
     public async void InitializedUICommonFunctions()
@@ -70,19 +88,33 @@
         Value = ValidateName(UICommonFunctions.GetDisplayName(new TransactionalItemQualityPair(), "Value"));
         StateHasChanged();
     }
+
     private string ValidateName(string? Name)
     {
         return Name != null ? Name : "-";
     }
-
-
-
-    public void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemQualityPairView> args)
+      
+    public void ViewNewQualityPair(string value)
     {
-        TransactionalItemQualityPairView obj = args.RowInfo.RowData;
-        transactionalService.ConceptTransactionalItemQualityPair = qualityParameters.Where(s =>s.Id !=null && s.Id == obj.Id).FirstOrDefault();
+        Navigation.NavigateTo(value);
+      
+    }
 
-        if (args.Item.Text == "Edit" && transactionalService.ConceptTransactionalItemQualityPair != null)
+    #region Grid
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<TransactionalItemQualityPair> args) => ContextMenuServices.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+        </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        TransactionalItemQualityPair argObj = (TransactionalItemQualityPair)args.Value;
+
+        transactionalService.ConceptTransactionalItemQualityPair = qualityParameters.Where(s => s.Id != null && s.Id == argObj.Id).FirstOrDefault();
+
+        if ( transactionalService.ConceptTransactionalItemQualityPair != null)
         {
 
             Navigation.NavigateTo("/QualityParametersCard/TransactionalItemCard/3/Edit");
@@ -91,43 +123,13 @@
     }
 
 
-    protected async Task ConverTo(List<TransactionalItemQualityPair> _qualityParameters)
-    {
-        QualityParametersView = new();
-        foreach (TransactionalItemQualityPair Element in _qualityParameters)
-        {
-            QualityParametersView.Add(new TransactionalItemQualityPairView
-                {
-                    Name = Element?.TransactionalItemQuality !=null ? Element.TransactionalItemQuality?.Name:"",
-                    Value = Element?.Value,
-                    Id = Element.Id,
-                    IdItemQuality = Element?.TransactionalItemQuality != null ? Element?.TransactionalItemQuality.Id:null
-                });
-        }
+    #endregion Grid
 
-    }
 
-    public void ViewNewQualityPair(string value)
-    {
-        Navigation.NavigateTo(value);
-      
-    }
-
-    public void Refresh()
-    {
-        GridQuality.Refresh();
-    }
-
-    public class TransactionalItemQualityPairView : TransactionalItemQualityPair
-    {      
-        public string Name { get; set; }
-        public string IdItemQuality { get; set; }
-      
-    }
-
+  
     public string GetName(string Name, Object Obj)
     {
-        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        if (UICommonFunctions.GetDisplayName(Obj, Name)!=null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
     }
 

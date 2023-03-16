@@ -2,10 +2,9 @@
 @using SunttelTradePointB.Client.Shared.TransactionalItems
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Navigations
-@using Syncfusion.Blazor.Grids
+@inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
 @inject TransactionalItemsService transactionalService;
-
 
 
 <div class="detailsTitleContainer" style="width:100%;">
@@ -16,41 +15,48 @@
     </svg>
 </div>
 <div class="flex-horizontal-center ">
-    <SfGrid @ref="DataGrid" DataSource="@ProductPackingSpecsView"
-            AllowFiltering="true"
-            AllowTextWrap="false"
-            AllowPaging="true"
-            AllowResizing="true"
-            Width="100%"
-            ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader" } })">
 
-        <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
-        <GridColumns>
-            <GridColumn Field="@nameof(PackingSpecsView.CustomerName)" HeaderText="@GetName("Concept",new PackingSpecs())" Width="250"></GridColumn>
-            <GridColumn Field="@nameof(PackingSpecsView.CustomerCode)" HeaderText="@GetName("Code",new AtomConcept())" Width="100"> </GridColumn>
-            <GridColumn Field="@nameof(PackingSpecsView.SeasonName)" HeaderText="@GetName("Season",new PackingSpecs())" Width="150"> </GridColumn>
-            <GridColumn Field="@nameof(PackingSpecsView.ModelRecipeName)" HeaderText="@GetName("ModelRecipe",new PackingSpecs())" Width="150"> </GridColumn>
-            <GridColumn Field="@nameof(PackingSpecsView.PackPerBoxLayer)" HeaderText="@GetName("PackPerBoxLayer",new PackingSpecs())" Width="150"> </GridColumn>
-            <GridColumn Field="@nameof(PackingSpecsView.PackLayersToSale)" HeaderText="@GetName("PackLayersToSale",new PackingSpecs())" Width="150"> </GridColumn>
-            <GridColumn Field="@nameof(PackingSpecsView.PackLayersToBuy)" HeaderText="@GetName("PackLayersToBuy",new PackingSpecs())" Width="150"> </GridColumn>
-            <GridColumn Field="@nameof(PackingSpecsView.PackingBoxToSaleName)" HeaderText="@GetName("PackingBoxToSaleName",new PackingSpecs())" Width="150"> </GridColumn>
-            <GridColumn Field="@nameof(PackingSpecsView.PackingBoxToBuyName)" HeaderText="@GetName("PackingBoxToBuyName",new PackingSpecs())" Width="150"> </GridColumn>
-            <GridColumn Field="@nameof(PackingSpecsView.UnitPrice)" HeaderText="@GetName("UnitPrice",new PriceInfo())" Width="150"> </GridColumn>
-        </GridColumns>
-        <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="PackingSpecsView"></GridEvents>
-    </SfGrid>
+    @if (productPackingSpecsView != null)
+    {
+        @if (productPackingSpecs != null)
+        {
+            <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="@itemsPerPage"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@productPackingSpecsView"
+                    TItem="PackingSpecsView"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    CellContextMenu="@ShowContextMenuWithContent"
+                    PageNumbersCount="100"
+                            Class="Text-grid">
+
+                <Columns>
+                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.CustomerName)" Title="@GetName(new PackingSpecs(), "Customer")" Width="250"></RadzenDataGridColumn>
+                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.CustomerCode)" Title="@GetName(new Concept(), "Code")" Width="100"> </RadzenDataGridColumn>
+                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.SeasonName)" Title="@GetName(new PackingSpecs(), "Season")" Width="150"> </RadzenDataGridColumn>
+                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.ModelRecipeName)" Title="@GetName(new PackingSpecs(), "ProductModel")" Width="150"> </RadzenDataGridColumn>
+                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.PackLayersToBuy)" Title="@GetName(new PackingSpecs(), "PackLayersToBuy")" Width="150"> </RadzenDataGridColumn>
+                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.PackPerBoxLayer)" Title="@GetName(new PackingSpecs(), "PackPerBoxLayer")" Width="150"> </RadzenDataGridColumn>
+                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.PackingBoxToBuyName)" Title="@GetName(new PackingSpecs(), "PackingBoxToBuy")" Width="150"> </RadzenDataGridColumn>
+                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.PackingBoxToSaleName)" Title="@GetName(new PackingSpecs(), "PackingBoxToSale")" Width="150"> </RadzenDataGridColumn>
+                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.PackLayersToSale)" Title="@GetName(new PackingSpecs(), "PackLayersToSale")" Width="150"> </RadzenDataGridColumn>
+                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.UnitPrice)" Title="@GetName(new PriceInfo(), "UnitPrice")" Width="150"> </RadzenDataGridColumn>
+
+                </Columns>
+            </RadzenDataGrid>
+        }
+    }
 
 </div>
 
-<style>
-    .e-grid .e-headercelldiv {
-        font-size: 12px;
-    }
-
-  /*  .e-grid .e-rowcell {
-        font-size: 7px;
-    }*/
-</style>
 
 
 @code {
@@ -58,15 +64,13 @@
     public string IdTransactionalItem { get; set; }
 
     public List<PackingSpecs> productPackingSpecs { get; set; }
-    public List<PackingSpecsView> ProductPackingSpecsView = new List<PackingSpecsView>();
+    public List<PackingSpecsView> productPackingSpecsView = new List<PackingSpecsView>();
     public TransactionalItem? currentItem { get; set; }
     List<Concept> ConceptModel = new List<Concept>();
 
     public bool PopupView { get; set; } = false;
     public string transactionalItemId { get; set; }
-
-    SfGrid<PackingSpecsView>? DataGrid;
-
+    private int itemsPerPage = 25;
 
     protected override void OnInitialized()
     {
@@ -84,20 +88,16 @@
         if (productPackingSpecs != null && productPackingSpecs?.Count > 0)
         {
             await ConverToProductPacking(productPackingSpecs);
-            DataGrid.ForceUpdate = true;
-            DataGrid.DataSource = ProductPackingSpecsView;
-            await DataGrid.Refresh();
             StateHasChanged();
 
         }
     }
 
-
     private List<TabData> TabStyles { get; set; } = new List<TabData>() {
         new TabData { StyleMode = "Default Tab", StyleClass = "" },
         new TabData { StyleMode = "Fill Tab Header", StyleClass = "e-fill" },
         new TabData { StyleMode = "Background Tab Header", StyleClass = "e-background" }
-    };
+            };
 
     public class TabData
     {
@@ -111,28 +111,27 @@
         Navigation.NavigateTo("/PackingRecipeCard");
     }
 
-
-
     public async Task ConverToProductPacking(List<PackingSpecs> ProductPackingSpecs)
     {
-        ProductPackingSpecsView = new List<PackingSpecsView>();
+        productPackingSpecsView = new List<PackingSpecsView>();
 
         foreach (var PackingSpecs in ProductPackingSpecs)
         {
-            ProductPackingSpecsView.Add(new PackingSpecsView
-                {
-                    CustomerName = PackingSpecs?.Customer?.Name,
-                    UnitPrice = PackingSpecs.Price != null ? PackingSpecs.Price.UnitPrice : 0,
-                    PackLayersToBuy = PackingSpecs.PackLayersToBuy != null ? PackingSpecs.PackLayersToBuy : 0,
-                    PackingBoxToBuyName = PackingSpecs.PackingBoxToBuy != null ? PackingSpecs.PackingBoxToBuy.Name : "",
-                    PackingBoxToSaleName = PackingSpecs?.PackingBoxToSale != null ? PackingSpecs.PackingBoxToSale?.Name : "",
-                    CustomerCode = PackingSpecs.Customer != null ? PackingSpecs.Customer.Code : "",
-                    PackLayersToSale = PackingSpecs.PackLayersToSale != null ? PackingSpecs.PackLayersToSale : 0,
-                    PackPerBoxLayer = PackingSpecs.PackPerBoxLayer != null ? PackingSpecs.PackPerBoxLayer : 0,
-                    SeasonName = PackingSpecs.Season != null ? PackingSpecs.Season.Name : "",
-                    Id = PackingSpecs.Id
+            productPackingSpecsView.Add(new PackingSpecsView
+                    {
+                        CustomerName = PackingSpecs?.Customer?.Name,
+                        UnitPrice = PackingSpecs.Price != null ? PackingSpecs.Price.UnitPrice : 0,
+                        PackLayersToBuy = PackingSpecs.PackLayersToBuy != null ? PackingSpecs.PackLayersToBuy : 0,
+                        PackingBoxToBuyName = PackingSpecs.PackingBoxToBuy != null ? PackingSpecs.PackingBoxToBuy.Name : "",
+                        PackingBoxToSaleName = PackingSpecs?.PackingBoxToSale != null ? PackingSpecs.PackingBoxToSale?.Name : "",
+                        CustomerCode = PackingSpecs.Customer != null ? PackingSpecs.Customer.Code : "",
+                        PackLayersToSale = PackingSpecs.PackLayersToSale != null ? PackingSpecs.PackLayersToSale : 0,
+                        PackPerBoxLayer = PackingSpecs.PackPerBoxLayer != null ? PackingSpecs.PackPerBoxLayer : 0,
+                        SeasonName = PackingSpecs.Season != null ? PackingSpecs.Season.Name : "",
+                        Id = PackingSpecs.Id,
+                        ModelRecipeName = PackingSpecs.ModelRecipe != null ? PackingSpecs.ModelRecipe.Name : ""
 
-                });
+                    });
         }
 
 
@@ -140,51 +139,32 @@
 
     public void ConverToProductPacking(PackingSpecs ProductPackingSpec)
     {
-        ProductPackingSpecsView = new List<PackingSpecsView>();
+        productPackingSpecsView = new List<PackingSpecsView>();
 
 
-        ProductPackingSpecsView.Add(new PackingSpecsView
-            {
-                Id = ProductPackingSpec.Id,
-                CustomerName = ProductPackingSpec.Customer.Name,
-                UnitPrice = ProductPackingSpec.Price.UnitPrice,
-                PackLayersToBuy = ProductPackingSpec.PackLayersToBuy,
-                PackingBoxToBuyName = ProductPackingSpec.PackingBoxToBuy.Name,
-                PackingBoxToSaleName = ProductPackingSpec.PackingBoxToSale.Name,
-                CustomerCode = ProductPackingSpec.Customer.Code,
-                PackLayersToSale = ProductPackingSpec.PackLayersToSale,
-                PackPerBoxLayer = ProductPackingSpec.PackPerBoxLayer
+        productPackingSpecsView.Add(new PackingSpecsView
+                {
+                    Id = ProductPackingSpec.Id,
+                    CustomerName = ProductPackingSpec.Customer.Name,
+                    UnitPrice = ProductPackingSpec.Price.UnitPrice,
+                    PackLayersToBuy = ProductPackingSpec.PackLayersToBuy,
+                    PackingBoxToBuyName = ProductPackingSpec.PackingBoxToBuy.Name,
+                    PackingBoxToSaleName = ProductPackingSpec.PackingBoxToSale.Name,
+                    CustomerCode = ProductPackingSpec.Customer.Code,
+                    PackLayersToSale = ProductPackingSpec.PackLayersToSale,
+                    PackPerBoxLayer = ProductPackingSpec.PackPerBoxLayer
 
-            });
+                });
 
 
     }
 
-
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<PackingSpecsView> args)
-    {
-        PackingSpecsView _PackingSpecs = new();
-        _PackingSpecs = args.RowInfo.RowData;
-
-        if (args.Item.Text == "Edit")
-        {
-            transactionalService.ConceptTransactionalItemPackingSpecs = productPackingSpecs.Where(s => s.Id == _PackingSpecs.Id).FirstOrDefault();
-            if (transactionalService.ConceptTransactionalItemPackingSpecs != null)
-            {
-                Navigation.NavigateTo("/PackingRecipeCard/Edit");
-            }
-        }
-    }
-
-    public string GetName(string Name, Object Obj)
+    public string GetName(Object Obj, string Name)
     {
         Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name != null ? Name : Name;
     }
 
-    public void Refresh()
-    {
-    }
     public class PackingSpecsView
     {
         public string Id { get; set; }
@@ -201,12 +181,31 @@
 
     }
 
+    #region Edit Grid
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<PackingSpecsView> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        PackingSpecsView _PackingSpecs = new();
+        _PackingSpecs = (PackingSpecsView)args.Value;
+
+        if (args.Text == "Edit")
+        {
+            transactionalService.ConceptTransactionalItemPackingSpecs = productPackingSpecs.Where(s => s.Id == _PackingSpecs.Id).FirstOrDefault();
+            if (transactionalService.ConceptTransactionalItemPackingSpecs != null)
+            {
+                Navigation.NavigateTo($"/PackingRecipeCard/{IdTransactionalItem}/{_PackingSpecs.Id}");
+            }
+        }
+    }
+
+    #endregion Edit Grid
 
 }
 
-<style>
-    .default-tab .e-content .e-item {
-        padding: 10px;
-        text-align: justify;
-    }
-</style>
+

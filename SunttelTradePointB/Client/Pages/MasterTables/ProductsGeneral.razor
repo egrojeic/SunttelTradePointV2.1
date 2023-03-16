@@ -84,11 +84,7 @@
     [Parameter]
     public string _filterItems { get; set; }
 
-    List<ContextMenuItemModel> contextMenuItemModel = new List<ContextMenuItemModel>()
-        {
-        new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" }
-        };
-
+   
 
     protected override void OnInitialized()
     {
@@ -134,19 +130,17 @@
 
     }
 
+
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<TransactionalItem> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-
     </RadzenMenu>
     );
-
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         TransactionalItem argObj = (TransactionalItem)args.Value;
         Navigate(argObj.Id);
-
         Console.WriteLine($"Menu item with Value={argObj.Name} clicked");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
@@ -158,20 +152,6 @@
     {
         Navigation.NavigateTo($"/TransactionalItemCard/{productId}");
     }
-
-
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItem> argObj)
-    {
-        TransactionalItem itemSeasonBusiness = argObj.RowInfo.RowData;
-        OpenOrder(itemSeasonBusiness);
-        transactItemsService.transactionalItemId = itemSeasonBusiness.Id;
-        Console.WriteLine($"Menu item with Value={argObj.Name} clicked");
-        if ( transactItemsService.transactionalItemId != null)
-        {
-            ContextMenuService.Close();
-        }
-    }
-
 
 
     public async Task OpenOrder(TransactionalItem itemCard)

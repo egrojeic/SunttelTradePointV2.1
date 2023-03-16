@@ -4,6 +4,7 @@
 @using Syncfusion.Blazor.Grids
 @using Syncfusion.Blazor.Popups
 @using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents
+@inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
 @inject TransactionalItemsService transactionalService;
 
@@ -16,20 +17,49 @@
 </div>
 
 @if (ProductModels == null) { ProductModels = new(); }
-<DataGrid @ref="dataGrid" TParameter="ProductModel"
-          EventCallbackMenu="OnContextMenuClick"
-          parameterList="ProductModels"
-          GridColumnsList="gridColumnList"
-          Width="100%">
-</DataGrid>
+
+@if (ProductModels != null)
+{
+    <RadzenDataGrid AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="true"
+                FilterMode="FilterMode.Advanced"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                AllowSorting="true"
+                PageSize="4"
+                AllowPaging="true"
+                PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                ShowPagingSummary="true"
+                Data="@ProductModels"
+                TItem="ProductModel"
+                ColumnWidth="300px"
+                SelectionMode="DataGridSelectionMode.Single"
+                LogicalFilterOperator="LogicalFilterOperator.Or"
+                CellContextMenu="@ShowContextMenuWithContent"
+                PageNumbersCount="100">
+
+        <Columns>
+            <RadzenDataGridColumn TItem="ProductModel" Property="Code" Title="Code" Frozen="false" Width="80px" />
+            <RadzenDataGridColumn TItem="ProductModel" Property="Name" Filterable="true" Title="Name" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+            <RadzenDataGridColumn TItem="ProductModel" Property="FullClassName" Title="Group" Width="160px" />
+            <RadzenDataGridColumn TItem="ProductModel" Property="Status.Name" Title="Status" Width="200px" />
+            <RadzenDataGridColumn TItem="ProductModel" Property="IsGeneric" Title="Is Generic" Width="120px" />
+            <RadzenDataGridColumn TItem="ProductModel" Property="ReferenceCost" Title="Reference Cost" Width="120px" />
+
+
+        </Columns>
+    </RadzenDataGrid>
+}
+
+
 
 @code {
+    [Parameter]
+    public string IdTransactionalItem { get; set; }
     List<ProductModel> ProductModels = new();
-    DataGrid<ProductModel>? dataGrid;
-    public List<GridColumn> gridColumnList = new();
+   
 
-    string transactionalItemId = "";
-    string msg =  "";
+    string msg = "";
     bool viewMsg = false;
     bool status = false;
 
@@ -40,59 +70,43 @@
     }
 
     protected override void OnInitialized()
-    {     
-        gridColumnList = new List<GridColumn>
-        {
-            new GridColumn() { Field = nameof(ProductModel.Name), HeaderText = GetName("Name", new AtomConcept()), Width="300" },
-             new GridColumn() { Field = nameof(ProductModel.Code), HeaderText = GetName("Code", new AtomConcept()), Width="90" },
-              new GridColumn() { Field = nameof(ProductModel.Description), HeaderText = GetName("Description", new ProductModel()), Width="100" },
-              new GridColumn() { Field = nameof(ProductModel.Notes), HeaderText = GetName("Notes", new AtomConcept()), Width="100" }
-
-        };
-
-        if (transactionalService.transactionalItemId != null && transactionalService.transactionalItemId != "")
-        {
-            transactionalItemId = transactionalService.transactionalItemId;     
-
-
-        }
-
-
-       
-
-
-    }
-
-    protected override void OnAfterRender(bool firstRender)
     {
-        OnInitializedData();
-
+       
+            OnInitializedData();
+        
     }
 
 
     public async void OnInitializedData()
     {
 
-        if (transactionalItemId != null && transactionalItemId != "")
+        if (IdTransactionalItem != null )
         {
-            ProductModels = await transactionalService.GetSelectorListTransactionalItemModels(transactionalItemId);     
-            if (dataGrid != null)
-            {
-                dataGrid.Refresh();
-            }
+            ProductModels = await transactionalService.GetSelectorListTransactionalItemModels(IdTransactionalItem);
 
-            if (dataGrid.parameterList.Count() != ProductModels.Count()) StateHasChanged();
+            StateHasChanged();
         }
 
     }
 
+    #region Grid
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<ProductModel> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
 
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        ProductModel argObj = (ProductModel)args.Value;
+        transactionalService.ConceptProductModel = argObj;
+        if (transactionalService.ConceptProductModel != null)
+        {
+            Navigation.NavigateTo("/ProductModelCard/Edit");
+        }
+    }
 
-
-
-
-
-
+    #endregion Grid
 
 
     public void OpenAdd()
@@ -102,19 +116,12 @@
 
     private void Msg(string _msg, int _status)
     {
-        msg =  _msg;
+        msg = _msg;
         viewMsg = true;
         status = status;
     }
 
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<ProductModel> args)
-    {
-        transactionalService.ConceptProductModel = args.RowInfo.RowData;
-        if (transactionalService.ConceptProductModel !=null)
-        {
-            Navigation.NavigateTo("/ProductModelCard/Edit");
-        }
-    }
+
 
     public string GetName(string Name, Object Obj)
     {

@@ -6,6 +6,7 @@
 @using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents
 @inject NavigationManager Navigation
 @inject TransactionalItemsService transactionalService;
+@inject ContextMenuService ContextMenuService
 
 <div class="detailsTitleContainer">
     <h3 class="subTitleDetailForm">Characteristic</h3>
@@ -17,44 +18,51 @@
 </div>
 
 
-@if (transactionalItemTypeCharacteristics == null) transactionalItemTypeCharacteristics = new();
+@if (transactionalItemTypeCharacteristics != null)
+{
 
-<DataGrid @ref="dataGrid" TParameter="TransactionalItemCharacteristicPairView"
-          EventCallbackMenu="OnContextMenuClick"
-          parameterList="transactionalItemTypeCharacteristicsView"
-          GridColumnsList="gridColumnListCharacteristic"
-          Width="100%">
-</DataGrid>
 
+    <RadzenDataGrid AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="true"
+                FilterMode="FilterMode.Advanced"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                AllowSorting="true"              
+                AllowPaging="true"
+                PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                ShowPagingSummary="true"
+                Data="@transactionalItemTypeCharacteristics"
+                TItem="TransactionalItemCharacteristicPair"
+                ColumnWidth="300px"
+                SelectionMode="DataGridSelectionMode.Single"
+                LogicalFilterOperator="LogicalFilterOperator.Or"              
+                CellContextMenu="@ShowContextMenuWithContent"
+                PageNumbersCount="100"
+                PageSize="2" >
+
+    <Columns>
+        <RadzenDataGridColumn TItem="TransactionalItemCharacteristicPair" Property="TransactionalItemCharacteristicPair.TransactionalItemCharacteristic.Name" Title="@GetName("TransactionalItemCharacteristic", new TransactionalItemCharacteristicPair())"  Width="80px" />
+        <RadzenDataGridColumn TItem="TransactionalItemCharacteristicPair" Property="TransactionalItemCharacteristicPair.Value" Title="@GetName("Value", new TransactionalItemCharacteristicPair())"  Width="180px" TextAlign="Radzen.TextAlign.Center" />
+           
+    </Columns>
+</RadzenDataGrid>
+}
 
 @code {
-
-  
-
+    [Parameter]
+    public string IdTransactionalItem { get; set; }
     public List<TransactionalItemCharacteristicPair> transactionalItemTypeCharacteristics = new();
     public TransactionalItemCharacteristicPair transactionalItemTypeCharacteristicPair = new();
-    public List<TransactionalItemCharacteristicPairView> transactionalItemTypeCharacteristicsView = new();
-    public List<GridColumn> gridColumnListCharacteristic = new();
-    DataGrid<TransactionalItemCharacteristicPairView>? dataGrid;
+
+
     #region TileName
-    public string transactionalItemId { get; set; }
+
 
     #endregion TitleName
 
     protected override void OnInitialized()
     {
-        if (transactionalService.transactionalItemId != null && transactionalService.transactionalItemId != "")
-        {
-            transactionalItemId = transactionalService.transactionalItemId;
-
-        }
-
-        gridColumnListCharacteristic = new List<GridColumn>
-        {
-            new GridColumn() { Field = nameof(TransactionalItemCharacteristicPairView.Name), HeaderText = GetName("Name", new TransactionalItemCharacteristic()), Width="300" },
-            new GridColumn() { Field = nameof(TransactionalItemCharacteristicPairView.ValuePair), HeaderText = GetName("Name", new TransactionalItemCharacteristicPair()) }
-
-        };
+        OnInitializedCharacterisc();
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -65,42 +73,41 @@
 
     protected async void OnInitializedCharacterisc()
     {
-        if (transactionalItemId != null && transactionalItemId != "")
+        if (IdTransactionalItem != null )
         {
-            transactionalItemTypeCharacteristics = await transactionalService.GetCharacteristic(transactionalItemId);
-            transactionalItemTypeCharacteristicsView = new();
-            @foreach (var item in transactionalItemTypeCharacteristics)
-            {
-                transactionalItemTypeCharacteristicsView.Add(new TransactionalItemCharacteristicPairView
-                {
-                    IdPair = item.Id,
-                    ValuePair = item.Value,
-                    Name = item.TransactionalItemCharacteristic !=null ?  item.TransactionalItemCharacteristic.Name:""
-                });
-            }
-            if (dataGrid != null)
-            {                       
-                dataGrid.Refresh();
-            }           
+            transactionalItemTypeCharacteristics = await transactionalService.GetCharacteristic(IdTransactionalItem);
 
-            if (dataGrid.parameterList.Count() != transactionalItemTypeCharacteristicsView.Count()) StateHasChanged();
+            StateHasChanged();
         }
+        if (transactionalItemTypeCharacteristics != null) transactionalItemTypeCharacteristics = new();
     }
 
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemCharacteristicPairView> args)
+    #region Grid
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<TransactionalItemCharacteristicPair> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
     {
-        TransactionalItemCharacteristicPairView ObjModel = null;
-        ObjModel = args.RowInfo.RowData;
+        TransactionalItemCharacteristicPair argObj = (TransactionalItemCharacteristicPair)args.Value;
+       
         if (transactionalItemTypeCharacteristics != null)
         {
-            transactionalService.ConcepttransactionalItemCharacteristicPair = transactionalItemTypeCharacteristics.Where(s => s.Id == ObjModel.IdPair).FirstOrDefault();
-        }      
-        if (args.Item.Text == "Edit" && transactionalService.ConcepttransactionalItemCharacteristicPair !=null)
+            transactionalService.ConcepttransactionalItemCharacteristicPair = transactionalItemTypeCharacteristics.Where(s => s.Id == argObj.Id).FirstOrDefault();
+        }
+        if (transactionalService.ConcepttransactionalItemCharacteristicPair != null)
         {
             Navigation.NavigateTo("/CharacteristicCard/TransactionalItemCard/5/Edit");
         }
     }
 
+    #endregion Grid
+
+
+  
 
     public void OpenAdd(string value)
     {

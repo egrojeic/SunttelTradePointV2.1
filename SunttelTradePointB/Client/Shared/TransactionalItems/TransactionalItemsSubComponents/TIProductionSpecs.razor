@@ -2,6 +2,7 @@
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Navigations
 @using Syncfusion.Blazor.Grids
+@inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
 @inject TransactionalItemsService transactionalService;
 
@@ -15,24 +16,44 @@
 @*<ProductionSpecsCard @ref="referNewProductionSpecs" save="@Save" ></ProductionSpecsCard>*@
 <div class="row">
     <div class="col-md-12">
-        <SfGrid @ref="GridProductSpecs" DataSource="@ProductionSpecsView" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" EnableStickyHeader="true"
-                ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader" } })">
-            <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
-            <GridColumns>
-                <GridColumn Field="@nameof(TransactionalItemProcessStep.Name)" HeaderText="@Name" Width="110"> </GridColumn>
-                <GridColumn Field="@nameof(TransactionalItemProcessStep.GeneralInstructions)" HeaderText="@GeneralInstructions" Width="110"> </GridColumn>
-                <GridColumn Field="@nameof(TransactionalItemProcessStep.Cost)" HeaderText="@Cost" Width="110"> </GridColumn>
-            </GridColumns>
-            <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="TransactionalItemProcessStep"></GridEvents>
-        </SfGrid>
+
+        @if (productionSpecs != null)
+        {
+            <RadzenDataGrid AllowFiltering="true"
+                        AllowColumnResize="true"
+                        AllowAlternatingRows="true"
+                        FilterMode="FilterMode.Advanced"
+                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        AllowSorting="true"
+                        AllowPaging="true"
+                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                        ShowPagingSummary="true"
+                        Data="@productionSpecs"
+                        TItem="TransactionalItemProcessStep"
+                        ColumnWidth="300px"
+                        SelectionMode="DataGridSelectionMode.Single"
+                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                        CellContextMenu="@ShowContextMenuWithContent"
+                        PageNumbersCount="100">
+
+                <Columns>
+                    <RadzenDataGridColumn TItem="TransactionalItemProcessStep" Title="@Name" Width="110"> </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="TransactionalItemProcessStep" Title="@GeneralInstructions" Width="110"> </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="TransactionalItemProcessStep" Title="@Cost" Width="110"> </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+        }
+
+
+
     </div>
 </div>
 @code {
-    List<TransactionalItemProcessStep> ProductionSpecsView = new List<TransactionalItemProcessStep>();
+    [Parameter]
+    public string IdTransactionalItem { get; set; }
+    List<TransactionalItemProcessStep> productionSpecs = new List<TransactionalItemProcessStep>();
 
-    SfGrid<TransactionalItemProcessStep> GridProductSpecs;
     ProductionSpecsCard? referNewProductionSpecs;
-    public string transactionalItemId { get; set; }
 
     #region TileName
     public string ProductionSpecs { get; set; }
@@ -50,20 +71,22 @@
     protected override void OnInitialized()
     {
         InitializedUICommonFunctions();
-        if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
-        {
-            transactionalItemId = transactionalService.transactionalItemId != null ? transactionalService.transactionalItemId : null;
-            OnInitializedProcessStep();
-        }
+
+        OnInitializedProcessStep();
+
     }
+
     protected async void OnInitializedProcessStep()
     {
-        ProductionSpecsView = await transactionalService.GetTransactionalItemDetailsProductionSpecs(transactionalItemId);
-        if (ProductionSpecsView != null)
+        if (IdTransactionalItem != null)
         {
-            GridProductSpecs.DataSource = ProductionSpecsView;
-            await GridProductSpecs.Refresh();
+            productionSpecs = await transactionalService.GetTransactionalItemDetailsProductionSpecs(IdTransactionalItem);
+
             StateHasChanged();
+        }
+        if (productionSpecs == null)
+        {
+            productionSpecs = new();
         }
     }
 
@@ -83,7 +106,7 @@
 
     private string ValidateName(string? Name)
     {
-        return Name != null ? Name : "-";
+        return Name != null ? Name : Name;
     }
 
     void ViewControlAddProductionSpecs()
@@ -95,8 +118,8 @@
     {
         try
         {
-            ProductionSpecsView.Add(Obj);
-            Refresh();
+            productionSpecs.Add(Obj);
+           
         }
         catch (Exception e)
         {
@@ -106,23 +129,29 @@
 
     }
 
-    public void Refresh()
-    {
-        GridProductSpecs.Refresh();
+    
 
-    }
-    public void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemProcessStep> args)
-    {
-        transactionalService.ConceptTransactionalItemProcessStep = args.RowInfo.RowData;
+    #region Grid
 
-        if (args.Item.Text == "Edit" && transactionalService.ConceptTransactionalItemProcessStep !=null)
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<TransactionalItemProcessStep> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        TransactionalItemProcessStep argObj = (TransactionalItemProcessStep)args.Value;
+        transactionalService.ConceptTransactionalItemProcessStep = (TransactionalItemProcessStep)args.Value;
+
+        if (transactionalService.ConceptTransactionalItemProcessStep != null)
         {
-           
-            Navigation.NavigateTo("/ProductionSpecsCard/TransactionalItemCard/1/Edit");
-           
+            Navigation.NavigateTo($"/ProductionSpecsCard/TransactionalItemCard/1/{IdTransactionalItem}/{argObj.Id}");
+
         }
     }
 
+    #endregion Grid
 
 
 }
