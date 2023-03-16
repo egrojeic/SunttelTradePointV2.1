@@ -170,8 +170,13 @@
                                         <Columns>
                                             <RadzenDataGridColumn TItem="TransactionalItemTag" Property="TransactionalItemTag.Key" Title="@GetName("Key", new TransactionalItemTag())" Frozen="false" Width="80px" />
                                             <RadzenDataGridColumn TItem="TransactionalItemTag" Property="TransactionalItemTag.Value" Filterable="true" Title="@GetName("Value", new TransactionalItemTag())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-
-                                        </Columns>
+                                          
+<RadzenDataGridColumn TItem="TransactionalItemTag" Title="Photo" Frozen="true" Sortable="false" Filterable="false" Width="60px" >
+                <Template Context="data">
+                    <RadzenImage Path="/images//acordion_image1.jpg" style="width: 40px; height: 40px; border-radius: 8px;" />
+                </Template>
+            </RadzenDataGridColumn>
+                                                            </Columns>
                                     </RadzenDataGrid>
                                 }
 

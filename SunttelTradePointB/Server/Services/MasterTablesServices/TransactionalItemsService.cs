@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
+using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Shared.Common;
 using System.Net;
@@ -73,7 +74,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 var pipeline = new List<BsonDocument>();
 
-                if(!(strNameFiler.ToLower()=="all" || strNameFiler.ToLower() == "todos"))
+                if (!(strNameFiler.ToLower() == "all" || strNameFiler.ToLower() == "todos"))
                 {
                     pipeline.Add(
                     new BsonDocument{
@@ -90,12 +91,12 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     }
                 );
                 }
-                
+
 
                 pipeline.Add(
                     new BsonDocument(
                         "$match",
-                        new BsonDocument("Status.IsEnabledForTransactions",true)
+                        new BsonDocument("Status.IsEnabledForTransactions", true)
 
                     )
                 );
@@ -153,7 +154,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             try
             {
                 var pipeline = new List<BsonDocument>();
-                
+
                 pipeline.Add(
                     new BsonDocument("$match", new BsonDocument("_id", new ObjectId(transactionalItemId)))
                 );
@@ -291,7 +292,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
-                if(transactionalItem.Id == null)
+                if (transactionalItem.Id == null)
                 {
                     transactionalItem.Id = ObjectId.GenerateNewId().ToString();
                 }
@@ -350,7 +351,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
-                if(transactionalItemCharacteristicPair.Id == null)
+                if (transactionalItemCharacteristicPair.Id == null)
                 {
                     transactionalItemCharacteristicPair.Id = ObjectId.GenerateNewId().ToString();
                 }
@@ -372,7 +373,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 {
                     //Add Element
                     var filter = Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId);
-                    if(resultPrev.ItemCharacteristics == null)
+                    if (resultPrev.ItemCharacteristics == null)
                     {
                         var ItemCharacteristicsLst = new List<TransactionalItemCharacteristicPair>();
                         ItemCharacteristicsLst.Add(transactionalItemCharacteristicPair);
@@ -384,7 +385,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         var update = Builders<TransactionalItem>.Update.AddToSet(x => x.ItemCharacteristics, transactionalItemCharacteristicPair);
                         await _TransactionalItemsCollection.UpdateOneAsync(filter, update);
                     }
-                   
+
                 }
 
 
@@ -408,7 +409,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="transactionalItemId"></param>
         /// <param name="productModel"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, ProductModel?  productModel, string? ErrorDescription)> SaveTransactionalItemModels(string userId, string ipAddress, string transactionalItemId, ProductModel  productModel)
+        public async Task<(bool IsSuccess, ProductModel? productModel, string? ErrorDescription)> SaveTransactionalItemModels(string userId, string ipAddress, string transactionalItemId, ProductModel productModel)
         {
             try
             {
@@ -480,7 +481,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 var filterPrev = Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId);
                 var resultPrev = await _TransactionalItemsCollection.Find(filterPrev).FirstOrDefaultAsync();
 
-                if (transactItemImage.Id != "" && resultPrev != null && resultPrev.PathImages.Any(x => x.Id == transactItemImage.Id))
+                if (transactItemImage.Id != "" && resultPrev != null && resultPrev.PathImages != null && resultPrev.PathImages.Any(x => x.Id == transactItemImage.Id))
                 {
                     //Update Element
                     var filter = Builders<TransactionalItem>.Filter.And(
@@ -493,11 +494,22 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 else
                 {
                     //Add Element
-
                     transactItemImage.Id = ObjectId.GenerateNewId().ToString();
+
                     var filter = Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId);
-                    var update = Builders<TransactionalItem>.Update.AddToSet(x => x.PathImages, transactItemImage);
-                    await _TransactionalItemsCollection.UpdateOneAsync(filter, update);
+                    if (resultPrev.PathImages == null)
+                    {
+                        var images = new List<TransactItemImage>();
+                        images.Add(transactItemImage);
+                      
+                        var updateWithoutList = Builders<TransactionalItem>.Update.Set(x => x.PathImages, images);
+                        await _TransactionalItemsCollection.UpdateOneAsync(filter, updateWithoutList);
+                    }
+                    else
+                    {                                   
+                        var update = Builders<TransactionalItem>.Update.AddToSet(x => x.PathImages, transactItemImage);
+                        await _TransactionalItemsCollection.UpdateOneAsync(filter, update);
+                    }
                 }
 
 
@@ -530,8 +542,8 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 }
 
 
-                if(transactionalItemProcessStep.TransactionalItemProcessTags !=null)
-                    transactionalItemProcessStep.TransactionalItemProcessTags.ForEach(t=> { if (t.Id == null) t.Id = ObjectId.GenerateNewId().ToString(); });
+                if (transactionalItemProcessStep.TransactionalItemProcessTags != null)
+                    transactionalItemProcessStep.TransactionalItemProcessTags.ForEach(t => { if (t.Id == null) t.Id = ObjectId.GenerateNewId().ToString(); });
 
                 if (transactionalItemProcessStep.CostExceptionsByQuantity != null)
                     transactionalItemProcessStep.CostExceptionsByQuantity.ForEach(t => { if (t.Id == null) t.Id = ObjectId.GenerateNewId().ToString(); });
@@ -739,7 +751,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 {
                     var pipeline = new List<BsonDocument>();
 
-                    if(filter.ToLower() != "all")
+                    if (filter.ToLower() != "all")
                     {
                         pipeline.Add(
                        new BsonDocument(
@@ -749,7 +761,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                        )
                    );
                     }
-                   
+
 
                     List<TransactionalItemType> results = await _transactionalItemTypes.Aggregate<TransactionalItemType>(pipeline).ToListAsync();
                     return (true, results, null);
@@ -817,7 +829,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
-                if(transactionalItemType.Id == null)
+                if (transactionalItemType.Id == null)
                 {
                     transactionalItemType.Id = ObjectId.GenerateNewId().ToString();
                 }
@@ -926,7 +938,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
-                if(box.Id == null)
+                if (box.Id == null)
                 {
                     box.Id = ObjectId.GenerateNewId().ToString();
                 }
@@ -1037,7 +1049,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
-                if(seasonBusiness.Id == null)
+                if (seasonBusiness.Id == null)
                 {
                     seasonBusiness.Id = ObjectId.GenerateNewId().ToString();
                 }

@@ -31,46 +31,66 @@
 
 <div class="row">
     <div class="col-md-12">
-        <SfGrid @ref="GridImge" DataSource="@PathImagesView" AllowTextWrap="false" AllowPaging="true" EnableStickyHeader="true">
-            <GridTemplates>
-                <RowTemplate>
-                    <div class="grid-image">
-                        @{
-                            var elemnt = (context as TransactItemImage);
-                            <div class="img">
-                                <img class="btn open" src="/images/extend.png" @onclick="@(()=>SetOpenImg(transactionalService.Host+elemnt.PathImage))" />
-                                <img class="img-style" src="@(transactionalService.Host+elemnt.PathImage)" />
-                            </div>
-                            <div class="description">
-                                <p id="@elemnt.Id"> @elemnt.Name</p>
-                            </div>
-                            <div>
-                                <img src="/images//delete.png" class="btn btn-color btn-delete" @onclick='()=>Delete(elemnt?.Id)'>
-                            </div>
-                        }
-                    </div>
-                </RowTemplate>
-            </GridTemplates>
-            <GridColumns>
-                @* <GridForeignColumn Field=@nameof(Concept.Name) HeaderText="Employee Name" ForeignKeyValue="FirstName" ForeignDataSource="@ConceptModel" Width="150"></GridForeignColumn>*@
-                <GridColumn HeaderText="Image" Width="180"></GridColumn>
-                <GridColumn HeaderText="@Name" Width="210"></GridColumn>
-                <GridColumn HeaderText="" Width="110"></GridColumn>
-            </GridColumns>
+        @if (isLoading)
+        {
 
-        </SfGrid>
+            <WaitingProcessIndicator loadingTopic="Transactional Items"></WaitingProcessIndicator>
+
+        }
+        else
+        {
+            if (PathImagesView != null)
+            {
+                <RadzenDataGrid AllowFiltering="true"
+                        AllowColumnResize="true"
+                        AllowAlternatingRows="true"
+                        FilterMode="FilterMode.Advanced"
+                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        AllowSorting="true"
+                        PageSize="5"
+                        AllowPaging="true"
+                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                        ShowPagingSummary="true"
+                        Data="@PathImagesView"
+                        TItem="TransactItemImage"
+                        ColumnWidth="300px"
+                        SelectionMode="DataGridSelectionMode.Single"
+                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                       
+                        PageNumbersCount="100">
+
+                    <Columns>
+                        <RadzenDataGridColumn TItem="TransactItemImage" Property="TransactionalItemTag.Key" Title="img" Frozen="false" Width="80px" />
+
+                        <RadzenDataGridColumn TItem="TransactItemImage" Title="Photo" Frozen="true" Sortable="false" Filterable="false" Width="60px">
+                            <Template Context="data">
+                                <RadzenImage Path="@(GetFullPathPhoto(data.PathImage))" style="width: 40px; height: 40px; border-radius: 8px;" />
+                            </Template>
+                        </RadzenDataGridColumn>
+                    </Columns>
+                </RadzenDataGrid>
+            }
+
+        }
+
+
+
+   
 
     </div>
 </div>
 
 @code {
+    [Parameter]
+      public string transactionalItemId { get; set; }
     List<TransactItemImage> PathImagesView = new List<TransactItemImage>();
     SfDialog? GridImg;
     string ImagenUrlOpen = "";
     bool ImgOpen = false;
+    bool isLoading = false;
     SfGrid<TransactItemImage>? GridImge;
 
-    public string transactionalItemId { get; set; }
+  
     #region TileName
     public string Title { get; set; }
     public string Name { get; set; }
@@ -84,19 +104,16 @@
     protected override void OnInitialized()
     {
         InitializedUICommonFunctions();
-        if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
-        {
-            transactionalItemId = transactionalService?.transactionalItemId;
+      
             InitializedPathImage();
-        }
+       
     }
 
     protected async void InitializedPathImage()
     {
         PathImagesView = await transactionalService.GetTransactionalItemDetailsPathImages(transactionalItemId);
         if (PathImagesView != null)
-        {
-            await GridImge.Refresh();
+        {           
             StateHasChanged();
         }
     }
@@ -111,14 +128,11 @@
 
     public void OpenNewImg()
     {
-        Navigation.NavigateTo("ImageCard");
-        Refresh();
+        Navigation.NavigateTo($"ImageCard/{transactionalItemId}");
+      
     }
 
-    public void Refresh()
-    {
-        GridImge.Refresh();
-    }
+   
 
     public void Delete(string value)
     {
@@ -128,7 +142,7 @@
             var resul = PathImagesView.Where(s => s.Id.Trim() == value.Trim()).FirstOrDefault();
             if (resul != null)
             {
-                PathImagesView.Remove(resul); Refresh();
+                PathImagesView.Remove(resul);
                 if (transactionalService.TransactionalItems != null)
                 {
                     if (transactionalService.TransactionalItems.PathImages == null)
@@ -161,6 +175,12 @@
 
         }
     }
+
+    public string GetFullPathPhoto(string imgName)
+    {
+        return UIClientGlobalVariables.PathTransactionalItemsImages +"/"+ imgName;
+    }
+
 
     void Msg(string _msg, int _status)
     {
