@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SunttelTradePointB.Shared.Common;
 using System.ComponentModel;
+using Newtonsoft.Json;
 
 namespace SunttelTradePointB.Shared.Sales
 {
@@ -15,16 +16,17 @@ namespace SunttelTradePointB.Shared.Sales
     {
 
         [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         [DisplayName("Affect Inventory")]
         public bool AffectInventory { get; set; }
 
         [BsonIgnoreIfNull]
-
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         [DisplayName("Affect Finance")]
         public bool AffectFinance { get; set; }
 
         [BsonIgnoreIfNull]
-
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         [DisplayName("Check Prices Needed")]
         public bool NeedsCheckPrices { get; set; }
 
