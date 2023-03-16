@@ -1,37 +1,45 @@
 ﻿
+<div style="position:relative;">
+    <div style="display:@(!captionOff?"flex":"none")" class="item-edit">
+        <label>@(caption)</label>
+        <button type="button" @onclick='SetViewElemnt' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+    </div>
+    <div class="position-input">
+        <div class="component-input" style="@style; display:@(Visible?"block":"none");  position:relative; width:278px;">
+            <div style=" flex-direction:row; display:@(!ViewSelect?"flex":"none"); ">
+                <input @bind="inputSearcherValue" class="form-control" autocomplete="on" />
+                <img id="btn-img" src="images/search.svg" @onclick="SearcherValue" />
+            </div>
+            <div id="div-Popup">
 
-<div class="component-input" style="@style; display:@(ViewControl?"block":"none");  position:relative; width:278px;">
-    <div style=" flex-direction:row; display:@(!ViewSelect?"flex":"none"); ">
-        <input @bind="inputSearcherValue" class="form-control" autocomplete="on"  />
-        <img id="btn-img" src="images/search.svg" @onclick="SearcherValue"  />
-    </div>
-    <div id="div-Popup"  >
-      
-        <select @onchange="SelectedCarsChanged" style="display:@(ViewSelect?"block":"none");  background-color:white; color:black;  border-color:gray; ">
-            <option value=""> select </option>
-            @if (ChildContent != null)
-            {
-                @ChildContent
-            }
-        </select>
-        <div>
-            <p style="background-color:@(ParamCountResul>0?"#8affa8":"orange"); display:@(ViewPopupCount?"block":"none");">@(ParamCountResul > 0 ? ParamCountResul : "searching")</p>
+                <select @onchange="SelectedCarsChanged" style="display:@(ViewSelect?"block":"none");  background-color:white; color:black;  border-color:gray; ">
+                    <option value=""> select </option>
+                    @if (ChildContent != null)
+                    {
+                        @ChildContent
+                    }
+                </select>
+                <div>
+                    <p style="background-color:@(ParamCountResul>0?"#8affa8":"orange"); display:@(ViewPopupCount?"block":"none");">@(ParamCountResul > 0 ? ParamCountResul : "searching")</p>
+                </div>
+
+            </div>
+            <input type="button" value="✓" @onclick="SelectedItem" id="Success" />
+            <input type="button" value="X" @onclick="Closed" id="Closed" />
         </div>
-      
     </div>
-      <input type="button" value="✓" @onclick="SelectedItem" id="Success"/>
-     <input  type="button" value="X" @onclick="Closed" id="Closed"/>
 </div>
 
 
-
-@code {
-    [EditorRequired]
+@code {  
+    [Parameter]
+    public EventCallback<(string,string)> EventSearcherValueAndId { get; set; }
     [Parameter]
     public EventCallback<string> EventSearcherValue { get; set; }
-    [EditorRequired]
     [Parameter]
     public EventCallback<string> EventIdSelection { get; set; }
+    [Parameter]
+    public EventCallback<(string, string)> EventIdSelectionAndId { get; set; }
     [Parameter]
     public EventCallback EventClosed { get; set; }
     [EditorRequired]
@@ -39,23 +47,23 @@
     public RenderFragment? ChildContent { get; set; }
     [EditorRequired]
     [Parameter]
-    public int? ParamCountResul { get; set; }
+    public int? ParamCountResul { get; set; }  
     [Parameter]
-    public string? ParamFirstSelectedValue { get; set; }    
+    public string Id { get; set; }
     [Parameter]
     public bool ViewSelect { get; set; } = false;
-    [EditorRequired]
     [Parameter]
-    public bool ViewControl{ get; set; } = false;
+    public bool Visible { get; set; } = false; 
     [Parameter]
-    public string style { get; set; }
-
-    bool ViewPopupCount = false;
-    public string? inputSearcherValue { get; set; }
-
+    public string style { get; set; }   
+    [Parameter]
+    public string caption { get; set; }
+    [Parameter]
+    public bool captionOff { get; set; } = false;
+    private bool ViewPopupCount = false;
     protected bool statusTask = false;
-    string valueSelection = "", backgroundSelection = "",  colorSelection = "";
-
+    public string? inputSearcherValue { get; set; }  
+    string selectionId = "", backgroundSelection = "", colorSelection = "";
 
 
     public async void SearcherValue()
@@ -63,17 +71,19 @@
         ParamCountResul = 0;
         ViewPopupCount = true;
         SearcherCountOff();
-        if (inputSearcherValue != null && inputSearcherValue!="")
+        if (inputSearcherValue != null && inputSearcherValue != "")
         {
+            await EventSearcherValueAndId.InvokeAsync((inputSearcherValue, Id));
             await EventSearcherValue.InvokeAsync(inputSearcherValue);
-        }
+        }        
         else
         {
+            await EventSearcherValueAndId.InvokeAsync(("all", Id));
             await EventSearcherValue.InvokeAsync("all");
-        }           
+        }
         backgroundSelection = "white";
-        colorSelection = "black";       
-       
+        colorSelection = "black";
+
         StateHasChanged();
     }
 
@@ -93,33 +103,40 @@
     {
         if (e.Value is not null)
         {
-            valueSelection = e.Value.ToString();
+            selectionId = e.Value.ToString();
 
         }
     }
+
     private void SelectedItem()
     {
-        if (valueSelection != "")
+        if (selectionId != "")
         {
-            EventIdSelection.InvokeAsync(valueSelection);
-            valueSelection = "";
+            EventIdSelectionAndId.InvokeAsync((Id, selectionId));
+            EventIdSelection.InvokeAsync(selectionId);
+            selectionId = "";
             backgroundSelection = "";
             colorSelection = "";
             ViewSelect = false;
-            ViewControl = false;
+            Visible = false;
             StateHasChanged();
         }
-     
+
     }
 
+    protected void SetViewElemnt()
+    {
+        Visible = true;
+    }
 
     public async Task Refresh()
-    {      
+    {
         StateHasChanged();
     }
+
     public void Closed()
-    {      
-        ViewControl = false;
+    {
+        Visible = false;
         ViewSelect = false;
         backgroundSelection = "";
         colorSelection = "";

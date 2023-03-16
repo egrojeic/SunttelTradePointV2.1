@@ -1,5 +1,5 @@
-﻿@page "/QualityParametersCard/{Page}"
-@page "/QualityParametersCard/{Page}/{SubPage}/{Mode}"
+﻿@page "/QualityParametersCard/{Page}/{transactionalItemId}"
+@page "/QualityParametersCard/{Page}/{transactionalItemId}/{qualityParametersCardId}"
 @using Syncfusion.Blazor.Popups
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Grids
@@ -25,27 +25,25 @@
                     @GetName( "TransactionalItemQuality", new TransactionalItemQualityPair())
                 </label>
             </div>
-            <div>
-                <div style="position:relative;">
-                    <div class="item-edit">
-                        <label>@(transactionalItemQuality != null ? transactionalItemQuality.Name : "")</label>
-                        <button @onclick='()=>SetViewElemnt("QualityParameters")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                    </div>
-
-                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" EventClosed="ClosedInput" ViewSelect="ViewPopupCount" ViewControl="transactionalItemQualityPairViewPopup">
-                        @{
-                            if (transactionalItemQualitys != null)
-                            {
-                                foreach (var QualityParameter in transactionalItemQualitys)
-                                {
-                                    <option value="@QualityParameter.Id">@QualityParameter.Name</option>
-                                }
-                            }
-
+            <InputTextSelector @ref="ReferInputTextSelector"
+                               Id="QualityParameters"
+                               caption="@(transactionalItemQuality != null ? transactionalItemQuality.Name : "")"
+                               EventSearcherValue="EventSearcherValue"
+                               EventIdSelection="EventIdSelection"
+                               ParamCountResul="ParamCountResul"
+                               EventClosed="ClosedInput"
+                               ViewSelect="ViewPopupCount">
+                @{
+                    if (transactionalItemQualitys != null)
+                    {
+                        foreach (var QualityParameter in transactionalItemQualitys)
+                        {
+                            <option value="@QualityParameter.Id">@QualityParameter.Name</option>
                         }
-                    </InputTextSelector>
-                </div>
-            </div>
+                    }
+
+                }
+            </InputTextSelector>
             <div><label>@GetName( "Value", new TransactionalItemQualityPair())</label></div>
             <div><input @bind-value="transactionalItemQualityPair.Value" class="form-control" placeholder="Edit value" /></div>
 
@@ -65,7 +63,9 @@
 
 @code {
     [Parameter]
-    public string Mode { get; set; } 
+    public string transactionalItemId { get; set; }
+    [Parameter]
+    public string qualityParametersCardId { get; set; }
     [Parameter]
     public string Page { get; set; }
     [Parameter]
@@ -81,17 +81,16 @@
 
     bool viewMsg = false;
     string msg = "";
-    int status =0;
+    int status = 0;
     public int ParamCountResul = 0;
-    bool transactionalItemQualityPairViewPopup = false;
     bool ViewPopupCount = false;
     bool PopupViewAddCustomer = false;
     string ModeSearcher = "";
-    public string _transactionalItemId { get; set; }
+
 
     #region TileName
     public string Title { get; set; }
-    public string transactionalItemId { get; set; }
+
     public string Value { get; set; }
     #endregion TitleName
 
@@ -99,23 +98,22 @@
     {
         InitializedUICommonFunctions();
 
-        if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
+
+        var transactionalItems = await transactionalService.GetTransactionalItemById(transactionalItemId);
+
+        if (transactionalItems != null)
         {
-            _transactionalItemId = transactionalService.transactionalItemId != null ? transactionalService.transactionalItemId : "";
-
-            transactionalItemQualityPairView = await transactionalService.GetTransactionalItemDetailsQualityParameters();
-        }
-
-
-        if (Mode == "Edit")
-        {
-            if (transactionalService.ConceptTransactionalItemQualityPair!=null)
+            ConceptType type = transactionalItems.TypeOfConcept != null ? transactionalItems.TypeOfConcept : null;
+            if (type != null)
             {
-                transactionalItemQualityPair = transactionalService.ConceptTransactionalItemQualityPair;             
-                transactionalItemQuality = transactionalItemQualityPair.TransactionalItemQuality!=null ? transactionalItemQualityPair.TransactionalItemQuality:new();
-                StateHasChanged();
-            }
+                var itemTypes = await transactionalService.GetTransactionalItemTypes(type.Name);
+                var resul = itemTypes.Where(s => s.Id == type.Id).FirstOrDefault();
+                if (resul != null)
+                {
+                    transactionalItemQualitys = resul.QualityParameters !=null ? resul.QualityParameters :  new();
+                }
 
+            }
         }
     }
 
@@ -135,7 +133,7 @@
     private async void Save()
     {
         transactionalItemQualityPair.TransactionalItemQuality = transactionalItemQuality;
-        var resul = await transactionalService.SaveQualityParameters(_transactionalItemId, transactionalItemQualityPair);
+        var resul = await transactionalService.SaveQualityParameters(transactionalItemId, transactionalItemQualityPair);
         if (transactionalService.TransactionalItems != null && resul)
         {
             if (transactionalService.TransactionalItems.QualityParameters == null)
@@ -148,8 +146,8 @@
         }
         else
         {
-            MsgOpen("No saved",1);
-        }       
+            MsgOpen("No saved", 1);
+        }
 
     }
 
@@ -160,10 +158,10 @@
     }
 
     public async Task Closed(string Element)
-    {      
+    {
         if (Element == "control")
         {
-            if (SubPage != null && SubPage != "") Navigation.NavigateTo($"/{Page}/{SubPage}/Edit");
+            Navigation.NavigateTo($"/{Page}/{transactionalItemId}");
         }
         else
         {
@@ -176,43 +174,37 @@
 
     protected async void EventIdSelection(string SelectionId)
     {
-        if (ModeSearcher == "QualityParameters")
-        {
-            transactionalItemQuality = transactionalItemQualitys.Where(s => s.Id == SelectionId || s.Name == SelectionId).FirstOrDefault();
-            if (transactionalItemQuality == null) transactionalItemQuality = new();
-            ClosedInput();
-            await Refresh();
-        }
-        
+        ClosedInput();
+        transactionalItemQuality = transactionalItemQualitys.Where(s => s.Id == SelectionId || s.Name == SelectionId).FirstOrDefault();
+        if (transactionalItemQuality == null) transactionalItemQuality = new();
 
+        await Refresh();
     }
     protected async void EventSearcherValue(string value)
     {
         ViewPopupCount = true;
-
-        if (ModeSearcher == "QualityParameters")
+        ClosedInput();
+        var transactionalItems = transactionalService.TransactionalItems;
+        transactionalItemQualitys = new();
+        if (transactionalItems != null)
         {
-            var transactionalItems = transactionalService.TransactionalItems;
-            transactionalItemQualitys = new();
-            if (transactionalItems != null)
+            ConceptType type = transactionalItems.TypeOfConcept != null ? transactionalItems.TypeOfConcept : null;
+            if (type != null)
             {
-                ConceptType type = transactionalItems.TypeOfConcept != null ? transactionalItems.TypeOfConcept : null ;
-                if (type !=null)
+                var itemTypes = await transactionalService.GetTransactionalItemTypes(type.Name);
+                var resul = itemTypes.Where(s => s.Id == type.Id).FirstOrDefault();
+                if (!value.ToLower().Contains("all") && !value.ToLower().Contains("todo"))
                 {
-                    var itemTypes = await transactionalService.GetTransactionalItemTypes(type.Name);
-                    var resul = itemTypes.Where(s => s.Id == type.Id).FirstOrDefault();
-                    if (!value.ToLower().Contains("all") && !value.ToLower().Contains("todo"))
-                    {
-                        transactionalItemQualitys = resul.QualityParameters.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
-                    }
-                    else
-                    {
-                        transactionalItemQualitys = resul.QualityParameters;
-                    }
+                    transactionalItemQualitys = resul.QualityParameters.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+                }
+                else
+                {
+                    transactionalItemQualitys = resul.QualityParameters;
+                }
 
 
-                }    
             }
+
 
 
             if (transactionalItemQualitys != null)
@@ -227,32 +219,13 @@
 
             }
         }
+
         await Refresh();
     }
 
-
     public void ClosedInput()
-    {       
+    {
         ViewPopupCount = false;
-        transactionalItemQualityPairViewPopup = false;
-    }
-
-    public void SetViewElemnt(string Element)
-    {
-        ModeSearcher = Element;
-        if (Element == "QualityParameters") { transactionalItemQualityPairViewPopup = true; }
-        Refresh();
-
-    }
-
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemCharacteristicPair> args)
-    {
-        //PossibleValues ObjModel = new();
-        //ObjModel = args.RowInfo.RowData;
-        //if (args.Item.Id == "Edit")
-        //{
-        //    dataGridView = false;
-        //}
     }
 
     public string GetName(string Name, Object Obj)

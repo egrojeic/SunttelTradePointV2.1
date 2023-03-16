@@ -27,7 +27,7 @@
                                         <label>@(entityActor != null ? entityActor.Name : "")</label>
                                         <button type="button" style="float:right" @onclick='()=>SetViewElemnt("Sender")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                     </div>
-                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEntitiesSender">
+                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewEntitiesSender">
                                         @{
                                             if (ListEntityActor != null)
                                             {
@@ -52,7 +52,7 @@
                                         <label>@(entityActorCarrier != null ? entityActorCarrier.Name : "")</label>
                                         <button type="button" style="float:right" @onclick='()=>SetViewElemnt("Carrier")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                     </div>
-                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEntitiesCarrier">
+                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewEntitiesCarrier">
                                         @{
                                             if (ListEntityActorCarrier != null)
                                             {
@@ -102,7 +102,7 @@
                                         <label>@(entityActorPallet != null ? entityActorPallet.Name : "")</label>
                                         <button type="button" style="float:right" @onclick='()=>SetViewElemnt("Pallet")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                     </div>
-                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEntitiesPallet">
+                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewEntitiesPallet">
                                         @{
                                             if (palletTypeList != null)
                                             {

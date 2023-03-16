@@ -155,11 +155,9 @@
 
 
     public async Task OpenOrder(TransactionalItem itemCard)
-    {
-        transactItemsService.transactionalItemId = itemCard.Id;
-        transactItemsService.TransactionalItems = itemCard;
+    {    
         transactItemsService.Page = "TransactionalItemCard";
-        Navigation.NavigateTo("/TransactionalItemCard/0/Edit");
+        Navigation.NavigateTo($"/TransactionalItemCard/{_filterItems}/{itemCard.Id}");
     }
 
     public string GetName(string Name, Object Obj)

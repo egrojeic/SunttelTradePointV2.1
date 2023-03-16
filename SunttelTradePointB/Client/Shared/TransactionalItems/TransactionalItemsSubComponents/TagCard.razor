@@ -1,5 +1,6 @@
-﻿@page "/TagCard/{Page}"
-@page "/TagCard/{Page}/{SubPage}/{Mode}"
+﻿@page "/TagCard/{Page}/{transactionalItemId}"
+@page "/TagCard/{Page}/{SubPage}/{transactionalItemId}"
+@page "/TagCard/{Page}/{SubPage}/{transactionalItemId}/{transactionalItemTagId}"
 @using Syncfusion.Blazor.Popups
 @using SunttelTradePointB.Shared.Common
 @inject TransactionalItemsService transactionalService;
@@ -39,7 +40,9 @@
 
 @code {
     [Parameter]
-    public string Mode { get; set; }
+    public string transactionalItemId { get; set; }
+    [Parameter]
+    public string transactionalItemTagId { get; set; }
     [Parameter]
     public string Page { get; set; }
     [Parameter]
@@ -51,7 +54,7 @@
     TransactionalItemTag Tag = new TransactionalItemTag();
 
     public bool ViewSelect { get; set; } = false;
-    public string transactionalItemId { get; set; }
+
     public string SearcherValueMode = "";
     public int ParamCountResul = 0;
     public bool PopupViewAddTag = false;
@@ -69,24 +72,21 @@
     protected override Task OnInitializedAsync()
     {
         InitializedUICommonFunctions();
-        if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
-        {
-            transactionalItemId = transactionalService.transactionalItemId ;
-        }
 
-        if (Mode=="Edit")
-        {
-            if (transactionalService.ConceptTransactionalItemTag!=null)
-            {
-                Tag = transactionalService.ConceptTransactionalItemTag;
-            }
-        }
 
         return base.OnInitializedAsync();
     }
 
     public async void InitializedUICommonFunctions()
     {
+        if (transactionalItemTagId != null)
+        {
+            Tag = await transactionalService.GetTagToId(transactionalItemId, transactionalItemTagId);
+        }
+        else
+        {
+            Tag = new();
+        }
         Key = UICommonFunctions.GetDisplayName(new TransactionalItemTag(), "Key");
         Value = UICommonFunctions.GetDisplayName(new TransactionalItemTag(), "Value");
         Title = UICommonFunctions.GetDisplayName(new TransactionalItem(), "TransactionalItemTags");
@@ -95,14 +95,14 @@
 
 
     private async void Save()
-    {       
-        if (transactionalItemId != "" && transactionalItemId != null)
+    {
+        if (transactionalItemId != null)
         {
             var resul = await transactionalService.SaveTags(transactionalItemId, Tag);
 
             if (transactionalService.TransactionalItems != null && resul)
-            {         
-                MsgOpen("Saved",1);
+            {
+                MsgOpen("Saved", 1);
             }
             else
             {
@@ -117,7 +117,7 @@
 
     public async Task Closed(string Element)
     {
-        if (Element == "control") Navigation.NavigateTo("/TransactionalItemCard/4/Edit");
+        if (Element == "control") Navigation.NavigateTo($"/TransactionalItemCard/{transactionalItemId}");
         StateHasChanged();
     }
     public void MsgOpen(string _msg, int _status)

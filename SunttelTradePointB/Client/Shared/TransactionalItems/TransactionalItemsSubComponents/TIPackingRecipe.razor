@@ -108,7 +108,7 @@
     public void ViewNewPackingRecipe()
     {
         PopupView = true;
-        Navigation.NavigateTo("/PackingRecipeCard");
+        Navigation.NavigateTo($"/PackingRecipeCard/{IdTransactionalItem}");
     }
 
     public async Task ConverToProductPacking(List<PackingSpecs> ProductPackingSpecs)

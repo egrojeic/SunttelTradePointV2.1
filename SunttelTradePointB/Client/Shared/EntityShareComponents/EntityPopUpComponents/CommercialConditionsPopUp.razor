@@ -26,7 +26,7 @@
                                         <label>@(entityActor != null ? entityActor.Name : "")</label>
                                         <button type="button" style="float:right" @onclick='()=>SetViewElemnt("Entity")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                     </div>
-                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEntities">
+                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewEntities">
                                         @{
                                             if (ListEntityActor != null)
                                             {

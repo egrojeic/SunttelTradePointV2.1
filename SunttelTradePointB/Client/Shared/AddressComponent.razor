@@ -23,7 +23,7 @@
                     <label>@(country1 != null ? (country1?.Name != null ? country1?.Name : "") : "")</label>
                     <button @onclick='()=>SetViewElemnt("Contry")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                 </div>
-                <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" EventClosed="ClosedInput" ViewSelect="viewSelect" ViewControl="viewControlCountry1">
+                <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" EventClosed="ClosedInput" ViewSelect="viewSelect" Visible="viewControlCountry1">
                     @{
                         if (countryList != null)
                         {
@@ -51,7 +51,7 @@
                     <label>@(geo != null ? (geo?.Name != null ? geo?.Name:"") : "")</label>
                     <button @onclick='()=>SetViewElemnt("Geo")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                 </div>
-                <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" EventClosed="ClosedInput" ViewSelect="viewSelect" ViewControl="viewControlGeo">
+                <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" EventClosed="ClosedInput" ViewSelect="viewSelect" Visible="viewControlGeo">
                     @{
                         if (regionsList != null)
                         {
@@ -77,7 +77,7 @@
                     <label>@(city != null ? (city?.Name != null ? city?.Name:"") : "")</label>
                     <button @onclick='()=>SetViewElemnt("City")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                 </div>
-                <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" EventClosed="ClosedInput" ViewSelect="viewSelect" ViewControl="viewControlCity">
+                <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" EventClosed="ClosedInput" ViewSelect="viewSelect" Visible="viewControlCity">
                     @{
                         if (citiesList != null)
                         {

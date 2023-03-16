@@ -44,7 +44,7 @@
                                             <label>@(warehouse.InventoryTransactionalItemType != null ? warehouse.InventoryTransactionalItemType?.Name : "")</label>
                                             <button type="button" style="float:right" @onclick='()=>SetViewElemnt("WareHouseParent")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                         </div>
-                                        <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewWareHouseParent">
+                                        <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewWareHouseParent">
                                             @{
                                                 if (warehouseList != null)
                                                 {
@@ -71,7 +71,7 @@
                                             <label>@(warehouse.AssociatedEntity != null ? warehouse.AssociatedEntity?.Name : "")</label>
                                             <button type="button" style="float:right" @onclick='()=>SetViewElemnt("AssociatedEntity")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                         </div>
-                                        <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedControlInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewAssociatedEntity">
+                                        <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedControlInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewAssociatedEntity">
                                             @{
                                                 if (wareHouseParentListApi != null)
                                                 {
@@ -148,7 +148,7 @@
                                                 <label>@(warehouse.InventoryTransactionalItemType != null ? warehouse.InventoryTransactionalItemType?.Name : "")</label>
                                                 <button type="button" style="float:right" @onclick='()=>SetViewElemnt("InventoryTransactionalItemType")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                             </div>
-                                            <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEntitiesInventory">
+                                            <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewEntitiesInventory">
                                                 @{
                                                     if (itemType != null)
                                                     {
@@ -183,7 +183,7 @@
                                             <label>@(warehouse.ContactPerson != null ? warehouse.ContactPerson?.Name : "")</label>
                                             <button type="button" style="float:right" @onclick='()=>SetViewElemnt("Contact")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                         </div>
-                                        <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEntitiesContact">
+                                        <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewEntitiesContact">
                                             @{
                                                 if (ContactList != null)
                                                 {

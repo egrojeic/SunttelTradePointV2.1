@@ -1,4 +1,4 @@
-﻿@page "/QualityParametersCardAll"
+﻿@page "/QualityParametersCardAll/{transactionalItemId}"
 @using Syncfusion.Blazor.Popups
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Grids
@@ -17,6 +17,7 @@
 
 <div id="add-recipe">
     <div class="flex-verical-center-new">
+        @if (transactionalItemQualityPairView == null) transactionalItemQualityPairView = new();
         @foreach (var qualityPair in transactionalItemQualityPairView)
         {
             <div class="grid-columns-2 box-shadow-mode width-grid-2">
@@ -54,7 +55,8 @@
 
 
 @code {
-
+    [Parameter]
+    public string transactionalItemId { get; set; }
     InputTextSelector? ReferInputTextSelector;
     TransactionalItemQualityPair transactionalItemQualityPair = new TransactionalItemQualityPair();
     List<TransactionalItemQualityPair> transactionalItemQualityPairView = new List<TransactionalItemQualityPair>();
@@ -70,11 +72,11 @@
     bool ViewPopupCount = false;
     bool PopupViewAddCustomer = false;
     string ModeSearcher = "";
-    public string _transactionalItemId { get; set; }
+   
 
     #region TileName
     public string Title { get; set; }
-    public string transactionalItemId { get; set; }
+   
     public string Value { get; set; }
     #endregion TitleName
 
@@ -82,11 +84,9 @@
     {
         InitializedUICommonFunctions();
 
-        if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
-        {
-            _transactionalItemId = transactionalService.transactionalItemId != null ? transactionalService.transactionalItemId : "";
-
-            var transactionalItems = transactionalService.TransactionalItems;
+        if (transactionalItemId != null)
+        {           
+            var transactionalItems = await transactionalService.GetTransactionalItemById(transactionalItemId);
             transactionalItemQualitys = new();
             if (transactionalItems != null)
             {
@@ -144,7 +144,7 @@
         {
             if (QualityPair.Value != null && QualityPair.Value != "")
             {
-                var resul = await transactionalService.SaveQualityParameters(_transactionalItemId, QualityPair);
+                var resul = await transactionalService.SaveQualityParameters(transactionalItemId, QualityPair);
                 if (transactionalService.TransactionalItems != null && resul)
                 {
                     if (transactionalService.TransactionalItems.QualityParameters == null)
@@ -182,68 +182,13 @@
 
     public async Task Closed(string Element)
     {
-        if (Element == "control") Navigation.NavigateTo("/TransactionalItemCard/2/Edit");
+        if (Element == "control") Navigation.NavigateTo($"/TransactionalItemCard/{transactionalItemId}");
         await Refresh();
         StateHasChanged();
     }
 
-    protected async void EventIdSelection(string SelectionId)
-    {
-        if (ModeSearcher == "QualityParameters")
-        {
-            transactionalItemQuality = transactionalItemQualitys.Where(s => s.Id == SelectionId || s.Name == SelectionId).FirstOrDefault();
-            if (transactionalItemQuality == null) transactionalItemQuality = new();
-            ClosedInput();
-            await Refresh();
-        }
-
-    }
-    protected async void EventSearcherValue(string value)
-    {
-        ViewPopupCount = true;
-
-        if (ModeSearcher == "QualityParameters")
-        {
-            if (transactionalItemQualitys != null)
-            {
-                ParamCountResul = transactionalItemQualitys.Count();
-                ViewPopupCount = ParamCountResul > 0;
-            }
-            else
-            {
-                ViewPopupCount = false;
-                ParamCountResul = 0;
-
-            }
-        }
-        await Refresh();
-    }
-
-
-    public void ClosedInput()
-    {
-        ViewPopupCount = false;
-        transactionalItemQualityPairViewPopup = false;
-    }
-
-    public void SetViewElemnt(string Element)
-    {
-        ModeSearcher = Element;
-        if (Element == "QualityParameters") { transactionalItemQualityPairViewPopup = true; }
-        Refresh();
-
-    }
-
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemCharacteristicPair> args)
-    {
-        //PossibleValues ObjModel = new();
-        //ObjModel = args.RowInfo.RowData;
-        //if (args.Item.Id == "Edit")
-        //{
-        //    dataGridView = false;
-        //}
-    }
-
+  
+      
     public string GetName(string Name, Object Obj)
     {
         Name = UICommonFunctions.GetDisplayName(Obj, Name);

@@ -60,8 +60,7 @@
                         PageNumbersCount="100">
 
                     <Columns>
-                        <RadzenDataGridColumn TItem="TransactItemImage" Property="TransactionalItemTag.Key" Title="img" Frozen="false" Width="80px" />
-
+                        <RadzenDataGridColumn TItem="TransactItemImage" Property="@nameof(TransactItemImage.Name)" Title="img" Frozen="false" Width="80px" />
                         <RadzenDataGridColumn TItem="TransactItemImage" Title="Photo" Frozen="true" Sortable="false" Filterable="false" Width="60px">
                             <Template Context="data">
                                 <RadzenImage Path="@(GetFullPathPhoto(data.PathImage))" style="width: 40px; height: 40px; border-radius: 8px;" />
@@ -181,6 +180,12 @@
         return UIClientGlobalVariables.PathTransactionalItemsImages +"/"+ imgName;
     }
 
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name != null ? Name : Name;
+    }
 
     void Msg(string _msg, int _status)
     {

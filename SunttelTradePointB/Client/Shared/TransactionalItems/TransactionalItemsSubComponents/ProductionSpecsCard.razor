@@ -1,5 +1,6 @@
 ﻿@page "/ProductionSpecsCard/{Page}"
 @page "/ProductionSpecsCard/{Page}/{transactionalItemId}/{productionSpecsToId}"
+@page "/ProductionSpecsCard/{Page}/{transactionalItemId}"
 @page "/ProductionSpecsCard/{Page}/{SubPage}/{transactionalItemId}/{productionSpecsToId}"
 
 @using Syncfusion.Blazor.Popups
@@ -170,13 +171,9 @@
                                         <Columns>
                                             <RadzenDataGridColumn TItem="TransactionalItemTag" Property="TransactionalItemTag.Key" Title="@GetName("Key", new TransactionalItemTag())" Frozen="false" Width="80px" />
                                             <RadzenDataGridColumn TItem="TransactionalItemTag" Property="TransactionalItemTag.Value" Filterable="true" Title="@GetName("Value", new TransactionalItemTag())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                          
-<RadzenDataGridColumn TItem="TransactionalItemTag" Title="Photo" Frozen="true" Sortable="false" Filterable="false" Width="60px" >
-                <Template Context="data">
-                    <RadzenImage Path="/images//acordion_image1.jpg" style="width: 40px; height: 40px; border-radius: 8px;" />
-                </Template>
-            </RadzenDataGridColumn>
-                                                            </Columns>
+
+
+                                        </Columns>
                                     </RadzenDataGrid>
                                 }
 
@@ -195,8 +192,7 @@
 
 
 @code {
-    [Parameter]
-    public string Mode { get; set; } = "Add";
+
     [Parameter]
     public string Page { get; set; }
     [Parameter]
@@ -245,27 +241,40 @@
 
     }
 
-    protected async override  Task OnInitializedAsync() {
+    protected async override Task OnInitializedAsync()
+    {
 
 
-        if (transactionalItemId != null && productionSpecsToId !=null)
+        if (transactionalItemId != null && productionSpecsToId != null)
         {
 
             _TransactionalItemProcessStep = await transactionalService.GetTransactionalItemDetailsProductionSpecsToId(transactionalItemId, productionSpecsToId);
+            if (_TransactionalItemProcessStep !=null)
+            {
+                TransactionalItemTagList = _TransactionalItemProcessStep.TransactionalItemProcessTags != null ? _TransactionalItemProcessStep.TransactionalItemProcessTags : new();
 
-            TransactionalItemTagList = _TransactionalItemProcessStep.TransactionalItemProcessTags != null ? _TransactionalItemProcessStep.TransactionalItemProcessTags : new();
+            }
+            else
+            {
+                Loading();
+            }
 
         }
         else
         {
 
-            _TransactionalItemProcessStep = new();
-            TransactionalItemTagList = new();
-
+            Loading();
         }
 
     }
 
+
+    public void Loading()
+    {
+        _TransactionalItemProcessStep = new();
+        TransactionalItemTagList = new();
+        TransactionalItemTag = new();
+    }
 
     public async void InitializedUICommonFunctions()
     {
@@ -317,7 +326,11 @@
     {
         if (Element == "control")
         {
-            if (SubPage != null && SubPage != "") Navigation.NavigateTo($"/{Page}/{SubPage}/Edit");
+            if (SubPage != null && SubPage != ""){ Navigation.NavigateTo($"/{Page}/{SubPage}/{transactionalItemId}"); }
+            else
+            {
+                Navigation.NavigateTo($"/{Page}/{transactionalItemId}");
+            }
         }
         else
         {

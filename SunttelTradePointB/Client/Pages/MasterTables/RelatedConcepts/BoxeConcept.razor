@@ -74,7 +74,7 @@
                         <button @onclick='()=>SetViewElemnt("LinkedTransactionalItem")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                     </div>
 
-                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" ViewControl="transactionalItemLinked" ViewSelect="ViewSelect" EventClosed="EventClosedInput">
+                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" Visible="transactionalItemLinked" ViewSelect="ViewSelect" EventClosed="EventClosedInput">
                         @{
                             if (transactionalItems != null)
                             {

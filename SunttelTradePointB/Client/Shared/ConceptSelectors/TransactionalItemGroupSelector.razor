@@ -26,7 +26,14 @@
                         }
                     </ChipItems>
                 </SfChip>
-                <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="EventClosed" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewAddGroup">
+                <InputTextSelector @ref="ReferInputTextSelector"
+                                   EventSearcherValueAndId="EventSearcherValueAndId"
+                                   EventClosed="EventClosed"
+                                   ParamCountResul="ParamCountResul"
+                                   ViewSelect="ViewSelect"
+                                   Visible="PopupViewAddGroup"
+                                   captionOff="true"
+                                   Id="Group">
                     @{
                         if (GroupsQuery != null)
                         {
@@ -65,7 +72,7 @@
     SfChip? referChip;
 
     protected override void OnParametersSet()
-    {      
+    {
         var R = Groups;
         StateHasChanged();
     }
@@ -81,11 +88,11 @@
         return base.OnInitializedAsync();
     }
 
-    protected async void EventSearcherValue(string value)
+    protected async void EventSearcherValueAndId((string value, string selectionId) arg)
     {
-        if (SearcherValueMode == "Group")
+        if (arg.selectionId == "Group")
         {
-            GroupsQuery = await transactionalService.GetTransactionalItemGroups(value);
+            GroupsQuery = await transactionalService.GetTransactionalItemGroups(arg.value);
 
             GroupsSearcher = new List<ConceptGroup>();
 
@@ -113,7 +120,7 @@
             EventAddGroups.InvokeAsync(Groups);
             Group = new ConceptGroup();
         }
-       
+
         ReferInputTextSelector.Refresh();
         StateHasChanged();
 
@@ -121,19 +128,19 @@
 
     private void onDeleted(ChipDeletedEventArgs args)
     {
-        if (args != null && args.Value != null && args.Value!="")
+        if (args != null && args.Value != null && args.Value != "")
         {
-           
-                var groupRemove = Groups.Where(r => r.Id == args.Value).FirstOrDefault();
-                Groups.Remove(groupRemove);
-                EventAddGroups.InvokeAsync(Groups);
-            
-        }       
+
+            var groupRemove = Groups.Where(r => r.Id == args.Value).FirstOrDefault();
+            Groups.Remove(groupRemove);
+            EventAddGroups.InvokeAsync(Groups);
+
+        }
     }
 
     public void Refresh()
     {
-        if (referChip!=null) referChip.Chips.Clear();
+        if (referChip != null) referChip.Chips.Clear();
         //foreach (var Group in Groups)
         //{
         //    referChip.Chips.Add(new ChipItem { Text = Group.Name, LeadingIconCss = "anne" });

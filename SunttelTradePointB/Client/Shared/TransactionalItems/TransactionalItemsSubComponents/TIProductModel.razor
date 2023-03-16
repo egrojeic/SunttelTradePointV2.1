@@ -99,10 +99,10 @@
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         ProductModel argObj = (ProductModel)args.Value;
-        transactionalService.ConceptProductModel = argObj;
-        if (transactionalService.ConceptProductModel != null)
+       
+        if (argObj != null)
         {
-            Navigation.NavigateTo("/ProductModelCard/Edit");
+            Navigation.NavigateTo($"/ProductModelCard/{IdTransactionalItem}/{argObj.Id}");
         }
     }
 
@@ -111,7 +111,7 @@
 
     public void OpenAdd()
     {
-        Navigation.NavigateTo("/ProductModelCard");
+        Navigation.NavigateTo($"/ProductModelCard/{IdTransactionalItem}");
     }
 
     private void Msg(string _msg, int _status)

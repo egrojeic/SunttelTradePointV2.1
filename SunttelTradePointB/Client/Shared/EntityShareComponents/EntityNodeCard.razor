@@ -139,7 +139,7 @@
                             <label>@(role != null ? role.Name : "")</label>
                             <button type="button" style="float:right" @onclick='()=>SetViewElement("Roles")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                         </div>
-                        <InputTextSelector @ref="inputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectorInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewRoles">
+                        <InputTextSelector @ref="inputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectorInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewRoles">
                             @{
                                 if (entityRoles != null)
                                 {
@@ -209,7 +209,7 @@
                                     }
                                 </ChipItems>
                             </SfChip>
-                            <InputTextSelector @ref="inputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectorInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewGroups">
+                            <InputTextSelector @ref="inputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectorInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewGroups">
                                 @{
                                     if (ListGroups != null)
                                     {

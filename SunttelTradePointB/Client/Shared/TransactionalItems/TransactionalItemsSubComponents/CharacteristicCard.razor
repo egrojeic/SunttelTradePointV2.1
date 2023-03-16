@@ -1,5 +1,5 @@
-﻿@page "/CharacteristicCard/{Page}"
-@page "/CharacteristicCard/{Page}/{SubPage}/{Mode}"
+﻿@page "/CharacteristicCard/{Page}/{transactionalItemId}/{characteristicPair}"
+@page "/CharacteristicCard/{Page}/{transactionalItemId}"
 @using Syncfusion.Blazor.Popups
 @using SunttelTradePointB.Shared.Common
 @inject NavigationManager Navigation
@@ -26,25 +26,24 @@
                 </label>
             </div>
             <div>
-                <div style="position:relative;">
-                    <div class="item-edit">
-                        <label>@(transactionalItemTypeCharacteristic != null ? transactionalItemTypeCharacteristic.Name : "")</label>
-                        <button @onclick='()=>SetViewElemnt("TransactionalItemTypeCharacteristic")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                    </div>
-
-                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" ViewSelect="ViewPopupCount" EventClosed="ClosedInput" ViewControl="CharacteristicControlInput">
-                        @{
-                            if (transactionalItemTypeCharacteristics != null)
+                <InputTextSelector @ref="ReferInputTextSelector"
+                                   Id="TransactionalItemTypeCharacteristic"
+                                   EventSearcherValue="EventSearcherValue"
+                                   EventIdSelection="EventIdSelection"
+                                   ParamCountResul="ParamCountResul"
+                                   ViewSelect="ViewPopupCount"
+                                   EventClosed="ClosedInput"
+                                   caption="@(transactionalItemTypeCharacteristic != null ? transactionalItemTypeCharacteristic.Name : "")">
+                    @{
+                        if (transactionalItemTypeCharacteristics != null)
+                        {
+                            foreach (var Obj in transactionalItemTypeCharacteristics)
                             {
-                                foreach (var Obj in transactionalItemTypeCharacteristics)
-                                {
-                                    <option value="@Obj.Id">@Obj.Name</option>
-                                }
+                                <option value="@Obj.Id">@Obj.Name</option>
                             }
-
                         }
-                    </InputTextSelector>
-                </div>
+                    }
+                </InputTextSelector>
             </div>
             <div><label> @GetName("Value", new TransactionalItemCharacteristicPair()) </label></div>
             <div>
@@ -69,7 +68,9 @@
 
 @code {
     [Parameter]
-    public string Mode { get; set; }
+    public string transactionalItemId { get; set; }
+    [Parameter]
+    public string characteristicPair { get; set; }
     [Parameter]
     public string Page { get; set; }
     [Parameter]
@@ -87,48 +88,40 @@
     string msg = "";
     int status = 0;
     public int ParamCountResul = 0;
-    bool CharacteristicControlInput = false;
     bool ViewPopupCount = false;
     string ModeSearcher = "";
-    public string _transactionalItemId { get; set; }
+  
 
     #region TileName
-    public string Title { get; set; }
-    public string transactionalItemId { get; set; }
+    public string Title { get; set; } 
     public string Value { get; set; }
     #endregion TitleName
 
     protected async override void OnInitialized()
     {
-        if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
+        var transactionalItems = await transactionalService.GetTransactionalItemById(transactionalItemId);
+        transactionalItemTypeCharacteristics = new();
+        if (transactionalItems != null)
         {
-            _transactionalItemId = transactionalService.transactionalItemId != null ? transactionalService.transactionalItemId : "";
-        }
-
-        if (Mode=="Edit")
-        {
-            if (transactionalService.ConcepttransactionalItemCharacteristicPair!=null)
+            ConceptType type = transactionalItems.TypeOfConcept != null ? transactionalItems.TypeOfConcept : null;
+            if (type != null)
             {
-
-                transactionalItemCharacteristicPair = transactionalService.ConcepttransactionalItemCharacteristicPair;
-                if (transactionalItemCharacteristicPair != null)
+                var itemTypes = await transactionalService.GetTransactionalItemTypes(type.Name);
+                var resul = itemTypes.Where(s => s.Id == type.Id).FirstOrDefault();
+                if (resul != null)
                 {
-                    transactionalItemTypeCharacteristic = transactionalItemCharacteristicPair.TransactionalItemCharacteristic;
-                    transactionalItemCharacteristicPair.Value = transactionalItemCharacteristicPair.Value;
-                    string id = transactionalItemCharacteristicPair.TransactionalItemCharacteristic.Id != null ? transactionalItemCharacteristicPair.TransactionalItemCharacteristic.Id : "";
-                    ModeSearcher = "TransactionalItemTypeCharacteristic";   
-                    possibleValues = transactionalItemCharacteristicPair.TransactionalItemCharacteristic.PossibleValues != null ? transactionalItemCharacteristicPair.TransactionalItemCharacteristic.PossibleValues : new();
-                }               
+                    transactionalItemTypeCharacteristics = resul.TransactionalItemTypeCharacteristics != null ? resul.TransactionalItemTypeCharacteristics : new();
+                   
+                }
 
             }
         }
-
     }
 
     private async void Save()
     {
         transactionalItemCharacteristicPair.TransactionalItemCharacteristic = transactionalItemTypeCharacteristic;
-        var resul = await transactionalService.SaveCharacteristics(_transactionalItemId, transactionalItemCharacteristicPair);
+        var resul = await transactionalService.SaveCharacteristics(transactionalItemId, transactionalItemCharacteristicPair);
         if (resul)
         {
             MsgOpen("Saved", 1);
@@ -145,15 +138,15 @@
 
     public async Task Closed(string Element)
     {
-        if (Element == "control") Navigation.NavigateTo("/TransactionalItemCard/5/Edit");
+        if (Element == "control") Navigation.NavigateTo($"/TransactionalItemCard/{transactionalItemId}");
     }
 
     protected async void EventIdSelection(string SelectedId)
-    {       
+    {
         transactionalItemTypeCharacteristic = transactionalItemTypeCharacteristics.Where(c => c.Name == SelectedId || c.Id == SelectedId).FirstOrDefault();
         if (transactionalItemTypeCharacteristic == null) transactionalItemTypeCharacteristic = new();
         ParamCountResul = 0;
-        CharacteristicControlInput = false;
+
         ViewPopupCount = false;
 
         if (transactionalItemTypeCharacteristics != null)
@@ -195,7 +188,7 @@
 
 
             if (transactionalItemTypeCharacteristics != null)
-            {               
+            {
 
                 ParamCountResul = transactionalItemTypeCharacteristics.Count();
                 ViewPopupCount = ParamCountResul > 0;
@@ -213,14 +206,6 @@
     public void ClosedInput()
     {
         ViewPopupCount = false;
-        CharacteristicControlInput = false;
-    }
-
-    public void SetViewElemnt(string Element)
-    {
-        ModeSearcher = Element;
-        if (Element == "TransactionalItemTypeCharacteristic") { CharacteristicControlInput = true; }
-        Refresh();
     }
 
     public string GetName(string Name, Object Obj)
@@ -236,5 +221,5 @@
         status = _status;
     }
 
-   
+
 }

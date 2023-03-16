@@ -218,6 +218,14 @@
 
     }
 
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null)Name =  UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name != null ? Name : Name;
+    }
+
+
     private void Msg(bool mode)
     {
         msg = mode ? "Saved" : "No saved";

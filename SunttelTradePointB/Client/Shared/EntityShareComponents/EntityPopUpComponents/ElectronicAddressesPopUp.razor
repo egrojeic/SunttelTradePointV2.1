@@ -32,7 +32,7 @@
                                         <label>@(electronic != null ? electronic.Name : "")</label>
                                         <button type="button" style="float:right" @onclick='()=>SetViewElemnt("Electronic")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                     </div>
-                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewElectronic">
+                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewElectronic">
                                         @{
                                             if (electronicAddressesList != null)
                                             {

@@ -1,4 +1,4 @@
-﻿@page "/PackingRecipeCard"
+﻿@page "/PackingRecipeCard/{transactionalItemId}"
 @page "/PackingRecipeCard/{transactionalItemId}/{packingSpecsId}"
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.Grids
@@ -45,24 +45,25 @@
                                 @GetName( "Material", new MaterialRecipeItem())
                             </label>
                         </div>
-                        <div style="position:relative;">
-                            <div class="item-edit">
-                                <label>@(MaterialConcept != null ? MaterialConcept.Name : "")</label>
-                                <button type="button" @onclick='()=>SetViewElemnt("Material")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                            </div>
-                            <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventClosed="ClosedInputText" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditMaterial">
-                                @{
-                                    if (MaterialsConcept != null)
+
+                        <InputTextSelector @ref="ReferInputTextSelector"
+                                       Id="Material"
+                                       caption="@(MaterialConcept != null ? MaterialConcept.Name : "")"
+                                       EventSearcherValueAndId="EventSearcherValueAndId"
+                                       EventClosed="ClosedInputText"
+                                       EventIdSelectionAndId="EventIdSelectionAndId"
+                                       ParamCountResul="ParamCountResul"
+                                       ViewSelect="ViewSelect">
+                            @{
+                                if (MaterialsConcept != null)
+                                {
+                                    foreach (var Element in MaterialsConcept)
                                     {
-                                        foreach (var Element in MaterialsConcept)
-                                        {
-                                            <option value="@Element?.Id">@Element?.Name</option>
-                                        }
+                                        <option value="@Element?.Id">@Element?.Name</option>
                                     }
                                 }
-                            </InputTextSelector>
-                        </div>
-
+                            }
+                        </InputTextSelector>
                         <div><label>@GetName( "Quantity",new MaterialRecipeItem())</label></div>
                         <div><input type="number" @bind="materialRecipeItem.Quantity" class="form-control border-color" required /></div>
                         <div></div>
@@ -118,7 +119,13 @@
                             <div style="display:flex; flex-direction:row;">
                                 <div class="conten-chip margin-left-control">
                                     <div class="position-input">
-                                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventClosed="ClosedInputText" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewAddImg">
+                                        <InputTextSelector @ref="ReferInputTextSelector"
+                                                       Id="img"
+                                                       EventSearcherValueAndId="EventSearcherValueAndId"
+                                                       EventClosed="ClosedInputText"
+                                                       EventIdSelectionAndId="EventIdSelectionAndId"
+                                                       ParamCountResul="ParamCountResul"
+                                                       ViewSelect="ViewSelect">
                                             @{
                                                 if (transactItemImages != null)
                                                 {
@@ -198,24 +205,27 @@
                         @GetName( "ItemComponent", new PackRecipeItem())
                     </label>
                 </div>
-                <div style="position:relative;">
-                    <div class="item-edit">
-                        <label>@(itemComponent != null ? itemComponent.Name : "")</label>
-                        <button type="button" @onclick='()=>SetViewElemnt("ItemComponent")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                    </div>
-                    <div class="position-input">
-                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditItemComponent">
-                            @{
-                                if (itemComponents != null)
+
+                <div class="position-input">
+                    <InputTextSelector @ref="ReferInputTextSelector"
+                                   Id="ItemComponent"
+                                   caption="@(itemComponent != null ? itemComponent.Name : "")"
+                                   EventSearcherValueAndId="EventSearcherValueAndId"
+                                   EventIdSelectionAndId="EventIdSelectionAndId"
+                                   EventClosed="ClosedInputText"
+                                   ParamCountResul="ParamCountResul"
+                                   ViewSelect="ViewSelect">
+                        @{
+                            if (itemComponents != null)
+                            {
+                                foreach (var Element in itemComponents)
                                 {
-                                    foreach (var Element in itemComponents)
-                                    {
-                                        <option value="@Element?.Id">@Element?.Name</option>
-                                    }
+                                    <option value="@Element?.Id">@Element?.Name</option>
                                 }
                             }
-                        </InputTextSelector>
-                    </div>
+                        }
+                    </InputTextSelector>
+
                 </div>
                 <div>
                     <label>
@@ -223,25 +233,26 @@
                     </label>
                 </div>
 
-                <div style="position:relative;">
-                    <div class="item-edit">
-                        <label>@(recipeQualityModifier != null ? recipeQualityModifier.Name : "")</label>
-                        <button type="button" @onclick='()=>SetViewElemnt("RecipeQualityModifier")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                    </div>
-                    <div class="position-input">
-                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditItemModifier">
-                            @{
-                                if (recipeQualityModifiers != null)
-                                {
-                                    foreach (var Element in recipeQualityModifiers)
-                                    {
-                                        <option value="@Element?.Id">@Element?.Name</option>
-                                    }
-                                }
+                <InputTextSelector @ref="ReferInputTextSelector"
+                               Id="RecipeQualityModifier"
+                               caption="@(recipeQualityModifier != null ? recipeQualityModifier.Name : "")"
+                               EventSearcherValueAndId="EventSearcherValueAndId"
+                               EventIdSelectionAndId="EventIdSelectionAndId"
+                               EventClosed="ClosedInputText"
+                               ParamCountResul="ParamCountResul"
+                               ViewSelect="ViewSelect"
+                              >
+                    @{
+                        if (recipeQualityModifiers != null)
+                        {
+                            foreach (var Element in recipeQualityModifiers)
+                            {
+                                <option value="@Element?.Id">@Element?.Name</option>
                             }
-                        </InputTextSelector>
-                    </div>
-                </div>
+                        }
+                    }
+                </InputTextSelector>
+
 
                 <div><label>@GetName( "Quantity",new MaterialRecipeItem())</label></div>
                 <div><input type="number" @bind="assemblyRecipeItem.Quantity" class="form-control border-color" required /></div>
@@ -364,26 +375,27 @@
                 <div class="grid-columns-2 box-shadow-mode">
                     <div><label>@GetName( "ListOfMaterials", new PackRecipeItem())</label></div>
                     <div>
-                        <div style="position:relative;">
-                            <div class="item-edit">
-                                <label>@(conceptMaterialAssembly != null ? conceptMaterialAssembly.Name : "")</label>
-                                <button type="button" @onclick='()=>SetViewElemnt("MaterialAssembly")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                            </div>
-                            <div class="position-input">
-                                <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewMaterialAssembly">
-                                    @{
-                                        if (ConceptMaterialsAssembly != null)
-                                        {
-                                            foreach (var item in ConceptMaterialsAssembly)
-                                            {
-                                                <option value="@item?.Id">@item?.Name</option>
-                                            }
-                                        }
 
+                        <InputTextSelector @ref="ReferInputTextSelector"
+                                       Id="ListOfMaterials"
+                                       caption="@(conceptMaterialAssembly != null ? conceptMaterialAssembly.Name : "")"
+                                       EventSearcherValueAndId="EventSearcherValueAndId"
+                                       EventIdSelectionAndId="EventIdSelectionAndId"
+                                       EventClosed="ClosedInputText"
+                                       ParamCountResul="ParamCountResul"
+                                       ViewSelect="ViewSelect">
+                            @{
+                                if (ConceptMaterialsAssembly != null)
+                                {
+                                    foreach (var item in ConceptMaterialsAssembly)
+                                    {
+                                        <option value="@item?.Id">@item?.Name</option>
                                     }
-                                </InputTextSelector>
-                            </div>
-                        </div>
+                                }
+
+                            }
+                        </InputTextSelector>
+
                     </div>
                     <div>
                         <label>
@@ -463,32 +475,29 @@
                         <TabHeader Text="@GetName("ProductPackingSpecs", new TransactionalItem())"></TabHeader>
                     </ChildContent>
                     <ContentTemplate>
-                        @(pageView = "ProductPackingSpecs");
+                        @*  @(pageView = "ProductPackingSpecs");*@
                         <div id="add-recipe">
                             <div class="grid-columns-4">
                                 <div><label>@GetName( "Customer", new PackingSpecs())</label></div>
-                                <div>
-                                    <div style="position:relative;">
-                                        <div class="item-edit">
-                                            <label>@(Customer != null ? Customer?.Name : "")</label>
-                                            <button type="button" @onclick='()=>SetViewElemnt("Customer")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                        </div>
-
-                                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" EventClosed="ClosedInputText" ViewSelect="ViewSelect" ViewControl="PopupViewAddCustomer">
-                                            @{
-                                                if (ListConcept != null)
-                                                {
-                                                    foreach (var customer in ListConcept)
-                                                    {
-                                                        <option value="@customer?.Id">@customer?.Name</option>
-                                                    }
-                                                }
-
+                                <InputTextSelector @ref="ReferInputTextSelector"
+                                                   Id="Customer"
+                                                   caption="@(Customer != null ? Customer?.Name : "")"
+                                                   EventSearcherValueAndId="EventSearcherValueAndId"
+                                                   EventIdSelectionAndId="EventIdSelectionAndId"
+                                                   ParamCountResul="ParamCountResul"
+                                                   EventClosed="ClosedInputText"
+                                                   ViewSelect="ViewSelect">
+                                    @{
+                                        if (ListConcept != null)
+                                        {
+                                            foreach (var customer in ListConcept)
+                                            {
+                                                <option value="@customer?.Id">@customer?.Name</option>
                                             }
-                                        </InputTextSelector>
-                                    </div>
-                                </div>
+                                        }
 
+                                    }
+                                </InputTextSelector>
                                 <div><label>@GetName( "Code", new AtomConcept())</label></div>
                                 <div> <b><h6>@(Customer != null ? Customer.Code : "")</h6></b></div>
                                 <div>
@@ -496,52 +505,50 @@
                                         @GetName( "Season", new PackingSpecs())
                                     </label>
                                 </div>
-                                <div>
-                                    <div style="position:relative;">
-                                        <div class="item-edit">
-                                            <label>@(Season != null ? Season?.Name : "")</label>
-                                            <button type="button" @onclick='()=>SetViewElemnt("Season")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                        </div>
-
-                                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditSeason">
-                                            @{
-                                                if (GetSeasonView != null)
-                                                {
-                                                    foreach (var season in GetSeasonView)
-                                                    {
-                                                        <option value="@season?.Id">@season?.Name</option>
-                                                    }
-                                                }
+                                <InputTextSelector @ref="ReferInputTextSelector"
+                                                   Id="Season"
+                                                   caption="@(Season != null ? Season?.Name : "")"
+                                                   EventSearcherValueAndId="EventSearcherValueAndId"
+                                                   EventIdSelectionAndId="EventIdSelectionAndId"
+                                                   EventClosed="ClosedInputText"
+                                                   ParamCountResul="ParamCountResul"
+                                                   ViewSelect="ViewSelect">
+                                    @{
+                                        if (GetSeasonView != null)
+                                        {
+                                            foreach (var season in GetSeasonView)
+                                            {
+                                                <option value="@season?.Id">@season?.Name</option>
                                             }
-                                        </InputTextSelector>
-                                    </div>
-                                </div>
+                                        }
+                                    }
+                                </InputTextSelector>
+
                                 <div>
                                     <label>
                                         @GetName("ModelRecipe",new PackingSpecs())
                                     </label>
                                 </div>
-                                <div>
-                                    <div style="position:relative;">
-                                        <div class="item-edit">
-                                            <label>@(ModelRecipe != null ? ModelRecipe?.Name : "")</label>
-                                            <button type="button" @onclick='()=>SetViewElemnt("Model")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                        </div>
-
-                                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditModel">
-                                            @{
-                                                if (GetModelView != null)
-                                                {
-                                                    foreach (var model in GetModelView)
-                                                    {
-                                                        <option value="@model?.Id">@model?.Name</option>
-                                                    }
-                                                }
-
+                                <InputTextSelector @ref="ReferInputTextSelector"
+                                                   Id="ModelRecipe"
+                                                   caption="@(ModelRecipe != null ? ModelRecipe?.Name : "")"
+                                                   EventSearcherValueAndId="EventSearcherValueAndId"
+                                                   EventIdSelectionAndId="EventIdSelectionAndId"
+                                                   EventClosed="ClosedInputText"
+                                                   ParamCountResul="ParamCountResul"
+                                                   ViewSelect="ViewSelect">
+                                    @{
+                                        if (GetModelView != null)
+                                        {
+                                            foreach (var model in GetModelView)
+                                            {
+                                                <option value="@model?.Id">@model?.Name</option>
                                             }
-                                        </InputTextSelector>
-                                    </div>
-                                </div>
+                                        }
+
+                                    }
+                                </InputTextSelector>
+
                                 <div>
                                     <label>
                                         @GetName( "PackLayersToSale", new PackingSpecs())
@@ -555,49 +562,47 @@
                                         @GetName( "PackingBoxToSale", new PackingSpecs())
                                     </label>
                                 </div>
-                                <div>
-                                    <div style="position:relative;">
-                                        <div class="item-edit">
-                                            <label>@(BoxToSale != null ? BoxToSale?.Name : "")</label>
-                                            <button type="button" @onclick='()=>SetViewElemnt("BoxToSale")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                        </div>
-
-                                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditBoxToSale">
-                                            @{
-                                                if (GetBoxToSaleView != null)
-                                                {
-                                                    foreach (var Box in GetBoxToSaleView)
-                                                    {
-                                                        <option value="@Box?.Id">@Box?.Name</option>
-                                                    }
-                                                }
-
+                                <InputTextSelector @ref="ReferInputTextSelector"
+                                                   Id="BoxToSale"
+                                                   caption="@(BoxToSale != null ? BoxToSale?.Name : "")"
+                                                   EventSearcherValueAndId="EventSearcherValueAndId"
+                                                   EventIdSelectionAndId="EventIdSelectionAndId"
+                                                   EventClosed="ClosedInputText"
+                                                   ParamCountResul="ParamCountResul"
+                                                   ViewSelect="ViewSelect">
+                                    @{
+                                        if (GetBoxToSaleView != null)
+                                        {
+                                            foreach (var Box in GetBoxToSaleView)
+                                            {
+                                                <option value="@Box?.Id">@Box?.Name</option>
                                             }
-                                        </InputTextSelector>
-                                    </div>
+                                        }
 
-                                </div>
+                                    }
+                                </InputTextSelector>
+
                                 <div><label>@GetName( "PackingBoxToBuy", new PackingSpecs())</label></div>
-                                <div>
-                                    <div style="position:relative;">
-                                        <div class="item-edit">
-                                            <label>@(BoxToBuy != null ? BoxToBuy?.Name : "")</label>
-                                            <button type="button" @onclick='()=>SetViewElemnt("BoxToBuy")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                        </div>
 
-                                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditBoxToBuy">
-                                            @{
-                                                if (GetBoxToBuyView != null)
-                                                {
-                                                    foreach (var Box in GetBoxToBuyView)
-                                                    {
-                                                        <option value="@Box?.Id">@Box?.Name</option>
-                                                    }
-                                                }
+                                <InputTextSelector @ref="ReferInputTextSelector"
+                                                   caption="@(BoxToBuy != null ? BoxToBuy?.Name : "")"
+                                                   Id="BoxToBuy"
+                                                   EventSearcherValueAndId="EventSearcherValueAndId"
+                                                   EventIdSelectionAndId="EventIdSelectionAndId"
+                                                   EventClosed="ClosedInputText"
+                                                   ParamCountResul="ParamCountResul"
+                                                   ViewSelect="ViewSelect">
+                                    @{
+                                        if (GetBoxToBuyView != null)
+                                        {
+                                            foreach (var Box in GetBoxToBuyView)
+                                            {
+                                                <option value="@Box?.Id">@Box?.Name</option>
                                             }
-                                        </InputTextSelector>
-                                    </div>
-                                </div>
+                                        }
+                                    }
+                                </InputTextSelector>
+
                                 <div>
                                     <label>
                                         @GetName( "PackPerBoxLayer", new PackingSpecs())
@@ -616,54 +621,51 @@
                                 <div><input @bind="PriceInfo.TotalPrice" type="number" class="form-control border-color" /></div>
 
                                 <div><label>@GetName( "TotalPriceItemTypeBasedOn", new PriceInfo())</label></div>
-                                <div>
-                                    <div style="position:relative;">
-                                        <div class="item-edit">
-                                            <label>@(totalPriceItemTypeBasedOn != null ? totalPriceItemTypeBasedOn.Name : "")</label>
-                                            <button type="button" @onclick='()=>SetViewElemnt("TotalPriceItemTypeBasedOn")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                        </div>
 
-                                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEdittotalPrice">
-                                            @{
-                                                if (totalPriceItemTypeBasedOns != null)
-                                                {
-                                                    foreach (var Box in totalPriceItemTypeBasedOns)
-                                                    {
-                                                        <option value="@Box?.Id">@Box?.Name</option>
-                                                    }
-                                                }
+                                <InputTextSelector @ref="ReferInputTextSelector"
+                                                   caption="@(totalPriceItemTypeBasedOn != null ? totalPriceItemTypeBasedOn.Name : "")"
+                                                   Id="TotalPriceItemTypeBasedOn"
+                                                   EventSearcherValueAndId="EventSearcherValueAndId"
+                                                   EventIdSelectionAndId="EventIdSelectionAndId"
+                                                   EventClosed="ClosedInputText"
+                                                   ParamCountResul="ParamCountResul"
+                                                   ViewSelect="ViewSelect">
+                                    @{
+                                        if (totalPriceItemTypeBasedOns != null)
+                                        {
+                                            foreach (var Box in totalPriceItemTypeBasedOns)
+                                            {
+                                                <option value="@Box?.Id">@Box?.Name</option>
                                             }
-                                        </InputTextSelector>
-                                    </div>
-                                </div>
+                                        }
+                                    }
+                                </InputTextSelector>
 
                                 <div>
                                     <label>
                                         @GetName("ItemAssemblyType",new PackingSpecs())
                                     </label>
                                 </div>
-                                <div>
-                                    <div style="position:relative;">
-                                        <div class="item-edit">
-                                            <label>@(assemblyType != null ? assemblyType?.Name : "")</label>
-                                            <button type="button" @onclick='()=>SetViewElemnt("ItemAssemblyType")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                        </div>
 
-                                        <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditAssembly">
-                                            @{
-                                                if (assemblyTypes != null)
-                                                {
-                                                    foreach (var model in assemblyTypes)
-                                                    {
-                                                        <option value="@model?.Id">@model?.Name</option>
-                                                    }
-                                                }
-
+                                <InputTextSelector @ref="ReferInputTextSelector"
+                                                   caption="@(assemblyType != null ? assemblyType?.Name : "")"
+                                                   Id="ItemAssemblyType"
+                                                   EventSearcherValueAndId="EventSearcherValueAndId"
+                                                   EventIdSelectionAndId="EventIdSelectionAndId"
+                                                   EventClosed="ClosedInputText"
+                                                   ParamCountResul="ParamCountResul"
+                                                   ViewSelect="ViewSelect">
+                                    @{
+                                        if (assemblyTypes != null)
+                                        {
+                                            foreach (var model in assemblyTypes)
+                                            {
+                                                <option value="@model?.Id">@model?.Name</option>
                                             }
-                                        </InputTextSelector>
-                                    </div>
-                                </div>
+                                        }
 
+                                    }
+                                </InputTextSelector>
 
                             </div>
                         </div>
@@ -682,45 +684,50 @@
                                         @GetName( "PalletLabelStyle", new LabelInstruction())
                                     </label>
                                 </div>
-                                <div style="position:relative;">
-                                    <div class="item-edit">
-                                        <label>@(palletLabelStyle != null ? palletLabelStyle.Name : "")</label>
-                                        <button type="button" @onclick='()=>SetViewElemnt("PalletLabelStyle")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                    </div>
-                                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditPalletLabelStyle">
-                                        @{
-                                            if (palletLabelStylesView != null)
+
+                                <InputTextSelector @ref="ReferInputTextSelector"
+                                                   Id="PalletLabelStyle"
+                                                   caption="@(palletLabelStyle != null ? palletLabelStyle.Name : "")"
+                                                   EventSearcherValueAndId="EventSearcherValueAndId"
+                                                   EventIdSelectionAndId="EventIdSelectionAndId"
+                                                   EventClosed="ClosedInputText"
+                                                   ParamCountResul="ParamCountResul"
+                                                   ViewSelect="ViewSelect">
+                                    @{
+                                        if (palletLabelStylesView != null)
+                                        {
+                                            foreach (var Element in palletLabelStylesView)
                                             {
-                                                foreach (var Element in palletLabelStylesView)
-                                                {
-                                                    <option value="@Element?.Id">@Element?.Name</option>
-                                                }
+                                                <option value="@Element?.Id">@Element?.Name</option>
                                             }
                                         }
-                                    </InputTextSelector>
-                                </div>
+                                    }
+                                </InputTextSelector>
+
                                 <div>
                                     <label>
                                         @GetName( "BoxLabelStyle", new LabelInstruction())
                                     </label>
                                 </div>
-                                <div style="position:relative;">
-                                    <div class="item-edit">
-                                        <label>@(BoxLabelStyle != null ? BoxLabelStyle.Name : "")</label>
-                                        <button type="button" @onclick='()=>SetViewElemnt("BoxLabelStyle")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                    </div>
-                                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditBoxLabelStyle">
-                                        @{
-                                            if (BoxLabelStylesView != null)
+
+                                <InputTextSelector @ref="ReferInputTextSelector"
+                                                   Id="BoxLabelStyle"
+                                                   caption="@(BoxLabelStyle != null ? BoxLabelStyle.Name : "")"
+                                                   EventSearcherValueAndId="EventSearcherValueAndId"
+                                                   EventIdSelectionAndId="EventIdSelectionAndId"
+                                                   EventClosed="ClosedInputText"
+                                                   ParamCountResul="ParamCountResul"
+                                                   ViewSelect="ViewSelect">
+                                    @{
+                                        if (BoxLabelStylesView != null)
+                                        {
+                                            foreach (var Element in BoxLabelStylesView)
                                             {
-                                                foreach (var Element in BoxLabelStylesView)
-                                                {
-                                                    <option value="@Element?.Id">@Element?.Name</option>
-                                                }
+                                                <option value="@Element?.Id">@Element?.Name</option>
                                             }
                                         }
-                                    </InputTextSelector>
-                                </div>
+                                    }
+                                </InputTextSelector>
                                 @* string UPCName*@
                                 <div><label> @GetName("UPCName", new LabelInstruction()) </label></div>
                                 <div><input @bind="labelInstruction.UPCName" class="form-control border-color" required /></div>
@@ -731,23 +738,24 @@
                                     </label>
                                 </div>
 
-                                <div style="position:relative;">
-                                    <div class="item-edit">
-                                        <label>@(InnerProductLabelStyleByDeafult != null ? InnerProductLabelStyleByDeafult.Name : "")</label>
-                                        <button type="button" @onclick='()=>SetViewElemnt("InnerProductLabelStyleByDeafult")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                    </div>
-                                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditInnerProduct">
-                                        @{
-                                            if (InnerProductLabelStyleByDeafultsView != null)
+                                <InputTextSelector @ref="ReferInputTextSelector"
+                                                   Id="InnerProductLabelStyleByDeafult"
+                                                   caption="@(InnerProductLabelStyleByDeafult != null ? InnerProductLabelStyleByDeafult.Name : "")"
+                                                   EventSearcherValueAndId="EventSearcherValueAndId"
+                                                   EventIdSelectionAndId="EventIdSelectionAndId"
+                                                   EventClosed="ClosedInputText"
+                                                   ParamCountResul="ParamCountResul"
+                                                   ViewSelect="ViewSelect">
+                                    @{
+                                        if (InnerProductLabelStyleByDeafultsView != null)
+                                        {
+                                            foreach (var Element in InnerProductLabelStyleByDeafultsView)
                                             {
-                                                foreach (var Element in InnerProductLabelStyleByDeafultsView)
-                                                {
-                                                    <option value="@Element?.Id">@Element?.Name</option>
-                                                }
+                                                <option value="@Element?.Id">@Element?.Name</option>
                                             }
                                         }
-                                    </InputTextSelector>
-                                </div>
+                                    }
+                                </InputTextSelector>
 
                                 <div><label> @GetName("UPCComments", new LabelInstruction()) </label></div>
                                 <div><input @bind="labelInstruction.UPCComments" class="form-control border-color border-color" required /></div>
@@ -842,7 +850,7 @@
                     </ChildContent>
                     <ContentTemplate>
                         <div style="display:flex; flex-direction:column; justify-content:center;">
-                            
+
                             <div class="detailsTitleContainer">
                                 <h3 class="subTitleDetailForm">@GetName( "AssemblyRecipeItems", new PackingSpecs())</h3>
                                 <svg @onclick='()=>ClosedAdd("AssemblyRecipeItems")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
@@ -907,7 +915,7 @@
     public bool ViewSelect { get; set; } = false;
     [Parameter]
     public string Mode { get; set; } = "Add";
-    bool viewMsg = false, modeEdit = true, PopupViewEditItemComponent = false;
+    bool viewMsg = false, modeEdit = true;
     string msg = "";
     string pageView = "";
     SfTab? referTag;
@@ -922,28 +930,9 @@
 
     public int Page = 0;
 
-    #region control Input Tex
-    public string SearcherValueMode = "";
-    public bool PopupViewAddCustomer = false;
-    public bool PopupViewEditModel = false;
-    public bool PopupViewEditSeason = false;
-    public bool PopupViewEditBoxToSale = false;
-    public bool PopupViewEditBoxToBuy = false;
-    public bool PopupViewEditPalletLabelStyle = false;
-    public bool PopupViewEdittotalPrice = false;
-    public bool PopupViewEditBoxLabelStyle = false;
-    public bool PopupViewEditUPCDateCodeBasedOn { get; set; }
-    public string PopupViewEditInnerProductLabelStyleByDeafult { get; set; }
-    public bool PopupViewEditAssembly = false;
-    public bool PopupViewMaterialAssembly = false;
-    public bool PopupViewEditItemModifier = false;
-    public bool PopupViewAddImg = false;
-    public bool PopupViewEditInnerProduct = false;
-    bool PopupViewEditMaterial = false;
-
-
-
+    #region control Input Tex     
     public int ParamCountResul = 0;
+    public string SearcherValueMode = "";
     #endregion Control Input Tex
 
     #region Tag 1
@@ -1106,7 +1095,7 @@
             _PackingSpecs.PackingBoxToSale = BoxToSale != null ? BoxToSale : new();
             _PackingSpecs.ListOfMaterials = listOfMaterials != null ? listOfMaterials : new();
             _PackingSpecs.CustomerLabelInstructions = labelInstruction;
-            assemblyRecipeItem.ItemComponent = itemComponent != null ? itemComponent : new();           
+            assemblyRecipeItem.ItemComponent = itemComponent != null ? itemComponent : new();
             materialRecipeItemsAssembly.Material = conceptMaterialAssembly != null ? conceptMaterialAssembly : new();
             assemblyRecipeItem.ListOfMaterials = materialsRecipeItemsAssembly != null ? materialsRecipeItemsAssembly : new();
             assemblyRecipeItem.RecipeQualityModifier = recipeQualityModifier != null ? recipeQualityModifier : new();
@@ -1240,14 +1229,14 @@
                 materialRecipeItem.Material = MaterialConcept;
                 listOfMaterials.Add(materialRecipeItem);
                 materialRecipeItem = new();
-                MaterialConcept = new();                
+                MaterialConcept = new();
                 Msg("Added");
             }
             else
             {
                 materialRecipeItem.Material = MaterialConcept;
                 materialRecipeItem = new();
-                MaterialConcept = new();              
+                MaterialConcept = new();
                 Msg("Update");
             }
 
@@ -1264,7 +1253,7 @@
                 materialRecipeItemsAssembly.Material = conceptMaterialAssembly;
                 materialsRecipeItemsAssembly.Add(materialRecipeItemsAssembly);
                 materialRecipeItemsAssembly = new();
-                conceptMaterialAssembly = new();             
+                conceptMaterialAssembly = new();
                 Msg("Added");
             }
             else
@@ -1282,15 +1271,15 @@
         if (assemblyRecipeItems == null) assemblyRecipeItems = new();
         foreach (var item in _assemblyRecipeItems)
         {
-            var remove = assemblyRecipeItems.Where(s => s.Id == item.Id).FirstOrDefault();          
+            var remove = assemblyRecipeItems.Where(s => s.Id == item.Id).FirstOrDefault();
             if (remove == null)
             {
-                assemblyRecipeItemsChldren.Add(item);              
+                assemblyRecipeItemsChldren.Add(item);
             }
             else
             {
                 assemblyRecipeItemsChldren.Remove(remove);
-                assemblyRecipeItemsChldren.Add(item);              
+                assemblyRecipeItemsChldren.Add(item);
 
             }
         }
@@ -1306,90 +1295,68 @@
 
     public async Task Closed(string Element)
     {
-        if (Element == "control") Navigation.NavigateTo("/TransactionalItemCard/0/Edit");
-        Reload();
-        await Refresh();
-        StateHasChanged();
+        if (Element == "control") Navigation.NavigateTo($"/TransactionalItemCard/{transactionalItemId}");
     }
 
     public void SetViewElemnt(string Element)
     {
         ViewSelect = false;
         SearcherValueMode = Element;
-        Reload();
-        if (Element == "Customer") { PopupViewAddCustomer = true; }
-        if (Element == "Model") { PopupViewEditModel = true; }
-        if (Element == "Season") { PopupViewEditSeason = true; }
-        if (Element == "BoxToSale") { PopupViewEditBoxToSale = true; }
-        if (Element == "BoxToBuy") { PopupViewEditBoxToBuy = true; }
-        if (Element == "PalletLabelStyle") { PopupViewEditPalletLabelStyle = true; }
-        if (Element == "BoxLabelStyle") { PopupViewEditBoxLabelStyle = true; }
-        if (Element == "InnerProductLabelStyleByDeafult") { }
-        if (Element == "UPCDateCodeBasedOn") { PopupViewEditUPCDateCodeBasedOn = true; }
-        if (Element == "Material") { PopupViewEditMaterial = true; }
-        if (Element == "ItemAssemblyType") { PopupViewEditAssembly = true; }
-        if (Element == "MaterialAssembly") { PopupViewMaterialAssembly = true; }
-        if (Element == "RecipeQualityModifier") { PopupViewEditItemModifier = true; }
-        if (Element == "TotalPriceItemTypeBasedOn") { PopupViewEdittotalPrice = true; }
-        if (Element == "PalletLabelStyle") { PopupViewEditPalletLabelStyle = true; }
-        if (Element == "InnerProductLabelStyleByDeafult") { PopupViewEditInnerProduct = true; }
-        if (Element == "ItemComponent") { PopupViewEditItemComponent = true; }
-
-
+        ClosedInputText();      
         StateHasChanged();
     }
 
-    protected async void EventSearcherValue(string value)
+    protected async void EventSearcherValueAndId((string value, string selectionId) arg)
     {
 
-        if (SearcherValueMode == "Customer")
+        if (arg.selectionId == "Customer")
         {
-            ListConcept = await transactionalService.GetSelectorListEntityActors(value, "MassMarket");
+            ListConcept = await transactionalService.GetSelectorListEntityActors(arg.value, "MassMarket");
             ParamCountResul = ListConcept != null ? ListConcept.Count() : 0;
         }
-        if (SearcherValueMode == "Model")
+        if (arg.selectionId == "Model")
         {
             if (SetModels == null) SetModels = new();
             SetModels = await transactionalService.GetSelectorListEntityProductModel(transactionalItemId);
             GetModelView = SetModels;
-            if (!value.ToLower().Contains("all") && !value.ToLower().Contains("todo")) GetModelView = SetModels.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+            if (!arg.value.ToLower().Contains("all") && !arg.value.ToLower().Contains("todo")) GetModelView = SetModels.Where(s => s.Name.ToLower().Contains(arg.value.ToLower())).ToList();
             ParamCountResul = GetModelView.Count();
         }
-        if (SearcherValueMode == "Season")
+        if (arg.selectionId == "Season")
         {
-            GetSeasonView = await transactionalService.GetSelectorListSeasonBusiness(value);
+            GetSeasonView = await transactionalService.GetSelectorListSeasonBusiness(arg.value);
             ParamCountResul = GetSeasonView != null ? GetSeasonView.Count() : 0;
         }
-        if (SearcherValueMode == "BoxToSale")
+        if (arg.selectionId == "BoxToSale")
         {
-            GetBoxToSaleView = await transactionalService.GetSelectorListBoxes(value);
+            GetBoxToSaleView = await transactionalService.GetSelectorListBoxes(arg.value);
             ParamCountResul = GetBoxToSaleView != null ? GetBoxToSaleView.Count() : 0;
         }
-        if (SearcherValueMode == "BoxToBuy")
+        if (arg.selectionId == "BoxToBuy")
         {
             if (SetBox == null) SetBox = new();
-            GetBoxToBuyView = await transactionalService.GetBoxTable(value);
+            GetBoxToBuyView = await transactionalService.GetBoxTable(arg.value);
             ParamCountResul = GetBoxToBuyView != null ? GetBoxToBuyView.Count() : 0;
         }
-        if (SearcherValueMode == "UPCDateCodeBasedOn")
+        if (arg.selectionId == "UPCDateCodeBasedOn")
         {
-            UPCDateCodeBasedOnsView = UPCDateCodeBasedOnsView.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+            UPCDateCodeBasedOnsView = UPCDateCodeBasedOnsView.Where(s => s.Name.ToLower().Contains(arg.value.ToLower())).ToList();
             ParamCountResul = InnerProductLabelStyleByDeafultsView != null ? InnerProductLabelStyleByDeafultsView.Count() : 0;
         }
-        if (SearcherValueMode == "ItemAssemblyType")
+        if (arg.selectionId == "ItemAssemblyType")
         {
             if (assemblyTypes == null) assemblyTypes = new();
 
-            assemblyTypes = await transactionalService.GetSelectorListAssemblyTypes(value);
+            assemblyTypes = await transactionalService.GetSelectorListAssemblyTypes(arg.value);
             ParamCountResul = assemblyTypes != null ? assemblyTypes.Count() : 0;
         }
-        if (SearcherValueMode == "MaterialAssembly")
+        if (arg.selectionId == "MaterialAssembly")
         {
             if (ConceptMaterialsAssembly == null) ConceptMaterialsAssembly = new();
-            ConceptMaterialsAssembly = await transactionalService.GetSelectorListPackingMaterials(value);
+            ConceptMaterialsAssembly = await transactionalService.GetSelectorListPackingMaterials(arg.value);
             ParamCountResul = ConceptMaterialsAssembly != null ? ConceptMaterialsAssembly.Count() : 0;
         }
-        if (SearcherValueMode == "RecipeQualityModifier")
+        if (arg.selectionId == "RecipeQualityModifier")
         {
             recipeQualityModifiers = new();
             if (itemComponents != null)
@@ -1405,9 +1372,9 @@
 
                         var resul = itemTypes.Where(s => s.Id == type.Id).FirstOrDefault();
 
-                        if (!value.ToLower().Contains("all") && !value.ToLower().Contains("todo"))
+                        if (!arg.value.ToLower().Contains("all") && !arg.value.ToLower().Contains("todo"))
                         {
-                            recipeModifiers = resul.InRecipeModifiers.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+                            recipeModifiers = resul.InRecipeModifiers.Where(s => s.Name.ToLower().Contains(arg.value.ToLower())).ToList();
 
                         }
                         else
@@ -1430,35 +1397,36 @@
 
 
         }
-        if (SearcherValueMode == "TotalPriceItemTypeBasedOn")
+
+        if (arg.selectionId == "TotalPriceItemTypeBasedOn")
         {
             if (totalPriceItemTypeBasedOns == null) totalPriceItemTypeBasedOns = new();
-            totalPriceItemTypeBasedOns = await transactionalService.GetTransactionalItemTypes(value);
+            totalPriceItemTypeBasedOns = await transactionalService.GetTransactionalItemTypes(arg.value);
             ParamCountResul = totalPriceItemTypeBasedOns != null ? totalPriceItemTypeBasedOns.Count() : 0;
         }
-        if (SearcherValueMode == "PalletLabelStyle")
+        if (arg.selectionId == "PalletLabelStyle")
         {
-            palletLabelStylesView = await transactionalService.GetLabelStyles(value);
+            palletLabelStylesView = await transactionalService.GetLabelStyles(arg.value);
             ParamCountResul = palletLabelStylesView.Count();
         }
-        if (SearcherValueMode == "BoxLabelStyle")
+        if (arg.selectionId == "BoxLabelStyle")
         {
-            BoxLabelStylesView = await transactionalService.GetLabelStyles(value);
+            BoxLabelStylesView = await transactionalService.GetLabelStyles(arg.value);
             ParamCountResul = BoxLabelStylesView.Count();
         }
-        if (SearcherValueMode == "InnerProductLabelStyleByDeafult")
+        if (arg.selectionId == "InnerProductLabelStyleByDeafult")
         {
-            InnerProductLabelStyleByDeafultsView = await transactionalService.GetLabelStyles(value);
+            InnerProductLabelStyleByDeafultsView = await transactionalService.GetLabelStyles(arg.value);
             ParamCountResul = InnerProductLabelStyleByDeafultsView.Count();
         }
-        if (SearcherValueMode == "Material")
+        if (arg.selectionId == "Material")
         {
-            MaterialsConcept = await transactionalService.GetSelectorListPackingMaterials(value);
+            MaterialsConcept = await transactionalService.GetSelectorListPackingMaterials(arg.value);
             ParamCountResul = MaterialsConcept.Count();
         }
-        if (SearcherValueMode == "ItemComponent")
+        if (arg.selectionId == "ItemComponent")
         {
-            var data = await transactionalService.GetTransactionalItemsList(1, 250, value);
+            var data = await transactionalService.GetTransactionalItemsList(1, 250, arg.value);
             //itemComponents = await transactionalService.GetConceptProduct(value);
 
             foreach (TransactionalItem item in data)
@@ -1489,70 +1457,70 @@
         await Refresh();
     }
 
-    protected async void EventIdSelectionInput(string selectionId)
+    protected async void EventIdSelectionAndId((string value, string selectionId) arg)
     {
 
-        if (SearcherValueMode == "Customer")
+        if (arg.value == "Customer")
         {
-            Customer = ListConcept.Where(c => c.Id == selectionId).FirstOrDefault();
+            Customer = ListConcept.Where(c => c.Id == arg.selectionId).FirstOrDefault();
         }
-        if (SearcherValueMode == "Model")
+        if (arg.value == "Model")
         {
-            ModelRecipe = GetModelView.Where(c => c.Id == selectionId).FirstOrDefault();
+            ModelRecipe = GetModelView.Where(c => c.Id == arg.selectionId).FirstOrDefault();
         }
-        if (SearcherValueMode == "Season")
+        if (arg.value == "Season")
         {
-            Season = GetSeasonView.Where(c => c.Id == selectionId).FirstOrDefault();
+            Season = GetSeasonView.Where(c => c.Id == arg.selectionId).FirstOrDefault();
         }
-        if (SearcherValueMode == "BoxToSale")
+        if (arg.value == "BoxToSale")
         {
-            BoxToSale = await transactionalService.GetBox(selectionId);
+            BoxToSale = await transactionalService.GetBox(arg.selectionId);
             if (BoxToSale == null) BoxToSale = new();
 
         }
-        if (SearcherValueMode == "BoxToBuy")
+        if (arg.value == "BoxToBuy")
         {
-            BoxToBuy = await transactionalService.GetBox(selectionId);
+            BoxToBuy = await transactionalService.GetBox(arg.selectionId);
             if (BoxToSale == null) BoxToSale = new();
 
         }
-        if (SearcherValueMode == "PalletLabelStyle")
+        if (arg.value == "PalletLabelStyle")
         {
-            palletLabelStyle = palletLabelStylesView.Where(c => c.Id == selectionId).FirstOrDefault();
+            palletLabelStyle = palletLabelStylesView.Where(c => c.Id == arg.selectionId).FirstOrDefault();
             ParamCountResul = palletLabelStylesView.Count();
         }
-        if (SearcherValueMode == "BoxLabelStyle")
+        if (arg.value == "BoxLabelStyle")
         {
-            BoxLabelStyle = BoxLabelStylesView.Where(c => c.Id == selectionId).FirstOrDefault();
+            BoxLabelStyle = BoxLabelStylesView.Where(c => c.Id == arg.selectionId).FirstOrDefault();
             ParamCountResul = BoxLabelStylesView.Count();
         }
-        if (SearcherValueMode == "InnerProductLabelStyleByDeafult")
+        if (arg.value == "InnerProductLabelStyleByDeafult")
         {
-            InnerProductLabelStyleByDeafult = InnerProductLabelStyleByDeafultsView.Where(c => c.Id == selectionId).FirstOrDefault();
+            InnerProductLabelStyleByDeafult = InnerProductLabelStyleByDeafultsView.Where(c => c.Id == arg.selectionId).FirstOrDefault();
             ParamCountResul = InnerProductLabelStyleByDeafultsView.Count();
         }
-        if (SearcherValueMode == "UPCDateCodeBasedOn")
+        if (arg.value == "UPCDateCodeBasedOn")
         {
-            uPCDateCodeBasedOn = UPCDateCodeBasedOnsView.Where(c => c.Id == selectionId).FirstOrDefault();
+            uPCDateCodeBasedOn = UPCDateCodeBasedOnsView.Where(c => c.Id == arg.selectionId).FirstOrDefault();
             ParamCountResul = UPCDateCodeBasedOnsView.Count();
         }
-        if (SearcherValueMode == "ItemAssemblyType")
+        if (arg.value == "ItemAssemblyType")
         {
             if (assemblyTypes == null) assemblyTypes = new();
-            assemblyType = assemblyTypes.Where(c => c.Id == selectionId).FirstOrDefault();
+            assemblyType = assemblyTypes.Where(c => c.Id == arg.selectionId).FirstOrDefault();
             ParamCountResul = assemblyTypes.Count();
         }
-        if (SearcherValueMode == "MaterialAssembly")
+        if (arg.value == "MaterialAssembly")
         {
             if (ConceptMaterialsAssembly == null) ConceptMaterialsAssembly = new();
-            conceptMaterialAssembly = ConceptMaterialsAssembly.Where(c => c.Id == selectionId).FirstOrDefault();
+            conceptMaterialAssembly = ConceptMaterialsAssembly.Where(c => c.Id == arg.selectionId).FirstOrDefault();
             ParamCountResul = assemblyTypes.Count();
         }
-        if (SearcherValueMode == "RecipeQualityModifier")
+        if (arg.value == "RecipeQualityModifier")
         {
             if (recipeModifiers != null)
             {
-                var recipeModifier = recipeModifiers.Where(s => s.Id != null && s.Id.Trim() == selectionId.Trim()).FirstOrDefault();
+                var recipeModifier = recipeModifiers.Where(s => s.Id != null && s.Id.Trim() == arg.selectionId.Trim()).FirstOrDefault();
                 if (recipeModifier != null)
                 {
                     recipeQualityModifier = new ProductRecipeQualityModifier
@@ -1566,29 +1534,29 @@
                 StateHasChanged();
             }
         }
-        if (SearcherValueMode == "TotalPriceItemTypeBasedOn")
+        if (arg.value == "TotalPriceItemTypeBasedOn")
         {
             if (totalPriceItemTypeBasedOns == null) totalPriceItemTypeBasedOns = new();
-            totalPriceItemTypeBasedOn = totalPriceItemTypeBasedOns.Where(c => c.Id == selectionId).FirstOrDefault();
+            totalPriceItemTypeBasedOn = totalPriceItemTypeBasedOns.Where(c => c.Id == arg.selectionId).FirstOrDefault();
         }
-        if (SearcherValueMode == "InnerProductLabelStyleByDeafult")
+        if (arg.value == "InnerProductLabelStyleByDeafult")
         {
             if (InnerProductLabelStyleByDeafultsView == null) InnerProductLabelStyleByDeafultsView = new();
-            InnerProductLabelStyleByDeafult = InnerProductLabelStyleByDeafultsView.Where(c => c.Id == selectionId).FirstOrDefault();
+            InnerProductLabelStyleByDeafult = InnerProductLabelStyleByDeafultsView.Where(c => c.Id == arg.selectionId).FirstOrDefault();
             ParamCountResul = InnerProductLabelStyleByDeafultsView.Count();
         }
-        if (SearcherValueMode == "Material")
+        if (arg.value == "Material")
         {
-            MaterialConcept = MaterialsConcept.Where(c => c.Id == selectionId).FirstOrDefault();
+            MaterialConcept = MaterialsConcept.Where(c => c.Id == arg.selectionId).FirstOrDefault();
             ParamCountResul = MaterialsConcept.Count();
         }
-        if (SearcherValueMode == "ItemComponent")
+        if (arg.value == "ItemComponent")
         {
-            itemComponent = itemComponents.Where(s => s.Id != null && s.Id.Trim() == selectionId.Trim()).FirstOrDefault();
+            itemComponent = itemComponents.Where(s => s.Id != null && s.Id.Trim() == arg.selectionId.Trim()).FirstOrDefault();
             ParamCountResul = itemComponents.Count();
         }
 
-        Reload();
+        ClosedInputText();
         await Refresh();
     }
 
@@ -1629,26 +1597,7 @@
     }
 
 
-    public void Reload()
-    {
-        PopupViewAddCustomer = false;
-        PopupViewEditModel = false;
-        PopupViewEditSeason = false;
-        PopupViewEditBoxToSale = false;
-        PopupViewEditBoxToBuy = false;
-        PopupViewEditAssembly = false;
-        PopupViewMaterialAssembly = false;
-        PopupViewEdittotalPrice = false;
-        PopupViewEditInnerProduct = false;
-        PopupViewEditPalletLabelStyle = false;
-        PopupViewEditBoxLabelStyle = false;
-        PopupViewEditItemComponent = false;
-        PopupViewEditMaterial = false;
-        PopupViewEditItemModifier = false;
-        PopupViewMaterialAssembly = false;
-        ViewSelect = false;
-        ParamCountResul = 0;
-    }
+   
 
 
 
@@ -1704,13 +1653,12 @@
     }
 
     public void ClosedInputText()
-    {
-        PopupViewAddImg = false;
+    {    
         ViewSelect = false;
-        Reload();
+        ParamCountResul = 0;
         StateHasChanged();
     }
-
+   
 
 
     public void SetStatus()
@@ -1774,7 +1722,7 @@
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
-        );
+    );
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {

@@ -54,8 +54,7 @@
     public string IdTransactionalItem { get; set; }
     List<TransactionalItemTag> TransactionalItemTags = new List<TransactionalItemTag>();
     SfGrid<TransactionalItemTag>? DataGrid;
-    #region TileName
-   
+    #region TileName   
     public string Key { get; set; }
     public string Value { get; set; }
     #endregion TitleName
@@ -98,27 +97,20 @@
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         TransactionalItemTag argObj = (TransactionalItemTag)args.Value;
-        transactionalService.ConceptTransactionalItemTag = argObj;
+        
 
-        if (transactionalService.ConceptTransactionalItemTag != null)
+        if (argObj != null && argObj.Id !=null)
         {
-            Navigation.NavigateTo("/TagCard/TransactionalItemCard/4/Edit");
+            Navigation.NavigateTo($"/TagCard/TransactionalItemCard/4/{IdTransactionalItem}/{argObj.Id}");
         }
     }
 
     #endregion Grid
 
 
-    public void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemTag> args)
-    {
-        
-    }
-
-
-
     public void OpenAdd()
     {
-        Navigation.NavigateTo("/TagCard/TransactionalItemCard/4/Add");
+        Navigation.NavigateTo($"/TagCard/TransactionalItemCard/4/{IdTransactionalItem}");
     }
 
 

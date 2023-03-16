@@ -34,7 +34,7 @@
                                         <label>@(identificationType != null ? identificationType.Name : "")</label>
                                         <button type="button" style="float:right" @onclick='()=>SetViewElemnt("Identification")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                     </div>
-                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewIdentification">
+                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewIdentification">
                                         @{
                                             if (identificationTypesList != null)
                                             {

@@ -55,7 +55,7 @@
                         <label>@(itemComponent != null ? itemComponent.Name : "")</label>
                         <button type="button" @onclick='()=>SetViewElemnt("ItemComponent")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                     </div>
-                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditItemComponent">
+                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedInputText" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewEditItemComponent">
                         @{
                             if (itemComponents != null)
                             {
@@ -78,7 +78,7 @@
                         <label>@(recipeQualityModifier != null ? recipeQualityModifier.Name : "")</label>
                         <button type="button" @onclick='()=>SetViewElemnt("RecipeQualityModifier")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                     </div>
-                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewEditItemModifier">
+                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewEditItemModifier">
                         @{
                             if (recipeQualityModifiers != null)
                             {
@@ -211,7 +211,7 @@
                                 <button type="button" @onclick='()=>SetViewElemnt("MaterialAssembly")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                             </div>
 
-                            <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" ViewControl="PopupViewMaterialAssembly">
+                            <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewMaterialAssembly">
                                 @{
                                     if (conceptMaterialsAssembly != null)
                                     {
