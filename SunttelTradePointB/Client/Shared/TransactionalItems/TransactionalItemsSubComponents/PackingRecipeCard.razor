@@ -1,5 +1,5 @@
 ﻿@page "/PackingRecipeCard"
-@page "/PackingRecipeCard/{Mode}"
+@page "/PackingRecipeCard/{transactionalItemId}/{packingSpecsId}"
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.Grids
 @using Syncfusion.Blazor.Data
@@ -10,6 +10,7 @@
 @using SunttelTradePointB.Client.Shared.ConceptSelectors
 @inject TransactionalItemsService transactionalService;
 @inject NavigationManager Navigation
+@inject ContextMenuService ContextMenuService
 
 
 @if (@viewMsg)
@@ -269,12 +270,35 @@
                                 @if (materialsRecipeItemsAssembly == null) { materialsRecipeItemsAssembly = new List<MaterialRecipeItem>(); }
 
 
-                                <DataGrid TParameter="MaterialRecipeItemView"
-                                      EventCallbackMenu="OnContextMenuClick"
-                                      parameterList="materialsRecipeItemsAssemblyView"
-                                      GridColumnsList="gridColumnListListOfMaterials"
-                                      Width="100%">
-                                </DataGrid>
+                                @if (materialsRecipeItemsAssembly != null)
+                                {
+                                    <RadzenDataGrid AllowFiltering="true"
+                                            AllowColumnResize="true"
+                                            AllowAlternatingRows="true"
+                                            FilterMode="FilterMode.Advanced"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                            AllowSorting="true"
+                                            PageSize="2"
+                                            AllowPaging="true"
+                                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                            ShowPagingSummary="true"
+                                            Data="@materialsRecipeItemsAssembly"
+                                            TItem="MaterialRecipeItem"
+                                            ColumnWidth="300px"
+                                            SelectionMode="DataGridSelectionMode.Single"
+                                            LogicalFilterOperator="LogicalFilterOperator.Or"
+                                            CellContextMenu="@ShowContextMenuWithContent"
+                                            PageNumbersCount="100">
+
+                                        <Columns>
+                                            <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="MaterialRecipeItem.Material.Name" Title="@GetName( "Name", new AtomConcept())" Frozen="false" Width="80px" />
+                                            <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="MaterialRecipeItem.Quantity" Filterable="true" Title="@GetName( "Quantity", new AtomConcept())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+
+                                        </Columns>
+                                    </RadzenDataGrid>
+                                }
+
+
                             </div>
 
                         </ContentTemplate>
@@ -294,15 +318,34 @@
                                     </svg>
                                 </div>
 
-                                @if (assemblyRecipeItemsChildrenView == null) { assemblyRecipeItemsChildrenView = new List<PackRecipeItemView>(); }
+                                @if (materialsRecipeItemsAssembly != null)
+                                {
+                                    <RadzenDataGrid AllowFiltering="true"
+                                            AllowColumnResize="true"
+                                            AllowAlternatingRows="true"
+                                            FilterMode="FilterMode.Advanced"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                            AllowSorting="true"
+                                            PageSize="2"
+                                            AllowPaging="true"
+                                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                            ShowPagingSummary="true"
+                                            Data="@assemblyRecipeItemsChldren"
+                                            TItem="PackRecipeItem"
+                                            ColumnWidth="300px"
+                                            SelectionMode="DataGridSelectionMode.Single"
+                                            LogicalFilterOperator="LogicalFilterOperator.Or"
+                                            CellContextMenu="@ShowContextMenuWithContent"
+                                            PageNumbersCount="100">
 
+                                        <Columns>
+                                            <RadzenDataGridColumn TItem="PackRecipeItem" Property="PackRecipeItem.Name.Name" Title="@GetName( "Name", new AtomConcept())" Frozen="false" Width="80px" />
+                                            <RadzenDataGridColumn TItem="PackRecipeItem" Property="PackRecipeItem.Quantity" Filterable="true" Title="@GetName( "Quantity", new PackRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
 
-                                <DataGrid TParameter="PackRecipeItemView"
-                                      EventCallbackMenu="OnContextMenuClick"
-                                      parameterList="assemblyRecipeItemsChildrenView"
-                                      GridColumnsList="gridColumnListAssemblyRecipeItems"
-                                      Width="100%">
-                                </DataGrid>
+                                        </Columns>
+                                    </RadzenDataGrid>
+                                }
+
                             </div>
                         </ContentTemplate>
                     </TabItem>
@@ -379,7 +422,7 @@
 
         @if (pageView == "ComponentItemRecipeChildren")
         {
-            <ComponentItemRecipeChildrenCard @ref="recipeChildren" EventCallbackPage="ClosedAdd" EventCallAdd="AddAssemblyRecipeItemsChildren"></ComponentItemRecipeChildrenCard>
+            <ComponentItemRecipeChildrenCard transactionalItemId="transactionalItemId" @ref="recipeChildren" EventCallbackPage="ClosedAdd" EventCallAdd="AddAssemblyRecipeItemsChildren"></ComponentItemRecipeChildrenCard>
         }
 
     </div>
@@ -427,7 +470,7 @@
                                 <div>
                                     <div style="position:relative;">
                                         <div class="item-edit">
-                                            <label>@(Customer != null ? Customer.Name : "")</label>
+                                            <label>@(Customer != null ? Customer?.Name : "")</label>
                                             <button type="button" @onclick='()=>SetViewElemnt("Customer")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                         </div>
 
@@ -456,7 +499,7 @@
                                 <div>
                                     <div style="position:relative;">
                                         <div class="item-edit">
-                                            <label>@(Season != null ? Season.Name : "")</label>
+                                            <label>@(Season != null ? Season?.Name : "")</label>
                                             <button type="button" @onclick='()=>SetViewElemnt("Season")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                         </div>
 
@@ -481,7 +524,7 @@
                                 <div>
                                     <div style="position:relative;">
                                         <div class="item-edit">
-                                            <label>@(ModelRecipe != null ? ModelRecipe.Name : "")</label>
+                                            <label>@(ModelRecipe != null ? ModelRecipe?.Name : "")</label>
                                             <button type="button" @onclick='()=>SetViewElemnt("Model")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                         </div>
 
@@ -515,7 +558,7 @@
                                 <div>
                                     <div style="position:relative;">
                                         <div class="item-edit">
-                                            <label>@(BoxToSale != null ? BoxToSale.Name : "")</label>
+                                            <label>@(BoxToSale != null ? BoxToSale?.Name : "")</label>
                                             <button type="button" @onclick='()=>SetViewElemnt("BoxToSale")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                         </div>
 
@@ -538,7 +581,7 @@
                                 <div>
                                     <div style="position:relative;">
                                         <div class="item-edit">
-                                            <label>@(BoxToBuy != null ? BoxToBuy.Name : "")</label>
+                                            <label>@(BoxToBuy != null ? BoxToBuy?.Name : "")</label>
                                             <button type="button" @onclick='()=>SetViewElemnt("BoxToBuy")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                         </div>
 
@@ -602,7 +645,7 @@
                                 <div>
                                     <div style="position:relative;">
                                         <div class="item-edit">
-                                            <label>@(assemblyType != null ? assemblyType.Name : "")</label>
+                                            <label>@(assemblyType != null ? assemblyType?.Name : "")</label>
                                             <button type="button" @onclick='()=>SetViewElemnt("ItemAssemblyType")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                                         </div>
 
@@ -757,18 +800,38 @@
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                 </svg>
                             </div>
-                            <SfGrid @ref="DataGrid" DataSource="@ListOfMaterialsView" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" AllowResizing="true"
-                                    ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader" } })">
-                                <GridEvents Destroyed="AddMaterialsOff" TValue="MaterialRecipeItemView"></GridEvents>
-                                <GridFilterSettings Type=" Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
-                                <GridColumns>
-                                    <GridColumn Field="@nameof(MaterialRecipeItemView.Name)" HeaderText="@GetName( "Name",new AtomConcept())" Width="300px"></GridColumn>
-                                    <GridColumn Field="@nameof(MaterialRecipeItemView.Quantity)" HeaderText="@GetName( "Quantity",new MaterialRecipeItem())" Width="300px"></GridColumn>
-                                    <GridColumn Field="@nameof(MaterialRecipeItemView.Code)" HeaderText="@GetName( "Code",new AtomConcept())" Width="120px"></GridColumn>                                  
-                                    <GridColumn Field="@nameof(MaterialRecipeItemView.FullClassName)" HeaderText="@GetName( "FullClassName",new Concept())" Width="120px"></GridColumn>
-                                </GridColumns>
-                                <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="MaterialRecipeItemView"></GridEvents>
-                            </SfGrid>
+
+
+                            @if (listOfMaterials != null)
+                            {
+                                <RadzenDataGrid AllowFiltering="true"
+                                            AllowColumnResize="true"
+                                            AllowAlternatingRows="true"
+                                            FilterMode="FilterMode.Advanced"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                            AllowSorting="true"
+                                            PageSize="4"
+                                            AllowPaging="true"
+                                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                            ShowPagingSummary="true"
+                                            Data="@listOfMaterials"
+                                            TItem="MaterialRecipeItem"
+                                            SelectionMode="DataGridSelectionMode.Single"
+                                            LogicalFilterOperator="LogicalFilterOperator.Or"
+                                            CellContextMenu="@ShowContextMenuWithContent"
+                                            PageNumbersCount="100">
+
+                                    <Columns>
+                                        <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="MaterialRecipeItem.Name" Title="Code" Frozen="false" Width="80px" />
+                                        <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="MaterialRecipeItem.Quantity" Filterable="true" Title="Name" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                        <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="MaterialRecipeItem.Code" Title="Group" Width="160px" />
+                                        <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="MaterialRecipeItem.FullClassName" Title="Status" Width="200px" />
+
+
+                                    </Columns>
+                                </RadzenDataGrid>
+                            }
+
                         </div>
 
                     </ContentTemplate>
@@ -779,7 +842,7 @@
                     </ChildContent>
                     <ContentTemplate>
                         <div style="display:flex; flex-direction:column; justify-content:center;">
-
+                            
                             <div class="detailsTitleContainer">
                                 <h3 class="subTitleDetailForm">@GetName( "AssemblyRecipeItems", new PackingSpecs())</h3>
                                 <svg @onclick='()=>ClosedAdd("AssemblyRecipeItems")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
@@ -791,18 +854,37 @@
                             <div class="content-btn">
                                 @* <button type="button" @onclick='()=>AddAssemblyControl(true)' class="size-btn color-btn" style=' display:@(btnAddMaterials?"block":"none");'>+</button>*@
                             </div>
-                            <SfGrid @ref="DataGrid1" DataSource="@assemblyRecipeItemsView" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" AllowResizing="true"
-                                    ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader" } })">
-                                <GridFilterSettings Type=" Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
-                                <GridColumns>
-                                    <GridColumn Field="@nameof(PackRecipeItemView.Name)" HeaderText="@GetName( "Name",new AtomConcept())" Width="200px"></GridColumn>
-                                    <GridColumn Field="@nameof(PackRecipeItemView.Quantity)" HeaderText="@GetName( "Quantity",new AtomConcept())" Width="100px"></GridColumn>
-                                    <GridColumn Field="@nameof(PackRecipeItemView.Code)" HeaderText="@GetName( "Code",new Concept())" Width="50px"></GridColumn>
-                                    <GridColumn Field="@nameof(PackRecipeItemView.FullClassName)" HeaderText="@GetName( "FullClassName",new Concept())" Width="100px"></GridColumn>
 
-                                </GridColumns>
-                                <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="PackRecipeItemView"></GridEvents>
-                            </SfGrid>
+
+                            @if (assemblyRecipeItems != null)
+                            {
+                                <RadzenDataGrid AllowFiltering="true"
+                                            AllowColumnResize="true"
+                                            AllowAlternatingRows="true"
+                                            FilterMode="FilterMode.Advanced"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                            AllowSorting="true"
+                                            PageSize="4"
+                                            AllowPaging="true"
+                                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                            ShowPagingSummary="true"
+                                            Data="@assemblyRecipeItems"
+                                            TItem="PackRecipeItem"
+                                            SelectionMode="DataGridSelectionMode.Single"
+                                            LogicalFilterOperator="LogicalFilterOperator.Or"
+                                            CellContextMenu="@ShowContextMenuWithContent"
+                                            PageNumbersCount="100">
+
+                                    <Columns>
+                                        <RadzenDataGridColumn TItem="PackRecipeItem" Property="PackRecipeItem.Name" Title="@GetName( "Name",new AtomConcept())" Frozen="false" Width="80px" />
+                                        <RadzenDataGridColumn TItem="PackRecipeItem" Property="PackRecipeItem.Quantity" Filterable="true" Title="@GetName( "Quantity",new AtomConcept())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                        <RadzenDataGridColumn TItem="PackRecipeItem" Property="PackRecipeItem.Code" Title="@GetName( "Code",new Concept())" Width="160px" />
+                                        <RadzenDataGridColumn TItem="PackRecipeItem" Property="PackRecipeItem.FullClassName" Title="@GetName( "FullClassName",new Concept())" Width="200px" />
+
+                                    </Columns>
+                                </RadzenDataGrid>
+                            }
+
                         </div>
                     </ContentTemplate>
                 </TabItem>
@@ -815,7 +897,9 @@
 
 @code {
     [Parameter]
-    public string id { get; set; }
+    public string transactionalItemId { get; set; }
+    [Parameter]
+    public string packingSpecsId { get; set; }
     public RenderFragment render { get; set; }
     [Parameter]
     public EventCallback<PackingSpecs> save { get; set; }
@@ -828,18 +912,15 @@
     string pageView = "";
     SfTab? referTag;
     TransactionalItemGroupSelector? referGroup;
-    SfGrid<MaterialRecipeItemView>? DataGrid;
-    SfGrid<PackRecipeItemView>? DataGrid1;
     ComponentItemRecipeChildrenCard? recipeChildren;
     MaterialRecipeItemCard? addControl;
     public TransactionalItem? transactionalItems { get; set; }
 
 
 
-    List<GridColumn> gridColumnListListOfMaterials = new();
+
 
     public int Page = 0;
-    public string transactionalItemId { get; set; }
 
     #region control Input Tex
     public string SearcherValueMode = "";
@@ -906,7 +987,6 @@
 
     List<MaterialRecipeItem> listOfMaterials = new List<MaterialRecipeItem>();
     MaterialRecipeItem materialRecipeItem = new MaterialRecipeItem();
-    List<MaterialRecipeItemView> ListOfMaterialsView = new List<MaterialRecipeItemView>();
     List<Concept> MaterialsConcept = new List<Concept>();
     Concept MaterialConcept = new Concept();
     Concept MateriaoNew = new();
@@ -918,23 +998,19 @@
 
     #region Tag 4
     bool addAssembly = false;
-    List<PackRecipeItemView> assemblyRecipeItemsChildrenView = new List<PackRecipeItemView>();
-    List<PackRecipeItemView> assemblyRecipeItemsView = new List<PackRecipeItemView>();
+
     List<PackRecipeItem> assemblyRecipeItemsChldren = new List<PackRecipeItem>();
     List<PackRecipeItem> assemblyRecipeItems = new List<PackRecipeItem>();
     PackRecipeItem assemblyRecipeItem = new PackRecipeItem();
     List<Concept> itemComponents = new();
     Concept itemComponent = new();
     List<RecipeModifier> recipeModifiers = new();
-    //RecipeModifier recipeModifier = new();
     List<ProductRecipeQualityModifier> recipeQualityModifiers = new();
     ProductRecipeQualityModifier recipeQualityModifier = new();
     List<MaterialRecipeItem> materialsRecipeItemsAssembly = new();
-    List<MaterialRecipeItemView> materialsRecipeItemsAssemblyView = new();
     MaterialRecipeItem materialRecipeItemsAssembly = new();
     List<Concept> ConceptMaterialsAssembly = new();
     Concept conceptMaterialAssembly = new();
-    List<GridColumn> gridColumnListAssemblyRecipeItems = new();
 
     #endregion Tag 4
 
@@ -950,23 +1026,11 @@
         StateHasChanged();
     }
 
-
     protected override void OnInitialized()
     {
         InitializedAsync();
 
-        gridColumnListListOfMaterials = new List<GridColumn>()
-        {
-             new GridColumn() { Field=nameof(MaterialRecipeItem.Material.Name) ,  HeaderText = @GetName( "Name", new AtomConcept())  },
-              new GridColumn() { Field=nameof(MaterialRecipeItem.Quantity) ,  HeaderText = @GetName( "Quantity", new AtomConcept())  }
 
-        };
-        gridColumnListAssemblyRecipeItems = new List<GridColumn>()
-        {
-             new GridColumn() { Field=nameof(MaterialRecipeItemView.Name) ,  HeaderText = @GetName( "Name", new AtomConcept())  },
-              new GridColumn() { Field=nameof(MaterialRecipeItemView.Quantity) ,  HeaderText = @GetName( "Quantity", new PackRecipeItem())  }
-
-        };
 
 
     }
@@ -975,14 +1039,9 @@
     {
         SetBox = await transactionalService.GetSelectorListEntityBoxToBuy();
 
-        if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
+        if (transactionalItemId != null && packingSpecsId != null)
         {
-            transactionalItemId = transactionalService.transactionalItemId;
-
-        }
-        if (Mode == "Edit")
-        {
-            _PackingSpecs = transactionalService.ConceptTransactionalItemPackingSpecs;
+            _PackingSpecs = await transactionalService.GetPackingRecipeToId(transactionalItemId, packingSpecsId);
             if (_PackingSpecs != null)
             {
                 #region Tag1
@@ -996,24 +1055,14 @@
                 labelInstruction = _PackingSpecs.CustomerLabelInstructions != null ? _PackingSpecs.CustomerLabelInstructions : new LabelInstruction();
                 assemblyRecipeItems = _PackingSpecs.AssemblyRecipeItems != null ? _PackingSpecs.AssemblyRecipeItems : new();
                 assemblyType = _PackingSpecs.ItemAssemblyType != null ? _PackingSpecs.ItemAssemblyType : new();
-                foreach (var assemblyRecipeItem in assemblyRecipeItems)
-                {
-                    assemblyRecipeItemsView.Add(new PackRecipeItemView
-                        {
-                            Name = assemblyRecipeItem.ItemComponent != null ? assemblyRecipeItem.ItemComponent?.Name : "",
-                            Code = assemblyRecipeItem.ItemComponent.Code != null ? assemblyRecipeItem.ItemComponent?.Code : "",
-                            FullClassName = assemblyRecipeItem.ItemComponent.FullClassName != null ? assemblyRecipeItem.ItemComponent?.FullClassName : "",
-                            SkinImageName = assemblyRecipeItem.ItemComponent.SkinImageName != null ? assemblyRecipeItem.ItemComponent?.SkinImageName : "",
-                            Quantity = assemblyRecipeItem.Quantity != null ? assemblyRecipeItem.Quantity.ToString() : "",
-                        });
-                }
+
 
                 if (_PackingSpecs.Price != null)
                 {
                     totalPriceItemTypeBasedOn = _PackingSpecs.Price.TotalPriceItemTypeBasedOn != null ? _PackingSpecs.Price.TotalPriceItemTypeBasedOn : new();
                 }
 
-                SetMaterialToView();
+
                 #endregion Tag1
 
                 #region Tag 2
@@ -1029,6 +1078,10 @@
                 #endregion Tag 2
 
                 StateHasChanged();
+            }
+            else
+            {
+                //Closed("control");
             }
         }
     }
@@ -1053,9 +1106,7 @@
             _PackingSpecs.PackingBoxToSale = BoxToSale != null ? BoxToSale : new();
             _PackingSpecs.ListOfMaterials = listOfMaterials != null ? listOfMaterials : new();
             _PackingSpecs.CustomerLabelInstructions = labelInstruction;
-            assemblyRecipeItem.ItemComponent = itemComponent != null ? itemComponent : new();
-            if (assemblyRecipeItem.ComponentItemRecipe == null) assemblyRecipeItem.ComponentItemRecipe = new();
-            if (recipeChildren != null && recipeChildren.assemblyRecipeItemGeneral != null) assemblyRecipeItem.ComponentItemRecipe.Add(recipeChildren.assemblyRecipeItemGeneral);
+            assemblyRecipeItem.ItemComponent = itemComponent != null ? itemComponent : new();           
             materialRecipeItemsAssembly.Material = conceptMaterialAssembly != null ? conceptMaterialAssembly : new();
             assemblyRecipeItem.ListOfMaterials = materialsRecipeItemsAssembly != null ? materialsRecipeItemsAssembly : new();
             assemblyRecipeItem.RecipeQualityModifier = recipeQualityModifier != null ? recipeQualityModifier : new();
@@ -1131,15 +1182,6 @@
                 assemblyRecipeItem.RecipeQualityModifier = recipeQualityModifier != null ? recipeQualityModifier : new();
                 assemblyRecipeItem.ComponentItemRecipe = assemblyRecipeItemsChldren != null ? assemblyRecipeItemsChldren : new();
                 assemblyRecipeItems.Add(assemblyRecipeItem);
-                assemblyRecipeItemsView.Add(new PackRecipeItemView
-                    {
-                        Name = assemblyRecipeItem.ItemComponent != null ? assemblyRecipeItem.ItemComponent?.Name : "",
-                        Code = assemblyRecipeItem.ItemComponent.Code != null ? assemblyRecipeItem.ItemComponent?.Code : "",
-                        FullClassName = assemblyRecipeItem.ItemComponent.FullClassName != null ? assemblyRecipeItem.ItemComponent?.FullClassName : "",
-                        SkinImageName = assemblyRecipeItem.ItemComponent.SkinImageName != null ? assemblyRecipeItem.ItemComponent?.SkinImageName : "",
-                        Quantity = assemblyRecipeItem.Quantity != null ? assemblyRecipeItem.Quantity.ToString() : "",
-                    });
-                if (DataGrid1 != null) DataGrid1.Refresh();
                 StateHasChanged();
                 Msg("Added");
             }
@@ -1148,17 +1190,6 @@
                 assemblyRecipeItem.ItemComponent = itemComponent;
                 assemblyRecipeItem.ListOfMaterials = materialsRecipeItemsAssembly;
                 assemblyRecipeItem.RecipeQualityModifier = recipeQualityModifier != null ? recipeQualityModifier : new();
-                var remove = assemblyRecipeItemsView.Where(s => s.Id == assemblyRecipeItem.Id).FirstOrDefault();
-                assemblyRecipeItemsView.Remove(remove);
-                assemblyRecipeItemsView.Add(new PackRecipeItemView
-                    {
-                        Name = assemblyRecipeItem.ItemComponent != null ? assemblyRecipeItem.ItemComponent?.Name : "",
-                        Code = assemblyRecipeItem.ItemComponent.Code != null ? assemblyRecipeItem.ItemComponent?.Code : "",
-                        FullClassName = assemblyRecipeItem.ItemComponent.FullClassName != null ? assemblyRecipeItem.ItemComponent?.FullClassName : "",
-                        SkinImageName = assemblyRecipeItem.ItemComponent.SkinImageName != null ? assemblyRecipeItem.ItemComponent?.SkinImageName : "",
-                        Quantity = assemblyRecipeItem.Quantity != null ? assemblyRecipeItem.Quantity.ToString() : "",
-                    });
-                if (DataGrid1 != null) DataGrid1.Refresh();
                 StateHasChanged();
                 Msg("Update");
             }
@@ -1178,7 +1209,6 @@
 
     public async void ItemSelectedConcept(MenuEventArgs e)
     {
-
         string tile = e.Item != null ? e.Item.Text : "";
         if (tile == "Material")
         {
@@ -1209,37 +1239,15 @@
             {
                 materialRecipeItem.Material = MaterialConcept;
                 listOfMaterials.Add(materialRecipeItem);
-                ListOfMaterialsView.Add(new MaterialRecipeItemView
-                    {
-                        Id = materialRecipeItem.Material != null ? materialRecipeItem.Material.Id : "",
-                        Name = materialRecipeItem.Material != null ? materialRecipeItem.Material.Name : "",
-                        Code = materialRecipeItem.Material != null ? materialRecipeItem.Material.Code : "",
-                        FullClassName = materialRecipeItem.Material != null ? materialRecipeItem.Material.FullClassName : "",
-                        Quantity = materialRecipeItem.Quantity != null ? materialRecipeItem.Quantity.ToString() : "",
-                        SkinImageName = materialRecipeItem.Material != null ? materialRecipeItem.Material.SkinImageName : ""
-                    });
                 materialRecipeItem = new();
-                MaterialConcept = new();
-                DataGrid.Refresh();
+                MaterialConcept = new();                
                 Msg("Added");
             }
             else
             {
                 materialRecipeItem.Material = MaterialConcept;
-                var removeView = ListOfMaterialsView.Where(s => s.Id == materialRecipeItem.Material.Id).FirstOrDefault();
-                ListOfMaterialsView.Remove(removeView);
-                ListOfMaterialsView.Add(new MaterialRecipeItemView
-                    {
-                        Id = materialRecipeItem.Material != null ? materialRecipeItem.Material.Id : "",
-                        Name = materialRecipeItem.Material != null ? materialRecipeItem.Material.Name : "",
-                        Code = materialRecipeItem.Material != null ? materialRecipeItem.Material.Code : "",
-                        FullClassName = materialRecipeItem.Material != null ? materialRecipeItem.Material.FullClassName : "",
-                        Quantity = materialRecipeItem.Quantity.ToString(),
-                        SkinImageName = materialRecipeItem.Material != null ? materialRecipeItem.Material.SkinImageName : ""
-                    });
                 materialRecipeItem = new();
-                MaterialConcept = new();
-                DataGrid.Refresh();
+                MaterialConcept = new();              
                 Msg("Update");
             }
 
@@ -1255,34 +1263,14 @@
             {
                 materialRecipeItemsAssembly.Material = conceptMaterialAssembly;
                 materialsRecipeItemsAssembly.Add(materialRecipeItemsAssembly);
-                materialsRecipeItemsAssemblyView.Add(new MaterialRecipeItemView
-                    {
-                        Id = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.Id : "",
-                        Name = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.Name : "",
-                        Code = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.Code : "",
-                        FullClassName = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.FullClassName : "",
-                        Quantity = materialRecipeItemsAssembly.Quantity != null ? materialRecipeItemsAssembly.Quantity.ToString() : "",
-                        SkinImageName = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.SkinImageName : ""
-                    });
                 materialRecipeItemsAssembly = new();
-                conceptMaterialAssembly = new();
-                if (DataGrid != null) DataGrid.Refresh();
+                conceptMaterialAssembly = new();             
                 Msg("Added");
             }
             else
             {
                 materialRecipeItemsAssembly.Material = conceptMaterialAssembly;
-                var remove = materialsRecipeItemsAssemblyView.Where(s => s.Id == materialRecipeItem.Material.Id).FirstOrDefault();
-                materialsRecipeItemsAssemblyView.Remove(remove);
-                materialsRecipeItemsAssemblyView.Add(new MaterialRecipeItemView
-                    {
-                        Id = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.Id : "",
-                        Name = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.Name : "",
-                        Code = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.Code : "",
-                        FullClassName = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.FullClassName : "",
-                        Quantity = materialRecipeItemsAssembly.Quantity != null ? materialRecipeItemsAssembly.Quantity.ToString() : "",
-                        SkinImageName = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material?.SkinImageName : ""
-                    });
+
                 Msg("Updated");
             }
 
@@ -1294,36 +1282,17 @@
         if (assemblyRecipeItems == null) assemblyRecipeItems = new();
         foreach (var item in _assemblyRecipeItems)
         {
-            var remove = assemblyRecipeItems.Where(s => s.Id == item.Id).FirstOrDefault();
-            var removeView = assemblyRecipeItemsChildrenView.Where(s => s.Id == item.Id).FirstOrDefault();
+            var remove = assemblyRecipeItems.Where(s => s.Id == item.Id).FirstOrDefault();          
             if (remove == null)
             {
-                assemblyRecipeItemsChldren.Add(item);
-                assemblyRecipeItemsChildrenView.Add(new PackRecipeItemView
-                    {
-                        Name = item.ItemComponent != null ? item.ItemComponent?.Name : "",
-                        Code = item.ItemComponent.Code != null ? item.ItemComponent?.Code : "",
-                        FullClassName = item.ItemComponent.FullClassName != null ? item.ItemComponent?.FullClassName : "",
-                        SkinImageName = item.ItemComponent.SkinImageName != null ? item.ItemComponent?.SkinImageName : "",
-                        Quantity = item.Quantity != null ? item.Quantity.ToString() : ""
-                    });
+                assemblyRecipeItemsChldren.Add(item);              
             }
             else
             {
                 assemblyRecipeItemsChldren.Remove(remove);
-                assemblyRecipeItemsChldren.Add(item);
-                assemblyRecipeItemsChildrenView.Remove(removeView);
-                assemblyRecipeItemsChildrenView.Add(new PackRecipeItemView
-                    {
-                        Name = item.ItemComponent != null ? item.ItemComponent?.Name : "",
-                        Code = item.ItemComponent.Code != null ? item.ItemComponent?.Code : "",
-                        FullClassName = item.ItemComponent.FullClassName != null ? item.ItemComponent?.FullClassName : "",
-                        SkinImageName = item.ItemComponent.SkinImageName != null ? item.ItemComponent?.SkinImageName : "",
-                        Quantity = item.Quantity != null ? item.Quantity.ToString() : ""
-                    });
+                assemblyRecipeItemsChldren.Add(item);              
 
             }
-
         }
         StateHasChanged();
 
@@ -1449,10 +1418,10 @@
                         foreach (var item in recipeModifiers)
                         {
                             recipeQualityModifiers.Add(new ProductRecipeQualityModifier
-                                {
-                                    Id = item.Id,
-                                    Name = item.Name
-                                });
+                                    {
+                                        Id = item.Id,
+                                        Name = item.Name
+                                    });
                         }
                         ParamCountResul = recipeModifiers.Count();
                     }
@@ -1495,22 +1464,22 @@
             foreach (TransactionalItem item in data)
             {
                 itemComponents.Add(new Concept
-                    {
-                        Name = item.Name != null ? item.Name : "",
-                        Id = item.Id != null ? item.Id : "",
-                        AuditRecord = item.AuditRecord != null ? item.AuditRecord : new(),
-                        Code = item.Code != null ? item.Code : "",
-                        SkinImageName = item.SkinImageName != null ? item.SkinImageName : "",
-                        Status = item.Status != null ? item.Status : new(),
-                        IsSelected = item.IsSelected != null ? item.IsSelected : false,
-                        Groups = item.Groups != null ? item.Groups : new(),
-                        HasChanged = item.HasChanged != null ? item.HasChanged : false,
-                        IsLoadingData = item.IsLoadingData != null ? item.IsLoadingData : default(bool),
-                        LegacyId = item.LegacyId != null ? item.LegacyId : "",
-                        Notes = item.Notes != null ? item.Notes : "",
-                        TypeOfConcept = item.TypeOfConcept != null ? item.TypeOfConcept : new(),
+                        {
+                            Name = item.Name != null ? item.Name : "",
+                            Id = item.Id != null ? item.Id : "",
+                            AuditRecord = item.AuditRecord != null ? item.AuditRecord : new(),
+                            Code = item.Code != null ? item.Code : "",
+                            SkinImageName = item.SkinImageName != null ? item.SkinImageName : "",
+                            Status = item.Status != null ? item.Status : new(),
+                            IsSelected = item.IsSelected != null ? item.IsSelected : false,
+                            Groups = item.Groups != null ? item.Groups : new(),
+                            HasChanged = item.HasChanged != null ? item.HasChanged : false,
+                            IsLoadingData = item.IsLoadingData != null ? item.IsLoadingData : default(bool),
+                            LegacyId = item.LegacyId != null ? item.LegacyId : "",
+                            Notes = item.Notes != null ? item.Notes : "",
+                            TypeOfConcept = item.TypeOfConcept != null ? item.TypeOfConcept : new(),
 
-                    });
+                        });
             }
             ParamCountResul = itemComponents != null ? itemComponents.Count() : 0;
         }
@@ -1587,10 +1556,10 @@
                 if (recipeModifier != null)
                 {
                     recipeQualityModifier = new ProductRecipeQualityModifier
-                        {
-                            Id = recipeModifier.Id,
-                            Name = recipeModifier.Name
-                        };
+                            {
+                                Id = recipeModifier.Id,
+                                Name = recipeModifier.Name
+                            };
                 }
 
 
@@ -1628,7 +1597,6 @@
         MaterialRecipeItemView ObjModel = null;
         ObjModel = args.RowInfo.RowData;
 
-
         if (args.Item.Text == "Edit" && pageView == "ListOfMaterials")
         {
             materialRecipeItem = listOfMaterials.Where(s => s.Material.Id == ObjModel.Id).FirstOrDefault();
@@ -1637,7 +1605,6 @@
             {
                 ClosedAdd("ListOfMaterials");
             }
-
 
         }
         if (args.Item.Text == "Edit" && materialRecipeItem != null && pageView == "ListOfMaterialsAssembly")
@@ -1649,30 +1616,6 @@
         }
     }
 
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<PackRecipeItemView> args)
-    {
-        PackRecipeItemView ObjModel = null;
-        ObjModel = args.RowInfo.RowData;
-
-        if (args.Item.Text == "Edit" && ObjModel.Id != null)
-        {
-            assemblyRecipeItem = assemblyRecipeItems.Where(s => s.Id != null && s.Id == ObjModel.Id).FirstOrDefault();
-
-            if (materialRecipeItem != null)
-            {
-                itemComponent = assemblyRecipeItem.ItemComponent != null ? assemblyRecipeItem.ItemComponent : new();
-                materialsRecipeItemsAssembly = assemblyRecipeItem.ListOfMaterials != null ? assemblyRecipeItem.ListOfMaterials : new();
-                recipeQualityModifier = assemblyRecipeItem.RecipeQualityModifier != null ? assemblyRecipeItem.RecipeQualityModifier : new();
-                assemblyRecipeItemsChldren = assemblyRecipeItem.ComponentItemRecipe != null ? assemblyRecipeItem.ComponentItemRecipe : new();
-                ClosedAdd("AssemblyRecipeItems");
-            }
-
-        }
-        else
-        {
-            Msg("Invalid id");
-        }
-    }
 
 
 
@@ -1714,19 +1657,6 @@
         Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name != null ? Name : Name;
     }
-    void ConverToMaterialToMateriaView(List<MaterialRecipeItem> Materials)
-    {
-        ListOfMaterialsView = new List<MaterialRecipeItemView>();
-        foreach (var Material in Materials)
-        {
-            ListOfMaterialsView.Add(new MaterialRecipeItemView
-                {
-                    Name = Material.Material != null ? Material.Material.Name : "",
-                    Quantity = Material.Quantity != null ? Material.Quantity.ToString() : ""
-                });
-        }
-    }
-
 
 
 
@@ -1781,24 +1711,7 @@
         StateHasChanged();
     }
 
-    public void SetMaterialToView()
-    {
-        ListOfMaterialsView = new();
-        foreach (var item in listOfMaterials)
-        {
-            ListOfMaterialsView.Add(
-       new MaterialRecipeItemView
-           {
-               Id = item.Material.Id,
-               Name = item.Material.Name,
-               FullClassName = item.Material.FullClassName,
-               Code = item.Material.Code,
-               Quantity = item.Quantity.ToString()
-           }
-       );
-        }
 
-    }
 
     public void SetStatus()
     {
@@ -1808,25 +1721,25 @@
         if (modeStatus)
         {
             MateriaoNew.Status = statust = new ConceptStatus
-                {
-                    Id = "000000000000000000000001",
-                    LegacyId = "1",
-                    Code = "name",
-                    Name = "ACTIVE",
-                    IsEnabledForTransactions = true
-                };
+                    {
+                        Id = "000000000000000000000001",
+                        LegacyId = "1",
+                        Code = "name",
+                        Name = "ACTIVE",
+                        IsEnabledForTransactions = true
+                    };
             colorStatus = "#008080";
         }
         else
         {
             MateriaoNew.Status = statust = new ConceptStatus
-                {
-                    Id = "",
-                    LegacyId = "",
-                    Code = "",
-                    Name = "....",
-                    IsEnabledForTransactions = false
-                };
+                    {
+                        Id = "",
+                        LegacyId = "",
+                        Code = "",
+                        Name = "....",
+                        IsEnabledForTransactions = false
+                    };
             colorStatus = "gary";
         }
 
@@ -1852,5 +1765,72 @@
         public string SkinImageName { get; set; }
         public string FullClassName { get; set; }
     }
+
+
+
+    #region Grid
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<MaterialRecipeItem> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+        );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        MaterialRecipeItem argObj = (MaterialRecipeItem)args.Value;
+        if (pageView == "ListOfMaterials")
+        {
+            materialRecipeItem = listOfMaterials.Where(s => s.Material.Id == argObj.Material.Id).FirstOrDefault();
+            MaterialConcept = materialRecipeItem.Material != null ? materialRecipeItem.Material : new();
+            if (materialRecipeItem != null)
+            {
+                ClosedAdd("ListOfMaterials");
+            }
+
+
+        }
+        if (materialRecipeItem != null && pageView == "ListOfMaterialsAssembly")
+        {
+            materialRecipeItemsAssembly = materialsRecipeItemsAssembly.Where(s => s.Material.Id == argObj.Material.Id).FirstOrDefault();
+            conceptMaterialAssembly = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material : new();
+            ClosedAdd("ListOfMaterialsAssembly");
+
+        }
+    }
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<PackRecipeItem> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick_1">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick_1(MenuItemEventArgs args)
+    {
+        PackRecipeItem argObj = (PackRecipeItem)args.Value;
+        if (argObj.Id != null)
+        {
+            assemblyRecipeItem = assemblyRecipeItems.Where(s => s.Id != null && s.Id == argObj.Id).FirstOrDefault();
+
+            if (materialRecipeItem != null)
+            {
+                itemComponent = assemblyRecipeItem.ItemComponent != null ? assemblyRecipeItem.ItemComponent : new();
+                materialsRecipeItemsAssembly = assemblyRecipeItem.ListOfMaterials != null ? assemblyRecipeItem.ListOfMaterials : new();
+                recipeQualityModifier = assemblyRecipeItem.RecipeQualityModifier != null ? assemblyRecipeItem.RecipeQualityModifier : new();
+                assemblyRecipeItemsChldren = assemblyRecipeItem.ComponentItemRecipe != null ? assemblyRecipeItem.ComponentItemRecipe : new();
+                ClosedAdd("AssemblyRecipeItems");
+            }
+
+        }
+        else
+        {
+            Msg("Invalid id");
+        }
+    }
+
+
+
+    #endregion Grid
+
 
 }

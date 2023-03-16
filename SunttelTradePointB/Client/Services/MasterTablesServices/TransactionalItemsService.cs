@@ -480,6 +480,31 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
 
         }
+        //---
+        public async Task<PackingSpecs> GetPackingRecipeToId(string? transactionalItemId , string packingSpecsId )
+
+        {
+            transactionalItemId = transactionalItemId != null ? transactionalItemId : "";
+           
+            try
+            {
+                var responseMessage = await Gethttp($"/api/TransactionalItems/GetTransactionalItemDetailsPackingRecipe?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}&transactionalItemId={transactionalItemId}");
+              var  _packingSpecs = await responseMessage.Content.ReadFromJsonAsync<PackingSpecs>();
+
+                return _packingSpecs != null ? _packingSpecs : new PackingSpecs();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+
+                return null;
+
+            }
+
+
+        }
+
+
 
         public async Task<List<TransactionalItemProcessStep>> GetTransactionalItemDetailsProductionSpecs(string? transactionalItemId = null)
         {
@@ -777,6 +802,29 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+
+        //--
+        public async Task<TransactionalItemProcessStep> GetTransactionalItemDetailsProductionSpecsToId(string transactionalItemId, string productionSpecsToId )
+        {
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+                var responseMessage = await Gethttp($"/api/ConceptsSelector/GetProductRecipeQualityModifiersByModifierId?userId={userId}&ipAddress={ipAddress}&modifierId={productionSpecsToId}");
+                var obj = await responseMessage.Content.ReadFromJsonAsync<TransactionalItemProcessStep>();
+
+                return obj;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+
+            }
+
+        }
+
+
 
         public async Task<List<TransactionalItemType>> GetTransactionalItemType(string? transactionalItemTypeId = null)
         {

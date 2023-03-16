@@ -1,5 +1,6 @@
 ﻿@page "/ProductionSpecsCard/{Page}"
-@page "/ProductionSpecsCard/{Page}/{SubPage}/{Mode}"
+@page "/ProductionSpecsCard/{Page}/{transactionalItemId}/{productionSpecsToId}"
+@page "/ProductionSpecsCard/{Page}/{SubPage}/{transactionalItemId}/{productionSpecsToId}"
 
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.Navigations
@@ -12,6 +13,7 @@
 @using Syncfusion.Blazor.Grids
 @inject NavigationManager Navigation
 @inject TransactionalItemsService transactionalService;
+@inject ContextMenuService ContextMenuService
 
 @if (@AlertOpen)
 {
@@ -46,7 +48,7 @@
                 </div>
 
                 <div></div>
-                <div>                   
+                <div>
                     <button @onclick='()=>OpenAdd("TransactionalItemTag")' class="size-btn color-btn margin-left" style="background-color:#00ccff;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
                     <button @onclick='Addtag' class="size-btn color-btn margin-left" style="background-color:#00ccff;"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                 </div>
@@ -136,13 +138,50 @@
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                 </svg>
                             </div>
+                            @if (TransactionalItemTagList == null) TransactionalItemTagList = new();
+                            @if (isLoading)
+                            {
 
-                            <DataGrid TParameter="TransactionalItemTag"
-                                      EventCallbackMenu="OnContextMenuClick"
-                                      parameterList="TransactionalItemTagList"
-                                      GridColumnsList="gridColumnList"
-                                      Width="100%">
-                            </DataGrid>
+                                <WaitingProcessIndicator loadingTopic="Transactional Items"></WaitingProcessIndicator>
+
+                            }
+                            else
+                            {
+                                if (TransactionalItemTagList != null)
+                                {
+                                    <RadzenDataGrid AllowFiltering="true"
+                                            AllowColumnResize="true"
+                                            AllowAlternatingRows="true"
+                                            FilterMode="FilterMode.Advanced"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                            AllowSorting="true"
+                                            PageSize="5"
+                                            AllowPaging="true"
+                                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                            ShowPagingSummary="true"
+                                            Data="@TransactionalItemTagList"
+                                            TItem="TransactionalItemTag"
+                                            ColumnWidth="300px"
+                                            SelectionMode="DataGridSelectionMode.Single"
+                                            LogicalFilterOperator="LogicalFilterOperator.Or"
+                                            CellContextMenu="@ShowContextMenuWithContent"
+                                            PageNumbersCount="100">
+
+                                        <Columns>
+                                            <RadzenDataGridColumn TItem="TransactionalItemTag" Property="TransactionalItemTag.Key" Title="@GetName("Key", new TransactionalItemTag())" Frozen="false" Width="80px" />
+                                            <RadzenDataGridColumn TItem="TransactionalItemTag" Property="TransactionalItemTag.Value" Filterable="true" Title="@GetName("Value", new TransactionalItemTag())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                          
+<RadzenDataGridColumn TItem="TransactionalItemTag" Title="Photo" Frozen="true" Sortable="false" Filterable="false" Width="60px" >
+                <Template Context="data">
+                    <RadzenImage Path="/images//acordion_image1.jpg" style="width: 40px; height: 40px; border-radius: 8px;" />
+                </Template>
+            </RadzenDataGridColumn>
+                                                            </Columns>
+                                    </RadzenDataGrid>
+                                }
+
+                            }
+
                         </div>
 
                     </ContentTemplate>
@@ -162,7 +201,10 @@
     public string Page { get; set; }
     [Parameter]
     public string SubPage { get; set; }
-
+    [Parameter]
+    public string transactionalItemId { get; set; }
+    [Parameter]
+    public string productionSpecsToId { get; set; }
     TransactionalItemProcessStep _TransactionalItemProcessStep = new TransactionalItemProcessStep();
     List<TransactionalItemTag> TransactionalItemTagList = new List<TransactionalItemTag>();
     TransactionalItemTag TransactionalItemTag = new TransactionalItemTag();
@@ -170,8 +212,8 @@
     SfListView<TransactionalItemTag>? referTagList;
     SfTab? referTag;
 
-    public List<GridColumn> gridColumnList = new();
 
+    bool isLoading = false;
 
     public bool AlertOpen = false;
     public string msg = "";
@@ -180,7 +222,7 @@
     public bool modeEdit = true, viewMsg = false;
     public int statusMsg = 1;
 
-    public string transactionalItemId { get; set; }
+
 
     #region TileName
     public string ProductionSpecs { get; set; }
@@ -199,40 +241,31 @@
     {
         InitializedUICommonFunctions();
 
-        if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
-        {
-            transactionalItemId = transactionalService.transactionalItemId;
-        }
-
-        if (Mode == "Edit")
-        {
-            if (transactionalService.ConceptTransactionalItemProcessStep != null)
-            {
-                _TransactionalItemProcessStep = transactionalService.ConceptTransactionalItemProcessStep;
-
-                TransactionalItemTagList = _TransactionalItemProcessStep.TransactionalItemProcessTags != null ? _TransactionalItemProcessStep.TransactionalItemProcessTags : new();
-            }
-            else
-            {
-                Closed("control");
-            }
-        }
-        if (Mode == "Add")
-        {
-            _TransactionalItemProcessStep = new();
-
-        }
-
-        gridColumnList = new List<GridColumn>
-    {
-    new GridColumn() { Field = nameof(TransactionalItemTag.Key), HeaderText = GetName("Name", new TransactionalItemTag())  },
-    new GridColumn() { Field = nameof(TransactionalItemTag.Value), HeaderText = GetName("Code", new TransactionalItemTag())  }
-
-    };
-
 
 
     }
+
+    protected async override  Task OnInitializedAsync() {
+
+
+        if (transactionalItemId != null && productionSpecsToId !=null)
+        {
+
+            _TransactionalItemProcessStep = await transactionalService.GetTransactionalItemDetailsProductionSpecsToId(transactionalItemId, productionSpecsToId);
+
+            TransactionalItemTagList = _TransactionalItemProcessStep.TransactionalItemProcessTags != null ? _TransactionalItemProcessStep.TransactionalItemProcessTags : new();
+
+        }
+        else
+        {
+
+            _TransactionalItemProcessStep = new();
+            TransactionalItemTagList = new();
+
+        }
+
+    }
+
 
     public async void InitializedUICommonFunctions()
     {
@@ -282,8 +315,9 @@
 
     public async Task Closed(string Element)
     {
-        if (Element == "control") {
-            if(SubPage!=null && SubPage != "")Navigation.NavigateTo($"/{Page}/{SubPage}/Edit");
+        if (Element == "control")
+        {
+            if (SubPage != null && SubPage != "") Navigation.NavigateTo($"/{Page}/{SubPage}/Edit");
         }
         else
         {
@@ -300,15 +334,26 @@
     }
 
 
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemTag> args)
-    {
-        TransactionalItemTag ObjModel = new();
-        ObjModel = args.RowInfo.RowData;
-        if (args.Item.Id == "Edit")
-        {
 
-        }
+
+    #region Grid
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<TransactionalItemTag> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        TransactionalItemTag argObj = (TransactionalItemTag)args.Value;
+
     }
+
+    #endregion Grid
+
+
+
 
     public string GetName(string Name, Object Obj)
     {
@@ -344,9 +389,9 @@
 
             if (transactionalItemId != "" && transactionalItemId != null)
             {
-                
+
                 var resul = await transactionalService.SaveProductionSpecs(transactionalItemId, _TransactionalItemProcessStep);
-                if (resul )
+                if (resul)
                 {
                     OpenAlert("Saved", 1);
 
@@ -372,7 +417,7 @@
         StateHasChanged();
     }
 
-  
+
 
 
 

@@ -3,6 +3,7 @@
 @using Syncfusion.Blazor.Navigations
 @using Syncfusion.Blazor.Grids
 @using Syncfusion.Blazor.Popups
+@inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
 @inject TransactionalItemsService transactionalService;
 
@@ -17,23 +18,44 @@
 
 <div class="row">
     <div class="col-md-12">
-        <SfGrid @ref="DataGrid" DataSource="@TransactionalItemTags" AllowFiltering="true" AllowTextWrap="false" AllowPaging="true" EnableStickyHeader="true"
-                ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader" } })">
-            <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
-            <GridColumns>
-                <GridColumn Field="@nameof(TransactionalItemTag.Key)" HeaderText="@Key" Width="110"></GridColumn>
-                <GridColumn Field="@nameof(TransactionalItemTag.Value)" HeaderText="@Value" Width="110"></GridColumn>
-            </GridColumns>
-            <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="TransactionalItemTag"></GridEvents>
-        </SfGrid>
+
+        @if (TransactionalItemTags == null) TransactionalItemTags = new();
+        
+            <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"                  
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@TransactionalItemTags"
+                    TItem="TransactionalItemTag"                    
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"                  
+                    CellContextMenu="@ShowContextMenuWithContent"
+                    PageNumbersCount="100">
+
+                <Columns>
+                    <RadzenDataGridColumn TItem="TransactionalItem" Property="Key" Title="@Key" Frozen="false" Width="80px" />
+                    <RadzenDataGridColumn TItem="TransactionalItem" Property="Value" Filterable="true" Title="@Value" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                   
+                </Columns>
+            </RadzenDataGrid>
+        
+
+
     </div>
 </div>
 
 @code {
+    [Parameter]
+    public string IdTransactionalItem { get; set; }
     List<TransactionalItemTag> TransactionalItemTags = new List<TransactionalItemTag>();
     SfGrid<TransactionalItemTag>? DataGrid;
     #region TileName
-    public string transactionalItemId { get; set; }
+   
     public string Key { get; set; }
     public string Value { get; set; }
     #endregion TitleName
@@ -42,11 +64,8 @@
     {
         InitializedUICommonFunctions();
 
-        if (transactionalService.transactionalItemId != null && transactionalService.transactionalItemId != "")
-        {
-            transactionalItemId = transactionalService.transactionalItemId;
+      
             OnInitializedTags();
-        }
     }
 
     public async void InitializedUICommonFunctions()
@@ -58,28 +77,41 @@
 
     protected async void OnInitializedTags()
     {
-        if (transactionalItemId != null && transactionalItemId != "")
+        if (IdTransactionalItem != null )
         {
-            TransactionalItemTags = await transactionalService.GetSelectorListTag(transactionalItemId);
+            TransactionalItemTags = await transactionalService.GetSelectorListTag(IdTransactionalItem);
             if (TransactionalItemTags != null)
-            {
-                DataGrid.DataSource = TransactionalItemTags.Where(s => s.Id != "" || s.Id != null).ToList();
-                StateHasChanged();
-                DataGrid.Refresh();
+            {            
+                StateHasChanged();               
             }
 
         }
     }
 
+    #region Grid
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<TransactionalItemTag> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
 
-    public void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemTag> args)
+    void OnMenuItemClick(MenuItemEventArgs args)
     {
-         transactionalService.ConceptTransactionalItemTag = args.RowInfo.RowData;
+        TransactionalItemTag argObj = (TransactionalItemTag)args.Value;
+        transactionalService.ConceptTransactionalItemTag = argObj;
 
-        if (args.Item.Text == "Edit" && transactionalService.ConceptTransactionalItemTag != null)
+        if (transactionalService.ConceptTransactionalItemTag != null)
         {
             Navigation.NavigateTo("/TagCard/TransactionalItemCard/4/Edit");
         }
+    }
+
+    #endregion Grid
+
+
+    public void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemTag> args)
+    {
+        
     }
 
 

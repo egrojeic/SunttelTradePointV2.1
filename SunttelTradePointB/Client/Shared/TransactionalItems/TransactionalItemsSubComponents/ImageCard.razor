@@ -1,4 +1,4 @@
-﻿@page "/ImageCard"
+﻿@page "/ImageCard/{transactionalItemId}"
 @using SixLabors.ImageSharp;
 @using SixLabors.ImageSharp.Formats.Jpeg;
 @using Syncfusion.Blazor.Popups
@@ -69,6 +69,8 @@
 @code {
     [Parameter]
     public EventCallback<TransactItemImage> EventCallbackSave { get; set; }
+    [Parameter]
+    public string transactionalItemId { get; set; }
     private InputFile? inputFile;
 
     private ElementReference previewImageElem;
@@ -77,7 +79,7 @@
     string imgId = "";
     public bool PopupViewDialog = false;
     string urlImageStorage = "";
-    public string transactionalItemId { get; set; }
+ 
 
     public MultipartFormDataContent fileUpload { get; set; }
     public enum UploadingFileType
@@ -128,25 +130,29 @@
     public async void Save()
     {
 
-        if (fileUpload !=null) {
+        if (fileUpload != null)
+        {
             var resulFile = await transactionalService.UploadFiles(fileUpload);
 
             if (resulFile != "")
-            {              
-               var resul = await transactionalService.SaveImage(transactionalItemId, transactItemImage);
+            {
+                var resul = await transactionalService.SaveImage(transactionalItemId, transactItemImage);
                 transactItemImage = new TransactItemImage();
 
-                if (transactionalService.TransactionalItems != null && resul )
+                if (transactionalService.TransactionalItems != null && resul)
+                {
+                    if (transactionalService.TransactionalItems.PathImages == null)
                     {
-                        if (transactionalService.TransactionalItems.PathImages == null)
-                        {
                         transactionalService.TransactionalItems.PathImages = new List<TransactItemImage>();
-                        }
-                    transactionalService.TransactionalItems.PathImages.Add(transactItemImage);
-                        
                     }
+                    transactionalService.TransactionalItems.PathImages.Add(transactItemImage);
+                    Msg("Saved");
+                }
+                else
+                {
+                    Msg("No saved");
+                }
 
-                Msg("Saved");
             }
             else
             {
@@ -157,10 +163,10 @@
         {
             Msg("No saved img required");
         }
-      
+
         imgUrl = "/images/defaultImage.png";
         Refresh();
-      
+
     }
 
 
@@ -183,7 +189,7 @@
 
             var file = e.File;
             string fileName = Guid.NewGuid().ToString();
-            transactItemImage.PathImage = fileName+".png";
+            transactItemImage.PathImage = fileName + ".png";
 
             var resizedFile = await file.RequestImageFileAsync("image/png", 300, 500);
             // Convert the image to a byte array
@@ -195,7 +201,7 @@
                 content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
                 content.Add(new StreamContent(ms, Convert.ToInt32(resizedFile.Size)), "photo", file.Name);
                 content.Add(new StringContent("0"), "uploadingFileType");
-                content.Add(new StringContent(fileName), "photoName");
+                content.Add(new StringContent(transactItemImage.PathImage), "photoName");
 
 
                 await transactionalService.UploadFiles(content);

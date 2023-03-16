@@ -174,33 +174,33 @@
                     @switch (verticalMenuOptionSelected)
                     {
                         case 0:
-                            <TIPackingRecipe  IdTransactionalItem="@Id"/>
+                            <TIPackingRecipe IdTransactionalItem="@Id" />
                             break;
 
                         case 1:
-                            <TIProductionSpecs />
+                            <TIProductionSpecs IdTransactionalItem="@Id" />
                             break;
 
                         case 2:
-                            <TIQualityParameters />
+                            <TIQualityParameters IdTransactionalItem="@Id" />
                             break;
 
                         case 3:
-                            <TIImages />
+                            <TIImages transactionalItemId="@Id" />
                             break;
 
                         case 4:
-                            <TITags />
+                            <TITags IdTransactionalItem="@Id" />
 
                             break;
                         case 5:
-                            <TICharacteristic />
+                            <TICharacteristic IdTransactionalItem="@Id" />
                             break;
                         case 6:
-                            <TIProductModel />
+                            <TIProductModel IdTransactionalItem="@Id" />
                             break;
                         default:
-                            <TIPackingRecipe />
+                            <TIPackingRecipe IdTransactionalItem="@Id" />
                             break;
                     }
                 }
@@ -264,9 +264,7 @@
     {
         if (Id != null)
         {
-           
             currentItem = await transactionalService.GetTransactionalItemById(Id);
-
 
             if (currentItem != null)
             {
@@ -276,18 +274,23 @@
                 currentItemStatus = currentItem.Status != null ? currentItem.Status.Name : "";
                 StateHasChanged();
             }
+            else
+            {
+                Home();
+            }
         }
         else
         {
             transactionalService.transactionalItemId = null;
             currentItem = new();
             SetStatus();
+            StateHasChanged();
+           
         }
 
         int PageMode = Convert.ToInt32((Page != null ? Page : "0"));
         SetMenuOption(PageMode);
-        SetStatus();
-        StateHasChanged();
+      
 
     }
 
