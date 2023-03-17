@@ -89,25 +89,26 @@
             </div>
             <div><label>@GetName("TypeOfConcept", new Concept())</label></div>
             <div>
-                <InputTextSelector 
-                    caption="@(typeOfConcept != null ? typeOfConcept.Name : "")"
-                    @ref="ReferInputTextSelector"
-                    EventSearcherValueAndId="EventSearcherValueAndId"
-                    EventClosed="ClosedInputText"
-                                   EventIdSelectionAndId="EventIdSelectionAndId"
-                    ParamCountResul="ParamCountResul"
-                    ViewSelect="ViewSelect"
-                    Id="TypeOfConcept">
+                <InputTextSelector2a caption="@(currentItem.TypeOfConcept != null ? currentItem.TypeOfConcept.Name : "")"
+                                     EventSearcherValueAndId="EventSearcherValueAndId"
+                                     EventClosed="ClosedInputText"  
+                                     selectedObj="@currentItem.TypeOfConcept"
+                                     ParamCountResul="ParamCountResul"
+                                     ViewSelect="ViewSelect"
+                                     Id="TypeOfConcept"                                     
+                                     >
                     @{
+
                         if (typeOfConcepts != null)
                         {
-                            foreach (var Box in typeOfConcepts)
+                            foreach (var Concept in typeOfConcepts)
                             {
-                                <option value="@Box?.Id">@Box?.Name</option>
+                                var r = Concept;
+                                <option value="@Concept">@Concept?.Name</option>
                             }
                         }
                     }
-                </InputTextSelector>
+                </InputTextSelector2a>
             </div>
 
             <div class="lineFormGroup">
@@ -121,23 +122,21 @@
                 <div class="form-group">
                     <div style="display:flex; flex-direction:row;">
                         <div class="conten-chip margin-left-control">
-                            <InputTextSelector @ref="ReferInputTextSelector"
-                                captionOff="true"
-                                EventSearcherValueAndId="EventSearcherValueAndId"
-                                EventClosed="ClosedInputText"
-                                               EventIdSelectionAndId="EventIdSelectionAndId"
-                                ParamCountResul="ParamCountResul"
-                                ViewSelect="ViewSelect"
-                                Visible="PopupViewAddImg"
-                                style="left:-100px;"
-                                Id="img"
-                                >
+                            <InputTextSelector captionOff="true"
+                                               EventSearcherValueAndId="EventSearcherValueAndId"
+                                               EventClosed="ClosedInputText"
+                                               ParamCountResul="ParamCountResul"
+                                               ViewSelect="ViewSelect"
+                                               Visible="PopupViewAddImg"
+                                               style="left:-100px;"
+                                               Id="img"
+                                               selectionId="@transactItemImage.PathImage">
                                 @{
                                     if (transactItemImages != null)
                                     {
-                                        foreach (var group in transactItemImages)
+                                        foreach (var obj in transactItemImages)
                                         {
-                                            <option value="@group?.Id">@group?.Name</option>
+                                            <option value="@obj?.PathImage">@obj?.Name</option>
                                         }
                                     }
 
@@ -238,7 +237,7 @@
     bool requiereSave = false;
     Alert? referAlert;
 
-    InputTextSelector? ReferInputTextSelector;
+
 
 
     public TransactionalItem? currentItem = new TransactionalItem();
@@ -408,7 +407,7 @@
             transactItemImages = transactItemImages.Where(s => s.Name != null && s.Name.ToLower().Contains(arg.value.ToLower())).ToList();
             ParamCountResul = transactItemImages != null ? transactItemImages.Count() : 0;
             ViewSelect = ParamCountResul > 0;
-            if (ReferInputTextSelector != null) ReferInputTextSelector.Refresh();
+            //if (ReferInputTextSelector != null) ReferInputTextSelector.Refresh();
             StateHasChanged();
 
         }
@@ -439,17 +438,20 @@
 
             ParamCountResul = typeOfConcepts != null ? typeOfConcepts.Count() : 0;
             ViewSelect = ParamCountResul > 0;
-            if (ReferInputTextSelector != null) ReferInputTextSelector.Refresh();
+            //if (ReferInputTextSelector != null) ReferInputTextSelector.Refresh();
             StateHasChanged();
         }
 
     }
 
 
-    protected async void EventIdSelectionAndId((string value, string selectionId) arg)
+    protected async void EventSearcherValueAndId2((ConceptType value, string selectionId) arg)
     {
 
-        if (arg.value == "img")
+        StateHasChanged();
+
+
+        if ("" == "img")
         {
             if (transactItemImages == null) transactItemImages = new();
             transactItemImage = transactItemImages.Where(c => c.Id == arg.selectionId).FirstOrDefault();
@@ -459,7 +461,7 @@
 
         }
 
-        if (arg.value == "TypeOfConcept")
+        if (arg.value.Name == "TypeOfConcept")
         {
             if (typeOfConcepts == null) typeOfConcepts = new();
             typeOfConcept = typeOfConcepts.Where(s => s.Id == arg.selectionId).FirstOrDefault();
@@ -469,7 +471,7 @@
 
         }
 
-        if (ReferInputTextSelector != null) ReferInputTextSelector.Refresh();
+        //if (ReferInputTextSelector != null) ReferInputTextSelector.Refresh();
         StateHasChanged();
 
     }
@@ -478,14 +480,14 @@
     {
         ViewSelect = false;
         SearcherValueMode = Element;
-        if (Element == "img") { PopupViewAddImg = true; }       
+        if (Element == "img") { PopupViewAddImg = true; }
         StateHasChanged();
     }
 
 
     public void Home()
     {
-        string paramFilter = filter != null ? "/"+filter : "";
+        string paramFilter = filter != null ? "/" + filter : "";
         Navigation.NavigateTo($"/Products{paramFilter}");
     }
 
@@ -525,7 +527,7 @@
 
     public void ClosedInputText()
     {
-        PopupViewAddImg = false;        
+        PopupViewAddImg = false;
         ParamCountResul = 0;
         ViewSelect = false;
         StateHasChanged();

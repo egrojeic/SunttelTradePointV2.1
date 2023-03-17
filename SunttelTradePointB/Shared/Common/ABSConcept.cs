@@ -75,13 +75,18 @@ namespace SunttelTradePointB.Shared.Common
         }
 
 
+        public override string ToString()
+        {
+            return Name;
+        }
+
     }
 
 
     public class BasicConcept
     {
         [BsonId]
-        //[BsonRepresentation(BsonType.ObjectId)]
+        [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         public string Name { get; set; }
     }
