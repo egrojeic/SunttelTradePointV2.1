@@ -166,29 +166,33 @@ namespace SunttelTradePointB.Shared.Sales
     }
 
     public enum ProductSources { 
-        Inventory = 0,
-        Production = 2,
-        PurchaseOrder = 3
+        Inventory = 1,        
+        PurchaseOrder = 2,
+        Production = 3
     }
     public class SalesDocumentItemsDetails: RecordItem
     {
+
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        [DisplayName("Document")]
+        public string IdCommercialDocument { get; set; }
+
         [DisplayName("Item")]
         public Concept TransactionalItem { get; set; }
 
         [DisplayName("Item Specs")]
         public PackingSpecs TransactionalItemSpecs { get; set; }
 
-        [DisplayName("Vendor Box")]
-        public Box VendorBox { get; set; }
-        
-        [DisplayName("Vendor Pack")]
-        public double VendorPack { get; set; }
 
-        [DisplayName("Boxes Qty")]
-        public double BoxesQty { get; set; }
+        [DisplayName("Qty")]
+        public double Qty { get; set; }
 
         [DisplayName("Chargeable Qty")]
         public double ChargeableQty { get; set; }
+
+        [DisplayName("Chargeable Units")]
+        public string ChargeableUnitsName { get; set; }
 
         [DisplayName("Unit Price")]
         public double UnitPrice { get; set; }
@@ -217,17 +221,8 @@ namespace SunttelTradePointB.Shared.Sales
         [DisplayName("Provider")]
         public BasicConcept Provider { get; set; }
 
-        [DisplayName("Provider Box")]
-        public Box ProviderBox { get; set; }
-
-        [DisplayName("Provider Box Layers")]
-        public double ProviderBoxLayers { get; set; }
-
-        [DisplayName("Provider Pack")]
-        public double ProviderPack { get; set; }
-
-        [DisplayName("Provider Boxes")]
-        public int ProviderBoxes { get; set; }
+        [DisplayName("Provider Qty")]
+        public int ProviderQty { get; set; }
 
         [BsonIgnoreIfNull]
         [DisplayName("Purchases Specs")]
