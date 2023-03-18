@@ -1,5 +1,7 @@
 ﻿@using System.Reflection;
+@using SunttelTradePointB.Client.Shared.TransactionalItems;
 
+@typeparam T
 
 
 <div style="position:relative;">
@@ -9,26 +11,25 @@
     </div>
     <div class="position-input">
         <div class="component-input" style="@style; display:@(Visible?"block":"none");  position:relative; width:278px;">
-            <div style=" flex-direction:row; display:@(!ViewSelect?"flex":"none"); ">
+            <div style=" flex-direction:row; display:@(listModel.Count()<=0?"flex":"none"); ">
                 <input @bind="inputSearcherValue" class="form-control" autocomplete="on" />
                 <img id="btn-img" src="images/search.svg" @onclick="SearcherValue" />
             </div>
             <div id="div-Popup">
 
-                <select 
-                   
-                    @onchange="SelectedCarsChanged" 
-                    style="display:@(ViewSelect?"block":"none");  
-                    background-color:white; color:black;  border-color:gray; ">
-                   
-                    @* <option value= @null> select </option>*@
+                <select @onchange="SelectedCarsChanged" style="display:@(listModel.Count()>0?"block":"none");  background-color:white; color:black;  border-color:gray; ">
+                    <option value=""> select </option>
                     @if (ChildContent != null)
                     {
                         @ChildContent
                     }
                 </select>
                 <div>
-                    <p style="background-color:@(ParamCountResul>0?"#8affa8":"orange"); display:@(ViewPopupCount?"block":"none");">@(ParamCountResul > 0 ? ParamCountResul : "searching")</p>
+                    <p style="background-color:@(listModel.Count()>0?"#8affa8":"orange"); display:@(viewPopupCount?"block":"none");">
+                        @(
+                            listModel.Count() > 0 ? listModel.Count() : "searching"
+                            )
+                    </p>
                 </div>
 
             </div>
@@ -40,64 +41,54 @@
 
 
 @code {
-    [Parameter]
-    public EventCallback<(string, string)> EventSearcherValueAndId { get; set; }
 
     [Parameter]
-    public EventCallback<string> EventSearcherValue { get; set; }
+    public EventCallback<(string, string)> EventSearcherValueAndId { get; set; }
     [Parameter]
-    public EventCallback<string> EventIdSelection { get; set; }
-    [Parameter]
-    public EventCallback<(string, string)> EventIdSelectionAndId { get; set; }
-    [Parameter]
-    public EventCallback EventClosed { get; set; }
-    [EditorRequired]
+    public EventCallback ChangeEventArgs { get; set; }
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
-    [EditorRequired]
-    [Parameter]
-    public int? ParamCountResul { get; set; }
     [Parameter]
     public string Id { get; set; }
     [Parameter]
-    public bool ViewSelect { get; set; } = false;
+    public string caption { get; set; }
     [Parameter]
     public bool Visible { get; set; } = false;
     [Parameter]
     public string style { get; set; }
     [Parameter]
-    public string caption { get; set; }
-    [Parameter]
     public bool captionOff { get; set; } = false;
-    private bool ViewPopupCount = false;
-    protected bool statusTask = false;
-    public string? inputSearcherValue { get; set; }
     [Parameter]
     public string selectionId { get; set; }
-    
-    public object? selectedObj { get; set; }
+    [Parameter]
+    public T selectedObj { get; set; }
+    [Parameter]
+    public List<T>? listModel { get; set; }
 
-    string backgroundSelection = "", colorSelection = "";
+    protected bool statusTask = false;
+    protected bool viewPopupCount = false;
+    public string? inputSearcherValue { get; set; }   
+  
 
-    public object SelectedCar { get; set; }
+    protected override void OnInitialized()
+    {
+        if (listModel == null) listModel = new List<T>();
+
+        base.OnInitialized();
+    }
 
     public async void SearcherValue()
     {
-        ParamCountResul = 0;
-        ViewPopupCount = true;
+        viewPopupCount = true;
         SearcherCountOff();
         if (inputSearcherValue != null && inputSearcherValue != "")
         {
             await EventSearcherValueAndId.InvokeAsync((inputSearcherValue, Id));
-            await EventSearcherValue.InvokeAsync(inputSearcherValue);
         }
         else
         {
             await EventSearcherValueAndId.InvokeAsync(("all", Id));
-            await EventSearcherValue.InvokeAsync("all");
         }
-        backgroundSelection = "white";
-        colorSelection = "black";
 
         StateHasChanged();
     }
@@ -109,86 +100,63 @@
             statusTask = true;
             await Task.Delay(10000);
             statusTask = false;
-            ViewPopupCount = false;
+            viewPopupCount = false;
             StateHasChanged();
         }
     }
 
-    private void SelectedCarsChanged(ChangeEventArgs e)
+    private void SelectedCarsChanged(ChangeEventArgs arg)
     {
-        if (e.Value is not null)
+        var r = arg.Value;
+        object obj = null;
+        foreach (var item in listModel)
         {
-
-            //objSelected = e;
-            //selectionId = e.Value.ToString();
-
-            //AssignMatchingProperties(e.Value, selectedObj);
+            obj = GetModel(item, arg.Value.ToString());
+            if (obj != null) break;
         }
+        if (obj != null) selectedObj = listModel.Where(s => s.Equals(obj)).FirstOrDefault();
+
+
     }
 
-
-    public void AssignMatchingProperties(object source, object target)
+    public static object GetModel(T Model, string Id)
     {
-        // Get the type of the source and target objects
-        Type sourceType = source.GetType();
-        Type targetType = target.GetType();
 
-        // Get the properties of the source object
-        PropertyInfo[] sourceProperties = targetType.GetProperties();
-
-        // Loop through the properties of the source object
-        foreach (PropertyInfo sourceProperty in sourceProperties)
+        PropertyInfo[] lst = typeof(T).GetProperties();
+        foreach (PropertyInfo oProperty in lst)
         {
-            // Get the property name and value of the source object
+            string Name = oProperty.Name;
+            string Tipo = oProperty.GetType().ToString();
 
-            try
+            string Valor = "";
+            Valor = oProperty.GetValue(Model) != null ? oProperty.GetValue(Model).ToString() : "";
+
+            if (Name == "Id")
             {
-                string propertyName = sourceProperty.Name;
-
-                PropertyInfo propertyInfo = targetType.GetProperty(propertyName);
-                object value = propertyInfo.GetValue(target, null); // value is "default value"
-
-                object propertyValue = sourceProperty.GetValue(source, null);
-
-                // Get the corresponding property of the target object
-                PropertyInfo targetProperty = targetType.GetProperty(propertyName);
-
-                // If the property exists in the target object, assign its value
-                if (targetProperty != null)
+                if (Valor == Id)
                 {
-                    targetProperty.SetValue(target, propertyValue, null);
+                    return Model;
                 }
-            }
-            catch (Exception ex)
-            {
 
-                string res = ex.Message;
             }
 
-          
 
         }
+        object d = null;
+        return d;
     }
-
-
 
     private void SelectedItem()
     {
-        //if (selectionId != "")
-        //{
-        //    EventIdSelectionAndId.InvokeAsync((Id, selectionId));
-        //    EventIdSelection.InvokeAsync(selectionId);
-        //    selectionId = "";
-        //    backgroundSelection = "";
-        //    colorSelection = "";
-        //    ViewSelect = false;
-        //    Visible = false;
-        //    StateHasChanged();
-        //}
-
+        ChangeEventArgs.InvokeAsync();
     }
 
-    protected void SetViewElemnt()
+    public void referValue(ref T value)
+    {
+        value = selectedObj;
+    }
+
+    public void SetViewElemnt()
     {
         Visible = true;
     }
@@ -201,10 +169,7 @@
     public void Closed()
     {
         Visible = false;
-        ViewSelect = false;
-        backgroundSelection = "";
-        colorSelection = "";
-        EventClosed.InvokeAsync();
+        listModel = new List<T>();             
         Refresh();
     }
 

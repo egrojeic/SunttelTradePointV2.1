@@ -89,16 +89,29 @@
             </div>
             <div><label>@GetName("TypeOfConcept", new Concept())</label></div>
             <div>
-                <InputTextSelector3 caption="@(currentItem.TypeOfConcept != null ? currentItem.TypeOfConcept.Name : "")"
-                        TItem="ConceptType"
-                        EventSearcherValueAndId="EventSearcherValueAndId"
-                        EventClosed="ClosedInputText"
-                        EventIdSelectionAndId="SelectionMade"
-                        ParamCountResul="ParamCountResul"
-                        ViewSelect="ViewSelect"
-                        Id="TypeOfConcept"
-                        Items="@typeOfConcepts">
-                </InputTextSelector3>
+
+
+                <InputTextSelector2a @ref="conceptType"
+                                     caption="@(currentItem.TypeOfConcept != null ? currentItem.TypeOfConcept.Name : "")"
+                                     EventSearcherValueAndId="EventSearcherValueAndId"
+                                     ChangeEventArgs="ChangeEventInputControl"
+                                     Id="@GetName("TypeOfConcept", new Concept())"
+                                     selectedObj="currentItem.TypeOfConcept"
+                                     T="ConceptType"
+                                     listModel="typeOfConcepts">
+                    @{
+
+                        if (typeOfConcepts != null)
+                        {
+                            foreach (var Concept in typeOfConcepts)
+                            {
+
+                                <option value="@Concept.Id">@Concept?.Name</option>
+                            }
+                        }
+                    }
+                </InputTextSelector2a>
+
             </div>
 
             <div class="lineFormGroup">
@@ -112,11 +125,8 @@
                 <div class="form-group">
                     <div style="display:flex; flex-direction:row;">
                         <div class="conten-chip margin-left-control">
-                            <InputTextSelector captionOff="true"
+                            <InputTextSelector @ref="inputTextSelectorImg" captionOff="true"
                                                EventSearcherValueAndId="EventSearcherValueAndId"
-                                               EventClosed="ClosedInputText"
-                                               ParamCountResul="ParamCountResul"
-                                               ViewSelect="ViewSelect"
                                                Visible="PopupViewAddImg"
                                                style="left:-100px;"
                                                Id="img"
@@ -135,9 +145,7 @@
                         </div>
                         <div>
                             @if (transactItemImages == null) transactItemImages = new List<TransactItemImage>();
-
-
-                            <img class="style-img" src="@(transactItemImage.PathImage !=null?transactionalService.Host+transactItemImage.PathImage:"/images/defaultImage.png")" @onclick='()=> SetViewElemnt("img")' />
+                            <img class="style-img" src="@(transactItemImage.PathImage !=null?transactionalService.Host+transactItemImage.PathImage:"/images/defaultImage.png")" @onclick='()=> inputTextSelectorImg.SetViewElemnt()' />
                         </div>
 
 
@@ -227,8 +235,8 @@
     bool requiereSave = false;
     Alert? referAlert;
 
-
-
+    InputTextSelector2a<ConceptType> conceptType;
+    InputTextSelector? inputTextSelectorImg;
 
     public TransactionalItem? currentItem = new TransactionalItem();
     List<ConceptGroup> conceptGroups = new List<ConceptGroup>();
@@ -245,12 +253,11 @@
 
 
     int verticalMenuOptionSelected = 0;
-    int ParamCountResul = 0;
+
 
     public string currentItemStatus { get; set; }
     public string nameTemp { get; set; }
     string colorStatus = "gray", SearcherValueMode = "";
-    bool ViewSelect = false;
     bool PopupViewAddImg = false;
 
 
@@ -386,31 +393,17 @@
 
     }
 
-    public void SelectionMade(ConceptType arg)
-    {
-        this.currentItem.TypeOfConcept = arg;
-        Console.Write(arg.Name);
-    }
-
-
-
     protected async void EventSearcherValueAndId((string value, string selectionId) arg)
     {
-        ParamCountResul = 0;
         if (arg.selectionId == "img")
         {
             transactItemImages = await transactionalService.GetTransactionalItemDetailsPathImages(transactionalItemId);
-            if (transactItemImages == null) transactItemImages = new List<TransactItemImage>();
-
             transactItemImages = transactItemImages.Where(s => s.Name != null && s.Name.ToLower().Contains(arg.value.ToLower())).ToList();
-            ParamCountResul = transactItemImages != null ? transactItemImages.Count() : 0;
-            ViewSelect = ParamCountResul > 0;
-            //if (ReferInputTextSelector != null) ReferInputTextSelector.Refresh();
             StateHasChanged();
 
         }
 
-        if (arg.selectionId == "TypeOfConcept")
+        if (arg.selectionId == "Type of Concept")
         {
             if (typeOfConcepts == null) typeOfConcepts = new();
             var data = await transactionalService.GetTransactionalItemTypes(arg.value);
@@ -433,10 +426,6 @@
                         });
                 }
             }
-
-            ParamCountResul = typeOfConcepts != null ? typeOfConcepts.Count() : 0;
-            ViewSelect = ParamCountResul > 0;
-            //if (ReferInputTextSelector != null) ReferInputTextSelector.Refresh();
             StateHasChanged();
         }
 
@@ -454,7 +443,6 @@
             if (transactItemImages == null) transactItemImages = new();
             transactItemImage = transactItemImages.Where(c => c.Id == arg.selectionId).FirstOrDefault();
             currentItem.SkinImageName = transactItemImage.PathImage;
-            ViewSelect = false;
             PopupViewAddImg = false;
 
         }
@@ -464,22 +452,21 @@
             if (typeOfConcepts == null) typeOfConcepts = new();
             typeOfConcept = typeOfConcepts.Where(s => s.Id == arg.selectionId).FirstOrDefault();
             if (typeOfConcepts == null) typeOfConcepts = new();
-            ParamCountResul = typeOfConcepts != null ? typeOfConcepts.Count() : 0;
-            ViewSelect = false;
 
         }
 
-        //if (ReferInputTextSelector != null) ReferInputTextSelector.Refresh();
         StateHasChanged();
-
     }
 
-    public void SetViewElemnt(string Element)
+
+    public void ChangeEventInputControl()
     {
-        ViewSelect = false;
-        SearcherValueMode = Element;
-        if (Element == "img") { PopupViewAddImg = true; }
-        StateHasChanged();
+        conceptType.Refresh();
+        ConceptType concept = new ConceptType();
+        conceptType.referValue(ref concept);
+        currentItem.TypeOfConcept = concept != null ? concept : currentItem.TypeOfConcept;
+        StateHasChanged();      
+
     }
 
 
@@ -523,17 +510,9 @@
         if (currentItem != null) currentItemStatus = currentItem.Status != null ? currentItem.Status.Name : "";
     }
 
-    public void ClosedInputText()
-    {
-        PopupViewAddImg = false;
-        ParamCountResul = 0;
-        ViewSelect = false;
-        StateHasChanged();
-    }
-
     public string GetName(string Name, Object Obj)
     {
-        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
     }
 
