@@ -1,5 +1,5 @@
 ﻿@using System.Reflection;
-
+@typeparam TItem
 
 
 <div style="position:relative;">
@@ -16,15 +16,14 @@
             <div id="div-Popup">
 
                 <select 
-                   
-                    @onchange="SelectedCarsChanged" 
+                    @onchange="OnSelectedItemChanged"
                     style="display:@(ViewSelect?"block":"none");  
                     background-color:white; color:black;  border-color:gray; ">
                    
-                    @* <option value= @null> select </option>*@
-                    @if (ChildContent != null)
+                    <option value= ""> select </option>
+                    @foreach (var item in Items)
                     {
-                        @ChildContent
+                        <option value="@item">@item.ToString()</option>
                     }
                 </select>
                 <div>
@@ -48,12 +47,10 @@
     [Parameter]
     public EventCallback<string> EventIdSelection { get; set; }
     [Parameter]
-    public EventCallback<(string, string)> EventIdSelectionAndId { get; set; }
+    public EventCallback<TItem> EventIdSelectionAndId { get; set; }
     [Parameter]
     public EventCallback EventClosed { get; set; }
-    [EditorRequired]
-    [Parameter]
-    public RenderFragment? ChildContent { get; set; }
+    
     [EditorRequired]
     [Parameter]
     public int? ParamCountResul { get; set; }
@@ -74,12 +71,35 @@
     public string? inputSearcherValue { get; set; }
     [Parameter]
     public string selectionId { get; set; }
-    
-    public object? selectedObj { get; set; }
+
+    [Parameter]
+    public List<TItem> Items { get; set; }
+
+    private TItem _selectedObj;
+    private TItem SelectedObj { 
+        get => _selectedObj;
+        set
+        {
+            _selectedObj= value;
+            //if (EventIdSelectionAndId.HasDelegate)
+            //{
+            //    EventIdSelectionAndId.InvokeAsync(value);
+            //}
+        }
+    }
+
+    private async Task OnSelectedItemChanged(ChangeEventArgs e)
+    {
+        var value = (string)e.Value;
+        var selectedItem = Items.FirstOrDefault(item => item.ToString() == value);
+        SelectedObj = selectedItem != null ? selectedItem : default;
+        await EventIdSelectionAndId.InvokeAsync(SelectedObj);
+    }
+
+
 
     string backgroundSelection = "", colorSelection = "";
 
-    public object SelectedCar { get; set; }
 
     public async void SearcherValue()
     {
@@ -114,17 +134,7 @@
         }
     }
 
-    private void SelectedCarsChanged(ChangeEventArgs e)
-    {
-        if (e.Value is not null)
-        {
-
-            //objSelected = e;
-            //selectionId = e.Value.ToString();
-
-            //AssignMatchingProperties(e.Value, selectedObj);
-        }
-    }
+   
 
 
     public void AssignMatchingProperties(object source, object target)
@@ -174,17 +184,16 @@
 
     private void SelectedItem()
     {
-        //if (selectionId != "")
-        //{
-        //    EventIdSelectionAndId.InvokeAsync((Id, selectionId));
-        //    EventIdSelection.InvokeAsync(selectionId);
-        //    selectionId = "";
-        //    backgroundSelection = "";
-        //    colorSelection = "";
-        //    ViewSelect = false;
-        //    Visible = false;
-        //    StateHasChanged();
-        //}
+        if (selectionId != "")
+        {
+            EventIdSelectionAndId.InvokeAsync(SelectedObj);
+            selectionId = "";
+            backgroundSelection = "";
+            colorSelection = "";
+            ViewSelect = false;
+            Visible = false;
+            StateHasChanged();
+        }
 
     }
 

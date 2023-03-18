@@ -9,6 +9,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace SunttelTradePointB.Shared.Common
 {
@@ -147,16 +148,20 @@ namespace SunttelTradePointB.Shared.Common
 
     }
 
-#nullable enable
-  
+    
     public class ConceptType: AtomConcept
     {
 
         [BsonIgnoreIfNull]
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<ConceptGroup>? Groups { get; set; }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
     }
-#nullable disable
+
 
     public class ConceptStatus : AtomConcept
     {
@@ -182,5 +187,34 @@ namespace SunttelTradePointB.Shared.Common
         [BsonIgnoreIfNull]
         public DateTime? LastModifiedTime { get; set; }
     }
+
+
+    public class ConceptTypeConverter : TypeConverter
+    {
+        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+        {
+            if ((sourceType == typeof(string))
+                || (sourceType == typeof(AtomConcept))
+                || (sourceType == typeof(ConceptType))
+                ) 
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+        {
+            if (value is string strValue)
+            {
+                return new ConceptType { Id = "", Name = strValue };
+            }
+
+
+            return base.ConvertFrom(context, culture, value);
+        }
+    }
+
 
 }
