@@ -44,10 +44,7 @@
     [Parameter]
     public EventCallback<TItem> EventIdSelectionAndId { get; set; }
     [Parameter]
-    public EventCallback EventClosed { get; set; }    
-    [EditorRequired]
-    [Parameter]
-    public int? ParamCountResul { get; set; }
+    public EventCallback EventClosed { get; set; }       
     [Parameter]
     public string Id { get; set; }    
     [Parameter]
@@ -58,14 +55,13 @@
     public string caption { get; set; }
     [Parameter]
     public bool captionOff { get; set; } = false;
-    private bool ViewPopupCount = false;
-    protected bool statusTask = false;
-    public string? inputSearcherValue { get; set; }
-    [Parameter]
-    public string selectionId { get; set; }
     [Parameter]
     public List<TItem> Items { get; set; }
-
+   
+    public string selectionId { get; set; }
+    private bool ViewPopupCount = false;  
+    public string? inputSearcherValue { get; set; }
+    
     private TItem _selectedObj;
     private TItem SelectedObj { 
         get => _selectedObj;
@@ -84,13 +80,11 @@
         var value = (string)e.Value;
         var selectedItem = Items.FirstOrDefault(item => item.ToString() == value);
         SelectedObj = selectedItem != null ? selectedItem : default;
-        await EventIdSelectionAndId.InvokeAsync(SelectedObj);
+        //await EventIdSelectionAndId.InvokeAsync(SelectedObj);
     }
 
-
     public async void SearcherValue()
-    {
-        ParamCountResul = 0;
+    {      
         ViewPopupCount = true;
         SearcherCountOff();
         if (inputSearcherValue != null && inputSearcherValue != "")
@@ -162,10 +156,9 @@
 
     private void SelectedItem()
     {
-        if (selectionId != "")
+        if (SelectedObj !=null)
         {
-            EventIdSelectionAndId.InvokeAsync(SelectedObj);
-            selectionId = "";
+            EventIdSelectionAndId.InvokeAsync(SelectedObj);           
             Items = new List<TItem>();
             Visible = false;
             StateHasChanged();
