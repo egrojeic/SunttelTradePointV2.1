@@ -26,24 +26,14 @@
                 </label>
             </div>
             <div>
-                <InputTextSelector @ref="ReferInputTextSelector"
-                                   Id="TransactionalItemTypeCharacteristic"
-                                   EventSearcherValue="EventSearcherValue"
-                                   EventIdSelection="EventIdSelection"
-                                   ParamCountResul="ParamCountResul"
-                                   ViewSelect="ViewPopupCount"
-                                   EventClosed="ClosedInput"
-                                   caption="@(transactionalItemTypeCharacteristic != null ? transactionalItemTypeCharacteristic.Name : "")">
-                    @{
-                        if (transactionalItemTypeCharacteristics != null)
-                        {
-                            foreach (var Obj in transactionalItemTypeCharacteristics)
-                            {
-                                <option value="@Obj.Id">@Obj.Name</option>
-                            }
-                        }
-                    }
-                </InputTextSelector>
+                <InputTextSelector3 TItem="TransactionalItemTypeCharacteristic"
+                                    Id="@GetName( "ItemCharacteristics", new TransactionalItem())"
+                                    EventClosed="ClosedInput"
+                                    EventSearcherValueAndId="EventSearcherValueAndId"
+                                    Items="transactionalItemTypeCharacteristics"
+                                    caption="@(transactionalItemTypeCharacteristic != null ? transactionalItemTypeCharacteristic.Name : "")">
+
+                </InputTextSelector3>
             </div>
             <div><label> @GetName("Value", new TransactionalItemCharacteristicPair()) </label></div>
             <div>
@@ -81,7 +71,7 @@
     public TransactionalItemCharacteristicPair transactionalItemCharacteristicPair = new();
     List<TransactionalItemTypeCharacteristic> transactionalItemTypeCharacteristics = new();
     TransactionalItemTypeCharacteristic transactionalItemTypeCharacteristic = new();
-    InputTextSelector? ReferInputTextSelector;
+
     public List<TransactionalItemCharacteristic> possibleValues = new();
 
     bool viewMsg = false;
@@ -90,10 +80,10 @@
     public int ParamCountResul = 0;
     bool ViewPopupCount = false;
     string ModeSearcher = "";
-  
+
 
     #region TileName
-    public string Title { get; set; } 
+    public string Title { get; set; }
     public string Value { get; set; }
     #endregion TitleName
 
@@ -111,7 +101,7 @@
                 if (resul != null)
                 {
                     transactionalItemTypeCharacteristics = resul.TransactionalItemTypeCharacteristics != null ? resul.TransactionalItemTypeCharacteristics : new();
-                   
+
                 }
 
             }
@@ -120,12 +110,16 @@
 
     private async void Save()
     {
-        transactionalItemCharacteristicPair.TransactionalItemCharacteristic = transactionalItemTypeCharacteristic;
+
         var resul = await transactionalService.SaveCharacteristics(transactionalItemId, transactionalItemCharacteristicPair);
         if (resul)
         {
-            MsgOpen("Saved", 1);
+            MsgOpen("Saved", 0);
             StateHasChanged();
+        }
+        else
+        {
+            MsgOpen("No saved", 1);
         }
 
     }
@@ -159,25 +153,25 @@
         await Refresh();
     }
 
-    protected async void EventSearcherValue(string value)
+    protected async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
         ViewPopupCount = true;
 
-        if (ModeSearcher == "TransactionalItemTypeCharacteristic")
+        if (ModeSearcher == GetName("ItemCharacteristics", new TransactionalItem()))
         {
 
-            var transactionalItems = transactionalService.TransactionalItems;
+            var transactionalItem = await transactionalService.GetTransactionalItemById(transactionalItemId);
             transactionalItemTypeCharacteristics = new();
-            if (transactionalItems != null)
+            if (transactionalItem != null)
             {
-                ConceptType type = transactionalItems.TypeOfConcept != null ? transactionalItems.TypeOfConcept : null;
-                if (type != null)
+                  
+                if (transactionalItem.TypeOfConcept != null)
                 {
-                    var itemTypes = await transactionalService.GetTransactionalItemTypes(type.Name);
-                    var resul = itemTypes.Where(s => s.Id == type.Id).FirstOrDefault();
-                    if (!value.ToLower().Contains("all") && !value.ToLower().Contains("todo"))
+                    var itemTypes = await transactionalService.GetTransactionalItemTypes(transactionalItem.TypeOfConcept.Name);
+                    var resul = itemTypes.Where(s => s.Id == transactionalItem.TypeOfConcept.Id).FirstOrDefault();
+                    if (!arg.value.ToLower().Contains("all") && !arg.value.ToLower().Contains("todo"))
                     {
-                        transactionalItemTypeCharacteristics = resul.TransactionalItemTypeCharacteristics.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+                        transactionalItemTypeCharacteristics = resul.TransactionalItemTypeCharacteristics.Where(s => s.Name.ToLower().Contains(arg.value.ToLower())).ToList();
                     }
                     else
                     {
@@ -210,7 +204,7 @@
 
     public string GetName(string Name, Object Obj)
     {
-        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        if (UICommonFunctions.GetDisplayName(Obj, Name)!=null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
     }
 

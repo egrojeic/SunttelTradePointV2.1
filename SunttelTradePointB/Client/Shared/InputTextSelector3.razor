@@ -9,21 +9,25 @@
     </div>
     <div class="position-input">
         <div class="component-input" style="@style; display:@(Visible?"block":"none");  position:relative; width:278px;">
-            <div style=" flex-direction:row; display:@(Items==null || Items.Count<=0?"flex":"none"); ">
+            <div style=" flex-direction:row; display:@(Items==null || Items.Count<=0 || !modeSearcher?"flex":"none"); ">
                 <input @bind="inputSearcherValue" class="form-control" autocomplete="on" />
                 <img id="btn-img" src="images/search.svg" @onclick="SearcherValue" />
             </div>
             <div id="div-Popup">
 
-                <select 
-                    @onchange="OnSelectedItemChanged"
-                        style="display:@(Items!=null && Items.Count>0?"block":"none");
+                <select @onchange="OnSelectedItemChanged"
+                        style="display:@(Items!=null && Items.Count>0 && modeSearcher ?"block":"none");
                     background-color:white; color:black;  border-color:gray; ">
-                   
-                    <option value= ""> select </option>
-                    @foreach (var item in Items)
-                    {
-                        <option value="@item">@item.ToString()</option>
+
+                    <option value=""> select </option>
+                    @{
+                        if (Items != null)
+                        {
+                            foreach (var item in Items)
+                            {
+                                <option value="@item">@item.ToString()</option>
+                            }
+                        }
                     }
                 </select>
                 <div>
@@ -39,14 +43,15 @@
 
 
 @code {
+
     [Parameter]
-    public EventCallback<(string, string)> EventSearcherValueAndId { get; set; }  
+    public EventCallback<(string, string)> EventSearcherValueAndId { get; set; }
     [Parameter]
     public EventCallback<TItem> EventIdSelectionAndId { get; set; }
     [Parameter]
-    public EventCallback EventClosed { get; set; }       
+    public EventCallback EventClosed { get; set; }
     [Parameter]
-    public string Id { get; set; }    
+    public string Id { get; set; }
     [Parameter]
     public bool Visible { get; set; } = false;
     [Parameter]
@@ -57,17 +62,20 @@
     public bool captionOff { get; set; } = false;
     [Parameter]
     public List<TItem> Items { get; set; }
-   
+
     public string selectionId { get; set; }
-    private bool ViewPopupCount = false;  
     public string? inputSearcherValue { get; set; }
-    
+    private bool ViewPopupCount = false;
+    public bool statusTask = false;
+    bool modeSearcher = false;
+
     private TItem _selectedObj;
-    private TItem SelectedObj { 
+    private TItem SelectedObj
+    {
         get => _selectedObj;
         set
         {
-            _selectedObj= value;
+            _selectedObj = value;
             //if (EventIdSelectionAndId.HasDelegate)
             //{
             //    EventIdSelectionAndId.InvokeAsync(value);
@@ -84,17 +92,19 @@
     }
 
     public async void SearcherValue()
-    {      
+    {
+        modeSearcher = true;
         ViewPopupCount = true;
         SearcherCountOff();
         if (inputSearcherValue != null && inputSearcherValue != "")
         {
-            await EventSearcherValueAndId.InvokeAsync((inputSearcherValue, Id));           
+            await EventSearcherValueAndId.InvokeAsync((inputSearcherValue, Id));
+          
         }
         else
         {
-            await EventSearcherValueAndId.InvokeAsync(("all", Id));          
-        }       
+            await EventSearcherValueAndId.InvokeAsync(("all", Id));
+        }
 
         StateHasChanged();
     }
@@ -156,11 +166,12 @@
 
     private void SelectedItem()
     {
-        if (SelectedObj !=null)
+        if (SelectedObj != null)
         {
-            EventIdSelectionAndId.InvokeAsync(SelectedObj);           
+            EventIdSelectionAndId.InvokeAsync(SelectedObj);
             Items = new List<TItem>();
             Visible = false;
+            modeSearcher = false;
             StateHasChanged();
         }
 
@@ -178,7 +189,8 @@
 
     public void Closed()
     {
-        Visible = false;     
+        Visible = false;
+        modeSearcher = false;
         Items = new List<TItem>();
         EventClosed.InvokeAsync();
         Refresh();
