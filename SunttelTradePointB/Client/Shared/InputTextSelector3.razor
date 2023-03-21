@@ -9,25 +9,29 @@
     </div>
     <div class="position-input">
         <div class="component-input" style="@style; display:@(Visible?"block":"none");  position:relative; width:278px;">
-            <div style=" flex-direction:row; display:@(!ViewSelect?"flex":"none"); ">
+            <div style=" flex-direction:row; display:@(Items==null || Items.Count<=0 || !modeSearcher?"flex":"none"); ">
                 <input @bind="inputSearcherValue" class="form-control" autocomplete="on" />
                 <img id="btn-img" src="images/search.svg" @onclick="SearcherValue" />
             </div>
             <div id="div-Popup">
 
-                <select 
-                    @onchange="OnSelectedItemChanged"
-                    style="display:@(ViewSelect?"block":"none");  
+                <select @onchange="OnSelectedItemChanged"
+                        style="display:@(Items!=null && Items.Count>0 && modeSearcher ?"block":"none");
                     background-color:white; color:black;  border-color:gray; ">
-                   
-                    <option value= ""> select </option>
-                    @foreach (var item in Items)
-                    {
-                        <option value="@item">@item.ToString()</option>
+
+                    <option value=""> select </option>
+                    @{
+                        if (Items != null)
+                        {
+                            foreach (var item in Items)
+                            {
+                                <option value="@item">@item.ToString()</option>
+                            }
+                        }
                     }
                 </select>
                 <div>
-                    <p style="background-color:@(ParamCountResul>0?"#8affa8":"orange"); display:@(ViewPopupCount?"block":"none");">@(ParamCountResul > 0 ? ParamCountResul : "searching")</p>
+                    <p style="background-color:@(Items!=null && Items.Count>0?"#8affa8":"orange"); display:@(ViewPopupCount?"block":"none");">@(Items != null && Items.Count > 0 ? Items.Count : "searching")</p>
                 </div>
 
             </div>
@@ -39,25 +43,15 @@
 
 
 @code {
-    [Parameter]
-    public EventCallback<(string, string)> EventSearcherValueAndId { get; set; }
 
     [Parameter]
-    public EventCallback<string> EventSearcherValue { get; set; }
-    [Parameter]
-    public EventCallback<string> EventIdSelection { get; set; }
+    public EventCallback<(string, string)> EventSearcherValueAndId { get; set; }
     [Parameter]
     public EventCallback<TItem> EventIdSelectionAndId { get; set; }
     [Parameter]
     public EventCallback EventClosed { get; set; }
-    
-    [EditorRequired]
-    [Parameter]
-    public int? ParamCountResul { get; set; }
     [Parameter]
     public string Id { get; set; }
-    [Parameter]
-    public bool ViewSelect { get; set; } = false;
     [Parameter]
     public bool Visible { get; set; } = false;
     [Parameter]
@@ -66,21 +60,22 @@
     public string caption { get; set; }
     [Parameter]
     public bool captionOff { get; set; } = false;
-    private bool ViewPopupCount = false;
-    protected bool statusTask = false;
-    public string? inputSearcherValue { get; set; }
-    [Parameter]
-    public string selectionId { get; set; }
-
     [Parameter]
     public List<TItem> Items { get; set; }
 
+    public string selectionId { get; set; }
+    public string? inputSearcherValue { get; set; }
+    private bool ViewPopupCount = false;
+    public bool statusTask = false;
+    bool modeSearcher = false;
+
     private TItem _selectedObj;
-    private TItem SelectedObj { 
+    private TItem SelectedObj
+    {
         get => _selectedObj;
         set
         {
-            _selectedObj= value;
+            _selectedObj = value;
             //if (EventIdSelectionAndId.HasDelegate)
             //{
             //    EventIdSelectionAndId.InvokeAsync(value);
@@ -93,31 +88,23 @@
         var value = (string)e.Value;
         var selectedItem = Items.FirstOrDefault(item => item.ToString() == value);
         SelectedObj = selectedItem != null ? selectedItem : default;
-        await EventIdSelectionAndId.InvokeAsync(SelectedObj);
+        //await EventIdSelectionAndId.InvokeAsync(SelectedObj);
     }
-
-
-
-    string backgroundSelection = "", colorSelection = "";
-
 
     public async void SearcherValue()
     {
-        ParamCountResul = 0;
+        modeSearcher = true;
         ViewPopupCount = true;
         SearcherCountOff();
         if (inputSearcherValue != null && inputSearcherValue != "")
         {
             await EventSearcherValueAndId.InvokeAsync((inputSearcherValue, Id));
-            await EventSearcherValue.InvokeAsync(inputSearcherValue);
+          
         }
         else
         {
             await EventSearcherValueAndId.InvokeAsync(("all", Id));
-            await EventSearcherValue.InvokeAsync("all");
         }
-        backgroundSelection = "white";
-        colorSelection = "black";
 
         StateHasChanged();
     }
@@ -133,9 +120,6 @@
             StateHasChanged();
         }
     }
-
-   
-
 
     public void AssignMatchingProperties(object source, object target)
     {
@@ -175,23 +159,19 @@
                 string res = ex.Message;
             }
 
-          
+
 
         }
     }
 
-
-
     private void SelectedItem()
     {
-        if (selectionId != "")
+        if (SelectedObj != null)
         {
             EventIdSelectionAndId.InvokeAsync(SelectedObj);
-            selectionId = "";
-            backgroundSelection = "";
-            colorSelection = "";
-            ViewSelect = false;
+            Items = new List<TItem>();
             Visible = false;
+            modeSearcher = false;
             StateHasChanged();
         }
 
@@ -210,9 +190,8 @@
     public void Closed()
     {
         Visible = false;
-        ViewSelect = false;
-        backgroundSelection = "";
-        colorSelection = "";
+        modeSearcher = false;
+        Items = new List<TItem>();
         EventClosed.InvokeAsync();
         Refresh();
     }

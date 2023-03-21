@@ -240,8 +240,7 @@
                                EventIdSelectionAndId="EventIdSelectionAndId"
                                EventClosed="ClosedInputText"
                                ParamCountResul="ParamCountResul"
-                               ViewSelect="ViewSelect"
-                              >
+                               ViewSelect="ViewSelect">
                     @{
                         if (recipeQualityModifiers != null)
                         {
@@ -479,25 +478,12 @@
                         <div id="add-recipe">
                             <div class="grid-columns-4">
                                 <div><label>@GetName( "Customer", new PackingSpecs())</label></div>
-                                <InputTextSelector @ref="ReferInputTextSelector"
-                                                   Id="Customer"
-                                                   caption="@(Customer != null ? Customer?.Name : "")"
-                                                   EventSearcherValueAndId="EventSearcherValueAndId"
-                                                   EventIdSelectionAndId="EventIdSelectionAndId"
-                                                   ParamCountResul="ParamCountResul"
-                                                   EventClosed="ClosedInputText"
-                                                   ViewSelect="ViewSelect">
-                                    @{
-                                        if (ListConcept != null)
-                                        {
-                                            foreach (var customer in ListConcept)
-                                            {
-                                                <option value="@customer?.Id">@customer?.Name</option>
-                                            }
-                                        }
-
-                                    }
-                                </InputTextSelector>
+                                <InputTextSelector3 TItem="Concept"
+                                                    Id="@GetName( "Customer", new PackingSpecs())"
+                                                    caption="@(Customer != null ? Customer?.Name : "")"
+                                                    EventClosed="ClosedInputText"
+                                                    Items="ListConcept">
+                                </InputTextSelector3>
                                 <div><label>@GetName( "Code", new AtomConcept())</label></div>
                                 <div> <b><h6>@(Customer != null ? Customer.Code : "")</h6></b></div>
                                 <div>
@@ -505,49 +491,23 @@
                                         @GetName( "Season", new PackingSpecs())
                                     </label>
                                 </div>
-                                <InputTextSelector @ref="ReferInputTextSelector"
-                                                   Id="Season"
-                                                   caption="@(Season != null ? Season?.Name : "")"
-                                                   EventSearcherValueAndId="EventSearcherValueAndId"
-                                                   EventIdSelectionAndId="EventIdSelectionAndId"
-                                                   EventClosed="ClosedInputText"
-                                                   ParamCountResul="ParamCountResul"
-                                                   ViewSelect="ViewSelect">
-                                    @{
-                                        if (GetSeasonView != null)
-                                        {
-                                            foreach (var season in GetSeasonView)
-                                            {
-                                                <option value="@season?.Id">@season?.Name</option>
-                                            }
-                                        }
-                                    }
-                                </InputTextSelector>
+                                <InputTextSelector3 TItem="SeasonBusiness"
+                                                    Id="@GetName( "Season", new PackingSpecs())"
+                                                    caption="@(Season != null ? Season?.Name : "")"
+                                                    EventClosed="ClosedInputText"
+                                                    Items="GetSeasonView">
+                                </InputTextSelector3>
 
                                 <div>
                                     <label>
                                         @GetName("ModelRecipe",new PackingSpecs())
                                     </label>
                                 </div>
-                                <InputTextSelector @ref="ReferInputTextSelector"
-                                                   Id="ModelRecipe"
-                                                   caption="@(ModelRecipe != null ? ModelRecipe?.Name : "")"
-                                                   EventSearcherValueAndId="EventSearcherValueAndId"
-                                                   EventIdSelectionAndId="EventIdSelectionAndId"
-                                                   EventClosed="ClosedInputText"
-                                                   ParamCountResul="ParamCountResul"
-                                                   ViewSelect="ViewSelect">
-                                    @{
-                                        if (GetModelView != null)
-                                        {
-                                            foreach (var model in GetModelView)
-                                            {
-                                                <option value="@model?.Id">@model?.Name</option>
-                                            }
-                                        }
-
-                                    }
-                                </InputTextSelector>
+                                <InputTextSelector3 TItem="ProductModel"
+                                                    Id="@GetName("ModelRecipe",new PackingSpecs())"
+                                                    caption="@(ModelRecipe != null ? ModelRecipe?.Name : "")"
+                                                    Items="GetModelView">
+                                </InputTextSelector3>
 
                                 <div>
                                     <label>
@@ -562,46 +522,23 @@
                                         @GetName( "PackingBoxToSale", new PackingSpecs())
                                     </label>
                                 </div>
-                                <InputTextSelector @ref="ReferInputTextSelector"
-                                                   Id="BoxToSale"
-                                                   caption="@(BoxToSale != null ? BoxToSale?.Name : "")"
-                                                   EventSearcherValueAndId="EventSearcherValueAndId"
-                                                   EventIdSelectionAndId="EventIdSelectionAndId"
-                                                   EventClosed="ClosedInputText"
-                                                   ParamCountResul="ParamCountResul"
-                                                   ViewSelect="ViewSelect">
-                                    @{
-                                        if (GetBoxToSaleView != null)
-                                        {
-                                            foreach (var Box in GetBoxToSaleView)
-                                            {
-                                                <option value="@Box?.Id">@Box?.Name</option>
-                                            }
-                                        }
+                                <InputTextSelector3 TItem="Box"
+                                                    Id="@GetName( "PackingBoxToSale", new PackingSpecs())"
+                                                    caption="@(BoxToSale != null ? BoxToSale?.Name : "")"
+                                                    EventClosed="ClosedInputText"
+                                                    Items="GetBoxToSaleView">
 
-                                    }
-                                </InputTextSelector>
+                                </InputTextSelector3>
 
                                 <div><label>@GetName( "PackingBoxToBuy", new PackingSpecs())</label></div>
 
-                                <InputTextSelector @ref="ReferInputTextSelector"
-                                                   caption="@(BoxToBuy != null ? BoxToBuy?.Name : "")"
-                                                   Id="BoxToBuy"
-                                                   EventSearcherValueAndId="EventSearcherValueAndId"
-                                                   EventIdSelectionAndId="EventIdSelectionAndId"
-                                                   EventClosed="ClosedInputText"
-                                                   ParamCountResul="ParamCountResul"
-                                                   ViewSelect="ViewSelect">
-                                    @{
-                                        if (GetBoxToBuyView != null)
-                                        {
-                                            foreach (var Box in GetBoxToBuyView)
-                                            {
-                                                <option value="@Box?.Id">@Box?.Name</option>
-                                            }
-                                        }
-                                    }
-                                </InputTextSelector>
+                                <InputTextSelector3 TItem="Box"
+                                                    caption="@(BoxToBuy != null ? BoxToBuy?.Name : "")"
+                                                    Id="@GetName( "PackingBoxToBuy", new PackingSpecs())"
+                                                    EventClosed="ClosedInputText"
+                                                    Items="GetBoxToBuyView">
+
+                                </InputTextSelector3>
 
                                 <div>
                                     <label>
@@ -622,24 +559,13 @@
 
                                 <div><label>@GetName( "TotalPriceItemTypeBasedOn", new PriceInfo())</label></div>
 
-                                <InputTextSelector @ref="ReferInputTextSelector"
-                                                   caption="@(totalPriceItemTypeBasedOn != null ? totalPriceItemTypeBasedOn.Name : "")"
-                                                   Id="TotalPriceItemTypeBasedOn"
-                                                   EventSearcherValueAndId="EventSearcherValueAndId"
-                                                   EventIdSelectionAndId="EventIdSelectionAndId"
-                                                   EventClosed="ClosedInputText"
-                                                   ParamCountResul="ParamCountResul"
-                                                   ViewSelect="ViewSelect">
-                                    @{
-                                        if (totalPriceItemTypeBasedOns != null)
-                                        {
-                                            foreach (var Box in totalPriceItemTypeBasedOns)
-                                            {
-                                                <option value="@Box?.Id">@Box?.Name</option>
-                                            }
-                                        }
-                                    }
-                                </InputTextSelector>
+                                <InputTextSelector3 TItem="TransactionalItemType"
+                                                    caption="@(totalPriceItemTypeBasedOn != null ? totalPriceItemTypeBasedOn.Name : "")"
+                                                    Id="@GetName( "TotalPriceItemTypeBasedOn", new PriceInfo())"
+                                                    EventClosed="ClosedInputText"
+                                                    Items="totalPriceItemTypeBasedOns">
+
+                                </InputTextSelector3>
 
                                 <div>
                                     <label>
@@ -647,25 +573,13 @@
                                     </label>
                                 </div>
 
-                                <InputTextSelector @ref="ReferInputTextSelector"
-                                                   caption="@(assemblyType != null ? assemblyType?.Name : "")"
-                                                   Id="ItemAssemblyType"
-                                                   EventSearcherValueAndId="EventSearcherValueAndId"
-                                                   EventIdSelectionAndId="EventIdSelectionAndId"
-                                                   EventClosed="ClosedInputText"
-                                                   ParamCountResul="ParamCountResul"
-                                                   ViewSelect="ViewSelect">
-                                    @{
-                                        if (assemblyTypes != null)
-                                        {
-                                            foreach (var model in assemblyTypes)
-                                            {
-                                                <option value="@model?.Id">@model?.Name</option>
-                                            }
-                                        }
+                                <InputTextSelector3 TItem="AssemblyType"
+                                                    caption="@(assemblyType != null ? assemblyType?.Name : "")"
+                                                    Id="@GetName("ItemAssemblyType",new PackingSpecs())"
+                                                    EventClosed="ClosedInputText"
+                                                    Items="assemblyTypes">
 
-                                    }
-                                </InputTextSelector>
+                                </InputTextSelector3>
 
                             </div>
                         </div>
@@ -930,7 +844,7 @@
 
     public int Page = 0;
 
-    #region control Input Tex     
+    #region control Input Tex
     public int ParamCountResul = 0;
     public string SearcherValueMode = "";
     #endregion Control Input Tex
@@ -1302,7 +1216,7 @@
     {
         ViewSelect = false;
         SearcherValueMode = Element;
-        ClosedInputText();      
+        ClosedInputText();
         StateHasChanged();
     }
 
@@ -1597,7 +1511,7 @@
     }
 
 
-   
+
 
 
 
@@ -1653,12 +1567,12 @@
     }
 
     public void ClosedInputText()
-    {    
+    {
         ViewSelect = false;
         ParamCountResul = 0;
         StateHasChanged();
     }
-   
+
 
 
     public void SetStatus()

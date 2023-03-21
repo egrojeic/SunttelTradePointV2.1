@@ -473,7 +473,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             {
                 string errMessage = ex.Message;
 
-                return null;
+                return new List<TransactItemImage>();
 
             }
 

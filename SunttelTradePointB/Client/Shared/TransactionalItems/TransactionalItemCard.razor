@@ -7,10 +7,10 @@
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.SplitButtons
+@using System.Reflection;
 @inject ActorsNodeService actorsNodeServive;
 @inject TransactionalItemsService transactionalService;
 @inject NavigationManager Navigation
-
 
 @if (@AlertOpen)
 {
@@ -79,7 +79,9 @@
             </div>
             <div><label for="shortcutCode">@GetName("Status", new Concept())</label></div>
             <div @onclick="SetStatus">
-                <label id="statusConcept" class="style-status" style="background-color:@colorStatus;">@currentItemStatus</label>
+                <label id="statusConcept" class="style-status" style="background-color:@colorStatus;">
+                    @(currentItem.Status != null ? currentItem.Status?.Name : "")
+                </label>
             </div>
             <div id="shortCutCodeGroup">
                 <label for="shortcutCode">@GetName("ReferenceCost", new TransactionalItem())</label>
@@ -89,15 +91,12 @@
             </div>
             <div><label>@GetName("TypeOfConcept", new Concept())</label></div>
             <div>
-                <InputTextSelector3 caption="@(currentItem.TypeOfConcept != null ? currentItem.TypeOfConcept.Name : "")"
-                        TItem="ConceptType"
-                        EventSearcherValueAndId="EventSearcherValueAndId"
-                        EventClosed="ClosedInputText"
-                        EventIdSelectionAndId="SelectionMade"
-                        ParamCountResul="ParamCountResul"
-                        ViewSelect="ViewSelect"
-                        Id="TypeOfConcept"
-                        Items="@typeOfConcepts">
+                <InputTextSelector3 TItem="ConceptType"
+                                    caption="@(currentItem.TypeOfConcept != null ? currentItem.TypeOfConcept.Name : "")"
+                                    EventSearcherValueAndId="EventSearcherValueAndId"                                   
+                                    Id="@GetName("TypeOfConcept", new Concept())"
+                                    Items="typeOfConcepts">
+
                 </InputTextSelector3>
             </div>
 
@@ -112,32 +111,19 @@
                 <div class="form-group">
                     <div style="display:flex; flex-direction:row;">
                         <div class="conten-chip margin-left-control">
-                            <InputTextSelector captionOff="true"
-                                               EventSearcherValueAndId="EventSearcherValueAndId"
-                                               EventClosed="ClosedInputText"
-                                               ParamCountResul="ParamCountResul"
-                                               ViewSelect="ViewSelect"
-                                               Visible="PopupViewAddImg"
-                                               style="left:-100px;"
-                                               Id="img"
-                                               selectionId="@transactItemImage.PathImage">
-                                @{
-                                    if (transactItemImages != null)
-                                    {
-                                        foreach (var obj in transactItemImages)
-                                        {
-                                            <option value="@obj?.PathImage">@obj?.Name</option>
-                                        }
-                                    }
+                            <InputTextSelector3 TItem="TransactItemImage"
+                                                captionOff="true"
+                                                EventSearcherValueAndId="EventSearcherValueAndId"
+                                                Visible="PopupViewAddImg"
+                                                style="left:-100px;"
+                                                EventClosed="EventClosed"
+                                                Id="@GetName("SkinImageName", new Concept())"
+                                                Items="transactItemImages">
 
-                                }
-                            </InputTextSelector>
+                            </InputTextSelector3>
                         </div>
-                        <div>
-                            @if (transactItemImages == null) transactItemImages = new List<TransactItemImage>();
-
-
-                            <img class="style-img" src="@(transactItemImage.PathImage !=null?transactionalService.Host+transactItemImage.PathImage:"/images/defaultImage.png")" @onclick='()=> SetViewElemnt("img")' />
+                        <div>                           
+                            <img class="style-img" src="@(currentItem.SkinImageName !=null && currentItem.SkinImageName !="." ?transactionalService.Host+currentItem.SkinImageName:"/images/defaultImage.png")" @onclick='()=> SetViewElemnt()' />
                         </div>
 
 
@@ -220,42 +206,33 @@
     [Parameter]
     public string transactionalItemId { get; set; }
 
-    public string msg = "", backgroundColor = "";
+    public string msg = "";
+    public string backgroundColor = "";
     public int status = 0;
     public bool AlertOpen = false;
     bool modeStatus = false;
     bool requiereSave = false;
     Alert? referAlert;
 
-
-
+    InputTextSelector2a<ConceptType> conceptType;
+    InputTextSelector? inputTextSelectorImg;
 
     public TransactionalItem? currentItem = new TransactionalItem();
-    List<ConceptGroup> conceptGroups = new List<ConceptGroup>();
-    List<PackingSpecs> productPackingSpecs = new();
-    List<TransactionalItemProcessStep> productionSpecs = new();
-    List<TransactItemImage> pathImages = new();
-    List<TransactionalItemQualityPair> qualityParameters = new();
-    List<TransactionalItemTag> transactionalItemTags = new();
-    ConceptType typeOfConcept = new();
     List<ConceptType> typeOfConcepts = new();
-    TransactItemImage transactItemImage = new();
     List<TransactItemImage> transactItemImages = new();
     TransactionalItemGroupSelector? referGroup;
 
-
     int verticalMenuOptionSelected = 0;
-    int ParamCountResul = 0;
 
-    public string currentItemStatus { get; set; }
+
     public string nameTemp { get; set; }
     string colorStatus = "gray", SearcherValueMode = "";
-    bool ViewSelect = false;
     bool PopupViewAddImg = false;
 
 
     protected override void OnParametersSet()
     {
+        LoadObj();
         StateHasChanged();
     }
 
@@ -264,13 +241,11 @@
         if (transactionalItemId != null)
         {
             currentItem = await transactionalService.GetTransactionalItemById(transactionalItemId);
-
+            LoadObj();
             if (currentItem != null)
             {
-                nameTemp = currentItem.Name;
-                typeOfConcept = currentItem.TypeOfConcept;
-                transactItemImage.PathImage = currentItem.SkinImageName;
-                currentItemStatus = currentItem.Status != null ? currentItem.Status.Name : "";
+                nameTemp = currentItem.Name;      
+                LoadObj();
                 StateHasChanged();
             }
             else
@@ -280,8 +255,7 @@
         }
         else
         {
-            transactionalService.transactionalItemId = null;
-            currentItem = new();
+            LoadObj();
             SetStatus();
             StateHasChanged();
 
@@ -290,6 +264,26 @@
         int PageMode = Convert.ToInt32((Page != null ? Page : "0"));
         SetMenuOption(PageMode);
 
+
+    }
+
+    protected void LoadObj()
+    {
+        if (currentItem == null) currentItem = new();
+        if (currentItem.ProductionSpecs == null) currentItem.ProductionSpecs = new();
+        if (currentItem.Groups == null) currentItem.Groups = new();
+        if (currentItem.ItemCharacteristics == null) currentItem.ItemCharacteristics = new();
+        if (currentItem.SkinImageName == null) currentItem.SkinImageName = ".";
+        if (currentItem.ItemCatalog == null) currentItem.ItemCatalog = new CatalogItem();
+        if (currentItem.ItemCharacteristics == null) currentItem.ItemCharacteristics = new List<TransactionalItemCharacteristicPair>();
+        if (currentItem.ProductPackingSpecs == null) currentItem.ProductPackingSpecs = new List<PackingSpecs>();
+        if (currentItem.ProductionSpecs == null) currentItem.ProductionSpecs = new List<TransactionalItemProcessStep>();
+        if (currentItem.PathImages == null) currentItem.PathImages = new List<TransactItemImage>();
+        if (currentItem.PriceOverridenByPriceList == null) currentItem.PriceOverridenByPriceList = new PriceListTransactionalItems();
+        if (currentItem.QualityParameters == null) currentItem.QualityParameters = new List<TransactionalItemQualityPair>();
+        if (currentItem.TransactionalItemTags == null) currentItem.TransactionalItemTags = new List<TransactionalItemTag>();
+        if (currentItem.TypeOfConcept == null) currentItem.TypeOfConcept = new();
+        if (currentItem.Status == null) currentItem.Status = new();
 
     }
 
@@ -319,18 +313,8 @@
         string tile = e.Item != null ? e.Item.Text : "";
         if (tile == "Save")
         {
-            if (currentItem.ItemCatalog == null) currentItem.ItemCatalog = new CatalogItem();
-            if (currentItem.ItemCharacteristics == null) currentItem.ItemCharacteristics = new List<TransactionalItemCharacteristicPair>();
-            if (currentItem.ProductPackingSpecs == null) currentItem.ProductPackingSpecs = new List<PackingSpecs>();
-            if (currentItem.ProductionSpecs == null) currentItem.ProductionSpecs = new List<TransactionalItemProcessStep>();
-            if (currentItem.PathImages == null) currentItem.PathImages = new List<TransactItemImage>();
-            if (currentItem.PriceOverridenByPriceList == null) currentItem.PriceOverridenByPriceList = new PriceListTransactionalItems();
-            if (currentItem.QualityParameters == null) currentItem.QualityParameters = new List<TransactionalItemQualityPair>();
-            if (currentItem.TransactionalItemTags == null) currentItem.TransactionalItemTags = new List<TransactionalItemTag>();
-            if (currentItem.TypeOfConcept == null) currentItem.TypeOfConcept = new();
 
-            if (transactItemImage == null) transactItemImage = new();
-            currentItem.TypeOfConcept = typeOfConcept != null ? typeOfConcept : new();
+
             TransactionalItem item = null;
             if (currentItem.Status != null) item = await transactionalService.SaveTransactionalItem(currentItem);
             bool resul = (item != null ? true : false);
@@ -353,7 +337,7 @@
         }
         if (tile == "Save as...")
         {
-            currentItem.Groups = conceptGroups;
+
             var currentItemCopy = currentItem;
             currentItemCopy.Id = null;
             if (currentItemCopy.Name != nameTemp)
@@ -383,34 +367,20 @@
         if (referAlert != null) referAlert.Load();
         StateHasChanged();
 
-
     }
 
-    public void SelectionMade(ConceptType arg)
+    protected async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
-        this.currentItem.TypeOfConcept = arg;
-        Console.Write(arg.Name);
-    }
-
-
-
-    protected async void EventSearcherValueAndId((string value, string selectionId) arg)
-    {
-        ParamCountResul = 0;
-        if (arg.selectionId == "img")
+        if (arg.IdControl == GetName("SkinImageName", new Concept()))
         {
+            transactItemImages = new();
             transactItemImages = await transactionalService.GetTransactionalItemDetailsPathImages(transactionalItemId);
-            if (transactItemImages == null) transactItemImages = new List<TransactItemImage>();
-
-            transactItemImages = transactItemImages.Where(s => s.Name != null && s.Name.ToLower().Contains(arg.value.ToLower())).ToList();
-            ParamCountResul = transactItemImages != null ? transactItemImages.Count() : 0;
-            ViewSelect = ParamCountResul > 0;
-            //if (ReferInputTextSelector != null) ReferInputTextSelector.Refresh();
+            if (transactItemImages != null && !arg.value.ToLower().Contains("all")) transactItemImages = currentItem.PathImages.Where(s => s.Name != null && s.Name.ToLower().Contains(arg.value.ToLower())).ToList();
             StateHasChanged();
 
         }
 
-        if (arg.selectionId == "TypeOfConcept")
+        if (arg.IdControl == GetName("TypeOfConcept", new Concept()))
         {
             if (typeOfConcepts == null) typeOfConcepts = new();
             var data = await transactionalService.GetTransactionalItemTypes(arg.value);
@@ -433,53 +403,39 @@
                         });
                 }
             }
-
-            ParamCountResul = typeOfConcepts != null ? typeOfConcepts.Count() : 0;
-            ViewSelect = ParamCountResul > 0;
-            //if (ReferInputTextSelector != null) ReferInputTextSelector.Refresh();
             StateHasChanged();
         }
 
     }
 
+    //protected void EventIdSelectionAndId(TItem Item)
+    //{        
+    //    if (Item.GetType().Equals(typeof(ConceptType)))
+    //    {
+    //        currentItem.TypeOfConcept = (ConceptType)Item;
+    //    }
+    //}
 
-    protected async void EventSearcherValueAndId2((ConceptType value, string selectionId) arg)
+
+
+    public void SetViewElemnt()
     {
-
-        StateHasChanged();
-
-
-        if ("" == "img")
-        {
-            if (transactItemImages == null) transactItemImages = new();
-            transactItemImage = transactItemImages.Where(c => c.Id == arg.selectionId).FirstOrDefault();
-            currentItem.SkinImageName = transactItemImage.PathImage;
-            ViewSelect = false;
-            PopupViewAddImg = false;
-
-        }
-
-        if (arg.value.Name == "TypeOfConcept")
-        {
-            if (typeOfConcepts == null) typeOfConcepts = new();
-            typeOfConcept = typeOfConcepts.Where(s => s.Id == arg.selectionId).FirstOrDefault();
-            if (typeOfConcepts == null) typeOfConcepts = new();
-            ParamCountResul = typeOfConcepts != null ? typeOfConcepts.Count() : 0;
-            ViewSelect = false;
-
-        }
-
-        //if (ReferInputTextSelector != null) ReferInputTextSelector.Refresh();
-        StateHasChanged();
-
+        PopupViewAddImg = PopupViewAddImg = true;
     }
 
-    public void SetViewElemnt(string Element)
+    public void EventClosed()
     {
-        ViewSelect = false;
-        SearcherValueMode = Element;
-        if (Element == "img") { PopupViewAddImg = true; }
+        PopupViewAddImg = false;
+    }
+
+    public void ChangeEventInputControl()
+    {
+        conceptType.Refresh();
+        ConceptType concept = new ConceptType();
+        conceptType.referValue(ref concept);
+        currentItem.TypeOfConcept = concept != null ? concept : currentItem.TypeOfConcept;
         StateHasChanged();
+
     }
 
 
@@ -503,6 +459,7 @@
         modeStatus = modeStatus ? false : true;
 
         ConceptStatus statust = new();
+        
         if (modeStatus)
         {
             currentItem.Status = statust = new ConceptStatus
@@ -520,20 +477,12 @@
             currentItem.Status = null;
             colorStatus = "gray";
         }
-        if (currentItem != null) currentItemStatus = currentItem.Status != null ? currentItem.Status.Name : "";
-    }
-
-    public void ClosedInputText()
-    {
-        PopupViewAddImg = false;
-        ParamCountResul = 0;
-        ViewSelect = false;
-        StateHasChanged();
+       
     }
 
     public string GetName(string Name, Object Obj)
     {
-        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
     }
 

@@ -35,7 +35,7 @@
                             <img src="@imgUrl" style="height:120px; width:180px; border-radius:10px 10px 0px 0px; margin-left:5px;" @ref="previewImageElem" /><br />
                             <div class="btn color-btn width">
                                 <label for="file-input">
-                                    <div><p> Choose your file </p></div>
+                                    <div class="color-btn"><p> Choose your file </p></div>
                                 </label>
                                 <InputFile id="file-input" @ref="inputFile" OnChange="@LoadFiles" class="btn color-btn" style="color:transparent;width:180px; border-radius:0px 0px 10px 10px; display:none;" />
                             </div>
@@ -139,13 +139,8 @@
                 var resul = await transactionalService.SaveImage(transactionalItemId, transactItemImage);
                 transactItemImage = new TransactItemImage();
 
-                if (transactionalService.TransactionalItems != null && resul)
-                {
-                    if (transactionalService.TransactionalItems.PathImages == null)
-                    {
-                        transactionalService.TransactionalItems.PathImages = new List<TransactItemImage>();
-                    }
-                    transactionalService.TransactionalItems.PathImages.Add(transactItemImage);
+                if ( resul)
+                {                  
                     Msg("Saved");
                 }
                 else

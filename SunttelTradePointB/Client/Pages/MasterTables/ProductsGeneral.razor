@@ -88,6 +88,7 @@
 
     protected override void OnInitialized()
     {
+        if (_filterItems != "" && _filterItems !=null) LoadData();
         base.OnInitialized();
     }
 
@@ -150,7 +151,7 @@
 
      private async Task Navigate(string productId)
     {
-        Navigation.NavigateTo($"/TransactionalItemCard/{productId}");
+        Navigation.NavigateTo($"/TransactionalItemCard/{_filterItems}/{productId}");
     }
 
 
