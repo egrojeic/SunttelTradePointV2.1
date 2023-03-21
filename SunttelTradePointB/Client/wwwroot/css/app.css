@@ -231,3 +231,10 @@ nav {
         color: white;
         transition: background-color 0.5s;
     }
+
+
+.tableContainer{
+    max-width: 1600px;
+
+
+}

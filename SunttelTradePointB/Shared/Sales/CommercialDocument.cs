@@ -67,7 +67,7 @@ namespace SunttelTradePointB.Shared.Sales
 
     public class CommercialDocument: RecordItem
     {
-
+        [DisplayName("Document Type")]
         public CommercialDocumentType DocumentType { get; set; }
         
         [DisplayName("Business Line")]

@@ -61,7 +61,8 @@
                 <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="EntityActor"></GridEvents>
             </SfGrid>*@
 
-            <RadzenDataGrid AllowFiltering="true"
+            <RadzenDataGrid 
+                    AllowFiltering="true"
                     AllowColumnResize="true"
                     AllowAlternatingRows="true"
                     FilterMode="FilterMode.Advanced"
@@ -76,7 +77,8 @@
                     ColumnWidth="300px"
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"
-                    @bind-Value=@selectedEntities Class="m-4"
+                    @bind-Value=@selectedEntities 
+                    Class="m-4"
                     CellContextMenu="@ShowContextMenuWithContent">
 
                 <Columns>
@@ -170,7 +172,7 @@
         }
     }
 
-     void OnMenuItemClick(MenuItemEventArgs args)
+    void OnMenuItemClick(MenuItemEventArgs args)
     {
         EntityActor argObj = (EntityActor)args.Value;
         Navigate(argObj.Id);

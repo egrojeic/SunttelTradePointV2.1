@@ -9,13 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Pages\Sales\**" />
-    <Content Remove="Pages\Sales\**" />
-    <EmbeddedResource Remove="Pages\Sales\**" />
-    <None Remove="Pages\Sales\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Remove="Shared\Chat\AuxiliarComponents\ChatMenuGroup.razor" />
   </ItemGroup>
 

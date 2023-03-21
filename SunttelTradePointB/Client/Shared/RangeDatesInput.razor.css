@@ -1,0 +1,44 @@
+﻿.controlContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 500px;
+    margin: auto;
+    
+}
+
+.lblControl{
+    color: white;
+    width: 60px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    
+}
+
+input{
+    width: 140px;
+}
+
+.reload-button {
+    padding: 5px;
+    font-size: 0.8rem;
+    font-family: sans-serif;
+    color: #f2fcff;
+    background-color: #f30;
+    border-radius: 5px;
+    border: none;
+    box-shadow: 0 4px 4px 0 rgba(242, 252, 252, 0.2);
+    transition: 0.3s;
+}
+
+    .reload-button:hover {
+        background-color: #f2f2f2;
+        color: #000000;
+    }
+
+
+img{
+    
+    width: 24px;
+    height: 24px;
+    
+}
