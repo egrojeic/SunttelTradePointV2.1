@@ -22,6 +22,8 @@ using SunttelTradePointB.Server.Services.Communications;
 using SunttelTradePointB.Server.Interfaces.UserTracking;
 using SunttelTradePointB.Server.Services.UserTracking;
 using SunttelTradePointB.Shared.Models;
+using SunttelTradePointB.Server.Interfaces.SalesBkServices;
+using SunttelTradePointB.Server.Services.SalesBkServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -76,6 +78,9 @@ builder.Services.AddTransient<ISelectorDataSource, SelectorsBackService>();
 builder.Services.AddTransient<ITransactionalItemsRelatedConceptsBKService, TransactionalItemsRelatedConceptsService>();
 builder.Services.AddTransient<IEntitiesRelatedConcepts, EntityActorsRelatedConceptsService>();
 builder.Services.AddTransient<IMessagesValet, MessageValet>();
+
+builder.Services.AddTransient<ICommercialDocument, CommercialDocumentsService>();
+
 
 builder.Services.AddTransient<IUserTracking, UserTrackingService>();
 

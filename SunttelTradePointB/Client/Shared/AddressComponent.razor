@@ -23,7 +23,15 @@
                     <label>@(country1 != null ? (country1?.Name != null ? country1?.Name : "") : "")</label>
                     <button @onclick='()=>SetViewElemnt("Contry")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                 </div>
-                <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" EventClosed="ClosedInput" ViewSelect="viewSelect" Visible="viewControlCountry1">
+                <InputTextSelector 
+                    @ref="ReferInputTextSelector" 
+                    EventSearcherValue="EventSearcherValue" 
+                    EventIdSelection="EventIdSelection" 
+                    ParamCountResul="ParamCountResul" 
+                    EventClosed="ClosedInput" 
+                    ViewSelect="viewSelect"
+                    
+                    Visible="viewControlCountry1">
                     @{
                         if (countryList != null)
                         {
@@ -35,6 +43,17 @@
 
                     }
                 </InputTextSelector>
+
+                <InputTextSelector3 TItem="Country"
+                                    captionOff="true"
+                                    EventSearcherValueAndId="EventSearcherValue"
+                                    Visible="viewControlCountry1"
+                                    style="left:-100px;"
+                                    EventClosed="ClosedInput"
+                                    Id="@GetName("SkinImageName", new Concept())"
+                                    Items="countryList">
+
+                </InputTextSelector3>
             </div>
         </div>      
     </div>
@@ -427,5 +446,12 @@
 
     }
     #endregion Input Control
+
+    
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
 
 }
