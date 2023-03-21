@@ -52,7 +52,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <param name="entityActorId"></param>
         /// <param name="entityDetailsSection"></param>
         /// <returns></returns>
-        Task<List<T>> GetEntityDetailsOf<T>(string entityActorId, EntityDetailsSection entityDetailsSection);
+        Task<List<Concept>> GetEntityDetailsOf(string entityActorId, EntityDetailsSection entityDetailsSection);
 
         /// <summary>
         /// Retrives the different related concepts to an Channel Communications Group
