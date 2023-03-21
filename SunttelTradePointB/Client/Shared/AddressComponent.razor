@@ -7,7 +7,7 @@
 
 <div class="form-group row py-2">
     <label class="control-label col-md-12">@lblAddresLine1*: </label>
-    <div class="col">     
+    <div class="col">
         @if (address == null) address = new();
         <input id="addres1" type="text" class="form-control" @bind-value="@address.AddressLine1" required />
     </div>
@@ -23,9 +23,8 @@
                                 caption="@(country1 != null ? (country1?.Name != null ? country1?.Name : "") : "")"
                                 EventClosed="ClosedInput"
                                 Items="countryList"
-                  EventSearcherValueAndId="EventSearcherValueAndId"
-                                                EventIdSelectionAndId="SelectionMade"
-            >
+                                EventSearcherValueAndId="EventSearcherValueAndId"
+                                EventIdSelectionAndId="SelectionMade">
 
             </InputTextSelector3>
 
@@ -57,21 +56,18 @@
     <div class="col">
         @if (citiesList == null) citiesList = new();
         <div>
-            <div style="position:relative;">
-                <div class="item-edit">
-                    <label></label>
-                    <button @onclick='()=>SetViewElemnt("City")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                </div>
-                <InputTextSelector3 TItem="City"
-                                    Id="City"
-                                    caption="@(city != null ? (city?.Name != null ? city?.Name : "") : "")"
-                                    Items="citiesList"
-                                    EventClosed="ClosedInput"
-                                    EventSearcherValueAndId="EventSearcherValueAndId"
-                                    EventIdSelectionAndId="SelectionMade">
 
-                </InputTextSelector3>
-            </div>
+
+            <InputTextSelector3 TItem="City"
+                                Id="City"
+                                caption="@(city != null ? (city?.Name != null ? city?.Name : "") : "")"
+                                Items="citiesList"
+                                EventClosed="ClosedInput"
+                                EventSearcherValueAndId="EventSearcherValueAndId"
+                                EventIdSelectionAndId="SelectionMade">
+
+            </InputTextSelector3>
+
         </div>
 
     </div>
@@ -195,7 +191,7 @@
 
         }
         if (address == null) address = new();
-       
+
     }
 
 
@@ -293,8 +289,8 @@
         if (oldAddress.CityAddress.RegionCity.CountryRegion == null) oldAddress.CityAddress.RegionCity.CountryRegion = new();
 
         oldAddress.CityAddress = city != null ? city : (oldAddress.CityAddress != null ? oldAddress.CityAddress : new());
-        oldAddress.CityAddress.RegionCity = currentRegion != null ? currentRegion : (oldAddress.CityAddress.RegionCity != null ? oldAddress.CityAddress.RegionCity : new());
-        oldAddress.CityAddress.RegionCity.CountryRegion = currentCountry != null ? currentCountry : (oldAddress.CityAddress.RegionCity.CountryRegion != null ? oldAddress.CityAddress.RegionCity.CountryRegion : new());
+        oldAddress.CityAddress.RegionCity = geo != null ? geo : (oldAddress.CityAddress.RegionCity != null ? oldAddress.CityAddress.RegionCity : new());
+        oldAddress.CityAddress.RegionCity.CountryRegion = country1 != null ? country1 : (oldAddress.CityAddress.RegionCity.CountryRegion != null ? oldAddress.CityAddress.RegionCity.CountryRegion : new());
         geoPlaces.address = oldAddress;
     }
 
@@ -344,16 +340,20 @@
     public void SelectionMade(Country arg)
     {
         if (SearcherValueMode == "Contry")
-        {
+        {            
             country1 = arg;
+            LoadRegions(country1);
+            SetEventAddress();
         }
         StateHasChanged();
     }
     public void SelectionMade(GeoRegion arg)
     {
-        if (SearcherValueMode == "Contry")
+        if (SearcherValueMode == "Geo")
         {
             geo = arg;
+            GetFilteredCities(geo);
+            SetEventAddress();
         }
         StateHasChanged();
     }
@@ -362,6 +362,7 @@
         if (SearcherValueMode == "City")
         {
             city = arg;
+            SetEventAddress();
         }
         StateHasChanged();
     }
@@ -378,16 +379,7 @@
         StateHasChanged();
     }
 
-    public void SetViewElemnt(string Element)
-    {
-        SearcherValueMode = Element;
-        ClosedInput();
-        if (Element == "Contry") { viewControlCountry1 = true; }
-        if (Element == "Geo") viewControlGeo = true;
-        if (Element == "City") viewControlCity = true;
-
-
-    }
+   
     #endregion Input Control
 
 }

@@ -40,22 +40,17 @@
                                 <div class="col">
                                     <div class="position:relative;">
                                         <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "WareHouseParent"): </label>
-                                        <div class="item-edit">
-                                            <label>@(warehouse.InventoryTransactionalItemType != null ? warehouse.InventoryTransactionalItemType?.Name : "")</label>
-                                            <button type="button" style="float:right" @onclick='()=>SetViewElemnt("WareHouseParent")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                        </div>
-                                        <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewWareHouseParent">
-                                            @{
-                                                if (warehouseList != null)
-                                                {
-                                                    foreach (var entity in warehouseList)
-                                                    {
-                                                        <option value="@entity?.Id">@entity?.Name</option>
-                                                    }
-                                                }
-
-                                            }
-                                        </InputTextSelector>
+                                       
+                                        <InputTextSelector3
+                                            TItem="Warehouse"
+                                            Id="WareHouseParent"
+                                            caption="@(warehouse.InventoryTransactionalItemType != null ? warehouse.InventoryTransactionalItemType?.Name : "")"
+                                            Items="warehouseList"
+                                             EventSearcherValueAndId="EventSearcherValueAndId"
+                                             EventIdSelectionAndId="SelectionMade"
+                                        >
+                                          
+                                        </InputTextSelector3>
                                     </div>
 
                                 </div>
@@ -66,24 +61,17 @@
                             <div class="form-group row py-2">
                                 <div class="form-group row">
                                     <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "AssociatedEntity"): </label>
-                                    <div class="position:relative;">
-                                        <div class="item-edit">
-                                            <label>@(warehouse.AssociatedEntity != null ? warehouse.AssociatedEntity?.Name : "")</label>
-                                            <button type="button" style="float:right" @onclick='()=>SetViewElemnt("AssociatedEntity")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                        </div>
-                                        <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" EventClosed="ClosedControlInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewAssociatedEntity">
-                                            @{
-                                                if (wareHouseParentListApi != null)
-                                                {
-                                                    foreach (var entity in wareHouseParentListApi)
-                                                    {
-                                                        <option value="@entity?.Id">@entity?.Name</option>
-                                                    }
-                                                }
-
-                                            }
-                                        </InputTextSelector>
-                                    </div>
+                                                                        
+                                        <InputTextSelector3
+                                            TItem="EntityActor"
+                                            Id="AssociatedEntity"
+                                        caption="@(warehouse.AssociatedEntity != null ? warehouse.AssociatedEntity?.Name : "")"
+                                        Items="wareHouseParentListApi"
+                                         EventSearcherValueAndId="EventSearcherValueAndId"
+                                         EventIdSelectionAndId="SelectionMade"
+                                        >                                           
+                                        </InputTextSelector3>
+                                  
                                 </div>
                             </div>
                             <div class="grid-columns-2">
@@ -144,22 +132,16 @@
                                     <div class="col">
                                         <div class="position:relative;">
                                             <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "InventoryTransactionalItemType"): </label>
-                                            <div class="item-edit">
-                                                <label>@(warehouse.InventoryTransactionalItemType != null ? warehouse.InventoryTransactionalItemType?.Name : "")</label>
-                                                <button type="button" style="float:right" @onclick='()=>SetViewElemnt("InventoryTransactionalItemType")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                            </div>
-                                            <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewEntitiesInventory">
-                                                @{
-                                                    if (itemType != null)
-                                                    {
-                                                        foreach (var entity in itemType)
-                                                        {
-                                                            <option value="@entity?.Id">@entity?.Name</option>
-                                                        }
-                                                    }
-
-                                                }
-                                            </InputTextSelector>
+                                           
+                                            <InputTextSelector3
+                                                TItem="TransactionalItemType"
+                                                Id="InventoryTransactionalItemType"
+                                                caption="@(warehouse.InventoryTransactionalItemType != null ? warehouse.InventoryTransactionalItemType?.Name : "")"
+                                                Items="itemType" 
+                                                 EventSearcherValueAndId="EventSearcherValueAndId"
+                                    EventIdSelectionAndId="SelectionMade"
+                                            >                                              
+                                            </InputTextSelector3>
                                         </div>
 
                                     </div>
@@ -179,22 +161,17 @@
                                 <div class="form-group row">
                                     <div class="position:relative;">
                                         <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "ContactPerson"): </label>
-                                        <div class="item-edit">
-                                            <label>@(warehouse.ContactPerson != null ? warehouse.ContactPerson?.Name : "")</label>
-                                            <button type="button" style="float:right" @onclick='()=>SetViewElemnt("Contact")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                        </div>
-                                        <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewEntitiesContact">
-                                            @{
-                                                if (ContactList != null)
-                                                {
-                                                    foreach (var entity in ContactList)
-                                                    {
-                                                        <option value="@entity?.Id">@entity?.Name</option>
-                                                    }
-                                                }
-
-                                            }
-                                        </InputTextSelector>
+                                        
+                                        <InputTextSelector3
+                                        TItem="EntityActor"  
+                                        Id="Contact"
+                                        caption="@(warehouse.ContactPerson != null ? warehouse.ContactPerson?.Name : "")"
+                                        Items="ContactList"
+                                         EventSearcherValueAndId="EventSearcherValueAndId"
+                                    EventIdSelectionAndId="SelectionMade"
+                                        >
+                                          
+                                        </InputTextSelector3>
                                     </div>
                                 </div>
                             </div>
@@ -233,7 +210,7 @@
     public bool PopupViewEntitiesInventory = false;
     public bool PopupViewWareHouseParent = false;
 
-  
+
 
 
     Warehouse warehouse = new Warehouse();
@@ -283,7 +260,7 @@
     }
 
 
- 
+
     public void SetViewElemnt(string Element)
     {
         ViewSelect = false;
@@ -297,24 +274,24 @@
         StateHasChanged();
     }
 
-    protected async void EventSearcherValue(string value)
+    protected async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
-        ParamCountResul = 0;
+        SearcherValueMode = arg.IdControl;
         if (SearcherValueMode == "AssociatedEntity")
         {
-            wareHouseParentListApi = await actorsNodeServive.GetEntityActorFaceList(value);
+            wareHouseParentListApi = await actorsNodeServive.GetEntityActorFaceList(arg.value);
             ParamCountResul = wareHouseParentListApi != null ? wareHouseParentListApi.Count() : 0;
         }
 
         if (SearcherValueMode == "Contact")
         {
-            ContactList = await actorsNodeServive.GetEntityActorFaceList(value);
+            ContactList = await actorsNodeServive.GetEntityActorFaceList(arg.value);
             ParamCountResul = ContactList != null ? ContactList.Count() : 0;
         }
         if (SearcherValueMode == "WareHouseParent")
         {
             warehouseList = await warehouseService.GetWarehouseList("all");
-            if (!value.ToLower().Contains("todo") && !value.ToLower().Contains("all")) { warehouseList = warehouseList.Where(s => s.Name != null != null && s.Name.ToLower().Contains(value.ToLower())).ToList(); }
+            if (!arg.value.ToLower().Contains("todo") && !arg.value.ToLower().Contains("all")) { warehouseList = warehouseList.Where(s => s.Name != null != null && s.Name.ToLower().Contains(arg.value.ToLower())).ToList(); }
 
             if (warehouse.WareHouseParent == null) warehouse.WareHouseParent = new();
             ParamCountResul = warehouseList != null ? warehouseList.Count() : 0;
@@ -322,42 +299,45 @@
         if (SearcherValueMode == "InventoryTransactionalItemType")
         {
             itemType = await transactionalItemsService.GetSelectorListTransactionalItemTypes();
-            if (!value.ToLower().Contains("todo") && !value.ToLower().Contains("all")) itemType = itemType.Where(s => s.Name != null != null && s.Name.ToLower().Contains(value.ToLower())).ToList();
+            if (!arg.value.ToLower().Contains("todo") && !arg.value.ToLower().Contains("all")) itemType = itemType.Where(s => s.Name != null != null && s.Name.ToLower().Contains(arg.value.ToLower())).ToList();
 
             ParamCountResul = itemType != null ? itemType.Count() : 0;
         }
 
-
-
-        if (ParamCountResul > 0) { ViewSelect = true; } else { ViewSelect = false; }
+      
         StateHasChanged();
     }
 
-    protected async void EventIdSelectionInput(string selectionId)
-    {
-        if (SearcherValueMode == "AssociatedEntity")
-        {
-            warehouse.AssociatedEntity = wareHouseParentListApi.Where(c => c.Id == selectionId).FirstOrDefault();
-        }
 
-        if (SearcherValueMode == "Contact")
-        {
-            warehouse.ContactPerson = ContactList.Where(c => c.Id == selectionId).FirstOrDefault();
-        }
-        if (SearcherValueMode == "WareHouseParent")
-        {
-            warehouse.WareHouseParent = warehouseList.Where(s => s.Id != null && s.Id == selectionId).FirstOrDefault();
-            if (warehouse.WareHouseParent == null) warehouse.WareHouseParent = new();
-            ParamCountResul = ContactList != null ? ContactList.Count() : 0;
-        }
-        if (SearcherValueMode == "InventoryTransactionalItemType")
-        {
-            warehouse.InventoryTransactionalItemType = itemType.Where(s => s.Id != null && s.Id == selectionId).FirstOrDefault();
-            if (warehouse.InventoryTransactionalItemType == null) warehouse.InventoryTransactionalItemType = new();
-            ParamCountResul = ContactList != null ? ContactList.Count() : 0;
-        }
-        ClosedControlInput();
+     public void SelectionMade(Warehouse arg)
+    {
+        warehouse.InventoryTransactionalItemType = arg;
+        StateHasChanged();
     }
+
+     public void SelectionMade(EntityActor arg)
+    {
+        if(SearcherValueMode=="Contact"){
+           warehouse.AssociatedEntity = arg;
+        }else{
+             warehouse.ContactPerson = arg;
+        }
+        StateHasChanged();
+    }
+
+      public void SelectionMade(TransactionalItemType arg)
+    {
+      warehouse.InventoryTransactionalItemType = arg;
+        StateHasChanged();
+    }
+
+    
+
+
+    
+
+
+  
 
     public void ClosedControlInput()
     {
