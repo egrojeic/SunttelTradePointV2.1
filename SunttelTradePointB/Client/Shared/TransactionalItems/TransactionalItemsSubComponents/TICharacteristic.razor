@@ -116,7 +116,7 @@
 
     public string GetName(string Name, Object Obj)
     {
-        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+       if(UICommonFunctions.GetDisplayName(Obj, Name)!=null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
     }
 

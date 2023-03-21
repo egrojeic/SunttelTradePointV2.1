@@ -93,8 +93,9 @@
             <div>
                 <InputTextSelector3 TItem="ConceptType"
                                     caption="@(currentItem.TypeOfConcept != null ? currentItem.TypeOfConcept.Name : "")"
-                                    EventSearcherValueAndId="EventSearcherValueAndId"                                   
-                                    Id="@GetName("TypeOfConcept", new Concept())"
+                                    EventSearcherValueAndId="EventSearcherValueAndId"
+                                    EventIdSelectionAndId="SelectionMade"
+                                    Id="TypeOfConcept"
                                     Items="typeOfConcepts">
 
                 </InputTextSelector3>
@@ -114,18 +115,18 @@
                             <InputTextSelector3 TItem="TransactItemImage"
                                                 captionOff="true"
                                                 EventSearcherValueAndId="EventSearcherValueAndId"
+                                                EventIdSelectionAndId="SelectionMade"
                                                 Visible="PopupViewAddImg"
                                                 style="left:-100px;"
                                                 EventClosed="EventClosed"
-                                                Id="@GetName("SkinImageName", new Concept())"
+                                                Id="SkinImageName"
                                                 Items="transactItemImages">
 
                             </InputTextSelector3>
                         </div>
-                        <div>                           
+                        <div>
                             <img class="style-img" src="@(currentItem.SkinImageName !=null && currentItem.SkinImageName !="." ?transactionalService.Host+currentItem.SkinImageName:"/images/defaultImage.png")" @onclick='()=> SetViewElemnt()' />
                         </div>
-
 
                     </div>
 
@@ -244,7 +245,7 @@
             LoadObj();
             if (currentItem != null)
             {
-                nameTemp = currentItem.Name;      
+                nameTemp = currentItem.Name;
                 LoadObj();
                 StateHasChanged();
             }
@@ -369,6 +370,7 @@
 
     }
 
+    #region ControlInput
     protected async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
         if (arg.IdControl == GetName("SkinImageName", new Concept()))
@@ -408,15 +410,17 @@
 
     }
 
-    //protected void EventIdSelectionAndId(TItem Item)
-    //{        
-    //    if (Item.GetType().Equals(typeof(ConceptType)))
-    //    {
-    //        currentItem.TypeOfConcept = (ConceptType)Item;
-    //    }
-    //}
-
-
+    public void SelectionMade(ConceptType arg)
+    {
+        this.currentItem.TypeOfConcept = arg;
+        StateHasChanged();
+    }
+    public void SelectionMade(TransactItemImage arg)
+    {
+        this.currentItem.SkinImageName = arg.Name;
+        StateHasChanged();
+    }
+    #endregion End ControlInput
 
     public void SetViewElemnt()
     {
@@ -459,7 +463,7 @@
         modeStatus = modeStatus ? false : true;
 
         ConceptStatus statust = new();
-        
+
         if (modeStatus)
         {
             currentItem.Status = statust = new ConceptStatus
@@ -477,7 +481,7 @@
             currentItem.Status = null;
             colorStatus = "gray";
         }
-       
+
     }
 
     public string GetName(string Name, Object Obj)

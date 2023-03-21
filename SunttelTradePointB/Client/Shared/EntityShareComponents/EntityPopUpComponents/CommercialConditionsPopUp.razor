@@ -21,24 +21,17 @@
                         <div class="form-group row">
                             <label>@lblRelatedEntity*:</label>
                             <div class="col">
-                                <div class="position:relative;">
-                                    <div class="item-edit">
-                                        <label>@(entityActor != null ? entityActor.Name : "")</label>
-                                        <button type="button" style="float:right" @onclick='()=>SetViewElemnt("Entity")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                    </div>
-                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewEntities">
-                                        @{
-                                            if (ListEntityActor != null)
-                                            {
-                                                foreach (var entity in ListEntityActor)
-                                                {
-                                                    <option value="@entity?.Id">@entity?.Name</option>
-                                                }
-                                            }
 
-                                        }
-                                    </InputTextSelector>
-                                </div>
+
+                                <InputTextSelector3 TItem="EntityActor"                                   
+                                                    caption="@(entityActor != null ? entityActor.Name : "")"
+                                                    EventSearcherValueAndId="EventSearcherValueAndId"
+                                                    EventIdSelectionAndId="SelectionMade"
+                                                    Items="ListEntityActor"
+                                                    Id="Entity">
+
+                                </InputTextSelector3>
+
                             </div>
                         </div>
 
@@ -129,32 +122,30 @@
         StateHasChanged();
     }
 
-    protected async void EventSearcherValue(string value)
+    protected async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
-        if (SearchValueMode == "Entity")
-        {
-            ListEntityActor = await actorsNodeServive.GetEntityActorFaceList(value);
+        if (arg.IdControl == "Entity")
+        {          
+            ListEntityActor = await actorsNodeServive.GetEntityActorFaceList(arg.value);
             ParamCountResul = ListEntityActor != null ? ListEntityActor.Count() : 0;
         }
         if (ParamCountResul > 0) { ViewSelect = true; } else { ViewSelect = false; }
         await Refresh();
     }
 
-    protected async void EventIdSelectionInput(string selectionId)
+   public void SelectionMade(EntityActor arg)
     {
-        if (SearchValueMode == "Entity")
-        {
-            entityActor = ListEntityActor.Where(c => c.Id == selectionId).FirstOrDefault();
-        }
-        PopupViewEntities = false;
-        await Refresh();
+        entityActor = arg;
+        StateHasChanged();
     }
+
+   
 
     public async Task SaveCommercialCondition(string entityId, EntitiesCommercialRelationShip comercialConditions)
     {
-        if(entityId != null && comercialConditions != null)
+        if (entityId != null && comercialConditions != null)
         {
-            if(comercialId != null)
+            if (comercialId != null)
             {
                 comercialConditions.Id = comercialId;
             }
@@ -169,7 +160,7 @@
 
     public async Task GetCommercialConditions(string entityId)
     {
-        if(comercialId != null)
+        if (comercialId != null)
         {
             relations = await actorsNodeServive.GetCommercialRelationShip(entityId);
             entityActor = relations.RelatedEntity;

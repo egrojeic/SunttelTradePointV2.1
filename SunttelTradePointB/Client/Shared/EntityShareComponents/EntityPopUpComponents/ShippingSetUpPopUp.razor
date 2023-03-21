@@ -22,24 +22,16 @@
                         <div class="form-group row">
                             <label>@lblSender*:</label>
                             <div class="col">
-                                <div class="position:relative;">
-                                    <div class="item-edit">
-                                        <label>@(entityActor != null ? entityActor.Name : "")</label>
-                                        <button type="button" style="float:right" @onclick='()=>SetViewElemnt("Sender")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                    </div>
-                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewEntitiesSender">
-                                        @{
-                                            if (ListEntityActor != null)
-                                            {
-                                                foreach (var entity in ListEntityActor)
-                                                {
-                                                    <option value="@entity?.Id">@entity?.Name</option>
-                                                }
-                                            }
 
-                                        }
-                                    </InputTextSelector>
-                                </div>
+                                <InputTextSelector3 TItem="EntityActor"
+                                                    Id="Sender"
+                                                    Items="ListEntityActor"
+                                                    caption="@(entityActor != null ? entityActor.Name : "")"
+                                                    EventSearcherValueAndId="EventSearcherValueAndId"
+                                                    EventIdSelectionAndId="SelectionMade">
+
+                                </InputTextSelector3>
+
                             </div>
                         </div>
 
@@ -47,24 +39,13 @@
                         <div class="form-group py-2">
                             <label>@lblCarrier*:</label>
                             <div class="col">
-                                <div class="position:relative;">
-                                    <div class="item-edit">
-                                        <label>@(entityActorCarrier != null ? entityActorCarrier.Name : "")</label>
-                                        <button type="button" style="float:right" @onclick='()=>SetViewElemnt("Carrier")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                    </div>
-                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewEntitiesCarrier">
-                                        @{
-                                            if (ListEntityActorCarrier != null)
-                                            {
-                                                foreach (var entity in ListEntityActorCarrier)
-                                                {
-                                                    <option value="@entity?.Id">@entity?.Name</option>
-                                                }
-                                            }
-
-                                        }
-                                    </InputTextSelector>
-                                </div>
+                                <InputTextSelector3 Id="Carrier"
+                                                    TItem="EntityActor"
+                                                    caption="@(entityActorCarrier != null ? entityActorCarrier.Name : "")"
+                                                    Items="ListEntityActorCarrier"
+                                                    EventSearcherValueAndId="EventSearcherValueAndId"
+                                                    EventIdSelectionAndId="SelectionMade">
+                                </InputTextSelector3>
                             </div>
                         </div>
 
@@ -76,9 +57,9 @@
                         </div>
                         <div class="form-group py-2">
                             <label>@lblCutOff24Hours*:</label>
-                            <div class="col">                                
+                            <div class="col">
                                 <input type="number" class="form-control" placeholder="Cut of 24 hours" @bind-value="@shippingInfo.CutOff24Hour" required />
-                            </div>                            
+                            </div>
                         </div>
                         <div class="form-group py-2">
                             <label>@lblCutOffMinute*:</label>
@@ -93,27 +74,20 @@
                             </div>
                         </div>
 
-                        
+
                         <div class="form-group py-2">
                             <label>@lblPalletTypeShipping*:</label>
                             <div class="col">
-                                <div class="position:relative;">
-                                    <div class="item-edit">
-                                        <label>@(entityActorPallet != null ? entityActorPallet.Name : "")</label>
-                                        <button type="button" style="float:right" @onclick='()=>SetViewElemnt("Pallet")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                    </div>
-                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewEntitiesPallet">
-                                        @{
-                                            if (palletTypeList != null)
-                                            {
-                                                foreach (var entity in palletTypeList)
-                                                {
-                                                    <option value="@entity?.Name">@entity?.Name</option>
-                                                }
-                                            }
-                                        }
-                                    </InputTextSelector>
-                                </div>
+
+                                <InputTextSelector3 TItem="PalletType"
+                                                    Id="Pallet"
+                                                    caption="@(entityActorPallet != null ? entityActorPallet.Name : "")"
+                                                    Items="palletTypeList"
+                                                    EventSearcherValueAndId="EventSearcherValueAndId"
+                                                    EventIdSelectionAndId="SelectionMade">
+
+                                </InputTextSelector3>
+
                             </div>
                         </div>
                         <div class="form-group py-2">
@@ -144,7 +118,7 @@
     </div>
 </div>
 
-@code{
+@code {
     [Parameter]
     public string Id { get; set; }
     [Parameter]
@@ -246,7 +220,7 @@
         if (shippingId != null)
         {
             getShippingInfo = await actorsNodeServive.GetShippingSetUpById(shippingId);
-            if(getShippingInfo != null)
+            if (getShippingInfo != null)
             {
                 entityActor.Name = getShippingInfo.Sender.Name;
                 entityActorCarrier.Name = getShippingInfo.Carrier.Name;
@@ -291,56 +265,53 @@
         StateHasChanged();
     }
 
-    public void SetViewElemnt(string Element)
-    {
-        ViewSelect = false;
-        SearcherValueMode = Element;
-        if (Element == "Sender" && !PopupViewEntitiesSender) { PopupViewEntitiesSender = true; }
-        if (Element == "Carrier" && !PopupViewEntitiesCarrier) { PopupViewEntitiesCarrier = true; }
-        if (Element == "Pallet" && !PopupViewEntitiesPallet) { PopupViewEntitiesPallet = true; }
-        StateHasChanged();
-    }
 
-    protected async void EventSearcherValue(string value)
+
+    protected async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
+        SearcherValueMode = arg.IdControl;
         if (SearcherValueMode == "Sender")
         {
-            ListEntityActor = await actorsNodeServive.GetEntityActorFaceList(value);
+            ListEntityActor = await actorsNodeServive.GetEntityActorFaceList(arg.value);
             ParamCountResul = ListEntityActor != null ? ListEntityActor.Count() : 0;
         }
         if (SearcherValueMode == "Carrier")
         {
-            ListEntityActorCarrier = await actorsNodeServive.GetEntityActorFaceList(value);
+            ListEntityActorCarrier = await actorsNodeServive.GetEntityActorFaceList(arg.value);
             ParamCountResul = ListEntityActorCarrier != null ? ListEntityActorCarrier.Count() : 0;
         }
         if (SearcherValueMode == "Pallet")
         {
             palletTypeListTest = await actorsNodeServive.GetPalletTypes();
-            palletTypeList = palletTypeListTest.Where(e => e.Name.ToLower().Contains(value.ToLower())).ToList();
+            palletTypeList = palletTypeListTest.Where(e => e.Name.ToLower().Contains(arg.value.ToLower())).ToList();
             ParamCountResul = palletTypeList != null ? palletTypeList.Count() : 0;
         }
-        if (ParamCountResul > 0) { ViewSelect = true; } else { ViewSelect = false; }
+
         await Refresh();
     }
 
-    protected async void EventIdSelectionInput(string selectionId)
+    public void SelectionMade(EntityActor arg)
     {
-
         if (SearcherValueMode == "Sender")
         {
-            entityActor = ListEntityActor.Where(c => c.Id == selectionId).FirstOrDefault();
+            entityActor = arg;
         }
         if (SearcherValueMode == "Carrier")
         {
-            entityActorCarrier = ListEntityActorCarrier.Where(c => c.Id == selectionId).FirstOrDefault();
+            entityActorCarrier = arg;
         }
+
+        StateHasChanged();
+    }
+    public void SelectionMade(PalletType arg)
+    {
         if (SearcherValueMode == "Pallet")
         {
-            entityActorPallet = palletTypeList.Where(c => c.Id == selectionId).FirstOrDefault();
+            entityActorPallet = arg;
         }
-        Reload();
-        await Refresh();
+        StateHasChanged();
     }
+
 
     private void Reload()
     {

@@ -7,48 +7,57 @@
 
 <div class="GeneralContainerDetails">
 
-<div class="detailsTitleContainer">
-    <h3 class="subTitleDetailForm">Shipping Places</h3>
+    <div class="detailsTitleContainer">
+        <h3 class="subTitleDetailForm">Shipping Places</h3>
         <a class="btn" title="Add new shipping to address" @onclick="(() => NavigateShippingPlaces())">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style" viewBox="0 0 16 16">
                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                 <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
             </svg>
         </a>
-</div>
+    </div>
 
 
 
-<div class="tableBodyContainer">
+    <div class="tableBodyContainer">
 
-    @if (entityAddressList != null)
-    {
-        <SfGrid 
-            DataSource="entityAddressList"
-            Height="auto"
-            Width="auto"
-            TValue="Address"
-            AllowFiltering="true"
-            AllowTextWrap="false"
-            AllowPaging="true"
-            AllowResizing="true"    
-            ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" } })">
-            <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
-            <GridColumns>
-                <GridColumn Field="@nameof(Address.Name)" HeaderText="Name" Width="auto"></GridColumn>
-                <GridColumn Field="@nameof(Address.AddressLine1)" HeaderText="Address Line 1" Width="auto"></GridColumn>
-                <GridColumn Field="@nameof(Address.AddressLine2)" HeaderText="Address Line 2" Width="auto"></GridColumn>
-                <GridColumn Field="@nameof(Address.CityAddress.RegionCity.CountryRegion.Name)" HeaderText="Country" Width="auto"></GridColumn>
-                <GridColumn Field="@nameof(Address.CityAddress.RegionCity.Name)" HeaderText="Region/State" Width="auto"></GridColumn>
-                <GridColumn Field="@nameof(Address.CityAddress.Name)" HeaderText="City" Width="auto"></GridColumn>
-                <GridColumn Field="@nameof(Address.ZipCode)" HeaderText="Zip Code" Width="auto"></GridColumn>
-            </GridColumns>
-            <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="Address"></GridEvents>
-        </SfGrid>
+        @if (entityAddressList != null)
+        {
 
-    }
+            <RadzenDataGrid AllowFiltering="true"
+                        AllowColumnResize="true"
+                        AllowAlternatingRows="true"
+                        FilterMode="FilterMode.Advanced"
+                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        AllowSorting="true"
+                        AllowPaging="true"
+                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                        ShowPagingSummary="true"
+                        Data="@entityAddressList"
+                        TItem="Address"
+                        ColumnWidth="300px"
+                        SelectionMode="DataGridSelectionMode.Single"
+                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                        CellContextMenu="@ShowContextMenuWithContent"
+                        PageNumbersCount="100"
+                        PageSize="2">
 
-</div>
+                <Columns>
+                    <RadzenDataGridColumn TItem="Address" Property="Name" Title="@GetName("Name", new Address())" Width="280px" />
+                    <RadzenDataGridColumn TItem="Address" Property="AddressLine1" Title="@GetName("AddressLine1", new Address())" Width="80px" TextAlign="Radzen.TextAlign.Center" />
+                    <RadzenDataGridColumn TItem="Address" Property="AddressLine2" Title="@GetName("AddressLine2", new Address())" Width="80px" TextAlign="Radzen.TextAlign.Center" />
+                    <RadzenDataGridColumn TItem="Address" Property="CityAddress.RegionCity.CountryRegion.Name" Title="@GetName("CountryRegion", new GeoRegion())" Width="80px" TextAlign="Radzen.TextAlign.Center" />
+                    <RadzenDataGridColumn TItem="Address" Property="CityAddress.RegionCity.Name" Title="@GetName("RegionCity", new Country())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                    <RadzenDataGridColumn TItem="Address" Property="CCityAddress.Name" Title="@GetName("CCityAddress", new Address())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                    <RadzenDataGridColumn TItem="Address" Property="ZipCode" Title="@GetName("ZipCode", new Address())" Width="80px" TextAlign="Radzen.TextAlign.Center" />
+
+                </Columns>
+            </RadzenDataGrid>
+
+
+        }
+
+    </div>
 </div>
 
 @code {
@@ -79,20 +88,35 @@
         }
     }
 
-    public void OnContextMenuClick(ContextMenuClickEventArgs<Address> args)
-    {
-        Address _Address = new();
-        _Address = args.RowInfo.RowData;
 
-        if (args.Item.Text == "Edit")
-        {
-            navigationManager.NavigateTo($"/Actors/{EntityId}/ShippingPlaces/{_Address.Id}/Edit");
-        }
+    #region Grid
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<Address> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        Address argObj = (Address)args.Value;
+
+        navigationManager.NavigateTo($"/Actors/{EntityId}/ShippingPlaces/{argObj.Id}/Edit");
     }
+
+    #endregion Grid
+
 
     private async Task NavigateShippingPlaces()
     {
         navigationManager.NavigateTo($"/Actors/{EntityId}/{Code}/ShippingPlaces");
     }
+
+     public string GetName(string Name, Object Obj)
+    {
+       if(UICommonFunctions.GetDisplayName(Obj, Name)!=null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
 
 }

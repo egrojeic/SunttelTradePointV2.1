@@ -21,22 +21,33 @@
 
     @if (entityElectronicAddress != null)
     {
-        <SfGrid DataSource="entityElectronicAddress"
-            Height="auto"
-            Width="auto"
-            TValue="ElectronicAddress"
-            AllowFiltering="true"
-            AllowTextWrap="false"
-            AllowPaging="true"
-            AllowResizing="true"
-            ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" } })">
-            <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
-            <GridColumns>
-                <GridColumn Field="@nameof(ElectronicAddress.AddressKey)" HeaderText="Address Key" Width="110"></GridColumn>
-                <GridColumn Field="EmitterEntity.Name" HeaderText="Phone Number" Width="110"></GridColumn>
-            </GridColumns>
-            <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="ElectronicAddress"></GridEvents>
-        </SfGrid>
+
+        <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@entityElectronicAddress"
+                    TItem="ElectronicAddress"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    CellContextMenu="@ShowContextMenuWithContent"
+                    PageNumbersCount="100"
+                    PageSize="2">
+
+            <Columns>
+                <RadzenDataGridColumn TItem="ElectronicAddress" Property="AddressKey" Title="@GetName("AddressKey", new ElectronicAddress())" Width="80px" />
+                <RadzenDataGridColumn TItem="ElectronicAddress" Property="EmitterEntity.Name" Title="@GetName("EmitterEntity", new ElectronicAddress())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+
+            </Columns>
+        </RadzenDataGrid>
+
+      
     }
 
 </div>
@@ -67,20 +78,32 @@
         }
     }
 
-    public void OnContextMenuClick(ContextMenuClickEventArgs<ElectronicAddress> args)
-    {
-        ElectronicAddress _ElectronicAddress = new();
-        _ElectronicAddress = args.RowInfo.RowData;
+    #region Grid
 
-        if (args.Item.Text == "Edit")
-        {
-            navigationManager.NavigateTo($"/Actors/{EntityId}/ElectronicAddress/{_ElectronicAddress.Id}/Edit");
-        }
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<ElectronicAddress> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        ElectronicAddress argObj = (ElectronicAddress)args.Value;
+        navigationManager.NavigateTo($"/Actors/{EntityId}/ElectronicAddress/{argObj.Id}/Edit");
     }
+    #endregion Grid
+
+
 
     private async Task NavigateElectronicAddress()
     {
         navigationManager.NavigateTo($"/Actors/{EntityId}/ElectronicAddress");
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
     }
 
 }

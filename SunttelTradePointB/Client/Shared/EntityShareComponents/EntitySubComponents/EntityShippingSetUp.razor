@@ -8,6 +8,7 @@
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager navigationManager
 
+
 <div class="detailsTitleContainer">
     <h3 class="subTitleDetailForm">Shipping Setup</h3>
     <span class="btn" @onclick="(() => NavigateToShippingInfo())">
@@ -21,25 +22,42 @@
 <div class="tableBodyContainer">
     @if(shippingInfoList != null)
     {
-        <SfGrid DataSource="shippingInfoList"
-            Height="auto"
-            Width="auto"
-            TValue="ShippingInfo"
-            AllowFiltering="true"
-            AllowTextWrap="false"
-            AllowPaging="true"
-            AllowResizing="true"
-            ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" } })">
-            <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
-            <GridColumns>
-                <GridColumn Field="Sender.Name" HeaderText="Sender" Width="110"></GridColumn>
-                <GridColumn Field="Carrier.Name" HeaderText="Phone Number" Width="110"></GridColumn>
-                <GridColumn Field="DeliveryAddress.Name" HeaderText="Delivery Address" Width="110"></GridColumn>
-                <GridColumn Field="@nameof(ShippingInfo.CutOff24Hour)" HeaderText="Cut Off 24H" Width="110"></GridColumn>
-                <GridColumn Field="@nameof(ShippingInfo.CutOffMinute)" HeaderText="Cut Off Minute" Width="110"></GridColumn>
-                <GridColumn Field="@nameof(ShippingInfo.DelayTimeDays)" HeaderText="Delay Time Days" Width="110"></GridColumn>
-                <GridColumn Field="PalletTypeShipping.Name" HeaderText="Pallet Type Shipping" Width="110"></GridColumn>
-                <GridColumn HeaderText="Days" Width="110">
+
+
+        <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@shippingInfoList"
+                    TItem="ShippingInfo"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    CellContextMenu="@ShowContextMenuWithContent"
+                    PageNumbersCount="100"
+                    PageSize="2">
+
+            <Columns>
+                <RadzenDataGridColumn TItem="ShippingInfo" Property="Sender.Name" Title="@GetName("Sender", new ShippingInfo())" Width="180px" />
+                <RadzenDataGridColumn TItem="ShippingInfo" Property="Carrier.Name" Title="@GetName("Carrier", new ShippingInfo())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                <RadzenDataGridColumn TItem="ShippingInfo" Property="DeliveryAddress.Name" Title="@GetName("DeliveryAddress", new ShippingInfo())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                <RadzenDataGridColumn TItem="ShippingInfo" Property="CutOff24Hour" Title="@GetName("CutOff24Hour", new ShippingInfo())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                <RadzenDataGridColumn TItem="ShippingInfo" Property="CutOffMinute" Title="@GetName("CutOffMinute", new ShippingInfo())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                <RadzenDataGridColumn TItem="ShippingInfo" Property="DelayTimeDays" Title="@GetName("DelayTimeDays", new ShippingInfo())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                <RadzenDataGridColumn TItem="ShippingInfo" Property="PalletTypeShipping.Name" Title="@GetName("PalletTypeShipping", new ShippingInfo())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                <RadzenDataGridColumn TItem="ShippingInfo"   Title="Days" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                   
+             
+            </Columns>
+        </RadzenDataGrid>
+        
+         
+            @*    <GridColumn HeaderText="Days" Width="110">
                     <Template>
                         @{
                             var Monday = (bool)context.GetType().GetProperty(nameof(ShippingInfo.Monday)).GetValue(context);
@@ -79,12 +97,8 @@
                                 <span> Sunday </span>
                             }
                         }
-                    </Template>
-                </GridColumn>
-            </GridColumns>
-            <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="ShippingInfo"></GridEvents>
-        </SfGrid>
-
+                    </Template>*@
+          
     }
 
 </div>
@@ -112,20 +126,30 @@
         }
     }
 
-    public void OnContextMenuClick(ContextMenuClickEventArgs<ShippingInfo> args)
-    {
-        ShippingInfo _ShippingInfo = new();
-        _ShippingInfo = args.RowInfo.RowData;
 
-        if (args.Item.Text == "Edit")
-        {
-            navigationManager.NavigateTo($"/Actors/{EntityId}/ShippingInfo/{_ShippingInfo.Id}/Edit");
-        }
+     #region Grid
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<ShippingInfo> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        ShippingInfo argObj = (ShippingInfo)args.Value;
+        navigationManager.NavigateTo($"/Actors/{EntityId}/ShippingInfo/{argObj.Id}/Edit");
     }
+    #endregion Grid
 
     private async Task NavigateToShippingInfo()
     {
         navigationManager.NavigateTo($"/Actors/{EntityId}/ShippingInfo");
     }
 
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
 }

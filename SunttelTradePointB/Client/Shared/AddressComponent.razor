@@ -7,7 +7,8 @@
 
 <div class="form-group row py-2">
     <label class="control-label col-md-12">@lblAddresLine1*: </label>
-    <div class="col">
+    <div class="col">     
+        @if (address == null) address = new();
         <input id="addres1" type="text" class="form-control" @bind-value="@address.AddressLine1" required />
     </div>
 </div>
@@ -17,26 +18,18 @@
     <div class="col">
         @if (countryList == null) countryList = new();
         <div>
-            <div style="position:relative;">
-                <div class="item-edit">
-                    @if (country1 == null) country1 = new();
-                    <label>@(country1 != null ? (country1?.Name != null ? country1?.Name : "") : "")</label>
-                    <button @onclick='()=>SetViewElemnt("Contry")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                </div>
-                <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" EventClosed="ClosedInput" ViewSelect="viewSelect" Visible="viewControlCountry1">
-                    @{
-                        if (countryList != null)
-                        {
-                            foreach (var Obj in countryList)
-                            {
-                                <option value="@Obj.Id">@Obj.Name</option>
-                            }
-                        }
+            <InputTextSelector3 TItem="Country"
+                                Id="Contry"
+                                caption="@(country1 != null ? (country1?.Name != null ? country1?.Name : "") : "")"
+                                EventClosed="ClosedInput"
+                                Items="countryList"
+                  EventSearcherValueAndId="EventSearcherValueAndId"
+                                                EventIdSelectionAndId="SelectionMade"
+            >
 
-                    }
-                </InputTextSelector>
-            </div>
-        </div>      
+            </InputTextSelector3>
+
+        </div>
     </div>
 </div>
 
@@ -46,24 +39,16 @@
     <div class="col">
         @if (regionsList == null) regionsList = new();
         <div>
-            <div style="position:relative;">
-                <div class="item-edit">
-                    <label>@(geo != null ? (geo?.Name != null ? geo?.Name:"") : "")</label>
-                    <button @onclick='()=>SetViewElemnt("Geo")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                </div>
-                <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" EventClosed="ClosedInput" ViewSelect="viewSelect" Visible="viewControlGeo">
-                    @{
-                        if (regionsList != null)
-                        {
-                            foreach (var Obj in regionsList)
-                            {
-                                <option value="@Obj.Id">@Obj.Name</option>
-                            }
-                        }
-                    }
-                </InputTextSelector>
-            </div>
-        </div>      
+            <InputTextSelector3 TItem="GeoRegion"
+                                Id="Geo"
+                                caption="@(geo != null ? (geo?.Name != null ? geo?.Name : "") : "")"
+                                EventClosed="ClosedInput"
+                                Items="regionsList"
+                                EventSearcherValueAndId="EventSearcherValueAndId"
+                                EventIdSelectionAndId="SelectionMade">
+            </InputTextSelector3>
+
+        </div>
     </div>
 </div>
 
@@ -74,23 +59,21 @@
         <div>
             <div style="position:relative;">
                 <div class="item-edit">
-                    <label>@(city != null ? (city?.Name != null ? city?.Name:"") : "")</label>
+                    <label></label>
                     <button @onclick='()=>SetViewElemnt("City")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                 </div>
-                <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" EventClosed="ClosedInput" ViewSelect="viewSelect" Visible="viewControlCity">
-                    @{
-                        if (citiesList != null)
-                        {
-                            foreach (var Obj in citiesList)
-                            {
-                                <option value="@Obj.Id">@Obj.Name</option>
-                            }
-                        }
-                    }
-                </InputTextSelector>
+                <InputTextSelector3 TItem="City"
+                                    Id="City"
+                                    caption="@(city != null ? (city?.Name != null ? city?.Name : "") : "")"
+                                    Items="citiesList"
+                                    EventClosed="ClosedInput"
+                                    EventSearcherValueAndId="EventSearcherValueAndId"
+                                    EventIdSelectionAndId="SelectionMade">
+
+                </InputTextSelector3>
             </div>
         </div>
-      
+
     </div>
 </div>
 @if (status && _filterView == -1)
@@ -211,7 +194,8 @@
             }
 
         }
-
+        if (address == null) address = new();
+       
     }
 
 
@@ -317,93 +301,71 @@
 
 
     #region InputControl
-    protected async void EventIdSelection(string SelectionId)
+
+    protected async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
-        if (SearcherValueMode == "Contry")
-        {
-            country1 = countryList.Where(s => s.Id == SelectionId.Trim()).FirstOrDefault();
-            LoadRegions(country1);
-            geo = new();
-            city = new();
-        }
-        if (SearcherValueMode == "Geo")
-        {
-            geo = regionsList.Where(s => s.Id == SelectionId.Trim()).FirstOrDefault();
-            if (geo != null)
-            {
-                city = new();
-                await GetFilteredCities(geo, "all");
-            }
-
-        }
-        if (SearcherValueMode == "City")
-        {
-            city = citiesList.Where(s => s.Id == SelectionId.Trim()).FirstOrDefault();
-
-            if (city != null)
-            {
-                address.CityAddressRef = city.Id;
-                address.CityAddress = city;
-            }
-
-
-        }
-
-
-        if (modePage == "ShippingPlaces")
-        {            
-            geoPlaces.addressShippingPlaces = geoPlaces.address == null ? new() : geoPlaces.address;
-            geoPlaces.addressShippingPlaces.CityAddress = city != null ? city : new();
-            geoPlaces.addressShippingPlaces.CityAddress.RegionCity = geo != null ? geo : new();
-            geoPlaces.addressShippingPlaces.CityAddress.RegionCity.CountryRegion = country1 != null ? country1 : new();
-        }
-        else
-        {
-            geoPlaces.address = geoPlaces.address == null ? new() : geoPlaces.address;
-            geoPlaces.address.CityAddress = city != null ? city : new();
-            geoPlaces.address.CityAddress.RegionCity = geo != null ? geo : new();
-            geoPlaces.address.CityAddress.RegionCity.CountryRegion = country1 != null ? country1 : new();
-        }
-
-
-        ClosedInput();
-    }
-    protected async void EventSearcherValue(string value)
-    {
+        SearcherValueMode = arg.IdControl;
         if (SearcherValueMode == "Contry")
         {
             await GetFilteredCountries();
-            if (!value.ToLower().Contains("all") && !value.ToLower().Contains("todo"))
+            if (!arg.value.ToLower().Contains("all") && !arg.value.ToLower().Contains("todo"))
             {
-                countryList = countryList.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+                countryList = countryList.Where(s => s.Name.ToLower().Contains(arg.value.ToLower())).ToList();
             }
 
             if (countryList != null)
             {
-                ParamCountResul = countryList.Count();                
+                ParamCountResul = countryList.Count();
             }
 
         }
         if (SearcherValueMode == "Geo")
         {
-            if (!value.ToLower().Contains("all") && !value.ToLower().Contains("todo"))
+            if (!arg.value.ToLower().Contains("all") && !arg.value.ToLower().Contains("todo"))
             {
-                regionsList = regionsList.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+                regionsList = regionsList.Where(s => s.Name.ToLower().Contains(arg.value.ToLower())).ToList();
             }
-            ParamCountResul = regionsList !=null?  regionsList.Count():0;
+            ParamCountResul = regionsList != null ? regionsList.Count() : 0;
         }
         if (SearcherValueMode == "City")
         {
-            if (!value.ToLower().Contains("all") && !value.ToLower().Contains("todo"))
+            if (!arg.value.ToLower().Contains("all") && !arg.value.ToLower().Contains("todo"))
             {
-                citiesList = citiesList.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+                citiesList = citiesList.Where(s => s.Name.ToLower().Contains(arg.value.ToLower())).ToList();
             }
 
             ParamCountResul = citiesList != null ? citiesList.Count() : 0;
         }
 
-        viewSelect = ParamCountResul > 0; 
+        viewSelect = ParamCountResul > 0;
     }
+
+
+    public void SelectionMade(Country arg)
+    {
+        if (SearcherValueMode == "Contry")
+        {
+            country1 = arg;
+        }
+        StateHasChanged();
+    }
+    public void SelectionMade(GeoRegion arg)
+    {
+        if (SearcherValueMode == "Contry")
+        {
+            geo = arg;
+        }
+        StateHasChanged();
+    }
+    public void SelectionMade(City arg)
+    {
+        if (SearcherValueMode == "City")
+        {
+            city = arg;
+        }
+        StateHasChanged();
+    }
+
 
 
     public void ClosedInput()

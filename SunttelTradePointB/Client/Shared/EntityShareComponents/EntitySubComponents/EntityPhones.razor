@@ -22,25 +22,34 @@
 
     @if (entityPhonesList != null)
     {
-        <SfGrid 
-            DataSource="entityPhonesList"
-            Height="auto"
-            Width="auto"
-            TValue="PhoneNumber"
-            AllowFiltering="true"
-            AllowTextWrap="false"
-            AllowPaging="true"
-            AllowResizing="true"    
-            ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" } })">
-            <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
-            <GridColumns>
-                <GridColumn Field="@nameof(PhoneNumber.ZoneCode)" HeaderText="Zone Code" Width="110"></GridColumn>
-                <GridColumn Field="@nameof(PhoneNumber.Number)" HeaderText="Phone Number" Width="110"></GridColumn>
-                <GridColumn Field="@nameof(PhoneNumber.Description)" HeaderText="Description" Width="110"></GridColumn>
-            </GridColumns>
-            <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="PhoneNumber"></GridEvents>
-        </SfGrid>
 
+        <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@entityPhonesList"
+                    TItem="PhoneNumber"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    CellContextMenu="@ShowContextMenuWithContent"
+                    PageNumbersCount="100"
+                    PageSize="2">
+
+            <Columns>
+                <RadzenDataGridColumn TItem="PhoneNumber" Property="ZoneCode" Title="@GetName("ZoneCode", new PhoneNumber())" Width="80px" />
+                <RadzenDataGridColumn TItem="PhoneNumber" Property="Number" Title="@GetName("Number", new PhoneNumber())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                <RadzenDataGridColumn TItem="PhoneNumber" Property="Description" Title="@GetName("Description", new PhoneNumber())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+
+            </Columns>
+        </RadzenDataGrid>
+
+     
 
     }
 
@@ -73,19 +82,33 @@
         }
     }
 
-    public void OnContextMenuClick(ContextMenuClickEventArgs<PhoneNumber> args)
-    {
-        PhoneNumber _PhoneNumber = new();
-        _PhoneNumber = args.RowInfo.RowData;
 
-        if (args.Item.Text == "Edit")
-        {
-            navigationManager.NavigateTo($"/Actors/{EntityId}/Phones/{_PhoneNumber.Id}/Edit");
-        }
+
+    #region Grid
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<PhoneNumber> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        PhoneNumber argObj = (PhoneNumber)args.Value;
+        navigationManager.NavigateTo($"/Actors/{EntityId}/Phones/{argObj.Id}/Edit");
     }
+
+    #endregion Grid
+
 
     private async Task NavigatePhone()
     {
         navigationManager.NavigateTo($"/Actors/{EntityId}/Phones");
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
     }
 }
