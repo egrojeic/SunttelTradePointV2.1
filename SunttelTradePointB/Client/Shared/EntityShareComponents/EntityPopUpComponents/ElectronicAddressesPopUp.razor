@@ -19,7 +19,7 @@
                             <div class="form-group row">
                                 <label class="control-label col-md-12">@lblAddresKey*: </label>
                                 <div class="col">
-                                    <input type="text" class="form-control" @bind-value="electronicAddress.AddressKey" required/>
+                                    <input type="text" class="form-control" @bind-value="electronicAddress.AddressKey" required />
                                 </div>
                             </div>
                         </div>
@@ -27,23 +27,15 @@
                         <div class="form-group row py-2">
                             <div class="form-group row">
                                 <label class="control-label col-md-12">@lblEmitter*: </label>
-                                <div class="col">
-                                    <div class="item-edit">
-                                        <label>@(electronic != null ? electronic.Name : "")</label>
-                                        <button type="button" style="float:right" @onclick='()=>SetViewElemnt("Electronic")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                    </div>
-                                    <InputTextSelector @ref="refInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectionInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewElectronic">
-                                        @{
-                                            if (electronicAddressesList != null)
-                                            {
-                                                foreach (var entity in electronicAddressesList)
-                                                {
-                                                    <option value="@entity?.Id">@entity?.Name</option>
-                                                }
-                                            }
-                                        }
-                                    </InputTextSelector>
-                                </div>
+
+                                <InputTextSelector3 TItem="AtomConcept"
+                                                    Id="Electronic"
+                                                    caption="@(electronic != null ? electronic.Name : "")"
+                                                    EventSearcherValueAndId="EventSearcherValueAndId"
+                                                    EventIdSelectionAndId="SelectionMade"                                                
+                                                    Items="electronicAddressesList">
+                                </InputTextSelector3>
+
                             </div>
                         </div>
 
@@ -117,7 +109,7 @@
         if (entityId != null)
         {
             electronicById = await actorsNodeServive.GetElectronicAddressById(entityId);
-            if(electronicById != null)
+            if (electronicById != null)
             {
                 electronicAddress = electronicById;
                 electronic = electronicById.EmitterEntity;
@@ -135,8 +127,9 @@
         StateHasChanged();
     }
 
-    protected async void EventSearcherValue(string value)
+    protected async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
+        SearchValueMode = arg.IdControl;
         if (SearchValueMode == "Electronic")
         {
             electronicAddressesList = await actorsNodeServive.GetListElectronicAddress();
@@ -145,16 +138,10 @@
         if (ParamCountResul > 0) { ViewSelect = true; } else { ViewSelect = false; }
         await Refresh();
     }
-
-    protected async void EventIdSelectionInput(string selectionId)
+    public void SelectionMade(AtomConcept arg)
     {
-
-        if (SearchValueMode == "Electronic")
-        {
-            electronic = electronicAddressesList.Where(c => c.Id == selectionId).FirstOrDefault();
-        }
-        PopupViewElectronic = false;
-        await Refresh();
+        electronic = arg;
+        StateHasChanged();
     }
 
     public async Task Refresh()

@@ -22,24 +22,34 @@
 
     @if (entityCommercialCondition != null)
     {
-        <SfGrid DataSource="entityCommercialCondition"
-            Height="auto"
-            Width="auto"
-            TValue="EntitiesCommercialRelationShip"
-            AllowFiltering="true"
-            AllowTextWrap="false"
-            AllowPaging="true"
-            AllowResizing="true"
-            ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" } })">
-            <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
-            <GridColumns>
-                <GridColumn Field="RelatedEntity.Name" HeaderText="Entity" Width="110"></GridColumn>
-                <GridColumn Field="@nameof(EntitiesCommercialRelationShip.LimitCreditDays)" HeaderText="Limit Credit Days" Width="110"></GridColumn>
-                <GridColumn Field="@nameof(EntitiesCommercialRelationShip.LimitCreditAmount)" HeaderText="Limit Credit Amount" Width="110"></GridColumn>
-                <GridColumn Field="EntitiyCommercialRelationShipType.Name" HeaderText="Relation Type" Width="110"></GridColumn>
-            </GridColumns>
-            <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="EntitiesCommercialRelationShip"></GridEvents>
-        </SfGrid>
+
+        <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@entityCommercialCondition"
+                    TItem="EntitiesCommercialRelationShip"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    CellContextMenu="@ShowContextMenuWithContent"
+                    PageNumbersCount="100">
+
+            <Columns>
+                <RadzenDataGridColumn TItem="EntitiesCommercialRelationShip" Property="RelatedEntity.Name" Title="@GetName("RelatedEntity",new EntitiesCommercialRelationShip())" Width="110"> </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="EntitiesCommercialRelationShip" Property="LimitCreditDays" Title="@GetName("LimitCreditDays",new EntitiesCommercialRelationShip())" Width="110"> </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="EntitiesCommercialRelationShip" Property="LimitCreditAmount" Title="GetName(" LimitCreditAmount",new EntitiesCommercialRelationShip())" Width="110"> </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="EntitiesCommercialRelationShip" Property="EntitiyCommercialRelationShipType.Name" Title="@GetName("EntitiyCommercialRelationShipType",new EntitiesCommercialRelationShip())" Width="110"> </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+
+
+      
 
     }
 
@@ -74,20 +84,35 @@
         }
     }
 
-    public void OnContextMenuClick(ContextMenuClickEventArgs<EntitiesCommercialRelationShip> args)
-    {
-        EntitiesCommercialRelationShip _EntitiesCommercialRelationShip = new();
-        _EntitiesCommercialRelationShip = args.RowInfo.RowData;
 
-        if (args.Item.Text == "Edit")
-        {
-            navigationManager.NavigateTo($"/Actors/{EntityId}/ComercialConditions/{_EntitiesCommercialRelationShip.Id}/Edit");
-        }
+
+    #region Grid
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<EntitiesCommercialRelationShip> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        EntitiesCommercialRelationShip argObj = (EntitiesCommercialRelationShip)args.Value;
+
+        navigationManager.NavigateTo($"/Actors/{EntityId}/ComercialConditions/{argObj.Id}/Edit");
+
     }
+
+    #endregion Grid
+
 
     private async Task NavigateCommercialConditions()
     {
         navigationManager.NavigateTo($"/Actors/{EntityId}/ComercialConditions");
     }
 
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
 }

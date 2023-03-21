@@ -99,6 +99,10 @@ namespace SunttelTradePointB.Shared.Common
         [DisplayName("Image Name")]
         public string PathImage { get; set; }
 
+        public override string ToString() {
+            return Name;
+        }
+
     }
     public class TransactionalItemStatus : ConceptStatus
     {
