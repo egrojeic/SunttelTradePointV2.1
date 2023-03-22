@@ -1062,6 +1062,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-     
+        Task<EntityActor> IEntityNodes.SaveEntity(string? EntityActorId, EntityActor entityActor)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
