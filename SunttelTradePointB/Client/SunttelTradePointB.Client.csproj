@@ -9,10 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Shared\Chat\AuxiliarComponents\ChatMenuGroup.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="Shared\TransactionalItems\TransactionalItemsSubComponents\NewPackingRecipe.razor~RF19b0e97.TMP" />
   </ItemGroup>
 
@@ -67,10 +63,6 @@
     <Folder Include="Services\QualityControlServices\" />
     <Folder Include="wwwroot\lib\microsoft\signalr\dist\browser\" />
     <Folder Include="wwwroot\uploads\squadImages\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Shared\Chat\AuxiliarComponents\ChatMenuGroup.razor" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties wwwroot_4css_4bootstrap_4bootstrap_1min_1css_1map__JsonSchema="" /></VisualStudio></ProjectExtensions>

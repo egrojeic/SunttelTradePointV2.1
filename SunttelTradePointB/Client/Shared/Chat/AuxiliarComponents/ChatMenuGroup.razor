@@ -1,5 +1,4 @@
-
-@using System;
+﻿@using System;
 @using System.Timers;
 @using Microsoft.AspNetCore.SignalR.Client
 @using SunttelTradePointB.Shared.Communications
@@ -7,23 +6,145 @@
 @using System.Text.RegularExpressions;
 
 @inject NavigationManager NavigationManager
+@inject ActorsNodeService actorsNodeService
+@inject CommunicationService communicationService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 
-<div  class="group-min">
-    <div class="item-group">
-        <img src="/images//ActorsIco.png" />
-       <p class="title-float" >msg</p>
+@if (modeMenu == "grid-columns-2-chat-max")
+{
+    
+    <div class="group-max">
+        <div class="content-search">
+            <input @bind-value="_filter" class="input-mode">
+            <img @onclick='()=>FilterGroup("filter")' class="img-ico-search" src="/images//search.svg">
+            <img @onclick='()=>FilterGroup("all")' class="img-ico-search" src="/images//reload.svg">
+        </div>
+        <div class="item-group">
+            <img @onclick='()=>SetModeMenu("grid-columns-2-chat-min")' src="/images//menu.png">
+        </div>
+        @if (channelCommunicationsGroups == null) channelCommunicationsGroups = new();
+        @foreach (var item in channelCommunicationsGroups)
+        {
+            <div class="item-group-column">
+                <div class="item-group">
+                    <img class='@(groupEnablId==item.Id?"":"enable")' @onclick='()=>SetgroupEnable(item.Id)' src="@(item.SkinImageName !=null ?(item.SkinImageName!=""? pathimages+item.SkinImageName:"/images/EntityGroups.png"):"/images/EntityGroups.png")" />
+                </div>
+                <p @onclick='()=>SetgroupEnable(item.Id)' class="title-normal">@(item.Name != null ? item.Name : "Group")"</p>
+            </div>
+        }
+
+    </div>
+}
+@if (modeMenu == "grid-columns-2-chat-min")
+{
+
+    <div class="group-min">
+
+        <div class="item-group">
+            <img @onclick='()=>SetModeMenu("grid-columns-2-chat-max")' src="/images//menu.png">
+        </div>
+        <div class="item-group">
+            <img @onclick='()=>SetNewPage("newGroup")' src="/images/add.png" />
+            <p class="title-float">Add group</p>
+        </div>
+        @if (channelCommunicationsGroups == null) channelCommunicationsGroups = new();
+        @foreach (var item in channelCommunicationsGroups)
+        {
+            <div class="item-group">
+                <img class='@(groupEnablId==item.Id?"":"enable")' @onclick='()=>SetgroupEnable(item.Id)' src="@(item.SkinImageName !=null ?(item.SkinImageName!=""? pathimages+item.SkinImageName:"/images/EntityGroups.png"):"/images/EntityGroups.png")" />
+               @* <p class="title-float" @onclick='()=>SetgroupEnable(item.Id)'>@(item.Name != null ? item.Name : "Group")"</p>*@
+            </div>
+        }
+
     </div>
 
-
-</div>
-
-
-
+}
 @code {
-  
+    [Parameter]
+    public EventCallback<string> EventCallModeMenu { get; set; }
+    [Parameter]
+    public EventCallback<string> EventCallNewPage { get; set; }   
+    [Parameter]
+    public EventCallback<ChannelCommunicationsGroup> EventCallSetgroupEnable { get; set; }
+    [Parameter]
+    public string modeMenu { get; set; }
 
-  
-   
- 
+    public string _filter = "";
+    string pathimages = "";
+    string groupEnablId = "";
+
+
+    List<ChannelCommunicationsGroup> channelCommunicationsGroups = new();
+    ChannelCommunicationsGroup channelCommunicationsGroup = new();
+    public List<CommunicationsGroupParticipant> participants { get; set; }
+    public EntityNodeCommunications Owner { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        pathimages = UIClientGlobalVariables.PathEntityImages + "/";
+        // channelCommunicationsGroup = await actorsNodeService.GetChannelCommunicationsGroupById("");
+        groupEnablId = channelCommunicationsGroup != null ? (channelCommunicationsGroup.Id!=null?channelCommunicationsGroup.Id:"") : "";
+        await  FilterGroup("all");
+        if (channelCommunicationsGroups == null) OnInitializedAsync();
+        StateHasChanged();
+    }
+
+
+    protected override void OnParametersSet()
+    {
+        StateHasChanged();
+    }
+
+
+    public async void SetModeMenu(string _modeMenu)
+    {
+        await EventCallModeMenu.InvokeAsync(_modeMenu);
+        modeMenu = _modeMenu;
+        StateHasChanged();
+    }
+
+    public void SetNewPage(string Page)
+    {
+        EventCallNewPage.InvokeAsync(Page);
+        StateHasChanged();
+
+    }
+
+
+
+    public async Task FilterGroup(string filter)
+    {
+        if (filter == "all")
+        {
+            channelCommunicationsGroups = await actorsNodeService.GetChannelCommunicationsGroups();
+            if (channelCommunicationsGroups!=null) channelCommunicationsGroups = channelCommunicationsGroups.OrderBy(s => s.WeightByUser).ToList();
+        }else
+        {
+            if (_filter != "")
+            {
+                var data = channelCommunicationsGroups.Where(s => s.Name.ToLower().Contains(_filter.ToLower())).ToList();
+                if (data != null && data.Count() > 0) channelCommunicationsGroups = data;
+                StateHasChanged();
+            }
+        }
+       
+
+    }
+
+    public void SetgroupEnable(string id)
+    {
+        var gropu = channelCommunicationsGroups.Where(s => s.Id == id).FirstOrDefault();
+        groupEnablId = gropu != null ? (gropu.Id != null ? gropu.Id : "") : "";
+        EventCallSetgroupEnable.InvokeAsync(gropu);
+       
+    }
+
+    public void Reload()
+    {
+        StateHasChanged();
+    }
+
+
 }

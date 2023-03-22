@@ -19,7 +19,7 @@
         @if (countryList == null) countryList = new();
         <div>
             <InputTextSelector3 TItem="Country"
-                                Id="Contry"
+                                Id="Conutry"
                                 caption="@(country1 != null ? (country1?.Name != null ? country1?.Name : "") : "")"
                                 EventClosed="ClosedInput"
                                 Items="countryList"
@@ -301,7 +301,7 @@
     protected async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
         SearcherValueMode = arg.IdControl;
-        if (SearcherValueMode == "Contry")
+        if (SearcherValueMode == "Conutry")
         {
             await GetFilteredCountries();
             if (!arg.value.ToLower().Contains("all") && !arg.value.ToLower().Contains("todo"))
