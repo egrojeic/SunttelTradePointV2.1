@@ -600,8 +600,12 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                var entityTypeList = await _httpClient.GetFromJsonAsync<List<EntityType>>("/api/ConceptsSelector/GetSelectorListEntityTypes");
-                return entityTypeList;
+
+                var response = await Gethttp("/api/ConceptsSelector/GetSelectorListEntityTypes");
+                var list = await response.Content.ReadFromJsonAsync<List<EntityType>>();
+
+               
+                return list;
             }
             catch (Exception ex)
             {
@@ -616,8 +620,12 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                var entityType = await _httpClient.GetFromJsonAsync<AtomConcept>($"/api/EntityActorsRelatedConcepts/GetEntityType?userId={userId}&ipAdress={ipAddress}&entityTypeId={entityTypeId}");
-                return entityType;
+
+                var response = await Gethttp($"/api/EntityActorsRelatedConcepts/GetEntityType?userId={userId}&ipAdress={ipAddress}&entityTypeId={entityTypeId}");
+                var item = await response.Content.ReadFromJsonAsync<AtomConcept>();
+
+              
+                return item;
             }
             catch (Exception ex)
             {
@@ -630,8 +638,10 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         {
             try
             {
-                var palletList = await _httpClient.GetFromJsonAsync<List<PalletType>>("/api/ConceptsSelector/GetSelectorListPalletTypes");
-                return palletList;
+                var response = await Gethttp("/api/ConceptsSelector/GetSelectorListPalletTypes");
+                var list = await response.Content.ReadFromJsonAsync<List<PalletType>>();
+              
+                return list;
             }
             catch (Exception ex)
             {
@@ -647,7 +657,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                var list = await _httpClient.GetFromJsonAsync<ChannelCommunicationsGroup>($"api/CommunicationsManagement/GetChannelCommunicationsGroupById?userId={userId}&ipAdress={ipAddress}&channelCommunicationsGroupId={channelCommunicationsGroupId}");
+                var response = await Gethttp($"api/CommunicationsManagement/GetChannelCommunicationsGroupById?userId={userId}&ipAdress={ipAddress}&channelCommunicationsGroupId={channelCommunicationsGroupId}");
+                var list = await response.Content.ReadFromJsonAsync<ChannelCommunicationsGroup>();
+                             
                 return list;
             }
             catch (Exception ex)
@@ -663,8 +675,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                var list = await _httpClient.GetFromJsonAsync<List<ChannelCommunicationsGroup>>($"api/CommunicationsManagement/GetChannelCommunicationsGroups?userId={userId}&ipAdress={ipAddress}");
-                // list = list.Where(s => s.Owner.Id == UIClientGlobalVariables.UserId).ToList();
+                var response = await Gethttp($"api/CommunicationsManagement/GetChannelCommunicationsGroups?userId={userId}&ipAdress={ipAddress}");
+                var list = await response.Content.ReadFromJsonAsync<List<ChannelCommunicationsGroup>>();            
+             
                 return list;
             }
             catch (Exception ex)
@@ -681,8 +694,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                var palletType = await _httpClient.GetFromJsonAsync<PalletType>($"/api/EntityActorsRelatedConcepts/GetPalletType?userId={userId}&ipAdress={ipAddress}&palletTypeId={palletTypeId}");
-                return palletType;
+
+                var response = await Gethttp($"/api/EntityActorsRelatedConcepts/GetPalletType?userId={userId}&ipAdress={ipAddress}&palletTypeId={palletTypeId}");
+                var item = await response.Content.ReadFromJsonAsync<PalletType>();
+              
+                return item;
             }
             catch (Exception ex)
             {
