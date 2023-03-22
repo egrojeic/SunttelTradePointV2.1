@@ -49,6 +49,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         private readonly HttpClient _httpClient;
 
 
+
         #region Mode Edit
 
         public IWebAssemblyHostEnvironment environment { get; set; }
