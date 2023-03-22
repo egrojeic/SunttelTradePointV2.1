@@ -388,7 +388,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                     ipAddress = "127.0.0.0";
 
                 var response = await Gethttp($"/api/EntityActorsRelatedConcepts/GetEntityRole?userId={userId}&ipAdress={ipAddress}&entityRoleId={roleId}");
-                var list = await response.Content.ReadFromJsonAsync<List<EntityRole>>();
+                var list = await response.Content.ReadFromJsonAsync<EntityRole>();
                            
                 return list;
             }
@@ -582,8 +582,10 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                var shipingInfo = await _httpClient.GetFromJsonAsync<ShippingInfo>($"/api/EntityNodesMaintenance/GetShippingSetupById?userId={userId}&ipAdress={ipAddress}&shippingInfoId={shippingInfoId}");
-                return shipingInfo;
+                var response = await Gethttp($"/api/EntityNodesMaintenance/GetShippingSetupById?userId={userId}&ipAdress={ipAddress}&shippingInfoId={shippingInfoId}");
+                var list = await response.Content.ReadFromJsonAsync<ShippingInfo>();
+
+                return list;
             }
             catch (Exception ex)
             {
@@ -1057,5 +1059,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
+        public Task<List<Concept>> GetEntityDetailsOf(string entityActorId, EntityDetailsSection entityDetailsSection)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

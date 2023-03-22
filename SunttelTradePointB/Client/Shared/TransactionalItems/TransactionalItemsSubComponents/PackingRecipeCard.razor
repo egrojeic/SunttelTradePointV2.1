@@ -24,13 +24,11 @@
 
         @if (@pageView == "ListOfMaterials")
         {
-
             <PageTitleComponent Title="@GetName( "Material", new MaterialRecipeItem())" IconName="material.png"
                             Description="@($"Here you can add {GetName( "Material", new MaterialRecipeItem()).ToLower()}")">
             </PageTitleComponent>
             <div class="panelMenuContainer">
                 <div class="flex-horizontal-start">
-
                     <div class="nav-link-style">
                         <a target="_blank" href="/Products"><i class="fa-sharp fa-solid fa-circle-plus"></i> Material </a>
                     </div>
@@ -68,7 +66,6 @@
                 </div>
             </div>
         }
-
 
         @if (@pageView == "Material")
         {
