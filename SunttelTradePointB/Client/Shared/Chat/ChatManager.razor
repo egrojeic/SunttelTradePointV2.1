@@ -46,7 +46,8 @@
                 <div>
                     <ChatMessage communicationsMessages="communicationsMessages"
                              SetMsgResponder="SetMsgResponder"
-                             SetMsgRecord="SetMsgRecord">
+                             SetMsgRecord="SetMsgRecord"
+                             modeMsg="@modeMsg">
 
                     </ChatMessage>
                 </div>
@@ -57,7 +58,7 @@
                        EventCallRefresh="EventCallRefresh"
                        SetMsgResponder="SetMsgResponder"
                        msgResponder="@msgResponder"
-                       groupEnable="groupEnable">
+                       groupEnable="@groupEnable">
         </ChatMessageWriter>
 
     }
@@ -80,6 +81,7 @@
     int NumberOfConnectedUsers = 0;
 
     string newPage = "";
+    string modeMsg = "";
 
 
     protected async override void OnInitialized()
@@ -105,7 +107,7 @@
         hubConnection.On<string, CommunicationsMessage>("ReceiveMessage", (user, message) =>
         {
             communicationsMessages.Add(message);
-           // EventCallbackFilter("all");
+            // EventCallbackFilter("all");
             StateHasChanged();
 
         });
@@ -118,7 +120,7 @@
         {
             Console.WriteLine($"Error connecting: {e.Message}");
         }
-       // EventCallbackFilter("all");
+        // EventCallbackFilter("all");
         StateHasChanged();
 
         LoadObj();
@@ -137,9 +139,16 @@
         this.msgResponder = msgResponder;
     }
 
-    public async void SetMsgRecord(CommunicationsMessage msgRecord)
+    public async void SetMsgRecord(CommunicationsMessage? msgRecord)
     {
-        communicationsMessages = communicationsMessages.Where(s => s.ParentMessageId == msgRecord.Id || s.Id == msgRecord.Id).ToList();
+        if (msgRecord != null)
+        {
+            await LoadMsgToIdGroup(groupEnable.Id);
+            communicationsMessages = communicationsMessages.Where(s => s.ParentMessageId == msgRecord.Id || s.Id == msgRecord.Id).ToList().OrderByDescending(s => s.Id == msgRecord.Id).ToList();
+            modeMsg = "messageHistory";
+        }
+        if (msgRecord == null)
+            LoadMsgToIdGroup(groupEnable.Id);
         StateHasChanged();
     }
 
@@ -150,17 +159,17 @@
     #region write
 
     public async void TextWriteMessageChanged(CommunicationsMessage communicationsMessage)
-    {       
+    {
         await hubConnection.SendAsync("SendMessage", "User a", communicationsMessage);
         StateHasChanged();
-    } 
+    }
 
     #endregion write
 
     #region Filter
 
     public async void EventCallbackFilter(string channelCommunicationGroupId, string? startingDate = null, string? filter = null)
-    {      
+    {
         this.communicationsMessages = await communicationService.GetMessagesOfAnEntity(channelCommunicationGroupId, startingDate, filter);
         if (communicationsMessages != null) communicationsMessages = communicationsMessages.OrderByDescending(s => s.SendDateTime).ThenBy(d => d.SendDateTime.Day).ThenBy(d => d.SendDateTime.Minute).ThenBy(d => d.SendDateTime.Second).ThenBy(d => d.SendDateTime.Microsecond).ToList();
         if (communicationsMessages == null) communicationsMessages = new();
@@ -168,11 +177,12 @@
     }
     public async void EventCallbackFilter(string filter)
     {
-     
+
     }
 
-    public async void LoadMsgToIdGroup(string groupId, string? filter =null, string? date = null )
-    {     
+    public async Task LoadMsgToIdGroup(string groupId, string? filter = null, string? date = null)
+    {
+        modeMsg = "";
         if (groupEnable != null) this.communicationsMessages = await communicationService.GetMessagesOfAnEntity(groupId, date, filter);
         if (communicationsMessages != null) communicationsMessages = communicationsMessages.OrderByDescending(s => s.SendDateTime).ThenBy(d => d.SendDateTime.Day).ThenBy(d => d.SendDateTime.Minute).ThenBy(d => d.SendDateTime.Second).ThenBy(d => d.SendDateTime.Microsecond).ToList();
         if (communicationsMessages == null) communicationsMessages = new();
@@ -183,8 +193,9 @@
 
     #region group
 
-   
-    public void EventCallSetgroupEnable(ChannelCommunicationsGroup groupEnable){
+
+    public void EventCallSetgroupEnable(ChannelCommunicationsGroup groupEnable)
+    {
         LoadMsgToIdGroup(groupEnable.Id);
         this.groupEnable = groupEnable;
         StateHasChanged();
@@ -205,7 +216,7 @@
     }
 
 
-  
+
 
     public void EventCallRefresh()
     {
@@ -220,6 +231,6 @@
     }
 
 
-  
+
 
 }
