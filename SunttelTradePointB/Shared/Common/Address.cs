@@ -94,6 +94,12 @@ namespace SunttelTradePointB.Shared.Common
 
         public Country CountryRegion { get; set; }
 
+        override public string ToString()
+        {
+            string nameCountry = (CountryRegion != null) ? CountryRegion.Name : "";
+            return $"{Name} - {nameCountry}";
+        }
+
 
     }
 
@@ -114,6 +120,12 @@ namespace SunttelTradePointB.Shared.Common
 
         [BsonIgnoreIfNull]
         public List<string> IPAddresses { get; set; }
+
+        override public string ToString()
+        {
+            return $"{Name}";
+        }
+
     }
 
 
