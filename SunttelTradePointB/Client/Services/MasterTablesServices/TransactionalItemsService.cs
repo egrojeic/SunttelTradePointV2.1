@@ -48,8 +48,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         private readonly HttpClient _httpClient;
 
-
-
         #region Mode Edit
 
         public IWebAssemblyHostEnvironment environment { get; set; }
@@ -143,7 +141,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             }
         }
-        //---
+        
         public async Task<List<Concept>> GetConceptProduct(string? filterString = null)
         {
 
@@ -336,7 +334,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        //--
         public async Task<TransactionalItemTag> GetTagToId(string transactionalItemId, string transactionalItemTagId)
         {
 
@@ -505,7 +502,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
 
         }
-        //---
         public async Task<PackingSpecs> GetPackingRecipeToId(string? transactionalItemId, string packingSpecsId)
 
         {
@@ -828,7 +824,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-        //--
         public async Task<TransactionalItemProcessStep> GetTransactionalItemDetailsProductionSpecsToId(string transactionalItemId, string productionSpecsToId)
         {
             string userId = UIClientGlobalVariables.UserId;

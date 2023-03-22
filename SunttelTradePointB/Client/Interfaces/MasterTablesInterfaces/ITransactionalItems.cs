@@ -226,7 +226,12 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<LabelPaper> GetConceptPaperId(string? labelPaperId = null);
 
-
+        /// <summary>
+        /// Retrives a Selector List of Packing Materials
+        /// </summary>
+        /// <param name="filterString"></param>              
+        /// <returns></returns>
+        Task<List<Concept>> GetConceptProduct(string? filterString = null);
 
         /// <summary>
         /// Retrives a list with transactionalItem type  meeting search criteria
