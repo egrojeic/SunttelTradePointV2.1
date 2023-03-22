@@ -1031,8 +1031,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 return null;
             }
         }
-
-     
+            
        
 
         public async Task<HttpResponseMessage> Gethttp(string Url)
