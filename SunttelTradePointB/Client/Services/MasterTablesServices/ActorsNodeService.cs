@@ -138,7 +138,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         /// <param name="entityActorId"></param>
         /// <param name="entityDetailsSection"></param>
         /// <returns></returns>
-        public async Task<List<Concept>> GetEntityDetailsOf<T>(string entityActorId, EntityDetailsSection entityDetailsSection)
+        public async Task<List<Concept>> GetEntityDetailsOf(string entityActorId, EntityDetailsSection entityDetailsSection)
         {
             string patternToFind = entityDetailsSection != null ? entityDetailsSection.ToString() : "";
             var userId = UIClientGlobalVariables.UserId;
@@ -1032,20 +1032,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public Task<List<EntityActor>> GetEntityActorFaceList(string? nameLike = null, string? entityType = null, string? entityCode = null, bool forceRefresh = false)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<EntityActor> GetEntityActorById(string entityActorId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<EntityActor> CreateNewEntityActor(EntityActor entityActor)
-        {
-            throw new NotImplementedException();
-        }
+     
+       
 
         public async Task<HttpResponseMessage> Gethttp(string Url)
         {
@@ -1075,9 +1063,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-        public Task<List<Concept>> GetEntityDetailsOf(string entityActorId, EntityDetailsSection entityDetailsSection)
-        {
-            throw new NotImplementedException();
-        }
+     
     }
 }

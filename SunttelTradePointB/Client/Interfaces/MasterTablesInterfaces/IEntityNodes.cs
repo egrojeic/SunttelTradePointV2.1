@@ -12,7 +12,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <param name="entityType">Name of the Entity type</param>
         /// <param name="entityCode">Identification Code of the actor</param>
         /// <returns></returns>
-        Task<List<EntityActor>> GetEntityActorFaceList(string? nameLike = null, string? entityType = null, string? entityCode = null, bool forceRefresh = false);
+        Task<List<EntityActor>> GetEntityActorFaceList(string? nameLike = null);
 
 
         /// <summary>
@@ -20,15 +20,16 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// </summary>
         /// <param name="entityActorId"></param>
         /// <returns></returns>
-        Task<EntityActor> GetEntityActorById(string entityActorId);
+        Task<EntityActor> GetEntityActor(string entityActorId);
 
 
         /// <summary>
         /// Insert a new Entity Actor in the DataBase
         /// </summary>
+        /// <param name="EntityActorId"></param>
         /// <param name="entityActor"></param>
         /// <returns></returns>
-        Task<EntityActor> CreateNewEntityActor(EntityActor entityActor);
+        Task<EntityActor> SaveEntity(string? EntityActorId,EntityActor entityActor);
 
         /// <summary>
         /// Updates the info of an Entity
