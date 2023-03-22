@@ -6,7 +6,7 @@
 @using SunttelTradePointB.Shared.Communications
 @using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents
 @using Syncfusion.Blazor.Grids
-
+@inject ContextMenuService ContextMenuService
 @inject NavigationManager navigationManager
 @inject ActorsNodeService actorsNodeServive
 
@@ -15,57 +15,67 @@
 
 </MessageSaveComponent>
 
-@* <CardHeader Title="New Group" />
-    <CardContent>*@
 
 @if (modeForm)
 {
     <div class="conten-vertical-center">
-        <div class="content grid-columns-4">
+        <div class="content grid-columns-2 width box-shadow-mode">
             <div>
-                <label class="control-label col-md-12">Group Name: </label>
+                <label class="control-label col-md-12 text-dark">Group Name</label>
             </div>
             <div>
                 <input type="text" class="form-control" @bind-value="channelCommunicationsGroup.Name" required />
             </div>
-
-            <div style="position:relative;">
-                <div>
-                    <label for="ComercialGroup">Participants</label>
-                    <button type="button" @onclick='() => SetViewElement("Participant")' class="btn btn-color"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-
-                </div>
-                <div class="position-chat">
-                    <InputTextSelector @ref="inputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectorInput" EventClosed="EventClosedInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="participants">
-                        @{
-                            if (entityActorList != null)
-                            {
-                                foreach (var entity in entityActorList)
-                                {
-                                    <option value="@entity?.Id">@entity?.Name</option>
-                                }
-                            }
-                        }
-                    </InputTextSelector>
-                </div>
+            <div>
+                <label class="control-label col-md-12 .text-dark ">@GetName("Participants", new ChannelCommunicationsGroup())</label>
             </div>
+          
+                <InputTextSelector3 TItem="EntityActor"
+                                Id="Participant"
+                                EventSearcherValueAndId="EventSearcherValueAndId"
+                                EventIdSelectionAndId="SelectionMade"
+                                Items="entityActorList">
+                </InputTextSelector3>
+          
         </div>
 
-        @if (@participantList != null)
+        @if (@channelCommunicationsGroup.Participants != null)
         {
             <div class="flex-horizontal-center ">
-                <DataGrid TParameter="EntityActor"
-                  parameterList="participantList"
-                  GridColumnsList="ListGridParticipant"
-                  Width="100%"
-                  Height="200">
-                </DataGrid>
+
+                <RadzenDataGrid AllowFiltering="true"
+                        AllowColumnResize="true"
+                        AllowAlternatingRows="true"
+                        FilterMode="FilterMode.Advanced"
+                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        AllowSorting="true"
+                        AllowPaging="true"
+                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                        ShowPagingSummary="true"
+                        Data="entityActorList"
+                        TItem="EntityActor"
+                        ColumnWidth="100%"
+                        SelectionMode="DataGridSelectionMode.Single"
+                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                        CellContextMenu="@ShowContextMenuWithContent"
+                        PageNumbersCount="100"
+                        PageSize="2">
+
+                    <Columns>
+                        <RadzenDataGridColumn TItem="EntityActor" Property="EntityActor.Name" Title="@GetName("Name", new AtomConcept())" Width="80px" />
+                        <RadzenDataGridColumn TItem="EntityActor" Property="EntityActor.Code" Title="@GetName("Code", new AtomConcept())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                        <RadzenDataGridColumn TItem="EntityActor" Property="EntityActor.Name" Title="@GetName( "FullClassName", new EntityActor())" Width="80px" />
+                        <RadzenDataGridColumn TItem="EntityActor" Property="EntityActor.Status" Title="@GetName("Status", new LabelStyle())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+
+                    </Columns>
+                </RadzenDataGrid>
+
+
             </div>
         }
 
         <div class="content-img">
-            <a @onclick='()=>ClosedPage("addIco")'>
-                @if (entityActor == null) entityActor = new();
+            <a @onclick='()=>ClosedPage("addIco")'>             
                 <img class="img" src="@( channelCommunicationsGroup.SkinImageName !=null ? pathimages  + channelCommunicationsGroup.SkinImageName:"/images//defaultImage.png")" />
             </a>
             <div> <label class="control-label col-md-12">@GetName("SkinImageName", new EntityNodeCommunications()) </label></div>
@@ -82,8 +92,7 @@ else
     <SunttelTradePointB.Client.Shared.EntityShareComponents.ActorImage Id="64085f220314820de346988b"
                                                                    EventCallbackNameImg="SetIcoGroup"
                                                                    EventCallbackOpenClosedPage="OpentPage"
-    Page="addIco"                                                               Component="true"
-    >
+                                                                   Page="addIco" Component="true">
     </SunttelTradePointB.Client.Shared.EntityShareComponents.ActorImage>
 }
 
@@ -104,15 +113,12 @@ else
     public EventCallback<string> EventCallNewPage { get; set; }
     [Parameter]
     public EventCallback<string> EventCallRefresh { get; set; }
-   
-    ChannelCommunicationsGroup channelCommunicationsGroup = new ChannelCommunicationsGroup();
-    List<EntityActor> participantList = new List<EntityActor>();
 
-    List<GridColumn> ListGridParticipant = new();
+    ChannelCommunicationsGroup channelCommunicationsGroup = new ChannelCommunicationsGroup();
+
 
     SfChip? referChip;
     InputTextSelector? inputTextSelector;
-    EntityActor entityActor = new EntityActor();
     List<EntityActor> entityActorList = new List<EntityActor>();
 
     bool modeForm = true;
@@ -125,21 +131,11 @@ else
     public string SearchValueMode = "";
     public int ParamCountResul = 0;
     public bool viewControlNodeCommunications = false;
-    protected string pathimages ="";
+    protected string pathimages = "";
 
     protected override void OnInitialized()
     {
-        pathimages = UIClientGlobalVariables.PathEntityImages+"/";
-        ListGridParticipant = new List<GridColumn>
-        {
-               new GridColumn() { Field=nameof(EntityActor.Name) ,  HeaderText = @GetName( "Name", new AtomConcept()) , Width="300" },
-                 new GridColumn() { Field=nameof(EntityActor.Code) ,  HeaderText = @GetName( "Code", new AtomConcept()), Width="80px"  },
-                  new GridColumn() { Field=nameof(EntityActor.FullClassName) ,  HeaderText = @GetName( "FullClassName", new EntityActor())  },
-                   new GridColumn() { Field=nameof(EntityActor.Status) ,  HeaderText = @GetName( "Status", new LabelStyle())  }
-
-
-
-        };
+        pathimages = UIClientGlobalVariables.PathEntityImages + "/";
 
     }
 
@@ -147,31 +143,9 @@ else
     public async void Save()
     {
 
-        if (entityActor == null || entityActor?.Id == null)
+        if (UIClientGlobalVariables.UserId != null)
         {
-            entityActor = await actorsNodeServive.GetEntityActor(UIClientGlobalVariables.UserId);
-            // if (entityActor == null) entityActor = new();
-        }
-
-        if (channelCommunicationsGroup != null && channelCommunicationsGroup.Name != null)
-        {
-
-            if (channelCommunicationsGroup.Participants == null) channelCommunicationsGroup.Participants = new();
-            if (channelCommunicationsGroup.Owner == null) channelCommunicationsGroup.Owner = new();
-            foreach (var item in participantList)
-            {
-                channelCommunicationsGroup.Participants.Add(new CommunicationsGroupParticipant
-                    {
-                        Participant = new EntityNodeCommunications
-                        {
-                            Id = item.Id,
-                            Name = item.Name,
-                            SkinImageName = item.SkinImageName
-
-                        },
-                        IsActive = true
-                    });
-            }
+            var entityActor = await actorsNodeServive.GetEntityActor(UIClientGlobalVariables.UserId);
             if (entityActor != null)
             {
                 channelCommunicationsGroup.Owner = new EntityNodeCommunications
@@ -179,13 +153,15 @@ else
                         Name = entityActor.Name != null ? entityActor.Name : "",
                         Id = entityActor.Id != null ? entityActor.Id : "",
                         SkinImageName = entityActor.SkinImageName != null ? entityActor.SkinImageName : ""
-
                     };
             }
 
+        }
 
+        if (channelCommunicationsGroup.Participants != null && channelCommunicationsGroup.Name != null && channelCommunicationsGroup.Owner != null)
+        {
             var resul = await actorsNodeServive.SaveChannelCommunicationsGroup(channelCommunicationsGroup);
-            if (resul != null && resul.Id !=null)
+            if (resul != null && resul.Id != null)
             {
                 Msg("Saved " + resul.Name, 0);
             }
@@ -199,44 +175,36 @@ else
     }
 
 
-    public void SetViewElement(string Element)
-    {
-        EventClosedInput();
-        SearchValueMode = Element;
-        if (Element == "Participant") { participants = true; }
-        if (Element == "EntityNodeCommunications") { viewControlNodeCommunications = true; }
 
-        Refresh();
+
+    protected async void EventSearcherValueAndId((string value, string IdControl) arg)
+    {
+        SearchValueMode = arg.IdControl;
+        if (SearchValueMode == "Participant")
+        {
+            entityActorList = await actorsNodeServive.GetEntityActorFaceList(arg.value);
+        }
+        await Refresh();
+    }
+
+    public void SelectionMade(EntityActor arg)
+    {
+        if (channelCommunicationsGroup.Participants == null) channelCommunicationsGroup.Participants = new();
+        entityActorList.Add(arg);
+        channelCommunicationsGroup.Participants.Add(new CommunicationsGroupParticipant
+        {
+            IsActive = true,
+            Participant = new EntityNodeCommunications
+            {
+                Name = arg.Name,
+                SkinImageName = arg.SkinImageName,
+                Id = arg.Id
+            }
+        });
         StateHasChanged();
     }
 
-    protected async void EventSearcherValue(string participant)
-    {
 
-        if (SearchValueMode == "Participant")
-        {
-            entityActorList = await actorsNodeServive.GetEntityActorFaceList(participant);
-            ParamCountResul = entityActorList.Count();
-        }
-        if (ParamCountResul > 0)
-        {
-            ViewSelect = true;
-        }
-        else
-        {
-            ViewSelect = false;
-        }
-        await Refresh();
-    }
-
-    protected async void EventIdSelectorInput(string selectionId)
-    {
-        if (SearchValueMode == "Participant")
-        {
-            participantList.Add(entityActorList.Where(c => c.Id == selectionId).FirstOrDefault());
-        }
-        await Refresh();
-    }
 
     public async Task Refresh()
     {
@@ -246,7 +214,8 @@ else
 
     private void onDeleted(ChipDeletedEventArgs args)
     {
-        participantList?.RemoveAt(args.Index);
+        if (channelCommunicationsGroup.Participants == null) channelCommunicationsGroup.Participants = new();
+        channelCommunicationsGroup.Participants?.RemoveAt(args.Index);
         StateHasChanged();
     }
 
@@ -282,15 +251,21 @@ else
         StateHasChanged();
     }
 
-    public void EventClosedInput()
+    #region Grid
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<EntityActor> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
     {
-        ViewSelect = false;
-        ParamCountResul = 0;
-        participants = false;
-        viewControlNodeCommunications = false;
+        EntityActor argObj = (EntityActor)args.Value;
+
     }
 
-
+    #endregion Grid
 
 
     public void Msg(string _msg, int _status)
@@ -300,9 +275,10 @@ else
         isVisible = true;
     }
 
+   
     public string GetName(string Name, Object Obj)
     {
-        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
     }
 

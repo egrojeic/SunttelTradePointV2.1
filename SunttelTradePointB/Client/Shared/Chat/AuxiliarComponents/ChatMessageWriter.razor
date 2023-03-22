@@ -70,6 +70,7 @@
     string enter = "";
     protected override void OnParametersSet()
     {
+        if (groupEnable.Id != null) msg = "";
         var f = communicationsMessage;
         StateHasChanged();
     }

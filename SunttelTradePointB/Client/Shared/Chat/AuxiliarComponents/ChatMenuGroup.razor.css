@@ -3,8 +3,7 @@
     height: 410px;
     overflow-y: auto;
     display: flex;
-    flex-direction: column;
-    justify-content:start;
+    flex-direction: column;   
     align-items:center;
     row-gap: 5px;
     padding: 0px 15px 100px 10px;
@@ -28,7 +27,7 @@
 }
 
 .item-group { 
-    height: 100px;
+    height: auto;
     width: 50px;    
     position: relative;
 }

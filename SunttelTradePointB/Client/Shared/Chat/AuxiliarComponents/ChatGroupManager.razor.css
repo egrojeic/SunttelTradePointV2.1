@@ -12,9 +12,10 @@
 .content {
     width: 90%;
     background-color:white;
-
 }
-
+.width{
+    width:500px;
+}
 
 .ico-style {
     height: 80px;

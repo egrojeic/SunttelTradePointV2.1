@@ -6,7 +6,7 @@ using System.Net.Http.Json;
 
 namespace SunttelTradePointB.Client.Services.MasterTablesServices
 {
-    public class CommunicationService: ICommunicationChat
+    public class CommunicationService : ICommunicationChat
     {
         private readonly HttpClient _httpClient;
         public List<CommunicationsMessage> communicationsMessages { get; set; } = new();
@@ -25,12 +25,15 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                if(ipAddress == null) 
+                if (ipAddress == null)
                 {
                     ipAddress = "127.0.0.0";
                 }
-                var channel = await _httpClient.GetFromJsonAsync<ChannelCommunicationsGroup>($"/api/CommunicationsManagement/GetChannelCommunicationsGroupById?userId={userId}&ipAdress={ipAddress}&channelCommunicationsGroupId={channelId}");
-                return channel;
+
+                var responseMessage = await Gethttp($"/api/CommunicationsManagement/GetChannelCommunicationsGroupById?userId={userId}&ipAdress={ipAddress}&channelCommunicationsGroupId={channelId}");
+                var item = await responseMessage.Content.ReadFromJsonAsync<ChannelCommunicationsGroup>();
+
+                return item;
             }
             catch (Exception ex)
             {
@@ -49,8 +52,12 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 {
                     ipAddress = "127.0.0.0";
                 }
-                var listGroups = await _httpClient.GetFromJsonAsync<List<ChannelCommunicationsGroup>>($"/api/CommunicationsManagement/GetChannelCommunicationsGroups?userId={userId}&ipAdress={ipAddress}");
-                return listGroups;
+
+                var responseMessage = await Gethttp($"/api/CommunicationsManagement/GetChannelCommunicationsGroups?userId={userId}&ipAdress={ipAddress}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<ChannelCommunicationsGroup>>();
+
+
+                return list;
             }
             catch (Exception ex)
             {
@@ -60,17 +67,18 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         }
 
 
-        public async Task<List<CommunicationsMessage>> GetMessagesOfAnEntity(string channelCommunicationGroupId, string? startingDate=null, string? filterCriteria=null)
+        public async Task<List<CommunicationsMessage>> GetMessagesOfAnEntity(string channelCommunicationGroupId, string? startingDate = null, string? filterCriteria = null)
         {
-            var userId = UIClientGlobalVariables.UserId;
-            var ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
             try
             {
-                if (ipAddress == null)
-                {
-                    ipAddress = "127.0.0.0";
-                }
-                var list = await _httpClient.GetFromJsonAsync<List<CommunicationsMessage>>($"api/CommunicationsManagement/GetMessagesOfAnEntity?userId={userId}&ipAdress={ipAddress}&channelCommunicationGroupId={channelCommunicationGroupId}&filterCriteria={filterCriteria}");
+                HttpResponseMessage responseMessage = null;
+                if (startingDate == null && filterCriteria == null) responseMessage = await Gethttp($"/api/CommunicationsManagement/GetMessagesOfAnEntity?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&channelCommunicationGroupId={channelCommunicationGroupId}");
+                if (startingDate != null && filterCriteria != null) responseMessage = await Gethttp($"/api/CommunicationsManagement/GetMessagesOfAnEntity?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&channelCommunicationGroupId={channelCommunicationGroupId}&filterCriteria={filterCriteria}&startingDate={startingDate}");
+                if (startingDate != null && filterCriteria == null) responseMessage = await Gethttp($"/api/CommunicationsManagement/GetMessagesOfAnEntity?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&channelCommunicationGroupId={channelCommunicationGroupId}&filterCriteria={filterCriteria}");
+                if (startingDate == null && filterCriteria != null) responseMessage = await Gethttp($"/api/CommunicationsManagement/GetMessagesOfAnEntity?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&channelCommunicationGroupId={channelCommunicationGroupId}&startingDate={startingDate}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<CommunicationsMessage>>();
+
                 return list;
             }
             catch (Exception ex)
@@ -88,7 +96,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                if(ipAddress == null)
+                if (ipAddress == null)
                 {
                     ipAddress = "127.0.0.0";
                 }
@@ -102,6 +110,32 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
+        public async Task<HttpResponseMessage> Gethttp(string Url)
+        {
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, Url);
+                request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad.ID.ToString());
+
+                var response = await _httpClient.SendAsync(request);
+
+                System.Diagnostics.Debug.WriteLine(response.IsSuccessStatusCode);
+                if (response.IsSuccessStatusCode)
+                {
+                    return response;
+                }
+                else { return null; }
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                System.Diagnostics.Debug.WriteLine(errMessage);
+
+            }
+            return null;
+
+        }
 
     }
 }

@@ -29,7 +29,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <param name="EntityActorId"></param>
         /// <param name="entityActor"></param>
         /// <returns></returns>
-        Task<EntityActor> SaveEntity(string? EntityActorId,EntityActor entityActor);
+        Task<(bool IsSuccess, string? EntityId, string? error)> SaveEntity(string? EntityActorId,EntityActor entityActor);
 
         /// <summary>
         /// Updates the info of an Entity
