@@ -49,7 +49,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <summary>
         /// Retrives the different related concepts to an Entity/Node
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="Concept"></typeparam>
         /// <param name="entityActorId"></param>
         /// <param name="entityDetailsSection"></param>
         /// <returns></returns>
