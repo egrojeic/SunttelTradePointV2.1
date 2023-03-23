@@ -1,8 +1,8 @@
 ﻿@using SunttelTradePointB.Shared.Communications
 @inject CommunicationService communicationService
+@inject IJSRuntime Js
 
-
-<div class="content-msg">
+<div  class="content-msg">
     @if (modeMsg == "messageHistory" )
     {      
         btnBackMsg = true;
@@ -119,8 +119,13 @@
 
 
     protected override void OnParametersSet()
-    {
+    {        
+        StateHasChanged();
+    }
 
+    protected override void OnAfterRender(bool firstRender)
+    {
+        scroll();
     }
 
     public void ViewModalMenu(string id, string _reques)
@@ -207,6 +212,11 @@
     public void LoadObj()
     {
         if (communicationsMessages == null) communicationsMessages = new();
+    }
+
+     public async void scroll()
+    {        
+      // await Js.InvokeVoidAsync("ChatScroll");
     }
 
 }

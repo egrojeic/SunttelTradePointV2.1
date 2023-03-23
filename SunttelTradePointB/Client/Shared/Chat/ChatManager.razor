@@ -107,8 +107,9 @@
         hubConnection.On<string, CommunicationsMessage>("ReceiveMessage", (user, message) =>
         {
             communicationsMessages.Add(message);
-            // EventCallbackFilter("all");
-            StateHasChanged();
+            communicationsMessages = communicationsMessages.OrderByDescending(s => s.SendDateTime).ThenBy(d => d.SendDateTime.Day).ThenBy(d => d.SendDateTime.Minute).ThenBy(d => d.SendDateTime.Second).ThenBy(d => d.SendDateTime.Microsecond).ToList();
+           // LoadMsgToIdGroup(groupEnable.Id);
+           
 
         });
 
