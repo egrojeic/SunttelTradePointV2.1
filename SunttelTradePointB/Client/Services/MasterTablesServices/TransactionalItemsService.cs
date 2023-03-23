@@ -434,11 +434,10 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         {
             string namteToFind = nameLike != null ? nameLike : "";
-            string userId = UIClientGlobalVariables.UserId;
-            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+          
             try
             {
-                var responseMessage = await Gethttp($"/api/TransactionalItemsRelatedConcepts/GetTransactionalItemGroups?userId={userId}&ipAddress={ipAddress}&filterCondition={namteToFind}");
+                var responseMessage = await Gethttp($"/api/TransactionalItemsRelatedConcepts/GetTransactionalItemGroups?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}&filterCondition={namteToFind}");
                 conceptGroupsList = await responseMessage.Content.ReadFromJsonAsync<List<ConceptGroup>>();
 
                 return conceptGroupsList != null ? conceptGroupsList.Where(g => g.Id != "").Take(20).ToList() : new List<ConceptGroup>();
@@ -1114,11 +1113,12 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            transactionalItem.SquadId = UIClientGlobalVariables.ActiveSquad!=null ?  UIClientGlobalVariables.ActiveSquad?.ID.ToString():"";
 
-            transactionalItem.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
 
             try
-            {
+            {             
+               
                 var resul = await _httpClient.PostAsJsonAsync<TransactionalItem>($"api/TransactionalItems/SaveTransactionalItem?userId={userId}&ipAddress={ipAddress}", transactionalItem);
                 TransactionalItem item = await resul.Content.ReadFromJsonAsync<TransactionalItem>();
                 return item;
@@ -1329,7 +1329,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
 
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
-                request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad.ID.ToString());
+                //request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad.ID.ToString());
 
 
                 var response = await _httpClient.SendAsync(request);

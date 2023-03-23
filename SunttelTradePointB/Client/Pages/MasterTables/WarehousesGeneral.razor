@@ -62,7 +62,7 @@
                                 var isExternal = (bool)context.GetType().GetProperty(nameof(Warehouse.IsExternal)).GetValue(context);
                                 if (isExternal)
                                 {
-                                    <input type="checkbox" checked="isExternal" />
+                                    <input type="checkbox" checked="isExternal" disabled/>
                                 }
                                 else
                                 {

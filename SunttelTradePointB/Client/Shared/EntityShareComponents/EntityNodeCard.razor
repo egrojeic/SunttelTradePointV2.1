@@ -132,14 +132,17 @@
                     <div>
                         <input type="text" class="form-control" @bind-value="EntityNode.Code" />
                     </div>
-              
+
                     <div><label for="sunttelUserId">@lblRole*</label></div>
                     <div>
                         <div class="item-edit">
-                            <label>@(role != null ? role.Name : "")</label>
+                            <label></label>
                             <button type="button" style="float:right" @onclick='()=>SetViewElement("Roles")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                         </div>
-                        <InputTextSelector @ref="inputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectorInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewRoles">
+                        <InputTextSelector3 TItem="EntityRole"
+                                        caption="@(role != null ? role.Name : "")"
+                                        Id="Roles">
+
                             @{
                                 if (entityRoles != null)
                                 {
@@ -150,7 +153,7 @@
                                 }
 
                             }
-                        </InputTextSelector>
+                        </InputTextSelector3>
                     </div>
 
 
@@ -223,7 +226,7 @@
                             </InputTextSelector>
                         </div>
                     </div>
-                  
+
                 </div>
             </div>
 
@@ -410,7 +413,7 @@
 
     async Task CreateEntityNodeFace()
     {
-        await actorsNodeServive.SaveEntity("",currentEntityActor);
+        await actorsNodeServive.SaveEntity("", currentEntityActor);
     }
 
     async Task UpdateEntityNodeFace()
@@ -446,7 +449,7 @@
         {
             var pathimages = UIClientGlobalVariables.PathEntityImages;
             string fullPath = Path.Combine(pathimages, EntityNode.SkinImageName.Replace("/", ""));
-            imageRute =  fullPath;
+            imageRute = fullPath;
 
         }
         StateHasChanged();
@@ -507,7 +510,7 @@
             EntityNode.SkinImageName = EntityNode.SkinImageName == null ? (imageRute != "" ? imageRute : "") : EntityNode.SkinImageName;
             EntityNode.DefaultEntityRole = role;
             EntityNode.Groups = FilterListGroups;
-           EntityNode.SkinImageName =  EntityNode.SkinImageName == null ? imageDefault : EntityNode.SkinImageName;
+            EntityNode.SkinImageName = EntityNode.SkinImageName == null ? imageDefault : EntityNode.SkinImageName;
             var result = await actorsNodeServive.SaveEntity(Id, EntityNode);
             if (result.IsSuccess)
             {
