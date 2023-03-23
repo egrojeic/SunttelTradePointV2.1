@@ -379,6 +379,31 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         Task<string> UploadFiles(MultipartFormDataContent multipartFormDataContent);
 
 
+        /// <summary>
+        /// Retrives a Transactional Item by transactionalItemId
+        /// </summary>
+        /// <param name="transactionalItemId"></param>              
+        /// <param name="transactionalItemTagId"></param>              
+        /// <returns></returns>
+        Task<TransactionalItemTag> GetTagToId(string transactionalItemId, string transactionalItemTagId);
+
+        /// <summary>
+        /// Retrives a Transactional Item Details Packing Recipe by transactionalItemId
+        /// </summary>
+        /// <param name="transactionalItemId"></param>              
+        /// <param name="packingSpecsId"></param>              
+        /// <returns></returns>
+        Task<PackingSpecs> GetPackingRecipeToId(string? transactionalItemId, string packingSpecsId);
+
+        /// <summary>
+        /// Retrives a Product Recipe Quality Modifiers By Modifier Id
+        /// </summary>
+        /// <param name="transactionalItemId"></param>              
+        /// <param name="productionSpecsToId"></param>              
+        /// <returns></returns>
+        Task<TransactionalItemProcessStep> GetTransactionalItemDetailsProductionSpecsToId(string transactionalItemId, string productionSpecsToId);
+
+
     }
 }
 

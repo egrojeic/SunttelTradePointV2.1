@@ -1196,7 +1196,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
 
-            transactionalItemType.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
+            transactionalItemType.SquadId = UIClientGlobalVariables.ActiveSquad!.ID.ToString();
 
             try
             {
