@@ -26,10 +26,15 @@
             <div> <p class="text">@msg.Message</p></div>
         </div>
         <div class="@(GetClassMode(msg.SenderEntity.Id,"menu"))">
-            <div class="content-msg-menu">
+            <div class="content-msg-menu  position-relative">
                 <img @onclick='()=>SetModelResponder(msg.Id)' class="ico-img-menu" src="/images//responder.svg">
                 <img @onclick='()=>ViewModalMenu(msg.Id,"menu-1")' class="ico-img-menu" src="/images//Reaction.svg">
                 <img @onclick='()=>SetMsgRecordView(msg.Id)' class="ico-img-menu" src="/images//chat-menu.svg">
+                @if (countMsg > 0)
+                {
+                    <p class="ico-msg-count">@countMsg</p>
+                }
+
                 @if (viewMenu1 && SelectionId == msg.Id)
                 {
                     <div class="menu-view-1">
@@ -58,13 +63,15 @@
     public EventCallback<string> SetResponder { get; set; }
     [Parameter]
     public EventCallback<string> SetMsgRecordViewModel { get; set; }
-    
+
     [Parameter]
     public bool viewHistory { get; set; } = false;
     [Parameter]
     public bool ChildrenMessage { get; set; } = false;
     [Parameter]
     public string style { get; set; }
+    [Parameter]
+    public int countMsg { get; set; }
 
     bool viewMenu1 = false;
     public string SelectionId { get; set; }
@@ -96,7 +103,7 @@
 
     }
 
-   
+
 
     public void SetColorMessageIconName(string value, string id)
     {

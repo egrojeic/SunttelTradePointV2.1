@@ -4,8 +4,7 @@
 
 <div class="content-msg">
     @if (modeMsg == "messageHistory" )
-    {
-      
+    {      
         btnBackMsg = true;
     }
     @foreach (var msg in communicationsMessages)
@@ -15,6 +14,7 @@
         {
 
             <div class="msg-responder">
+              
                 @{
                     if (msg.ParentMessageId != null && modeMsg != "messageHistory")
                     {
@@ -22,6 +22,7 @@
                         <ChatMsg msg="@GetMsgResponder(msg.ParentMessageId)"
                              communicationsMessages="@communicationsMessages"
                              SetResponder="SetResponder"
+                             countMsg="@(GetCountMsg(GetMsgResponder(msg.ParentMessageId)))"
                              SetMsgRecordViewModel="SetMsgRecordView" ChildrenMessage="true">
                         </ChatMsg>
 
@@ -43,6 +44,7 @@
                                  communicationsMessages="@communicationsMessages"
                                  SetResponder="SetResponder"
                                  SetMsgRecordViewModel="SetMsgRecordView"
+                                  countMsg="@(GetCountMsg(msg.Id))"
                                  viewHistory="true"
                         style="box-shadow: 0px 0px 5px">
                         </ChatMsg>
@@ -56,6 +58,7 @@
                              communicationsMessages="@communicationsMessages"
                              SetResponder="SetResponder"
                              SetMsgRecordViewModel="SetMsgRecordView"
+                              countMsg="@(GetCountMsg(msg.Id))"
                              ChildrenMessage="true"
                    style="box-shadow: 0px 0px 5px"
                   >
@@ -149,8 +152,8 @@
         CommunicationsMessage msg = null;
         if (Id != null) msg = communicationsMessages.Where(s => s.Id == Id).FirstOrDefault();        
         if (msg != null) SetMsgResponder.InvokeAsync(msg);
-         if( communicationsMessages !=null &&  communicationsMessages.Count()>0)SetMsgRecordView(msg.Id);
-       
+        if( communicationsMessages !=null &&  communicationsMessages.Count()>0)SetMsgRecordView(msg.Id);
+
     }
 
     public void SetMsgRecordView(string? Id)
@@ -177,12 +180,28 @@
         modeMsg = "messageHistory";
         SetMsgRecord.InvokeAsync(msg);
     }
-   
+
     public CommunicationsMessage GetMsgResponder(string? Id)
     {
         CommunicationsMessage msg = null;
         if (Id != null) msg = communicationsMessages.Where(s => s.Id == Id).FirstOrDefault();
         return msg;
+    }
+
+    public int GetCountMsg(string msgId)
+    {
+        int count = 0;
+        if(communicationsMessages!=null)  count =  communicationsMessages.Where(s => s.ParentMessageId !=null && s.ParentMessageId.Trim() == msgId.Trim()).ToList().Count();
+
+        return count;
+    }
+
+     public int GetCountMsg(CommunicationsMessage msg)
+    {
+        int count = 0;
+        if(communicationsMessages!=null && msg!=null)  count =  communicationsMessages.Where(s => s.ParentMessageId !=null && s.ParentMessageId.Trim() == msg.Id.Trim()).ToList().Count();
+
+        return count;
     }
 
     public void LoadObj()
