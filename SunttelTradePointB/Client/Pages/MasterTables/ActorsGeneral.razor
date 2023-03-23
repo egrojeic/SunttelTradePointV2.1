@@ -38,28 +38,6 @@
         @if (entityNodesList != null)
         {
 
-          @*  <SfGrid 
-                DataSource="entityNodesList"
-                Height="auto"
-                Width="auto"
-                TValue="EntityActor"
-                AllowFiltering="true"
-                AllowTextWrap="false"
-                AllowPaging="true"
-                AllowResizing="true"    
-                ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" } })">
-                <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
-                <GridColumns>
-                    <GridColumn Field="@nameof(EntityActor.Code)" HeaderText="Code" Width="110"></GridColumn>
-                    <GridColumn Field="@nameof(EntityActor.Name)" HeaderText="Name" Width="110"></GridColumn>
-                    <GridColumn Field="@nameof(EntityActor.EMailAddress)" HeaderText="Email Address" Width="110"></GridColumn>
-                    <GridColumn Field="InvoicingAddress.CityAddress" HeaderText="Geolocation" Width="110"></GridColumn>
-                    <GridColumn Field="@nameof(EntityActor.GetFirstPhone)" HeaderText="Phone" Width="110"></GridColumn>
-                    <GridColumn Field="@nameof(EntityActor.DefaultEntityRole)" HeaderText="Default Role" Width="110"></GridColumn>
-                    <GridColumn Field="@nameof(EntityActor.FullClassName)" HeaderText="Groups" Width="110"></GridColumn>
-                </GridColumns>
-                <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="EntityActor"></GridEvents>
-            </SfGrid>*@
 
             <RadzenDataGrid 
                     AllowFiltering="true"
@@ -107,6 +85,16 @@
     <div class="contextMenuItem">Print</div>
 </div>
 
+
+<style>
+    .e-split-btn-wrapper .e-split-btn {
+        z-index: 0;
+    }
+
+    .e-split-btn-wrapper .e-dropdown-btn {
+        z-index: 0;
+    }
+</style>
 
 @code {
     string filterText = "";
