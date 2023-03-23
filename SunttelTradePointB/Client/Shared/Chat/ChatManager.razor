@@ -161,6 +161,7 @@
     public async void TextWriteMessageChanged(CommunicationsMessage communicationsMessage)
     {
         await hubConnection.SendAsync("SendMessage", "User a", communicationsMessage);
+        LoadMsgToIdGroup(groupEnable.Id);
         StateHasChanged();
     }
 

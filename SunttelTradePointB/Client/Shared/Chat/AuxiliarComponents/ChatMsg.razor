@@ -30,10 +30,10 @@
                 }
 
             </div>
-            @if (GetValidationId(msg.Message).Video != "")
+            @if (GetValidationId(msg.Message).VideoImg != "")
             {
                 <div class="video">
-                    <img src="@($"{GetValidationId(msg.Message).Video}/hqdefault.jpg")"
+                    <img @onclick="()=>NavigationUrl(GetValidationId(msg.Message).VideoUrl)" src="@($"{GetValidationId(msg.Message).VideoImg}/hqdefault.jpg")"
                      width="150" />
 
             </div>
@@ -201,7 +201,8 @@
             }
             if (GetMsgTypeVideo(_msg))
             {
-                item.Video = _msg.Replace("https://www.youtube.com/watch?v=","https://img.youtube.com/vi/");
+                item.VideoImg = _msg.Replace("https://www.youtube.com/watch?v=","https://img.youtube.com/vi/");
+                item.VideoUrl = _msg;
             }
         }
 
@@ -240,12 +241,18 @@
         string url = $"TransactionalItemCard/all/{id}";
         Js.InvokeAsync<object>("open", url, "_blank");
     }
+    public void NavigationUrl(string url)
+    {
+        
+        Js.InvokeAsync<object>("open", url, "_blank");
+    }
 
     public  class msType
     {
         public string Msg { get; set; } = "";
         public string Id { get; set; } = "";
-        public string Video { get; set; } = "";
+        public string VideoImg { get; set; } = "";
+        public string VideoUrl { get; set; } = "";
     }
 
 
