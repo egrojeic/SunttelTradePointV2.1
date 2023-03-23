@@ -26,25 +26,15 @@
                         }
                     </ChipItems>
                 </SfChip>
-                <InputTextSelector @ref="ReferInputTextSelector"
-                                   EventSearcherValueAndId="EventSearcherValueAndId"
-                                   EventClosed="EventClosed"
-                                   ParamCountResul="ParamCountResul"
-                                   ViewSelect="ViewSelect"
-                                   Visible="PopupViewAddGroup"
-                                   captionOff="true"
-                                   Id="Group">
-                    @{
-                        if (GroupsQuery != null)
-                        {
-                            foreach (var group in GroupsQuery)
-                            {
-                                <option value="@group?.Id">@group?.Name</option>
-                            }
-                        }
+                <InputTextSelector3 TItem="ConceptGroup"
+                                    Visible="PopupViewAddGroup"
+                                    captionOff="true"
+                                    EventSearcherValueAndId="EventSearcherValueAndId"
+                                    EventIdSelectionAndId="SelectionMade"
+                                    Id="Group"
+                                    Items="GroupsQuery">
 
-                    }
-                </InputTextSelector>
+                </InputTextSelector3>
             </div>
             <a @onclick='()=> SetViewElemnt("Group")' style="display:@(!PopupViewAddGroup?"block":"none");" class="rounded-button">
                 <i class="fa-solid fa-hand-pointer " id="arrow-icon"></i>
@@ -93,12 +83,8 @@
         if (arg.selectionId == "Group")
         {
             GroupsQuery = await transactionalService.GetTransactionalItemGroups(arg.value);
-
             GroupsSearcher = new List<ConceptGroup>();
-
             GroupsSearcher.AddRange(GroupsQuery);
-            ParamCountResul = GroupsSearcher != null ? GroupsSearcher.Count() : 0;
-            ViewSelect = ParamCountResul > 0;
             ReferInputTextSelector.Refresh();
             StateHasChanged();
 
@@ -106,26 +92,20 @@
 
     }
 
-
-    protected async void EventIdSelectionInput(string selectionId)
+    public void SelectionMade(ConceptGroup arg)
     {
-
         if (SearcherValueMode == "Group")
-        {
-            if (Groups == null) Groups = new();
-            Group = GroupsSearcher.Where(c => c.Id == selectionId).FirstOrDefault();
-            ViewSelect = false;
+        {            
             PopupViewAddGroup = false;
-            Groups.Add(Group);
+            Groups.Add(arg);
             EventAddGroups.InvokeAsync(Groups);
-            Group = new ConceptGroup();
+           
         }
-
-        ReferInputTextSelector.Refresh();
         StateHasChanged();
-
     }
 
+   
+ 
     private void onDeleted(ChipDeletedEventArgs args)
     {
         if (args != null && args.Value != null && args.Value != "")

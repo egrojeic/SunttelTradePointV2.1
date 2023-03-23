@@ -155,7 +155,7 @@
         </div>
         <div class="workArea">
             @{
-                if (currentItem != null)
+                if (currentItem != null && currentItem.Id!=null)
                 {
                     @switch (verticalMenuOptionSelected)
                     {
@@ -303,9 +303,9 @@
     public void AddGroup(List<ConceptGroup> conceptGroups)
     {
         if (currentItem.Groups == null) currentItem.Groups = new();
-        currentItem.Groups = conceptGroups;
-        StateHasChanged();
+        currentItem.Groups = conceptGroups;       
         OpenAlert("Added", 0);
+        StateHasChanged();
     }
 
     public async void ItemSelected(MenuEventArgs e)
@@ -321,9 +321,7 @@
             bool resul = (item != null ? true : false);
             if (resul && currentItem.Status != null)
             {
-                currentItem = item;
-                transactionalService.TransactionalItems = item;
-                transactionalService.transactionalItemId = item.Id;
+                currentItem = item;               
             }
 
             if (currentItem.Status == null)
@@ -445,8 +443,8 @@
 
     public void Home()
     {
-        string paramFilter = filter != null ? "/" + filter : "";
-        Navigation.NavigateTo($"/Products{paramFilter}");
+        string paramFilter = filter != null ? filter : "";
+        Navigation.NavigateTo($"/Products/{paramFilter}");
     }
 
     public void OpenAlert(string _msg, int _status)

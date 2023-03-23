@@ -34,6 +34,8 @@
 </div>
 
 @code {
+    [Parameter]
+    public string filter { get; set; }
     static bool ShowMenu { get; set; } = false;
     public string commandStyle = "display: 'none';";
 
@@ -68,9 +70,9 @@
         Navigation.NavigateTo($"{Selected_item}");
     }
 
-    private void SetNavigateTo(string PageView)
-    {     
-        Navigation.NavigateTo($"{PageView}/0/Add");
+    private void SetNavigateTo(string page)
+    {            
+        Navigation.NavigateTo($"{page}");
     }
 
 
