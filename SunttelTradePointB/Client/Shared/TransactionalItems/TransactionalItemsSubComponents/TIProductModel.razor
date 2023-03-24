@@ -43,7 +43,6 @@
             <RadzenDataGridColumn TItem="ProductModel" Property="Name" Filterable="true" Title="Name" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
             <RadzenDataGridColumn TItem="ProductModel" Property="FullClassName" Title="Group" Width="160px" />
             <RadzenDataGridColumn TItem="ProductModel" Property="Status.Name" Title="Status" Width="200px" />
-            <RadzenDataGridColumn TItem="ProductModel" Property="IsGeneric" Title="Is Generic" Width="120px" />
             <RadzenDataGridColumn TItem="ProductModel" Property="ReferenceCost" Title="Reference Cost" Width="120px" />
 
 
@@ -57,7 +56,7 @@
     [Parameter]
     public string IdTransactionalItem { get; set; }
     List<ProductModel> ProductModels = new();
-   
+
 
     string msg = "";
     bool viewMsg = false;
@@ -71,16 +70,16 @@
 
     protected override void OnInitialized()
     {
-       
-            OnInitializedData();
-        
+
+        OnInitializedData();
+
     }
 
 
     public async void OnInitializedData()
     {
 
-        if (IdTransactionalItem != null )
+        if (IdTransactionalItem != null)
         {
             ProductModels = await transactionalService.GetSelectorListTransactionalItemModels(IdTransactionalItem);
 
@@ -99,7 +98,7 @@
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         ProductModel argObj = (ProductModel)args.Value;
-       
+
         if (argObj != null)
         {
             Navigation.NavigateTo($"/ProductModelCard/{IdTransactionalItem}/{argObj.Id}");

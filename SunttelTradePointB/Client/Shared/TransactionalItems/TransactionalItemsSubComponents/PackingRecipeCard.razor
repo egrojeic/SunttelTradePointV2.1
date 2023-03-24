@@ -186,17 +186,14 @@
                     </label>
                 </div>
 
-                <div class="position-input">
-                    <InputTextSelector3 TItem="Concept"
-                                    Id="ItemComponent"
-                                    caption="@(itemComponent != null ? itemComponent.Name : "")"
-                                    EventSearcherValueAndId="EventSearcherValueAndId"
-                                    EventIdSelectionAndId="SelectionMade"
-                                    EventClosed="ClosedInputText">
+                <InputTextSelector3 TItem="Concept"
+                                Id="ItemComponent"
+                                caption="@(itemComponent != null ? itemComponent.Name : "")"
+                                EventSearcherValueAndId="EventSearcherValueAndId"
+                                EventIdSelectionAndId="SelectionMade"
+                                EventClosed="ClosedInputText">
 
-                    </InputTextSelector3>
-
-                </div>
+                </InputTextSelector3>
                 <div>
                     <label>
                         @GetName( "RecipeQualityModifier", new PackRecipeItem())
@@ -565,13 +562,13 @@
                                 </div>
 
                                 <InputTextSelector3 TItem="LabelStyle"
-                                                   Id="PalletLabelStyle"
-                                                   caption="@(palletLabelStyle != null ? palletLabelStyle.Name : "")"
-                                                   EventSearcherValueAndId="EventSearcherValueAndId"
-                                                   EventIdSelectionAndId="SelectionMade"
-                                                   EventClosed="ClosedInputText"
-                                                   Items="palletLabelStylesView">
-                                  
+                                                    Id="PalletLabelStyle"
+                                                    caption="@(palletLabelStyle != null ? palletLabelStyle.Name : "")"
+                                                    EventSearcherValueAndId="EventSearcherValueAndId"
+                                                    EventIdSelectionAndId="SelectionMade"
+                                                    EventClosed="ClosedInputText"
+                                                    Items="palletLabelStylesView">
+
                                 </InputTextSelector3>
 
                                 <div>
@@ -580,14 +577,14 @@
                                     </label>
                                 </div>
 
-                                    <InputTextSelector3 TItem="LabelStyle"
-                                                   Id="BoxLabelStyle"
-                                                   caption="@(BoxLabelStyle != null ? BoxLabelStyle.Name : "")"
-                                                   EventSearcherValueAndId="EventSearcherValueAndId"
-                                                   EventIdSelectionAndId="SelectionMade"
-                                                   EventClosed="ClosedInputText"
-                                                   Items="BoxLabelStylesView"   >   
-                                 
+                                <InputTextSelector3 TItem="LabelStyle"
+                                                    Id="BoxLabelStyle"
+                                                    caption="@(BoxLabelStyle != null ? BoxLabelStyle.Name : "")"
+                                                    EventSearcherValueAndId="EventSearcherValueAndId"
+                                                    EventIdSelectionAndId="SelectionMade"
+                                                    EventClosed="ClosedInputText"
+                                                    Items="BoxLabelStylesView">
+
                                 </InputTextSelector3>
                                 @* string UPCName*@
                                 <div><label> @GetName("UPCName", new LabelInstruction()) </label></div>
@@ -600,14 +597,13 @@
                                 </div>
 
                                 <InputTextSelector3 TItem="LabelStyle"
-                                                   Id="InnerProductLabelStyleByDeafult"
-                                                   caption="@(InnerProductLabelStyleByDeafult != null ? InnerProductLabelStyleByDeafult.Name : "")"
-                                                   EventSearcherValueAndId="EventSearcherValueAndId"
-                                                   EventIdSelectionAndId="SelectionMade"
-                                                   EventClosed="ClosedInputText"
-                                                   Items="InnerProductLabelStyleByDeafultsView"
-                                                  >
-                                  
+                                                    Id="InnerProductLabelStyleByDeafult"
+                                                    caption="@(InnerProductLabelStyleByDeafult != null ? InnerProductLabelStyleByDeafult.Name : "")"
+                                                    EventSearcherValueAndId="EventSearcherValueAndId"
+                                                    EventIdSelectionAndId="SelectionMade"
+                                                    EventClosed="ClosedInputText"
+                                                    Items="InnerProductLabelStyleByDeafultsView">
+
                                 </InputTextSelector3>
 
                                 <div><label> @GetName("UPCComments", new LabelInstruction()) </label></div>
@@ -1152,7 +1148,7 @@
         if (arg.selectionId == "Customer")
         {
             ListConcept = await transactionalService.GetSelectorListEntityActors(arg.value, "MassMarket");
-            
+
         }
         if (arg.selectionId == "Model")
         {
@@ -1160,41 +1156,41 @@
             SetModels = await transactionalService.GetSelectorListEntityProductModel(transactionalItemId);
             GetModelView = SetModels;
             if (!arg.value.ToLower().Contains("all") && !arg.value.ToLower().Contains("todo")) GetModelView = SetModels.Where(s => s.Name.ToLower().Contains(arg.value.ToLower())).ToList();
-           
+
         }
         if (arg.selectionId == "Season")
         {
             GetSeasonView = await transactionalService.GetSelectorListSeasonBusiness(arg.value);
-           
+
         }
         if (arg.selectionId == "BoxToSale")
         {
             GetBoxToSaleView = await transactionalService.GetSelectorListBoxes(arg.value);
-          
+
         }
         if (arg.selectionId == "BoxToBuy")
         {
             if (SetBox == null) SetBox = new();
             GetBoxToBuyView = await transactionalService.GetBoxTable(arg.value);
-          
+
         }
         if (arg.selectionId == "UPCDateCodeBasedOn")
         {
             UPCDateCodeBasedOnsView = UPCDateCodeBasedOnsView.Where(s => s.Name.ToLower().Contains(arg.value.ToLower())).ToList();
-            
+
         }
         if (arg.selectionId == "ItemAssemblyType")
         {
             if (assemblyTypes == null) assemblyTypes = new();
 
             assemblyTypes = await transactionalService.GetSelectorListAssemblyTypes(arg.value);
-           
+
         }
         if (arg.selectionId == "MaterialAssembly")
         {
             if (ConceptMaterialsAssembly == null) ConceptMaterialsAssembly = new();
             ConceptMaterialsAssembly = await transactionalService.GetSelectorListPackingMaterials(arg.value);
-           
+
         }
         if (arg.selectionId == "RecipeQualityModifier")
         {
@@ -1230,7 +1226,7 @@
                                         Name = item.Name
                                     });
                         }
-                       
+
                     }
                 }
             }
@@ -1242,27 +1238,27 @@
         {
             if (totalPriceItemTypeBasedOns == null) totalPriceItemTypeBasedOns = new();
             totalPriceItemTypeBasedOns = await transactionalService.GetTransactionalItemTypes(arg.value);
-           
+
         }
         if (arg.selectionId == "PalletLabelStyle")
         {
             palletLabelStylesView = await transactionalService.GetLabelStyles(arg.value);
-           
+
         }
         if (arg.selectionId == "BoxLabelStyle")
         {
             BoxLabelStylesView = await transactionalService.GetLabelStyles(arg.value);
-           
+
         }
         if (arg.selectionId == "InnerProductLabelStyleByDeafult")
         {
             InnerProductLabelStyleByDeafultsView = await transactionalService.GetLabelStyles(arg.value);
-           
+
         }
         if (arg.selectionId == "Material")
         {
             MaterialsConcept = await transactionalService.GetSelectorListPackingMaterials(arg.value);
-            
+
         }
         if (arg.selectionId == "ItemComponent")
         {
@@ -1289,7 +1285,7 @@
 
                         });
             }
-            
+
         }
 
         await Refresh();
@@ -1333,7 +1329,7 @@
         }
         StateHasChanged();
     }
-  
+
     public void SelectionMade(SeasonBusiness arg)
     {
         if (selectionControl == "Season")
@@ -1371,7 +1367,7 @@
         StateHasChanged();
     }
 
-     public void SelectionMade(LabelStyle arg)
+    public void SelectionMade(LabelStyle arg)
     {
         if (selectionControl == "PalletLabelStyle")
         {
@@ -1394,7 +1390,7 @@
         {
             ModelRecipe = arg;
         }
-       
+
 
 
         StateHasChanged();
@@ -1571,7 +1567,7 @@
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
-    );
+        );
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {

@@ -1,12 +1,7 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
+using System.ComponentModel;
 
 namespace SunttelTradePointB.Shared.Common
 {
@@ -84,22 +79,23 @@ namespace SunttelTradePointB.Shared.Common
         [BsonIgnoreIfNull]
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<ProductModel> TransactionalItemModels { get; set; }
-        
+
 
     }
 
 
 
-    public class TransactItemImage: RecordItem
+    public class TransactItemImage : RecordItem
     {
-        
+
         [BsonIgnoreIfNull]
         public string Name { get; set; }
 
         [DisplayName("Image Name")]
         public string PathImage { get; set; }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return Name;
         }
 
@@ -120,8 +116,9 @@ namespace SunttelTradePointB.Shared.Common
 
 
 
-    public class TransactionalItemProcessStep:AtomConcept {
-        
+    public class TransactionalItemProcessStep : AtomConcept
+    {
+
         [DisplayName("General Instructions")]
         public string GeneralInstructions { get; set; }
         public double Cost { get; set; }
@@ -157,11 +154,12 @@ namespace SunttelTradePointB.Shared.Common
         public string Id { get; set; }
         public string Name { get; set; }
 
-       
+
 
     }
 
-    public class CostExceptionByQuantity {
+    public class CostExceptionByQuantity
+    {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
@@ -177,22 +175,23 @@ namespace SunttelTradePointB.Shared.Common
         [DisplayName("Maximum Quantity")]
         public double MaximumQty { get; set; }
 
-       
+
 
     }
 
 
-    public class TransactionalItemTag: RecordItem
+    public class TransactionalItemTag : RecordItem
     {
-        
+
         public string Key { get; set; }
         public string Value { get; set; }
 
-       
+
 
     }
 
-    public class CatalogItem {
+    public class CatalogItem
+    {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
@@ -203,12 +202,12 @@ namespace SunttelTradePointB.Shared.Common
         public CatalogItem ParentCatalogItem { get; set; }
 
 
-      
+
     }
 
-   
 
-    public class TransactionalItemType: ConceptType
+
+    public class TransactionalItemType : ConceptType
     {
         [DisplayName("Has Packing Recipe")]
         [BsonIgnoreIfNull]
@@ -242,11 +241,12 @@ namespace SunttelTradePointB.Shared.Common
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<RecipeModifier> InRecipeModifiers { get; set; }
 
-        
+
 
     }
 
-    public class TransactionalItemTypeCharacteristic {
+    public class TransactionalItemTypeCharacteristic
+    {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
@@ -256,7 +256,8 @@ namespace SunttelTradePointB.Shared.Common
         public List<TransactionalItemCharacteristic> PossibleValues { get; set; }
     }
 
-    public class TransactionalItemCharacteristic {
+    public class TransactionalItemCharacteristic
+    {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
@@ -282,18 +283,18 @@ namespace SunttelTradePointB.Shared.Common
     }
 
 
-    public class TransactionalItemCharacteristicPair: RecordItem
+    public class TransactionalItemCharacteristicPair : RecordItem
     {
 
         [DisplayName("Characteristic")]
         public TransactionalItemTypeCharacteristic TransactionalItemCharacteristic { get; set; }
         public string Value { get; set; }
 
-       
+
     }
 
 
-    public class TransactionalItemQuality: AtomConcept
+    public class TransactionalItemQuality : AtomConcept
     {
         [DisplayName("Default Value")]
         [BsonIgnoreIfNull]
@@ -302,21 +303,21 @@ namespace SunttelTradePointB.Shared.Common
         public string AdditionalDescription { get; set; }
     }
 
-    public class TransactionalItemQualityPair: RecordItem
+    public class TransactionalItemQualityPair : RecordItem
     {
-        
+
         [DisplayName("Item Quality")]
         public TransactionalItemQuality TransactionalItemQuality { get; set; }
         public string Value { get; set; }
 
-       
+
     }
 
 
-  
-    public class ProductModel: AtomConcept
+
+    public class ProductModel : AtomConcept
     {
-    
+
         public string Description { get; set; }
     }
 
@@ -330,7 +331,7 @@ namespace SunttelTradePointB.Shared.Common
 
     public class PackingSpecs : RecordItem
     {
-      
+
 
         public Concept Customer { get; set; }
         public SeasonBusiness Season { get; set; }
@@ -366,15 +367,15 @@ namespace SunttelTradePointB.Shared.Common
         [DisplayName("Assembly Type")]
         public AssemblyType ItemAssemblyType { get; set; }
 
-       
+
     }
 
-    public class AssemblyType: AtomConcept
-    { 
+    public class AssemblyType : AtomConcept
+    {
     }
 
 
-    public class PackRecipeItem: RecordItem
+    public class PackRecipeItem : RecordItem
     {
 
         [DisplayName("Product")]
@@ -411,14 +412,15 @@ namespace SunttelTradePointB.Shared.Common
     }
 
 
-    public class ProductRecipeQualityModifier {
+    public class ProductRecipeQualityModifier
+    {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         public string LegacyId { get; set; }
         public string Name { get; set; }
 
-       
+
     }
 
 
@@ -445,7 +447,8 @@ namespace SunttelTradePointB.Shared.Common
     }
 
 
-    public class Box: AtomConcept {
+    public class Box : AtomConcept
+    {
 
         [DisplayName("Inventory Product")]
         [BsonIgnoreIfNull]
@@ -527,13 +530,14 @@ namespace SunttelTradePointB.Shared.Common
         ProductionDate = 4
     }
 
-    public enum LabelPurpose {
+    public enum LabelPurpose
+    {
         Inventory = 1,
         Customer = 2,
         Provider = 3,
         UPC = 4
     }
-    public class LabelStyle: AtomConcept
+    public class LabelStyle : AtomConcept
     {
 
         [DisplayName("Purpose")]
@@ -546,16 +550,16 @@ namespace SunttelTradePointB.Shared.Common
 
         [DisplayName("DataMax Label Settings")]
         [BsonIgnoreIfNull]
-        public DataMaxLabelSpecs  DataMaxLabelSettings { get; set; }
+        public DataMaxLabelSpecs DataMaxLabelSettings { get; set; }
 
         [DisplayName("Zebra Label Settings")]
         [BsonIgnoreIfNull]
-        public ZebraLabelSpecs  ZebraLabelSettings { get; set; }
+        public ZebraLabelSpecs ZebraLabelSettings { get; set; }
     }
 
-    public class LabelPaper: AtomConcept
+    public class LabelPaper : AtomConcept
     {
-       
+
         public double Width { get; set; }
         public double Height { get; set; }
 
@@ -571,12 +575,13 @@ namespace SunttelTradePointB.Shared.Common
 
     }
 
-    public class DataMaxLabelLineSpec {
+    public class DataMaxLabelLineSpec
+    {
 
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
-        public LabelField  FieldInLabel { get; set; }
+        public LabelField FieldInLabel { get; set; }
 
         public string Rotation { get; set; }
         public string Font { get; set; }
@@ -608,17 +613,17 @@ namespace SunttelTradePointB.Shared.Common
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         public LabelField FieldInLabel { get; set; }
-        public string CampoA {get; set;}
-        public string CampoB {get; set;}
-        public string CampoC {get; set;}
-        public string CampoD {get; set;}
-        public string CampoEEE {get; set;}
-        public string CampoFFFF {get; set;}
-        public string CampoGGGG {get; set;}
-        public string CampoHHHH {get; set;}
-        public string CampoIIII {get; set;}
-        public string CampoJ {get; set;}
-        public string CampoK {get; set;}
+        public string CampoA { get; set; }
+        public string CampoB { get; set; }
+        public string CampoC { get; set; }
+        public string CampoD { get; set; }
+        public string CampoEEE { get; set; }
+        public string CampoFFFF { get; set; }
+        public string CampoGGGG { get; set; }
+        public string CampoHHHH { get; set; }
+        public string CampoIIII { get; set; }
+        public string CampoJ { get; set; }
+        public string CampoK { get; set; }
         public string Orden { get; set; }
 
     }
@@ -632,11 +637,12 @@ namespace SunttelTradePointB.Shared.Common
         public string Name { get; set; }
 
         [DisplayName("Used for")]
-        public List<LabelPurpose> UsedFor { get; set; }      
+        public List<LabelPurpose> UsedFor { get; set; }
     }
 
 
-    public class PriceListTransactionalItems {
+    public class PriceListTransactionalItems
+    {
         public string Id { get; set; }
         public string Name { get; set; }
 
@@ -648,5 +654,5 @@ namespace SunttelTradePointB.Shared.Common
     }
 
 
-   
+
 }
