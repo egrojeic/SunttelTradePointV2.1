@@ -118,8 +118,7 @@
 
             communicationsMessage = new();
 
-            StateHasChanged();
-            ClosedAlert("responder");
+            StateHasChanged();           
             onWrite = true;
             message = "";
             message =
@@ -157,9 +156,15 @@
     public void ClosedAlert(string value)
     {
         if (value == "alert") msg = "";
-        if (value == "responder") { msgResponder.Message = ""; msgResponder.Id = null; msgResponder.Message = ""; };
-        SetMsgResponder.InvokeAsync(msgResponder);
+        if (value == "responder") { msgResponder = null; SetMsgResponder.InvokeAsync(null); };
 
+
+        StateHasChanged();
+    }
+
+    public void ClosedAlert()
+    {
+        msgResponder = null;
         StateHasChanged();
     }
 

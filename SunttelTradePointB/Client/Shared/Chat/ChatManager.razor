@@ -67,7 +67,7 @@
 </div>
 
 @code {
-   
+
     string modeMenu { get; set; } = "grid-columns-2-chat-min";
     public ChannelCommunicationsGroup groupEnable { get; set; } = new();
 
@@ -122,12 +122,8 @@
 
 
                 msg = communicationsMessagesApi.Where(s => s.Id != null && s.Id == message.ParentMessageId).FirstOrDefault();
-                modeMsg = "";
+
                 if (msg != null) { SetMsgRecord(msg); }
-                else
-                {
-                    var r = msg;
-                }
 
             }
             else
@@ -136,7 +132,7 @@
             }
 
 
-
+            refChatMessageWriter.ClosedAlert();
 
 
         });
@@ -149,9 +145,8 @@
         {
             Console.WriteLine($"Error connecting: {e.Message}");
         }
-        // EventCallbackFilter("all");
-        StateHasChanged();
 
+        StateHasChanged();
         LoadObj();
     }
 
@@ -160,35 +155,38 @@
         if (chatMenuGroup != null) chatMenuGroup.Reload();
     }
 
-
-
     #region ViewMsg
     public async Task SetMsgResponder(CommunicationsMessage _msgResponder)
     {
         if (_msgResponder != null && _msgResponder.Id != null)
         {
             this.msgResponder = _msgResponder;
+
             msgContainer.SetMsgRecordView(_msgResponder.Id);
             modeMsg = "messageHistory";
         }
         else
         {
-            LoadMsgToIdGroup(groupEnable.Id, true);
+            LoadMsgToIdGroup(groupEnable.Id, false);
             modeMsg = "";
         }
+        StateHasChanged();
     }
 
     public async void SetMsgRecord(CommunicationsMessage? msgRecord)
     {
         if (msgRecord != null)
         {
+            LoadMsgToIdGroup(groupEnable.Id, false);
             communicationsMessagesApi = communicationsMessagesApi.Where(s => s.ParentMessageId == msgRecord.Id || s.Id == msgRecord.Id).ToList().OrderByDescending(s => s.Id == msgRecord.Id).ToList();
             modeMsg = "messageHistory";
+           
         }
         if (msgRecord == null)
         {
             LoadMsgToIdGroup(groupEnable.Id, true);
             modeMsg = "";
+            msgResponder = null;
             refChatMessageWriter.ClosedAlert("responder");
         }
         StateHasChanged();
@@ -197,17 +195,11 @@
     #endregion ViewMsg
 
 
-
     #region write
 
     public async void TextWriteMessageChanged(CommunicationsMessage communicationsMessage)
     {
-
-        // CommunicationsMessage msgResponder = communicationsMessagesApi.Where(s => s.Id == communicationsMessage.ParentMessageId).FirstOrDefault();
-        //EventMsgResponder.InvokeAsync(msgResponder);
         await hubConnection.SendAsync("SendMessage", "User a", communicationsMessage);
-        //LoadMsgToIdGroup(groupEnable.Id);
-        // StateHasChanged();
     }
 
     #endregion write
@@ -272,22 +264,15 @@
 
     }
 
-
-
-
     public void EventCallRefresh()
     {
         StateHasChanged();
     }
-
-
     public void LoadObj()
     {
         if (groupEnable == null) groupEnable = new();
         if (communicationsMessagesApi == null) communicationsMessagesApi = new();
     }
-
-
 
 
 }

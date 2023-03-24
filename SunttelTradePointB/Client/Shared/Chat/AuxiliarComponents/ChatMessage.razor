@@ -40,7 +40,7 @@
                                 <button class="color-btn btn-back-msg "  @onclick="ToBackMsgHistory" ><i class="fa-sharp fa-solid fa-circle-arrow-left"></i</button>
                                 btnBackMsg = false;
                             }
-                              @msg.Id
+                              
                         <ChatMsg msg="@msg"
                                  communicationsMessages="@communicationsMessages"
                                  SetResponder="SetResponder"
@@ -54,7 +54,7 @@
                 }
                 else
                 {
-                     @msg.Id
+                    
                     <ChatMsg msg="@msg"
                              communicationsMessages="@communicationsMessages"
                              SetResponder="SetResponder"
@@ -188,17 +188,17 @@
         {
             msg = communicationsMessagesRecord.Pop();
             communicationsMessagesRecordStatusBack = false;
-              modeMsg = "messageHistory";
+            modeMsg = "messageHistory";
+             SetMsgRecord.InvokeAsync(msg);
         }
         else
         {
             modeMsg = "";
             communicationsMessagesRecord.Clear();
-             SetMsgRecord.InvokeAsync(null);
-            
+            SetMsgRecord.InvokeAsync(null);
+
         }
-      
-        SetMsgRecord.InvokeAsync(msg);
+
     }
 
     public CommunicationsMessage GetMsgResponder(string? Id)
