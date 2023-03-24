@@ -13,12 +13,12 @@
         @if (msg.SenderEntity.Id != null)
         {
 
-            <div class="msg-responder">
-              
+            <div class="msg-responder">           
+            
                 @{
                     if (msg.ParentMessageId != null && modeMsg != "messageHistory")
                     {
-
+  @msg.Id
                         <ChatMsg msg="@GetMsgResponder(msg.ParentMessageId)"
                              communicationsMessages="@communicationsMessages"
                              SetResponder="SetResponder"
@@ -40,6 +40,7 @@
                                 <button class="color-btn btn-back-msg "  @onclick="ToBackMsgHistory" ><i class="fa-sharp fa-solid fa-circle-arrow-left"></i</button>
                                 btnBackMsg = false;
                             }
+                              @msg.Id
                         <ChatMsg msg="@msg"
                                  communicationsMessages="@communicationsMessages"
                                  SetResponder="SetResponder"
@@ -53,7 +54,7 @@
                 }
                 else
                 {
-                   
+                     @msg.Id
                     <ChatMsg msg="@msg"
                              communicationsMessages="@communicationsMessages"
                              SetResponder="SetResponder"
@@ -165,14 +166,15 @@
     {
         CommunicationsMessage msg = null;
         if (Id != null) msg = communicationsMessages.Where(s => s.Id == Id).FirstOrDefault();
-        if (msg != null) communicationsMessagesRecord.Push(msg);
+        if (msg != null && communicationsMessagesRecord.Where(s=>s.Id ==msg.Id) ==null)
+        { communicationsMessagesRecord.Push(msg); }
         modeMsg = "messageHistory";
         SetMsgRecord.InvokeAsync(msg);
     }
     public void ToBackMsgHistory()
     {
         CommunicationsMessage msg = null;
-        if(communicationsMessagesRecordStatusBack)communicationsMessagesRecord.Pop();
+        if(communicationsMessagesRecordStatusBack && communicationsMessagesRecord !=null)communicationsMessagesRecord.Pop();
         if (communicationsMessagesRecord !=null && communicationsMessagesRecord.Count() > 0)
         {
             msg = communicationsMessagesRecord.Pop();
@@ -196,7 +198,7 @@
     public int GetCountMsg(string msgId)
     {
         int count = 0;
-        if(communicationsMessages!=null)  count =  communicationsMessages.Where(s => s.ParentMessageId !=null && s.ParentMessageId.Trim() == msgId.Trim()).ToList().Count();
+        if(communicationsMessages!=null && msgId !="" && msgId !=null)  count =  communicationsMessages.Where(s => s.ParentMessageId !=null && s.ParentMessageId.Trim() == msgId.Trim()).ToList().Count();
 
         return count;
     }

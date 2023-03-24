@@ -157,8 +157,8 @@ else
             }
 
         }
-
-        if (channelCommunicationsGroup.Participants != null && channelCommunicationsGroup.Name != null && channelCommunicationsGroup.Owner != null)
+        //&& channelCommunicationsGroup.Owner != null
+        if (channelCommunicationsGroup.Participants != null && channelCommunicationsGroup.Name != null )
         {
             var resul = await actorsNodeServive.SaveChannelCommunicationsGroup(channelCommunicationsGroup);
             if (resul != null && resul.Id != null)
