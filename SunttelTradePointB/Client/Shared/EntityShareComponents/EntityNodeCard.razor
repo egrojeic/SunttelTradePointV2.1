@@ -132,29 +132,19 @@
                     <div>
                         <input type="text" class="form-control" @bind-value="EntityNode.Code" />
                     </div>
-
-                    <div><label for="sunttelUserId">@lblRole*</label></div>
                     <div>
-                        <div class="item-edit">
-                            <label></label>
-                            <button type="button" style="float:right" @onclick='()=>SetViewElement("Roles")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                        </div>
+                        <label>@lblRole*</label>
+                    </div>
+                   
                         <InputTextSelector3 TItem="EntityRole"
+                                        EventSearcherValueAndId="EventSearcherValueAndId"
+                                        EventIdSelectionAndId="SelectionMade"
                                         caption="@(role != null ? role.Name : "")"
+                                        Items="entityRoles"
                                         Id="Roles">
 
-                            @{
-                                if (entityRoles != null)
-                                {
-                                    foreach (var entity in entityRoles)
-                                    {
-                                        <option value="@entity?.Id">@entity?.Name</option>
-                                    }
-                                }
-
-                            }
                         </InputTextSelector3>
-                    </div>
+                 
 
 
                 </div>
@@ -212,18 +202,15 @@
                                     }
                                 </ChipItems>
                             </SfChip>
-                            <InputTextSelector @ref="inputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelectorInput" ParamCountResul="ParamCountResul" ViewSelect="ViewSelect" Visible="PopupViewGroups">
-                                @{
-                                    if (ListGroups != null)
-                                    {
-                                        foreach (var group in ListGroups)
-                                        {
-                                            <option value="@group?.Id">@group?.Name</option>
-                                        }
+                            <InputTextSelector3 TItem="ConceptGroup"
+                                            EventSearcherValueAndId="EventSearcherValueAndId"
+                                            EventIdSelectionAndId="SelectionMade"
+                                            Items="ListGroups"
+                                            captionOff="true"
+                                            Visible="PopupViewGroups"
+                                            Id="Group">
 
-                                    }
-                                }
-                            </InputTextSelector>
+                            </InputTextSelector3>
                         </div>
                     </div>
 
@@ -287,7 +274,14 @@
 }
 
 
-
+<style>
+    .e-split-btn-wrapper .e-split-btn {
+        z-index: 0;
+    }
+    .e-split-btn-wrapper .e-dropdown-btn{
+        z-index: 0;
+    }
+</style>
 
 @code {
     public EntityActor? currentEntityActor { get; set; }
@@ -458,7 +452,7 @@
 
     public void SetViewElement(string Element)
     {
-        ViewSelect = false;
+        
         SearchValueMode = Element;
         if (Element == "Group" && !PopupViewGroups) { PopupViewGroups = true; }
         if (Element == "Roles" && !PopupViewRoles) { PopupViewRoles = true; }
@@ -466,17 +460,18 @@
         StateHasChanged();
     }
 
-    protected async void EventSearcherValue(string group)
+    protected async void EventSearcherValueAndId((string value, string selectionId) arg)
     {
+        SearchValueMode = arg.selectionId;
         if (SearchValueMode == "Group")
         {
-            ListGroups = await actorsNodeServive.GetEntityGroups(group);
-            ParamCountResul = ListGroups.Count();
+            ListGroups = await actorsNodeServive.GetEntityGroups(arg.value);
+           
         }
         if (SearchValueMode == "Roles")
         {
-            entityRoles = await actorsNodeServive.GetListEntityRoles(group);
-            ParamCountResul = entityRoles.Count();
+            entityRoles = await actorsNodeServive.GetListEntityRoles(arg.value);
+           
         }
         if (ParamCountResul > 0)
         {
@@ -486,21 +481,30 @@
         {
             ViewSelect = false;
         }
-        await Refresh();
+       
     }
 
-    protected async void EventIdSelectorInput(string selectionId)
+    public void SelectionMade(ConceptGroup arg)
     {
         if (SearchValueMode == "Group")
         {
-            FilterListGroups.Add(ListGroups.Where(c => c.Id == selectionId).FirstOrDefault());
-        }
+           FilterListGroups.Add(arg);
+        } 
+
+        StateHasChanged();
+    }
+
+    public void SelectionMade(EntityRole arg)
+    {
         if (SearchValueMode == "Roles")
         {
-            role = entityRoles.Where(c => c.Id == selectionId).FirstOrDefault();
+          role = arg;
         }
-        await Refresh();
+
+        StateHasChanged();
     }
+
+   
 
     public async void ItemSelected(MenuEventArgs menuEventArgs)
     {

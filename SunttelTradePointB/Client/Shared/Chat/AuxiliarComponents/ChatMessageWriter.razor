@@ -27,7 +27,7 @@
         <div class="content-input">
 
             <SfTextBox @ref="input" Placeholder="Type a message"
-                       Enabled="true"
+                       Enabled="@(groupEnable.Id!=null)"
                        Multiline="true"
                        @bind-Value="message"
                        @oninput="OnTyping"
@@ -159,7 +159,7 @@
         if (value == "alert") msg = "";
         if (value == "responder") { msgResponder.Message = ""; msgResponder.Id = null; msgResponder.Message = ""; };
         SetMsgResponder.InvokeAsync(msgResponder);
-       
+
         StateHasChanged();
     }
 
@@ -200,5 +200,6 @@
     }
 
 
+   
 
 }

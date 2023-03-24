@@ -1,11 +1,10 @@
 ﻿@using SunttelTradePointB.Shared.Communications
 @inject CommunicationService communicationService
+@inject IJSRuntime Js
 
-
-<div class="content-msg">
+<div  class="content-msg">
     @if (modeMsg == "messageHistory" )
-    {
-      
+    {      
         btnBackMsg = true;
     }
     @foreach (var msg in communicationsMessages)
@@ -14,14 +13,16 @@
         @if (msg.SenderEntity.Id != null)
         {
 
-            <div class="msg-responder">
+            <div class="msg-responder">           
+            
                 @{
                     if (msg.ParentMessageId != null && modeMsg != "messageHistory")
                     {
-
+  @msg.Id
                         <ChatMsg msg="@GetMsgResponder(msg.ParentMessageId)"
                              communicationsMessages="@communicationsMessages"
                              SetResponder="SetResponder"
+                             countMsg="@(GetCountMsg(GetMsgResponder(msg.ParentMessageId)))"
                              SetMsgRecordViewModel="SetMsgRecordView" ChildrenMessage="true">
                         </ChatMsg>
 
@@ -39,10 +40,12 @@
                                 <button class="color-btn btn-back-msg "  @onclick="ToBackMsgHistory" ><i class="fa-sharp fa-solid fa-circle-arrow-left"></i</button>
                                 btnBackMsg = false;
                             }
+                              @msg.Id
                         <ChatMsg msg="@msg"
                                  communicationsMessages="@communicationsMessages"
                                  SetResponder="SetResponder"
                                  SetMsgRecordViewModel="SetMsgRecordView"
+                                  countMsg="@(GetCountMsg(msg.Id))"
                                  viewHistory="true"
                         style="box-shadow: 0px 0px 5px">
                         </ChatMsg>
@@ -51,11 +54,12 @@
                 }
                 else
                 {
-                   
+                     @msg.Id
                     <ChatMsg msg="@msg"
                              communicationsMessages="@communicationsMessages"
                              SetResponder="SetResponder"
                              SetMsgRecordViewModel="SetMsgRecordView"
+                              countMsg="@(GetCountMsg(msg.Id))"
                              ChildrenMessage="true"
                    style="box-shadow: 0px 0px 5px"
                   >
@@ -116,8 +120,13 @@
 
 
     protected override void OnParametersSet()
-    {
+    {        
+        StateHasChanged();
+    }
 
+    protected override void OnAfterRender(bool firstRender)
+    {
+        scroll();
     }
 
     public void ViewModalMenu(string id, string _reques)
@@ -149,22 +158,23 @@
         CommunicationsMessage msg = null;
         if (Id != null) msg = communicationsMessages.Where(s => s.Id == Id).FirstOrDefault();        
         if (msg != null) SetMsgResponder.InvokeAsync(msg);
-         if( communicationsMessages !=null &&  communicationsMessages.Count()>0)SetMsgRecordView(msg.Id);
-       
+        if( communicationsMessages !=null &&  communicationsMessages.Count()>0)SetMsgRecordView(msg.Id);
+
     }
 
     public void SetMsgRecordView(string? Id)
     {
         CommunicationsMessage msg = null;
         if (Id != null) msg = communicationsMessages.Where(s => s.Id == Id).FirstOrDefault();
-        if (msg != null) communicationsMessagesRecord.Push(msg);
+        if (msg != null && communicationsMessagesRecord.Where(s=>s.Id ==msg.Id) ==null)
+        { communicationsMessagesRecord.Push(msg); }
         modeMsg = "messageHistory";
         SetMsgRecord.InvokeAsync(msg);
     }
     public void ToBackMsgHistory()
     {
         CommunicationsMessage msg = null;
-        if(communicationsMessagesRecordStatusBack)communicationsMessagesRecord.Pop();
+        if(communicationsMessagesRecordStatusBack && communicationsMessagesRecord !=null)communicationsMessagesRecord.Pop();
         if (communicationsMessagesRecord !=null && communicationsMessagesRecord.Count() > 0)
         {
             msg = communicationsMessagesRecord.Pop();
@@ -177,7 +187,7 @@
         modeMsg = "messageHistory";
         SetMsgRecord.InvokeAsync(msg);
     }
-   
+
     public CommunicationsMessage GetMsgResponder(string? Id)
     {
         CommunicationsMessage msg = null;
@@ -185,9 +195,30 @@
         return msg;
     }
 
+    public int GetCountMsg(string msgId)
+    {
+        int count = 0;
+        if(communicationsMessages!=null && msgId !="" && msgId !=null)  count =  communicationsMessages.Where(s => s.ParentMessageId !=null && s.ParentMessageId.Trim() == msgId.Trim()).ToList().Count();
+
+        return count;
+    }
+
+     public int GetCountMsg(CommunicationsMessage msg)
+    {
+        int count = 0;
+        if(communicationsMessages!=null && msg!=null)  count =  communicationsMessages.Where(s => s.ParentMessageId !=null && s.ParentMessageId.Trim() == msg.Id.Trim()).ToList().Count();
+
+        return count;
+    }
+
     public void LoadObj()
     {
         if (communicationsMessages == null) communicationsMessages = new();
+    }
+
+     public async void scroll()
+    {        
+      // await Js.InvokeVoidAsync("ChatScroll");
     }
 
 }

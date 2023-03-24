@@ -1,4 +1,6 @@
 ﻿@page "/ChatGeneral"
+
+@using SunttelTradePointB.Shared.Communications
 @using Microsoft.AspNetCore.SignalR.Client
 @using SunttelTradePointB.Client.Shared.EntityShareComponents
 @using System.Reflection
@@ -15,8 +17,10 @@
                     Description="Chat with your teammates, clients, and providers">
 </PageTitleComponent>
 
-<div class="content-chat" >
-    <ChatManager>
+<div class="content-chat">
+    <ChatManager
+        msgResponder="@msgResponder"
+                 EventMsgResponder="EventMsgResponder">
 
     </ChatManager>
 
@@ -25,4 +29,11 @@
 
 @code {
 
+    CommunicationsMessage msgResponder  { get;   set; } = new();
+
+    public void EventMsgResponder(CommunicationsMessage _msgResponder)
+    {
+        msgResponder = _msgResponder;
+        StateHasChanged();
+    }
 }

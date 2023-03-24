@@ -1,6 +1,6 @@
 ﻿@using SunttelTradePointB.Shared.Communications
 @inject CommunicationService communicationService
-
+@inject IJSRuntime Js
 
 @if (msg != null)
 {
@@ -23,13 +23,32 @@
 
         </div>
         <div class="@(GetClassMode(msg.SenderEntity.Id,"msg"))">
-            <div> <p class="text">@msg.Message</p></div>
+            <div> <p class="text">@(GetValidationId(msg.Message).Msg)</p>
+                @if (GetValidationId(msg.Message).Id != "")
+                {
+                    <a class="text link" @onclick="()=>NavigationLink(GetValidationId(msg.Message).Id)">@(GetValidationId(msg.Message).Id)</a>
+                }
+
+            </div>
+            @if (GetValidationId(msg.Message).VideoImg != "")
+            {
+                <div class="video">
+                    <img @onclick="()=>NavigationUrl(GetValidationId(msg.Message).VideoUrl)" src="@($"{GetValidationId(msg.Message).VideoImg}/hqdefault.jpg")"
+                     width="150" />
+
+            </div>
+            }
         </div>
         <div class="@(GetClassMode(msg.SenderEntity.Id,"menu"))">
-            <div class="content-msg-menu">
+            <div class="content-msg-menu  position-relative">
                 <img @onclick='()=>SetModelResponder(msg.Id)' class="ico-img-menu" src="/images//responder.svg">
                 <img @onclick='()=>ViewModalMenu(msg.Id,"menu-1")' class="ico-img-menu" src="/images//Reaction.svg">
                 <img @onclick='()=>SetMsgRecordView(msg.Id)' class="ico-img-menu" src="/images//chat-menu.svg">
+                @if (countMsg > 0)
+                {
+                    <p class="ico-msg-count">@countMsg</p>
+                }
+
                 @if (viewMenu1 && SelectionId == msg.Id)
                 {
                     <div class="menu-view-1">
@@ -58,13 +77,15 @@
     public EventCallback<string> SetResponder { get; set; }
     [Parameter]
     public EventCallback<string> SetMsgRecordViewModel { get; set; }
-    
+
     [Parameter]
     public bool viewHistory { get; set; } = false;
     [Parameter]
     public bool ChildrenMessage { get; set; } = false;
     [Parameter]
     public string style { get; set; }
+    [Parameter]
+    public int countMsg { get; set; }
 
     bool viewMenu1 = false;
     public string SelectionId { get; set; }
@@ -96,7 +117,7 @@
 
     }
 
-   
+
 
     public void SetColorMessageIconName(string value, string id)
     {
@@ -167,6 +188,43 @@
 
     }
 
+    public msType GetValidationId(string msg)
+    {
+        var item = new msType();
+        string[] list = msg.Split(' ');
+
+        foreach (var _msg in list)
+        {
+            if (GetMsgTypeId(_msg))
+            {
+                item.Id = _msg;
+            }
+            if (GetMsgTypeVideo(_msg))
+            {
+                item.VideoImg = _msg.Replace("https://www.youtube.com/watch?v=","https://img.youtube.com/vi/");
+                item.VideoUrl = _msg;
+            }
+        }
+
+        item.Msg = msg;
+        return item;
+    }
+
+    private bool GetMsgTypeId(string item)
+    {
+        bool result = false;
+        int idLength = "000000000000000000752363".Length;
+        int itemLength = item.Replace(" ","").Trim().Length;
+        if (itemLength == idLength) result = true;        
+        return result;
+    }
+    private bool GetMsgTypeVideo(string url)
+    {
+        bool result = false;       
+       
+        if (url.ToLower().Contains("https://www.youtube")) { result = true; } 
+        return result;
+    }
 
     public CommunicationsMessage GetMsgResponder(string? Id)
     {
@@ -177,6 +235,27 @@
     {
 
     }
+
+    public void NavigationLink(string id)
+    {
+        string url = $"TransactionalItemCard/all/{id}";
+        Js.InvokeAsync<object>("open", url, "_blank");
+    }
+    public void NavigationUrl(string url)
+    {
+        
+        Js.InvokeAsync<object>("open", url, "_blank");
+    }
+    
+
+    public  class msType
+    {
+        public string Msg { get; set; } = "";
+        public string Id { get; set; } = "";
+        public string VideoImg { get; set; } = "";
+        public string VideoUrl { get; set; } = "";
+    }
+
 
 }
 

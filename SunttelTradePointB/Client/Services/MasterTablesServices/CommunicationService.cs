@@ -73,10 +73,12 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             try
             {
                 HttpResponseMessage responseMessage = null;
-                if (startingDate == null && filterCriteria == null) responseMessage = await Gethttp($"/api/CommunicationsManagement/GetMessagesOfAnEntity?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&channelCommunicationGroupId={channelCommunicationGroupId}");
-                if (startingDate != null && filterCriteria != null) responseMessage = await Gethttp($"/api/CommunicationsManagement/GetMessagesOfAnEntity?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&channelCommunicationGroupId={channelCommunicationGroupId}&filterCriteria={filterCriteria}&startingDate={startingDate}");
-                if (startingDate != null && filterCriteria == null) responseMessage = await Gethttp($"/api/CommunicationsManagement/GetMessagesOfAnEntity?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&channelCommunicationGroupId={channelCommunicationGroupId}&filterCriteria={filterCriteria}");
-                if (startingDate == null && filterCriteria != null) responseMessage = await Gethttp($"/api/CommunicationsManagement/GetMessagesOfAnEntity?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&channelCommunicationGroupId={channelCommunicationGroupId}&startingDate={startingDate}");
+                string url = $"/api/CommunicationsManagement/GetMessagesOfAnEntity?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&channelCommunicationGroupId={channelCommunicationGroupId}";
+
+                if (startingDate != null && filterCriteria != null) url += $"&filterCriteria={filterCriteria}&startingDate={startingDate}";
+                if (startingDate == null && filterCriteria != null) url += $"&filterCriteria={filterCriteria}";
+                if (startingDate != null && filterCriteria == null) url += $"&startingDate={startingDate}";
+                responseMessage = await Gethttp(url);
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<CommunicationsMessage>>();
 
                 return list;
@@ -115,7 +117,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             try
             {
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
-                request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad.ID.ToString());
+                //request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad.ID.ToString());
 
                 var response = await _httpClient.SendAsync(request);
 

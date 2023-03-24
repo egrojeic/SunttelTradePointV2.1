@@ -5,7 +5,6 @@ html, body {
     background-color: #161616;
     color: dimgray;
     padding: 0;
-
 }
 
 
@@ -137,9 +136,19 @@ a, .btn-link {
     margin-left: 5px;
 }
 
+    .splitButtonsStyle .e-split-btn-wrapper .e-split-btn {
+        z-index: 0;
+    }
+
+    .splitButtonsStyle .e-split-btn-wrapper .e-dropdown-btn {
+        z-index: 0;
+    }
+
     .splitButtonsStyle .e-split-btn, .e-dropdown-btn {
         background-color: #00CCFF !important;
         border: none !important;
+        color: white;
+        z-index: 0;
     }
 
     .splitButtonsStyle .e-split-btn {
@@ -150,6 +159,7 @@ a, .btn-link {
     .splitButtonsStyle .e-dropdown-btn {
         border-bottom-right-radius: 10px;
         border-top-right-radius: 10px;
+        z-index: 0;
     }
 
 .detailsTitleContainer {
@@ -233,8 +243,6 @@ nav {
     }
 
 
-.tableContainer{
+.tableContainer {
     max-width: 1600px;
-
-
 }
