@@ -18,7 +18,7 @@
                 @{
                     if (msg.ParentMessageId != null && modeMsg != "messageHistory")
                     {
-  @msg.Id
+  
                         <ChatMsg msg="@GetMsgResponder(msg.ParentMessageId)"
                              communicationsMessages="@communicationsMessages"
                              SetResponder="SetResponder"
@@ -155,36 +155,49 @@
 
     public void SetResponder(string? Id)
     {
-        CommunicationsMessage msg = null;
+        CommunicationsMessage msg = new();
         if (Id != null) msg = communicationsMessages.Where(s => s.Id == Id).FirstOrDefault();        
-        if (msg != null) SetMsgResponder.InvokeAsync(msg);
-        if( communicationsMessages !=null &&  communicationsMessages.Count()>0)SetMsgRecordView(msg.Id);
+        if (msg != null && msg.Id!=null) SetMsgResponder.InvokeAsync(msg);
+        if( msg!=null && msg.Id!=null)SetMsgRecordView(msg.Id);
+
 
     }
 
     public void SetMsgRecordView(string? Id)
     {
-        CommunicationsMessage msg = null;
-        if (Id != null) msg = communicationsMessages.Where(s => s.Id == Id).FirstOrDefault();
-        if (msg != null && communicationsMessagesRecord.Where(s=>s.Id ==msg.Id) ==null)
-        { communicationsMessagesRecord.Push(msg); }
-        modeMsg = "messageHistory";
-        SetMsgRecord.InvokeAsync(msg);
+        CommunicationsMessage _msg = new();
+        if (Id != null) { 
+            _msg = communicationsMessages.Where(s => s.Id == Id).FirstOrDefault(); 
+        }
+        bool resul = communicationsMessagesRecord!=null ? communicationsMessagesRecord.Where(s => s.Id == _msg.Id).Count() > 0:false;
+        if (_msg != null && !resul)
+        { 
+            communicationsMessagesRecord.Push(_msg);
+            modeMsg = "messageHistory";
+            SetMsgRecord.InvokeAsync(_msg);
+        }
+
     }
     public void ToBackMsgHistory()
     {
         CommunicationsMessage msg = null;
-        if(communicationsMessagesRecordStatusBack && communicationsMessagesRecord !=null)communicationsMessagesRecord.Pop();
+        if(communicationsMessagesRecordStatusBack && communicationsMessagesRecord !=null && communicationsMessagesRecord.Count()>0)
+            communicationsMessagesRecord.Pop();
+
         if (communicationsMessagesRecord !=null && communicationsMessagesRecord.Count() > 0)
         {
             msg = communicationsMessagesRecord.Pop();
             communicationsMessagesRecordStatusBack = false;
+              modeMsg = "messageHistory";
         }
         else
         {
+            modeMsg = "";
             communicationsMessagesRecord.Clear();
+             SetMsgRecord.InvokeAsync(null);
+            
         }
-        modeMsg = "messageHistory";
+      
         SetMsgRecord.InvokeAsync(msg);
     }
 
