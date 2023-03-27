@@ -68,29 +68,19 @@
             </div>
             <div><label>@GetName( "LinkedTransactionalItem", new Box())</label></div>
             <div>
-                <div style="position:relative;">
-                    <div class="item-edit">
-                        <label>@(transactionalItem != null ? transactionalItem.Name : "")</label>
-                        <button @onclick='()=>SetViewElemnt("LinkedTransactionalItem")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                    </div>
 
-                    <InputTextSelector @ref="ReferInputTextSelector" EventSearcherValue="EventSearcherValue" EventIdSelection="EventIdSelection" ParamCountResul="ParamCountResul" Visible="transactionalItemLinked" ViewSelect="ViewSelect" EventClosed="EventClosedInput">
-                        @{
-                            if (transactionalItems != null)
-                            {
-                                foreach (var Obj in transactionalItems)
-                                {
-                                    <option value="@Obj.Id">@Obj.Name</option>
-                                }
-                            }
+                <InputTextSelector3 Id="LinkedTransactionalItem"
+                                    TItem="TransactionalItem"
+                                    Items="transactionalItems"
+                                    EventSearcherValueAndId="EventSearcherValue"
+                                    caption="@(transactionalItem != null ? transactionalItem.Name : "")"
+                                    EventIdSelectionAndId="EventIdSelection"
+                >
 
-                        }
-                    </InputTextSelector>
-                </div>
+                </InputTextSelector3>
+
             </div>
-
         </div>
-
     </div>
 </div>
 
@@ -162,15 +152,13 @@
     }
 
 
-    protected async void EventIdSelection(string SelectionId)
+    public void EventIdSelection(TransactionalItem transactionalItem)
     {
-        // transactionalItems = await transactionalService.GetTransactionalItemDetailsQualityParameters();
-        transactionalItem = transactionalItems.Where(c => c.Id == SelectionId).FirstOrDefault();
         if (transactionalItem != null)
         {
             if (box == null) box = new();
             box.LinkedTransactionalItem = new AtomConcept
-            {
+                {
                     Name = transactionalItem.Name != null ? transactionalItem.Name : "",
                     Id = transactionalItem.Id != null ? transactionalItem.Id : "",
                     AuditRecord = transactionalItem.AuditRecord != null ? transactionalItem.AuditRecord : new(),
@@ -180,7 +168,7 @@
                     IsSelected = transactionalItem.IsSelected != null ? transactionalItem.IsSelected : false,
                     LegacyId = transactionalItem.LegacyId != null ? transactionalItem.LegacyId : ""
 
-            };
+                };
         }
 
         ViewSelect = false;
@@ -189,16 +177,16 @@
         ParamCountResul = 0;
         ReferInputTextSelector.Refresh();
         StateHasChanged();
-
     }
-    protected async void EventSearcherValue(string value)
+
+    public async void EventSearcherValue((string value, string valueId) args)
     {
         ViewPopupCount = true;
         transactionalItems = new List<TransactionalItem>();
         if (ModeSearcher == "LinkedTransactionalItem")
         {
-            transactionalItems = await transactionalService.GetTransactionalItemsList(1, 20, value);
-            if (transactionalItems != null) transactionalItems = transactionalItems.Where(s => s.Name.ToLower().Contains(value.ToLower())).ToList();
+            transactionalItems = await transactionalService.GetTransactionalItemsList(1, 20, args.value);
+            if (transactionalItems != null) transactionalItems = transactionalItems.Where(s => s.Name.ToLower().Contains(args.value.ToLower())).ToList();
 
             ParamCountResul = transactionalItems != null ? transactionalItems.Count() : 0;
             ViewSelect = ParamCountResul > 0;
@@ -250,7 +238,7 @@
             bool validate = Validate.GetValidate(box);
             if (validate || true)
             {
-                
+
                 string boxId = box.Id;
                 var resul = await transactionalService.SaveBox(box);
                 if (resul) { box = new(); };
@@ -322,5 +310,4 @@
             return _Msg == "" ? true : false;
         }
     }
-
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.JSInterop;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
@@ -51,6 +52,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         #region Mode Edit
 
         public IWebAssemblyHostEnvironment environment { get; set; }
+
         List<TransactionalItem>? transactionalItemsList;
         List<Concept> conceptList;
         List<ConceptGroup> conceptGroupsList;
@@ -194,7 +196,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         {
             transactionalItemId = transactionalItemId != null ? transactionalItemId : "";
             string userId = UIClientGlobalVariables.UserId;
-            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress == "" ? "127.0.0.0" : UIClientGlobalVariables.PublicIpAddress;
             try
             {
 

@@ -241,6 +241,8 @@
     {
         if (transactionalItemId != null)
         {
+            // TODO: cuando se carga la pagina, hace la llamada antes de cargar la informacion del usuario
+            // en el mainLayout
             currentItem = await transactionalService.GetTransactionalItemById(transactionalItemId);
             LoadObj();
             if (currentItem != null)
