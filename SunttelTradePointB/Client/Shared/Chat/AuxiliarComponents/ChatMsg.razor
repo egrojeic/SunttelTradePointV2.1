@@ -236,6 +236,11 @@
             result = item.Split(":")[1].Replace(" ", "");
             result = result.Split(' ')[0];
         }
+        if (item.Contains("A:"))
+        {
+            result = item.Split(":")[1].Replace(" ", "");
+            result = result.Split(' ')[0];
+        }
         return result;
     }
     private bool GetMsgTypeVideo(string url)

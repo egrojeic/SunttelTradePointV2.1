@@ -95,15 +95,15 @@ namespace SunttelTradePointB.Server.Hubs
         {
             try
             {
-                await _messagesValet.SaveMessage(message);
-
+               var response = await _messagesValet.SaveMessage(message);
+               var msg = response.communicationsMessage;
                 //await _messagesValet.SaveMessage(new CommunicationsMessage
                 //{
                 //    Message = message,
                 //    MessageTypeId = CommunicationsMessageType.ChatMessage
                 //}); 
 
-                await Clients.All.SendAsync("ReceiveMessage", user, message);
+                await Clients.All.SendAsync("ReceiveMessage", user, msg);
             }
             catch (Exception e)
             {

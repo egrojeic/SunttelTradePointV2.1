@@ -115,11 +115,10 @@
         {
 
             communicationsMessagesApi.Add(message);
-            await LoadMsgToIdGroup(groupEnable.Id, false);
+            // await LoadMsgToIdGroup(groupEnable.Id, false);
             if (modeMsg == "messageHistory")
             {
                 CommunicationsMessage msg = null;
-
 
                 msg = communicationsMessagesApi.Where(s => s.Id != null && s.Id == message.ParentMessageId).FirstOrDefault();
 
@@ -132,7 +131,7 @@
             }
 
 
-            refChatMessageWriter.ClosedAlert();
+            refChatMessageWriter.ClosedAlert("responder");
 
 
         });
@@ -161,14 +160,20 @@
         if (_msgResponder != null && _msgResponder.Id != null)
         {
             this.msgResponder = _msgResponder;
-
-            msgContainer.SetMsgRecordView(_msgResponder.Id);
             modeMsg = "messageHistory";
         }
         else
         {
             LoadMsgToIdGroup(groupEnable.Id, false);
-            modeMsg = "";
+            msgResponder = new();
+            if (msgContainer.communicationsMessagesRecord == null || msgContainer.communicationsMessagesRecord.Count()<=0)
+            {
+                modeMsg = ""; }
+            else
+            {
+                modeMsg = "messageHistory";
+            }
+           
         }
         StateHasChanged();
     }
@@ -180,12 +185,18 @@
             LoadMsgToIdGroup(groupEnable.Id, false);
             communicationsMessagesApi = communicationsMessagesApi.Where(s => s.ParentMessageId == msgRecord.Id || s.Id == msgRecord.Id).ToList().OrderByDescending(s => s.Id == msgRecord.Id).ToList();
             modeMsg = "messageHistory";
-           
+
         }
         if (msgRecord == null)
         {
             LoadMsgToIdGroup(groupEnable.Id, true);
-            modeMsg = "";
+            if (msgContainer.communicationsMessagesRecord == null || msgContainer.communicationsMessagesRecord.Count() <= 0)
+            { 
+                modeMsg = ""; }
+            else
+            {
+                modeMsg = "messageHistory";
+            }
             msgResponder = null;
             refChatMessageWriter.ClosedAlert("responder");
         }
