@@ -18,13 +18,20 @@
         </div>
     }
     <div class="sub-content">
-
-        @if (msg != "")
+        @if (modeType)
         {
-            <div class="msg" @onclick='()=>ClosedAlert("alert")' style="display:@(msg!=""?"block":"none");">@msg</div>
+            <div class="msg" style="display:@(modeType?"block":"none");">
+                <select @onchange="AddTypeLink">
+                    <option value="T-1">Transaction</option>
+                    <option value="A-1">Actor</option>
+                </select>
+            <img @onclick='()=>ClosedAlert("alert")' class="ico-to-closed" src="/images//close.svg">
+            </div>
         }
-
-        <div class="content-input">
+        <div class="content-img-add">
+            <img @onclick="SendMsg" class="img-add" src="/images//attach.png" />
+        </div>
+      <div class="content-input">
 
             <SfTextBox @ref="input" Placeholder="Type a message"
                        Enabled="@(groupEnable.Id!=null)"
@@ -66,11 +73,10 @@
     bool onWrite = true;
 
     string message = "";
-    string msg = "";
+    bool modeType = false;
     string enter = "";
     protected override void OnParametersSet()
-    {
-        if (groupEnable.Id != null) msg = "";
+    {      
         var f = communicationsMessage;
         StateHasChanged();
     }
@@ -109,9 +115,9 @@
 
             };
 
-        msg = Validationbj();
 
-        if (onWrite && message != null && message != "" && msg == "")
+
+        if (onWrite && message != null && message != "" )
         {
             onWrite = false;
             TextMessageChanged.InvokeAsync(communicationsMessage);
@@ -129,6 +135,7 @@
 
     private string Validationbj()
     {
+        string msg="";
         if (communicationsMessage.Message == null || communicationsMessage.Message == "") msg = "Required message";
         if (groupEnable == null || groupEnable.Id == null) { msg = " You must select a group "; }
         return msg;
@@ -155,13 +162,20 @@
 
     public void ClosedAlert(string value)
     {
-        if (value == "alert") msg = "";
+        if (value == "alert" &&  groupEnable!=null) modeType = !modeType;
         if (value == "responder") { msgResponder = new(); msgResponder.Id =null; SetMsgResponder.InvokeAsync(msgResponder); };
 
         StateHasChanged();
     }
 
-  
+    public void AddTypeLink(ChangeEventArgs arg)
+    {
+        string item ="";       
+        if (arg.Value.ToString() == "T-1") item = "T:";
+        if (arg.Value.ToString() == "A-1") item = "A:";
+        message = message+" "+item;
+    }
+
     private void Loading()
     {
         //if (communicationsMessages == null) communicationsMessages = new();
@@ -169,7 +183,6 @@
         if (communicationsMessage.DestinyGroupChannel == null) communicationsMessage.DestinyGroupChannel = new();
         if (groupEnable == null) groupEnable = new();
     }
-
 
     private void OnKeyDown(KeyboardEventArgs e)
     {
