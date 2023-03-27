@@ -35,13 +35,46 @@
 else
 {
 
-    <DataGrid TParameter="TransactionalItemType"
-          EventCallbackMenu="OnContextMenuClick"
-          parameterList="transactionalItemType"
-          GridColumnsList="gridColumnList"
-          EventCallbackOnLoad="Onload">
-    </DataGrid>
+    <RadzenDataGrid AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="true"
+                FilterMode="FilterMode.Advanced"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                AllowSorting="true"
+                AllowPaging="true"
+                PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                ShowPagingSummary="true"
+                Data="@transactionalItemType"
+                TItem="TransactionalItemType"
+                ColumnWidth="300px"
+                SelectionMode="DataGridSelectionMode.Single"
+                LogicalFilterOperator="LogicalFilterOperator.Or"
+                CellContextMenu="@ShowContextMenuWithContent"
+                PageNumbersCount="100"
+                PageSize="2">
 
+        <Columns>
+            <RadzenDataGridColumn TItem="TransactionalItemType" Property="Name" Title="@GetName("Name", new TransactionalItemType())" Width="80px" />
+            <RadzenDataGridColumn TItem="TransactionalItemType" Property="Code" Title="@GetName("Code", new TransactionalItemType())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+            <RadzenDataGridColumn TItem="TransactionalItemType" Property="HasProductionSpecs" Title="@GetName("HasProductionSpecs", new TransactionalItemType())" Width="80px" TextAlign="Radzen.TextAlign.Center">
+                <Template>
+                    @{
+                        var HasProductionSpecs = (bool)context.GetType().GetProperty(nameof(TransactionalItemType.HasProductionSpecs)).GetValue(context);
+                        <input type="checkbox" checked="@HasProductionSpecs" disabled />                      
+                    }
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="TransactionalItemType" Property="HasPackingRecipe" Title="@GetName("HasPackingRecipe", new TransactionalItemType())" Width="80px" TextAlign="Radzen.TextAlign.Center">
+                <Template>
+                    @{
+                        var HasPackingRecipe = (bool)context.GetType().GetProperty(nameof(TransactionalItemType.HasPackingRecipe)).GetValue(context);
+                        <input type="checkbox" checked="@HasPackingRecipe" disabled />
+                    }
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+  
 }
 
 
@@ -51,7 +84,7 @@ else
     [Parameter]
     public string _filterItems { get; set; } = "";
     public List<TransactionalItemType> transactionalItemType { get; set; }  
-    public List<GridColumn> gridColumnList { get; set; }
+   
 
     bool isLoading = false;  
 
@@ -70,13 +103,6 @@ else
     protected override void OnInitialized()
     {
 
-        gridColumnList = new List<GridColumn>()
-        {
-            new GridColumn() { Field = nameof(TransactionalItemType.Name), HeaderText = GetName("Name", new ConceptGroup())  },
-            new GridColumn() { Field = nameof(TransactionalItemType.Code), HeaderText = GetName("Code", new ConceptGroup()) },
-            new GridColumn() { Field = nameof(TransactionalItemType.HasProductionSpecs), HeaderText = GetName("HasProductionSpecs", new TransactionalItemType()), DisplayAsCheckBox=true }
-
-        };
         if (_filterItems != "" && _filterItems != null)
         {
             LoadData();
@@ -95,16 +121,24 @@ else
 
     }
 
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemType> args)
+    #region Grid
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<TransactionalItemType> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
     {
-        TransactionalItemType itemTransactionalItemType = null;
-        itemTransactionalItemType = args.RowInfo.RowData;
-        transactItemsService.ConceptTransactionalItemType = itemTransactionalItemType;
-        if (args.Item.Text == "Edit")
-        {
-            Navigation.NavigateTo($"/TypesTransactionalItemsConcept/TypesTransactionalItems/Edit/{_filterItems}");
-        }
+        TransactionalItemType argObj = (TransactionalItemType)args.Value;   
+        Navigation.NavigateTo($"/TypesTransactionalItemsConcept/TypesTransactionalItems/{_filterItems}/{argObj.Id}");
+      
     }
+
+    #endregion Grid
+
+
     public void Onload(object args)
     {
         isLoading = false;

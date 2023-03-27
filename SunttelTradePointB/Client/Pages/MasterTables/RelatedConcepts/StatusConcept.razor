@@ -1,5 +1,5 @@
-﻿@page "/StatusConcept/{Page}/{Mode}/{filterItems}"
-@page "/StatusConcept/{Page}/{Mode}"
+﻿@page "/StatusConcept/{Page}/{filterItems}/{transactionalItemStatusId}"
+@page "/StatusConcept/{Page}"
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
 @inject NavigationManager Navigation
@@ -50,7 +50,7 @@
     [Parameter]
     public string Page { get; set; } = "";
     [Parameter]
-    public string Mode { get; set; } = "Add";
+    public string transactionalItemStatusId { get; set; }
     [Parameter]
     public string filterItems { get; set; } = "";
     public TransactionalItemStatus transactionalItemStatus = new();
@@ -62,20 +62,12 @@
 
     protected override void OnInitialized()
     {
-        if (Mode == "Edit")
+        if (transactionalItemStatusId !=null)
         {
+            //transactionalItemStatus = transactionalService.GetTransactionalStatusesTable();;
 
-            if (transactionalService?.ConceptStatusSelectedItems != null)
-            {
-                transactionalItemStatus = transactionalService.ConceptStatusSelectedItems;
-            }
-            else
-            {
-                Closed("control");
-            }
-                    
         }
-        if (Mode == "Add")
+        if (transactionalItemStatusId ==null)
         {
             transactionalItemStatus = new();
         }

@@ -7,7 +7,6 @@
 @using Syncfusion.Blazor.Navigations
 @inject HttpClient Http
 @inject TransactionalItemsService transactItemsService;
-@inject IJSRuntime JSRuntime
 @inject ContextMenuService ContextMenuService
 @inject DialogService DialogService
 @inject NavigationManager Navigation
@@ -33,12 +32,33 @@
 else
 {
 
-    <DataGrid TParameter="TransactionalItemStatus"
-          EventCallbackMenu="OnContextMenuClick"
-          parameterList="transactionalItemStatuss"
-          GridColumnsList="GridColumnList"
-          EventCallbackOnLoad="Onload">
-    </DataGrid>
+    <RadzenDataGrid AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="true"
+                FilterMode="FilterMode.Advanced"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                AllowSorting="true"
+                AllowPaging="true"
+                PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                ShowPagingSummary="true"
+                Data="@transactionalItemStatuss"
+                TItem="TransactionalItemStatus"
+                ColumnWidth="300px"
+                SelectionMode="DataGridSelectionMode.Single"
+                LogicalFilterOperator="LogicalFilterOperator.Or"
+                CellContextMenu="@ShowContextMenuWithContent"
+                PageNumbersCount="100"
+                PageSize="2">
+
+        <Columns>
+            <RadzenDataGridColumn TItem="TransactionalItemStatus" Property="TransactionalItemStatus.Name" Title="@GetName("Name", new TransactionalItemStatus())" Width="80px" />
+            <RadzenDataGridColumn TItem="TransactionalItemStatus" Property="TransactionalItemStatus.Code" Title="@GetName("Code", new AtomConcept())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+            <RadzenDataGridColumn TItem="TransactionalItemStatus" Property="TransactionalItemStatus.Notes" Title="@GetName("Notes", new AtomConcept())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+
+        </Columns>
+    </RadzenDataGrid>
+
+   
 
 }
 
@@ -47,18 +67,11 @@ else
     [Parameter]
     public string _filterItems { get; set; } = "";
     public List<TransactionalItemStatus> transactionalItemStatuss { get; set; }
-    public List<GridColumn> GridColumnList { get; set; }
-
+  
 
     protected override void OnInitialized()
     {
-        GridColumnList = new List<GridColumn>()
-        {
-            new GridColumn() { Field = nameof(TransactionalItemStatus.Name), HeaderText = GetName("Name", new TransactionalItemStatus())  },
-            new GridColumn() { Field = nameof(TransactionalItemStatus.Code), HeaderText = GetName("Code", new TransactionalItemStatus()), Width="100" },
-            new GridColumn() { Field = nameof(TransactionalItemStatus.Notes), HeaderText = GetName("Notes", new AtomConcept()) }
-           
-        };
+      
 
         if (_filterItems != "" && _filterItems != null)
         {
@@ -95,16 +108,25 @@ else
         StateHasChanged();
     }
 
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemStatus> args)
+    #region Grid
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<TransactionalItemStatus> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
     {
-        TransactionalItemStatus Obj = null;
-        Obj = args.RowInfo.RowData;
-        transactItemsService.ConceptStatusSelectedItems = Obj;
-        if (args.Item.Text == "Edit")
-        {
-            Navigation.NavigateTo($"/StatusConcept/Status/Edit/{_filterItems}");
-        }
+        TransactionalItemStatus argObj = (TransactionalItemStatus)args.Value;
+
+       Navigation.NavigateTo($"/StatusConcept/Status/{_filterItems}/{argObj.Id}");
     }
+
+    #endregion Grid
+
+
+  
 
     public string GetName(string Name, Object Obj)
     {

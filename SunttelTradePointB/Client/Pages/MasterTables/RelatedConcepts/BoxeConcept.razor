@@ -1,5 +1,5 @@
-﻿@page "/BoxeConcept/{Page}/{Mode}/{filterItems}"
-@page "/BoxeConcept/{Page}/{Mode}"
+﻿@page "/BoxeConcept/{Page}/{filterItems}/{boxId}"
+@page "/BoxeConcept/{Page}/"
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.SplitButtons
@@ -15,8 +15,8 @@
         </MessageSaveComponent>
     }
 
-    <PageTitleComponent Title=" Children Groups" IconName="group.png"
-                        Description="Here you can add types of Children Groups">
+    <PageTitleComponent Title=" Box " IconName="group.png"
+                        Description="Here you can add types of box">
     </PageTitleComponent>
 
     <div class="container-menu-g">
@@ -73,9 +73,8 @@
                                     TItem="TransactionalItem"
                                     Items="transactionalItems"
                                     EventSearcherValueAndId="EventSearcherValue"
-                                    caption="@(transactionalItem != null ? transactionalItem.Name : "")"
-                                    EventIdSelectionAndId="EventIdSelection"
-                >
+                                    caption="@(box.LinkedTransactionalItem != null ? box.LinkedTransactionalItem?.Name : "")"
+                                    EventIdSelectionAndId="EventIdSelection">
 
                 </InputTextSelector3>
 
@@ -88,7 +87,7 @@
     [Parameter]
     public string Page { get; set; } = "";
     [Parameter]
-    public string Mode { get; set; } = "Add";
+    public string boxId { get; set; }
     [Parameter]
     public string filterItems { get; set; } = "";
     public Box box = new();
@@ -105,39 +104,30 @@
     public bool modeEdit = true, viewMsg = false;
     public string msg = "", pageView = "";
 
-    protected override void OnInitialized()
+    protected async override void OnInitialized()
     {
-        if (Mode == "Edit")
+        if (boxId != null)
         {
-            if (transactionalService?.BoxSelectedItems != null)
-            {
-                box = transactionalService.BoxSelectedItems;
-                var concept = box.LinkedTransactionalItem != null ? box.LinkedTransactionalItem : new();
-                transactionalItem = new TransactionalItem
-                    {
-                        Name = concept.Name != null ? concept.Name : "",
-                        Id = concept.Id != null ? concept.Id : "",
-                        AuditRecord = concept.AuditRecord != null ? concept.AuditRecord : new(),
-                        Notes = concept.Notes != null ? concept.Notes : "",
-                        HasChanged = concept.HasChanged != null ? concept.HasChanged : false,
-                        IsLoadingData = concept.IsLoadingData != null ? concept.IsLoadingData : false,
-                        IsSelected = concept.IsSelected != null ? concept.IsSelected : false,
-                        LegacyId = concept.LegacyId != null ? concept.LegacyId : ""
-                    };
-
-            }
-            else
-            {
-                Closed("control");
-            }
-
+            box = await transactionalService.GetBox(boxId);
+            var concept = box.LinkedTransactionalItem != null ? box.LinkedTransactionalItem : new();
+            transactionalItem = new TransactionalItem
+                {
+                    Name = concept.Name != null ? concept.Name : "",
+                    Id = concept.Id != null ? concept.Id : "",
+                    AuditRecord = concept.AuditRecord != null ? concept.AuditRecord : new(),
+                    Notes = concept.Notes != null ? concept.Notes : "",
+                    HasChanged = concept.HasChanged != null ? concept.HasChanged : false,
+                    IsLoadingData = concept.IsLoadingData != null ? concept.IsLoadingData : false,
+                    IsSelected = concept.IsSelected != null ? concept.IsSelected : false,
+                    LegacyId = concept.LegacyId != null ? concept.LegacyId : ""
+                };
 
         }
-        if (Mode == "Add")
+        if (boxId == null)
         {
             box = new();
         }
-        base.OnInitialized();
+        StateHasChanged();
     }
 
     protected override void OnParametersSet()
@@ -145,12 +135,10 @@
         StateHasChanged();
     }
 
-
     public void Closed(string value)
     {
         if (value == "control") Navigation.NavigateTo($"/{Page}/{filterItems}");
     }
-
 
     public void EventIdSelection(TransactionalItem transactionalItem)
     {
@@ -183,16 +171,11 @@
     {
         ViewPopupCount = true;
         transactionalItems = new List<TransactionalItem>();
+        ModeSearcher = args.valueId.ToString();
         if (ModeSearcher == "LinkedTransactionalItem")
         {
             transactionalItems = await transactionalService.GetTransactionalItemsList(1, 20, args.value);
             if (transactionalItems != null) transactionalItems = transactionalItems.Where(s => s.Name.ToLower().Contains(args.value.ToLower())).ToList();
-
-            ParamCountResul = transactionalItems != null ? transactionalItems.Count() : 0;
-            ViewSelect = ParamCountResul > 0;
-
-            ReferInputTextSelector.Refresh();
-
         }
 
         StateHasChanged();
@@ -238,7 +221,6 @@
             bool validate = Validate.GetValidate(box);
             if (validate || true)
             {
-
                 string boxId = box.Id;
                 var resul = await transactionalService.SaveBox(box);
                 if (resul) { box = new(); };

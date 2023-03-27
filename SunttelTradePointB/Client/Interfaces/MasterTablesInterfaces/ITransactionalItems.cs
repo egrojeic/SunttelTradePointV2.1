@@ -118,7 +118,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// </summary>
         /// <param name="nameLike"></param>              
         /// <returns></returns>
-        Task<List<TransactionalItemType>> GetTransactionalItemType(string? nameLike = null);
+        Task<TransactionalItemType> GetTransactionalItemType(string? nameLike = null);
 
         /// <summary>
         /// Retrives a list with Transactional Statuses meeting search criteria

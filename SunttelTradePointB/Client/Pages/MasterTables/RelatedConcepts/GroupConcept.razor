@@ -1,5 +1,5 @@
-﻿@page "/GroupConcept/{Page}/{Mode}/{filterItems}"
-@page "/GroupConcept/{Page}/{Mode}"
+﻿@page "/GroupConcept/{Page}/{filterItems}/{conceptGroupId}"
+@page "/GroupConcept/{Page}"
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.Navigations
@@ -8,6 +8,7 @@
 @using Syncfusion.Blazor.SplitButtons
 @inject NavigationManager Navigation
 @inject TransactionalItemsService transactionalService;
+@inject ContextMenuService ContextMenuService
 
 
 <div class="flex-verical-center position-relative" style="display:@(!modeEdit?"flex":"none");">
@@ -102,13 +103,35 @@
             </div>
             @if (childrenGroups == null) childrenGroups = new();
 
-            <DataGrid TParameter="ConceptGroup"
-                      EventCallbackMenu="OnContextMenuClick"
-                      parameterList="childrenGroups"
-                      GridColumnsList="gridColumnListchildrenGroups"
-                      EventCallbackOnLoad="Onload"
-                      Width="100%">
-            </DataGrid>
+
+            @if (conceptGroup == null) conceptGroup = new();
+            <RadzenDataGrid AllowFiltering="true"
+                            AllowColumnResize="true"
+                            AllowAlternatingRows="true"
+                            FilterMode="FilterMode.Advanced"
+                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            AllowSorting="true"
+                            AllowPaging="true"
+                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                            ShowPagingSummary="true"
+                            Data="@childrenGroups"
+                            TItem="ConceptGroup"
+                            ColumnWidth="300px"
+                            SelectionMode="DataGridSelectionMode.Single"
+                            LogicalFilterOperator="LogicalFilterOperator.Or"
+                            CellContextMenu="@ShowContextMenuWithContent"
+                            PageNumbersCount="100"
+                            PageSize="2">
+
+                <Columns>
+                    <RadzenDataGridColumn TItem="ConceptGroup" Property="Name" Title="@GetName("TransactionalItemCharacteristic", new ConceptGroup())" Width="80px" />
+                    <RadzenDataGridColumn TItem="ConceptGroup" Property="Code" Title="@GetName("Value", new ConceptGroup())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                    <RadzenDataGridColumn TItem="ConceptGroup" Property="GroupClassificationCriteria" Title="@GetName("GroupClassificationCriteria", new ConceptGroup())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+
+                </Columns>
+            </RadzenDataGrid>
+
+           
 
         </div>
     </div>
@@ -117,7 +140,7 @@
     [Parameter]
     public string Page { get; set; } = "";
     [Parameter]
-    public string Mode { get; set; } = "Add";
+    public string conceptGroupId { get; set; }
     [Parameter]
     public string filterItems { get; set; } = "";
     public ConceptGroup conceptGroup = new();
@@ -135,35 +158,16 @@
         StateHasChanged();
     }
 
-    protected override void OnInitialized()
+    protected async override void OnInitialized()
     {
-        if (Mode == "Edit")
+        if (conceptGroupId !=null)
         {
-            if (transactionalService?.ConceptGroupSelectedItems != null)
-            {
-                conceptGroup = transactionalService.ConceptGroupSelectedItems;
-            }
-            else
-            {
-                Closed("control");
-            }
 
+            conceptGroup = null;//await transactionalService.ConceptGroupSelectedItems("");
 
-            childrenGroups = conceptGroup.ChildrenGroups;
+           if(conceptGroup!=null) childrenGroups = conceptGroup.ChildrenGroups;
         }
 
-        if (Mode == "Add")
-        {
-            conceptGroup = new();
-        }
-
-
-        gridColumnListchildrenGroups = new List<GridColumn>
-            {
-            new GridColumn() { Field = nameof(ConceptGroup.Name), HeaderText = GetName("Name", new ConceptGroup()) , Width="300" },
-            new GridColumn() { Field = nameof(ConceptGroup.Code), HeaderText = GetName("Code", new ConceptGroup()) , Width="120" },
-            new GridColumn() { Field = nameof(ConceptGroup.GroupClassificationCriteria), HeaderText = GetName("GroupClassificationCriteria", new ConceptGroup()), Width="300" }
-            };
     }
 
 
@@ -185,7 +189,8 @@
         {
             if (childrenGroup.GroupClassificationCriteria != null)
             {
-                childrenGroups.Add(childrenGroup);
+                if (conceptGroup.ChildrenGroups == null) conceptGroup.ChildrenGroups = new();
+                conceptGroup.ChildrenGroups.Add(childrenGroup);
                 childrenGroup = new();
                 Msg("Added");
             }
@@ -209,16 +214,24 @@
 
     }
 
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<ConceptGroup> args)
+
+
+    #region Grid
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<ConceptGroup> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
     {
-        ConceptGroup ObjModel = null;
-        ObjModel = args.RowInfo.RowData;
-        childrenGroup = ObjModel;
-        if (args.Item.Id == "Edit")
-        {
-            dataGridView = false;
-        }
+        ConceptGroup argObj = (ConceptGroup)args.Value;
+        childrenGroup = argObj;
+        dataGridView = false;
     }
+
+    #endregion Grid
 
     public void Onload(object args)
     {
@@ -244,11 +257,11 @@
     {
 
 
-        StateHasChanged();
+      
         string tile = e.Item != null ? e.Item.Text : "";
         if (tile == "Save")
         {
-            conceptGroup.ChildrenGroups = childrenGroups;
+           
             var resul = await transactionalService.SaveTransactionalItemGroup( conceptGroup);
             if (resul)
             {
@@ -262,8 +275,6 @@
         {
 
         }
-
-
         StateHasChanged();
 
 
