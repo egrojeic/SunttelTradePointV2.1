@@ -282,9 +282,15 @@
         }
         if (SearcherValueMode == "Pallet")
         {
-            palletTypeListTest = await actorsNodeServive.GetPalletTypes();
-            palletTypeList = palletTypeListTest.Where(e => e.Name.ToLower().Contains(arg.value.ToLower())).ToList();
-            ParamCountResul = palletTypeList != null ? palletTypeList.Count() : 0;
+            palletTypeList = await actorsNodeServive.GetPalletTypes();
+            if (!arg.value.ToLower().Contains("all") && !arg.value.ToLower().Contains("todo"))
+            {
+                palletTypeList = palletTypeList.Where(s => s.Name.ToLower().Contains(arg.value.ToLower())).ToList();
+            }
+            if (palletTypeList != null)
+            {
+                ParamCountResul = palletTypeList.Count();
+            }
         }
 
         await Refresh();

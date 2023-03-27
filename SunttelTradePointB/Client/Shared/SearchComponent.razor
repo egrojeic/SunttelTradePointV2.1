@@ -1,13 +1,12 @@
 ﻿@inject ContextMenuService ContextMenuService
 
+@*// TODO: REPLICAR SEARCHBAR EN RELATED CONCEPTS*@
 <div class="search-bar">
 	<input type="search" name="search" pattern=".*\S.*" required @bind="@FilterText" @oninput="@OnInputEvent" autocomplete="off">
 
 	<button class="search-btn" @onclick="@ButtonClick">
 		<span>Search</span>
 	</button>
-	
-	
 	
 
 </div>

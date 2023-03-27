@@ -21,7 +21,7 @@
                             <div class="form-group row">
                                 <label class="control-label col-md-12">@lblCode*: </label>
                                 <div class="col">
-                                    <input type="number" class="form-control" @bind-value="identificationEntity.Code" required/>
+                                    <input type="number" class="form-control" @bind-value="identificationEntity.Code" required />
                                 </div>
                             </div>
                         </div>
@@ -29,17 +29,14 @@
                         <div class="form-group row py-2">
                             <div class="form-group row">
                                 <label class="control-label col-md-12">@lblEntityIssuer*: </label>
-                                <div class="col">
-                                    <div class="item-edit">
-                                        <label>@(identificationType != null ? identificationType.Name : "")</label>
-                                        <button type="button" style="float:right" @onclick='()=>SetViewElemnt("Identification")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                                    </div>
+                                <div class="col">                                   
                                     <InputTextSelector3 TItem="IdentificationType"
-                                        Id="Identification"
-                                         EventSearcherValueAndId="EventSearcherValueAndId"
-                                         EventIdSelectionAndId="SelectionMade"
-                                        Items="identificationTypesList"     >                                   
-                                      
+                                                        Id="Identification"
+                                                        EventSearcherValueAndId="EventSearcherValueAndId"
+                                                        EventIdSelectionAndId="SelectionMade"
+                                                        Items="identificationTypesList"
+                                                        caption="@(identificationType != null ? identificationType.Name : "")">
+
                                     </InputTextSelector3>
                                 </div>
                             </div>
@@ -107,7 +104,7 @@
 
     private async void SaveIdentification(string entityId, IdentificationEntity identificationEntity)
     {
-        if(entityId != null && identificationEntity != null)
+        if (entityId != null && identificationEntity != null)
         {
             if (identificationId != null)
             {
@@ -117,7 +114,7 @@
             await actorsNodeServive.SaveIdentificationCode(entityId, identificationEntity);
             visible = true;
             Reload();
-            StateHasChanged();  
+            StateHasChanged();
         }
 
     }
@@ -135,20 +132,27 @@
         SearchValueMode = arg.IdControl;
         if (SearchValueMode == "Identification")
         {
-            identificationTypesListTest = await actorsNodeServive.GetIdentificationTypes();
-            identificationTypesList = identificationTypesListTest.Where(e => e.Name.ToLower().Contains(arg.value.ToLower())).ToList();
-            ParamCountResul = identificationTypesList != null ? identificationTypesList.Count() : 0;
+            identificationTypesList = await actorsNodeServive.GetIdentificationTypes();
+            if (!arg.value.ToLower().Contains("all") && !arg.value.ToLower().Contains("todo"))
+            {
+                identificationTypesList = identificationTypesList.Where(s => s.Name.ToLower().Contains(arg.value.ToLower())).ToList();
+            }
+            if (identificationTypesList != null)
+            {
+                ParamCountResul = identificationTypesList.Count();
+            }
+
         }
         if (ParamCountResul > 0) { ViewSelect = true; } else { ViewSelect = false; }
         await Refresh();
     }
 
-     public void SelectionMade(IdentificationType arg)
+    public void SelectionMade(IdentificationType arg)
     {
         identificationType = arg;
         StateHasChanged();
     }
-   
+
 
     public async Task Refresh()
     {
@@ -158,7 +162,7 @@
 
     public async Task GetEntityIdentifierList(string entityId)
     {
-        if(identificationId != null)
+        if (identificationId != null)
         {
             identificationEntityList = await actorsNodeServive.GetEntityIdentifierList(entityId);
             foreach (var identifierList in identificationEntityList)

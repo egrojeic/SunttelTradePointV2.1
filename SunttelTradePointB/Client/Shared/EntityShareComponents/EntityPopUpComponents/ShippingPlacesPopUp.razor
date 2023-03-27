@@ -30,7 +30,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row py-2">
+                        @*<div class="form-group row py-2">
                             <label class="control-label col-md-12">@lblAddressLine1*: </label>
                             <div class="col">
                                 <input id="addres1" type="text" class="form-control" @bind-value="@address.AddressLine1" required />
@@ -44,7 +44,7 @@
                                     <input id="addres2" type="text" class="form-control" @bind-value="@address.AddressLine2" />
                                 </SfTooltip>
                             </div>
-                        </div>
+                        </div>*@
 
                         <div class="form-group row py-2">
                             <div class="form-group row">
@@ -55,14 +55,14 @@
                             </div>
                         </div>
 
-                        <div class="form-group row py-2">
+                        @*<div class="form-group row py-2">
                             <label class="control-label col-md-12">@lblZipCode*: </label>
                             <div class="col">
                                 <SfTooltip ID="Tooltip" Target="#zipCode" Content="@ContentZipCode">
                                     <input id="zipCode" type="text" class="form-control" @bind-value="@address.ZipCode" required />
                                 </SfTooltip>
                             </div>
-                        </div>
+                        </div>*@
 
                         <MessageSaveComponent message="Shippinh Place Saved" isVisible="visible"></MessageSaveComponent>
 
@@ -271,9 +271,9 @@
             //address.Code = Code;
             //address.CityAddressRef = city.Id;
             //address.Code = identificationEntity.Code;
-            address.CityAddress = geoPlaces.addressShippingPlaces.CityAddress != null ? geoPlaces.addressShippingPlaces.CityAddress : new();
-            address.CityAddress.RegionCity = geoPlaces.addressShippingPlaces.CityAddress.RegionCity != null ? geoPlaces.addressShippingPlaces.CityAddress.RegionCity : new();
-            address.CityAddress.RegionCity.CountryRegion = geoPlaces.addressShippingPlaces.CityAddress.RegionCity.CountryRegion != null ? geoPlaces.addressShippingPlaces.CityAddress.RegionCity.CountryRegion : new();
+            //address.CityAddress = geoPlaces.addressShippingPlaces.CityAddress != null ? geoPlaces.addressShippingPlaces.CityAddress : new();
+            //address.CityAddress.RegionCity = geoPlaces.addressShippingPlaces.CityAddress.RegionCity != null ? geoPlaces.addressShippingPlaces.CityAddress.RegionCity : new();
+            //address.CityAddress.RegionCity.CountryRegion = geoPlaces.addressShippingPlaces.CityAddress.RegionCity.CountryRegion != null ? geoPlaces.addressShippingPlaces.CityAddress.RegionCity.CountryRegion : new();
            var resul  = await actorsNodeServive.SaveEntityAddress(EntityActorId, address);
 
             if (resul) visible = true;

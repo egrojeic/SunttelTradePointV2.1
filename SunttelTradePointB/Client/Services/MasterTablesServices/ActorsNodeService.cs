@@ -469,7 +469,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 if (ipAddress == "")
                     ipAddress = "127.0.0.0";
 
-                var response = await Gethttp($"/api/EntityNodesMaintenance/GetShippingSetup?userId={userId}&ipAdress={ipAddress}");
+                var response = await Gethttp($"/api/EntityNodesMaintenance/GetShippingSetup?userId={userId}&ipAdress={ipAddress}&entityActorId={shippingId}");
                 var list = await response.Content.ReadFromJsonAsync<List<ShippingInfo>>();
                               
                 return list;
@@ -1040,7 +1040,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             try
             {
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
-                //request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad.ID.ToString());
+                request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad.ID.ToString());
 
 
                 var response = await _httpClient.SendAsync(request);
