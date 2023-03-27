@@ -1335,7 +1335,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
 
                 var response = await _httpClient.SendAsync(request);
-                // var content  = await response.Content.ReadFromJsonAsync<List<TransactionalItem>>();
+                var content  = await response.Content.ReadFromJsonAsync<List<TransactionalItem>>();
                 System.Diagnostics.Debug.WriteLine(response.IsSuccessStatusCode);
                 if (response.IsSuccessStatusCode)
                 {

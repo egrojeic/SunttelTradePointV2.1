@@ -23,21 +23,38 @@
 
         </div>
         <div class="@(GetClassMode(msg.SenderEntity.Id,"msg"))">
-            <div> <p class="text">@(GetValidationId(msg.Message).Msg)</p>
-                @if (GetValidationId(msg.Message).Id != "")
-                {
-                    <a class="text link" @onclick="()=>NavigationLink(GetValidationId(msg.Message).Id)">@(GetValidationId(msg.Message).Id)</a>
-                }
+            <div>
+
+                <p class="text">
+                    @foreach (var item in msg.Message.Split(' '))
+                    {
+                        @if (GetValidationId(item).Id != null)
+                        {
+                            <b>
+                                <a class="text link" @onclick="()=>NavigationLink(GetValidationId(item).Id)">
+                                    @(GetValidationId(item).Id + " ")
+                                </a>
+                            </b>
+                            @* <a>
+                                @((MarkupString)$"<b>{item}</b>")
+                                </a>*@
+                        }
+                         else if (GetValidationId(item).VideoImg != "")
+                        {
+                            <div class="video">
+                                <img @onclick="()=>NavigationUrl(GetValidationId(msg.Message).VideoUrl)" src="@($"{GetValidationId(msg.Message).VideoImg}/hqdefault.jpg")"
+                                     width="150" />
+                            </div>
+                        }
+                        else
+                        {
+                            <b>@(item + " ")</b>
+                        }
+                    }
+                </p>
 
             </div>
-            @if (GetValidationId(msg.Message).VideoImg != "")
-            {
-                <div class="video">
-                    <img @onclick="()=>NavigationUrl(GetValidationId(msg.Message).VideoUrl)" src="@($"{GetValidationId(msg.Message).VideoImg}/hqdefault.jpg")"
-                     width="150" />
 
-            </div>
-            }
         </div>
         <div class="@(GetClassMode(msg.SenderEntity.Id,"menu"))">
             <div class="content-msg-menu  position-relative">
@@ -193,36 +210,44 @@
         var item = new msType();
         string[] list = msg.Split(' ');
 
-        foreach (var _msg in list)
+
+        if (GetMsgTypeTId(msg) != "")
         {
-            if (GetMsgTypeId(_msg))
-            {
-                item.Id = _msg;
-            }
-            if (GetMsgTypeVideo(_msg))
-            {
-                item.VideoImg = _msg.Replace("https://www.youtube.com/watch?v=","https://img.youtube.com/vi/");
-                item.VideoUrl = _msg;
-            }
+            item.Id = GetMsgTypeTId(msg);
+            msg = msg.ToLower().Replace($"T:{item.Id}".ToLower(), "");
         }
+        if (GetMsgTypeVideo(msg))
+        {
+            item.VideoImg = msg.Replace("https://www.youtube.com/watch?v=", "https://img.youtube.com/vi/");
+            msg.ToLower().Replace(msg, "");
+            item.VideoUrl = msg;
+        }
+
 
         item.Msg = msg;
         return item;
     }
 
-    private bool GetMsgTypeId(string item)
+    private string GetMsgTypeTId(string item)
     {
-        bool result = false;
-        int idLength = "000000000000000000752363".Length;
-        int itemLength = item.Replace(" ","").Trim().Length;
-        if (itemLength == idLength) result = true;        
+        string result = "";
+        if (item.Contains("T:"))
+        {
+            result = item.Split(":")[1].Replace(" ", "");
+            result = result.Split(' ')[0];
+        }
+        if (item.Contains("A:"))
+        {
+            result = item.Split(":")[1].Replace(" ", "");
+            result = result.Split(' ')[0];
+        }
         return result;
     }
     private bool GetMsgTypeVideo(string url)
     {
-        bool result = false;       
-       
-        if (url.ToLower().Contains("https://www.youtube")) { result = true; } 
+        bool result = false;
+
+        if (url.ToLower().Contains("https://www.youtube")) { result = true; }
         return result;
     }
 
@@ -243,15 +268,14 @@
     }
     public void NavigationUrl(string url)
     {
-        
         Js.InvokeAsync<object>("open", url, "_blank");
     }
-    
 
-    public  class msType
+
+    public class msType
     {
         public string Msg { get; set; } = "";
-        public string Id { get; set; } = "";
+        public string Id { get; set; }
         public string VideoImg { get; set; } = "";
         public string VideoUrl { get; set; } = "";
     }

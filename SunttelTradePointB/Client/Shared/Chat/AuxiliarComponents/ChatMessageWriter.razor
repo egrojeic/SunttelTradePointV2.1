@@ -8,7 +8,7 @@
 
 
 <div class="content">
-    @if (msgResponder != null && msgResponder.Message!=null )
+    @if (msgResponder != null &&  msgResponder.Id != null )
     {
        
         <div class="msg-responder"  style="display:@(msgResponder.Message!=""?"block":"none");">
@@ -118,8 +118,7 @@
 
             communicationsMessage = new();
 
-            StateHasChanged();
-            ClosedAlert("responder");
+            StateHasChanged();           
             onWrite = true;
             message = "";
             message =
@@ -157,12 +156,12 @@
     public void ClosedAlert(string value)
     {
         if (value == "alert") msg = "";
-        if (value == "responder") { msgResponder.Message = ""; msgResponder.Id = null; msgResponder.Message = ""; };
-        SetMsgResponder.InvokeAsync(msgResponder);
+        if (value == "responder") { msgResponder = new(); msgResponder.Id =null; SetMsgResponder.InvokeAsync(msgResponder); };
 
         StateHasChanged();
     }
 
+  
     private void Loading()
     {
         //if (communicationsMessages == null) communicationsMessages = new();
