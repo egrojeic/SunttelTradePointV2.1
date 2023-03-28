@@ -1,5 +1,5 @@
-﻿@page "/ProductModelCard"
-@page "/ProductModelCard/{Mode}"
+﻿@page "/ProductModelCard/{transactionalItemId}"
+@page "/ProductModelCard/{transactionalItemId}/{productModelId}"
 
 @using Syncfusion.Blazor.Popups
 @using SunttelTradePointB.Shared.Common
@@ -51,38 +51,28 @@
 
 @code {
     [Parameter]
-    public string Mode { get; set; } = "Add";
-    string transactionalItemId = "";
+    public string transactionalItemId { get; set; }
+    [Parameter]
+    public string productModelId { get; set; }
     ProductModel productModel = new();
     bool viewMsg = false;
     string msg = "";
     int status = 0;
 
-    protected override Task OnInitializedAsync()
+    protected async override Task OnInitializedAsync()
     {
-        if (transactionalService?.transactionalItemId != null && transactionalService?.transactionalItemId != "")
+        if (transactionalItemId != null && productModelId !=null)
         {
-            transactionalItemId = transactionalService.transactionalItemId;
-        }
-
-        if (Mode == "Edit")
-        {
-            if (transactionalService.ConceptProductModel != null)
-            {
-                productModel = transactionalService.ConceptProductModel;
-            }
-            else
-            {
-                Closed("Control");
-            }
-        }
-
-        if (Mode == "Add")
-        {
+            productModel = await transactionalService.GetProductModelToId(transactionalItemId, productModelId);
 
         }
 
-        return base.OnInitializedAsync();
+        if (transactionalItemId == null)
+        {
+            productModel = new();
+        }
+
+
     }
 
 
@@ -109,7 +99,7 @@
     public async Task Closed(string Element)
     {
         if (Element == "control") Navigation.NavigateTo($"/TransactionalItemCard/{transactionalItemId}");
-       
+
     }
 
     public string GetName(string Name, Object Obj)

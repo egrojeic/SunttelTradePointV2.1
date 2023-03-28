@@ -373,7 +373,7 @@
     #region ControlInput
     protected async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
-        if (arg.IdControl == GetName("SkinImageName", new Concept()))
+        if (arg.IdControl == "SkinImageName")
         {
             transactItemImages = new();
             transactItemImages = await transactionalService.GetTransactionalItemDetailsPathImages(transactionalItemId);
@@ -382,7 +382,7 @@
 
         }
 
-        if (arg.IdControl == GetName("TypeOfConcept", new Concept()))
+        if (arg.IdControl == "TypeOfConcept")
         {
             if (typeOfConcepts == null) typeOfConcepts = new();
             var data = await transactionalService.GetTransactionalItemTypes(arg.value);
@@ -417,7 +417,7 @@
     }
     public void SelectionMade(TransactItemImage arg)
     {
-        this.currentItem.SkinImageName = arg.Name;
+        this.currentItem.SkinImageName = arg.PathImage;
         StateHasChanged();
     }
     #endregion End ControlInput

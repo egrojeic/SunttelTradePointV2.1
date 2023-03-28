@@ -17,35 +17,41 @@
     <img class="img-ico-list" src="/images/desploy.png" @onclick='()=>OpenAdd($"CharacteristicAllCard/{IdTransactionalItem}")' />
 </div>
 
-
-@if (transactionalItemTypeCharacteristics != null)
+@if (isLoading)
 {
 
+    <WaitingProcessIndicator loadingTopic="Transactional Items"></WaitingProcessIndicator>
 
-    <RadzenDataGrid AllowFiltering="true"
+}
+else
+{
+    @if (transactionalItemTypeCharacteristics != null)
+    {
+
+
+        <RadzenDataGrid AllowFiltering="true"
                 AllowColumnResize="true"
                 AllowAlternatingRows="true"
                 FilterMode="FilterMode.Advanced"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                AllowSorting="true"              
+                AllowSorting="true"
                 AllowPaging="true"
                 PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                 ShowPagingSummary="true"
                 Data="@transactionalItemTypeCharacteristics"
                 TItem="TransactionalItemCharacteristicPair"
                 ColumnWidth="300px"
-                SelectionMode="DataGridSelectionMode.Single"
-                LogicalFilterOperator="LogicalFilterOperator.Or"              
                 CellContextMenu="@ShowContextMenuWithContent"
                 PageNumbersCount="100"
-                PageSize="2" >
+                PageSize="20">
 
-    <Columns>
-        <RadzenDataGridColumn TItem="TransactionalItemCharacteristicPair" Property="TransactionalItemCharacteristicPair.TransactionalItemCharacteristic.Name" Title="@GetName("TransactionalItemCharacteristic", new TransactionalItemCharacteristicPair())"  Width="80px" />
-        <RadzenDataGridColumn TItem="TransactionalItemCharacteristicPair" Property="TransactionalItemCharacteristicPair.Value" Title="@GetName("Value", new TransactionalItemCharacteristicPair())"  Width="180px" TextAlign="Radzen.TextAlign.Center" />
-           
-    </Columns>
-</RadzenDataGrid>
+            <Columns>
+                <RadzenDataGridColumn TItem="TransactionalItemCharacteristicPair" Property="TransactionalItemCharacteristicPair.TransactionalItemCharacteristic.Name" Title="@GetName("TransactionalItemCharacteristic", new TransactionalItemCharacteristicPair())" Width="80px" />
+                <RadzenDataGridColumn TItem="TransactionalItemCharacteristicPair" Property="Value" Title="@GetName("Value", new TransactionalItemCharacteristicPair())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+
+            </Columns>
+        </RadzenDataGrid>
+    }
 }
 
 @code {
@@ -54,33 +60,24 @@
     public List<TransactionalItemCharacteristicPair> transactionalItemTypeCharacteristics = new();
     public TransactionalItemCharacteristicPair transactionalItemTypeCharacteristicPair = new();
 
-
+    bool isLoading = false;
     #region TileName
 
 
     #endregion TitleName
 
-    protected override void OnInitialized()
+    protected async override void OnInitialized()
     {
-        OnInitializedCharacterisc();
-    }
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        OnInitializedCharacterisc();
-    }
-
-
-    protected async void OnInitializedCharacterisc()
-    {
-        if (IdTransactionalItem != null )
+        isLoading = true;
+        if (IdTransactionalItem != null)
         {
             transactionalItemTypeCharacteristics = await transactionalService.GetCharacteristic(IdTransactionalItem);
-
-            StateHasChanged();
+            isLoading = false;
         }
-        if (transactionalItemTypeCharacteristics != null) transactionalItemTypeCharacteristics = new();
+      
+        StateHasChanged();
     }
+
 
     #region Grid
 
@@ -93,21 +90,17 @@
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         TransactionalItemCharacteristicPair argObj = (TransactionalItemCharacteristicPair)args.Value;
-       
-        if (transactionalItemTypeCharacteristics != null)
+
+        if (argObj != null)
         {
-            transactionalItemTypeCharacteristicPair = transactionalItemTypeCharacteristics.Where(s => s.Id == argObj.Id).FirstOrDefault();
-        }
-        if (transactionalItemTypeCharacteristicPair != null)
-        {
-            Navigation.NavigateTo($"/CharacteristicCard/TransactionalItemCard/{IdTransactionalItem}/{transactionalItemTypeCharacteristicPair.Id}");
+            Navigation.NavigateTo($"/CharacteristicCard/TransactionalItemCard/{IdTransactionalItem}/{argObj.Id}");
         }
     }
 
     #endregion Grid
 
 
-  
+
 
     public void OpenAdd(string value)
     {
@@ -116,7 +109,7 @@
 
     public string GetName(string Name, Object Obj)
     {
-       if(UICommonFunctions.GetDisplayName(Obj, Name)!=null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
     }
 

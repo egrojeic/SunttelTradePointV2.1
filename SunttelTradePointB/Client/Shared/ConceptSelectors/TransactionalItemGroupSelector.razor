@@ -82,10 +82,10 @@
     {
         if (arg.selectionId == "Group")
         {
+            if (GroupsQuery == null) GroupsQuery = new();
             GroupsQuery = await transactionalService.GetTransactionalItemGroups(arg.value);
             GroupsSearcher = new List<ConceptGroup>();
-            GroupsSearcher.AddRange(GroupsQuery);
-            ReferInputTextSelector.Refresh();
+            GroupsSearcher.AddRange(GroupsQuery);          
             StateHasChanged();
 
         }
