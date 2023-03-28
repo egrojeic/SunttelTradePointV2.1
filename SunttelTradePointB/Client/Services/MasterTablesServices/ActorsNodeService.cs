@@ -1040,7 +1040,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             try
             {
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
-                request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad.ID.ToString());
+                request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad.IDSquads.ToString());
 
 
                 var response = await _httpClient.SendAsync(request);
