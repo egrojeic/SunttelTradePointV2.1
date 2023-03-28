@@ -1,4 +1,4 @@
-﻿@page "/PaperConcept/{Page}/{Mode}/{filterItems}"
+﻿@page "/PaperConcept/{Page}/{filterItems}/{labelPaperId}"
 @page "/PaperConcept/{Page}/{Mode}"
 
 @using SunttelTradePointB.Shared.Common
@@ -16,7 +16,7 @@
                     Description="@($"Here you can add {GetName("Paper", new LabelStyle()).ToLower()} ")">
 </PageTitleComponent>
 
-<div class="flex-horizontal-center">    
+<div class="flex-horizontal-center">
     <div class="grid-columns-2 box-shadow-mode">
         <div><label><strong class="c-red">*</strong>@GetName( "Name", new AtomConcept())</label></div>
         <div><input @bind-value="labelPaper.Name" class="form-control" placeholder="Edit value" /></div>
@@ -41,7 +41,7 @@
     [Parameter]
     public string Page { get; set; } = "";
     [Parameter]
-    public string Mode { get; set; } = "Add";
+    public string labelPaperId { get; set; }
     [Parameter]
     public string filterItems { get; set; } = "";
     public bool modeEdit = true, viewMsg = false;
@@ -50,48 +50,39 @@
 
     LabelPaper labelPaper = new();
 
-    protected override void OnInitialized()
+    protected async override void OnInitialized()
     {
-        if (Mode == "Edit")
+        if (labelPaperId != null)
         {
-
-            if (transactionalService?.ConceptStatusSelectedItems != null)
-            {
-
-            }
-            else
-            {
-                Closed("control");
-            }
+            labelPaper = await transactionalService.GetConceptPaperId(labelPaperId);
 
         }
-        if (Mode == "Add")
+        else
         {
-
+            labelPaper = new();
         }
         base.OnInitialized();
     }
 
 
-
     public async void Save()
     {
-        if (labelPaper !=null)
+        if (labelPaper != null)
         {
             msg = Validate();
-            if (msg=="")
+            if (msg == "")
             {
                 var resul = await transactionalService.SaveConceptPaper(labelPaper);
 
                 if (!resul) Msg("Pendiente Api", 1);
-                if (resul) Msg("Saved", 1);
+                if (resul) Msg("Saved", 0);
             }
             else
             {
-                Msg(msg, 0);
+                Msg(msg, 1);
             }
 
-        }       
+        }
 
     }
 
@@ -104,8 +95,6 @@
         if (msg != "") msg = " Required : " + msg;
         return msg;
     }
-
-
 
     private void Msg(string? Msg, int _status)
     {

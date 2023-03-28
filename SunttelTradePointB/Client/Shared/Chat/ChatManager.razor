@@ -115,11 +115,10 @@
         {
 
             communicationsMessagesApi.Add(message);
-            // await LoadMsgToIdGroup(groupEnable.Id, false);
+            
             if (modeMsg == "messageHistory")
             {
                 CommunicationsMessage msg = null;
-
                 msg = communicationsMessagesApi.Where(s => s.Id != null && s.Id == message.ParentMessageId).FirstOrDefault();
 
                 if (msg != null) { SetMsgRecord(msg); }

@@ -8,6 +8,7 @@
 @using Syncfusion.Blazor.Grids
 @inject NavigationManager Navigation
 @inject TransactionalItemsService transactionalService;
+@inject ContextMenuService ContextMenuService
 
 
 @if (@viewMsg)
@@ -320,13 +321,38 @@
                                 </svg>
                             </div>
                             <div class="flex-horizontal-center ">
+                                <RadzenDataGrid AllowFiltering="true"
+                                                AllowColumnResize="true"
+                                                AllowAlternatingRows="true"
+                                                FilterMode="FilterMode.Advanced"
+                                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                                AllowSorting="true"
+                                                AllowPaging="true"
+                                                PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                                ShowPagingSummary="true"
+                                                Data="@dataMaxLabelLineSpecsView"
+                                                TItem="DataMaxLabelLineSpecView"
+                                                ColumnWidth="300px"
+                                                SelectionMode="DataGridSelectionMode.Single"
+                                                LogicalFilterOperator="LogicalFilterOperator.Or"
+                                                CellContextMenu="@ShowContextMenuWithContent"
+                                                PageNumbersCount="100"
+                                                PageSize="2">
 
-                                <DataGrid TParameter="DataMaxLabelLineSpecView"
-                                          EventCallbackMenu="OnContextMenuClick"
-                                          parameterList="dataMaxLabelLineSpecsView"
-                                          GridColumnsList="gridColumnListDataMaxLabelLineSpec"
-                                          Width="100%">
-                                </DataGrid>
+                                    <Columns>
+                                        <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="ZebraLabelLineSpecView.NameLabelField" Title="@GetName( "Name", new DataMaxLabelLineSpec())" Width="80px" />
+                                        <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="DataMaxLabelLineSpecView.Rotation" Title="@GetName( "Rotation", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                        <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="DataMaxLabelLineSpecView.Font" Title="@GetName( "Font", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                        <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="DataMaxLabelLineSpecView.Width" Title="@GetName( "Width", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                        <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="DataMaxLabelLineSpecView.Heigh" Title="@GetName( "Height", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+
+                                        <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="DataMaxLabelLineSpecView.FontSize" Title="@GetName( "FontSize", new DataMaxLabelLineSpec())" Width="80px" />
+                                        <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="DataMaxLabelLineSpecView.Row" Title="@GetName( "Row", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                        <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="DataMaxLabelLineSpecView.GGColumn" Title="@GetName( "GGColumn", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                        <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="DataMaxLabelLineSpecView.IIIColumn" Title="@GetName( "IIIColumn", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                        <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="DataMaxLabelLineSpecView.JColumn" Title="@GetName( "JColumn", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                    </Columns>
+                                </RadzenDataGrid>
 
                             </div>
                         </div>
@@ -476,20 +502,7 @@
 
         };
 
-        gridColumnListDataMaxLabelLineSpec = new List<GridColumn>
-        {
-             new GridColumn() { Field=nameof(ZebraLabelLineSpecView.NameLabelField) ,  HeaderText = @GetName( "Name", new DataMaxLabelLineSpec()), Width="300"   },
-               new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.Rotation) ,  HeaderText = @GetName( "Rotation", new DataMaxLabelLineSpec()), Width="100"  },
-                 new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.Font) ,  HeaderText = @GetName( "Font", new DataMaxLabelLineSpec()) ,Width="100" },
-                  new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.Width) ,  HeaderText = @GetName( "Width", new DataMaxLabelLineSpec()) ,Width="100" },
-                   new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.Height) ,  HeaderText = @GetName( "Height", new DataMaxLabelLineSpec()),Width="100"  },
-                     new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.FontSize) ,  HeaderText = @GetName( "FontSize", new DataMaxLabelLineSpec()),Width="100"  },
-                      new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.Row) ,  HeaderText = @GetName( "Row", new DataMaxLabelLineSpec()),Width="100"  },
-                       new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.GGColumn) ,  HeaderText = @GetName( "GGColumn", new DataMaxLabelLineSpec()),Width="100"  },
-                        new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.IIIColumn) ,  HeaderText = @GetName( "IIIColumn", new DataMaxLabelLineSpec()),Width="100"  },
-                         new GridColumn() { Field=nameof(DataMaxLabelLineSpecView.JColumn) ,  HeaderText = @GetName( "JColumn", new DataMaxLabelLineSpec()),Width="100" }
 
-        };
 
 
         gridColumnListZebraLabelSettings = new List<GridColumn>
@@ -676,24 +689,26 @@
 
     }
 
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<DataMaxLabelLineSpecView> args)
+
+    #region Grid
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<DataMaxLabelLineSpecView> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
     {
-        DataMaxLabelLineSpecView dataMaxLabelSpecs = args.RowInfo.RowData;
-        dataMaxLabelLineSpec = dataMaxLabelLineSpecs.Where(s => s.Id != null && s.Id == dataMaxLabelSpecs.Id).FirstOrDefault();
-
-        if (args.Item.Text == "Edit" && dataMaxLabelLineSpec != null)
-        {
-            dataMaxFieldInLabel = dataMaxLabelLineSpec.FieldInLabel != null ? dataMaxLabelLineSpec.FieldInLabel : new();
-            ClosedAdd("DataMaxLabelLineSpec");
-        }
-        else
-        {
-            Msg("Invalid ID", 1);
-        }
-
+        DataMaxLabelLineSpecView argObj = (DataMaxLabelLineSpecView)args.Value;
+        dataMaxLabelLineSpec = dataMaxLabelLineSpecs.Where(s => s.Id != null && s.Id == argObj.Id).FirstOrDefault();
+        dataMaxFieldInLabel = dataMaxLabelLineSpec.FieldInLabel != null ? dataMaxLabelLineSpec.FieldInLabel : new();
+        ClosedAdd("DataMaxLabelLineSpec");
     }
 
+    #endregion Grid
 
+  
 
     public void Closed(string value)
     {
