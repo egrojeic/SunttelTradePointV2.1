@@ -62,15 +62,10 @@
                     <RadzenDataGridColumn TItem="TransactionalItem" Property="IsGeneric" Title="Is Generic" Width="120px">
                         <Template>
                             @{
-                                var IsGeneric = (bool)context.GetType().GetProperty(nameof(TransactionalItem.IsGeneric)).GetValue(context);
-                                if (IsGeneric)
-                                {
-                                    <input type="checkbox" checked="IsGeneric" disabled />
-                                }
-                                else
-                                {
-                                    <input type="checkbox" />
-                                }
+                                bool IsGeneric = (bool)context.GetType().GetProperty(nameof(TransactionalItem.IsGeneric)).GetValue(context);
+
+                                <input type="checkbox" checked="@IsGeneric" />
+
                             }
                         </Template>
                     </RadzenDataGridColumn>

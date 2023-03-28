@@ -6,7 +6,6 @@
 @using Syncfusion.Blazor.Navigations
 @inject HttpClient Http
 @inject TransactionalItemsService transactItemsService;
-@inject IJSRuntime JSRuntime
 @inject ContextMenuService ContextMenuService
 @inject DialogService DialogService
 @inject NavigationManager Navigation
@@ -31,25 +30,38 @@ else
 {
     if (seasonBusiness == null) seasonBusiness = new();
 
-    <SfGrid @ref="referDataGrid" DataSource="@seasonBusiness"
-        AllowFiltering="true"
-        AllowTextWrap="false"
-        AllowPaging="true"
-        AllowResizing="true"
-        ContextMenuItems="@(contextMenuItemModel)">
 
-        <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
-        <GridColumns>
-            <GridColumn Field="@nameof(SeasonBusiness.Name)" HeaderText="@GetName("Name", new AtomConcept())" Width="250px"></GridColumn>
-            <GridColumn Field="@nameof(SeasonBusiness.Code)" HeaderText="@GetName("Code", new AtomConcept())" Width="120px"></GridColumn>
-            <GridColumn Field="@nameof(SeasonBusiness.FlagSundayShipping)" HeaderText="@GetName("FlagSundayShipping", new SeasonBusiness())" DisplayAsCheckBox="true"></GridColumn>
-            <GridColumn Field="@nameof(SeasonBusiness.StartDate)" HeaderText="@GetName("StartDate", new SeasonBusiness())"></GridColumn>
-            <GridColumn Field="@nameof(SeasonBusiness.EndDate)" HeaderText="@GetName("EndDate", new SeasonBusiness())"></GridColumn>
-            <GridColumn Field="@nameof(SeasonBusiness.Notes)" HeaderText="@GetName("Notes", new AtomConcept())"></GridColumn>
-            <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="SeasonBusiness"></GridEvents>
-        </GridColumns>
+    <RadzenDataGrid AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="true"
+                FilterMode="FilterMode.Advanced"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                AllowSorting="true"
+                AllowPaging="true"
+                PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                ShowPagingSummary="true"
+                Data="@seasonBusiness"
+                TItem="SeasonBusiness"
+                ColumnWidth="300px"
+                SelectionMode="DataGridSelectionMode.Single"
+                LogicalFilterOperator="LogicalFilterOperator.Or"
+                CellContextMenu="@ShowContextMenuWithContent"
+                PageNumbersCount="100"
+                PageSize="2">
 
-    </SfGrid>
+        <Columns>
+            <RadzenDataGridColumn TItem="SeasonBusiness" Property="Box.Name)" Title="@GetName("Name", new AtomConcept())"></RadzenDataGridColumn>
+
+            <RadzenDataGridColumn TItem="SeasonBusiness" Property="SeasonBusiness.Name" Title="@GetName("Name", new AtomConcept())"></RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="SeasonBusiness" Property="SeasonBusiness.Code" Title="@GetName("Code", new AtomConcept())"></RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="SeasonBusiness" Property="SeasonBusiness.FlagSundayShipping)" Title="@GetName("FlagSundayShipping", new SeasonBusiness())"></RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="SeasonBusiness" Property="SeasonBusiness.StartDate" Title="@GetName("StartDate", new SeasonBusiness())"></RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="SeasonBusiness" Property="SeasonBusiness.EndDate" Title="@GetName("EndDate", new SeasonBusiness())"></RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="SeasonBusiness" Property="SeasonBusiness.Notes" Title="@GetName("Notes", new AtomConcept())"></RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+
+
 }
 
 
@@ -62,9 +74,9 @@ else
 
     bool isLoading = false;
     List<ContextMenuItemModel> contextMenuItemModel = new List<ContextMenuItemModel>()
-    {
+        {
         new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" }
-    };
+        };
 
     public string? conceptFilter
     {
@@ -101,14 +113,30 @@ else
         return Name;
     }
 
+
+
+    #region Grid
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<SeasonBusiness> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        SeasonBusiness argObj = (SeasonBusiness)args.Value;
+        Navigation.NavigateTo($"/SeasonBusinessConcept/SeasonsGeneral/{_filterItems}/{argObj.Id}");
+    }
+
+    #endregion Grid
+
+
     public async void OnContextMenuClick(ContextMenuClickEventArgs<SeasonBusiness> args)
     {
         SeasonBusiness itemSeasonBusiness = null;
         itemSeasonBusiness = args.RowInfo.RowData;
         transactItemsService.SeasonBusinessSelectedItems = itemSeasonBusiness;
-        if (args.Item.Text == "Edit" && transactItemsService.SeasonBusinessSelectedItems !=null)
-        {
-            Navigation.NavigateTo($"/SeasonBusinessConcept/SeasonsGeneral/Edit/{_filterItems}");
-        }
+
     }
 }

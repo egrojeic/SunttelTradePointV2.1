@@ -93,9 +93,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             catch (Exception ex)
             {
                 string errMessage = ex.Message;
-
                 return null;
-
             }
         }
 
@@ -442,7 +440,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 var responseMessage = await Gethttp($"/api/TransactionalItemsRelatedConcepts/GetTransactionalItemGroups?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}&filterCondition={namteToFind}");
                 conceptGroupsList = await responseMessage.Content.ReadFromJsonAsync<List<ConceptGroup>>();
 
-                return conceptGroupsList != null ? conceptGroupsList.Where(g => g.Id != "").Take(20).ToList() : new List<ConceptGroup>();
+                return conceptGroupsList != null ? conceptGroupsList : new List<ConceptGroup>();
             }
             catch (Exception ex)
             {
@@ -697,10 +695,10 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 page = page == 0 ? 1 : page;
                 if (!nameLike.ToLower().Contains("all") && !nameLike.ToLower().Contains("todo"))
                 {
-                    seasonBusiness = seasonBusiness = seasonBusiness != null ? seasonBusiness.Where(s => s.Name.ToLower().Contains(nameLike.ToLower())).ToList() : new List<SeasonBusiness>();
+                    seasonBusiness =  seasonBusiness != null ? seasonBusiness.Where(s => s.Name !=null && s.Name.ToLower().Contains(nameLike.ToLower())).ToList() : new List<SeasonBusiness>();
 
-                    if ((seasonBusiness.Count() - page) >= perPage) seasonBusiness.ToList().GetRange((int)page, (int)perPage);
-                    if ((seasonBusiness.Count() - page) < perPage) seasonBusiness.GetRange((int)page, (seasonBusiness.Count() - 1));
+                    //if ((seasonBusiness.Count() - page) >= perPage) seasonBusiness.ToList().GetRange((int)page, (int)perPage);
+                    //if ((seasonBusiness.Count() - page) < perPage) seasonBusiness.GetRange((int)page, (seasonBusiness.Count() - 1));
                 }
 
 
@@ -847,7 +845,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
 
 
-        public async Task<List<TransactionalItemType>> GetTransactionalItemType(string? transactionalItemTypeId = null)
+        public async Task<TransactionalItemType> GetTransactionalItemType(string? transactionalItemTypeId = null)
         {
             transactionalItemTypeId = transactionalItemTypeId != null ? transactionalItemTypeId : "";
             string userId = UIClientGlobalVariables.UserId;
@@ -855,10 +853,10 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             try
             {
                 var responseMessage = await Gethttp($"/api/TransactionalItems/GetTransactionalItemType?userId={userId}&ipAddress={ipAddress}&transactionalItemTypeId={transactionalItemTypeId}");
-                var transactionalItemType = await responseMessage.Content.ReadFromJsonAsync<List<TransactionalItemType>>();
+                var transactionalItemType = await responseMessage.Content.ReadFromJsonAsync<TransactionalItemType>();
 
 
-                return transactionalItemType != null ? transactionalItemType : new List<TransactionalItemType>();
+                return transactionalItemType != null ? transactionalItemType : new TransactionalItemType();
             }
             catch (Exception ex)
             {
@@ -880,7 +878,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 transactionalItemStatuss = await responseMessage.Content.ReadFromJsonAsync<List<TransactionalItemStatus>>();
 
 
-                if (!nameLike.ToLower().Contains("all") && !nameLike.ToLower().Contains("todo")) return transactionalItemStatuss != null ? transactionalItemStatuss.Where(s => s.Name.ToLower().Contains(nameLike.ToLower())).ToList() : new List<TransactionalItemStatus>();
+                if (!nameLike.ToLower().Contains("all") && !nameLike.ToLower().Contains("todo")) return transactionalItemStatuss != null ? transactionalItemStatuss.Where(s => s.Name !=null && s.Name.ToLower().Contains(nameLike.ToLower())).ToList() : new List<TransactionalItemStatus>();
                 return transactionalItemStatuss;
             }
             catch (Exception ex)
@@ -1223,6 +1221,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             try
             {
                 var resul = await _httpClient.PostAsJsonAsync<ConceptGroup>($"api/TransactionalItemsRelatedConcepts/SaveTransactionalItemGroup?userId={userId}&ipAddress={ipAddress}", conceptGroup);
+              
                 return resul.IsSuccessStatusCode;
             }
             catch (Exception ex)
@@ -1331,11 +1330,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
 
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
-                //request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad.ID.ToString());
+                var g = UIClientGlobalVariables.ActiveSquad;
+                request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad.ID.ToString());
 
 
                 var response = await _httpClient.SendAsync(request);
-                var content  = await response.Content.ReadFromJsonAsync<List<TransactionalItem>>();
                 System.Diagnostics.Debug.WriteLine(response.IsSuccessStatusCode);
                 if (response.IsSuccessStatusCode)
                 {

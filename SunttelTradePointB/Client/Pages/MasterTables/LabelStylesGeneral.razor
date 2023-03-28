@@ -7,7 +7,6 @@
 @using Syncfusion.Blazor.Navigations
 @inject HttpClient Http
 @inject TransactionalItemsService transactItemsService;
-@inject IJSRuntime JSRuntime
 @inject ContextMenuService ContextMenuService
 @inject DialogService DialogService
 @inject NavigationManager Navigation
@@ -31,14 +30,36 @@ else
 {
     @if (@labelStyles != null)
     {
-           <div class="flex-horizontal-center ">
-            <DataGrid TParameter="LabelStyle"
-              EventCallbackMenu="OnContextMenuClick"
-              parameterList="labelStyles"
-              GridColumnsList="ListGridlabelStyles"
-              Width="100%">
-            </DataGrid>
-        </div>
+
+
+        <RadzenDataGrid AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="true"
+                FilterMode="FilterMode.Advanced"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                AllowSorting="true"
+                AllowPaging="true"
+                PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                ShowPagingSummary="true"
+                Data="@labelStyles"
+                TItem="LabelStyle"
+                ColumnWidth="300px"
+                SelectionMode="DataGridSelectionMode.Single"
+                LogicalFilterOperator="LogicalFilterOperator.Or"
+                CellContextMenu="@ShowContextMenuWithContent"
+                PageNumbersCount="100"
+                PageSize="2">
+
+            <Columns>
+                <RadzenDataGridColumn TItem="LabelStyle" Property="Name" Title="@GetName( "Name", new AtomConcept())" Width="80px" />
+                <RadzenDataGridColumn TItem="LabelStyle" Property="Code" Title="@GetName( "Code", new AtomConcept())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                 <RadzenDataGridColumn TItem="LabelStyle" Property="Notes" Title="@GetName( "Notes", new AtomConcept())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                <RadzenDataGridColumn TItem="LabelStyle" Property="PDFReportName" Title="@GetName( "PDFReportName", new LabelStyle())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                <RadzenDataGridColumn TItem="LabelStyle" Property="Purpose" Title="@GetName( "Purpose", new LabelStyle())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+            </Columns>
+        </RadzenDataGrid>
+
+
     }
 
 }
@@ -46,9 +67,9 @@ else
 @code {
     [Parameter]
     public string _filterItems { get; set; } = "";
+   
     public List<LabelStyle> labelStyles = new();
-
-    List<GridColumn> ListGridlabelStyles = new();
+ 
     SfGrid<Box>? referDataGrid;
 
     bool isLoading = false;
@@ -73,16 +94,6 @@ else
         }
         transactItemsService.Page = "LabelStyles";
 
-        ListGridlabelStyles = new List<GridColumn>
-        {
-               new GridColumn() { Field=nameof(LabelStyle.Name) ,  HeaderText = @GetName( "Name", new AtomConcept()) , Width="300" },
-                 new GridColumn() { Field=nameof(LabelStyle.Code) ,  HeaderText = @GetName( "Code", new AtomConcept()), Width="80px"  },
-                  new GridColumn() { Field=nameof(LabelStyle.Notes) ,  HeaderText = @GetName( "Notes", new AtomConcept())  },
-                   new GridColumn() { Field=nameof(LabelStyle.PDFReportName) ,  HeaderText = @GetName( "PDFReportName", new LabelStyle())  },
-                    new GridColumn() { Field=nameof(LabelStyle.Purpose) ,  HeaderText = @GetName( "Purpose", new LabelStyle())  }           
-
-
-        };
 
     }
 
@@ -100,17 +111,26 @@ else
         StateHasChanged();
     }
 
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<LabelStyle> args)
+
+    #region Grid
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<LabelStyle> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
     {
+        LabelStyle argObj = (LabelStyle)args.Value;
+        Navigation.NavigateTo($"/LabelStylesConcept/LabelStyles/{_filterItems}/{argObj.Id}");
       
-        transactItemsService.ConceptLabelStyle = args.RowInfo.RowData;        
-        if (args.Item.Text == "Edit")
-        {
-            Navigation.NavigateTo($"/LabelStylesConcept/LabelStyles/Edit/{_filterItems}");
-        }
     }
 
+    #endregion Grid
 
 
+
+   
 
 }

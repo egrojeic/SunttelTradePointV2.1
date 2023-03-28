@@ -240,9 +240,7 @@
     protected override async void OnInitialized()
     {
         if (transactionalItemId != null)
-        {
-            // TODO: cuando se carga la pagina, hace la llamada antes de cargar la informacion del usuario
-            // en el mainLayout
+        {            
             currentItem = await transactionalService.GetTransactionalItemById(transactionalItemId);
             LoadObj();
             if (currentItem != null)
@@ -320,6 +318,8 @@
 
             TransactionalItem item = null;
             if (currentItem.Status != null) item = await transactionalService.SaveTransactionalItem(currentItem);
+            
+            
             bool resul = (item != null ? true : false);
             if (resul && currentItem.Status != null)
             {

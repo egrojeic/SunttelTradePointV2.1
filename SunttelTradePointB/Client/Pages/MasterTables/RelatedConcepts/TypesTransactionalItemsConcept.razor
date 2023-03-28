@@ -1,5 +1,5 @@
-﻿@page "/TypesTransactionalItemsConcept/{Page}/{Mode}/{filterItems}"
-@page "/TypesTransactionalItemsConcept/{Page}/{Mode}"
+﻿@page "/TypesTransactionalItemsConcept/{Page}/{filterItems}/{transactionalItemTypeId}"
+@page "/TypesTransactionalItemsConcept/{Page}/{transactionalItemTypeId}/"
 @using SunttelTradePointB.Shared.Common
 @using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents
 @using SunttelTradePointB.Client.Shared.Menus
@@ -598,17 +598,14 @@
     </SfTab>
 
 </div>
-<style>
-    .e-tab .e-tab-header .e-toolbar-item .e-tab-text,
-    .e-tab .e-tab-header .e-toolbar-item .e-tab-wrap .e-tab-icon {
-        font-size: 11px;
-    }
-</style>
+
 @code {
     [Parameter]
     public string Page { get; set; } = "";
     [Parameter]
-    public string Mode { get; set; } = "Add";
+    public string transactionalItemTypeId { get; set; }
+    [Parameter]
+    public string transactionalItemId { get; set; }
     [Parameter]
     public string filterItems { get; set; } = "";
 
@@ -664,28 +661,21 @@
         StateHasChanged();
     }
 
-    protected override void OnInitialized()
+    protected async override void OnInitialized()
     {
-        if (Mode == "Edit")
+        if (transactionalItemTypeId !=null)
         {
-            if (transactionalService.ConceptTransactionalItemType != null)
-            {
-                transactionalItemType = transactionalService.ConceptTransactionalItemType;
+            
+                transactionalItemType = await transactionalService.GetTransactionalItemType(transactionalItemTypeId);
                 transactionalItemProcessSteps = transactionalItemType.TransactionalItemProcesses != null ? transactionalItemType.TransactionalItemProcesses : new();
                 childrenGroups = transactionalItemType.Groups != null ? transactionalItemType.Groups : new();
                 transactionalItemTypeCharacteristics = transactionalItemType.TransactionalItemTypeCharacteristics != null ? transactionalItemType.TransactionalItemTypeCharacteristics : new();
                 transactionalItemQualitys = transactionalItemType.QualityParameters != null ? transactionalItemType.QualityParameters : new();
                 inRecipeModifiers = transactionalItemType.InRecipeModifiers != null ? transactionalItemType.InRecipeModifiers : new();
                 StateHasChanged();
-            }
-            else
-            {
-                Closed("control");
-            }
+            
 
-
-        }
-        if (Mode == "Add")
+        }else
         {
             transactionalItemType = new();
         }
@@ -978,7 +968,7 @@
             if (transactionalItemProcessSteps == null) transactionalItemProcessSteps = new();
 
 
-            if (Mode == "Add" || transactionalItemProcessStep.Id == null)
+            if ( transactionalItemProcessStep.Id == null)
             {
 
                 transactionalItemProcessStep.TransactionalItemProcessTags = transactionalItemProcessTags != null ? transactionalItemProcessTags : new();
@@ -991,7 +981,7 @@
 
             }
 
-            if (Mode == "Edit" && transactionalItemProcessStep.Id != null)
+            if ( transactionalItemProcessStep.Id != null)
             {
                 transactionalItemProcessStep.TransactionalItemProcessTags = transactionalItemProcessTags != null ? transactionalItemProcessTags : new();
                 transactionalItemProcessStep.CostExceptionsByQuantity = costExceptionsByQuantitys != null ? costExceptionsByQuantitys : new();
@@ -1009,7 +999,7 @@
 
         if (value == "TransactionalItemProcessesTag")
         {
-            if (Mode == "Add" || transactionalItemProcessTag.Id == null)
+            if (transactionalItemProcessTag.Id == null)
             {
                 if (transactionalItemProcessTag.Key != null)
                 {
@@ -1019,10 +1009,16 @@
                         transactionalItemProcessTag = new();
                         Msg("Added");
                     }
-                }
+                    else
+                    {
+                        Msg("value require");
+                    }
+                }else{
+                Msg("key require");
+            }
             }
 
-            if (Mode == "Edit" && transactionalItemProcessTag.Id != null)
+            if (transactionalItemProcessTag.Id != null)
             {
                 if (transactionalItemProcessTag.Id != null)
                 {
@@ -1039,7 +1035,7 @@
         if (value == "CostExceptionsByQuantityProcessStep")
         {
 
-            if (Mode == "Add" || costExceptionsByQuantity.Id == null)
+            if ( costExceptionsByQuantity.Id == null)
             {
                 costExceptionsByQuantitys.Add(costExceptionsByQuantity);
                 costExceptionsByQuantity = new();
@@ -1047,7 +1043,7 @@
 
 
             }
-            if (Mode == "Edit" && costExceptionsByQuantity.Id != null)
+            if (costExceptionsByQuantity.Id != null)
             {
 
                 Msg("Updated");
@@ -1058,7 +1054,7 @@
 
         if (value == "TransactionalItemTypeCharacteristics")
         {
-            if (Mode == "Add" || transactionalItemTypeCharacteristic.Id == null)
+            if ( transactionalItemTypeCharacteristic.Id == null)
             {
                 if (transactionalItemTypeCharacteristics == null) transactionalItemTypeCharacteristics = new();
                 transactionalItemTypeCharacteristic.PossibleValues = possibleValues != null ? possibleValues : new();
@@ -1068,7 +1064,7 @@
                 Msg("Added");
 
             }
-            if (Mode == "Edit" || transactionalItemTypeCharacteristic.Id != null)
+            if ( transactionalItemTypeCharacteristic.Id != null)
             {
                 Msg("Updated");
 
@@ -1081,14 +1077,14 @@
         if (value == "QualityParameters")
         {
 
-            if (Mode == "Add" || transactionalItemQuality.Id == null)
+            if ( transactionalItemQuality.Id == null)
             {
                 if (transactionalItemQualitys == null) transactionalItemQualitys = new();
                 transactionalItemQualitys.Add(transactionalItemQuality);
                 transactionalItemQuality = new();
                 Msg("Added");
             }
-            if (Mode == "Edit" && transactionalItemQuality.Id != null)
+            if ( transactionalItemQuality.Id != null)
             {
 
                 Msg("Updated");
@@ -1102,7 +1098,7 @@
         if (value == "InRecipeQualityModifiers")
         {
 
-            if (Mode == "Add" || inRecipeModifier.Id == null)
+            if ( inRecipeModifier.Id == null)
             {
                 if (inRecipeModifiers == null) inRecipeModifiers = new();
                 inRecipeModifier.RecipePossibleModifierValues = recipePossibleModifierValues;
@@ -1110,7 +1106,7 @@
                 inRecipeModifier = new();
                 Msg("Added");
             }
-            if (Mode == "Edit" && inRecipeModifier.Id != null)
+            if ( inRecipeModifier.Id != null)
             {
 
                 Msg("Updated");
@@ -1121,14 +1117,14 @@
         if (value == "RecipePossibleModifierValues")
         {
 
-            if (Mode == "Add" || recipePossibleModifierValue.Id == null)
+            if ( recipePossibleModifierValue.Id == null)
             {
                 if (recipePossibleModifierValues == null) recipePossibleModifierValues = new();
                 recipePossibleModifierValues.Add(recipePossibleModifierValue);
                 recipePossibleModifierValue = new();
                 Msg("Added");
             }
-            if (Mode == "Edit" && recipePossibleModifierValue.Id != null)
+            if ( recipePossibleModifierValue.Id != null)
             {
 
                 Msg("Updated");
@@ -1188,15 +1184,13 @@
         {
             if (childrenGroup.GroupClassificationCriteria != null)
             {
-                if (childrenGroup.Id == null && Mode == "Add")
+                if (childrenGroup.Id == null )
                 {
                     childrenGroups.Add(childrenGroup);
                     childrenGroup = new();
                     requiereSave = true;
                     Msg("Added");
-                }
-
-                if (Mode == "Edit")
+                }else
                 {
                     requiereSave = true;
                     Msg("Update");

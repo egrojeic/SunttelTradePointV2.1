@@ -1,5 +1,5 @@
-﻿@page "/SeasonBusinessConcept/{Page}/{Mode}/{filterItems}"
-@page "/SeasonBusinessConcept/{Page}/{Mode}"
+﻿@page "/SeasonBusinessConcept/{Page}/{filterItems}/{seasonBusinessId}"
+@page "/SeasonBusinessConcept/{Page}/"
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
 @inject NavigationManager Navigation
@@ -40,7 +40,7 @@
     [Parameter]
     public string Page { get; set; } = "";
     [Parameter]
-    public string Mode { get; set; } = "Add";
+    public string seasonBusinessId { get; set; }
     [Parameter]
     public string filterItems { get; set; } = "";
     public bool viewMsg = false;
@@ -48,26 +48,19 @@
 
     public SeasonBusiness seasonBusiness = new();
 
-    protected override void OnInitialized()
+    protected async override void OnInitialized()
     {
-        if (Mode == "Edit")
+        if (seasonBusinessId !=null)
         {
-            if (transactionalService?.SeasonBusinessSelectedItems != null)
-            {
-                seasonBusiness = transactionalService.SeasonBusinessSelectedItems;
-            }
-            else
-            {
-                Closed("control");
-            }          
-          
-            
+
+            seasonBusiness = await transactionalService.GetSeason(seasonBusinessId);
+
         }
-        if (Mode == "Add")
+        if (seasonBusinessId ==null)
         {
             seasonBusiness = new();
         }
-        base.OnInitialized();
+        StateHasChanged();
     }
 
 
@@ -84,6 +77,7 @@
             seasonBusiness = new();
         }
         Msg(resul);
+        StateHasChanged();
 
     }
 
