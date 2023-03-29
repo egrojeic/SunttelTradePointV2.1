@@ -277,15 +277,37 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Retrives the list of possible Entity Roles
         /// </summary>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
         /// <param name="filterString"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<AtomConcept>? EntityRolesList, string? ErrorDescription)> GetSelectorListEntityRoles(string? filterString)
+        public async Task<(bool IsSuccess, List<AtomConcept>? EntityRolesList, string? ErrorDescription)> GetSelectorListEntityRoles(string? filterString, int? page = 1, int? perPage = 10)
         {
             try
             {
                 string strNameFiler = filterString == null ? "" : filterString;
+                var skip = (page - 1) * perPage;
+
 
                 var pipeline = new List<BsonDocument>();
+
+                if (!(strNameFiler.ToLower() == "all" || strNameFiler.ToLower() == "todos"))
+                {
+                    pipeline.Add(
+                    new BsonDocument{
+                        { "$match",  new BsonDocument {
+                            { "$text",
+                                new BsonDocument {
+                                    { "$search",strNameFiler },
+                                    { "$language","english" },
+                                    { "$caseSensitive",false },
+                                    { "$diacriticSensitive",false }
+                                }
+                            }
+                        }}
+                    }
+                );
+                }
 
                 pipeline.Add(
                     new BsonDocument(
@@ -306,6 +328,18 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                                 { "Name", 1 }
                             }
                         }
+                    }
+                );
+
+                pipeline.Add(
+                    new BsonDocument{
+                        {"$skip",  skip}
+                        }
+                    );
+
+                pipeline.Add(
+                    new BsonDocument{
+                        {"$limit",  perPage}
                     }
                 );
 

@@ -98,14 +98,16 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Retrives the list of possible Entity Roles
         /// </summary>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
         /// <param name="filterCondition"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetSelectorListEntityRoles")]
-        public async Task<IActionResult> GetSelectorListEntityRoles(string filterCondition)
+        public async Task<IActionResult> GetSelectorListEntityRoles(string? filterCondition = null, int? page = 1, int? perPage = 10)
         {
 
-            var response = await _selectorDatasource.GetSelectorListEntityRoles(filterCondition);
+            var response = await _selectorDatasource.GetSelectorListEntityRoles(filterCondition, page, perPage);
 
             if (response.IsSuccess)
             {

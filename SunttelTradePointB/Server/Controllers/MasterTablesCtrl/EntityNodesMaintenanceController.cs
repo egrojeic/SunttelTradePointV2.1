@@ -194,13 +194,15 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAdress"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
         /// <param name="filterCondition"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetEntityGroups")]
-        public async Task<IActionResult> GetEntityGroups(string userId, string ipAdress, string? filterCondition = null)
+        public async Task<IActionResult> GetEntityGroups(string userId, string ipAdress, int? page = 1, int? perPage = 10, string? filterCondition = null)
         {
-            var result = await _entityNodes.GetEntityGroups(userId, ipAdress,filterCondition);
+            var result = await _entityNodes.GetEntityGroups(userId, ipAdress, page, perPage, filterCondition);
 
             if (result.IsSuccess)
             {

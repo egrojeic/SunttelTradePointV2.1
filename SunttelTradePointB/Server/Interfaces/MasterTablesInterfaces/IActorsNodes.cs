@@ -112,9 +112,11 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAdress"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
         /// <param name="filterCondition"></param>
         /// <returns></returns>
-        public Task<(bool IsSuccess, List<EntityGroup>? entityGroup, string? ErrorDescription)> GetEntityGroups(string userId, string ipAdress, string? filterCondition = null);
+        public Task<(bool IsSuccess, List<EntityGroup>? entityGroup, string? ErrorDescription)> GetEntityGroups(string userId, string ipAdress, int? page = 1, int? perPage = 10, string? filterCondition = null);
 
         /// <summary>
         /// Retrieves a Entity Group of the id

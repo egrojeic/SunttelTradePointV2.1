@@ -571,15 +571,18 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAdress"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
         /// <param name="userId"></param>
         /// <param name="ipAdress"></param>
         /// <param name="filterCondition"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<EntityGroup>? entityGroup, string? ErrorDescription)> GetEntityGroups(string userId, string ipAdress, string? filterCondition = null)
+        public async Task<(bool IsSuccess, List<EntityGroup>? entityGroup, string? ErrorDescription)> GetEntityGroups(string userId, string ipAdress, int? page = 1, int? perPage = 10, string? filterCondition = null)
         {
             try
             {
                 string filter = filterCondition == null ? "" : filterCondition;
+                var skip = (page - 1) * perPage;
 
                 if (filter.Length > 0)
                 {
@@ -591,6 +594,18 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                                 "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filter}/i"))
                             )
                         )
+                    );
+
+                    pipeline.Add(
+                    new BsonDocument{
+                        {"$skip",  skip}
+                        }
+                    );
+
+                    pipeline.Add(
+                        new BsonDocument{
+                        {"$limit",  perPage}
+                        }
                     );
 
                     List<EntityGroup> results = await _entityGroup.Aggregate<EntityGroup>(pipeline).ToListAsync();

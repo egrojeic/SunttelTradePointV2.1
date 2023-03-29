@@ -38,9 +38,11 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <summary>
         /// Retrieves the list of Entity  Roles
         /// </summary>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
         /// <param name="filterString"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<AtomConcept>? EntityRolesList, string? ErrorDescription)> GetSelectorListEntityRoles(string? filterString);
+        Task<(bool IsSuccess, List<AtomConcept>? EntityRolesList, string? ErrorDescription)> GetSelectorListEntityRoles(string? filterString, int? page = 1, int? perPage = 10);
 
 
         /// <summary>
