@@ -86,7 +86,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// Returns a list of the different Identification Types in the system
         /// </summary>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<IdentificationType>? identificationTypes, string? ErrorDescription)> GetSelectorListIdentificationTypes();
+        Task<(bool IsSuccess, List<IdentificationType>? identificationTypes, string? ErrorDescription)> GetSelectorListIdentificationTypes(string? filterName = null);
 
 
         /// <summary>
