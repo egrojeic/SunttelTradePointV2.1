@@ -44,7 +44,9 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             TransactionalItemImage,
             EntityImage
         }
-        public string Host { get { return UIClientGlobalVariables.PathEntityImages + "/"; } }
+        public string Host { get {
+                string host = UIClientGlobalVariables.PathEntityImages;      
+                return host + "/"; } }
         #endregion Property
 
         private readonly HttpClient _httpClient;
@@ -256,6 +258,24 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
+        public async Task<ProductModel> GetProductModelToId(string? transactionalItemId, string productModelId)
+        {
+            try
+            {
+                var responseMessage = await Gethttp($"/api/ConceptsSelector/GetSelectorListTransactionalItemModels?transactionalItemId={transactionalItemId}");
+                var item = await responseMessage.Content.ReadFromJsonAsync<ProductModel>();
+
+                return item != null ? item : new ProductModel();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+
+                return null;
+
+            }
+        }
+
         public async Task<List<Box>> GetSelectorListEntityBoxToSale()
         {
             try
@@ -341,7 +361,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                var responseMessage = await Gethttp($"/api/TransactionalItems/GetTransactionalItemDetailsTags?userId={userId}&ipAddress={ipAddress}&transactionalItemId={transactionalItemId}");
+                var responseMessage = await Gethttp($"/api/TransactionalItems/pendiente?userId={userId}&ipAddress={ipAddress}&transactionalItemId={transactionalItemId}");
                 var obj  = await responseMessage.Content.ReadFromJsonAsync<TransactionalItemTag>();
 
                 return obj != null ? obj : new TransactionalItemTag();
@@ -829,7 +849,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                var responseMessage = await Gethttp($"/api/ConceptsSelector/GetProductRecipeQualityModifiersByModifierId?userId={userId}&ipAddress={ipAddress}&modifierId={productionSpecsToId}");
+                var responseMessage = await Gethttp($"/api/ConceptsSelector/pendiente?userId={userId}&ipAddress={ipAddress}&modifierId={productionSpecsToId}");
                 var obj = await responseMessage.Content.ReadFromJsonAsync<TransactionalItemProcessStep>();
 
                 return obj;
@@ -1273,15 +1293,12 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         }
 
         public async Task<bool> SaveConceptPaper(LabelPaper labelPaper)
-        {
-            string userId = UIClientGlobalVariables.UserId;
-            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
-
+        {            
             labelPaper.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
 
             try
             {
-                var resul = await _httpClient.PostAsJsonAsync<LabelPaper>($"api/TransactionalItemsRelatedConcepts/SaveLabelPaper?userId={userId}&ipAddress={ipAddress}", labelPaper);
+                var resul = await _httpClient.PostAsJsonAsync<LabelPaper>($"api/TransactionalItemsRelatedConcepts/SaveLabelPaper?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}", labelPaper);
                 return resul.IsSuccessStatusCode;
             }
             catch (Exception ex)
@@ -1372,6 +1389,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
+        
     }
 
     public class FilePath

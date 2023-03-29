@@ -20,7 +20,9 @@
     <div class="grid-columns-2 box-shadow-mode">
         <div><label>@GetName( "Name", new AtomConcept())</label></div>
         <div><input type="text" @bind-value="seasonBusiness.Name" class="form-control" placeholder="Edit value" /></div>
-        <div><label>@GetName( "FlagSundayShipping", new SeasonBusiness())</label></div>
+        <div><label>@GetName( "Code", new AtomConcept())</label></div>
+        <div><input type="text" @bind-value="seasonBusiness.Code" class="form-control" placeholder="Edit value" /></div>
+        <div><label>@GetName( "Code", new AtomConcept())</label></div>
         <div>
             <SfSwitch @bind-Checked="seasonBusiness.FlagSundayShipping"></SfSwitch>
         </div>

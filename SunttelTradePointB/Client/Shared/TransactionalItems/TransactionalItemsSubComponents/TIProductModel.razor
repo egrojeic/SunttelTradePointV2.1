@@ -18,9 +18,19 @@
 
 @if (ProductModels == null) { ProductModels = new(); }
 
-@if (ProductModels != null)
+
+
+@if (isLoading)
 {
-    <RadzenDataGrid AllowFiltering="true"
+
+    <WaitingProcessIndicator loadingTopic="ProductModel Items"></WaitingProcessIndicator>
+
+}
+else
+{
+    @if (ProductModels != null)
+    {
+        <RadzenDataGrid AllowFiltering="true"
                 AllowColumnResize="true"
                 AllowAlternatingRows="true"
                 FilterMode="FilterMode.Advanced"
@@ -38,18 +48,18 @@
                 CellContextMenu="@ShowContextMenuWithContent"
                 PageNumbersCount="100">
 
-        <Columns>
-            <RadzenDataGridColumn TItem="ProductModel" Property="Code" Title="Code" Frozen="false" Width="80px" />
-            <RadzenDataGridColumn TItem="ProductModel" Property="Name" Filterable="true" Title="Name" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-            <RadzenDataGridColumn TItem="ProductModel" Property="FullClassName" Title="Group" Width="160px" />
-            <RadzenDataGridColumn TItem="ProductModel" Property="Status.Name" Title="Status" Width="200px" />
-            <RadzenDataGridColumn TItem="ProductModel" Property="ReferenceCost" Title="Reference Cost" Width="120px" />
+            <Columns>
+                <RadzenDataGridColumn TItem="ProductModel" Property="Code" Title="Code" Frozen="false" Width="80px" />
+                <RadzenDataGridColumn TItem="ProductModel" Property="Name" Filterable="true" Title="Name" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                <RadzenDataGridColumn TItem="ProductModel" Property="FullClassName" Title="Group" Width="160px" />
+                <RadzenDataGridColumn TItem="ProductModel" Property="Status.Name" Title="Status" Width="200px" />
+                <RadzenDataGridColumn TItem="ProductModel" Property="ReferenceCost" Title="Reference Cost" Width="120px" />
 
 
-        </Columns>
-    </RadzenDataGrid>
+            </Columns>
+        </RadzenDataGrid>
+    }
 }
-
 
 
 @code {
@@ -61,6 +71,7 @@
     string msg = "";
     bool viewMsg = false;
     bool status = false;
+    bool isLoading = false;
 
 
     protected override void OnParametersSet()
@@ -81,8 +92,9 @@
 
         if (IdTransactionalItem != null)
         {
+            isLoading = true;
             ProductModels = await transactionalService.GetSelectorListTransactionalItemModels(IdTransactionalItem);
-
+            isLoading = false;
             StateHasChanged();
         }
 

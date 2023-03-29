@@ -455,7 +455,7 @@
                                     </label>
                                 </div>
                                 <InputTextSelector3 TItem="ProductModel"
-                                                    Id="ModelRecipe"
+                                                    Id="Model"
                                                     EventSearcherValueAndId="EventSearcherValueAndId"
                                                     EventIdSelectionAndId="SelectionMade"
                                                     caption="@(ModelRecipe != null ? ModelRecipe?.Name : "")"
@@ -907,7 +907,7 @@
 
 
                 #endregion Tag 2
-
+                if (_PackingSpecs == null) _PackingSpecs = new();
                 StateHasChanged();
             }
             else
@@ -1385,7 +1385,7 @@
     }
     public void SelectionMade(ProductModel arg)
     {
-        if (selectionControl == "ModelRecipe")
+        if (selectionControl == "Model")
         {
             ModelRecipe = arg;
         }
@@ -1441,15 +1441,10 @@
         //OpenAlert("Added", 0);
     }
 
-
-
-
-
-
     public string GetName(string Name, Object Obj)
     {
-        Name = UICommonFunctions.GetDisplayName(Obj, Name);
-        return Name != null ? Name : Name;
+       if(UICommonFunctions.GetDisplayName(Obj, Name)!=null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name ;
     }
 
 

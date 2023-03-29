@@ -1,4 +1,4 @@
-﻿@page "/CharacteristicCard/{Page}/{transactionalItemId}/{characteristicPair}"
+﻿@page "/CharacteristicCard/{Page}/{transactionalItemId}/{characteristicPairId}"
 @page "/CharacteristicCard/{Page}/{transactionalItemId}"
 @using Syncfusion.Blazor.Popups
 @using SunttelTradePointB.Shared.Common
@@ -27,9 +27,10 @@
             </div>
             <div>
                 <InputTextSelector3 TItem="TransactionalItemTypeCharacteristic"
-                                    Id="@GetName( "ItemCharacteristics", new TransactionalItem())"
+                                    Id="ItemCharacteristics"
                                     EventClosed="ClosedInput"
                                     EventSearcherValueAndId="EventSearcherValueAndId"
+                                    EventIdSelectionAndId="EventIdSelection"
                                     Items="transactionalItemTypeCharacteristics"
                                     caption="@(transactionalItemTypeCharacteristic != null ? transactionalItemTypeCharacteristic.Name : "")">
 
@@ -38,6 +39,8 @@
             <div><label> @GetName("Value", new TransactionalItemCharacteristicPair()) </label></div>
             <div>
                 <select @bind="transactionalItemCharacteristicPair.Value" class="form-control">
+
+                    <option value="0" selected>Select</option>
                     @foreach (var item in possibleValues)
                     {
                         <option value="@item.Name">@item.Name</option>
@@ -60,7 +63,7 @@
     [Parameter]
     public string transactionalItemId { get; set; }
     [Parameter]
-    public string characteristicPair { get; set; }
+    public string characteristicPairId { get; set; }
     [Parameter]
     public string Page { get; set; }
     [Parameter]
@@ -89,6 +92,15 @@
 
     protected async override void OnInitialized()
     {
+        transactionalItemCharacteristicPairs = await transactionalService.GetCharacteristic(transactionalItemId);
+        if (transactionalItemCharacteristicPairs != null)
+        {
+            transactionalItemCharacteristicPair = transactionalItemCharacteristicPairs.Where(s => s.Id == characteristicPairId).FirstOrDefault();
+            transactionalItemTypeCharacteristic = transactionalItemCharacteristicPair.TransactionalItemCharacteristic;
+        }
+
+
+
         var transactionalItems = await transactionalService.GetTransactionalItemById(transactionalItemId);
         transactionalItemTypeCharacteristics = new();
         if (transactionalItems != null)
@@ -100,12 +112,16 @@
                 var resul = itemTypes.Where(s => s.Id == type.Id).FirstOrDefault();
                 if (resul != null)
                 {
-                    transactionalItemTypeCharacteristics = resul.TransactionalItemTypeCharacteristics != null ? resul.TransactionalItemTypeCharacteristics : new();
 
+                    transactionalItemTypeCharacteristics = resul.TransactionalItemTypeCharacteristics != null ? resul.TransactionalItemTypeCharacteristics : new();
+                    var values = transactionalItemTypeCharacteristics.Where(s => s.Id == transactionalItemTypeCharacteristic?.Id).FirstOrDefault();
+
+                    if (values != null) possibleValues = values.PossibleValues;
                 }
 
             }
         }
+        StateHasChanged();
     }
 
     private async void Save()
@@ -135,20 +151,17 @@
         if (Element == "control") Navigation.NavigateTo($"/TransactionalItemCard/{transactionalItemId}");
     }
 
-    protected async void EventIdSelection(string SelectedId)
+    protected async void EventIdSelection(TransactionalItemTypeCharacteristic item)
     {
-        transactionalItemTypeCharacteristic = transactionalItemTypeCharacteristics.Where(c => c.Name == SelectedId || c.Id == SelectedId).FirstOrDefault();
-        if (transactionalItemTypeCharacteristic == null) transactionalItemTypeCharacteristic = new();
-        ParamCountResul = 0;
-
-        ViewPopupCount = false;
+        transactionalItemTypeCharacteristic = item;
 
         if (transactionalItemTypeCharacteristics != null)
         {
-            var characteristic = transactionalItemTypeCharacteristics.Where(s => s.Id != null && s.Id.Trim() == SelectedId.Trim()).FirstOrDefault();
+            var characteristic = transactionalItemTypeCharacteristics.Where(s => s.Id != null && s.Id.Trim() == item.Id).FirstOrDefault();
             if (characteristic != null) possibleValues = characteristic.PossibleValues != null ? characteristic.PossibleValues : new();
             StateHasChanged();
         }
+        transactionalItemCharacteristicPair.TransactionalItemCharacteristic = item;
 
         await Refresh();
     }
@@ -156,15 +169,15 @@
     protected async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
         ViewPopupCount = true;
-
-        if (ModeSearcher == GetName("ItemCharacteristics", new TransactionalItem()))
+        ModeSearcher = arg.IdControl;
+        if (ModeSearcher == "ItemCharacteristics")
         {
 
             var transactionalItem = await transactionalService.GetTransactionalItemById(transactionalItemId);
             transactionalItemTypeCharacteristics = new();
             if (transactionalItem != null)
             {
-                  
+
                 if (transactionalItem.TypeOfConcept != null)
                 {
                     var itemTypes = await transactionalService.GetTransactionalItemTypes(transactionalItem.TypeOfConcept.Name);
@@ -204,7 +217,7 @@
 
     public string GetName(string Name, Object Obj)
     {
-        if (UICommonFunctions.GetDisplayName(Obj, Name)!=null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
     }
 

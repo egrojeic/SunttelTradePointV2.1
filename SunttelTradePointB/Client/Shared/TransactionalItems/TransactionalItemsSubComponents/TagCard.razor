@@ -1,6 +1,5 @@
 ﻿@page "/TagCard/{Page}/{transactionalItemId}"
-@page "/TagCard/{Page}/{SubPage}/{transactionalItemId}"
-@page "/TagCard/{Page}/{SubPage}/{transactionalItemId}/{transactionalItemTagId}"
+@page "/TagCard/{Page}/{transactionalItemId}/{transactionalItemTagId}"
 @using Syncfusion.Blazor.Popups
 @using SunttelTradePointB.Shared.Common
 @inject TransactionalItemsService transactionalService;
@@ -79,11 +78,11 @@
 
     public async void InitializedUICommonFunctions()
     {
-        if (transactionalItemTagId != null)
+        if (transactionalItemTagId != null && transactionalItemTagId !=null)
         {
             Tag = await transactionalService.GetTagToId(transactionalItemId, transactionalItemTagId);
         }
-        else
+        if (Tag==null)
         {
             Tag = new();
         }

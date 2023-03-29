@@ -29,6 +29,17 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<List<ProductModel>> GetSelectorListEntityProductModel(string? transactionalItemId = null);
 
+
+
+        /// <summary>
+        /// Retrives a item with ProductModel Items meeting search criteria
+        /// </summary>
+        /// <param name="transactionalItemId"></param>    
+        /// <param name="productModelId"></param>    
+        /// <returns></returns>
+        Task<ProductModel> GetProductModelToId(string? transactionalItemId, string productModelId);
+
+
         /// <summary>
         /// etrives a list with Box To Sale Items
         /// </summary>        //   

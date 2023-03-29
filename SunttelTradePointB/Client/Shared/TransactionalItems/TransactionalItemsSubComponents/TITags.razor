@@ -16,76 +16,70 @@
 </div>
 
 
-<div class="row">
-    <div class="col-md-12">
+@if (isLoading)
+{
 
-        @if (TransactionalItemTags == null) TransactionalItemTags = new();
-        
-            <RadzenDataGrid AllowFiltering="true"
-                    AllowColumnResize="true"
-                    AllowAlternatingRows="true"
-                    FilterMode="FilterMode.Advanced"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    AllowSorting="true"                  
-                    AllowPaging="true"
-                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    Data="@TransactionalItemTags"
-                    TItem="TransactionalItemTag"                    
-                    SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"                  
-                    CellContextMenu="@ShowContextMenuWithContent"
-                    PageNumbersCount="100">
+    <WaitingProcessIndicator loadingTopic="Transactional Tag Items"></WaitingProcessIndicator>
 
-                <Columns>
-                    <RadzenDataGridColumn TItem="TransactionalItem" Property="Key" Title="@Key" Frozen="false" Width="80px" />
-                    <RadzenDataGridColumn TItem="TransactionalItem" Property="Value" Filterable="true" Title="@Value" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                   
-                </Columns>
-            </RadzenDataGrid>
-        
+}
+else
+{
+    @if (TransactionalItemTags != null)
+    {
+        <RadzenDataGrid AllowFiltering="true"
+                Data="@TransactionalItemTags"
+                TItem="TransactionalItemTag"
+                CellContextMenu="@ShowContextMenuWithContent"
+                AllowColumnResize="true"
+                AllowAlternatingRows="true"
+                FilterMode="FilterMode.Advanced"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                AllowSorting="true"              
+                AllowPaging="true"
+                PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                ShowPagingSummary="true"               
+                SelectionMode="DataGridSelectionMode.Single"
+                LogicalFilterOperator="LogicalFilterOperator.Or"               
+                ColumnWidth="300"
+                PageNumbersCount="100">
+
+            <Columns>
+                <RadzenDataGridColumn TItem="TransactionalItemTag" Property="Key" Title="@UICommonFunctions.GetDisplayName(new TransactionalItemTag(), "Key")" Frozen="false" Width="80px" />
+                <RadzenDataGridColumn TItem="TransactionalItemTag" Property="Value" Filterable="true" Title="@UICommonFunctions.GetDisplayName(new TransactionalItemTag(), "Value")" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+
+            </Columns>
+        </RadzenDataGrid>
+    }
+}
 
 
-    </div>
-</div>
 
 @code {
     [Parameter]
     public string IdTransactionalItem { get; set; }
     List<TransactionalItemTag> TransactionalItemTags = new List<TransactionalItemTag>();
     SfGrid<TransactionalItemTag>? DataGrid;
-    #region TileName   
+    #region TileName
     public string Key { get; set; }
     public string Value { get; set; }
     #endregion TitleName
 
-    protected override void OnInitialized()
-    {
-        InitializedUICommonFunctions();
+    bool isLoading = false;
 
-      
-            OnInitializedTags();
-    }
-
-    public async void InitializedUICommonFunctions()
+    protected async override void OnInitialized()
     {
-        Key = UICommonFunctions.GetDisplayName(new PackingSpecs(), "Key");
-        Value = UICommonFunctions.GetDisplayName(new PackingSpecs(), "Value");
-        StateHasChanged();
-    }
-
-    protected async void OnInitializedTags()
-    {
-        if (IdTransactionalItem != null )
+        isLoading = true;    
+        if (IdTransactionalItem != null)
         {
             TransactionalItemTags = await transactionalService.GetSelectorListTag(IdTransactionalItem);
-            if (TransactionalItemTags != null)
-            {            
-                StateHasChanged();               
-            }
-
+            isLoading = false;
+            StateHasChanged();
         }
+
+
     }
+
+  
 
     #region Grid
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<TransactionalItemTag> args) => ContextMenuService.Open(args, ds =>
@@ -97,11 +91,11 @@
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         TransactionalItemTag argObj = (TransactionalItemTag)args.Value;
-        
 
-        if (argObj != null && argObj.Id !=null)
+
+        if (argObj != null && argObj.Id != null)
         {
-            Navigation.NavigateTo($"/TagCard/TransactionalItemCard/4/{IdTransactionalItem}/{argObj.Id}");
+            Navigation.NavigateTo($"/TagCard/TransactionalItemCard/{IdTransactionalItem}/{argObj.Id}");
         }
     }
 
@@ -110,14 +104,14 @@
 
     public void OpenAdd()
     {
-        Navigation.NavigateTo($"/TagCard/TransactionalItemCard/4/{IdTransactionalItem}");
+        Navigation.NavigateTo($"/TagCard/TransactionalItemCard/{IdTransactionalItem}");
     }
 
 
 
 
 
- 
+
 
 
 
@@ -129,4 +123,3 @@
 
 
 
-    
