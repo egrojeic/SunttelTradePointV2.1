@@ -231,8 +231,8 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 pipeline.Add(
                     new BsonDocument("$limit", limit)
-                    );
-               List<EntityActor> results = await _entityActorsCollection.Aggregate<EntityActor>(pipeline).ToListAsync();
+                    );                
+                List<EntityActor> results = await _entityActorsCollection.Aggregate<EntityActor>(pipeline).ToListAsync();
 
                //var results = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
 
@@ -502,7 +502,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         Builders<EntityActor>.Filter.Eq(x => x.Id, entityActorId),
                         Builders<EntityActor>.Filter.ElemMatch(x => x.PhoneNumbers, y => y.Id == phoneNumber.Id)
                     );
-                    var update = Builders<EntityActor>.Update.Set(x => x.PhoneNumbers[-1], phoneNumber);
+                    var update = Builders<EntityActor>.Update.Set("PhoneNumbers.$", phoneNumber);
                     await _entityActorsCollection.UpdateOneAsync(filter, update);
                 }
                 else
