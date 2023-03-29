@@ -82,6 +82,11 @@
             isLoading = true;
             StateHasChanged();
 
+            if (filter.ToLower() == "all" || filter.ToLower() == "todo")
+            {
+                filter = "";
+            }
+
             var response = await actorsNodeServive.GetListEntityGroups(filter);
 
             if (response != null)
