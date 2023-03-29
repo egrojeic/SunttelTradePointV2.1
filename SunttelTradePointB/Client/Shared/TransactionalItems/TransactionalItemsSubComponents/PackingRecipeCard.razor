@@ -191,7 +191,8 @@
                                 caption="@(itemComponent != null ? itemComponent.Name : "")"
                                 EventSearcherValueAndId="EventSearcherValueAndId"
                                 EventIdSelectionAndId="SelectionMade"
-                                EventClosed="ClosedInputText">
+                                EventClosed="ClosedInputText"
+                                Items="itemComponents">
 
                 </InputTextSelector3>
                 <div>
@@ -258,8 +259,8 @@
                                             PageNumbersCount="100">
 
                                         <Columns>
-                                            <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="MaterialRecipeItem.Material.Name" Title="@GetName( "Name", new AtomConcept())" Frozen="false" Width="80px" />
-                                            <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="MaterialRecipeItem.Quantity" Filterable="true" Title="@GetName( "Quantity", new AtomConcept())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                            <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="Material.Name" Title="@GetName( "Name", new AtomConcept())" Frozen="false" Width="80px" />
+                                            <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="Quantity" Filterable="true" Title="@GetName( "Quantity", new AtomConcept())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
 
                                         </Columns>
                                     </RadzenDataGrid>
@@ -306,8 +307,8 @@
                                             PageNumbersCount="100">
 
                                         <Columns>
-                                            <RadzenDataGridColumn TItem="PackRecipeItem" Property="PackRecipeItem.Name.Name" Title="@GetName( "Name", new AtomConcept())" Frozen="false" Width="80px" />
-                                            <RadzenDataGridColumn TItem="PackRecipeItem" Property="PackRecipeItem.Quantity" Filterable="true" Title="@GetName( "Quantity", new PackRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                            <RadzenDataGridColumn TItem="PackRecipeItem" Property="ItemComponent.Name" Title="@GetName( "Name", new AtomConcept())" Frozen="false" Width="80px" />
+                                            <RadzenDataGridColumn TItem="PackRecipeItem" Property="Quantity" Filterable="true" Title="@GetName( "Quantity", new PackRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
 
                                         </Columns>
                                     </RadzenDataGrid>
@@ -476,7 +477,7 @@
                                     </label>
                                 </div>
                                 <InputTextSelector3 TItem="Box"
-                                                    Id="@GetName( "PackingBoxToSale", new PackingSpecs())"
+                                                    Id="PackingBoxToSale"
                                                     caption="@(BoxToSale != null ? BoxToSale?.Name : "")"
                                                     EventSearcherValueAndId="EventSearcherValueAndId"
                                                     EventIdSelectionAndId="SelectionMade"
@@ -646,7 +647,7 @@
                         <TabHeader Text="@GetName( "ListOfMaterials",new PackingSpecs())"></TabHeader>
                     </ChildContent>
                     <ContentTemplate>
-                        @(pageView = "ListOfMaterials");
+                        @{pageView = "ListOfMaterials";}
                         <div style="display:flex; flex-direction:column; justify-content:center;">
 
                             <div class="detailsTitleContainer">
@@ -678,12 +679,9 @@
                                             PageNumbersCount="100">
 
                                     <Columns>
-                                        <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="MaterialRecipeItem.Name" Title="Code" Frozen="false" Width="80px" />
-                                        <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="MaterialRecipeItem.Quantity" Filterable="true" Title="Name" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                        <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="MaterialRecipeItem.Code" Title="Group" Width="160px" />
-                                        <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="MaterialRecipeItem.FullClassName" Title="Status" Width="200px" />
-
-
+                                        <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="Material.Code" Title="@GetName("Code",new AtomConcept())" Frozen="false" Width="80px" />
+                                        <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="Material.Name" Filterable="true" Title="@GetName("Material",new MaterialRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                        <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="Quantity" Title="@GetName("Quantity",new MaterialRecipeItem())" Width="200px" />
                                     </Columns>
                                 </RadzenDataGrid>
                             }
@@ -720,7 +718,7 @@
                                             FilterMode="FilterMode.Advanced"
                                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                             AllowSorting="true"
-                                            PageSize="4"
+                                            PageSize="20"
                                             AllowPaging="true"
                                             PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                                             ShowPagingSummary="true"
@@ -732,11 +730,10 @@
                                             PageNumbersCount="100">
 
                                     <Columns>
-                                        <RadzenDataGridColumn TItem="PackRecipeItem" Property="PackRecipeItem.Name" Title="@GetName( "Name",new AtomConcept())" Frozen="false" Width="80px" />
-                                        <RadzenDataGridColumn TItem="PackRecipeItem" Property="PackRecipeItem.Quantity" Filterable="true" Title="@GetName( "Quantity",new AtomConcept())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                        <RadzenDataGridColumn TItem="PackRecipeItem" Property="PackRecipeItem.Code" Title="@GetName( "Code",new Concept())" Width="160px" />
-                                        <RadzenDataGridColumn TItem="PackRecipeItem" Property="PackRecipeItem.FullClassName" Title="@GetName( "FullClassName",new Concept())" Width="200px" />
-
+                                        <RadzenDataGridColumn TItem="PackRecipeItem" Property="ItemComponent.Name" Title="@GetName( "ComponentItemRecipe",new PackRecipeItem())" Frozen="false" Width="80px" />
+                                        <RadzenDataGridColumn TItem="PackRecipeItem" Property="RecipeQualityModifier.Name" Filterable="true" Title="@GetName( "Quantity",new PackRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                        <RadzenDataGridColumn TItem="PackRecipeItem" Property="Quantity" Filterable="true" Title="@GetName( "RecipeQualityModifier",new PackRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                      
                                     </Columns>
                                 </RadzenDataGrid>
                             }
@@ -856,10 +853,7 @@
 
     InputTextSelector? ReferInputTextSelector;
 
-    protected override void OnParametersSet()
-    {
-        StateHasChanged();
-    }
+   
 
     protected override void OnInitialized()
     {
@@ -921,7 +915,7 @@
 
     public async void ItemSelected(MenuEventArgs e)
     {
-        StateHasChanged();
+       
         string tile = e.Item != null ? e.Item.Text : "";
         if (tile == "Save")
         {
@@ -1016,22 +1010,11 @@
                 StateHasChanged();
                 Msg("Added");
             }
-            else
-            {
-                assemblyRecipeItem.ItemComponent = itemComponent;
-                assemblyRecipeItem.ListOfMaterials = materialsRecipeItemsAssembly;
-                assemblyRecipeItem.RecipeQualityModifier = recipeQualityModifier != null ? recipeQualityModifier : new();
-                StateHasChanged();
-                Msg("Update");
-            }
+           
 
 
         }
-        if (tile == "Save as...")
-        {
-
-        }
-
+       
 
         StateHasChanged();
 
@@ -1066,7 +1049,8 @@
     {
         if (materialRecipeItem != null)
         {
-            if (materialRecipeItem.Material.Id == null)
+            if (materialRecipeItem.Material == null) materialRecipeItem.Material = new();
+            if ( materialRecipeItem.Material.Id == null)
             {
                 materialRecipeItem.Material = MaterialConcept;
                 listOfMaterials.Add(materialRecipeItem);
@@ -1083,6 +1067,7 @@
             }
 
         }
+        StateHasChanged();
     }
 
     private void AddMaterialsAssembly()
@@ -1090,22 +1075,16 @@
         if (materialRecipeItemsAssembly != null)
         {
             if (materialRecipeItemsAssembly.Material == null) materialRecipeItemsAssembly.Material = new();
-            if (materialRecipeItemsAssembly.Material.Id == null)
-            {
+           
                 materialRecipeItemsAssembly.Material = conceptMaterialAssembly;
                 materialsRecipeItemsAssembly.Add(materialRecipeItemsAssembly);
                 materialRecipeItemsAssembly = new();
                 conceptMaterialAssembly = new();
                 Msg("Added");
-            }
-            else
-            {
-                materialRecipeItemsAssembly.Material = conceptMaterialAssembly;
-
-                Msg("Updated");
-            }
+          
 
         }
+        StateHasChanged();
     }
 
     public void AddAssemblyRecipeItemsChildren(List<PackRecipeItem> _assemblyRecipeItems)
@@ -1162,12 +1141,12 @@
             GetSeasonView = await transactionalService.GetSelectorListSeasonBusiness(arg.value);
 
         }
-        if (arg.selectionId == "BoxToSale")
+        if (arg.selectionId == "PackingBoxToSale")
         {
             GetBoxToSaleView = await transactionalService.GetSelectorListBoxes(arg.value);
 
         }
-        if (arg.selectionId == "BoxToBuy")
+        if (arg.selectionId == "PackingBoxToBuy")
         {
             if (SetBox == null) SetBox = new();
             GetBoxToBuyView = await transactionalService.GetBoxTable(arg.value);
@@ -1185,12 +1164,13 @@
             assemblyTypes = await transactionalService.GetSelectorListAssemblyTypes(arg.value);
 
         }
-        if (arg.selectionId == "MaterialAssembly")
+        if (arg.selectionId == "ListOfMaterials")
         {
             if (ConceptMaterialsAssembly == null) ConceptMaterialsAssembly = new();
             ConceptMaterialsAssembly = await transactionalService.GetSelectorListPackingMaterials(arg.value);
 
         }
+      
         if (arg.selectionId == "RecipeQualityModifier")
         {
             recipeQualityModifiers = new();
@@ -1214,7 +1194,8 @@
                         }
                         else
                         {
-                            recipeModifiers = resul.InRecipeModifiers;
+
+                            if (resul != null) recipeModifiers = resul.InRecipeModifiers;
 
                         }
                         foreach (var item in recipeModifiers)
@@ -1261,7 +1242,7 @@
         }
         if (arg.selectionId == "ItemComponent")
         {
-            var data = await transactionalService.GetTransactionalItemsList(1, 250, arg.value);
+            var data = await transactionalService.GetTransactionalItemsList(1, 50, arg.value);
             //itemComponents = await transactionalService.GetConceptProduct(value);
 
             foreach (TransactionalItem item in data)
@@ -1283,11 +1264,12 @@
                             TypeOfConcept = item.TypeOfConcept != null ? item.TypeOfConcept : new(),
 
                         });
+
             }
 
         }
 
-        await Refresh();
+        StateHasChanged();
     }
     #region Control
     public void SelectionMade(Concept arg)

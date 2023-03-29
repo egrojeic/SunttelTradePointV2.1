@@ -11,7 +11,14 @@
 @inject TransactionalItemsService transactionalService;
 @inject ContextMenuService ContextMenuService
 
+<style>
 
+.e-tab-header .e-toolbar-item .e-tab-text {
+    text-transform: none;
+    font-size: 5px;
+    color:red;
+} 
+</style>
 
 <div class="flex-verical-center position-relative" style="display:@(!modeEdit?"flex":"none");">
 
