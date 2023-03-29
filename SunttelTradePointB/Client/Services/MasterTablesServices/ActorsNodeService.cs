@@ -304,11 +304,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task<List<IdentificationType>> GetIdentificationTypes()
+        public async Task<List<IdentificationType>> GetIdentificationTypes(string filter = "")
         {
             try
             {
-                var response = await Gethttp($"/api/ConceptsSelector/GetSelectorListIdentificationTypes");
+                var response = await Gethttp($"/api/ConceptsSelector/GetSelectorListIdentificationTypes?filterName={filter}");
                 var list = await response.Content.ReadFromJsonAsync<List<IdentificationType>>();
                               
                 return list;
@@ -594,14 +594,14 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task<List<EntityType>> GetEntityTypeList()
+        public async Task<List<EntityType>> GetEntityTypeList(string filter = "")
         {
             var userId = UIClientGlobalVariables.UserId;
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
 
-                var response = await Gethttp("/api/ConceptsSelector/GetSelectorListEntityTypes");
+                var response = await Gethttp($"/api/ConceptsSelector/GetSelectorListEntityTypes?filterName={filter}");
                 var list = await response.Content.ReadFromJsonAsync<List<EntityType>>();
 
                

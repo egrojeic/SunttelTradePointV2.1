@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SunttelTradePointB.Shared.Common
+﻿namespace SunttelTradePointB.Shared.Common
 {
-    internal class HubAddress
+    public static class HubMethods
     {
+
+        public const string updateConnectedUsers = "updateConnectedUsers";
+        public const string ReceiveMessage = "ReceiveMessage";
     }
 }

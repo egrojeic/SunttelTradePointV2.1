@@ -16,8 +16,6 @@
 
         </SfSplitButton>
 
-
-
     </nav>
 
 </div>
@@ -25,6 +23,9 @@
 @code {
     static bool ShowMenu { get; set; } = false;
     public string commandStyle = "display: 'none';";
+
+    [Parameter]
+    public string? OriginPage { get; set; }
 
     const string PASTE = "e-btn-icons e-paste";
     const string PASTESPECIAL = "e-btn-icons e-paste-special";
@@ -65,7 +66,7 @@
         }
         if (Page == "Status")
         {
-            Navigation.NavigateTo($"/StatusConcept/Status");
+            Navigation.NavigateTo($"/StatusConcept/Status/{OriginPage}/all");
         }
 
         if (Page == "LabelStyles")
@@ -81,7 +82,7 @@
 
     public void Home()
     {
-        Navigation.NavigateTo($"/Products");
+        Navigation.NavigateTo($"/{OriginPage}");
     }
 
 }

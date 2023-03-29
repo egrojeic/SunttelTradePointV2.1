@@ -77,7 +77,7 @@
             isLoading = true;
             StateHasChanged();
 
-            var response = await actorsNodeServive.GetIdentificationTypes();
+            var response = await actorsNodeServive.GetIdentificationTypes(filter);
 
             if (response != null)
                 entityIdentificationTypeList = response;

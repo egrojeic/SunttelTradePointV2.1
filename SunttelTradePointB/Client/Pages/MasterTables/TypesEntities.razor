@@ -79,7 +79,7 @@
             isLoading = true;
             StateHasChanged();
 
-            var response = await actorsNodeServive.GetEntityTypeList();
+            var response = await actorsNodeServive.GetEntityTypeList(filter);
 
             if (response != null)
                 entityTypesList = response;

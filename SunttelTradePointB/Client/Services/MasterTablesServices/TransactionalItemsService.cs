@@ -911,6 +911,25 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
+        public async Task<TransactionalItemStatus> GetTransactionalStatusesTableById(string? statusId)
+        {
+            try
+            {
+                var responseMessage = await Gethttp($"/api/TransactionalItemsRelatedConcepts/GetTransactionalStatusesTable?statusId={statusId}");
+                var transactionalItemStatus = await responseMessage.Content.ReadFromJsonAsync<TransactionalItemStatus>();
+
+                return transactionalItemStatus is null ? new TransactionalItemStatus() : transactionalItemStatus;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+
+                return null;
+
+            }
+
+        }
+
         public async Task<List<TransactionalItemCharacteristicPair>> GetCharacteristic(string? labelPaperId = null)
         {
             string userId = UIClientGlobalVariables.UserId;
