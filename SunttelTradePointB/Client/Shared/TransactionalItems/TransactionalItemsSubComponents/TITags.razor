@@ -19,7 +19,7 @@
 @if (isLoading)
 {
 
-    <WaitingProcessIndicator loadingTopic="Transactional Items"></WaitingProcessIndicator>
+    <WaitingProcessIndicator loadingTopic="Transactional Tag Items"></WaitingProcessIndicator>
 
 }
 else
@@ -29,24 +29,23 @@ else
         <RadzenDataGrid AllowFiltering="true"
                 Data="@TransactionalItemTags"
                 TItem="TransactionalItemTag"
+                CellContextMenu="@ShowContextMenuWithContent"
                 AllowColumnResize="true"
                 AllowAlternatingRows="true"
                 FilterMode="FilterMode.Advanced"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                AllowSorting="true"
-                PageSize="4"
+                AllowSorting="true"              
                 AllowPaging="true"
                 PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                ShowPagingSummary="true"
-                ColumnWidth="300px"
+                ShowPagingSummary="true"               
                 SelectionMode="DataGridSelectionMode.Single"
-                LogicalFilterOperator="LogicalFilterOperator.Or"
-                CellContextMenu="@ShowContextMenuWithContent"
+                LogicalFilterOperator="LogicalFilterOperator.Or"               
+                ColumnWidth="300"
                 PageNumbersCount="100">
 
             <Columns>
-                <RadzenDataGridColumn TItem="TransactionalItem" Property="Key" Title="@Key" Frozen="false" Width="80px" />
-                <RadzenDataGridColumn TItem="TransactionalItem" Property="Value" Filterable="true" Title="@Value" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                <RadzenDataGridColumn TItem="TransactionalItemTag" Property="Key" Title="@UICommonFunctions.GetDisplayName(new TransactionalItemTag(), "Key")" Frozen="false" Width="80px" />
+                <RadzenDataGridColumn TItem="TransactionalItemTag" Property="Value" Filterable="true" Title="@UICommonFunctions.GetDisplayName(new TransactionalItemTag(), "Value")" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
 
             </Columns>
         </RadzenDataGrid>
@@ -69,8 +68,7 @@ else
 
     protected async override void OnInitialized()
     {
-        isLoading = true;
-        InitializedUICommonFunctions();
+        isLoading = true;    
         if (IdTransactionalItem != null)
         {
             TransactionalItemTags = await transactionalService.GetSelectorListTag(IdTransactionalItem);
@@ -81,14 +79,7 @@ else
 
     }
 
-    public async void InitializedUICommonFunctions()
-    {
-        Key = UICommonFunctions.GetDisplayName(new PackingSpecs(), "Key");
-        Value = UICommonFunctions.GetDisplayName(new PackingSpecs(), "Value");
-        StateHasChanged();
-    }
-
-
+  
 
     #region Grid
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<TransactionalItemTag> args) => ContextMenuService.Open(args, ds =>

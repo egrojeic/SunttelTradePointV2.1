@@ -42,15 +42,15 @@
             <SplitButtonEvents ItemSelected="ItemSelected">
             </SplitButtonEvents>
             <DropDownMenuItems>
-                <DropDownMenuItem transactionalItemId="TypesTransactionalItems" Text="Types" IconCss="fa-solid fa-sitemap"></DropDownMenuItem>
-                <DropDownMenuItem transactionalItemId="Groups" Text="Groups" IconCss="fa-solid fa-group-arrows-rotate"></DropDownMenuItem>
-                <DropDownMenuItem transactionalItemId="Boxes" Text="Box Types" IconCss="fa-solid fa-box"></DropDownMenuItem>
-                <DropDownMenuItem transactionalItemId="SeasonsGeneral" Text="Seasons" IconCss="fa-solid fa-tree"></DropDownMenuItem>
-                <DropDownMenuItem transactionalItemId="Status" Text="Status" IconCss="fa-solid fa-signal"></DropDownMenuItem>
-                <DropDownMenuItem transactionalItemId="LabelStyles" Text="Label Styles" IconCss="fa-solid fa-palette"></DropDownMenuItem>
-                <DropDownMenuItem transactionalItemId="Duties" Text="Duties" IconCss="fa-solid fa-comments-dollar"></DropDownMenuItem>
-                <DropDownMenuItem transactionalItemId="PaperConcept/TransactionalItemCard/Add" Text="Paper" IconCss="fa-sharp fa-solid fa-circle-plus"></DropDownMenuItem>
-                <DropDownMenuItem transactionalItemId="ItemAssemblyType/TransactionalItemCard/Add" Text="Assembly Type" IconCss="fa-sharp fa-solid fa-circle-plus"></DropDownMenuItem>
+                <DropDownMenuItem Id="TypesTransactionalItems" Text="Types" IconCss="fa-solid fa-sitemap"></DropDownMenuItem>
+                <DropDownMenuItem Id="Groups" Text="Groups" IconCss="fa-solid fa-group-arrows-rotate"></DropDownMenuItem>
+                <DropDownMenuItem Id="Boxes" Text="Box Types" IconCss="fa-solid fa-box"></DropDownMenuItem>
+                <DropDownMenuItem Id="SeasonsGeneral" Text="Seasons" IconCss="fa-solid fa-tree"></DropDownMenuItem>
+                <DropDownMenuItem Id="Status" Text="Status" IconCss="fa-solid fa-signal"></DropDownMenuItem>
+                <DropDownMenuItem Id="LabelStyles" Text="Label Styles" IconCss="fa-solid fa-palette"></DropDownMenuItem>
+                <DropDownMenuItem Id="Duties" Text="Duties" IconCss="fa-solid fa-comments-dollar"></DropDownMenuItem>
+                <DropDownMenuItem Id="PaperConcept/TransactionalItemCard/Add" Text="Paper" IconCss="fa-sharp fa-solid fa-circle-plus"></DropDownMenuItem>
+                <DropDownMenuItem Id="ItemAssemblyType/TransactionalItemCard/Add" Text="Assembly Type" IconCss="fa-sharp fa-solid fa-circle-plus"></DropDownMenuItem>
             </DropDownMenuItems>
 
         </SfSplitButton>
@@ -379,7 +379,6 @@
             transactItemImages = await transactionalService.GetTransactionalItemDetailsPathImages(transactionalItemId);
             if (transactItemImages != null && !arg.value.ToLower().Contains("all")) transactItemImages = currentItem.PathImages.Where(s => s.Name != null && s.Name.ToLower().Contains(arg.value.ToLower())).ToList();
             StateHasChanged();
-
         }
 
         if (arg.IdControl == "TypeOfConcept")

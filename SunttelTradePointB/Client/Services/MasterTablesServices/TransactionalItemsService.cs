@@ -361,7 +361,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                var responseMessage = await Gethttp($"/api/TransactionalItems/GetTransactionalItemDetailsTags?userId={userId}&ipAddress={ipAddress}&transactionalItemId={transactionalItemId}");
+                var responseMessage = await Gethttp($"/api/TransactionalItems/pendiente?userId={userId}&ipAddress={ipAddress}&transactionalItemId={transactionalItemId}");
                 var obj  = await responseMessage.Content.ReadFromJsonAsync<TransactionalItemTag>();
 
                 return obj != null ? obj : new TransactionalItemTag();
@@ -849,7 +849,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                var responseMessage = await Gethttp($"/api/ConceptsSelector/GetProductRecipeQualityModifiersByModifierId?userId={userId}&ipAddress={ipAddress}&modifierId={productionSpecsToId}");
+                var responseMessage = await Gethttp($"/api/ConceptsSelector/pendiente?userId={userId}&ipAddress={ipAddress}&modifierId={productionSpecsToId}");
                 var obj = await responseMessage.Content.ReadFromJsonAsync<TransactionalItemProcessStep>();
 
                 return obj;

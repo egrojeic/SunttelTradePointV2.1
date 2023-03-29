@@ -16,10 +16,17 @@
 @*<ProductionSpecsCard @ref="referNewProductionSpecs" save="@Save" ></ProductionSpecsCard>*@
 <div class="row">
     <div class="col-md-12">
-
-        @if (productionSpecs != null)
+        @if (isLoading)
         {
-            <RadzenDataGrid AllowFiltering="true"
+
+            <WaitingProcessIndicator loadingTopic="Transactional Process Step Items"></WaitingProcessIndicator>
+
+        }
+        else
+        {
+            @if (productionSpecs != null)
+            {
+                <RadzenDataGrid AllowFiltering="true"
                         AllowColumnResize="true"
                         AllowAlternatingRows="true"
                         FilterMode="FilterMode.Advanced"
@@ -36,14 +43,14 @@
                         CellContextMenu="@ShowContextMenuWithContent"
                         PageNumbersCount="100">
 
-                <Columns>
-                    <RadzenDataGridColumn TItem="TransactionalItemProcessStep" Title="@Name" Width="110"> </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="TransactionalItemProcessStep" Title="@GeneralInstructions" Width="110"> </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="TransactionalItemProcessStep" Title="@Cost" Width="110"> </RadzenDataGridColumn>
-                </Columns>
-            </RadzenDataGrid>
+                    <Columns>
+                        <RadzenDataGridColumn TItem="TransactionalItemProcessStep" Property="Name" Title="@Name" Width="110"> </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="TransactionalItemProcessStep" Property="GeneralInstructions" Title="@GeneralInstructions" Width="110"> </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="TransactionalItemProcessStep" Property="Cost" Title="@Cost" Width="110"> </RadzenDataGridColumn>
+                    </Columns>
+                </RadzenDataGrid>
+            }
         }
-
     </div>
 </div>
 @code {
@@ -52,7 +59,7 @@
     List<TransactionalItemProcessStep> productionSpecs = new List<TransactionalItemProcessStep>();
 
     ProductionSpecsCard? referNewProductionSpecs;
-
+    bool isLoading = false;
     #region TileName
     public string ProductionSpecs { get; set; }
     public string Key { get; set; }
@@ -69,23 +76,24 @@
     protected override void OnInitialized()
     {
         InitializedUICommonFunctions();
-
         OnInitializedProcessStep();
-
     }
 
     protected async void OnInitializedProcessStep()
     {
+        isLoading = true;
         if (IdTransactionalItem != null)
         {
             productionSpecs = await transactionalService.GetTransactionalItemDetailsProductionSpecs(IdTransactionalItem);
 
-            StateHasChanged();
+           
         }
         if (productionSpecs == null)
         {
             productionSpecs = new();
         }
+         isLoading = false;
+        StateHasChanged();
     }
 
     public async void InitializedUICommonFunctions()
@@ -117,7 +125,7 @@
         try
         {
             productionSpecs.Add(Obj);
-           
+
         }
         catch (Exception e)
         {
@@ -127,7 +135,7 @@
 
     }
 
-    
+
 
     #region Grid
 

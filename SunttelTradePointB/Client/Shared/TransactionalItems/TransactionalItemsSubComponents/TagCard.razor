@@ -78,11 +78,11 @@
 
     public async void InitializedUICommonFunctions()
     {
-        if (transactionalItemTagId != null)
+        if (transactionalItemTagId != null && transactionalItemTagId !=null)
         {
             Tag = await transactionalService.GetTagToId(transactionalItemId, transactionalItemTagId);
         }
-        else
+        if (Tag==null)
         {
             Tag = new();
         }

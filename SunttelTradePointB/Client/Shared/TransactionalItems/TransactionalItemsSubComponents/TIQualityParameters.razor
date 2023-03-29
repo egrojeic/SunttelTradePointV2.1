@@ -14,41 +14,48 @@
         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
     </svg>
     <img class="img-ico-list" src="/images/desploy.png" @onclick='()=>ViewNewQualityPair($"QualityParametersCardAll/{IdTransactionalItem}")' />
-  
+
 </div>
 
 
-    <div class="row">
+<div class="row">
     <div class="grid-width">
+        @if (isLoading)
+        {
 
+            <WaitingProcessIndicator loadingTopic="TransactionalItem Quality Items"></WaitingProcessIndicator>
+
+        }
+        else
+        {
             @if (qualityParameters != null)
             {
-            <RadzenDataGrid AllowFiltering="true"
+                <RadzenDataGrid AllowFiltering="true"
                         AllowColumnResize="true"
                         AllowAlternatingRows="true"
                         FilterMode="FilterMode.Advanced"
                         FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                        AllowSorting="true"                       
+                        AllowSorting="true"
                         AllowPaging="true"
                         PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                         ShowPagingSummary="true"
                         Data="@qualityParameters"
                         TItem="TransactionalItemQualityPair"
                         SelectionMode="DataGridSelectionMode.Single"
-                        LogicalFilterOperator="LogicalFilterOperator.Or"                     
+                        LogicalFilterOperator="LogicalFilterOperator.Or"
                         CellContextMenu="@ShowContextMenuWithContent"
                         PageNumbersCount="100">
 
-                <Columns>
-                    <RadzenDataGridColumn TItem="TransactionalItemQualityPair" Property="TransactionalItemQualityPair.TransactionalItemQuality.Name" Title="@GetName( "TransactionalItemQuality", new TransactionalItemQualityPair())" />
-                    <RadzenDataGridColumn TItem="TransactionalItemQualityPair" Property="TransactionalItemQualityPair.Value" Title="@GetName( "Value", new TransactionalItemQualityPair())" />
+                    <Columns>
+                        <RadzenDataGridColumn TItem="TransactionalItemQualityPair" Property="TransactionalItemQualityPair.TransactionalItemQuality.Name" Title="@GetName( "TransactionalItemQuality", new TransactionalItemQualityPair())" />
+                        <RadzenDataGridColumn TItem="TransactionalItemQualityPair" Property="TransactionalItemQualityPair.Value" Title="@GetName( "Value", new TransactionalItemQualityPair())" />
 
-                </Columns>
-            </RadzenDataGrid>
+                    </Columns>
+                </RadzenDataGrid>
             }
-           
-        </div>
+        }
     </div>
+</div>
 
 
 @code {
@@ -56,6 +63,8 @@
 
     [Parameter]
     public string IdTransactionalItem { get; set; }
+    bool isLoading = false;
+
     #region TileName
     public string Title { get; set; }
     public string Name { get; set; }
@@ -64,6 +73,7 @@
 
     protected override void OnInitialized()
     {
+        isLoading = true;
         InitializedUICommonFunctions();
 
         InitializedQualityParameters();
@@ -79,6 +89,7 @@
             StateHasChanged();
         }
         if (qualityParameters == null) qualityParameters = new();
+        isLoading = false;
     }
 
     public async void InitializedUICommonFunctions()
@@ -93,11 +104,11 @@
     {
         return Name != null ? Name : "-";
     }
-      
+
     public void ViewNewQualityPair(string value)
     {
         Navigation.NavigateTo(value);
-      
+
     }
 
     #region Grid
@@ -105,13 +116,13 @@
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<TransactionalItemQualityPair> args) => ContextMenuServices.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-        </RadzenMenu>
+    </RadzenMenu>
     );
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         TransactionalItemQualityPair argObj = (TransactionalItemQualityPair)args.Value;
-              
+
 
         if (argObj != null)
         {
@@ -125,10 +136,10 @@
     #endregion Grid
 
 
-  
+
     public string GetName(string Name, Object Obj)
     {
-        if (UICommonFunctions.GetDisplayName(Obj, Name)!=null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
     }
 
