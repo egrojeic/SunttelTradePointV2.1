@@ -668,11 +668,29 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// Retrieves a list of Entity Types
         /// </summary>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<Shared.Common.EntityType>? entityTypes, string? ErrorDescription)> GetSelectorListEntityTypes()
+        public async Task<(bool IsSuccess, List<Shared.Common.EntityType>? entityTypes, string? ErrorDescription)> GetSelectorListEntityTypes(string? filterName = null)
         {
             try
             {
-                var entityTypes = await _entityTypes.Find<Shared.Common.EntityType>(new BsonDocument()).ToListAsync();
+                string strNameFiler = filterName == null ? "" : filterName;
+
+                var pipeline = new List<BsonDocument>();
+
+                if (strNameFiler.ToLower() != "all")
+                {
+                    pipeline.Add(
+                    new BsonDocument(
+                        "$match",
+                        new BsonDocument(
+                                 "Name",
+                                    new BsonDocument(
+                                        "$regex", new BsonRegularExpression($"/{strNameFiler}/i"))
+                            )
+                    )
+                );
+                }
+
+                var entityTypes = await _entityTypes.Aggregate<Shared.Common.EntityType>(pipeline).ToListAsync();
 
                 if (entityTypes == null || entityTypes.Count == 0)
                 {

@@ -113,7 +113,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// Retrieves a list of Entity Types
         /// </summary>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<EntityType>?  entityTypes, string? ErrorDescription)> GetSelectorListEntityTypes();
+        Task<(bool IsSuccess, List<EntityType>?  entityTypes, string? ErrorDescription)> GetSelectorListEntityTypes(string? filterName = null);
 
 
 
