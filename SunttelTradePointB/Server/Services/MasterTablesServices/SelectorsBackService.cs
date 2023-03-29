@@ -548,11 +548,29 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// </summary>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, List<IdentificationType>? identificationTypes, string? ErrorDescription)> GetSelectorListIdentificationTypes()
+        public async Task<(bool IsSuccess, List<IdentificationType>? identificationTypes, string? ErrorDescription)> GetSelectorListIdentificationTypes(string? filterName = null)
         {
             try
             {
-                var identificationTypes = await _identificationTypes.Find<IdentificationType>(new BsonDocument()).ToListAsync();
+                string strNameFiler = filterName == null ? "" : filterName;
+
+                var pipeline = new List<BsonDocument>();
+
+                if (strNameFiler.ToLower() != "all")
+                {
+                    pipeline.Add(
+                    new BsonDocument(
+                        "$match",
+                        new BsonDocument(
+                                 "Name",
+                                    new BsonDocument(
+                                        "$regex", new BsonRegularExpression($"/{strNameFiler}/i"))
+                            )
+                    )
+                );
+                }
+
+                var identificationTypes = await _identificationTypes.Aggregate<IdentificationType>(pipeline).ToListAsync();
 
                 if (identificationTypes == null || identificationTypes.Count == 0)
                 {
