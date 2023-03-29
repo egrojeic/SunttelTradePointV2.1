@@ -546,7 +546,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         Builders<EntityActor>.Filter.Eq(x => x.Id, entityActorId),
                         Builders<EntityActor>.Filter.ElemMatch(x => x.Identifications, y => y.Id == identificationEntity.Id)
                     );
-                    var update = Builders<EntityActor>.Update.Set(x => x.Identifications[-1], identificationEntity);
+                    var update = Builders<EntityActor>.Update.Set("Identifications.$", identificationEntity);
                     await _entityActorsCollection.UpdateOneAsync(filter, update);
                 }
                 else
@@ -703,7 +703,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         Builders<EntityActor>.Filter.Eq(x => x.Id, entityActorId),
                         Builders<EntityActor>.Filter.ElemMatch(x => x.ElectronicAddresses, y => y.Id == electronicAddress.Id)
                     );
-                    var update = Builders<EntityActor>.Update.Set(x => x.ElectronicAddresses[-1], electronicAddress);
+                    var update = Builders<EntityActor>.Update.Set("ElectronicAddresses.$", electronicAddress);
                     await _entityActorsCollection.UpdateOneAsync(filter, update);
                 }
                 else
@@ -749,7 +749,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         Builders<EntityActor>.Filter.Eq(x => x.Id, entityActorId),
                         Builders<EntityActor>.Filter.ElemMatch(x => x.ShippingInformation, y => y.Id == shippingInfo.Id)
                     );
-                    var update = Builders<EntityActor>.Update.Set(x => x.ShippingInformation[-1], shippingInfo);
+                    var update = Builders<EntityActor>.Update.Set("ShippingInformation.$", shippingInfo);
                     await _entityActorsCollection.UpdateOneAsync(filter, update);
                 }
                 else
@@ -795,7 +795,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         Builders<EntityActor>.Filter.Eq(x => x.Id, entityActorId),
                         Builders<EntityActor>.Filter.ElemMatch(x => x.EntitiesRelationShips, y => y.Id == entitiesCommercialRelationShip.Id)
                     );
-                    var update = Builders<EntityActor>.Update.Set(x => x.EntitiesRelationShips[-1], entitiesCommercialRelationShip);
+                    var update = Builders<EntityActor>.Update.Set("EntitiesRelationShips.$", entitiesCommercialRelationShip);
                     await _entityActorsCollection.UpdateOneAsync(filter, update);
                 }
                 else
