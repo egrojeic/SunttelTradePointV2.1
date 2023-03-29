@@ -366,7 +366,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId),
                         Builders<TransactionalItem>.Filter.ElemMatch(x => x.ItemCharacteristics, y => y.Id == transactionalItemCharacteristicPair.Id)
                     );
-                    var update = Builders<TransactionalItem>.Update.Set(x => x.ItemCharacteristics[-1], transactionalItemCharacteristicPair);
+                    var update = Builders<TransactionalItem>.Update.Set("ItemCharacteristics.$", transactionalItemCharacteristicPair);
                     await _TransactionalItemsCollection.UpdateOneAsync(filter, update);
                 }
                 else
@@ -611,7 +611,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId),
                         Builders<TransactionalItem>.Filter.ElemMatch(x => x.QualityParameters, y => y.Id == transactionalItemQualityPair.Id)
                     );
-                    var update = Builders<TransactionalItem>.Update.Set(x => x.QualityParameters[-1], transactionalItemQualityPair);
+                    var update = Builders<TransactionalItem>.Update.Set("QualityParameters.$", transactionalItemQualityPair);
                     await _TransactionalItemsCollection.UpdateOneAsync(filter, update);
                 }
                 else
