@@ -67,7 +67,7 @@
                         <MessageSaveComponent message="Shippinh Place Saved" isVisible="visible"></MessageSaveComponent>
 
                         <div class="py-2">
-                            <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveEntityAddres(Id, address))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                            <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveEntityAddres(Id))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
                             <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
                         </div>
                     </form>
@@ -260,24 +260,31 @@
         showCities = false;
     }
 
-    private async Task SaveEntityAddres(string EntityActorId, Address address)
+    private async Task SaveEntityAddres(string EntityActorId)
     {
-        if (EntityActorId != null && address != null)
+     try
         {
-            if (addresList != null)
+            if (EntityActorId != null && address != null)
             {
-                address.Id = addressId;
-            }
-            //address.Code = Code;
-            //address.CityAddressRef = city.Id;
-            //address.Code = identificationEntity.Code;
-            //address.CityAddress = geoPlaces.addressShippingPlaces.CityAddress != null ? geoPlaces.addressShippingPlaces.CityAddress : new();
-            //address.CityAddress.RegionCity = geoPlaces.addressShippingPlaces.CityAddress.RegionCity != null ? geoPlaces.addressShippingPlaces.CityAddress.RegionCity : new();
-            //address.CityAddress.RegionCity.CountryRegion = geoPlaces.addressShippingPlaces.CityAddress.RegionCity.CountryRegion != null ? geoPlaces.addressShippingPlaces.CityAddress.RegionCity.CountryRegion : new();
-           var resul  = await actorsNodeServive.SaveEntityAddress(EntityActorId, address);
+                if (addresList != null)
+                {
+                    address.Id = addressId;
+                }
+                address.Code = Code;
+                address.CityAddressRef = city.Id;
+                address.Code = identificationEntity.Code;
+                address.CityAddress = geoPlaces.address.CityAddress != null ? geoPlaces.address.CityAddress : new();
+                address.CityAddress.RegionCity = geoPlaces.address.CityAddress.RegionCity != null ? geoPlaces.address.CityAddress.RegionCity : new();
+                address.CityAddress.RegionCity.CountryRegion = geoPlaces.address.CityAddress.RegionCity.CountryRegion != null ? geoPlaces.address.CityAddress.RegionCity.CountryRegion : new();
+                var resul = await actorsNodeServive.SaveEntityAddress(EntityActorId, address);
 
-            if (resul) visible = true;
-            StateHasChanged();
+                if (resul) visible = true;
+                StateHasChanged();
+            }
+        }
+        catch (Exception e)
+        {            
+            throw;
         }
     }
 
