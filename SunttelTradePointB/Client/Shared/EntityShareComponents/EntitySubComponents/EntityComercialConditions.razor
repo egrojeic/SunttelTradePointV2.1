@@ -38,7 +38,9 @@
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"
                     CellContextMenu="@ShowContextMenuWithContent"
-                    PageNumbersCount="100">
+                    PageNumbersCount="100"
+                    PageSize="5"
+                    >
 
             <Columns>
                 <RadzenDataGridColumn TItem="EntitiesCommercialRelationShip" Property="RelatedEntity.Name" Title="@GetName("RelatedEntity",new EntitiesCommercialRelationShip())" Width="110"> </RadzenDataGridColumn>
