@@ -404,7 +404,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <param name="transactionalItemId"></param>              
         /// <param name="packingSpecsId"></param>              
         /// <returns></returns>
-        Task<PackingSpecs> GetPackingRecipeToId(string? transactionalItemId, string packingSpecsId);
+        Task<PackingSpecs> GetPackingRecipeById(string? transactionalItemId, string packingSpecsId);
 
         /// <summary>
         /// Retrives a Product Recipe Quality Modifiers By Modifier Id

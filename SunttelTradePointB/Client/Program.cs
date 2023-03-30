@@ -7,6 +7,7 @@ using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Client.Interfaces.SquadInterfaces;
 using SunttelTradePointB.Client.Services;
 using SunttelTradePointB.Client.Services.MasterTablesServices;
+using SunttelTradePointB.Client.Services.SalesServices;
 using SunttelTradePointB.Client.Services.SquadServices;
 using Syncfusion.Blazor;
 
@@ -30,6 +31,7 @@ builder.Services.AddScoped<ActorsNodeService>();
 builder.Services.AddScoped<WarehouseService>();
 builder.Services.AddScoped<CommunicationService>();
 builder.Services.AddScoped<TransactionalItemsService>();
+builder.Services.AddScoped<SalesDocuments>();
 
 
 builder.Services.AddScoped<ContextMenuService>();
