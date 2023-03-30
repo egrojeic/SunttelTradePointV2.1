@@ -642,11 +642,29 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// Retrieves a list of Pallet Types
         /// </summary>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<PalletType>? palletTypes, string? ErrorDescription)> GetSelectorListPalletTypes()
+        public async Task<(bool IsSuccess, List<PalletType>? palletTypes, string? ErrorDescription)> GetSelectorListPalletTypes(string? filterName = null)
         {
             try
             {
-                var palletTypes = await _palletTypes.Find<PalletType>(new BsonDocument()).ToListAsync();
+                string strNameFiler = filterName == null ? "" : filterName;
+
+                var pipeline = new List<BsonDocument>();
+
+                if (strNameFiler.ToLower() != "all")
+                {
+                    pipeline.Add(
+                    new BsonDocument(
+                        "$match",
+                        new BsonDocument(
+                                 "Name",
+                                    new BsonDocument(
+                                        "$regex", new BsonRegularExpression($"/{strNameFiler}/i"))
+                            )
+                    )
+                );
+                }
+
+                var palletTypes = await _palletTypes.Aggregate<PalletType>(pipeline).ToListAsync();
 
                 if (palletTypes == null || palletTypes.Count == 0)
                 {

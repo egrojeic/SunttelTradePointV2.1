@@ -289,9 +289,9 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetSelectorListPalletTypes")]
-        public async Task<IActionResult> GetSelectorListPalletTypes()
+        public async Task<IActionResult> GetSelectorListPalletTypes(string? filterName = null)
         {
-            var response = await _selectorDatasource.GetSelectorListPalletTypes();
+            var response = await _selectorDatasource.GetSelectorListPalletTypes(filterName);
 
             if (response.IsSuccess)
             {

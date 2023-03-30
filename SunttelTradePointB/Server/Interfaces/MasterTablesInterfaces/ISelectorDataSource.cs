@@ -107,7 +107,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// Retrieves a list of Pallet Types
         /// </summary>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<PalletType>? palletTypes, string? ErrorDescription)> GetSelectorListPalletTypes();
+        Task<(bool IsSuccess, List<PalletType>? palletTypes, string? ErrorDescription)> GetSelectorListPalletTypes(string? filterName = null);
 
         /// <summary>
         /// Retrieves a list of Entity Types
