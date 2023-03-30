@@ -521,7 +521,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
 
         }
-        public async Task<PackingSpecs> GetPackingRecipeToId(string? transactionalItemId, string packingSpecsId)
+        public async Task<PackingSpecs> GetPackingRecipeById(string? transactionalItemId, string packingSpecsId)
 
         {
             transactionalItemId = transactionalItemId != null ? transactionalItemId : "";

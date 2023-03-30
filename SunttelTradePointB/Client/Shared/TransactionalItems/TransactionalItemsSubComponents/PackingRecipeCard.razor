@@ -866,7 +866,7 @@
 
         if (transactionalItemId != null && packingSpecsId != null)
         {
-            _PackingSpecs = await transactionalService.GetPackingRecipeToId(transactionalItemId, packingSpecsId);
+            _PackingSpecs = await transactionalService.GetPackingRecipeById(transactionalItemId, packingSpecsId);
             if (_PackingSpecs != null)
             {
                 #region Tag1

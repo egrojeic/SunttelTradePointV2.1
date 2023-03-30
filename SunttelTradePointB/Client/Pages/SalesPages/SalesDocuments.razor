@@ -1,5 +1,7 @@
 ﻿@page "/SalesDocuments"
+@page "/SalesDocuments/{_filterItems}"
 @using SunttelTradePointB.Shared.Sales;
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
 @inject ContextMenuService ContextMenuService
 
 <PageTitleComponent Title="Sales" IconName="commercialActivities.png"
@@ -13,7 +15,18 @@
 </div>
 
 <div class="tableContainer">
-    <RadzenDataGrid AllowFiltering="true"
+
+
+    @if (isLoading)
+    {
+
+        <WaitingProcessIndicator loadingTopic="Characteristic Items"></WaitingProcessIndicator>
+
+    }
+    else
+    {
+
+        <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
                     AllowAlternatingRows="true"
                     FilterMode="FilterMode.Advanced"
@@ -30,75 +43,100 @@
                     LogicalFilterOperator="LogicalFilterOperator.Or"
                     @bind-Value="@selectedcommercialdocuments"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
-        <Columns>
+            <Columns>
 
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentType.Name" Title="Document Type" Width="208px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="BusinessLineDoc.Name" Title="Business Line" Width="208px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="PO" Title="PO" Width="64px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="ShipDate" Title="Ship Date" FormatString="{0:d}" Width="176px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="DeliveryDate" Title="Delivery Date" FormatString="{0:d}" Width="240px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="ArrivalDate" Title="Provider Arrival Date" FormatString="{0:d}" Width="368px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="Vendor.Name" Title="Vendor" Width="96px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="Buyer.Name" Title="Buyer" Width="80px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="SalesPerson.Name" Title="Sales Person" Width="192px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="Carrier.Name" Title="Carrier" Width="112px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="DeliveryAddress.Name" Title="Delivery Address" Width="256px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="ShippingStatusDocument.Name" Title="Shipping Status" Width="240px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="TrackingNumber" Title="Tracking Number" Width="272px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceStatusDocument.Name" Title="Finance Status" Width="224px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="OriginDocument.Name" Title="Origin Document" Width="240px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="VendorWarehouse.Name" Title="Vendor Warehouse" Width="256px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="BuyerWarehouse.Name" Title="Buyer Warehouse" Width="240px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="Season.Name" Title="Season" Width="96px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="PrintingSatus.Name" Title="Printing Satus" Width="224px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="SpecsNotes" Title="Specs Notes" Width="208px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="MarkedForQCInspection" Title="Marked for QCInspection" Width="90px">
-                <Template Context="commercialdocumentItem">
-                    <RadzenCheckBox @bind-Value="commercialdocumentItem.MarkedForQCInspection" />
-                </Template>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.Name" Title="FinanceSummary" Width="224px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="Items.Name" Title="Items" Width="80px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="ToInvoice" Title="To Invoice" Width="90px">
-                <Template Context="commercialdocumentItem">
-                    <RadzenCheckBox @bind-Value="commercialdocumentItem.ToInvoice" />
-                </Template>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="Id" Title="Id" Width="64px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="LegacyId" Title="LegacyId" Width="160px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="IsSelected" Title="IsSelected" Width="90px">
-                <Template Context="commercialdocumentItem">
-                    <RadzenCheckBox @bind-Value="commercialdocumentItem.IsSelected" />
-                </Template>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="IsLoadingData" Title="Has Changed" Width="90px">
-                <Template Context="commercialdocumentItem">
-                    <RadzenCheckBox @bind-Value="commercialdocumentItem.IsLoadingData" />
-                </Template>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="Notes" Title="Notes" Width="112px" />
-            <RadzenDataGridColumn TItem="CommercialDocument" Property="SquadId" Title="SquadId" Width="144px" />
-        </Columns>
-    </RadzenDataGrid>
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentType.Name" Title="Document Type" Width="208px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="BusinessLineDoc.Name" Title="Business Line" Width="208px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="PO" Title="PO" Width="64px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="ShipDate" Title="Ship Date" FormatString="{0:d}" Width="176px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="DeliveryDate" Title="Delivery Date" FormatString="{0:d}" Width="240px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="ArrivalDate" Title="Provider Arrival Date" FormatString="{0:d}" Width="368px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="Vendor.Name" Title="Vendor" Width="96px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="Buyer.Name" Title="Buyer" Width="80px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="SalesPerson.Name" Title="Sales Person" Width="192px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="Carrier.Name" Title="Carrier" Width="112px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="DeliveryAddress.Name" Title="Delivery Address" Width="256px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="ShippingStatusDocument.Name" Title="Shipping Status" Width="240px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="TrackingNumber" Title="Tracking Number" Width="272px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceStatusDocument.Name" Title="Finance Status" Width="224px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="OriginDocument.Name" Title="Origin Document" Width="240px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="VendorWarehouse.Name" Title="Vendor Warehouse" Width="256px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="BuyerWarehouse.Name" Title="Buyer Warehouse" Width="240px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="Season.Name" Title="Season" Width="96px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="PrintingSatus.Name" Title="Printing Satus" Width="224px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="SpecsNotes" Title="Specs Notes" Width="208px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="MarkedForQCInspection" Title="Marked for QCInspection" Width="90px">
+                    <Template Context="commercialdocumentItem">
+                        <RadzenCheckBox @bind-Value="commercialdocumentItem.MarkedForQCInspection" />
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.Name" Title="FinanceSummary" Width="224px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="Items.Name" Title="Items" Width="80px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="ToInvoice" Title="To Invoice" Width="90px">
+                    <Template Context="commercialdocumentItem">
+                        <RadzenCheckBox @bind-Value="commercialdocumentItem.ToInvoice" />
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="Id" Title="Id" Width="64px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="LegacyId" Title="LegacyId" Width="160px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="IsSelected" Title="IsSelected" Width="90px">
+                    <Template Context="commercialdocumentItem">
+                        <RadzenCheckBox @bind-Value="commercialdocumentItem.IsSelected" />
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="IsLoadingData" Title="Has Changed" Width="90px">
+                    <Template Context="commercialdocumentItem">
+                        <RadzenCheckBox @bind-Value="commercialdocumentItem.IsLoadingData" />
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="Notes" Title="Notes" Width="112px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="SquadId" Title="SquadId" Width="144px" />
+            </Columns>
+        </RadzenDataGrid>
+    }
 </div>
 
 
 
 @code {
-
-
-    string docsFilter = "";
-    DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
-
-
+    [Parameter]
+    public string _filterItems { get; set; }
     List<CommercialDocument>? commercialdocumentList;
     IList<CommercialDocument>? selectedcommercialdocuments;
+    bool isLoading = false;
+
+    DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
+
+    public string docsFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+    protected async override void OnInitialized()
+    {
+        if (_filterItems != null) LoadData();
+        base.OnInitialized();
+    }
+
+    public async void LoadData()
+    {
+        isLoading = true;
+        commercialdocumentList = await DocumentServices.GetCommercialDocumentList(docsFilter, startingDate, endDate);
+        isLoading = false;
+        StateHasChanged();
+    }
+     
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CommercialDocument> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
         <RadzenMenuItem Text="Another" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
-);
+    );
 
 
     void OnMenuItemClick(MenuItemEventArgs args)
@@ -110,5 +148,6 @@
             ContextMenuService.Close();
         }
     }
+
 
 }
