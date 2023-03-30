@@ -634,11 +634,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task<List<PalletType>> GetPalletTypeList()
+        public async Task<List<PalletType>> GetPalletTypeList(string filter = "")
         {
             try
             {
-                var response = await Gethttp("/api/ConceptsSelector/GetSelectorListPalletTypes");
+                var response = await Gethttp($"/api/ConceptsSelector/GetSelectorListPalletTypes?filterName={filter}");
                 var list = await response.Content.ReadFromJsonAsync<List<PalletType>>();
               
                 return list;
