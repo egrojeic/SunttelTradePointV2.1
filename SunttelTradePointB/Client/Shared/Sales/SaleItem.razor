@@ -9,12 +9,20 @@
 @using Syncfusion.Blazor.Navigations
 @inject NavigationManager Navigation
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject GeographicPlacesService geoPlaces
 
 <MessageSaveComponent @ref="referAlert">
 </MessageSaveComponent>
 
 
 <form>
+
+    @if (page == "")
+    {
+        
+    }
+
+    @if(page==""){
     <div class="panelMenuContainer" style="max-width:95%;">
         <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
@@ -33,7 +41,23 @@
 
 
     </div>
-    <SfTab Height="250px" CssClass="tab-adaptive">
+    <div class="grid-columns-header">
+
+            <div><b class="c-red">*</b><label>@GetName("DocumentType",new CommercialDocument())</label></div>
+            <InputTextSelector3 TItem="CommercialDocumentType"
+                            Id="DocumentType"
+                            caption="@(commercialDocument.DocumentType !=null ? commercialDocument.DocumentType?.Name:"" )"
+                            Items="documentTypeList">
+
+            </InputTextSelector3>
+            <div><b class="c-red">*</b><label>@GetName("TrackingNumber",new CommercialDocument())</label></div>
+                        <div><p>@(commercialDocument.TrackingNumber)</p><img class="img-ico-edit" src="~/images//edit.png"></div>
+
+    </div>
+
+
+
+        <SfTab Height="250px" CssClass="tab-adaptive" HeaderPlacement="HeaderPosition.Left">
         <TabAnimationSettings>
             <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
             <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
@@ -46,13 +70,7 @@
                 <ContentTemplate>
                     <div class="grid-columns-4 width">
 
-                        <div><b class="c-red">*</b><label>@GetName("DocumentType",new CommercialDocument())</label></div>
-                        <InputTextSelector3 TItem="CommercialDocumentType"
-                                            Id="DocumentType"
-                                            caption="@(commercialDocument.DocumentType !=null ? commercialDocument.DocumentType?.Name:"" )"
-                                            Items="documentTypeList">
-
-                        </InputTextSelector3>
+                      
 
                         <div><b class="c-red">*</b><label>@GetName("BusinessLineDoc",new CommercialDocument())</label></div>
                         <InputTextSelector3 TItem="BusinessLine"
@@ -142,7 +160,11 @@
                     <TabHeader Text="@GetName("DeliveryAddress",new CommercialDocument())"></TabHeader>
                 </ChildContent>
                 <ContentTemplate>
-                    <AddressComponent oldAddress="@commercialDocument.DeliveryAddress"></AddressComponent>
+                    <div class="flex-horizontal-center ">
+                        <div class=" width-address box-shadow-mode ">
+                            <AddressComponent oldAddress="@commercialDocument.DeliveryAddress"></AddressComponent>
+                        </div>
+                    </div>
                 </ContentTemplate>
             </TabItem>
             <TabItem>
@@ -186,75 +208,75 @@
                             <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                         </svg>
                     </div>
-                  
 
-                        @if (isLoading)
+
+                    @if (isLoading)
+                    {
+
+                        <WaitingProcessIndicator loadingTopic="Characteristic Items"></WaitingProcessIndicator>
+
+                    }
+                    else
+                    {
+                        @if (commercialDocument.Items != null)
                         {
+                            <RadzenDataGrid AllowFiltering="true"
+                                    AllowColumnResize="true"
+                                    AllowAlternatingRows="true"
+                                    FilterMode="FilterMode.Advanced"
+                                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                    AllowSorting="true"
+                                    AllowPaging="true"
+                                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                    ShowPagingSummary="true"
+                                    Data="@commercialDocument.Items"
+                                    TItem="SalesDocumentItemsDetails"
+                                    ColumnWidth="300px"
+                                    PageNumbersCount="100"
+                                    PageSize="20">
 
-                            <WaitingProcessIndicator loadingTopic="Characteristic Items"></WaitingProcessIndicator>
-
+                                <Columns>
+                                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="DocumentPrinted" Title="@GetName("DocumentPrinted", new SalesDocumentItemsDetails())" Width="80px">
+                                        <Template>
+                                            bool value = (bool)context.GetType().GetProperty("DocumentPrinted").GetValue(context);
+                                            <input type="checkbox" checked="value" disabled />
+                                        </Template>
+                                    </RadzenDataGridColumn>
+                                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="BillOfLandingPrinted" Title="@GetName("BillOfLandingPrinted", new SalesDocumentItemsDetails())" Width="80px">
+                                        <Template>
+                                            bool value = (bool)context.GetType().GetProperty("BillOfLandingPrinted").GetValue(context);
+                                            <input type="checkbox" checked="value" disabled />
+                                        </Template>
+                                    </RadzenDataGridColumn>
+                                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PickingTicketPrinted" Title="@GetName("PickingTicketPrinted", new SalesDocumentItemsDetails())" Width="80px">
+                                        <Template>
+                                            bool value = (bool)context.GetType().GetProperty("PickingTicketPrinted").GetValue(context);
+                                            <input type="checkbox" checked="value" disabled />
+                                        </Template>
+                                    </RadzenDataGridColumn>
+                                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="LabelsPrinted" Title="@GetName("LabelsPrinted", new SalesDocumentItemsDetails())" Width="80px">
+                                        <Template>
+                                            bool value = (bool)context.GetType().GetProperty("LabelsPrinted").GetValue(context);
+                                            <input type="checkbox" checked="value" disabled />
+                                        </Template>
+                                    </RadzenDataGridColumn>
+                                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="SelectedToPrint" Title="@GetName("SelectedToPrint", new SalesDocumentItemsDetails())" Width="80px">
+                                        <Template>
+                                            bool value = (bool)context.GetType().GetProperty("SelectedToPrint").GetValue(context);
+                                            <input type="checkbox" checked="value" disabled />
+                                        </Template>
+                                    </RadzenDataGridColumn>
+                                </Columns>
+                            </RadzenDataGrid>
                         }
-                        else
-                        {
-                            @if (commercialDocument.Items != null)
-                            {
-                                <RadzenDataGrid AllowFiltering="true"
-                                        AllowColumnResize="true"
-                                        AllowAlternatingRows="true"
-                                        FilterMode="FilterMode.Advanced"
-                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                        AllowSorting="true"
-                                        AllowPaging="true"
-                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                                        ShowPagingSummary="true"
-                                        Data="@commercialDocument.Items"
-                                        TItem="SalesDocumentItemsDetails"
-                                        ColumnWidth="300px"
-                                        PageNumbersCount="100"
-                                        PageSize="20">
+                    }
 
-                                    <Columns>
-                                        <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="DocumentPrinted" Title="@GetName("DocumentPrinted", new SalesDocumentItemsDetails())" Width="80px">
-                                            <Template>
-                                                bool value = (bool)context.GetType().GetProperty("DocumentPrinted").GetValue(context);
-                                                <input type="checkbox" checked="value" disabled />
-                                            </Template>
-                                        </RadzenDataGridColumn>
-                                        <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="BillOfLandingPrinted" Title="@GetName("BillOfLandingPrinted", new SalesDocumentItemsDetails())" Width="80px">
-                                            <Template>
-                                                bool value = (bool)context.GetType().GetProperty("BillOfLandingPrinted").GetValue(context);
-                                                <input type="checkbox" checked="value" disabled />
-                                            </Template>
-                                        </RadzenDataGridColumn>
-                                        <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PickingTicketPrinted" Title="@GetName("PickingTicketPrinted", new SalesDocumentItemsDetails())" Width="80px">
-                                            <Template>
-                                                bool value = (bool)context.GetType().GetProperty("PickingTicketPrinted").GetValue(context);
-                                                <input type="checkbox" checked="value" disabled />
-                                            </Template>
-                                        </RadzenDataGridColumn>
-                                        <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="LabelsPrinted" Title="@GetName("LabelsPrinted", new SalesDocumentItemsDetails())" Width="80px">
-                                            <Template>
-                                                bool value = (bool)context.GetType().GetProperty("LabelsPrinted").GetValue(context);
-                                                <input type="checkbox" checked="value" disabled />
-                                            </Template>
-                                        </RadzenDataGridColumn>
-                                        <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="SelectedToPrint" Title="@GetName("SelectedToPrint", new SalesDocumentItemsDetails())" Width="80px">
-                                            <Template>
-                                                bool value = (bool)context.GetType().GetProperty("SelectedToPrint").GetValue(context);
-                                                <input type="checkbox" checked="value" disabled />
-                                            </Template>
-                                        </RadzenDataGridColumn>
-                                    </Columns>
-                                </RadzenDataGrid>
-                            }
-                        }
 
-                  
                 </ContentTemplate>
             </TabItem>
         </TabItems>
     </SfTab>
-
+    }
 
 </form>
 
@@ -266,6 +288,8 @@
     public string commercialDocumentId { get; set; }
     [Parameter]
     public string filter { get; set; }
+
+    string page = "";
 
     public CommercialDocument commercialDocument = new();
     public SalesDocumentItemsDetails items = new();
@@ -316,7 +340,7 @@
         string tile = e.Item != null ? e.Item.Text : "";
         if (tile == "Save")
         {
-
+            commercialDocument.DeliveryAddress = geoPlaces.address;
 
 
         }
