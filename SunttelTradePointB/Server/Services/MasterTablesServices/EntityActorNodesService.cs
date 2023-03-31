@@ -495,7 +495,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 var filterPrev = Builders<EntityActor>.Filter.Eq(x => x.Id, entityActorId);
                 var resultPrev = await _entityActorsCollection.Find(filterPrev).FirstOrDefaultAsync();
 
-                if (resultPrev != null && resultPrev.PhoneNumbers.Any(x => x.Id == phoneNumber.Id))
+                if (resultPrev != null && resultPrev.PhoneNumbers != null  && resultPrev.PhoneNumbers.Any(x => x.Id == phoneNumber.Id))
                 {
                     //Update Element
                     var filter = Builders<EntityActor>.Filter.And(
