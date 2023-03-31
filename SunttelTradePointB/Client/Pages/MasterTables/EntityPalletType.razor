@@ -80,7 +80,7 @@
             isLoading = true;
             StateHasChanged();
 
-            var response = await actorsNodeServive.GetPalletTypeList();
+            var response = await actorsNodeServive.GetPalletTypeList(filter);
 
             if (response != null)
                 palletTypesList = response;
