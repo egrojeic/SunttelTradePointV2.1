@@ -1,0 +1,22 @@
+﻿<div>
+    <div class="control">
+        <p style="background-color:@statusColor();">@Name</p>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public string Name { get; set; }
+    [Parameter]
+    public List<(string,string)> listStatus { get; set; }
+
+    public string statusColor()
+    {
+        string color = "gray";
+        if(listStatus!=null)
+        color = listStatus.Where(s => s.Item1.Contains(Name)).FirstOrDefault().Item2;
+
+        return color;
+    }
+
+}
+
