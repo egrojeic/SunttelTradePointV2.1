@@ -262,7 +262,7 @@
 
     private async Task SaveEntityAddres(string EntityActorId)
     {
-     try
+        try
         {
             if (EntityActorId != null && address != null)
             {
@@ -271,11 +271,7 @@
                     address.Id = addressId;
                 }
                 address.Code = Code;
-                address.CityAddressRef = city.Id;
-                address.Code = identificationEntity.Code;
-                address.CityAddress = geoPlaces.address.CityAddress != null ? geoPlaces.address.CityAddress : new();
-                address.CityAddress.RegionCity = geoPlaces.address.CityAddress.RegionCity != null ? geoPlaces.address.CityAddress.RegionCity : new();
-                address.CityAddress.RegionCity.CountryRegion = geoPlaces.address.CityAddress.RegionCity.CountryRegion != null ? geoPlaces.address.CityAddress.RegionCity.CountryRegion : new();
+                if (address.CityAddressRef is null) address.CityAddressRef = geoPlaces.address.CityAddress.Id;                 
                 var resul = await actorsNodeServive.SaveEntityAddress(EntityActorId, address);
 
                 if (resul) visible = true;

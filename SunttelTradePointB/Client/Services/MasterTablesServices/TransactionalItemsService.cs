@@ -915,7 +915,10 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         {
             try
             {
-                var responseMessage = await Gethttp($"/api/TransactionalItemsRelatedConcepts/GetTransactionalStatusesTable?statusId={statusId}");
+                string userId = UIClientGlobalVariables.UserId;
+                string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+                var responseMessage = await Gethttp($"/api/TransactionalItemsRelatedConcepts/GetTransactionalStatusById?userId={userId}&ipAddress={ipAddress}&statusId={statusId}");
                 var transactionalItemStatus = await responseMessage.Content.ReadFromJsonAsync<TransactionalItemStatus>();
 
                 return transactionalItemStatus is null ? new TransactionalItemStatus() : transactionalItemStatus;

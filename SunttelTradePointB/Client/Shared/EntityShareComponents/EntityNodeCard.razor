@@ -453,7 +453,7 @@
 
     public void SetViewElement(string Element)
     {
-        
+
         SearchValueMode = Element;
         if (Element == "Group" && !PopupViewGroups) { PopupViewGroups = true; }
         if (Element == "Roles" && !PopupViewRoles) { PopupViewRoles = true; }
@@ -466,15 +466,12 @@
         SearchValueMode = arg.selectionId;
         if (SearchValueMode == "Group")
         {
-            
-
             ListGroups = await actorsNodeServive.GetEntityGroups(arg.value);
-           
         }
         if (SearchValueMode == "Roles")
         {
             entityRoles = await actorsNodeServive.GetListEntityRoles(arg.value);
-           
+
         }
         if (ParamCountResul > 0)
         {
@@ -484,7 +481,9 @@
         {
             ViewSelect = false;
         }
-       
+
+        StateHasChanged();
+
     }
 
     public void SelectionMade(ConceptGroup arg)

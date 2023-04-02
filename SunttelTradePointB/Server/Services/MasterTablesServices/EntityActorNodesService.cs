@@ -452,7 +452,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         Builders<EntityActor>.Filter.Eq(x => x.Id, entityActorId),
                         Builders<EntityActor>.Filter.ElemMatch(x => x.AddressList, y => y.Id == address.Id)
                     );
-                    var update = Builders<EntityActor>.Update.Set(x => x.AddressList[-1], address);
+                    var update = Builders<EntityActor>.Update.Set("AddressList.$", address);
                     await _entityActorsCollection.UpdateOneAsync(filter, update);
                 }
                 else

@@ -79,7 +79,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// Retrieves a table with all possible Transactional States
         /// </summary>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<TransactionalItemStatus>?  transactionalItemStatuses, string? ErrorDescription)> GetTransactionalStatusesTable();
+        Task<(bool IsSuccess, List<TransactionalItemStatus>? transactionalItemStatuses, string? ErrorDescription)> GetTransactionalStatusesTable();
 
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="transactionalItemTypeId"></param>
         /// <param name="transactionalItemProcessStep"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, TransactionalItemProcessStep?  transactionalItemProcessStep, string? ErrorDescription)> SaveTransactionalItemProcessStep(string userId, string ipAddress, string transactionalItemTypeId, TransactionalItemProcessStep transactionalItemProcessStep);
+        Task<(bool IsSuccess, TransactionalItemProcessStep? transactionalItemProcessStep, string? ErrorDescription)> SaveTransactionalItemProcessStep(string userId, string ipAddress, string transactionalItemTypeId, TransactionalItemProcessStep transactionalItemProcessStep);
 
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="transactionalItemTypeId"></param>
         /// <param name="transactionalItemTypeCharacteristic"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, TransactionalItemTypeCharacteristic?  transactionalItemTypeCharacteristic, string? ErrorDescription)> SaveTransactionalItemTypeCharacteristic(string userId, string ipAddress, string transactionalItemTypeId, TransactionalItemTypeCharacteristic transactionalItemTypeCharacteristic);
+        Task<(bool IsSuccess, TransactionalItemTypeCharacteristic? transactionalItemTypeCharacteristic, string? ErrorDescription)> SaveTransactionalItemTypeCharacteristic(string userId, string ipAddress, string transactionalItemTypeId, TransactionalItemTypeCharacteristic transactionalItemTypeCharacteristic);
 
         /// <summary>
         /// Saves (INSERT/UPDATE) a Transactional Item Quality
@@ -152,7 +152,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="transactionalItemTypeId"></param>
         /// <param name="transactionalItemQuality"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, TransactionalItemQuality?  transactionalItemQuality, string? ErrorDescription)> SaveTransactionalItemQuality(string userId, string ipAddress, string transactionalItemTypeId, TransactionalItemQuality  transactionalItemQuality);
+        Task<(bool IsSuccess, TransactionalItemQuality? transactionalItemQuality, string? ErrorDescription)> SaveTransactionalItemQuality(string userId, string ipAddress, string transactionalItemTypeId, TransactionalItemQuality transactionalItemQuality);
 
         /// <summary>
         /// Saves (INSERT/UPDATE) a Recipe Modifier
@@ -162,7 +162,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="transactionalItemTypeId"></param>
         /// <param name="recipeModifier"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, RecipeModifier?  recipeModifier, string? ErrorDescription)> SaveRecipeModifier(string userId, string ipAddress, string transactionalItemTypeId, RecipeModifier recipeModifier);
+        Task<(bool IsSuccess, RecipeModifier? recipeModifier, string? ErrorDescription)> SaveRecipeModifier(string userId, string ipAddress, string transactionalItemTypeId, RecipeModifier recipeModifier);
 
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="ipAddress"></param>
         /// <param name="labelStyleId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, LabelStyle?  labelStyle, string? ErrorDescription)> GetLabelStyle(string userId, string ipAddress, string labelStyleId);
+        Task<(bool IsSuccess, LabelStyle? labelStyle, string? ErrorDescription)> GetLabelStyle(string userId, string ipAddress, string labelStyleId);
 
         /// <summary>
         /// Save label style
@@ -203,7 +203,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<(bool IsSuccess, LabelStyle? labelStyle, string? ErrorDescription)> SaveLabelStyle(string userId, string ipAddress, LabelStyle labelStyle);
 
-        
+
         /// <summary>
         /// Retrieves the list of  Label Styles
         /// </summary>
@@ -221,7 +221,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="ipAddress"></param>
         /// <param name="filterString"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<LabelPaper>?  labelPapers, string? ErrorDescription)> GetLabelPapers(string userId, string ipAddress, string? filterString);
+        Task<(bool IsSuccess, List<LabelPaper>? labelPapers, string? ErrorDescription)> GetLabelPapers(string userId, string ipAddress, string? filterString);
 
         /// <summary>
         /// Retrieves a particular Label Paper
@@ -242,6 +242,14 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<(bool IsSuccess, LabelPaper? labelPaper, string? ErrorDescription)> SaveLabelPaper(string userId, string ipAddress, LabelPaper labelPaper);
 
-
+        /// <summary>
+        /// Retrives a Transactional Item Status by Id
+        /// </summary>
+        /// <param name="statusId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        Task<(bool IsSuccess, TransactionalItemStatus? transactionalItemStatuses, string? ErrorDescription)> GetTransactionalStatusById(string userId, string ipAddress, string statusId);
     }
 }

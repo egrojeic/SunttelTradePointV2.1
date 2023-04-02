@@ -96,7 +96,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 };
 
                 string strNameFilter = filterString == null ? "" : filterString;
-                string strRoleName = roleIndex == null ? "" : roleDict[roleIndex??0];
+                string strRoleName = roleIndex == null ? "" : roleDict[roleIndex ?? 0];
 
                 //if(strRoleName.Length > 0)
                 //{
@@ -104,14 +104,14 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 //}
 
                 var pipe = new List<BsonDocument>();
-                
+
                 if (strNameFilter.ToUpper() != "ALL" && strNameFilter.ToUpper() != "TODOS")
                 {
-                   
+
                     pipe.Add(
                         new BsonDocument
                         {
-                            { "$match", 
+                            { "$match",
                                 new BsonDocument{
                                     { "$text", new BsonDocument {
                                             { "$search", strNameFilter },
@@ -126,7 +126,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     );
                 }
 
-                if(strRoleName != "")
+                if (strRoleName != "")
                 {
                     pipe.Add(
                         new BsonDocument(
@@ -238,20 +238,34 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
-                string strNameFiler = filterString == null ? "" : filterString;
+                //string strNameFiler = filterString == null ? "" : filterString;
 
                 var pipeline = new List<BsonDocument>();
 
-                pipeline.Add(
-                    new BsonDocument(
-                        "$match",
-                          new BsonDocument(
-                                 "Name",
-                                    new BsonDocument(
-                                        "$regex", new BsonRegularExpression($"/{strNameFiler}/i"))
-                            )
-                    )
-                );
+
+                if (!string.IsNullOrEmpty(filterString) && !filterString.ToLower().Equals("all") && !filterString.ToLower().Equals("todos")) // se agregó verificación de si strNameFiler está vacío
+                {
+                    pipeline.Add(
+                        new BsonDocument {
+                            { "$match", new BsonDocument {
+                               { "Name", new BsonRegularExpression($"/{filterString}/i")
+                                    }
+                               }
+                            }   
+                        }
+                    );
+                }
+
+                //pipeline.Add(
+                //    new BsonDocument(
+                //        "$match",
+                //          new BsonDocument(
+                //                 "Name",
+                //                    new BsonDocument(
+                //                        "$regex", new BsonRegularExpression($"/{strNameFiler}/i"))
+                //            )
+                //    )
+                //);
 
                 pipeline.Add(
                     new BsonDocument {
@@ -285,40 +299,35 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
-                string strNameFiler = filterString == null ? "" : filterString;
                 var skip = (page - 1) * perPage;
 
 
                 var pipeline = new List<BsonDocument>();
 
-                if (!(strNameFiler.ToLower() == "all" || strNameFiler.ToLower() == "todos"))
+                if (!string.IsNullOrEmpty(filterString) && !filterString.ToLower().Equals("all") && !filterString.ToLower().Equals("todos")) // se agregó verificación de si strNameFiler está vacío
                 {
                     pipeline.Add(
-                    new BsonDocument{
-                        { "$match",  new BsonDocument {
-                            { "$text",
-                                new BsonDocument {
-                                    { "$search",strNameFiler },
-                                    { "$language","english" },
-                                    { "$caseSensitive",false },
-                                    { "$diacriticSensitive",false }
-                                }
-                            }
-                        }}
-                    }
-                );
+                        new BsonDocument {
+                               { "$match", new BsonDocument {
+                                    { "Name", new BsonRegularExpression($"/{filterString}/i")
+                                      }
+                              }
+                           }
+                        }
+
+                    );
                 }
 
-                pipeline.Add(
-                    new BsonDocument(
-                        "$match",
-                          new BsonDocument(
-                                 "Name",
-                                    new BsonDocument (
-                                        "$regex", new BsonRegularExpression($"/{strNameFiler}/i"))
-                            )
-                    )
-                );
+                //pipeline.Add(
+                //    new BsonDocument(
+                //        "$match",
+                //          new BsonDocument(
+                //                 "Name",
+                //                    new BsonDocument(
+                //                        "$regex", new BsonRegularExpression($"/{strNameFiler}/i"))
+                //            )
+                //    )
+                //);
 
                 pipeline.Add(
                     new BsonDocument {
@@ -331,17 +340,17 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     }
                 );
 
-                pipeline.Add(
-                    new BsonDocument{
-                        {"$skip",  skip}
-                        }
-                    );
+                //pipeline.Add(
+                //    new BsonDocument{
+                //        {"$skip",  skip}
+                //        }
+                //    );
 
-                pipeline.Add(
-                    new BsonDocument{
-                        {"$limit",  perPage}
-                    }
-                );
+                //pipeline.Add(
+                //    new BsonDocument{
+                //        {"$limit",  perPage}
+                //    }
+                //);
 
                 List<AtomConcept> results = await _entityRoles.Aggregate<AtomConcept>(pipeline).ToListAsync();
 
@@ -402,7 +411,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         "$match",
                           new BsonDocument(
                                  "Name",
-                                    new BsonDocument (
+                                    new BsonDocument(
                                         "$regex", new BsonRegularExpression($"/{strNameFiler}/i"))
                             )
                     )
@@ -597,8 +606,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
-                FindOptions<AtomConcept> findOptions= new FindOptions<AtomConcept> { 
-                    Projection= Builders<AtomConcept>.Projection.Include(cx=>cx.Name)
+                FindOptions<AtomConcept> findOptions = new FindOptions<AtomConcept>
+                {
+                    Projection = Builders<AtomConcept>.Projection.Include(cx => cx.Name)
                 };
                 List<AtomConcept> results = await _addresses.FindAsync(Builders<AtomConcept>.Filter.In("Groups.Name", new[] { "Network Platforms" }), findOptions).Result.ToListAsync<AtomConcept>();
 
@@ -606,7 +616,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
             catch (Exception e)
             {
-                return(false, null, e.Message);
+                return (false, null, e.Message);
             }
         }
 

@@ -72,7 +72,7 @@
         if (transactionalItemStatusId is null)
         {
         } else {
-            //transactionalItemStatus = await transactionalService.GetTransactionalStatusesTableById(transactionalItemStatusId);
+            transactionalItemStatus = await transactionalService.GetTransactionalStatusesTableById(transactionalItemStatusId);
         }
         base.OnInitialized();
     }
