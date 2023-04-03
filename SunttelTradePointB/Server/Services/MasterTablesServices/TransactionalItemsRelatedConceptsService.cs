@@ -197,6 +197,37 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
 
         /// <summary>
+        /// Retrives a Transactional Item Status by Id
+        /// </summary>
+        /// <param name="statusId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<(bool IsSuccess, TransactionalItemStatus? transactionalItemStatuses, string? ErrorDescription)> GetTransactionalStatusById(string userId, string ipAddress, string statusId)
+        {
+            try
+            {
+                var filterPrev = Builders<TransactionalItemStatus>.Filter.Eq(x => x.Id, statusId);
+                var transactionalItemStatus = await _transactionalItemStatus.Find<TransactionalItemStatus>(filterPrev).FirstOrDefaultAsync();
+
+
+                if (transactionalItemStatus == null)
+                {
+                    return (false, null, "Transactional Item Status not found");
+                }
+                else
+                {
+                    return (true, transactionalItemStatus, null);
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        /// <summary>
         /// Retrives a table with the different Transactional Item Status
         /// </summary>
         /// <returns></returns>

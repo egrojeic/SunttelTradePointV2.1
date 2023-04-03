@@ -247,8 +247,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                if (ipAddress == "")
-                    ipAddress = "127.0.0.0";
+                if (ipAddress == "") ipAddress = "127.0.0.0";
 
                 var response = await Gethttp($"/api/ConceptsSelector/GetSelectorListEntityGroups?filterCondition={filterCondition}");
                 var item = await response.Content.ReadFromJsonAsync<List<ConceptGroup>>();

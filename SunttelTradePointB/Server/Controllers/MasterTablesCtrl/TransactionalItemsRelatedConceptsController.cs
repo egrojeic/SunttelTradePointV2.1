@@ -166,6 +166,25 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
             }
         }
 
+        /// <summary>
+        /// Retrieves a Transactional Status By Id
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetTransactionalStatusById")]
+        public async Task<IActionResult> GetTransactionalStatusById(string userId, string ipAddress, string statusId)
+        {
+            var response = await _transactionalItemsRelatedConcepts.GetTransactionalStatusById(userId,ipAddress, statusId);
+            if (response.IsSuccess)
+            {
+                return Ok(response.transactionalItemStatuses);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
 
         /// <summary>
         /// Retrieves a list of Transactional Item Groupd with a specified condition

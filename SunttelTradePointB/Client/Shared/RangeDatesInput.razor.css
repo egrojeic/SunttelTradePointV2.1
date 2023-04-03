@@ -9,7 +9,9 @@
 
 .lblControl{
     color: white;
-    width: 60px;
+    width: auto;
+    margin-right:2px;
+    margin-left:5px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     
 }
@@ -28,6 +30,7 @@ input{
     border: none;
     box-shadow: 0 4px 4px 0 rgba(242, 252, 252, 0.2);
     transition: 0.3s;
+    margin-left:8px;
 }
 
     .reload-button:hover {
