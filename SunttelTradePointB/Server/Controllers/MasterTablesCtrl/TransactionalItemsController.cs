@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
+using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Shared.Common;
 
@@ -723,6 +724,170 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
                 return NotFound(response.ErrorDescription);
             }
         }
+
+        /* Nuevos endpoints */
+
+        /// <summary>
+        /// Retrieves an Entity/Packing Specs object by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="packingSpecsId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetPackingSpecsById")]
+        public async Task<IActionResult> GetPackingSpecsById(string userId, string ipAdress, string transactionalItemId, string packingSpecsId)
+        {
+            var response = await _transactionalItems.GetPackingSpecsById(userId, ipAdress, transactionalItemId, packingSpecsId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.packingSpecsResponse);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+
+        /// <summary>
+        /// Retrieves an Entity/Production Specs object by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="productionSpecsId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetProductionSpecsById")]
+        public async Task<IActionResult> GetProductionSpecsById(string userId, string ipAdress, string transactionalItemId, string productionSpecsId)
+        {
+            var response = await _transactionalItems.GetProductionSpecsById(userId, ipAdress, transactionalItemId, productionSpecsId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.transactionalItemProcessStepResponse);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+
+        /// <summary>
+        /// Retrieves an Entity/Transactional Item Tag object by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="transactionalItemTagId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetTransactionalItemTagById")]
+        public async Task<IActionResult> GetTransactionalItemTagById(string userId, string ipAdress, string transactionalItemId, string transactionalItemTagId)
+        {
+            var response = await _transactionalItems.GetTransactionalItemTagById(userId, ipAdress, transactionalItemId, transactionalItemTagId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.packingSpecsResponse);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+
+        /// <summary>
+        /// Retrieves an Entity/Groups object by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetGroupsByld")]
+        public async Task<IActionResult> GetGroupsById(string userId, string ipAdress, string transactionalItemId, string groupId)
+        {
+            var response = await _transactionalItems.GetGroupsById(userId, ipAdress, transactionalItemId, groupId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.packingSpecsResponse);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+
+        /// <summary>
+        /// Retrieves an Entity/Status object by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="statusId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetStatusById")]
+        public async Task<IActionResult> GetStatusById(string userId, string ipAdress, string transactionalItemId, string statusId)
+        {
+            var response = await _transactionalItems.GetStatusById(userId, ipAdress, transactionalItemId, statusId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.packingSpecsResponse);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+
+        /// <summary>
+        /// Retrieves an Entity/Product Model object by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="productModelId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetProductModelById")]
+        public async Task<IActionResult> GetProductModelById(string userId, string ipAdress, string transactionalItemId, string productModelId)
+        {
+            var response = await _transactionalItems.GetProductModelById(userId, ipAdress, transactionalItemId, productModelId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.packingSpecsResponse);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+
+        /// <summary>
+        /// Retrieves an Entity/Transactional Item Details Production Specs object by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="transactionalItemDetailsProductionSpecsId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetTransactionalItemDetailsProductionSpecsById")]
+        public async Task<IActionResult> GetTransactionalItemDetailsProductionSpecsById(string userId, string ipAdress, string transactionalItemId, string transactionalItemDetailsProductionSpecsId)
+        {
+            var response = await _transactionalItems.GetTransactionalItemDetailsProductionSpecsById(userId, ipAdress, transactionalItemId, transactionalItemDetailsProductionSpecsId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.packingSpecsResponse);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+       
 
     }
 }

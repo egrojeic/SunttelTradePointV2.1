@@ -4,6 +4,7 @@ using SixLabors.ImageSharp.ColorSpaces;
 using SunttelTradePointB.Client.Shared.ConceptSelectors;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Shared.Common;
+using System.IO.Pipelines;
 using System.Net.WebSockets;
 
 namespace SunttelTradePointB.Server.Services.MasterTablesServices
@@ -267,6 +268,30 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 string strFilterCondition = filterCondition == null ? "" : filterCondition;
 
                 var pipeline = new List<BsonDocument>();
+
+
+                /*
+                if (strFilterCondition.ToUpper() != "ALL" && strFilterCondition.ToUpper() != "TODOS")
+                {
+
+                    pipeline.Add(
+                        new BsonDocument
+                        {
+                            { "$match",
+                                new BsonDocument{
+                                    { "$text", new BsonDocument {
+                                            { "$search", strFilterCondition },
+                                            { "$language", "english" },
+                                            { "$caseSensitive", false },
+                                            { "$diacriticSensitive", false}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    );
+                }
+                */
 
                 pipeline.Add(
                     new BsonDocument(

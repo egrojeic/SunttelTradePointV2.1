@@ -24,7 +24,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         //IMongoCollection<TransactionalItemCharacteristicPair> _TransactionalItemsCharacteristicsCollection;
         //IMongoCollection<TransactItemImage> _TransactionalItemsImagesCollection;
         //IMongoCollection<TransactionalItemProcessStep> _TransactionalItemsProductionSpecsCollection;
-        //IMongoCollection<PackingSpecs> _TransactionalItemsPackingSpecsCollection;
+        IMongoCollection<PackingSpecs> _TransactionalItemsPackingSpecsCollection;
         //IMongoCollection<TransactionalItemQualityPair> _TransactionalItemsQualityCollection;
         //IMongoCollection<TransactionalItemTag> _TransactionalItemsTagsCollection;
 
@@ -47,7 +47,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             //_TransactionalItemsCharacteristicsCollection = mongoDatabase.GetCollection<TransactionalItemCharacteristicPair>("TransactionalItems");
             //_TransactionalItemsImagesCollection = mongoDatabase.GetCollection<TransactItemImage>("TransactionalItems");
             //_TransactionalItemsProductionSpecsCollection = mongoDatabase.GetCollection<TransactionalItemProcessStep>("TransactionalItems");
-            //_TransactionalItemsPackingSpecsCollection = mongoDatabase.GetCollection<PackingSpecs>("TransactionalItems");
+            _TransactionalItemsPackingSpecsCollection = mongoDatabase.GetCollection<PackingSpecs>("TransactionalItems");
             //_TransactionalItemsQualityCollection = mongoDatabase.GetCollection<TransactionalItemQualityPair>("TransactionalItems");
             //_TransactionalItemsTagsCollection = mongoDatabase.GetCollection<TransactionalItemTag>("TransactionalItems");
 
@@ -1250,6 +1250,281 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             {
                 return (false, null, e.Message);
             }
+        }
+
+
+
+        /*NUEVOS ENDPOINTS */
+
+        /// <summary>
+        /// Retrieves the whole object of an Entity/Packing Specs
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="packingSpecsId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> GetPackingSpecsById(string userId, string ipAdress, string transactionalItemId, string packingSpecsId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+                var resultFinal = new PackingSpecs();
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(transactionalItemId)))
+                );
+
+                // obtengo el transactional items //
+                var resultPrev = await _TransactionalItemsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                // deserializo transactional items //
+                TransactionalItem result = resultPrev.Select(d => BsonSerializer.Deserialize<TransactionalItem>(d)).ToList()[0];
+                // obtengo lista de productsPackingSpecs
+                List<PackingSpecs> listProductsPackingSpecs = result.ProductPackingSpecs;
+
+                foreach (var i in listProductsPackingSpecs)
+                {
+                    if(i.Id == packingSpecsId)
+                    {
+                        resultFinal = i;
+                    }
+                }
+
+                //PackingSpecs resultFinal = null;
+
+                return (true, resultFinal, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the whole object of an Entity/Production Specs
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="productionSpecsId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, TransactionalItemProcessStep transactionalItemProcessStepResponse, string? ErrorDescription)> GetProductionSpecsById(string userId, string ipAdress, string transactionalItemId, string productionSpecsId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+                var resultFinal = new TransactionalItemProcessStep();
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(transactionalItemId)))
+                );
+
+                // obtengo el transactional items //
+                var resultPrev = await _TransactionalItemsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                // deserializo transactional items //
+                TransactionalItem result = resultPrev.Select(d => BsonSerializer.Deserialize<TransactionalItem>(d)).ToList()[0];
+                // obtengo lista de productsPackingSpecs
+                List<TransactionalItemProcessStep> listProductsPackingSpecs = result.ProductionSpecs;
+
+                foreach (var i in listProductsPackingSpecs)
+                {
+                    if (i.Id == productionSpecsId)
+                    {
+                        resultFinal = i;
+                    }
+                }
+
+                //PackingSpecs resultFinal = null;
+
+                return (true, resultFinal, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        
+
+        /// <summary>
+        /// Retrieves the whole object of an Entity/Transactional Item Tag
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="transactionalItemTagId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, TransactionalItemProcessStep packingSpecsResponse, string? ErrorDescription)> GetTransactionalItemTagById(string userId, string ipAdress, string transactionalItemId, string transactionalItemTagId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+                var resultFinal = new TransactionalItemProcessStep();
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(transactionalItemId)))
+                );
+
+                // obtengo el transactional items //
+                var resultPrev = await _TransactionalItemsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                // deserializo transactional items //
+                TransactionalItem result = resultPrev.Select(d => BsonSerializer.Deserialize<TransactionalItem>(d)).ToList()[0];
+                // obtengo lista de productsPackingSpecs
+                List<TransactionalItemProcessStep> listProductsPackingSpecs = result.ProductionSpecs;
+
+                foreach (var i in listProductsPackingSpecs)
+                {
+                    if (i.Id == transactionalItemTagId)
+                    {
+                        resultFinal = i;
+                    }
+                }
+
+                //PackingSpecs resultFinal = null;
+
+                return (true, resultFinal, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the whole object of an Entity/Group
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> GetGroupsById(string userId, string ipAdress, string transactionalItemId, string groupId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(groupId)))
+                );
+
+                //var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+                var resultPrev = await _TransactionalItemsPackingSpecsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+
+                PackingSpecs result = resultPrev.Select(d => BsonSerializer.Deserialize<PackingSpecs>(d)).ToList()[0];
+
+                return (true, result, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the whole object of an Entity/Status
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="statusId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> GetStatusById(string userId, string ipAdress, string transactionalItemId, string statusId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(statusId)))
+                );
+
+                //var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+                var resultPrev = await _TransactionalItemsPackingSpecsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+
+                PackingSpecs result = resultPrev.Select(d => BsonSerializer.Deserialize<PackingSpecs>(d)).ToList()[0];
+
+                return (true, result, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the whole object of an Entity/Product Model 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="productModelId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> GetProductModelById(string userId, string ipAdress, string transactionalItemId, string productModelId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(productModelId)))
+                );
+
+                //var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+                var resultPrev = await _TransactionalItemsPackingSpecsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+
+                PackingSpecs result = resultPrev.Select(d => BsonSerializer.Deserialize<PackingSpecs>(d)).ToList()[0];
+
+                return (true, result, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the whole object of an Entity/Transactional Item Details Production Specs
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="transactionalItemDetailsProductionSpecsId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> GetTransactionalItemDetailsProductionSpecsById(string userId, string ipAdress, string transactionalItemId, string transactionalItemDetailsProductionSpecsId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(transactionalItemDetailsProductionSpecsId)))
+                );
+
+                //var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+                var resultPrev = await _TransactionalItemsPackingSpecsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+
+                PackingSpecs result = resultPrev.Select(d => BsonSerializer.Deserialize<PackingSpecs>(d)).ToList()[0];
+
+                return (true, result, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> ITransactionalItemsBack.GetTransactionalItemTagById(string userId, string ipAdress, string transactionalItemId, string transactionalItemTagId)
+        {
+            throw new NotImplementedException();
         }
     }
 }
