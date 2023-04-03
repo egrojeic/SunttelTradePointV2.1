@@ -36,6 +36,156 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
+        //Shipping Statuses
+        public async Task<List<ShippingStatus>> GetShippingStatuses(string filter)
+        {
+            try
+            {
+                string path = basepath.Replace("Name", "GetShippingStatuses");
+                var responseMessage = await Gethttp($"{path}?filterCondition={filter}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<ShippingStatus>>();
+                return list != null ? list : new List<ShippingStatus>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+         public async Task<ShippingStatus> GetShippingStatusById(string ShippingStatusId)
+        {
+            try
+            {
+                string path = basepath.Replace("Name", "GetShippingStatusById");
+                var responseMessage = await Gethttp($"{path}?ShippingStatusId={ShippingStatusId}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<ShippingStatus>();
+                return list != null ? list : new ShippingStatus();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<bool> SaveShippingStatus(ShippingStatus shippingStatus)
+        {
+            try
+            {
+                var clientPost = new AddProperty<ShippingStatus>(_httpClient);
+                shippingStatus = (ShippingStatus)clientPost.Property(shippingStatus);
+                string path = basepath.Replace("Name", "SaveShippingStatus");
+                var responseMessage = await clientPost.Posthttp(path, shippingStatus);
+                return responseMessage.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+        }
+
+        // Documents types
+        public async Task<List<CommercialDocumentType>> GetCommercialDocumentsTypes(string filter)
+        {
+            try
+            {
+                string path = basepath.Replace("Name", "GetCommercialDocumentsTypes");
+                var responseMessage = await Gethttp($"{path}?filterCondition={filter}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocumentType>>();
+                return list != null ? list : new List<CommercialDocumentType>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<CommercialDocumentType?> GetCommercialDocumentTypeById(string filter)
+        {
+            try
+            {
+                string path = basepath.Replace("Name", "GetCommercialDocumentTypeById");
+                var responseMessage = await Gethttp($"{path}?filterCondition={filter}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<CommercialDocumentType>();
+                return list != null ? list : new CommercialDocumentType();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<bool> SaveCommercialDocumentType(CommercialDocumentType commercialDocumentType)
+        {
+            try
+            {
+                var clientPost = new AddProperty<CommercialDocumentType>(_httpClient);
+                commercialDocumentType = (CommercialDocumentType)clientPost.Property(commercialDocumentType);
+                string path = basepath.Replace("Name", "SaveCommercialDocumentType");
+                var responseMessage = await clientPost.Posthttp(path, commercialDocumentType);
+                return responseMessage.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+        }
+
+        //Buisiness Lines
+        public async Task<List<BusinessLine>> GetCommercialBusinessLines(string filter)
+        {
+            try
+            {
+                string path = basepath.Replace("Name", "GetCommercialBusinessLines");
+                var responseMessage = await Gethttp($"{path}?filterCondition={filter}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<BusinessLine>>();
+                return list != null ? list : new List<BusinessLine>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<BusinessLine?> GetCommercialBusinessLineById(string filter)
+        {
+            try
+            {
+                string path = basepath.Replace("Name", "GetCommercialBusinessLineById");
+                var responseMessage = await Gethttp($"{path}?filterCondition={filter}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<BusinessLine>();
+                return list != null ? list : new BusinessLine();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<bool> SaveCommercialBusinessLine(BusinessLine businessLine)
+        {
+            try
+            {
+                var clientPost = new AddProperty<BusinessLine>(_httpClient);
+                businessLine = (BusinessLine)clientPost.Property(businessLine);
+                string path = basepath.Replace("Name", "SaveCommercialBusinessLine");
+                var responseMessage = await clientPost.Posthttp(path, businessLine);
+                return responseMessage.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+        }
+
         public async Task<CommercialDocument> GetItemCommercialDocumentById(string commercialDocumentId)
         {
             try

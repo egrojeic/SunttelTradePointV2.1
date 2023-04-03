@@ -1,0 +1,140 @@
+﻿@page "/ShippingStatusDocument/{_filterItems}"
+@page "/ShippingStatusDocument"
+
+@using SunttelTradePointB.Client.Services.SalesServices;
+@using SunttelTradePointB.Shared.Sales;
+@inject HttpClient Http
+@inject SalesDocuments SalesDocumentsService
+@inject ContextMenuService ContextMenuService
+@inject TransactionalItemsService transactItemsService
+@inject NavigationManager Navigation
+
+
+<PageTitleComponent Title="Status of Shipping Document" IconName="signal.png"
+                    Description="Describe the Status of the Shipping Document">
+</PageTitleComponent>
+
+<div class="panelMenuContainer">
+    <MenuConcet OriginPage="SalesDocuments"></MenuConcet>
+    <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
+</div>
+
+
+@if (isLoading)
+{
+
+    <WaitingProcessIndicator loadingTopic="Transactional Items"></WaitingProcessIndicator>
+
+}
+else
+{
+
+    <RadzenDataGrid AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="true"
+                FilterMode="FilterMode.Advanced"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                AllowSorting="true"
+                AllowPaging="true"
+                PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                ShowPagingSummary="true"
+                Data="@ShippingStatuses"
+                TItem="ShippingStatus"
+                ColumnWidth="300px"
+                SelectionMode="DataGridSelectionMode.Single"
+                LogicalFilterOperator="LogicalFilterOperator.Or"
+                CellContextMenu="@ShowContextMenuWithContent"
+                PageNumbersCount="100"
+                PageSize="10">
+
+        <Columns>
+            <RadzenDataGridColumn TItem="ShippingStatus" Property="ShippingStatuses.Name" Title="@GetName("Name", new ShippingStatus())" Width="80px" />
+            <RadzenDataGridColumn TItem="ShippingStatus" Property="AffectInventory" Title="@GetName("AffectInventory", new ShippingStatus())" Width="120px" TextAlign="Radzen.TextAlign.Center">
+                <Template>
+                    @{
+                        bool AffectInventory = (bool)context.GetType().GetProperty(nameof(ShippingStatus.AffectInventory)).GetValue(context);
+                        <input type="checkbox" checked="@AffectInventory" />
+                    }
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="ShippingStatus" Property="EditingAllowed" Title="@GetName("EditingAllowed", new ShippingStatus())" Width="120px" TextAlign="Radzen.TextAlign.Center">
+                <Template>
+                    @{
+                        bool EditingAllowed = (bool)context.GetType().GetProperty(nameof(ShippingStatus.EditingAllowed)).GetValue(context);
+                        <input type="checkbox" checked="@EditingAllowed" />
+                    }
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+}
+
+
+@code {
+    [Parameter]
+    public string _filterItems { get; set; } = "";
+
+    public List<ShippingStatus> ShippingStatuses = new List<ShippingStatus>();
+
+
+    protected override void OnInitialized()
+    {
+        transactItemsService.Page = "ShippingStatus";
+        if (_filterItems == "" && _filterItems is null) return;
+        LoadData();
+    }
+
+    bool isLoading = false;
+
+    public string? conceptFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+    private async Task LoadData()
+    {
+        isLoading = true;
+        ShippingStatuses = await SalesDocumentsService.GetShippingStatuses(_filterItems);
+        isLoading = false;
+        StateHasChanged();
+    }
+
+
+    public void Onload(object args)
+    {
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    #region Grid
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<ShippingStatus> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        TransactionalItemStatus argObj = (TransactionalItemStatus)args.Value;
+
+        //Navigation.NavigateTo($"/StatusConcept/Status/{Page}/{_filterItems}/{argObj.Id}");
+    }
+
+    #endregion Grid
+
+
+
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+}
