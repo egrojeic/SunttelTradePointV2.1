@@ -462,23 +462,23 @@
         SearcherValue = arg.value.ToString();
         if (SearcherValue == "DocumentType")
         {
-            documentTypeList = await DocumentServices.GetCommercialDocumentsTypes(commercialDocumentId);
+            documentTypeList = await DocumentServices.GetCommercialDocumentsTypes(arg.value);
         }
         if (SearcherValue == "Vendor")
         {
-            vendorList = new List<Concept>();
+            vendorList = await DocumentServices.GetCommercialVendorList(arg.value);
         }
         if (SearcherValue == "SalesPerson")
         {
-            salesPersonList = new List<Concept>();
+            salesPersonList = await DocumentServices.GetCommercialSalesPersonList(arg.value);
         }
         if (SearcherValue == "Buyer")
         {
-            buyerList = new List<Concept>();
+            buyerList = await DocumentServices.GetCommercialBuyerList(arg.value);
         }
         if (SearcherValue == "Season")
         {
-            seasonList = new List<SeasonBusiness>();
+            seasonList = await DocumentServices.GetCommercialSeasonList(arg.value);
         }
 
 

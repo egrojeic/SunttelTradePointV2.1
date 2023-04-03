@@ -88,6 +88,71 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
+        public async Task<List<Concept>> GetCommercialVendorList(string filter)
+        {
+            try
+            {
+                string path = basepath.Replace("Name", "GetCommercialDocumentsTypes");
+                var responseMessage = await Gethttp($"{path}?filterCondition={filter}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
+                return list != null ? list : new List<Concept>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+        
+        
+        public async Task<List<Concept>> GetCommercialSalesPersonList(string filter)
+        {
+            try
+            {
+                string path = basepath.Replace("Name", "GetCommercialDocumentsTypes");
+                var responseMessage = await Gethttp($"{path}?filterCondition={filter}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
+                return list != null ? list : new List<Concept>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+        
+        public async Task<List<SeasonBusiness>> GetCommercialSeasonList(string filter)
+        {
+            try
+            {
+                string path = basepath.Replace("Name", "GetCommercialDocumentsTypes");
+                var responseMessage = await Gethttp($"{path}?filterCondition={filter}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<SeasonBusiness>>();
+                return list != null ? list : new List<SeasonBusiness>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<List<Concept>> GetCommercialBuyerList(string filter)
+        {
+            try
+            {
+                string path = basepath.Replace("Name", "GetCommercialDocumentsTypes");
+                var responseMessage = await Gethttp($"{path}?filterCondition={filter}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
+                return list != null ? list : new List<Concept>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
         public async Task<CommercialDocumentType?> GetCommercialDocumentTypeById(string filter)
         {
             try
