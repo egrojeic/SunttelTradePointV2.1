@@ -1,17 +1,17 @@
 ﻿@if (Enable)
 {
-    <div >
+    <div style="@style">
         <input type="@(TypeInt?"number":"")" class="form-control" @onchange="Onchange">
     </div>
 }
 else
 {
-    <div class="p-mode-text">
+    <div class="p-mode-text" style="@style">
         <p>@Value</p>
     </div>
 }
 @code {
-   
+
     public int Value { get; set; }
     [Parameter]
     public int ValueInt { get; set; }
@@ -21,6 +21,8 @@ else
     public bool Enable { get; set; } = true;
     [Parameter]
     public bool TypeInt { get; set; } = true;
+    [Parameter]
+    public string style  { get; set; }
     [Parameter]
     public EventCallback<int> ValueIntChanged { get; set; }
     [Parameter]

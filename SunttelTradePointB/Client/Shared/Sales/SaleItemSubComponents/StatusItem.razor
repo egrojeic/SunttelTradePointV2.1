@@ -1,0 +1,41 @@
+﻿@using SunttelTradePointB.Shared.Common
+@using SunttelTradePointB.Shared.Sales;
+<div>
+    <div class="control-horizontal">
+        <div style="@statusColor">
+            <img class="img-btn" src="/images/print.png">
+        </div>
+        <div style="@statusColor">
+            <img class="img-btn" src="/images/print.png">
+        </div>
+        <div style="@statusColor">
+            <img class="img-btn" src="/images/print.png">
+        </div>
+        <div style="@statusColor">
+            <img class="img-btn" src="/images/print.png">
+        </div>
+        <div style="@statusColor">
+            <img class="img-btn" src="/images/print.png">
+        </div>     
+    </div>
+</div>
+@code {
+    [Parameter]
+    public SalesDocumentPrintingSatus item { get; set; }
+
+    public string statusColor(string name)
+    {
+        string color = "#a4a4a4";
+        if (item != null)
+        {
+            if (name == "DocumentPrinted") return item != null ? "#73e600" : "#a4a4a4";
+            if (name == "BillOfLandingPrinted") return item != null ? "#73e600" : "#a4a4a4";
+            if (name == "PickingTicketPrinted") return item != null ? "#73e600" : "#a4a4a4";
+            if (name == "LabelsPrinted") return ""; return item != null ? "#73e600" : "#a4a4a4";
+            if (name == "SelectedToPrint") return item != null ? "#73e600" : "#a4a4a4";
+        }
+        return color;
+    }
+
+}
+
