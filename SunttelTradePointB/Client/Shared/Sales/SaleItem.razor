@@ -20,7 +20,7 @@
 
 
 <form>
-   
+
     @if (page == "")
     {
 
@@ -28,7 +28,7 @@
 
     @if (page == "")
     {
-        
+
         <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
             <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
@@ -47,7 +47,7 @@
 
 
         </div>
-        <SliderScrollAuto></SliderScrollAuto>
+        <SliderScrollAuto summary="commercialDocument.FinanceSummary"></SliderScrollAuto>
         <div class="grid-columns-header grid-columns-6">
 
             <div class="item-1">
@@ -75,7 +75,9 @@
             <InputTextSelector3 styleCaption="width:180px" TItem="CommercialDocumentType"
                             Id="DocumentType"
                             caption="@(commercialDocument.DocumentType !=null ? commercialDocument.DocumentType?.Name:"" )"
-                            Items="documentTypeList">
+                            Items="documentTypeList"
+                            EventIdSelectionAndId="EventIdSelectionAndId"
+                            EventSearcherValueAndId="EventSearcherValueAndId">
             </InputTextSelector3>
 
             <div><b class="c-red">*</b><label>@GetName("DocumentNumber",new CommercialDocument())</label></div>
@@ -84,25 +86,8 @@
                           @bind-ValueInt="commercialDocument.DocumentNumber">
             </InputTextDisable>
 
-            <div><b class="c-red">*</b><label>@GetName("Vendor",new CommercialDocument())</label></div>
-            <InputTextSelector3 styleCaption="width:180px" TItem="Concept"
-                            Id="Vendor"
-                            caption="@(commercialDocument.Vendor !=null ? commercialDocument.Vendor?.Name:"" )"
-                            Items="vendorList">
-
-            </InputTextSelector3>
-
-            <div><b class="c-red">*</b><label>@GetName("Buyer",new CommercialDocument())</label></div>
-            <InputTextSelector3 styleCaption="width:180px" TItem="Concept"
-                            Id="Buyer"
-                            caption="@(commercialDocument.Buyer !=null ? commercialDocument.Buyer?.Name:"" )"
-                            Items="vendorList">
-
-            </InputTextSelector3>
-
-            <div><b class="c-red">*</b><label>@GetName("TrackingNumber",new CommercialDocument())</label></div>
-            <InputTextDisable Enable="true" TypeInt="false" @bind-ValueString="commercialDocument.TrackingNumber"></InputTextDisable>
-
+            <div><b class="c-red">*</b><label>@GetName("PO",new CommercialDocument())</label></div>
+            <InputTextDisable Enable="true" TypeInt="false" @bind-ValueString="commercialDocument.PO"></InputTextDisable>
 
             <div><b class="c-red">*</b><label>@GetName("ShipDate",new CommercialDocument())</label></div>
             <div><input type="date" @bind-value="commercialDocument.ShipDate" class="form-control" /></div>
@@ -113,14 +98,84 @@
             <div><b class="c-red">*</b><label>@GetName("ArrivalDate",new CommercialDocument())</label></div>
             <div><input type="date" @bind-value="commercialDocument.ArrivalDate" class="form-control" /></div>
 
+            <div><b class="c-red">*</b><label>@GetName("Vendor",new CommercialDocument())</label></div>
+            <InputTextSelector3 styleCaption="width:180px" TItem="Concept"
+                            Id="Vendor"
+                            caption="@(commercialDocument.Vendor !=null ? commercialDocument.Vendor?.Name:"" )"
+                            Items="vendorList"
+                            EventIdSelectionAndId="EventIdSelectionAndId"
+                            EventSearcherValueAndId="EventSearcherValueAndId">
+
+            </InputTextSelector3>
+
+            <div><b class="c-red">*</b><label>@GetName("Buyer",new CommercialDocument())</label></div>
+            <InputTextSelector3 styleCaption="width:180px" TItem="Concept"
+                            Id="Buyer"
+                            caption="@(commercialDocument.Buyer !=null ? commercialDocument.Buyer?.Name:"" )"
+                            Items="buyerList"
+                            EventIdSelectionAndId="EventIdSelectionAndId"
+                            EventSearcherValueAndId="EventSearcherValueAndId">
+
+            </InputTextSelector3>
+
             <div><b class="c-red">*</b><label>@GetName("SalesPerson",new CommercialDocument())</label></div>
             <InputTextSelector3 styleCaption="width:180px" TItem="Concept"
                             Id="SalesPerson"
                             caption="@(commercialDocument.SalesPerson !=null ? commercialDocument.SalesPerson?.Name:"" )"
-                            Items="salesPersonList">
+                            Items="salesPersonList"
+                            EventIdSelectionAndId="EventIdSelectionAndId"
+                            EventSearcherValueAndId="EventSearcherValueAndId"
+            >
             </InputTextSelector3>
 
+            <div><b class="c-red">*</b><label>@GetName("DeliveryAddress",new CommercialDocument())</label></div>
+            <div>
+                <select @onchange="SelectItemDeliveryAddress" class="select-style">
+                    @if (commercialDocument.DeliveryAddress != null)
+                    {
+                        <option value="@commercialDocument.DeliveryAddress" selected>@commercialDocument.DeliveryAddress.Name</option>
+                    }
+                    @if (buyerWarehouseList != null && buyerWarehouseList.Count() > 0)
+                    {
+                        <option value="0" selected>Select</option>
+                    }
+                    @foreach (var item in addressList)
+                    {
+                        <option value="@item">@item.Name</option>
+                    }
+                </select>
+            </div>
 
+
+            <div><b class="c-red">*</b><label>@GetName("Season",new CommercialDocument())</label></div>
+            <InputTextSelector3 styleCaption="width:180px" TItem="SeasonBusiness"
+                            Id="Season"
+                            caption="@(commercialDocument.Season !=null ? commercialDocument.Season?.Name:"" )"
+                            Items="seasonList"
+                            EventIdSelectionAndId="EventIdSelectionAndId"
+                            EventSearcherValueAndId="EventSearcherValueAndId">
+            </InputTextSelector3>
+
+            <div><b class="c-red">*</b><label>@GetName("Carrier",new CommercialDocument())</label></div>
+            <div>
+                <select @onchange="SelectItemVendorWarehous" class="select-style">
+                    @if (commercialDocument.Carrier != null)
+                    {
+                        <option value="@commercialDocument.Carrier" selected>@commercialDocument.Carrier.Name</option>
+                    }
+                    @if (carrierList != null && carrierList.Count() > 0)
+                    {
+                        <option value="0" selected>Select</option>
+                    }
+                    @foreach (var item in carrierList)
+                    {
+                        <option value="@item">@item.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div><b class="c-red">*</b><label>@GetName("TrackingNumber",new CommercialDocument())</label></div>
+            <InputTextDisable Enable="true" TypeInt="false" @bind-ValueString="commercialDocument.TrackingNumber"></InputTextDisable>
 
             <div><b class="c-red">*</b><label>@GetName("VendorWarehouse",new CommercialDocument())</label></div>
             <div>
@@ -158,24 +213,6 @@
                 </select>
             </div>
 
-            <div><b class="c-red">*</b><label>@GetName("DeliveryAddress",new CommercialDocument())</label></div>
-            <div>
-                <select @onchange="SelectItemDeliveryAddress" class="select-style">
-                    @if (commercialDocument.DeliveryAddress != null)
-                    {
-                        <option value="@commercialDocument.DeliveryAddress" selected>@commercialDocument.DeliveryAddress.Name</option>
-                    }
-                    @if (buyerWarehouseList != null && buyerWarehouseList.Count() > 0)
-                    {
-                        <option value="0" selected>Select</option>
-                    }
-                    @foreach (var item in addressList)
-                    {
-                        <option value="@item">@item.Name</option>
-                    }
-                </select>
-            </div>
-
             <div><b class="c-red">*</b><label>@GetName("BusinessLineDoc",new CommercialDocument())</label></div>
             <div>
                 <select @onchange="SelectItemBusinessLineDoc" class="select-style">
@@ -196,34 +233,6 @@
 
 
 
-            <div><b class="c-red">*</b><label>@GetName("PO",new CommercialDocument())</label></div>
-            <InputTextDisable Enable="true" TypeInt="false" @bind-ValueString="commercialDocument.PO"></InputTextDisable>
-
-
-            <div><b class="c-red">*</b><label>@GetName("Season",new CommercialDocument())</label></div>
-            <InputTextSelector3 styleCaption="width:180px" TItem="SeasonBusiness"
-                            Id="SalesPerson"
-                            caption="@(commercialDocument.Season !=null ? commercialDocument.Season?.Name:"" )"
-                            Items="seasonList">
-            </InputTextSelector3>
-
-            <div><b class="c-red">*</b><label>@GetName("Carrier",new CommercialDocument())</label></div>
-            <div>
-                <select @onchange="SelectItemVendorWarehous" class="select-style">
-                    @if (commercialDocument.Carrier != null)
-                    {
-                        <option value="@commercialDocument.Carrier" selected>@commercialDocument.Carrier.Name</option>
-                    }
-                    @if (CarrierList != null && CarrierList.Count() > 0)
-                    {
-                        <option value="0" selected>Select</option>
-                    }
-                    @foreach (var item in CarrierList)
-                    {
-                        <option value="@item">@item.Name</option>
-                    }
-                </select>
-            </div>
 
         </div>
 
@@ -342,6 +351,7 @@
     public string filter { get; set; }
 
     string page = "";
+    string SearcherValue = "";
 
     public CommercialDocument commercialDocument = new();
     public SalesDocumentItemsDetails items = new();
@@ -351,8 +361,7 @@
    ("ACTIVE", "#61c100"),  ("DISABLE", "#5d5d5d") };
     public List<(string, string)> financeStatusDocumenTypeList = new List<(string, string)>{
    ("ACTIVE", "#61c100"),  ("DISABLE", "#5d5d5d") };
-    public List<(string, string)> printingSatusStatusTypeList = new List<(string, string)>{
-   ("ACTIVE", "#61c100"),  ("DISABLE", "#5d5d5d") };
+
 
     public List<ShippingStatus> shippingStatusDocumentList = new();
     public List<FinanceStatus> financeStatusDocumentList = new();
@@ -363,7 +372,8 @@
     public List<BusinessLine> businessLineDocList = new();
     public List<Concept> salesPersonList = new();
     public List<Concept> vendorList = new();
-    public List<Concept> CarrierList = new();
+    public List<Concept> carrierList = new();
+    public List<Concept> buyerList = new();
     public List<SeasonBusiness> seasonList = new();
     public List<CommercialDocument> originDocument = new();
     public List<BasicConcept> vendorWarehouseList = new();
@@ -447,10 +457,6 @@
     }
 
 
-
-
-
-
     public string GetDeliveryAddress(Address address)
     {
         string _address = "";
@@ -461,6 +467,61 @@
                 _address += address.CityAddress.RegionCity.CountryRegion.Name;
         }
         return _address;
+    }
+
+
+    public void EventSearcherValueAndId((string value, string IdControl) arg)
+    {
+        SearcherValue = arg.value.ToString();
+        if (SearcherValue == "DocumentType")
+        {
+            documentTypeList = new List<CommercialDocumentType>();
+        }
+        if (SearcherValue == "Vendor")
+        {
+            vendorList = new List<Concept>();
+        }
+        if (SearcherValue == "SalesPerson")
+        {
+            salesPersonList = new List<Concept>();
+        }
+        if (SearcherValue == "Buyer")
+        {
+            buyerList = new List<Concept>();
+        }
+        if (SearcherValue == "Season")
+        {
+            seasonList = new List<SeasonBusiness>();
+        }
+
+
+    }
+
+
+    public void EventIdSelectionAndId(CommercialDocumentType item)
+    {
+        commercialDocument.DocumentType = item;
+    }
+
+    public void EventIdSelectionAndId(Concept item)
+    {
+        if (SearcherValue == "Vendor")
+        {
+            commercialDocument.Vendor = item;
+        }
+        if (SearcherValue == "SalesPerson")
+        {
+            commercialDocument.SalesPerson = item;
+        }
+        if (SearcherValue == "Buyer")
+        {
+            commercialDocument.Buyer = item;
+        }       
+    }
+
+    public void EventIdSelectionAndId(SeasonBusiness item)
+    {
+        commercialDocument.Season = item;
     }
 
     public void Home()
