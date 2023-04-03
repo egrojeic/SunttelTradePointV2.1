@@ -5,28 +5,26 @@
 
 <div id="container-menu-general">
     <nav>
-        <button class="general-menu-button" @onclick="CreateNew"><i class="fa-solid fa-file"></i> New</button>
-       
-        <SfSplitButton Content="Import Data" IconCss="fa-solid fa-file-import" CssClass="splitButtonsStyle">
+        <button class="general-menu-button btn-new" @onclick="CreateNew"><i class="fa-solid fa-file"></i></button>
+
+        <SfSplitButton Content="Import..." IconCss="fa-solid fa-file-import" CssClass="splitButtonsStyle">
             <DropDownMenuItems>
                 <DropDownMenuItem Text="Importing from the cloud..." IconCss="fa-solid fa-cloud-arrow-up"></DropDownMenuItem>
                 <DropDownMenuItem Text="Uploading a csv file..." IconCss="fa-solid fa-file-csv"></DropDownMenuItem>
-
             </DropDownMenuItems>
-
         </SfSplitButton>
 
         <SfSplitButton Content="Related Concepts" IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
             <SplitButtonEvents ItemSelected="ItemSelected">
             </SplitButtonEvents>
             <DropDownMenuItems>
-                <DropDownMenuItem Id="Entities" Text="Entities" IconCss="fa-solid fa-group-arrows-rotate"></DropDownMenuItem>
-                <DropDownMenuItem Id="TransactionalItems" Text="Commercial Items" IconCss="fa-solid fa-layer-group"></DropDownMenuItem>
-                
+                <DropDownMenuItem Id="DocumentType" Text="Document Type" IconCss="fa-solid fa-group-arrows-rotate"></DropDownMenuItem>
+                <DropDownMenuItem Id="BusinessLineDoc" Text="Business Line Doc" IconCss="fa-solid fa-layer-group"></DropDownMenuItem>
+                <DropDownMenuItem Id="ShippingStatusDocument" Text="Shipping Status Document" IconCss="fa-solid fa-layer-group"></DropDownMenuItem>               
             </DropDownMenuItems>
         </SfSplitButton>
 
-        <SfSplitButton Content="Dynamic Views" IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
+        <SfSplitButton Content="Views" IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
             <SplitButtonEvents ItemSelected="ItemSelected">
             </SplitButtonEvents>
             <DropDownMenuItems>
@@ -37,7 +35,7 @@
         </SfSplitButton>
 
     </nav>
-  
+
 </div>
 
 

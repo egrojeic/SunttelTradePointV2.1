@@ -24,3 +24,11 @@ nav {
 .e-btn {
     background-color: red;
 }
+
+.btn-new{  
+    display:flex;
+    flex-direction:row;
+    justify-items:center;
+    align-items:center;   
+    margin-right:0px;
+}
