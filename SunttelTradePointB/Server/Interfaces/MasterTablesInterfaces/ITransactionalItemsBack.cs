@@ -263,5 +263,86 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="productModel"></param>
         /// <returns></returns>
         Task<(bool IsSuccess, ProductModel? productModel, string? ErrorDescription)> SaveTransactionalItemModels(string userId, string ipAddress, string transactionalItemId, ProductModel productModel);
+
+
+        /* NUEVOS ENDPOINTS */
+
+
+        /// <summary>
+        /// Retrieves an entity packing specs looked by id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="packingSpecsId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> GetPackingSpecsById(string userId, string ipAdress, string transactionalItemId, string packingSpecsId);
+
+
+        /// <summary>
+        /// Retrieves an entity production specs looked by id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="productionSpecsId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, PackingSpecs TransactionalItemProcessStep, string? ErrorDescription)> GetProductionSpecsById(string userId, string ipAdress, string transactionalItemId, string productionSpecsId);
+
+
+        /// <summary>
+        /// Retrieves an entity transactional item tag looked by id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="transactionalItemTagId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> GetTransactionalItemTagById(string userId, string ipAdress, string transactionalItemId, string transactionalItemTagId);
+
+
+        /// <summary>
+        /// Retrieves an entity group looked by id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> GetGroupsById(string userId, string ipAdress, string transactionalItemId, string groupId);
+
+
+        /// <summary>
+        /// Retrieves an entity status looked by id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="statusId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> GetStatusById(string userId, string ipAdress, string transactionalItemId, string statusId);
+
+
+        /// <summary>
+        /// Retrieves an entity product model looked by id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="productModelId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> GetProductModelById(string userId, string ipAdress, string transactionalItemId, string productModelId);
+
+
+        /// <summary>
+        /// Retrieves an entity transactional item details production looked by id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="transactionalItemDetailsProductionSpecsId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> GetTransactionalItemDetailsProductionSpecsById(string userId, string ipAdress, string transactionalItemId, string transactionalItemDetailsProductionSpecsId);
+
     }
 }
