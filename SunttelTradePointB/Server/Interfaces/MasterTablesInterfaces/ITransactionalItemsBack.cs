@@ -287,7 +287,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="transactionalItemId"></param>
         /// <param name="productionSpecsId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, PackingSpecs TransactionalItemProcessStep, string? ErrorDescription)> GetProductionSpecsById(string userId, string ipAdress, string transactionalItemId, string productionSpecsId);
+        Task<(bool IsSuccess, TransactionalItemProcessStep transactionalItemProcessStepResponse, string? ErrorDescription)> GetProductionSpecsById(string userId, string ipAdress, string transactionalItemId, string productionSpecsId);
 
 
         /// <summary>

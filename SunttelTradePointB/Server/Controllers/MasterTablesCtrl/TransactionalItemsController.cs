@@ -766,7 +766,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
 
             if (response.IsSuccess)
             {
-                return Ok(response.packingSpecsResponse );
+                return Ok(response.transactionalItemProcessStepResponse);
             }
             else
                 return NotFound(response.ErrorDescription);

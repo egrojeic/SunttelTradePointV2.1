@@ -1308,7 +1308,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="transactionalItemId"></param>
         /// <param name="productionSpecsId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, TransactionalItemProcessStep packingSpecsResponse, string? ErrorDescription)> GetProductionSpecsById(string userId, string ipAdress, string transactionalItemId, string productionSpecsId)
+        public async Task<(bool IsSuccess, TransactionalItemProcessStep transactionalItemProcessStepResponse, string? ErrorDescription)> GetProductionSpecsById(string userId, string ipAdress, string transactionalItemId, string productionSpecsId)
         {
             try
             {
@@ -1344,6 +1344,8 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
         }
 
+        
+
         /// <summary>
         /// Retrieves the whole object of an Entity/Transactional Item Tag
         /// </summary>
@@ -1352,24 +1354,35 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="transactionalItemId"></param>
         /// <param name="transactionalItemTagId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> GetTransactionalItemTagById(string userId, string ipAdress, string transactionalItemId, string transactionalItemTagId)
+        public async Task<(bool IsSuccess, TransactionalItemProcessStep packingSpecsResponse, string? ErrorDescription)> GetTransactionalItemTagById(string userId, string ipAdress, string transactionalItemId, string transactionalItemTagId)
         {
             try
             {
                 var pipeline = new List<BsonDocument>();
+                var resultFinal = new TransactionalItemProcessStep();
 
                 pipeline.Add(
-                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(transactionalItemTagId)))
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(transactionalItemId)))
                 );
 
-                //var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                // obtengo el transactional items //
+                var resultPrev = await _TransactionalItemsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                // deserializo transactional items //
+                TransactionalItem result = resultPrev.Select(d => BsonSerializer.Deserialize<TransactionalItem>(d)).ToList()[0];
+                // obtengo lista de productsPackingSpecs
+                List<TransactionalItemProcessStep> listProductsPackingSpecs = result.ProductionSpecs;
 
-                var resultPrev = await _TransactionalItemsPackingSpecsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                foreach (var i in listProductsPackingSpecs)
+                {
+                    if (i.Id == transactionalItemTagId)
+                    {
+                        resultFinal = i;
+                    }
+                }
 
+                //PackingSpecs resultFinal = null;
 
-                PackingSpecs result = resultPrev.Select(d => BsonSerializer.Deserialize<PackingSpecs>(d)).ToList()[0];
-
-                return (true, result, null);
+                return (true, resultFinal, null);
             }
             catch (Exception e)
             {
@@ -1509,5 +1522,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
         }
 
+        Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> ITransactionalItemsBack.GetTransactionalItemTagById(string userId, string ipAdress, string transactionalItemId, string transactionalItemTagId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
