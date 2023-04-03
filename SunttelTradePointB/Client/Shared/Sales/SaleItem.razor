@@ -395,28 +395,15 @@
 
     protected override async void OnInitialized()
     {
-        //prueba
-        commercialDocument.VendorWarehouse = new BasicConcept
-            {
-                Name = "Prueba david"
-            };
-
-        commercialDocument.BuyerWarehouse = new BasicConcept
-            {
-                Name = "Prueba David "
-            };
-
-        isLoading = true;
-        OpenAlert("Loading...", 0, true);
+      
+        isLoading = true;       
         StateHasChanged();
         if (commercialDocumentId != null)
         {
             commercialDocument = await DocumentServices.GetItemCommercialDocumentById(commercialDocumentId);
         }
 
-        LoadCommercialDocument();
-
-        OpenAlert("Loading...", 0, false);
+        LoadCommercialDocument();       
         isLoading = false;
         StateHasChanged();
     }
@@ -470,12 +457,12 @@
     }
 
 
-    public void EventSearcherValueAndId((string value, string IdControl) arg)
+    public async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
         SearcherValue = arg.value.ToString();
         if (SearcherValue == "DocumentType")
         {
-            documentTypeList = new List<CommercialDocumentType>();
+            documentTypeList = await DocumentServices.GetCommercialDocumentsTypes(commercialDocumentId);
         }
         if (SearcherValue == "Vendor")
         {

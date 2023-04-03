@@ -72,8 +72,8 @@
     public async void Save()
     {
         var resul = await SaleDocumentService.SaveCommercialDocumentType(commercialDocumentType);
-        if (resul) commercialDocumentType = new();
-        Msg(resul);
+        if (resul !=null) commercialDocumentType = new();
+        Msg(resul !=null);
     }
 
     private void Msg(bool mode)

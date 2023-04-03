@@ -10,8 +10,8 @@
 
 @if (@viewMsg)
 {
-            <MessageSaveComponent isVisible="viewMsg" message="@msg">
-            </MessageSaveComponent>
+    <MessageSaveComponent isVisible="viewMsg" message="@msg">
+    </MessageSaveComponent>
 }
 
 <PageTitleComponent Title="Business line documents" IconName="signal.png"
@@ -60,17 +60,15 @@
     public async void Save()
     {
         var resul = await SaleDocumentService.SaveCommercialBusinessLine(businessLine);
-        if (resul) businessLine = new();
-        Msg(resul);
+        if (resul != null)
+        {
+            businessLine = new();
+            Msg("Save", 0);
+        }
     }
 
-    private void Msg(bool mode)
-    {
-        msg = mode ? "Saved" : "No saved";
-        viewMsg = true;
-        StateHasChanged();
-    }
-    private void Msg(string? Msg)
+
+    private void Msg(string? Msg, int status)
     {
         msg = Msg;
         viewMsg = true;

@@ -68,8 +68,8 @@
     public async void Save()
     {
         var resul = await SaleDocumentService.SaveShippingStatus(shippingStatus);
-        if (resul) shippingStatus = new();
-        Msg(resul);
+        if (resul !=null) shippingStatus = new();
+        Msg(resul!=null);
     }
 
     private void Msg(bool mode)
