@@ -20,7 +20,7 @@
 
 
 <form>
-
+   
     @if (page == "")
     {
 
@@ -28,6 +28,7 @@
 
     @if (page == "")
     {
+        
         <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
             <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
@@ -46,6 +47,7 @@
 
 
         </div>
+        <SliderScrollAuto></SliderScrollAuto>
         <div class="grid-columns-header grid-columns-6">
 
             <div class="item-1">

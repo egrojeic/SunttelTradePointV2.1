@@ -1,0 +1,34 @@
+﻿<div class="div-scroll">
+    <div class="div-scroll-item">
+        @if (list != null)
+        {
+            @foreach (var item in list)
+            {              
+                <div class="item">
+                    <p>
+                        @item.Item1
+                        <b>@item.Item2</b>
+                    </p>
+                </div>
+            }   
+        }
+    </div>
+   
+</div>
+
+@code {
+    [Parameter]
+    public List<(string, string)> list { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        if (list == null) list = new();
+        list.Add(("Total", "2000"));
+        list.Add(("Total", "2000"));
+        list.Add(("Total", "2000"));
+        list.Add(("Total", "2000"));
+        list.Add(("Total", "2000"));
+
+    }
+
+}

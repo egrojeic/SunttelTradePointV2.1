@@ -2,20 +2,20 @@
 @using SunttelTradePointB.Shared.Sales;
 <div>
     <div class="control-horizontal">
-        <div style="@statusColor">
+        <div style="background-color:@(statusColor("DocumentPrinted"));">
             <img class="img-btn" src="/images/print.png">
         </div>
-        <div style="@statusColor">
-            <img class="img-btn" src="/images/print.png">
+        <div style="background-color:@(statusColor("BillOfLandingPrinted"));">
+            <img class="img-btn" src="/images/BillOfLandingPrinted.png">
         </div>
-        <div style="@statusColor">
-            <img class="img-btn" src="/images/print.png">
+        <div style="background-color:@(statusColor("PickingTicketPrinted"));">
+            <img class="img-btn" src="/images/PickingTicketPrinted.png">
         </div>
-        <div style="@statusColor">
-            <img class="img-btn" src="/images/print.png">
+        <div style="background-color:@(statusColor("LabelsPrinted"));">
+            <img class="img-btn" src="/images/LabelsPrinted.png">
         </div>
-        <div style="@statusColor">
-            <img class="img-btn" src="/images/print.png">
+        <div style="background-color:@(statusColor("SelectedToPrint"));">
+            <img class="img-btn" src="/images/SelectedToPrint.png">
         </div>     
     </div>
 </div>
@@ -28,12 +28,13 @@
         string color = "#a4a4a4";
         if (item != null)
         {
-            if (name == "DocumentPrinted") return item != null ? "#73e600" : "#a4a4a4";
-            if (name == "BillOfLandingPrinted") return item != null ? "#73e600" : "#a4a4a4";
-            if (name == "PickingTicketPrinted") return item != null ? "#73e600" : "#a4a4a4";
-            if (name == "LabelsPrinted") return ""; return item != null ? "#73e600" : "#a4a4a4";
-            if (name == "SelectedToPrint") return item != null ? "#73e600" : "#a4a4a4";
+            if (name == "DocumentPrinted" && item.DocumentPrinted) return "#73e600";
+            if (name == "BillOfLandingPrinted" && item.BillOfLandingPrinted )  return "#73e600";
+            if (name == "PickingTicketPrinted" && item.PickingTicketPrinted) return "#73e600";
+            if (name == "LabelsPrinted" && item.LabelsPrinted) return "#73e600";
+            if (name == "SelectedToPrint" && item.SelectedToPrint) return "#73e600";
         }
+       
         return color;
     }
 
