@@ -149,7 +149,7 @@
     public bool dataGridView = true;
 
     public bool modeEdit = true, viewMsg = false;
-    public string msg = "", pageView = "";
+    public string msg = "", pageView = "Groups";
 
     public List<GridColumn> gridColumnListchildrenGroups = new();
 
@@ -165,7 +165,8 @@
 
             conceptGroup = await transactionalService.GetGroupsById(conceptGroupId);
 
-           if(conceptGroup!=null) childrenGroups = conceptGroup.ChildrenGroups;
+            if(conceptGroup!=null) childrenGroups = conceptGroup.ChildrenGroups;
+            StateHasChanged();
         }
 
     }
@@ -196,7 +197,7 @@
             }
 
         }
-
+        
     }
 
     public void DeleteChildrenGroups(string value)
@@ -221,14 +222,16 @@
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<ConceptGroup> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         ConceptGroup argObj = (ConceptGroup)args.Value;
         childrenGroup = argObj;
-        dataGridView = false;
+        
+        modeEdit = false;
+        StateHasChanged();
     }
 
     #endregion Grid

@@ -8,6 +8,7 @@
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.SplitButtons
 @using System.Reflection;
+@inject IJSRuntime Js
 @inject ActorsNodeService actorsNodeServive;
 @inject TransactionalItemsService transactionalService;
 @inject NavigationManager Navigation
@@ -39,7 +40,7 @@
 
 
         <SfSplitButton Content="Related Concepts" IconCss="e-icons e-user-defined" CssClass="splitButtonsStyle">
-            <SplitButtonEvents ItemSelected="ItemSelected">
+            <SplitButtonEvents ItemSelected="ItemSelected_1">
             </SplitButtonEvents>
             <DropDownMenuItems>
                 <DropDownMenuItem Id="TypesTransactionalItems" Text="Types" IconCss="fa-solid fa-sitemap"></DropDownMenuItem>
@@ -318,8 +319,8 @@
 
             TransactionalItem item = null;
             if (currentItem.Status != null) item = await transactionalService.SaveTransactionalItem(currentItem);
-            
-            
+
+
             bool resul = (item != null ? true : false);
             if (resul && currentItem.Status != null)
             {
@@ -368,6 +369,15 @@
         if (referAlert != null) referAlert.Load();
         StateHasChanged();
 
+    }
+
+    public async void ItemSelected_1(MenuEventArgs e)
+    {
+        string tile = e.Item != null ? e.Item.Id : "";
+        if (e.Item!=null)
+        {
+            Js.InvokeAsync<object>("open", e.Item.Id, "_blank");
+        }
     }
 
     #region ControlInput
