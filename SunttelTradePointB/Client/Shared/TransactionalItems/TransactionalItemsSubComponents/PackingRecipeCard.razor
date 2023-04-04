@@ -271,7 +271,9 @@
 
                         </ContentTemplate>
                     </TabItem>
-                    <TabItem>
+                    @if (false)
+                    {
+                        @*   <TabItem>
                         <ChildContent>
                             <TabHeader Text="@GetName( "ComponentItemRecipe", new PackRecipeItem())"></TabHeader>
                         </ChildContent>
@@ -316,7 +318,8 @@
 
                             </div>
                         </ContentTemplate>
-                    </TabItem>
+                    </TabItem>*@
+                    }
                 </TabItems>
             </SfTab>
 
@@ -663,7 +666,7 @@
 
                             @if (listOfMaterials != null)
                             {
-                                <RadzenDataGrid AllowFiltering="true"
+                                <RadzenDataGrid @ref="GridlistOfMaterials" AllowFiltering="true"
                                             AllowColumnResize="true"
                                             AllowAlternatingRows="true"
                                             FilterMode="FilterMode.Advanced"
@@ -767,7 +770,9 @@
     TransactionalItemGroupSelector? referGroup;
     ComponentItemRecipeChildrenCard? recipeChildren;
     MaterialRecipeItemCard? addControl;
+    RadzenDataGrid<MaterialRecipeItem> GridlistOfMaterials;
     public TransactionalItem? transactionalItems { get; set; }
+
 
 
 
@@ -992,26 +997,26 @@
         string tile = e.Item != null ? e.Item.Text : "";
         if (tile == "Add")
         {
-            //assemblyRecipeItem.Id == null
-            if (true)
-            {
-                assemblyRecipeItem.ItemComponent = itemComponent != null ? itemComponent : new();
-                assemblyRecipeItem.ListOfMaterials = materialsRecipeItemsAssembly != null ? materialsRecipeItemsAssembly : new();
-                assemblyRecipeItem.RecipeQualityModifier = recipeQualityModifier != null ? recipeQualityModifier : new();
-                assemblyRecipeItem.ComponentItemRecipe = assemblyRecipeItemsChldren != null ? assemblyRecipeItemsChldren : new();
-                assemblyRecipeItems.Add(assemblyRecipeItem);
-                StateHasChanged();
-                Msg("Added");
-            }
-
-
+            AddListOfMaterials();
 
         }
 
-
         StateHasChanged();
+    }
 
-
+    public void AddListOfMaterials()
+    {
+        if (assemblyRecipeItem !=null)
+        {
+            assemblyRecipeItem.ItemComponent = itemComponent != null ? itemComponent : new();
+            assemblyRecipeItem.ListOfMaterials = materialsRecipeItemsAssembly != null ? materialsRecipeItemsAssembly : new();
+            assemblyRecipeItem.RecipeQualityModifier = recipeQualityModifier != null ? recipeQualityModifier : new();
+            assemblyRecipeItem.ComponentItemRecipe = assemblyRecipeItemsChldren != null ? assemblyRecipeItemsChldren : new();
+            assemblyRecipeItems.Add(assemblyRecipeItem);
+            assemblyRecipeItem = new();
+            StateHasChanged();
+            Msg("Added");
+        }
     }
 
     public async void ItemSelectedConcept(MenuEventArgs e)
@@ -1077,6 +1082,7 @@
 
 
         }
+       if(GridlistOfMaterials!=null) GridlistOfMaterials.Reload();
         StateHasChanged();
     }
 
@@ -1109,7 +1115,9 @@
 
     public async Task Closed(string Element)
     {
+        AddListOfMaterials();
         if (Element == "control") Navigation.NavigateTo($"/TransactionalItemCard/{transactionalItemId}");
+
     }
 
 
@@ -1380,29 +1388,29 @@
 
 
 
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<MaterialRecipeItemView> args)
-    {
-        MaterialRecipeItemView ObjModel = null;
-        ObjModel = args.RowInfo.RowData;
+    //public async void OnContextMenuClick(ContextMenuClickEventArgs<MaterialRecipeItemView> args)
+    //{
+    //    MaterialRecipeItemView ObjModel = null;
+    //    ObjModel = args.RowInfo.RowData;
 
-        if (args.Item.Text == "Edit" && pageView == "ListOfMaterials")
-        {
-            materialRecipeItem = listOfMaterials.Where(s => s.Material.Id == ObjModel.Id).FirstOrDefault();
-            MaterialConcept = materialRecipeItem.Material != null ? materialRecipeItem.Material : new();
-            if (materialRecipeItem != null)
-            {
-                ClosedAdd("ListOfMaterials");
-            }
+    //    if (args.Item.Text == "Edit" && pageView == "ListOfMaterials")
+    //    {
+    //        materialRecipeItem = listOfMaterials.Where(s => s.Material.Id == ObjModel.Id).FirstOrDefault();
+    //        MaterialConcept = materialRecipeItem.Material != null ? materialRecipeItem.Material : new();
+    //        if (materialRecipeItem != null)
+    //        {
+    //            ClosedAdd("ListOfMaterials");
+    //        }
 
-        }
-        if (args.Item.Text == "Edit" && materialRecipeItem != null && pageView == "ListOfMaterialsAssembly")
-        {
-            materialRecipeItemsAssembly = materialsRecipeItemsAssembly.Where(s => s.Material.Id == ObjModel.Id).FirstOrDefault();
-            conceptMaterialAssembly = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material : new();
-            ClosedAdd("ListOfMaterialsAssembly");
+    //    }
+    //    if (args.Item.Text == "Edit" && materialRecipeItem != null && pageView == "ListOfMaterialsAssembly")
+    //    {
+    //        listOfMaterials = listOfMaterials.Where(s => s.Material.Id == ObjModel.Id).FirstOrDefault();
+    //        conceptMaterialAssembly = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material : new();
+    //        ClosedAdd("ListOfMaterialsAssembly");
 
-        }
-    }
+    //    }
+    //}
 
 
 
@@ -1535,7 +1543,7 @@
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<MaterialRecipeItem> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
     void OnMenuItemClick(MenuItemEventArgs args)
@@ -1552,13 +1560,25 @@
 
 
         }
-        if (materialRecipeItem != null && pageView == "ListOfMaterialsAssembly")
+        if (materialRecipeItem != null && pageView == "AssemblyRecipeItems")
         {
             materialRecipeItemsAssembly = materialsRecipeItemsAssembly.Where(s => s.Material.Id == argObj.Material.Id).FirstOrDefault();
             conceptMaterialAssembly = materialRecipeItemsAssembly.Material != null ? materialRecipeItemsAssembly.Material : new();
-            ClosedAdd("ListOfMaterialsAssembly");
+            ClosedAdd("AssemblyRecipeItems");
 
         }
+
+        if (materialRecipeItem != null && pageView == "ListOfMaterials")
+        {
+           var material = listOfMaterials.Where(s=>s.Material.Id == argObj.Material.Id).FirstOrDefault();
+            MaterialConcept = material !=null ? material.Material : new();
+            ClosedAdd("ListOfMaterials");
+
+        }
+
+        
+      
+
     }
 
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<PackRecipeItem> args) => ContextMenuService.Open(args, ds =>
