@@ -68,19 +68,25 @@
     public string Value { get; set; }
     #endregion TitleName
 
-    protected override Task OnInitializedAsync()
+    protected async override void OnInitialized()
     {
         InitializedUICommonFunctions();
 
+        if (transactionalItemId !=null &&  transactionalItemTagId !=null)
+        {
+            Tag = await transactionalService.GetTagById(transactionalItemId, transactionalItemTagId);
+        }
+        if (Tag == null)
+        { Tag = new(); }
 
-        return base.OnInitializedAsync();
+       
     }
 
     public async void InitializedUICommonFunctions()
     {
         if (transactionalItemTagId != null && transactionalItemTagId !=null)
         {
-            Tag = await transactionalService.GetTagToId(transactionalItemId, transactionalItemTagId);
+            Tag = await transactionalService.GetTagById(transactionalItemId, transactionalItemTagId);
         }
         if (Tag==null)
         {

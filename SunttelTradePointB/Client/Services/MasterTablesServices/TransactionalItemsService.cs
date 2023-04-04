@@ -258,11 +258,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task<ProductModel> GetProductModelToId(string? transactionalItemId, string productModelId)
+        public async Task<ProductModel> GetProductModelById(string productModelId)
         {
             try
             {
-                var responseMessage = await Gethttp($"/api/ConceptsSelector/GetSelectorListTransactionalItemModels?transactionalItemId={transactionalItemId}");
+                var responseMessage = await Gethttp($"/api/TransactionalItems/GetProductModelById?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&productModelId={productModelId}");
                 var item = await responseMessage.Content.ReadFromJsonAsync<ProductModel>();
 
                 return item != null ? item : new ProductModel();
@@ -354,14 +354,12 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-        public async Task<TransactionalItemTag> GetTagToId(string transactionalItemId, string transactionalItemTagId)
+        public async Task<TransactionalItemTag> GetTagById(string transactionalItemId, string transactionalItemTagId)
         {
-
-            string userId = UIClientGlobalVariables.UserId;
-            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+                      
             try
             {
-                var responseMessage = await Gethttp($"/api/TransactionalItems/pendiente?userId={userId}&ipAddress={ipAddress}&transactionalItemId={transactionalItemId}");
+                var responseMessage = await Gethttp($"/api/TransactionalItems/GetTransactionalItemTagById?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&transactionalItemId={transactionalItemId}&transactionalItemTagId={transactionalItemTagId}");
                 var obj  = await responseMessage.Content.ReadFromJsonAsync<TransactionalItemTag>();
 
                 return obj != null ? obj : new TransactionalItemTag();
@@ -376,6 +374,50 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
 
         }
+        //--
+        public async Task<ConceptGroup> GetGroupsById(string groupId)
+        {
+
+            try
+            {
+                var responseMessage = await Gethttp($"/api/TransactionalItems/GetGroupsById?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&groupId={groupId}");
+                var obj = await responseMessage.Content.ReadFromJsonAsync<ConceptGroup>();
+
+                return obj != null ? obj : new ConceptGroup();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+
+                return null;
+
+            }
+
+
+        }
+
+        //--
+        public async Task<TransactionalItemStatus> GetStatusById(string transactionalItemId, string statusId)
+        {
+
+            try
+            {
+                var responseMessage = await Gethttp($"/api/TransactionalItems/GetStatusById?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&transactionalItemId={transactionalItemId}&statusId={statusId}");
+                var obj = await responseMessage.Content.ReadFromJsonAsync<TransactionalItemStatus>(); 
+
+                return obj != null ? obj : new TransactionalItemStatus();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+
+                return null;
+
+            }
+
+
+        }
+
 
         public async Task<List<TransactionalItemTag>> GetSelectorListTag(string? transactionalItemId = null)
 
@@ -528,7 +570,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             try
             {
-                var responseMessage = await Gethttp($"/api/TransactionalItems/GetTransactionalItemDetailsPackingRecipe?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}&transactionalItemId={transactionalItemId}");
+                var responseMessage = await Gethttp($"/api/TransactionalItems/GetPackingSpecsById?userId={UIClientGlobalVariables.UserId}&ipAdress=UIClientGlobalVariables{UIClientGlobalVariables.PublicIpAddress}&transactionalItemId={transactionalItemId}&packingSpecsId={packingSpecsId}");
                 var _packingSpecs = await responseMessage.Content.ReadFromJsonAsync<PackingSpecs>();
 
                 return _packingSpecs != null ? _packingSpecs : new PackingSpecs();
@@ -845,11 +887,10 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         public async Task<TransactionalItemProcessStep> GetTransactionalItemDetailsProductionSpecsById(string transactionalItemId, string productionSpecsToId)
         {
-            string userId = UIClientGlobalVariables.UserId;
-            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+          
             try
             {
-                var responseMessage = await Gethttp($"/api/ConceptsSelector/pendiente?userId={userId}&ipAddress={ipAddress}&modifierId={productionSpecsToId}");
+                var responseMessage = await Gethttp($"api/TransactionalItems/GetProductionSpecsById?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&transactionalItemId={transactionalItemId}&productionSpecsId={productionSpecsToId}");
                 var obj = await responseMessage.Content.ReadFromJsonAsync<TransactionalItemProcessStep>();
 
                 return obj;

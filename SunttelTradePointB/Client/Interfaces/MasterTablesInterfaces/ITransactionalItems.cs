@@ -37,7 +37,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <param name="transactionalItemId"></param>    
         /// <param name="productModelId"></param>    
         /// <returns></returns>
-        Task<ProductModel> GetProductModelToId(string? transactionalItemId, string productModelId);
+        Task<ProductModel> GetProductModelById(string productModelId);
 
 
         /// <summary>
@@ -396,7 +396,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <param name="transactionalItemId"></param>              
         /// <param name="transactionalItemTagId"></param>              
         /// <returns></returns>
-        Task<TransactionalItemTag> GetTagToId(string transactionalItemId, string transactionalItemTagId);
+        Task<TransactionalItemTag> GetTagById(string transactionalItemId, string transactionalItemTagId);
 
         /// <summary>
         /// Retrives a Transactional Item Details Packing Recipe by transactionalItemId

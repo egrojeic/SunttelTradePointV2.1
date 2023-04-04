@@ -63,7 +63,7 @@
     {
         if (transactionalItemId != null && productModelId !=null)
         {
-            productModel = await transactionalService.GetProductModelToId(transactionalItemId, productModelId);
+            productModel = await transactionalService.GetProductModelById( productModelId);
 
         }
 

@@ -1,4 +1,6 @@
-﻿@page "/StatusConcept/{Page}/{PageOrigin}/{filterItems}/{transactionalItemStatusId}"
+﻿@page "/StatusConcept/{Page}/{transactionalItemStatusId}"
+@page "/StatusConcept/{Page}"
+@page "/StatusConcept/{Page}/{PageOrigin}/{filterItems}/{transactionalItemStatusId}"
 @page "/StatusConcept/{Page}/{PageOrigin}/{filterItems}"
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
@@ -69,10 +71,14 @@
     protected override async Task OnInitializedAsync()
     {
         transactionalItemStatus = new();
-        if (transactionalItemStatusId is null)
+        if (transactionalItemStatusId != null)
         {
-        } else {
             transactionalItemStatus = await transactionalService.GetTransactionalStatusesTableById(transactionalItemStatusId);
+        }
+
+        if (transactionalItemStatus == null)
+        {
+            transactionalItemStatus = new();
         }
         base.OnInitialized();
     }
@@ -80,7 +86,8 @@
 
     public void Closed(string value)
     {
-        if (value == "control") Navigation.NavigateTo($"/{Page}/{PageOrigin}/{filterItems}");
+        if (value == "control" && PageOrigin !=null) Navigation.NavigateTo($"/{Page}/{PageOrigin}/{filterItems}");
+        if (value == "control" && PageOrigin == null) Navigation.NavigateTo($"/{Page}/{filterItems}");
     }
 
     public async void Save()

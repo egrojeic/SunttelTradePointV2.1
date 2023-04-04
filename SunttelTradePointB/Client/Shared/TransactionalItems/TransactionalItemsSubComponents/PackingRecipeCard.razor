@@ -647,7 +647,9 @@
                         <TabHeader Text="@GetName( "ListOfMaterials",new PackingSpecs())"></TabHeader>
                     </ChildContent>
                     <ContentTemplate>
-                        @{pageView = "ListOfMaterials";}
+                        @{
+                            pageView = "ListOfMaterials";
+                        }
                         <div style="display:flex; flex-direction:column; justify-content:center;">
 
                             <div class="detailsTitleContainer">
@@ -733,7 +735,7 @@
                                         <RadzenDataGridColumn TItem="PackRecipeItem" Property="ItemComponent.Name" Title="@GetName( "ComponentItemRecipe",new PackRecipeItem())" Frozen="false" Width="80px" />
                                         <RadzenDataGridColumn TItem="PackRecipeItem" Property="RecipeQualityModifier.Name" Filterable="true" Title="@GetName( "Quantity",new PackRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
                                         <RadzenDataGridColumn TItem="PackRecipeItem" Property="Quantity" Filterable="true" Title="@GetName( "RecipeQualityModifier",new PackRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                      
+
                                     </Columns>
                                 </RadzenDataGrid>
                             }
@@ -853,7 +855,7 @@
 
     InputTextSelector? ReferInputTextSelector;
 
-   
+
 
     protected override void OnInitialized()
     {
@@ -915,7 +917,7 @@
 
     public async void ItemSelected(MenuEventArgs e)
     {
-       
+
         string tile = e.Item != null ? e.Item.Text : "";
         if (tile == "Save")
         {
@@ -959,26 +961,17 @@
 
             var resul = await transactionalService.SaveProductPackingSpec(transactionalItemId, _PackingSpecs);
 
-            if (transactionalService.TransactionalItems != null && resul)
+            if (resul)
             {
-                if (transactionalService.TransactionalItems.ProductPackingSpecs == null) transactionalService.TransactionalItems.ProductPackingSpecs = new List<PackingSpecs>();
-                if (_PackingSpecs.Id == null)
-                {
-                    transactionalService.TransactionalItems.ProductPackingSpecs.Add(_PackingSpecs);
-                }
-                else
-                {
-                    var Remove = transactionalService.TransactionalItems.ProductPackingSpecs.Where(s => s.Id == _PackingSpecs.Id).FirstOrDefault();
-                    if (Remove != null)
-                    {
-                        transactionalService.TransactionalItems.ProductPackingSpecs.Remove(Remove);
-                        transactionalService.TransactionalItems.ProductPackingSpecs.Add(_PackingSpecs);
-                    }
-                }
+                Msg("Saved");
 
             }
+            else
+            {
+                Msg("No saved");
+            }
 
-            Msg("Saved");
+
 
 
         }
@@ -1010,11 +1003,11 @@
                 StateHasChanged();
                 Msg("Added");
             }
-           
+
 
 
         }
-       
+
 
         StateHasChanged();
 
@@ -1050,7 +1043,7 @@
         if (materialRecipeItem != null)
         {
             if (materialRecipeItem.Material == null) materialRecipeItem.Material = new();
-            if ( materialRecipeItem.Material.Id == null)
+            if (materialRecipeItem.Material.Id == null)
             {
                 materialRecipeItem.Material = MaterialConcept;
                 listOfMaterials.Add(materialRecipeItem);
@@ -1075,13 +1068,13 @@
         if (materialRecipeItemsAssembly != null)
         {
             if (materialRecipeItemsAssembly.Material == null) materialRecipeItemsAssembly.Material = new();
-           
-                materialRecipeItemsAssembly.Material = conceptMaterialAssembly;
-                materialsRecipeItemsAssembly.Add(materialRecipeItemsAssembly);
-                materialRecipeItemsAssembly = new();
-                conceptMaterialAssembly = new();
-                Msg("Added");
-          
+
+            materialRecipeItemsAssembly.Material = conceptMaterialAssembly;
+            materialsRecipeItemsAssembly.Add(materialRecipeItemsAssembly);
+            materialRecipeItemsAssembly = new();
+            conceptMaterialAssembly = new();
+            Msg("Added");
+
 
         }
         StateHasChanged();
@@ -1170,7 +1163,7 @@
             ConceptMaterialsAssembly = await transactionalService.GetSelectorListPackingMaterials(arg.value);
 
         }
-      
+
         if (arg.selectionId == "RecipeQualityModifier")
         {
             recipeQualityModifiers = new();
@@ -1425,8 +1418,8 @@
 
     public string GetName(string Name, Object Obj)
     {
-       if(UICommonFunctions.GetDisplayName(Obj, Name)!=null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
-        return Name ;
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
     }
 
 
@@ -1543,7 +1536,7 @@
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
-        );
+    );
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
