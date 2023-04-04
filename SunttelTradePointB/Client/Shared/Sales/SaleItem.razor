@@ -72,6 +72,24 @@
 
             </div>
             <div><b class="c-red">*</b><label>@GetName("DocumentType",new CommercialDocument())</label></div>
+
+            <div>
+                <select @onchange="SelectItemDocumentType" class="select-style">
+                    @if (commercialDocument.DocumentType != null)
+                    {
+                        <option value="@commercialDocument.DocumentType" selected>@commercialDocument.DocumentType.Name</option>
+                    }
+                    @if (documentTypeList != null && documentTypeList.Count() > 0)
+                    {
+                        <option value="0" selected>Select</option>
+                    }
+                    @foreach (var item in documentTypeList)
+                    {
+                        <option value="@item">@item.Name</option>
+                    }
+                </select>
+            </div>
+
             <InputTextSelector3 styleCaption="width:180px" TItem="CommercialDocumentType"
                             Id="DocumentType"
                             caption="@(commercialDocument.DocumentType !=null ? commercialDocument.DocumentType?.Name:"" )"
@@ -428,19 +446,24 @@
 
     public void SelectItemVendorWarehous(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
-
+        commercialDocument.VendorWarehouse = (BasicConcept)arg.Value;
     }
 
     public void SelectItemDeliveryAddress(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
-
+        commercialDocument.DeliveryAddress = (Address)arg.Value;
 
     }
 
     public void SelectItemBusinessLineDoc(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
+        commercialDocument.BusinessLineDoc = (BusinessLine)arg.Value;
 
+    }
 
+    public void SelectItemDocumentType(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    {
+        commercialDocument.DocumentType = (CommercialDocumentType)arg.Value;
     }
 
 
