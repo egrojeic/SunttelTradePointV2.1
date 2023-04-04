@@ -801,14 +801,13 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAdress"></param>
-        /// <param name="transactionalItemId"></param>
         /// <param name="groupId"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetGroupsById")]
-        public async Task<IActionResult> GetGroupsById(string userId, string ipAdress, string transactionalItemId, string groupId)
+        public async Task<IActionResult> GetGroupsById(string userId, string ipAdress,  string groupId)
         {
-            var response = await _transactionalItems.GetGroupsById(userId, ipAdress, transactionalItemId, groupId);
+            var response = await _transactionalItems.GetGroupsById(userId, ipAdress, groupId);
 
             if (response.IsSuccess)
             {

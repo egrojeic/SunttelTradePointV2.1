@@ -306,10 +306,9 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAdress"></param>
-        /// <param name="transactionalItemId"></param>
         /// <param name="groupId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, ConceptGroup? groupResponse, string? ErrorDescription)> GetGroupsById(string userId, string ipAdress, string transactionalItemId, string groupId);
+        Task<(bool IsSuccess, ConceptGroup? groupResponse, string? ErrorDescription)> GetGroupsById(string userId, string ipAdress, string groupId);
 
 
         /// <summary>

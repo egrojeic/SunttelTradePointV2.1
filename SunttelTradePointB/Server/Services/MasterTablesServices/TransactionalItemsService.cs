@@ -52,6 +52,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             _TransactionalItemsPackingSpecsCollection = mongoDatabase.GetCollection<PackingSpecs>("TransactionalItems");
             //_TransactionalItemsQualityCollection = mongoDatabase.GetCollection<TransactionalItemQualityPair>("TransactionalItems");
             //_TransactionalItemsTagsCollection = mongoDatabase.GetCollection<TransactionalItemTag>("TransactionalItems");
+            _TransactionalItemsGroupsCollection = mongoDatabase.GetCollection<ConceptGroup>("TransactionalItemsGroups");
 
 
         }
@@ -1424,46 +1425,24 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAdress"></param>
-        /// <param name="transactionalItemId"></param>
         /// <param name="groupId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, ConceptGroup? groupResponse, string? ErrorDescription)> GetGroupsById(string userId, string ipAdress, string transactionalItemId, string groupId)
+        public async Task<(bool IsSuccess, ConceptGroup? groupResponse, string? ErrorDescription)> GetGroupsById(string userId, string ipAdress, string groupId)
         {
             try
             {
                 var pipeline = new List<BsonDocument>();
-                var resultFinal = new ConceptGroup();
 
                 pipeline.Add(
-                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(transactionalItemId)))
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(groupId)))
                 );
 
                 // obtengo el transactional items //
-                var resultPrev = await _TransactionalItemsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                var resultPrev = await _TransactionalItemsGroupsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
                 // deserializo transactional items //
-                TransactionalItem result = resultPrev.Select(d => BsonSerializer.Deserialize<TransactionalItem>(d)).ToList()[0];
-                // obtengo lista de productsPackingSpecs
-                List<ConceptGroup> listGroups = result.Groups;
-                if (listGroups != null)
-                {
-                    foreach (var i in listGroups)
-                    {
-                        if (i.Id == groupId)
-                        {
-                            resultFinal = i;
-                        }
-                        else
-                        {
-                            return (false, null, "The item does not have Group Id");
-                        }
-                    }
-                }
-                else
-                {
-                    return (false, null, "The item does not have Group");
-                }
-
-                return (true, resultFinal, null);
+                ConceptGroup result = resultPrev.Select(d => BsonSerializer.Deserialize<ConceptGroup>(d)).ToList()[0];
+                
+                return (true, result, null);
             }
             catch (Exception e)
             {
