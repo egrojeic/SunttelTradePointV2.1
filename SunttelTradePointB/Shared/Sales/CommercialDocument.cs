@@ -82,7 +82,7 @@ namespace SunttelTradePointB.Shared.Sales
         [DisplayName("Delivery Date")]
         public DateTime DeliveryDate { get; set; }
        
-        [DisplayName("Provider Arrival Date")]
+        [DisplayName("Arrival Date")]
         public DateTime ArrivalDate { get; set; }
         public Concept Vendor { get; set; }
         public Concept Buyer { get; set; }
