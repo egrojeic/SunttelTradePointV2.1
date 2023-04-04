@@ -1,0 +1,92 @@
+﻿@page "/ShippingStatusDocumentConcept/add/{ShippingStatusId}"
+@page "/ShippingStatusDocumentConcept/add/"
+
+@using SunttelTradePointB.Client.Services.SalesServices;
+@using SunttelTradePointB.Shared.Common
+@using SunttelTradePointB.Shared.Sales;
+@using Syncfusion.Blazor.Buttons
+@inject NavigationManager Navigation
+@inject SalesDocuments SaleDocumentService
+
+@if (@viewMsg)
+{
+    <MessageSaveComponent isVisible="viewMsg" message="@msg">
+    </MessageSaveComponent>
+}
+
+<PageTitleComponent Title=" Status " IconName="signal.png"
+                    Description="Here you can add  Status ">
+</PageTitleComponent>
+
+<div class="flex-horizontal-center">
+    <div class="grid-columns-2 box-shadow-mode">
+        <div><label>@GetName( "Name", new AtomConcept())</label></div>
+        <div><input type="text" @bind-value="shippingStatus.Name" class="form-control" placeholder="Edit value" /></div>
+
+        <div><label>@GetName( "AffectInventory", new ShippingStatus())</label></div>
+        <div>
+            <SfSwitch @bind-Checked="@shippingStatus.AffectInventory"></SfSwitch>
+        </div>
+        <div><label>@GetName( "EditingAllowed", new ShippingStatus())</label></div>
+        <div>
+            <SfSwitch @bind-Checked="@shippingStatus.EditingAllowed"></SfSwitch>
+        </div>       
+        <div></div>
+        <div>
+            <div class="flex-horizontal-end">
+                <button @onclick='()=>Closed()' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                <button @onclick='Save' class="size-btn color-btn"><i class="fa-regular fa-floppy-disk color-hover "></i></button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@code {
+    [Parameter]
+    public string? ShippingStatusId { get; set; }
+
+    public ShippingStatus shippingStatus = new ShippingStatus();
+
+    public bool modeEdit = true, viewMsg = false;
+    public string msg = "", pageView = "";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ShippingStatusId is null) return;
+        shippingStatus = await SaleDocumentService.GetShippingStatusById(ShippingStatusId);
+        base.OnInitialized();
+    }
+
+
+    public void Closed()
+    {
+        Navigation.NavigateTo($"/ShippingStatusDocument");
+    }
+
+    public async void Save()
+    {
+        var resul = await SaleDocumentService.SaveShippingStatus(shippingStatus);
+        if (resul !=null) shippingStatus = new();
+        Msg(resul!=null);
+    }
+
+    private void Msg(bool mode)
+    {
+        msg = mode ? "Saved" : "No saved";
+        viewMsg = true;
+        StateHasChanged();
+    }
+    private void Msg(string? Msg)
+    {
+        msg = Msg;
+        viewMsg = true;
+        StateHasChanged();
+    }
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+}

@@ -1,0 +1,42 @@
+﻿.img-btn {
+    height: 30px;
+    width: 30px;
+    box-shadow: 0px 0px 5px;
+    border-radius: 5px;
+    padding: 5px;
+  
+    
+}
+
+.control-horizontal {
+    background-color: #00ccff;
+    width: 200px;
+    height: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-radius: 5px;
+    padding: 5px;
+   
+}
+
+.position-relative{
+    position:relative;
+}
+
+.name-item {
+    display: none;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 3px,0px -1px 3px -1px inset;
+    padding: 5px;
+    border-radius: 10px 10px 10px 0px;
+    position: absolute;
+    height: 25px;
+    font-size: 12px;
+    top: -27px;
+    left: 15px;
+}
+
+.position-relative:hover > .name-item {
+    display: block;
+}

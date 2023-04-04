@@ -1,0 +1,42 @@
+﻿@using SunttelTradePointB.Shared.Sales;
+
+<div class="div-scroll">
+    <div class="div-scroll-item">
+        @if (list != null)
+        {
+            @foreach (var item in list)
+            {
+                <div class="item">
+                    <p>
+                        @item.Item1
+                        <b>@item.Item2</b>
+                    </p>
+                </div>
+            }
+        }
+    </div>
+
+</div>
+
+@code {
+    [Parameter]
+    public FinanceSalesDocumentSummary summary { get; set; }
+    public List<(string, string)> list { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        if (list == null) list = new();
+        list.Add(($"{GetName("TotalAmount", new FinanceSalesDocumentSummary())}", "2000"));
+        list.Add(($"{GetName("TotalCosts", new FinanceSalesDocumentSummary())}", "2000"));
+        list.Add(($"{GetName("TotalTaxes", new FinanceSalesDocumentSummary())}", "2000"));
+        list.Add(($"{GetName("TotalDiscounts", new FinanceSalesDocumentSummary())}", "2000"));
+
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+}

@@ -1,0 +1,51 @@
+﻿@using SunttelTradePointB.Shared.Common
+@using SunttelTradePointB.Shared.Sales;
+<div>
+    <div class="control-horizontal">
+        <div class="position-relative" style="background-color:@(statusColor("DocumentPrinted"));">
+            <img class="img-btn" src="/images/print.png">
+            <div class="name-item"><p>@GetName("DocumentPrinted", new FinanceSalesDocumentSummary())</p></div>
+        </div>
+        <div class="position-relative" style="background-color:@(statusColor("BillOfLandingPrinted"));">
+            <img class="img-btn" src="/images/BillOfLandingPrinted.png">
+            <div class="name-item"><p>@GetName("BillOfLandingPrinted", new FinanceSalesDocumentSummary())</p></div>
+        </div>
+        <div class="position-relative" style="background-color:@(statusColor("PickingTicketPrinted"));">
+            <img class="img-btn" src="/images/PickingTicketPrinted.png">
+            <div class="name-item"><p>@GetName("PickingTicketPrinted", new FinanceSalesDocumentSummary())</p></div>
+        </div>
+        <div class="position-relative" style="background-color:@(statusColor("LabelsPrinted"));">
+            <img class="img-btn" src="/images/LabelsPrinted.png">
+            <div class="name-item"><p>@GetName("LabelsPrinted", new FinanceSalesDocumentSummary())</p></div>
+        </div>
+        <div class="position-relative" style="background-color:@(statusColor("SelectedToPrint"));">
+            <img class="img-btn" src="/images/SelectedToPrint.png">
+            <div class="name-item"><p>@GetName("SelectedToPrint", new FinanceSalesDocumentSummary())</p></div>
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public SalesDocumentPrintingSatus item { get; set; }
+
+    public string statusColor(string name)
+    {
+        string color = "#a4a4a4";
+        if (item != null)
+        {
+            if (name == "DocumentPrinted" && (item.DocumentPrinted != null ? item.DocumentPrinted : false)) return "#73e600";
+            if (name == "BillOfLandingPrinted" && (item.BillOfLandingPrinted != null? item.BillOfLandingPrinted:false)) return "#73e600";
+            if (name == "PickingTicketPrinted" && (item.PickingTicketPrinted !=null ? item.PickingTicketPrinted:false)) return "#73e600";
+            if (name == "LabelsPrinted" && (item.LabelsPrinted !=null ? item.LabelsPrinted:false)) return "#73e600";
+            if (name == "SelectedToPrint" && (item.SelectedToPrint != null ? item.SelectedToPrint : false)) return "#73e600";
+        }
+        if (name == "SelectedToPrint" ) return "#73e600";
+        return color;
+    }
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+}
+

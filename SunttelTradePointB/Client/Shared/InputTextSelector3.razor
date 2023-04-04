@@ -3,7 +3,7 @@
 
 
 <div style="position:relative;">
-    <div style="display:@(!captionOff?"flex":"none")" class="item-edit">
+    <div class="item-edit" style="display:@(!captionOff?"flex":"none"); @styleCaption">
         <label>@(caption)</label>
         <button type="button" @onclick='SetViewElemnt' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
     </div>
@@ -56,6 +56,8 @@
     public bool Visible { get; set; } = false;
     [Parameter]
     public string style { get; set; }
+    [Parameter]
+    public string styleCaption { get; set; }
     [Parameter]
     public string caption { get; set; }
     [Parameter]

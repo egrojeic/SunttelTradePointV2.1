@@ -127,7 +127,6 @@ namespace SunttelTradePointB.Shared.Sales
         [DisplayName("Items")]
         public List<SalesDocumentItemsDetails> Items { get; set; }
 
-
         [DisplayName("To Invoice")]
         public bool ToInvoice { get; set; }
 
