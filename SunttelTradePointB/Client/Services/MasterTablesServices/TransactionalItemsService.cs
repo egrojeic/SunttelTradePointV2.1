@@ -45,7 +45,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             EntityImage
         }
         public string Host { get {
-                string host = UIClientGlobalVariables.PathEntityImages;      
+                string host = UIClientGlobalVariables.PathTransactionalItemsImages;      
                 return host + "/"; } }
         #endregion Property
 
