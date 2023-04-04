@@ -843,7 +843,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-        public async Task<TransactionalItemProcessStep> GetTransactionalItemDetailsProductionSpecsToId(string transactionalItemId, string productionSpecsToId)
+        public async Task<TransactionalItemProcessStep> GetTransactionalItemDetailsProductionSpecsById(string transactionalItemId, string productionSpecsToId)
         {
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;

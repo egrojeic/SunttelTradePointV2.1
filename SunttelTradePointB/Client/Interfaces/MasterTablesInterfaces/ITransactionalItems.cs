@@ -412,7 +412,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <param name="transactionalItemId"></param>              
         /// <param name="productionSpecsToId"></param>              
         /// <returns></returns>
-        Task<TransactionalItemProcessStep> GetTransactionalItemDetailsProductionSpecsToId(string transactionalItemId, string productionSpecsToId);
+        Task<TransactionalItemProcessStep> GetTransactionalItemDetailsProductionSpecsById(string transactionalItemId, string productionSpecsToId);
 
 
     }
