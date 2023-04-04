@@ -163,7 +163,7 @@
         if (conceptGroupId !=null)
         {
 
-            conceptGroup = null;//await transactionalService.ConceptGroupSelectedItems("");
+            conceptGroup = await transactionalService.GetGroupsById(conceptGroupId);
 
            if(conceptGroup!=null) childrenGroups = conceptGroup.ChildrenGroups;
         }

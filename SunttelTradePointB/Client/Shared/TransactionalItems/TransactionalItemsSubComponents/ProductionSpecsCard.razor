@@ -248,7 +248,7 @@
         if (transactionalItemId != null && productionSpecsToId != null)
         {
 
-            _TransactionalItemProcessStep = await transactionalService.GetTransactionalItemDetailsProductionSpecsToId(transactionalItemId, productionSpecsToId);
+            _TransactionalItemProcessStep = await transactionalService.GetTransactionalItemDetailsProductionSpecsById(transactionalItemId, productionSpecsToId);
             if (_TransactionalItemProcessStep !=null)
             {
                 TransactionalItemTagList = _TransactionalItemProcessStep.TransactionalItemProcessTags != null ? _TransactionalItemProcessStep.TransactionalItemProcessTags : new();
