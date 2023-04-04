@@ -789,7 +789,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
 
             if (response.IsSuccess)
             {
-                return Ok(response.packingSpecsResponse);
+                return Ok(response.transactionalItemTagResponse);
             }
             else
                 return NotFound(response.ErrorDescription);
@@ -805,14 +805,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <param name="groupId"></param>
         /// <returns></returns>
         [HttpGet]
-        [ActionName("GetGroupsByld")]
+        [ActionName("GetGroupsById")]
         public async Task<IActionResult> GetGroupsById(string userId, string ipAdress, string transactionalItemId, string groupId)
         {
             var response = await _transactionalItems.GetGroupsById(userId, ipAdress, transactionalItemId, groupId);
 
             if (response.IsSuccess)
             {
-                return Ok(response.packingSpecsResponse);
+                return Ok(response.groupResponse);
             }
             else
                 return NotFound(response.ErrorDescription);
@@ -835,7 +835,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
 
             if (response.IsSuccess)
             {
-                return Ok(response.packingSpecsResponse);
+                return Ok(response.statusResponse);
             }
             else
                 return NotFound(response.ErrorDescription);
@@ -858,7 +858,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
 
             if (response.IsSuccess)
             {
-                return Ok(response.packingSpecsResponse);
+                return Ok(response.productModelResponse);
             }
             else
                 return NotFound(response.ErrorDescription);

@@ -276,7 +276,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="transactionalItemId"></param>
         /// <param name="packingSpecsId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> GetPackingSpecsById(string userId, string ipAdress, string transactionalItemId, string packingSpecsId);
+        Task<(bool IsSuccess, PackingSpecs? packingSpecsResponse, string? ErrorDescription)> GetPackingSpecsById(string userId, string ipAdress, string transactionalItemId, string packingSpecsId);
 
 
         /// <summary>
@@ -287,7 +287,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="transactionalItemId"></param>
         /// <param name="productionSpecsId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, TransactionalItemProcessStep transactionalItemProcessStepResponse, string? ErrorDescription)> GetProductionSpecsById(string userId, string ipAdress, string transactionalItemId, string productionSpecsId);
+        Task<(bool IsSuccess, TransactionalItemProcessStep? transactionalItemProcessStepResponse, string? ErrorDescription)> GetProductionSpecsById(string userId, string ipAdress, string transactionalItemId, string productionSpecsId);
 
 
         /// <summary>
@@ -298,7 +298,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="transactionalItemId"></param>
         /// <param name="transactionalItemTagId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> GetTransactionalItemTagById(string userId, string ipAdress, string transactionalItemId, string transactionalItemTagId);
+        Task<(bool IsSuccess, TransactionalItemTag? transactionalItemTagResponse, string? ErrorDescription)> GetTransactionalItemTagById(string userId, string ipAdress, string transactionalItemId, string transactionalItemTagId);
 
 
         /// <summary>
@@ -309,7 +309,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="transactionalItemId"></param>
         /// <param name="groupId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> GetGroupsById(string userId, string ipAdress, string transactionalItemId, string groupId);
+        Task<(bool IsSuccess, ConceptGroup? groupResponse, string? ErrorDescription)> GetGroupsById(string userId, string ipAdress, string transactionalItemId, string groupId);
 
 
         /// <summary>
@@ -320,7 +320,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="transactionalItemId"></param>
         /// <param name="statusId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> GetStatusById(string userId, string ipAdress, string transactionalItemId, string statusId);
+        Task<(bool IsSuccess, ConceptStatus? statusResponse, string? ErrorDescription)> GetStatusById(string userId, string ipAdress, string transactionalItemId, string statusId);
 
 
         /// <summary>
@@ -331,7 +331,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="transactionalItemId"></param>
         /// <param name="productModelId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> GetProductModelById(string userId, string ipAdress, string transactionalItemId, string productModelId);
+        Task<(bool IsSuccess, ProductModel? productModelResponse, string? ErrorDescription)> GetProductModelById(string userId, string ipAdress, string transactionalItemId, string productModelId);
 
 
         /// <summary>

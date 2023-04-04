@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
+using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents;
 using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Shared.Common;
@@ -27,6 +28,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         IMongoCollection<PackingSpecs> _TransactionalItemsPackingSpecsCollection;
         //IMongoCollection<TransactionalItemQualityPair> _TransactionalItemsQualityCollection;
         //IMongoCollection<TransactionalItemTag> _TransactionalItemsTagsCollection;
+        IMongoCollection<ConceptGroup> _TransactionalItemsGroupsCollection;
 
 
 
@@ -1264,7 +1266,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="transactionalItemId"></param>
         /// <param name="packingSpecsId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> GetPackingSpecsById(string userId, string ipAdress, string transactionalItemId, string packingSpecsId)
+        public async Task<(bool IsSuccess, PackingSpecs? packingSpecsResponse, string? ErrorDescription)> GetPackingSpecsById(string userId, string ipAdress, string transactionalItemId, string packingSpecsId)
         {
             try
             {
@@ -1281,16 +1283,24 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 TransactionalItem result = resultPrev.Select(d => BsonSerializer.Deserialize<TransactionalItem>(d)).ToList()[0];
                 // obtengo lista de productsPackingSpecs
                 List<PackingSpecs> listProductsPackingSpecs = result.ProductPackingSpecs;
-
-                foreach (var i in listProductsPackingSpecs)
+                if(listProductsPackingSpecs != null)
                 {
-                    if(i.Id == packingSpecsId)
+                    foreach (var i in listProductsPackingSpecs)
                     {
-                        resultFinal = i;
+                        if (i.Id == packingSpecsId)
+                        {
+                            resultFinal = i;
+                        }
+                        else
+                        {
+                            return (false, null, "The item does not have Packing Specs Id");
+                        }
                     }
                 }
-
-                //PackingSpecs resultFinal = null;
+                else
+                {
+                    return (false, null, "The item does not have Product Packing Specs");
+                }
 
                 return (true, resultFinal, null);
             }
@@ -1308,7 +1318,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="transactionalItemId"></param>
         /// <param name="productionSpecsId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, TransactionalItemProcessStep transactionalItemProcessStepResponse, string? ErrorDescription)> GetProductionSpecsById(string userId, string ipAdress, string transactionalItemId, string productionSpecsId)
+        public async Task<(bool IsSuccess, TransactionalItemProcessStep? transactionalItemProcessStepResponse, string? ErrorDescription)> GetProductionSpecsById(string userId, string ipAdress, string transactionalItemId, string productionSpecsId)
         {
             try
             {
@@ -1324,17 +1334,26 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 // deserializo transactional items //
                 TransactionalItem result = resultPrev.Select(d => BsonSerializer.Deserialize<TransactionalItem>(d)).ToList()[0];
                 // obtengo lista de productsPackingSpecs
-                List<TransactionalItemProcessStep> listProductsPackingSpecs = result.ProductionSpecs;
+                List<TransactionalItemProcessStep> listProductsSpecs = result.ProductionSpecs;
 
-                foreach (var i in listProductsPackingSpecs)
+                if (listProductsSpecs != null)
                 {
-                    if (i.Id == productionSpecsId)
+                    foreach (var i in listProductsSpecs)
                     {
-                        resultFinal = i;
+                        if (i.Id == productionSpecsId)
+                        {
+                            resultFinal = i;
+                        }
+                        else
+                        {
+                            return (false, null, "The item does not have Production Specs Id");
+                        }
                     }
                 }
-
-                //PackingSpecs resultFinal = null;
+                else
+                {
+                    return (false, null, "The item does not have Production Specs");
+                }
 
                 return (true, resultFinal, null);
             }
@@ -1344,7 +1363,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
         }
 
-        
+
 
         /// <summary>
         /// Retrieves the whole object of an Entity/Transactional Item Tag
@@ -1354,12 +1373,12 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="transactionalItemId"></param>
         /// <param name="transactionalItemTagId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, TransactionalItemProcessStep packingSpecsResponse, string? ErrorDescription)> GetTransactionalItemTagById(string userId, string ipAdress, string transactionalItemId, string transactionalItemTagId)
+        public async Task<(bool IsSuccess, TransactionalItemTag? transactionalItemTagResponse, string? ErrorDescription)>  GetTransactionalItemTagById(string userId, string ipAdress, string transactionalItemId, string transactionalItemTagId)
         {
             try
             {
                 var pipeline = new List<BsonDocument>();
-                var resultFinal = new TransactionalItemProcessStep();
+                var resultFinal = new TransactionalItemTag();
 
                 pipeline.Add(
                     new BsonDocument("$match", new BsonDocument("_id", new ObjectId(transactionalItemId)))
@@ -1370,17 +1389,26 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 // deserializo transactional items //
                 TransactionalItem result = resultPrev.Select(d => BsonSerializer.Deserialize<TransactionalItem>(d)).ToList()[0];
                 // obtengo lista de productsPackingSpecs
-                List<TransactionalItemProcessStep> listProductsPackingSpecs = result.ProductionSpecs;
+                List<TransactionalItemTag> listTransactionalItemTag = result.TransactionalItemTags;
 
-                foreach (var i in listProductsPackingSpecs)
+                if (listTransactionalItemTag != null)
                 {
-                    if (i.Id == transactionalItemTagId)
+                    foreach (var i in listTransactionalItemTag)
                     {
-                        resultFinal = i;
+                        if (i.Id == transactionalItemTagId)
+                        {
+                            resultFinal = i;
+                        }
+                        else
+                        {
+                            return (false, null, "The item does not have Transactional Item Tag Id");
+                        }
                     }
                 }
-
-                //PackingSpecs resultFinal = null;
+                else
+                {
+                    return (false, null, "The item does not have Transactional Item Tag");
+                }
 
                 return (true, resultFinal, null);
             }
@@ -1388,6 +1416,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             {
                 return (false, null, e.Message);
             }
+
         }
 
         /// <summary>
@@ -1398,24 +1427,43 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="transactionalItemId"></param>
         /// <param name="groupId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> GetGroupsById(string userId, string ipAdress, string transactionalItemId, string groupId)
+        public async Task<(bool IsSuccess, ConceptGroup? groupResponse, string? ErrorDescription)> GetGroupsById(string userId, string ipAdress, string transactionalItemId, string groupId)
         {
             try
             {
                 var pipeline = new List<BsonDocument>();
+                var resultFinal = new ConceptGroup();
 
                 pipeline.Add(
-                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(groupId)))
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(transactionalItemId)))
                 );
 
-                //var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                // obtengo el transactional items //
+                var resultPrev = await _TransactionalItemsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                // deserializo transactional items //
+                TransactionalItem result = resultPrev.Select(d => BsonSerializer.Deserialize<TransactionalItem>(d)).ToList()[0];
+                // obtengo lista de productsPackingSpecs
+                List<ConceptGroup> listGroups = result.Groups;
+                if (listGroups != null)
+                {
+                    foreach (var i in listGroups)
+                    {
+                        if (i.Id == groupId)
+                        {
+                            resultFinal = i;
+                        }
+                        else
+                        {
+                            return (false, null, "The item does not have Group Id");
+                        }
+                    }
+                }
+                else
+                {
+                    return (false, null, "The item does not have Group");
+                }
 
-                var resultPrev = await _TransactionalItemsPackingSpecsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
-
-
-                PackingSpecs result = resultPrev.Select(d => BsonSerializer.Deserialize<PackingSpecs>(d)).ToList()[0];
-
-                return (true, result, null);
+                return (true, resultFinal, null);
             }
             catch (Exception e)
             {
@@ -1431,24 +1479,41 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="transactionalItemId"></param>
         /// <param name="statusId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> GetStatusById(string userId, string ipAdress, string transactionalItemId, string statusId)
+        public async Task<(bool IsSuccess, ConceptStatus? statusResponse, string? ErrorDescription)> GetStatusById(string userId, string ipAdress, string transactionalItemId, string statusId)
         {
             try
             {
                 var pipeline = new List<BsonDocument>();
+                var resultFinal = new ConceptStatus();
 
                 pipeline.Add(
-                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(statusId)))
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(transactionalItemId)))
                 );
 
-                //var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                // obtengo el transactional items //
+                var resultPrev = await _TransactionalItemsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                // deserializo transactional items //
+                TransactionalItem result = resultPrev.Select(d => BsonSerializer.Deserialize<TransactionalItem>(d)).ToList()[0];
+                // obtengo lista de productsPackingSpecs
+                ConceptStatus status = result.Status;
+                if (status != null)
+                {
+                    if (statusId == status.Id)
+                    {
+                        resultFinal = status;
+                    }
+                    else
+                    {
+                        return (false, null, "The item does not have Status Id");
+                    }
+                  
+                }
+                else
+                {
+                    return (false, null, "The item does not have Status");
+                }
 
-                var resultPrev = await _TransactionalItemsPackingSpecsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
-
-
-                PackingSpecs result = resultPrev.Select(d => BsonSerializer.Deserialize<PackingSpecs>(d)).ToList()[0];
-
-                return (true, result, null);
+                return (true, resultFinal, null);
             }
             catch (Exception e)
             {
@@ -1464,24 +1529,43 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="transactionalItemId"></param>
         /// <param name="productModelId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> GetProductModelById(string userId, string ipAdress, string transactionalItemId, string productModelId)
+        public async Task<(bool IsSuccess, ProductModel? productModelResponse, string? ErrorDescription)> GetProductModelById(string userId, string ipAdress, string transactionalItemId, string productModelId)
         {
             try
             {
                 var pipeline = new List<BsonDocument>();
+                var resultFinal = new ProductModel();
 
                 pipeline.Add(
-                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(productModelId)))
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(transactionalItemId)))
                 );
 
-                //var resultPrev = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                // obtengo el transactional items //
+                var resultPrev = await _TransactionalItemsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                // deserializo transactional items //
+                TransactionalItem result = resultPrev.Select(d => BsonSerializer.Deserialize<TransactionalItem>(d)).ToList()[0];
+                // obtengo lista de productsPackingSpecs
+                List<ProductModel> listProductModel = result.TransactionalItemModels;
+                if (listProductModel != null)
+                {
+                    foreach (var i in listProductModel)
+                    {
+                        if (i.Id == productModelId)
+                        {
+                            resultFinal = i;
+                        }
+                        else
+                        {
+                            return (false, null, "The item does not have Product Model Id");
+                        }
+                    }
+                }
+                else
+                {
+                    return (false, null, "The item does not have Product Model");
+                }
 
-                var resultPrev = await _TransactionalItemsPackingSpecsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
-
-
-                PackingSpecs result = resultPrev.Select(d => BsonSerializer.Deserialize<PackingSpecs>(d)).ToList()[0];
-
-                return (true, result, null);
+                return (true, resultFinal, null);
             }
             catch (Exception e)
             {
@@ -1522,9 +1606,6 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
         }
 
-        Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> ITransactionalItemsBack.GetTransactionalItemTagById(string userId, string ipAdress, string transactionalItemId, string transactionalItemTagId)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }
