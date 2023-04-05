@@ -9,10 +9,8 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// Retrives a list with commercialDocument items meeting search criteria
         /// </summary>
         /// <param name="filterCriteria"></param>
-        /// <param name="startingDate"></param>
-        /// <param name="endDate"></param>       
         /// <returns></returns>
-        Task<List<CommercialDocument>> GetCommercialDocumentList(string filterCriteria, DateTime? startingDate = null, DateTime? endDate = null);
+        Task<List<CommercialDocument>> GetCommercialDocumentList(string filterCriteria);
 
         /// <summary>
         /// Retrives a item with commercialDocument items meeting search criteria

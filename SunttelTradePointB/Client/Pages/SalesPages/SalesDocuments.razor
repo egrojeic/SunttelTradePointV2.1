@@ -126,7 +126,7 @@
     public async void LoadData()
     {
         isLoading = true;
-        commercialdocumentList = await DocumentServices.GetCommercialDocumentList(docsFilter, startingDate, endDate);
+        commercialdocumentList = await DocumentServices.GetCommercialDocumentList(docsFilter);
         isLoading = false;
         StateHasChanged();
     }

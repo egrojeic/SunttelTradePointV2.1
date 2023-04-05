@@ -11,6 +11,7 @@
 @inject NavigationManager Navigation
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
 @inject GeographicPlacesService geoPlaces
+@inject ActorsNodeService actorsNodeServive
 @inject IJSRuntime Js
 
 
@@ -440,7 +441,13 @@
         {
             commercialDocument = await DocumentServices.GetItemCommercialDocumentById(commercialDocumentId);
         }
-
+        LoadCommercialDocument();
+        documentTypeList = await DocumentServices.GetCommercialDocumentTypes();
+        businessLineDocList = await DocumentServices.GetCommercialBusinessLines();
+        var  currentEntityActor = await actorsNodeServive.GetEntityActor(UIClientGlobalVariables.EntityUserId);
+        if (currentEntityActor != null) addressList = currentEntityActor.AddressList;//await DocumentServices.GetAddressList(currentEntityActor);
+        vendorWarehouseList = await DocumentServices.GetCommercialVendorWarehouseList();
+        buyerWarehouseList = await DocumentServices.GetCommercialBuyerWarehouseList();
         LoadCommercialDocument();
         isLoading = false;
         StateHasChanged();
@@ -624,7 +631,7 @@
         if (commercialDocument.PrintingSatus == null) commercialDocument.PrintingSatus = new();
         if (commercialDocument.FinanceSummary == null) commercialDocument.FinanceSummary = new();
         if (commercialDocument.Items == null) commercialDocument.Items = new();
-
+       
         #region SalesDocumentItemsDetails
         if (items.TransactionalItem == null) items.TransactionalItem = new();
         if (items.TransactionalItemSpecs == null) items.TransactionalItemSpecs = new();
@@ -632,6 +639,20 @@
         if (items.CancelationInfo == null) items.CancelationInfo = new();
 
         #endregion SalesDocumentItemsDetails
+
+        if (businessLineDocList == null) businessLineDocList = new();
+        if (documentTypeList == null) documentTypeList = new();
+        if (salesPersonList == null) salesPersonList = new();
+        if (vendorList == null) vendorList = new();
+        if (carrierList == null) carrierList = new();
+        if (buyerList == null) buyerList = new();
+        if (seasonList == null) seasonList = new();
+        if (originDocument == null) originDocument = new();
+        if (vendorWarehouseList == null) vendorWarehouseList = new();
+        if (buyerWarehouseList == null) buyerWarehouseList = new();
+        if (addressList == null) addressList = new();
+ 
+   
     }
 
 
