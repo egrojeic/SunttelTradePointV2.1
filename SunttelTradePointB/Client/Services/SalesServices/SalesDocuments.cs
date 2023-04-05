@@ -258,7 +258,6 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<BusinessLine?> GetCommercialBusinessLineById(string filter)
         public async Task<BusinessLine?> GetCommercialBusinessLineById(string businessLineDocId)
         {
             try
