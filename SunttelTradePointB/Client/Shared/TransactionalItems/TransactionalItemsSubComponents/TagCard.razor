@@ -9,7 +9,7 @@
 
 @if (@viewMsg)
 {
-    <MessageSaveComponent isVisible="viewMsg" message="@msg">
+    <MessageSaveComponent isVisible="viewMsg" message="@msg" status="@status">
     </MessageSaveComponent>
 }
 <PageTitleComponent Title="@Title" IconName="tag.png"
@@ -107,11 +107,11 @@
 
             if (transactionalService.TransactionalItems != null && resul)
             {
-                MsgOpen("Saved", 1);
+                MsgOpen("Saved", 0);
             }
             else
             {
-                MsgOpen("Saved", 1);
+                MsgOpen("No saved", 1);
 
             }
         }
