@@ -5,6 +5,7 @@ using SunttelTradePointB.Server.Controllers.MasterTablesCtrl;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Server.Interfaces.SalesBkServices;
 using SunttelTradePointB.Shared.Sales;
+using SunttelTradePointB.Shared.SquadsMgr;
 
 namespace SunttelTradePointB.Server.Controllers.SalesBack
 {
@@ -151,13 +152,15 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
-        /// <param name="squadId"></param>
         /// <param name="business"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveBusinessLineDoc")]
-        public async Task<IActionResult> SaveBusinessLineDoc(string userId, string ipAddress, string squadId, [FromBody] BusinessLine business)
+        public async Task<IActionResult> SaveBusinessLineDoc(string userId, string ipAddress, [FromBody] BusinessLine business)
         {
+
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
 
             var response = await _commercialDocument.SaveBusinessLineDoc(userId, ipAddress, squadId, business);
 
@@ -175,13 +178,15 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         /// </summary>
         /// /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
-        /// <param name="squadId"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetBusinessLinesDocs")]
-        public async Task<IActionResult> GetBusinessLinesDocs(string userId, string ipAddress, string squadId, string filter)
+        public async Task<IActionResult> GetBusinessLinesDocs(string userId, string ipAddress, string filter)
         {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+
             var response = await _commercialDocument.GetBusinessLinesDocs(userId, ipAddress, squadId, filter);
 
             if (response.IsSuccess)
@@ -198,13 +203,15 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         /// </summary>
         /// /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
-        /// <param name="squadId"></param>
         /// <param name="businessLineDocId"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetBusinessLineDocById")]
-        public async Task<IActionResult> GetBusinessLineDocById(string userId, string ipAddress, string squadId, string businessLineDocId)
+        public async Task<IActionResult> GetBusinessLineDocById(string userId, string ipAddress, string businessLineDocId)
         {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+
             var response = await _commercialDocument.GetBusinessLineDocById(userId, ipAddress, squadId, businessLineDocId);
 
             if (response.IsSuccess)
@@ -223,13 +230,14 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
-        /// <param name="squadId"></param>
         /// <param name="shipping"></param>
         /// <returns></returns>
         [HttpPost]
-        [ActionName("SaveShippinStatus")]
-        public async Task<IActionResult> SaveShippinStatus(string userId, string ipAddress, string squadId, [FromBody] ShippingStatus shipping)
+        [ActionName("SaveShippingStatus")]
+        public async Task<IActionResult> SaveShippingStatus(string userId, string ipAddress, [FromBody] ShippingStatus shipping)
         {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
 
             var response = await _commercialDocument.SaveShippinStatus(userId, ipAddress, squadId, shipping);
 
@@ -247,13 +255,15 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         /// </summary>
         /// /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
-        /// <param name="squadId"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetShippingStatusDocs")]
-        public async Task<IActionResult> GetShippingStatusDocs(string userId, string ipAddress, string squadId, string filter)
+        public async Task<IActionResult> GetShippingStatusDocs(string userId, string ipAddress, string filter)
         {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+
             var response = await _commercialDocument.GetShippingStatusDocs(userId, ipAddress, squadId, filter);
 
             if (response.IsSuccess)
@@ -270,14 +280,16 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         /// </summary>
         /// /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
-        /// <param name="squadId"></param>
         /// <param name="shippingStatusId"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetShippingStatusDocById")]
-        public async Task<IActionResult> GetShippingStatusDocById(string userId, string ipAddress, string squadId, string shippingStatusId)
+        public async Task<IActionResult> GetShippingStatusDocById(string userId, string ipAddress, string shippingStatusId)
         {
-            var response = await _commercialDocument.GetShippingStatusDocById(userId, ipAddress, squadId, shippingStatusId);
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+
+            var response = await _commercialDocument.GetShippingStatusDocById(userId, ipAddress,squadId, shippingStatusId);
 
             if (response.IsSuccess)
             {

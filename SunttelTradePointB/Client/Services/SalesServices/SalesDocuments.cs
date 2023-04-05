@@ -41,8 +41,8 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-                string path = basepath.Replace("Name", "GetShippingStatuses");
-                var responseMessage = await Gethttp($"{path}?filterCondition={filter}");
+                string path = basepath.Replace("Name", "GetShippingStatusDocs");
+                var responseMessage = await Gethttp($"{path}&filter={filter}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<ShippingStatus>>();
                 return list != null ? list : new List<ShippingStatus>();
             }
@@ -57,8 +57,8 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-                string path = basepath.Replace("Name", "GetShippingStatusById");
-                var responseMessage = await Gethttp($"{path}?ShippingStatusId={ShippingStatusId}");
+                string path = basepath.Replace("Name", "GetShippingStatusDocById");
+                var responseMessage = await Gethttp($"{path}&ShippingStatusId={ShippingStatusId}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<ShippingStatus>();
                 return list != null ? list : new ShippingStatus();
             }
@@ -181,8 +181,8 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-                string path = basepath.Replace("Name", "GetCommercialBusinessLines");
-                var responseMessage = await Gethttp($"{path}?filterCondition={filter}");
+                string path = basepath.Replace("Name", "GetBusinessLinesDocs");
+                var responseMessage = await Gethttp($"{path}&filter={filter}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<BusinessLine>>();
                 return list != null ? list : new List<BusinessLine>();
             }
@@ -193,12 +193,12 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<BusinessLine?> GetCommercialBusinessLineById(string filter)
+        public async Task<BusinessLine?> GetCommercialBusinessLineById(string businessLineDocId)
         {
             try
             {
-                string path = basepath.Replace("Name", "GetCommercialBusinessLineById");
-                var responseMessage = await Gethttp($"{path}?filterCondition={filter}");
+                string path = basepath.Replace("Name", "GetBusinessLineDocById");
+                var responseMessage = await Gethttp($"{path}&businessLineDocId={businessLineDocId}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<BusinessLine>();
                 return list != null ? list : new BusinessLine();
             }
@@ -281,7 +281,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             try
             {
                 //businessLine.SquadId = UIClientGlobalVariables.ActiveSquad.IDAppUserOwner;
-                string path = basepath.Replace("Name", "SaveCommercialBusinessLine");
+                string path = basepath.Replace("Name", "SaveBusinessLineDoc");
                 var responseMessage = await _httpClient.PostAsJsonAsync<BusinessLine>($"{path}", businessLine);
                 return await responseMessage.Content.ReadFromJsonAsync<BusinessLine>();
             }

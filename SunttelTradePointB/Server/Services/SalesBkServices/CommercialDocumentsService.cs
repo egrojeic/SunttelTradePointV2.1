@@ -343,8 +343,9 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     new BsonDocument {
                         { "$project",
                             new BsonDocument {
-                                { "Code", 1 },
-                                { "Name", 1 }
+                                { "Name", 1 },
+                                { "AffectInventory", 1},
+                                { "EditingAllowed", 1 }
                             }
                         }
                     }

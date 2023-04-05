@@ -47,7 +47,7 @@ else
                 PageSize="10">
 
         <Columns>
-            <RadzenDataGridColumn TItem="CommercialDocumentType" Property="Name" Title="@GetName("Name", new CommercialDocumentType())" Width="80px" />            
+            <RadzenDataGridColumn TItem="BusinessLine" Property="Name" Title="@GetName("Name", new BasicConcept())" Width="80px" />
         </Columns>
     </RadzenDataGrid>
 }
@@ -106,7 +106,7 @@ else
     {
         BusinessLine argObj = (BusinessLine)args.Value;
 
-        //Navigation.NavigateTo($"/StatusConcept/Status/{Page}/{_filterItems}/{argObj.Id}");
+        Navigation.NavigateTo($"/BusinessLineDocConcept/add/{argObj.Id}");
     }
 
     #endregion Grid

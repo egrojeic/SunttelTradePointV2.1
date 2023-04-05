@@ -52,7 +52,7 @@
     public string msg = "", pageView = "";
 
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         if (ShippingStatusId is null) return;
         shippingStatus = await SaleDocumentService.GetShippingStatusById(ShippingStatusId);
