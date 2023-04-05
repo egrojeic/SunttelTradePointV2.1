@@ -1,4 +1,4 @@
-﻿@page "/SaleItem"
+@page "/SaleItem"
 @page "/SaleItem/{commercialDocumentId}"
 @page "/SaleItem/{filter}/{commercialDocumentId}"
 @using SunttelTradePointB.Shared.Sales;
@@ -280,7 +280,7 @@
                                 <h3 class="subTitleDetailForm">@GetName("Items",new CommercialDocument())</h3>
                                 <img @onclick="()=>CloseMenu(true)" class="img-menu" src="/images/menu.png">
                                 <div class="menu-item" style="display:@(menuVisible?"flex":"none");">
-                                    <button type="button" class="exit-btn" @onclick="()=>CloseMenu(false)" >
+                                    <button type="button" class="exit-btn" @onclick="()=>CloseMenu(false)">
                                         <i class="fa-regular fa-circle-xmark"></i>
                                     </button>
                                     <div class="item">
@@ -331,9 +331,35 @@
                                         PageSize="20">
 
                                         <Columns>
-                                              <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName("TransactionalItem", new SalesDocumentItemsDetails())" Width="80px" />
-                                              <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.ProductPackingSpecs.Code" Title="@GetName("TransactionalItemSpecs", new SalesDocumentItemsDetails())" Width="80px" />
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName("TransactionalItem", new SalesDocumentItemsDetails())" Width="120px" />
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.ProductPackingSpecs.Code" Title="@GetName("TransactionalItemSpecs", new SalesDocumentItemsDetails())" Width="120px" />
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="IdCommercialDocument" Title="@GetName("IdCommercialDocument", new SalesDocumentItemsDetails())" Width="120px" />
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Qty" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Width="120px" />
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableQty" Title="@GetName("ChargeableQty", new SalesDocumentItemsDetails())" Width="120px" />
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableUnitsName" Title="@GetName("ChargeableUnitsName", new SalesDocumentItemsDetails())" Width="120px" />
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitPrice" Title="@GetName("UnitPrice", new SalesDocumentItemsDetails())" Width="120px">
+                                               
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxableUnitPrice" Title="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())" Width="120px" />
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitCost" Title="@GetName("UnitCost", new SalesDocumentItemsDetails())" Width="120px" />
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxRate" Title="@GetName("TaxRate", new SalesDocumentItemsDetails())" Width="120px" />
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxValue" Title="@GetName("TaxValue", new SalesDocumentItemsDetails())" Width="120px" />
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Total" Title="@GetName("Total", new SalesDocumentItemsDetails())" Width="120px" />
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PurchaseSpecs" Title="@GetName("PurchaseSpecs", new SalesDocumentItemsDetails())" Width="120px" />
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Provider" Title="@GetName("Provider", new SalesDocumentItemsDetails())" Width="120px" />
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="OriginalPrice" Title="@GetName("OriginalPrice", new SalesDocumentItemsDetails())" Width="120px" />
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ScannedBoxes" Title="@GetName("ScannedBoxes", new SalesDocumentItemsDetails())" Width="120px" />
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ProcurementPtje" Title="@GetName("ProcurementPtje", new SalesDocumentItemsDetails())" Width="120px">
+                                                <Template>
+                                                    @{
+                                                        var MarkedForQCInspection = context.GetType().GetProperty(nameof(CommercialDocument.MarkedForQCInspection))?.GetValue(context);
 
+                                                        <input type="checkbox" checked="@(MarkedForQCInspection!=null? (bool)MarkedForQCInspection:false)" disabled />
+                                                    }
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PullDate" Title="@GetName("PullDate", new SalesDocumentItemsDetails())" Width="120px" />
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="FormatedPullDate" Title="@GetName("FormatedPullDate", new SalesDocumentItemsDetails())" Width="120px" />
 
                                         </Columns>
                                     </RadzenDataGrid>
@@ -358,7 +384,7 @@
     [Parameter]
     public string filter { get; set; }
 
-   
+
 
 
     string page = "";
@@ -420,7 +446,7 @@
         StateHasChanged();
     }
 
-   
+
 
     public async void ItemSelected(MenuEventArgs e)
     {
@@ -539,13 +565,13 @@
 
     public void EventIdSelectionMenuItem(string name)
     {
-         Js.InvokeAsync<object>("open", name, "_blank");
+        Js.InvokeAsync<object>("open", name, "_blank");
     }
 
 
 
 
-    public void alert(string msg,int status)
+    public void alert(string msg, int status)
     {
         referAlert.isVisible = true;
         referAlert.message = msg;
