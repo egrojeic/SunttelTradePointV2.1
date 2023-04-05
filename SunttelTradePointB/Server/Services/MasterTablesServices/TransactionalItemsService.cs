@@ -431,7 +431,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId),
                         Builders<TransactionalItem>.Filter.ElemMatch(x => x.TransactionalItemModels, y => y.Id == productModel.Id)
                     );
-                    var update = Builders<TransactionalItem>.Update.Set(x => x.TransactionalItemModels[-1], productModel);
+                    var update = Builders<TransactionalItem>.Update.Set("TransactionalItemModels.$", productModel);
                     await _TransactionalItemsCollection.UpdateOneAsync(filter, update);
                 }
                 else
