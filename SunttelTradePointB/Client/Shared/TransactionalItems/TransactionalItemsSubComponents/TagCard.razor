@@ -105,7 +105,7 @@
         {
             var resul = await transactionalService.SaveTags(transactionalItemId, Tag);
 
-            if (transactionalService.TransactionalItems != null && resul)
+            if ( resul)
             {
                 MsgOpen("Saved", 0);
             }
