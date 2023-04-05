@@ -1,45 +1,95 @@
-﻿.img-ico-edit
-{
-    height:20px;
-    width:20px;
-    cursor:pointer;
-    
+﻿.img-ico-edit {
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
 }
 
-.width{
-    width:100%;
-   
+.width {
+    width: 100%;
 }
+
 .width-address {
     width: 300px;
-    padding:15px;
-    margin-top:10px;
-}
-.scroll-vertical{
-    overflow-y:auto;
+    padding: 15px;
+    margin-top: 10px;
 }
 
-.textarea-control{
-    width:90%;
-    min-height:200px;
-
+.scroll-vertical {
+    overflow-y: auto;
 }
-.grid-columns-6{
-    grid-template-columns:140px 180px 176px 180px 150px 180px ;
+
+.textarea-control {
+    width: 90%;
+    min-height: 200px;
+}
+
+.grid-columns-6 {
+    grid-template-columns: 140px 180px 176px 180px 150px 180px;
 }
 
     .grid-columns-6 .item-1 {
         grid-column: 1/7;
-        display:flex;       
-        flex-direction:row;
-        justify-content:start;
-        column-gap:20px;
-        align-items:center;
-
+        display: flex;
+        flex-direction: row;
+        justify-content: start;
+        column-gap: 20px;
+        align-items: center;
     }
 
 .item-check {
     display: grid;
     grid-template-columns: 185px 50px;
-   
+}
+
+.menu-item {
+    top: 20px;
+    left: 80px;
+    position: absolute;
+    background-color: #edeade;
+    height: auto;
+    min-width: 40px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+    padding:8px;
+    justify-items: start;
+    z-index: 100;
+    box-shadow: 0px 0px 2px, 0px 0px 1px 1px inset;   
+}
+
+    .menu-item .item button {
+        margin-left: 2px;
+        border: none;
+        background-color: #00ccff;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+        box-shadow: 0px 0px 2px, 0px 0px 2px inset;
+    }
+
+    .menu-item .exit-btn {
+        width: 25px;
+        height:25px;
+        padding:0px;
+        top:-15px;
+        right:-8px;
+        position: absolute;
+        border-radius: 100%;
+        border: none;
+        background-color: #00ccff;
+        box-shadow: 0px 0px 2px;
+    }
+
+    .menu-item b {
+        text-shadow: 0px 0px 0px;
+        cursor: pointer;
+        color:black;
+        font-weight:normal;
+    }
+
+.img-menu {
+    margin-top: 2px;
+    margin-left: 6px;
+    height: 20px;
+    width: 20px;
 }

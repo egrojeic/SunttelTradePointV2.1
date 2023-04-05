@@ -120,14 +120,20 @@ namespace SunttelTradePointB.Client.Services.SalesServices
                 return null;
             }
         }
-        
+
+
+      
+
+
+
         public async Task<List<SeasonBusiness>> GetCommercialSeasonList(string filter)
         {
             try
             {
-                string path = basepath.Replace("Name", "GetCommercialDocumentsTypes");
-                var responseMessage = await Gethttp($"{path}?filterCondition={filter}");
+                string path = basepath.Replace("Name", "GetCommercialDocumentsTypes");              
+                var responseMessage = await Gethttp($"/api/ConceptsSelector/GetSelectorListSeasonBusiness?filterString={filter}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<SeasonBusiness>>();
+               
                 return list != null ? list : new List<SeasonBusiness>();
             }
             catch (Exception ex)
