@@ -144,8 +144,6 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
                 return NotFound(response.ErrorDescription);
             }
         }
-    }
-        }
 
         #region Business Line Docs
         /// <summary>
