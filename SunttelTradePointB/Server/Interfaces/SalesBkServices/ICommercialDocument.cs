@@ -1,4 +1,5 @@
-﻿using SunttelTradePointB.Shared.Sales;
+﻿using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.Sales;
 
 namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
 {
@@ -41,6 +42,35 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <param name="entity"></param>
         /// <returns></returns>
         Task<(bool IsSuccess, BusinessLine? entity, string? ErrorDescription)> SaveBusinessLineDoc(string userId, string ipAdress, string squadId, BusinessLine entity);
+
+        /// <summary>
+        /// Retrieves the list of Transactional Types that match with the filter condition in the parameter
+        /// </summary>
+        /// <param name="filterCondition"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<CommercialDocumentType>? commercialDocumentTypes, string? ErrorDescription)> GetCommercialDocumentTypes(string userId, string ipAddress, string filterCondition);
+
+        /// <summary>
+        /// Retrieves a Transactional Type of the corresponding id
+        /// </summary>
+        /// <param name="commercialDocumentTypeId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, CommercialDocumentType? commercialDocumentType, string? ErrorDescription)> GetCommercialDocumentTypeById(string userId, string ipAddress, string commercialDocumentTypeId);
+
+        /// <summary>
+        /// Insert/ Updates a Transactional Type of the corresponding id
+        /// </summary>
+        /// <param name="commercialDocumentType"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, CommercialDocumentType? commercialDocumentType, string? ErrorDescription)> SaveCommercialDocumentType(string userId, string ipAddress, CommercialDocumentType commercialDocumentType);
+
+
 
 
         /// <summary>

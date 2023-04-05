@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Server.Controllers.MasterTablesCtrl;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Server.Interfaces.SalesBkServices;
@@ -73,6 +74,77 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
             }
             else
                 return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Retrieves a list of Transactional Item Types with the posibility to receive an optional paremeter
+        /// </summary>
+        /// <param name="filterCondition"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetCommercialDocumentTypes")]
+        public async Task<IActionResult> GetCommercialDocumentTypes(string userId, string ipAddress, string? filterCondition = null)
+        {
+            var response = await _commercialDocument.GetCommercialDocumentTypes(userId, ipAddress, filterCondition);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.commercialDocumentTypes);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves a Transactional Item Type object by Id
+        /// </summary>
+        /// <param name="commercialDocumentTypeId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetCommercialDocumentTypeById")]
+        public async Task<IActionResult> GetCommercialDocumentTypeById(string userId, string ipAddress, string commercialDocumentTypeId)
+        {
+            var response = await _commercialDocument.GetCommercialDocumentTypeById(userId, ipAddress, commercialDocumentTypeId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.commercialDocumentType);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+        /// <summary>
+        /// Insert / Update a Transactional Item Type
+        /// </summary>
+        /// <param name="commercialDocumentType"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveCommercialDocumentType")]
+        public async Task<IActionResult> SaveCommercialDocumentType(string userId, string ipAddress, CommercialDocumentType commercialDocumentType)
+        {
+            var response = await _commercialDocument.SaveCommercialDocumentType(userId, ipAddress, commercialDocumentType);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.commercialDocumentType);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+    }
         }
 
         #region Business Line Docs

@@ -851,7 +851,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetProductModelById")]
-        public async Task<IActionResult> GetProductModelById(string userId, string ipAdress, string transactionalItemId, string productModelId)
+        public async Task<IActionResult> GetProductModelById(string userId, string ipAdress, string? transactionalItemId, string productModelId)
         {
             var response = await _transactionalItems.GetProductModelById(userId, ipAdress, transactionalItemId, productModelId);
 

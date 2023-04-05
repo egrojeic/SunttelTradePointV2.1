@@ -17,6 +17,8 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         IMongoCollection<SalesDocuments> _SalesDocumentsCollection;
         IMongoCollection<BusinessLine> _BusinessLineCollection;
         IMongoCollection<ShippingStatus> _ShippingStatusCollection;
+        IMongoCollection<CommercialDocument> _CommercialDocumentCollection;
+        IMongoCollection<CommercialDocumentType> _CommercialDocumentType;
 
 
         /// <summary>
@@ -107,6 +109,61 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
                 List<CommercialDocument> results = await _SalesDocumentsCollection.Aggregate<CommercialDocument>(pipeline).ToListAsync();
 
+                return (true, results, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves a list of Transactional Item Types with the posibility to receive an optional paremeter
+        /// </summary>
+        /// <param name="filterCondition"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<(bool IsSuccess, List<CommercialDocumentType>? commercialDocumentTypes, string? ErrorDescription)> GetCommercialDocumentTypes(string userId, string ipAddress, string? filterCondition = null)
+        {
+            try
+            {
+                string filter = filterCondition == null ? "" : filterCondition;
+
+                if (filter.Length > 0)
+                {
+                    var pipeline = new List<BsonDocument>();
+
+                    if (filter.ToLower() != "all")
+                    {
+                        pipeline.Add(
+                       new BsonDocument(
+                           "$match", new BsonDocument(
+                               "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filter}/i"))
+                           )
+                       )
+                   );
+                    }
+
+
+                    List<CommercialDocumentType> results = await _CommercialDocumentType.Aggregate<CommercialDocumentType>(pipeline).ToListAsync();
+                    return (true, results, null);
+                }
+                else
+                {
+                    var commercialDocumentTypes = await _CommercialDocumentType.Find<CommercialDocumentType>(new BsonDocument()).ToListAsync();
+
+                    if (commercialDocumentTypes == null || commercialDocumentTypes.Count == 0)
+                    {
+                        return (false, null, "Unpopulated Transactional Item Types");
+                    }
+                    else
+                    {
+                        return (true, commercialDocumentTypes, null);
+                    }
+                }
+            }
                 return (true, results, null);
             }
             catch (Exception e)
@@ -334,5 +391,65 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
             }
         }
         #endregion
+
+        /// <summary>
+        /// Retrieves a particular Transactional Item Type by Id
+        /// </summary>
+        /// <param name="commercialDocumentType"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, CommercialDocumentType? commercialDocumentType, string? ErrorDescription)> GetCommercialDocumentTypeById(string userId, string ipAddress, string commercialDocumentTypeId)
+        {
+            try
+            {
+                var filterCommercialDocumentType = Builders<CommercialDocumentType>.Filter.Eq(x => x.Id, commercialDocumentTypeId);
+                var resultCommercialDocumentType = await _CommercialDocumentType.Find(filterCommercialDocumentType).FirstOrDefaultAsync();
+
+                if (resultCommercialDocumentType == null)
+                {
+                    return (false, null, "Unpopulated Transactional Item Types");
+                }
+                else
+                {
+                    return (true, resultCommercialDocumentType, null);
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Inserts / Updates an Transactional Item Type object
+        /// </summary>
+        /// <param name="commercialDocumentType"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<(bool IsSuccess, CommercialDocumentType? commercialDocumentType, string? ErrorDescription)> SaveCommercialDocumentType(string userId, string ipAddress, CommercialDocumentType commercialDocumentType)
+        {
+            try
+            {
+                if (commercialDocumentType.Id == null)
+                {
+                    commercialDocumentType.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterCommercialDocumentType = Builders<CommercialDocumentType>.Filter.Eq("_id", new ObjectId(commercialDocumentType.Id));
+                var updateCommercialDocumentType = new ReplaceOptions { IsUpsert = true };
+                var resultCommercialDocumentType = await _CommercialDocumentType.ReplaceOneAsync(filterCommercialDocumentType, commercialDocumentType, updateCommercialDocumentType);
+
+                return (true, commercialDocumentType, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
     }
 }

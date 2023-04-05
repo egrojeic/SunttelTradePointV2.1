@@ -42,36 +42,10 @@
                     PageSize="20">
 
                 <Columns>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="DocumentPrinted" Title="@GetName("DocumentPrinted", new SalesDocumentItemsDetails())" Width="80px">
-                        <Template>
-                            bool value = (bool)context.GetType().GetProperty("DocumentPrinted").GetValue(context);
-                            <input type="checkbox" checked="value" disabled />
-                        </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="BillOfLandingPrinted" Title="@GetName("BillOfLandingPrinted", new SalesDocumentItemsDetails())" Width="80px">
-                        <Template>
-                            bool value = (bool)context.GetType().GetProperty("BillOfLandingPrinted").GetValue(context);
-                            <input type="checkbox" checked="value" disabled />
-                        </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PickingTicketPrinted" Title="@GetName("PickingTicketPrinted", new SalesDocumentItemsDetails())" Width="80px">
-                        <Template>
-                            bool value = (bool)context.GetType().GetProperty("PickingTicketPrinted").GetValue(context);
-                            <input type="checkbox" checked="value" disabled />
-                        </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="LabelsPrinted" Title="@GetName("LabelsPrinted", new SalesDocumentItemsDetails())" Width="80px">
-                        <Template>
-                            bool value = (bool)context.GetType().GetProperty("LabelsPrinted").GetValue(context);
-                            <input type="checkbox" checked="value" disabled />
-                        </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="SelectedToPrint" Title="@GetName("SelectedToPrint", new SalesDocumentItemsDetails())" Width="80px">
-                        <Template>
-                            bool value = (bool)context.GetType().GetProperty("SelectedToPrint").GetValue(context);
-                            <input type="checkbox" checked="value" disabled />
-                        </Template>
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName("TransactionalItem", new SalesDocumentItemsDetails())" Width="80px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.ProductPackingSpecs.Code" Title="@GetName("TransactionalItemSpecs", new SalesDocumentItemsDetails())" Width="80px" />
+
+
                 </Columns>
             </RadzenDataGrid>
         }
@@ -83,7 +57,7 @@
 @code {
     [Parameter]
     public string _filterItems { get; set; }
-    public List<SalesDocumentItemsDetails> Items { get; set; }
+    public List<SalesDocumentItemsDetails> Items { get; set; } = new();
     List<TransactionalItem>? itemList;
 
     bool isLoading = false;
@@ -108,10 +82,11 @@
     private async Task LoadData()
     {
         isLoading = true;
-        var data = await transactItemsService.GetTransactionalItemsList(0, 50, _filterItems);
+        var data = await transactItemsService.GetTransactionalItemsList(1, 50, _filterItems);
         itemList = data;
-        isLoading = false;
-        StateHasChanged();
+
+        listItemByListProduct();
+
 
     }
 
@@ -122,20 +97,28 @@
     }
 
 
-    public void listItemByListProduct()
+    public async void listItemByListProduct()
     {
         foreach (var Transactional in itemList)
         {
-            foreach (var ProductPackingSpec in Transactional.ProductPackingSpecs)
+            var item = await transactItemsService.GetTransactionalItemById(Transactional.Id);
+             if(item!=null) Transactional.ProductPackingSpecs = item.ProductPackingSpecs;
+            if (Transactional.ProductPackingSpecs !=null)
             {
-                Items.Add(new SalesDocumentItemsDetails
-                        {
-                            TransactionalItem = Transactional,
-                            TransactionalItemSpecs = ProductPackingSpec                            
+                foreach (var ProductPackingSpec in Transactional.ProductPackingSpecs)
+                {
+                    Items.Add(new SalesDocumentItemsDetails
+                            {
+                                TransactionalItem = Transactional,
+                                TransactionalItemSpecs = ProductPackingSpec
 
-                        });
+                            });
+                }
             }
+
         }
+        isLoading = false;
+        StateHasChanged();
     }
 
 

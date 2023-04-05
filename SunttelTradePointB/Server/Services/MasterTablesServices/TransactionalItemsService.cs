@@ -563,7 +563,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId),
                         Builders<TransactionalItem>.Filter.ElemMatch(x => x.ProductionSpecs, y => y.Id == transactionalItemProcessStep.Id)
                     );
-                    var update = Builders<TransactionalItem>.Update.Set(x => x.ProductionSpecs[-1], transactionalItemProcessStep);
+                    var update = Builders<TransactionalItem>.Update.Set("ProductionSpecs.$", transactionalItemProcessStep);
                     await _TransactionalItemsCollection.UpdateOneAsync(filter, update);
                 }
                 else
@@ -714,7 +714,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         Builders<TransactionalItem>.Filter.Eq(x => x.Id, transactionalItemId),
                         Builders<TransactionalItem>.Filter.ElemMatch(x => x.TransactionalItemTags, y => y.Id == transactionalItemTag.Id)
                     );
-                    var update = Builders<TransactionalItem>.Update.Set(x => x.TransactionalItemTags[-1], transactionalItemTag);
+                    var update = Builders<TransactionalItem>.Update.Set("TransactionalItemTags.$", transactionalItemTag);
                     await _TransactionalItemsCollection.UpdateOneAsync(filter, update);
                 }
                 else
@@ -1499,7 +1499,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="transactionalItemId"></param>
         /// <param name="productModelId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, ProductModel? productModelResponse, string? ErrorDescription)> GetProductModelById(string userId, string ipAdress, string transactionalItemId, string productModelId)
+        public async Task<(bool IsSuccess, ProductModel? productModelResponse, string? ErrorDescription)> GetProductModelById(string userId, string ipAdress, string? transactionalItemId, string productModelId)
         {
             try
             {
