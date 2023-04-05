@@ -1291,19 +1291,17 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         if (i.Id == packingSpecsId)
                         {
                             resultFinal = i;
+                            return (true, resultFinal, null);
                         }
-                        else
-                        {
-                            return (false, null, "The item does not have Packing Specs Id");
-                        }
+                        
                     }
+                    return (false, null, "The item does not have Packing Specs Id");
                 }
                 else
                 {
                     return (false, null, "The item does not have Product Packing Specs");
                 }
 
-                return (true, resultFinal, null);
             }
             catch (Exception e)
             {
@@ -1344,19 +1342,15 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         if (i.Id == productionSpecsId)
                         {
                             resultFinal = i;
-                        }
-                        else
-                        {
-                            return (false, null, "The item does not have Production Specs Id");
+                            return (true, resultFinal, null);
                         }
                     }
+                    return (false, null, "The item does not have Production Specs Id");
                 }
                 else
                 {
                     return (false, null, "The item does not have Production Specs");
                 }
-
-                return (true, resultFinal, null);
             }
             catch (Exception e)
             {
@@ -1399,19 +1393,16 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         if (i.Id == transactionalItemTagId)
                         {
                             resultFinal = i;
-                        }
-                        else
-                        {
-                            return (false, null, "The item does not have Transactional Item Tag Id");
+                            return (true, resultFinal, null);
                         }
                     }
+                    return (false, null, "The item does not have Transactional Item Tag Id");
                 }
                 else
                 {
                     return (false, null, "The item does not have Transactional Item Tag");
                 }
 
-                return (true, resultFinal, null);
             }
             catch (Exception e)
             {
@@ -1513,38 +1504,30 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             try
             {
                 var pipeline = new List<BsonDocument>();
-                var resultFinal = new ProductModel();
 
                 pipeline.Add(
-                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(transactionalItemId)))
+                    new BsonDocument("$match", new BsonDocument("TransactionalItemModels._id", new ObjectId(productModelId)))
                 );
+
+                pipeline.Add(
+                   new BsonDocument("$unwind", "$TransactionalItemModels")
+               );
+                pipeline.Add(
+                  new BsonDocument("$match", new BsonDocument("TransactionalItemModels._id", new ObjectId(productModelId)))
+              );
+                pipeline.Add(
+                 new BsonDocument("$replaceRoot", new BsonDocument("newRoot", "$TransactionalItemModels"))
+             );
+
 
                 // obtengo el transactional items //
                 var resultPrev = await _TransactionalItemsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
                 // deserializo transactional items //
-                TransactionalItem result = resultPrev.Select(d => BsonSerializer.Deserialize<TransactionalItem>(d)).ToList()[0];
+                ProductModel result = resultPrev.Select(d => BsonSerializer.Deserialize<ProductModel>(d)).ToList()[0];
                 // obtengo lista de productsPackingSpecs
-                List<ProductModel> listProductModel = result.TransactionalItemModels;
-                if (listProductModel != null)
-                {
-                    foreach (var i in listProductModel)
-                    {
-                        if (i.Id == productModelId)
-                        {
-                            resultFinal = i;
-                        }
-                        else
-                        {
-                            return (false, null, "The item does not have Product Model Id");
-                        }
-                    }
-                }
-                else
-                {
-                    return (false, null, "The item does not have Product Model");
-                }
+               
 
-                return (true, resultFinal, null);
+                return (true, result, null);
             }
             catch (Exception e)
             {
