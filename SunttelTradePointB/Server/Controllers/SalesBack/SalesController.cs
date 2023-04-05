@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SunttelTradePointB.Server.Controllers.MasterTablesCtrl;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Server.Interfaces.SalesBkServices;
+using SunttelTradePointB.Shared.Sales;
 
 namespace SunttelTradePointB.Server.Controllers.SalesBack
 {
@@ -73,5 +74,149 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
             else
                 return NotFound(response.ErrorDescription);
         }
+
+        #region Business Line Docs
+        /// <summary>
+        /// Save a Business line document
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="business"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveBusinessLineDoc")]
+        public async Task<IActionResult> SaveBusinessLineDoc(string userId, string ipAddress, string squadId, [FromBody] BusinessLine business)
+        {
+
+            var response = await _commercialDocument.SaveBusinessLineDoc(userId, ipAddress, squadId, business);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.entity);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+
+        }
+
+        /// <summary>
+        /// Retrieves a the list of Business lines documents
+        /// </summary>
+        /// /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetBusinessLinesDocs")]
+        public async Task<IActionResult> GetBusinessLinesDocs(string userId, string ipAddress, string squadId, string filter)
+        {
+            var response = await _commercialDocument.GetBusinessLinesDocs(userId, ipAddress, squadId, filter);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.businessesLinesDocs);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+
+        }
+
+        /// <summary>
+        /// Retrieves a Business line document by id
+        /// </summary>
+        /// /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="businessLineDocId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetBusinessLineDocById")]
+        public async Task<IActionResult> GetBusinessLineDocById(string userId, string ipAddress, string squadId, string businessLineDocId)
+        {
+            var response = await _commercialDocument.GetBusinessLineDocById(userId, ipAddress, squadId, businessLineDocId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.businessLineDoc);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+
+        }
+        #endregion
+
+        #region shipping status docs
+        /// <summary>
+        /// Save a Shipping status
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="shipping"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveShippinStatus")]
+        public async Task<IActionResult> SaveShippinStatus(string userId, string ipAddress, string squadId, [FromBody] ShippingStatus shipping)
+        {
+
+            var response = await _commercialDocument.SaveShippinStatus(userId, ipAddress, squadId, shipping);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.entity);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+
+        }
+
+        /// <summary>
+        /// Retrieves a the list of the shipping status docs
+        /// </summary>
+        /// /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetShippingStatusDocs")]
+        public async Task<IActionResult> GetShippingStatusDocs(string userId, string ipAddress, string squadId, string filter)
+        {
+            var response = await _commercialDocument.GetShippingStatusDocs(userId, ipAddress, squadId, filter);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.shippingStatuses);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+
+        }
+
+        /// <summary>
+        /// Retrieves a Shipping status by Id
+        /// </summary>
+        /// /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="shippingStatusId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetShippingStatusDocById")]
+        public async Task<IActionResult> GetShippingStatusDocById(string userId, string ipAddress, string squadId, string shippingStatusId)
+        {
+            var response = await _commercialDocument.GetShippingStatusDocById(userId, ipAddress, squadId, shippingStatusId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.shippingStatus);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+
+        }
+        #endregion
     }
 }
