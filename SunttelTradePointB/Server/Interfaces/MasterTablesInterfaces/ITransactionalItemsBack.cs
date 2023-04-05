@@ -330,7 +330,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="transactionalItemId"></param>
         /// <param name="productModelId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, ProductModel? productModelResponse, string? ErrorDescription)> GetProductModelById(string userId, string ipAdress, string transactionalItemId, string productModelId);
+        Task<(bool IsSuccess, ProductModel? productModelResponse, string? ErrorDescription)> GetProductModelById(string userId, string ipAdress, string? transactionalItemId, string productModelId);
 
 
         /// <summary>

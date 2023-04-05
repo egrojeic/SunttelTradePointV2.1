@@ -1499,7 +1499,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="transactionalItemId"></param>
         /// <param name="productModelId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, ProductModel? productModelResponse, string? ErrorDescription)> GetProductModelById(string userId, string ipAdress, string transactionalItemId, string productModelId)
+        public async Task<(bool IsSuccess, ProductModel? productModelResponse, string? ErrorDescription)> GetProductModelById(string userId, string ipAdress, string? transactionalItemId, string productModelId)
         {
             try
             {
