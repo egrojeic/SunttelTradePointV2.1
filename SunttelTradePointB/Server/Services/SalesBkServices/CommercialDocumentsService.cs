@@ -164,8 +164,6 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     }
                 }
             }
-                return (true, results, null);
-            }
             catch (Exception e)
             {
                 return (false, null, e.Message);
