@@ -1,5 +1,5 @@
-@page "/SalesDocumentItems"
-@page "/SalesDocumentItems/{_filterItems}"
+@page "/SalesFromProductList"
+@page "/SalesFromProductList/{_filterItems}"
 
 @using SunttelTradePointB.Shared.Sales;
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
@@ -54,12 +54,14 @@
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableUnitsName" Title="@GetName("ChargeableUnitsName", new SalesDocumentItemsDetails())" Width="120px" />
                     <RadzenDataGridColumn  TItem="SalesDocumentItemsDetails" Property="UnitPrice" Title="@GetName("UnitPrice", new SalesDocumentItemsDetails())" Width="120px" >
                         <EditTemplate  Context="itemEdit">
-                            <RadzenNumeric  @bind-Value="itemEdit.UnitPrice" />
-                            
+                            <RadzenNumeric  @bind-Value="itemEdit.UnitPrice" />                            
                         </EditTemplate>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxableUnitPrice" Title="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitCost" Title="@GetName("UnitCost", new SalesDocumentItemsDetails())" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxableUnitPrice" Title="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())" Width="120px" >
+                        <EditTemplate Context="itemEdit">
+                            <RadzenNumeric @bind-Value="itemEdit.UnitPrice" />
+                        </EditTemplate>
+                    </RadzenDataGridColumn><RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitCost" Title="@GetName("UnitCost", new SalesDocumentItemsDetails())" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxRate" Title="@GetName("TaxRate", new SalesDocumentItemsDetails())" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxValue" Title="@GetName("TaxValue", new SalesDocumentItemsDetails())" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Total" Title="@GetName("Total", new SalesDocumentItemsDetails())" Width="120px" />
@@ -71,7 +73,6 @@
                         <Template>
                             @{
                                 var MarkedForQCInspection = context.GetType().GetProperty(nameof(CommercialDocument.MarkedForQCInspection))?.GetValue(context);
-
                                 <input type="checkbox" checked="@(MarkedForQCInspection!=null? (bool)MarkedForQCInspection:false)" disabled />
                             }
                         </Template>
@@ -204,6 +205,12 @@
         StateHasChanged();
     }
 
+    public async void ConvetToSalesDocumentItemsDetails(SalesDocumentItemsDetails item)
+    {
+        
+
+
+    }
 
   
 }

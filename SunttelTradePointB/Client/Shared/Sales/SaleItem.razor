@@ -86,9 +86,12 @@
                     {
                         <option value="0" selected>Select</option>
                     }
-                    @foreach (var item in documentTypeList)
+                    @if (documentTypeList != null)
                     {
-                        <option value="@item">@item.Name</option>
+                        @foreach (var item in documentTypeList)
+                        {
+                            <option value="@item">@item.Name</option>
+                        }
                     }
                 </select>
             </div>
@@ -285,22 +288,22 @@
                                         <i class="fa-regular fa-circle-xmark"></i>
                                     </button>
                                     <div class="item">
-                                        <button type="button" @onclick='()=>EventIdSelectionMenuItem("SalesDocumentItems")'>
+                                        <button type="button" @onclick='()=>EventIdSelectionMenuItem("SalesFromProductList")'>
                                             <i class="fa-sharp fa-solid fa-circle-plus"></i>
                                         </button>
-                                        <b @onclick='()=>EventIdSelectionMenuItem("SalesDocumentItems")' class="subTitleDetailForm">Of list product</b>
+                                        <b @onclick='()=>EventIdSelectionMenuItem("SalesDocumentItems")' class="subTitleDetailForm">From product list</b>
                                     </div>
                                     <div class="item">
-                                        <button type="button" @onclick='()=>EventIdSelectionMenuItem("inventory")'>
+                                        <button type="button" @onclick='()=>EventIdSelectionMenuItem("SalesFromInventroy")'>
                                             <i class="fa-sharp fa-solid fa-circle-plus"></i>
                                         </button>
-                                        <b @onclick='()=>EventIdSelectionMenuItem("inventory")' class="subTitleDetailForm">Of inventory</b>
+                                        <b @onclick='()=>EventIdSelectionMenuItem("inventory")' class="subTitleDetailForm">From Inventroy</b>
                                     </div>
                                     <div class="item">
-                                        <button type="button" @onclick='()=>EventIdSelectionMenuItem("Product")'>
+                                        <button type="button" @onclick='()=>EventIdSelectionMenuItem("SalesFromProductionOrder")'>
                                             <i class="fa-sharp fa-solid fa-circle-plus"></i>
                                         </button>
-                                        <b @onclick='()=>EventIdSelectionMenuItem("Product")' class="subTitleDetailForm">Add </b>
+                                        <b @onclick='()=>EventIdSelectionMenuItem("Product")' class="subTitleDetailForm">From Production Order </b>
                                     </div>
                                 </div>
 
@@ -339,7 +342,7 @@
                                             <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableQty" Title="@GetName("ChargeableQty", new SalesDocumentItemsDetails())" Width="120px" />
                                             <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableUnitsName" Title="@GetName("ChargeableUnitsName", new SalesDocumentItemsDetails())" Width="120px" />
                                             <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitPrice" Title="@GetName("UnitPrice", new SalesDocumentItemsDetails())" Width="120px">
-                                               
+
                                             </RadzenDataGridColumn>
                                             <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxableUnitPrice" Title="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())" Width="120px" />
                                             <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitCost" Title="@GetName("UnitCost", new SalesDocumentItemsDetails())" Width="120px" />
@@ -444,7 +447,7 @@
         LoadCommercialDocument();
         documentTypeList = await DocumentServices.GetCommercialDocumentTypes();
         businessLineDocList = await DocumentServices.GetCommercialBusinessLines();
-        var  currentEntityActor = await actorsNodeServive.GetEntityActor(UIClientGlobalVariables.EntityUserId);
+        var currentEntityActor = await actorsNodeServive.GetEntityActor(UIClientGlobalVariables.EntityUserId);
         if (currentEntityActor != null) addressList = currentEntityActor.AddressList;//await DocumentServices.GetAddressList(currentEntityActor);
         vendorWarehouseList = await DocumentServices.GetCommercialVendorWarehouseList();
         buyerWarehouseList = await DocumentServices.GetCommercialBuyerWarehouseList();
@@ -632,7 +635,7 @@
         if (commercialDocument.PrintingSatus == null) commercialDocument.PrintingSatus = new();
         if (commercialDocument.FinanceSummary == null) commercialDocument.FinanceSummary = new();
         if (commercialDocument.Items == null) commercialDocument.Items = new();
-       
+
         #region SalesDocumentItemsDetails
         if (items.TransactionalItem == null) items.TransactionalItem = new();
         if (items.TransactionalItemSpecs == null) items.TransactionalItemSpecs = new();
@@ -652,8 +655,8 @@
         if (vendorWarehouseList == null) vendorWarehouseList = new();
         if (buyerWarehouseList == null) buyerWarehouseList = new();
         if (addressList == null) addressList = new();
- 
-   
+
+
     }
 
 
