@@ -573,6 +573,7 @@
     public void EventIdSelectionMenuItem(string name)
     {
         Js.InvokeAsync<object>("open", name, "_blank");
+        CloseMenu(false);
     }
 
 
