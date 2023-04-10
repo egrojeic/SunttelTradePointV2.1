@@ -34,6 +34,8 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
             _SalesDocumentsCollection = mongoDatabase.GetCollection<SalesDocuments>("CommercialDocuments");
             _BusinessLineCollection = mongoDatabase.GetCollection<BusinessLine>("BusinessLineDocuments");
             _ShippingStatusCollection = mongoDatabase.GetCollection<ShippingStatus>("ShippingStatusDocuments");
+            _CommercialDocumentType = mongoDatabase.GetCollection<CommercialDocumentType>("CommercialDocumentTypes");
+            _FinanceStatusCollection = mongoDatabase.GetCollection<FinanceStatus>("FinanceStatus");
 
         }
 
@@ -132,39 +134,27 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
             try
             {
                 string filter = filterCondition == null ? "" : filterCondition;
+                var pipeline = new List<BsonDocument>();
 
-                if (filter.Length > 0)
+                if (filter.ToLower() != "all")
                 {
-                    var pipeline = new List<BsonDocument>();
-
-                    if (filter.ToLower() != "all")
-                    {
-                        pipeline.Add(
-                       new BsonDocument(
-                           "$match", new BsonDocument(
-                               "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filter}/i"))
-                           )
-                       )
-                   );
-                    }
-
-
-                    List<CommercialDocumentType> results = await _CommercialDocumentType.Aggregate<CommercialDocumentType>(pipeline).ToListAsync();
-                    return (true, results, null);
+                    pipeline.Add(
+                    new BsonDocument(
+                        "$match",
+                        new BsonDocument(
+                                 "Name",
+                                    new BsonDocument(
+                                        "$regex", new BsonRegularExpression($"/{filter}/i"))
+                            )
+                    )
+                );
                 }
-                else
-                {
-                    var commercialDocumentTypes = await _CommercialDocumentType.Find<CommercialDocumentType>(new BsonDocument()).ToListAsync();
 
-                    if (commercialDocumentTypes == null || commercialDocumentTypes.Count == 0)
-                    {
-                        return (false, null, "Unpopulated Transactional Item Types");
-                    }
-                    else
-                    {
-                        return (true, commercialDocumentTypes, null);
-                    }
-                }
+                List<CommercialDocumentType> results = await _CommercialDocumentType.Aggregate<CommercialDocumentType>(pipeline).ToListAsync();
+                
+                return (true, results, null);
+                
+                
             }
             catch (Exception e)
             {
