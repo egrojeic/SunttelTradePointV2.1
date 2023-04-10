@@ -9,7 +9,7 @@
     <Authorized>
 
         <div id="navMenuContainer">
-
+           
             @*<div id="companyLogoContainer">
                 @if (@pathLogo != null)
                 {
@@ -30,7 +30,7 @@
 
                         <li>
                             <i class="fa-solid fa-screwdriver-wrench"></i><a @onclick="ToggleNavMenu">User Tools</a>
-                            <ul class="subMenuItem @NavMenuCssClass">
+                            <ul class="subMenuItem ">
                                 <NavLink class="nav-link" href="/">
                                     <i class="fa fa-th"></i><span class="innerlink">Dashboard</span>
                                 </NavLink>
@@ -92,7 +92,10 @@
 </AuthorizeView>
 
 @code {
-    private bool collapseNavMenu = true;
+    [Parameter]
+    public bool collapseNavMenu { get; set; } = true;
+    [Parameter]
+    public EventCallback<string> EventMenuOpen {get; set;}
     List<SystemTool>? optionsMenuList;
     List<ToolSet>? toolSet;
     string squadName = "";
@@ -100,11 +103,12 @@
 
     private string pathLogo;
 
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private string? NavMenuCssClass => collapseNavMenu ? "sidebar" : null;
 
     private void ToggleNavMenu()
     {
-        collapseNavMenu = !collapseNavMenu;
+        collapseNavMenu = !collapseNavMenu;       
+        StateHasChanged();
     }
 
     private void ToggleNavMenuLi(ToolSet toolSet)

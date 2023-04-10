@@ -2,6 +2,7 @@
 @using System.Globalization
 @using System.Security.Claims
 @using System.Text.Json;
+@inject NavigationManager Navigation
 @inherits LayoutComponentBase
 @inject NavigationManager navigationManager
 @inject CustomStateProvider authStateProvider
@@ -42,10 +43,12 @@
 
         <div class="page">
 
-    
+            <div @onclick="ToggleNavMenu">
+                <img class="btn-menu-close @(collapseNavMenu?"btn-menu-width-open":"btn-menu-width-close") " src="@(collapseNavMenu?"/images/close.svg":"images/open.svg")">
+            </div>
 
-            <div class="sidebar">
-                <NavMenu />
+            <div class="@(NavMenuCssClass)">
+                <NavMenu/>
             </div>
 
 
@@ -63,10 +66,18 @@
 
     [CascadingParameter]
     Task<AuthenticationState> AuthenticationState { get; set; }
-  
+    [Parameter]
+    public bool collapseNavMenu { get; set; } = true;
+    private string? NavMenuCssClass => collapseNavMenu ? "sidebar" : "sidebar-on";
+
     string currentDate = "";
     int weekDate = 0;
 
+
+    protected override void OnInitialized()
+    {
+
+    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -85,10 +96,17 @@
             {
                 UIClientGlobalVariables.UserName = user.Identity.Name;
                 UIClientGlobalVariables.UserId = user.FindFirst(ClaimTypes.NameIdentifier).Value;
-             
+
             }
-            
+
         }
+
+
+
+        if (Navigation.Uri.Contains("SalesFromProductList")) collapseNavMenu = false;
+        if (Navigation.Uri.Contains("SalesFromInventroy")) collapseNavMenu = false;
+        if (Navigation.Uri.Contains("SalesFromProductionOrder")) collapseNavMenu = false;
+      
 
         StateHasChanged();
 
@@ -102,7 +120,7 @@
 
                 UIClientGlobalVariables.PublicIpAddress = response;
             }
-           
+
         }
         catch (Exception)
         {
@@ -111,7 +129,7 @@
             UIClientGlobalVariables.PublicIpAddress = publicIpAddress;
         } 
 
-        
+
 
     }
 
@@ -132,19 +150,28 @@
     }
 
     public static int GetIso8601WeekOfYear(DateTime time)
-{
-    // Seriously cheat.  If its Monday, Tuesday or Wednesday, then it'll 
-    // be the same week# as whatever Thursday, Friday or Saturday are,
-    // and we always get those right
-    DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
-    if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
     {
-        time = time.AddDays(3);
+        // Seriously cheat.  If its Monday, Tuesday or Wednesday, then it'll 
+        // be the same week# as whatever Thursday, Friday or Saturday are,
+        // and we always get those right
+        DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
+        if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
+        {
+            time = time.AddDays(3);
+        }
+
+        // Return the week of our adjusted day
+        return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+    } 
+
+   
+  
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+        
+        StateHasChanged();
     }
-
-    // Return the week of our adjusted day
-    return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
-} 
-
+ 
 
 }

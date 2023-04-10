@@ -18,19 +18,46 @@
 .main {
     flex: 2;
     padding: 10px;
-    overflow: auto
+    overflow: auto;
+
 }
 
 .sidebar {
-    max-width: 220px;
-   
+    max-width: 220px; 
     flex: 1;
     height: 100%;
 }
 
-#squadName {
-    color: #36cc00;
+.sidebar-on {
+    max-width: 0px;
+    overflow: hidden;
+    flex: 1;
+    overflow: hidden;
+    height: 100%;   
 }
+
+
+
+.btn-menu-close {
+    height: 40px;
+    background-color: #00ccff;
+    position: absolute;
+    border-radius:0px 5px 5px 0px;
+    z-index: 0;
+    box-shadow: 4px 2px 10px 1px black inset;
+}
+
+.btn-menu-width-open {
+    left:220px;
+
+}
+.btn-menu-width-close {
+    top:110px;
+}
+
+    #squadName {
+        color: #36cc00;
+    }
 
 #currentDate{
     color: whitesmoke;
