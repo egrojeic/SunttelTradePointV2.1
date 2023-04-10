@@ -19,6 +19,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         IMongoCollection<ShippingStatus> _ShippingStatusCollection;
         IMongoCollection<CommercialDocument> _CommercialDocumentCollection;
         IMongoCollection<CommercialDocumentType> _CommercialDocumentType;
+        IMongoCollection<FinanceStatus> _FinanceStatusCollection;
 
 
         /// <summary>
@@ -117,6 +118,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
             }
         }
 
+        #region Commercial Document Type
         /// <summary>
         /// Retrieves a list of Transactional Item Types with the posibility to receive an optional paremeter
         /// </summary>
@@ -169,6 +171,180 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 return (false, null, e.Message);
             }
         }
+
+        /// <summary>
+        /// Retrieves a particular Transactional Item Type by Id
+        /// </summary>
+        /// <param name="commercialDocumentType"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, CommercialDocumentType? commercialDocumentType, string? ErrorDescription)> GetCommercialDocumentTypeById(string userId, string ipAddress, string commercialDocumentTypeId)
+        {
+            try
+            {
+                var filterCommercialDocumentType = Builders<CommercialDocumentType>.Filter.Eq(x => x.Id, commercialDocumentTypeId);
+                var resultCommercialDocumentType = await _CommercialDocumentType.Find(filterCommercialDocumentType).FirstOrDefaultAsync();
+
+                if (resultCommercialDocumentType == null)
+                {
+                    return (false, null, "Unpopulated Transactional Item Types");
+                }
+                else
+                {
+                    return (true, resultCommercialDocumentType, null);
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Inserts / Updates an Transactional Item Type object
+        /// </summary>
+        /// <param name="commercialDocumentType"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<(bool IsSuccess, CommercialDocumentType? commercialDocumentType, string? ErrorDescription)> SaveCommercialDocumentType(string userId, string ipAddress, CommercialDocumentType commercialDocumentType)
+        {
+            try
+            {
+                if (commercialDocumentType.Id == null)
+                {
+                    commercialDocumentType.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterCommercialDocumentType = Builders<CommercialDocumentType>.Filter.Eq("_id", new ObjectId(commercialDocumentType.Id));
+                var updateCommercialDocumentType = new ReplaceOptions { IsUpsert = true };
+                var resultCommercialDocumentType = await _CommercialDocumentType.ReplaceOneAsync(filterCommercialDocumentType, commercialDocumentType, updateCommercialDocumentType);
+
+                return (true, commercialDocumentType, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+        #endregion
+
+        #region Finance Status
+        /// <summary>
+        /// Retrieves a list of Transactional Item Types with the posibility to receive an optional paremeter
+        /// </summary>
+        /// <param name="filterCondition"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<(bool IsSuccess, List<FinanceStatus>? financeStatuses, string? ErrorDescription)> GetFinanceStatuses(string userId, string ipAddress, string? filterCondition = null)
+        {
+            try
+            {
+                string filter = filterCondition == null ? "" : filterCondition;
+
+                if (filter.Length > 0)
+                {
+                    var pipeline = new List<BsonDocument>();
+
+                    if (filter.ToLower() != "all")
+                    {
+                        pipeline.Add(
+                       new BsonDocument(
+                           "$match", new BsonDocument(
+                               "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filter}/i"))
+                           )
+                       )
+                   );
+                    }
+
+
+                    List<FinanceStatus> results = await _FinanceStatusCollection.Aggregate<FinanceStatus>(pipeline).ToListAsync();
+                    return (true, results, null);
+                }
+                else
+                {
+                    var financeStatuses = await _FinanceStatusCollection.Find<FinanceStatus>(new BsonDocument()).ToListAsync();
+
+                    if (financeStatuses == null || financeStatuses.Count == 0)
+                    {
+                        return (false, null, "Unpopulated Finance Statuses");
+                    }
+                    else
+                    {
+                        return (true, financeStatuses, null);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves a particular Transactional Item Type by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="financeStatusId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, FinanceStatus? financeStatus, string? ErrorDescription)> GetFiananceStatusById(string userId, string ipAddress, string financeStatusId)
+        {
+            try
+            {
+                var filterFinanceStatus = Builders<FinanceStatus>.Filter.Eq(x => x.Id, financeStatusId);
+                var resultFinanceStatus = await _FinanceStatusCollection.Find(filterFinanceStatus).FirstOrDefaultAsync();
+
+                if (resultFinanceStatus == null)
+                {
+                    return (false, null, "Unpopulated Finance Status");
+                }
+                else
+                {
+                    return (true, resultFinanceStatus, null);
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Inserts / Updates an Transactional Item Type object
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="financeStatus"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<(bool IsSuccess, FinanceStatus? financeStatus, string? ErrorDescription)> SaveFinanceStatus(string userId, string ipAddress, FinanceStatus financeStatus)
+        {
+            try
+            {
+                if (financeStatus.Id == null)
+                {
+                    financeStatus.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterFinanceStatus = Builders<FinanceStatus>.Filter.Eq("_id", new ObjectId(financeStatus.Id));
+                var updateFinanceStatus = new ReplaceOptions { IsUpsert = true };
+                var resultFinanceStatus = await _FinanceStatusCollection.ReplaceOneAsync(filterFinanceStatus, financeStatus, updateFinanceStatus);
+
+                return (true, financeStatus, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+        #endregion
 
         #region BusinessLineDoc
         /// <summary>
@@ -390,65 +566,6 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
             }
         }
         #endregion
-
-        /// <summary>
-        /// Retrieves a particular Transactional Item Type by Id
-        /// </summary>
-        /// <param name="commercialDocumentType"></param>
-        /// <param name="userId"></param>
-        /// <param name="ipAddress"></param>
-        /// <returns></returns>
-        public async Task<(bool IsSuccess, CommercialDocumentType? commercialDocumentType, string? ErrorDescription)> GetCommercialDocumentTypeById(string userId, string ipAddress, string commercialDocumentTypeId)
-        {
-            try
-            {
-                var filterCommercialDocumentType = Builders<CommercialDocumentType>.Filter.Eq(x => x.Id, commercialDocumentTypeId);
-                var resultCommercialDocumentType = await _CommercialDocumentType.Find(filterCommercialDocumentType).FirstOrDefaultAsync();
-
-                if (resultCommercialDocumentType == null)
-                {
-                    return (false, null, "Unpopulated Transactional Item Types");
-                }
-                else
-                {
-                    return (true, resultCommercialDocumentType, null);
-                }
-            }
-            catch (Exception e)
-            {
-                return (false, null, e.Message);
-            }
-        }
-
-
-        /// <summary>
-        /// Inserts / Updates an Transactional Item Type object
-        /// </summary>
-        /// <param name="commercialDocumentType"></param>
-        /// <param name="userId"></param>
-        /// <param name="ipAddress"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, CommercialDocumentType? commercialDocumentType, string? ErrorDescription)> SaveCommercialDocumentType(string userId, string ipAddress, CommercialDocumentType commercialDocumentType)
-        {
-            try
-            {
-                if (commercialDocumentType.Id == null)
-                {
-                    commercialDocumentType.Id = ObjectId.GenerateNewId().ToString();
-                }
-
-                var filterCommercialDocumentType = Builders<CommercialDocumentType>.Filter.Eq("_id", new ObjectId(commercialDocumentType.Id));
-                var updateCommercialDocumentType = new ReplaceOptions { IsUpsert = true };
-                var resultCommercialDocumentType = await _CommercialDocumentType.ReplaceOneAsync(filterCommercialDocumentType, commercialDocumentType, updateCommercialDocumentType);
-
-                return (true, commercialDocumentType, null);
-            }
-            catch (Exception e)
-            {
-                return (false, null, e.Message);
-            }
-        }
 
     }
 }

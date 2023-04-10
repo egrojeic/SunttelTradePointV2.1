@@ -77,6 +77,7 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
                 return NotFound(response.ErrorDescription);
         }
 
+        #region Commercial Document Type
         /// <summary>
         /// Retrieves a list of Transactional Item Types with the posibility to receive an optional paremeter
         /// </summary>
@@ -145,6 +146,78 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
                 return NotFound(response.ErrorDescription);
             }
         }
+        #endregion
+
+        #region Finance Status
+        /// <summary>
+        /// Retrieves a list of Transactional Item Types with the posibility to receive an optional paremeter
+        /// </summary>
+        /// <param name="filterCondition"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetFinanceStatuses")]
+        public async Task<IActionResult> GetFinanceStatuses(string userId, string ipAddress, string? filterCondition = null)
+        {
+            var response = await _commercialDocument.GetFinanceStatuses(userId, ipAddress, filterCondition);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.financeStatuses);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves a Transactional Item Type object by Id
+        /// </summary>
+        /// <param name="commercialDocumentTypeId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetFiananceStatusById")]
+        public async Task<IActionResult> GetFiananceStatusById(string userId, string ipAddress, string commercialDocumentTypeId)
+        {
+            var response = await _commercialDocument.GetFiananceStatusById(userId, ipAddress, commercialDocumentTypeId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.financeStatus);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+        /// <summary>
+        /// Insert / Update a Transactional Item Type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="financeStatus"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveFinanceStatus")]
+        public async Task<IActionResult> SaveFinanceStatus(string userId, string ipAddress, FinanceStatus financeStatus)
+        {
+            var response = await _commercialDocument.SaveFinanceStatus(userId, ipAddress, financeStatus);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.financeStatus);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+        #endregion
 
         #region Business Line Docs
         /// <summary>
