@@ -399,6 +399,10 @@
     public SalesDocumentItemsDetails items = new();
 
     #region Status
+
+
+    
+
     public List<(string, string)> shippingStatusDocumentTypeList = new List<(string, string)>{
    ("ACTIVE", "#61c100"),  ("DISABLE", "#5d5d5d") };
     public List<(string, string)> financeStatusDocumenTypeList = new List<(string, string)>{
@@ -443,6 +447,7 @@
         if (commercialDocumentId != null)
         {
             commercialDocument = await DocumentServices.GetItemCommercialDocumentById(commercialDocumentId);
+          // var FiananceStatus =  DocumentServices.GetFinanceStatuses();
         }
         LoadCommercialDocument();
         documentTypeList = await DocumentServices.GetCommercialDocumentTypes();
@@ -464,6 +469,7 @@
         string tile = e.Item != null ? e.Item.Text : "";
         if (tile == "Save")
         {
+            LoadCommercialDocument();
             commercialDocument.DeliveryAddress = geoPlaces.address;
             var result = await DocumentServices.SaveCommercialDocument(commercialDocument);
             if (result != null)
