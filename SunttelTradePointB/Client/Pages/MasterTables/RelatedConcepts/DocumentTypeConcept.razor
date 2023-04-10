@@ -20,10 +20,10 @@
 
 <div class="flex-horizontal-center">
     <div class="grid-columns-2 box-shadow-mode">
-        <div><label>@GetName( "Name", new AtomConcept())</label></div>
+        <div><label>@GetName( "Name", new BasicConcept())</label></div>
         <div><input type="text" @bind-value="commercialDocumentType.Name" class="form-control" placeholder="Edit value" /></div>
 
-        <div><label>@GetName( "AffectInventory", new ShippingStatus())</label></div>
+        <div><label>@GetName( "AffectInventory", new CommercialDocumentType())</label></div>
         <div>
             <SfSwitch @bind-Checked="@commercialDocumentType.AffectInventory"></SfSwitch>
         </div>
@@ -56,7 +56,7 @@
     public string msg = "", pageView = "";
 
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         if (DocumentTypeId is null) return;
         commercialDocumentType = await SaleDocumentService.GetCommercialDocumentTypeById(DocumentTypeId);
