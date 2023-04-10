@@ -230,7 +230,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-                string path = basepath.Replace("Name", "GetBusinessLinesDocs");
+                string path = basepath.Replace("Name", "GetBusinessLines");
                 var responseMessage = await Gethttp($"{path}&filter={filter}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<BusinessLine>>();
                 return list != null ? list : new List<BusinessLine>();
