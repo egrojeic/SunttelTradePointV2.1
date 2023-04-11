@@ -12,7 +12,7 @@
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
-    <button type="button" @onclick='()=>SetNavigateTo("TransactionalItemCard")' class="general-menu-button"><i class="fa-solid fa-file"></i> ...</button>
+    <button type="button" @onclick='()=>SetNavigateTo("SaleItem")' class="general-menu-button"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i> ...</button>
 
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
 </div>
@@ -52,12 +52,12 @@
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Qty" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableQty" Title="@GetName("ChargeableQty", new SalesDocumentItemsDetails())" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableUnitsName" Title="@GetName("ChargeableUnitsName", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn  TItem="SalesDocumentItemsDetails" Property="UnitPrice" Title="@GetName("UnitPrice", new SalesDocumentItemsDetails())" Width="120px" >
-                        <EditTemplate  Context="itemEdit">
-                            <RadzenNumeric  @bind-Value="itemEdit.UnitPrice" />                            
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitPrice" Title="@GetName("UnitPrice", new SalesDocumentItemsDetails())" Width="120px">
+                        <EditTemplate Context="itemEdit">
+                            <RadzenNumeric @bind-Value="itemEdit.UnitPrice" />
                         </EditTemplate>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxableUnitPrice" Title="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())" Width="120px" >
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxableUnitPrice" Title="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())" Width="120px">
                         <EditTemplate Context="itemEdit">
                             <RadzenNumeric @bind-Value="itemEdit.UnitPrice" />
                         </EditTemplate>
@@ -79,7 +79,13 @@
                     </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PullDate" Title="@GetName("PullDate", new SalesDocumentItemsDetails())" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="FormatedPullDate" Title="@GetName("FormatedPullDate", new SalesDocumentItemsDetails())" Width="120px" />
-                 
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ProcurementPtje" Title="@GetName("ProcurementPtje", new SalesDocumentItemsDetails())" Width="120px">
+                        <Template>
+                            @{
+                                <input class="btn-grid btn-grid-color" type="button" value="select" >
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
                 </Columns>
             </RadzenDataGrid>
         }
@@ -95,7 +101,7 @@
     List<TransactionalItem>? itemList;
 
     RadzenDataGrid<SalesDocumentItemsDetails> GridItem;
-    public SalesDocumentItemsDetails  Item { get; set; } = new();
+    public SalesDocumentItemsDetails Item { get; set; } = new();
     bool isLoading = false;
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
 
@@ -124,11 +130,11 @@
     }
 
 
-      void ShowContextMenuWithContent(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> args) => ContextMenuService.Open(args, ds =>
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
         <RadzenMenuItem Text="Select" Value=args.Data Icon="edit"></RadzenMenuItem>
-      </RadzenMenu>
+    </RadzenMenu>
     );
 
     public async void OnMenuItemClick(MenuItemEventArgs args)
@@ -186,11 +192,11 @@
                     {
 
                         Items.Add(new SalesDocumentItemsDetails
-                                {
-                                    TransactionalItem = Transactional,
-                                    TransactionalItemSpecs = ProductPackingSpec
+                            {
+                                TransactionalItem = Transactional,
+                                TransactionalItemSpecs = ProductPackingSpec
 
-                                });
+                            });
                         foreach (var itemEdit in Items)
                         {
                             GridItem.EditRow(itemEdit);
@@ -207,10 +213,10 @@
 
     public async void ConvetToSalesDocumentItemsDetails(SalesDocumentItemsDetails item)
     {
-        
+
 
 
     }
 
-  
+
 }

@@ -30,7 +30,10 @@ else
 
     public void Onchange(ChangeEventArgs arg)
     {
-        Value = Convert.ToInt32(arg.Value.ToString());
+        try{
+            Value = Convert.ToInt32(arg.Value.ToString());
+        }
+        catch { ValueInt = 0; }
         ValueIntChanged.InvokeAsync(Value);
         ValueStringChanged.InvokeAsync(Value.ToString());
     }

@@ -80,7 +80,7 @@
                 <select @onchange="SelectItemDocumentType" class="select-style">
                     @if (commercialDocument.DocumentType != null)
                     {
-                        <option value="@commercialDocument.DocumentType" selected>@commercialDocument.DocumentType.Name</option>
+                        <option value="@commercialDocument.DocumentType.Id" selected>@commercialDocument.DocumentType.Name</option>
                     }
                     @if (documentTypeList != null && documentTypeList.Count() > 0)
                     {
@@ -90,7 +90,7 @@
                     {
                         @foreach (var item in documentTypeList)
                         {
-                            <option value="@item">@item.Name</option>
+                            <option value="@item.Id">@item.Name</option>
                         }
                     }
                 </select>
@@ -150,7 +150,7 @@
                 <select @onchange="SelectItemDeliveryAddress" class="select-style">
                     @if (commercialDocument.DeliveryAddress != null)
                     {
-                        <option value="@commercialDocument.DeliveryAddress" selected>@commercialDocument.DeliveryAddress.Name</option>
+                        <option value="@commercialDocument.DeliveryAddress.Id" selected>@commercialDocument.DeliveryAddress.Name</option>
                     }
                     @if (buyerWarehouseList != null && buyerWarehouseList.Count() > 0)
                     {
@@ -158,7 +158,7 @@
                     }
                     @foreach (var item in addressList)
                     {
-                        <option value="@item">@item.Name</option>
+                        <option value="@item.Id">@item.Name</option>
                     }
                 </select>
             </div>
@@ -178,7 +178,7 @@
                 <select @onchange="SelectItemVendorWarehous" class="select-style">
                     @if (commercialDocument.Carrier != null)
                     {
-                        <option value="@commercialDocument.Carrier" selected>@commercialDocument.Carrier.Name</option>
+                        <option value="@commercialDocument.Carrier.Id" selected>@commercialDocument.Carrier.Name</option>
                     }
                     @if (carrierList != null && carrierList.Count() > 0)
                     {
@@ -186,7 +186,7 @@
                     }
                     @foreach (var item in carrierList)
                     {
-                        <option value="@item">@item.Name</option>
+                        <option value="@item.Id">@item.Name</option>
                     }
                 </select>
             </div>
@@ -199,7 +199,7 @@
                 <select @onchange="SelectItemVendorWarehous" class="select-style">
                     @if (commercialDocument.VendorWarehouse != null)
                     {
-                        <option value="@commercialDocument.VendorWarehouse" selected>@commercialDocument.VendorWarehouse.Name</option>
+                        <option value="@commercialDocument.VendorWarehouse.Id" selected>@commercialDocument.VendorWarehouse.Name</option>
                     }
                     @if (vendorWarehouseList != null && vendorWarehouseList.Count() > 0)
                     {
@@ -207,7 +207,7 @@
                     }
                     @foreach (var item in vendorWarehouseList)
                     {
-                        <option value="@item">@item.Name</option>
+                        <option value="@item.Id">@item.Name</option>
                     }
                 </select>
             </div>
@@ -225,7 +225,7 @@
                     }
                     @foreach (var item in buyerWarehouseList)
                     {
-                        <option value="@item">@item.Name</option>
+                        <option value="@item.Id">@item.Name</option>
                     }
                 </select>
             </div>
@@ -235,7 +235,7 @@
                 <select @onchange="SelectItemBusinessLineDoc" class="select-style">
                     @if (commercialDocument.BusinessLineDoc != null)
                     {
-                        <option value="@commercialDocument.DeliveryAddress" selected>@commercialDocument.BusinessLineDoc.Name</option>
+                        <option value="@commercialDocument.DeliveryAddress.Id" selected>@commercialDocument.BusinessLineDoc.Name</option>
                     }
                     @if (buyerWarehouseList != null && buyerWarehouseList.Count() > 0)
                     {
@@ -243,7 +243,7 @@
                     }
                     @foreach (var item in businessLineDocList)
                     {
-                        <option value="@item">@item.Name</option>
+                        <option value="@item.Id">@item.Name</option>
                     }
                 </select>
             </div>
@@ -401,7 +401,7 @@
     #region Status
 
 
-    
+
 
     public List<(string, string)> shippingStatusDocumentTypeList = new List<(string, string)>{
    ("ACTIVE", "#61c100"),  ("DISABLE", "#5d5d5d") };
@@ -447,7 +447,7 @@
         if (commercialDocumentId != null)
         {
             commercialDocument = await DocumentServices.GetItemCommercialDocumentById(commercialDocumentId);
-          // var FiananceStatus =  DocumentServices.GetFinanceStatuses();
+            // var FiananceStatus =  DocumentServices.GetFinanceStatuses();
         }
         LoadCommercialDocument();
         documentTypeList = await DocumentServices.GetCommercialDocumentTypes();
@@ -487,24 +487,24 @@
 
     public void SelectItemVendorWarehous(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
-        commercialDocument.VendorWarehouse = (BasicConcept)arg.Value;
+        commercialDocument.VendorWarehouse = vendorWarehouseList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
     }
 
     public void SelectItemDeliveryAddress(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
-        commercialDocument.DeliveryAddress = (Address)arg.Value;
+        commercialDocument.DeliveryAddress = addressList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
 
     }
 
     public void SelectItemBusinessLineDoc(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
-        commercialDocument.BusinessLineDoc = (BusinessLine)arg.Value;
+        commercialDocument.BusinessLineDoc = businessLineDocList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
 
     }
 
     public void SelectItemDocumentType(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
-        commercialDocument.DocumentType = (CommercialDocumentType)arg.Value;
+        commercialDocument.DocumentType = documentTypeList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
     }
 
 
