@@ -104,13 +104,14 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<List<Concept>> GetCommercialVendorList(string filter)
+        public async Task<List<Concept>> GetCommercialVendorList(string filter,bool IsSales)
         {
             try
             {
-                string path = basepath.Replace("Name", "GetCommercialDocumentsTypes");
-                var responseMessage = await Gethttp($"{path}?filterCondition={filter}");
+                string path = $"/api/ConceptsSelector/GetSelectorListEntityActor?filter={filter}&roleIndex=1";
+                var responseMessage = await Gethttp($"{path}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
+                if(IsSales && list !=null) list = list.Where(s=>s.SquadId == UIClientGlobalVariables.ActiveSquad.IDSquads.ToString()).ToList();
                 return list != null ? list : new List<Concept>();
             }
             catch (Exception ex)
@@ -179,7 +180,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-                string path = basepath.Replace("Name", "GetCommercialDocumentsTypes");              
+               
                 var responseMessage = await Gethttp($"/api/ConceptsSelector/GetSelectorListSeasonBusiness?filterString={filter}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<SeasonBusiness>>();
                
@@ -192,13 +193,14 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<List<Concept>> GetCommercialBuyerList(string filter)
+        public async Task<List<Concept>> GetCommercialBuyerList(string filter,bool isASale)
         {
             try
             {
-                string path = basepath.Replace("Name", "GetCommercialDocumentsTypes");
-                var responseMessage = await Gethttp($"{path}?filterCondition={filter}");
+                 string path = $"/api/ConceptsSelector/GetSelectorListEntityActor?filter=all&roleIndex=3";
+                var responseMessage = await Gethttp($"{path}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
+                if (!isASale) list = list.Where(s => s.Id == UIClientGlobalVariables.EntityUserId).ToList();
                 return list != null ? list : new List<Concept>();
             }
             catch (Exception ex)
@@ -207,6 +209,24 @@ namespace SunttelTradePointB.Client.Services.SalesServices
                 return null;
             }
         }
+
+
+        public async Task<List<Concept>> GetCarrierList()
+        {
+            try
+            {
+                string path = $"/api/ConceptsSelector/GetSelectorListEntityActor?filter=all&roleIndex=4";
+                var responseMessage = await Gethttp($"{path}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();              
+                return list != null ? list : new List<Concept>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
 
         public async Task<CommercialDocumentType?> GetCommercialDocumentTypeById(string commercialDocumentTypeId)
         {
@@ -292,14 +312,19 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<CommercialDocument> GetDeliveryAddress(string IdEntity)
+
+        public async Task<List<Address>> GetEntityDetailsAddressList(string entityActorId)
         {
+            var userId = UIClientGlobalVariables.UserId;
+            var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             try
             {
-                string path = basepath.Replace("Name", "GetCommercialDocumentById");
-                var responseMessage = await Gethttp($"{path}&documentId={IdEntity}");
-                var list = await responseMessage.Content.ReadFromJsonAsync<CommercialDocument>();
-                return list != null ? list : new CommercialDocument();
+                if (ipAddress == "")
+                    ipAddress = "127.0.0.0";
+
+                var response = await Gethttp($"/api/EntityNodesMaintenance/GetEntityDetailsAddressList?userId={userId}&ipAdress={ipAddress}&EntityId={entityActorId}");
+                var list = await response.Content.ReadFromJsonAsync<List<Address>>();
+                return list;
             }
             catch (Exception ex)
             {
@@ -307,6 +332,25 @@ namespace SunttelTradePointB.Client.Services.SalesServices
                 return null;
             }
         }
+
+
+        public async Task<List<AtomConcept>> GetSelectorListEntityActor(string filterString, BasicRolesFilter? roleIndex)
+        {
+          
+            try
+            {
+              
+                var response = await Gethttp($"/api/ConceptsSelector/GetSelectorListEntityActor?filterString ={filterString}&roleIndex={roleIndex}");
+                var list = await response.Content.ReadFromJsonAsync<List<AtomConcept>>();
+                return list;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
 
 
         public async Task<CommercialDocument> SaveCommercialDocument(CommercialDocument commercialDocument)

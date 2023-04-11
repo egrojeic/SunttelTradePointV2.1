@@ -15,11 +15,14 @@
     padding: 5px;
     border-radius: 30px;
 }
+.margin{
+   margin-left:50px;
+  
+}
 .main {
     flex: 2;
     padding: 10px;
     overflow: auto;
-
 }
 
 .sidebar {
@@ -42,17 +45,19 @@
     height: 40px;
     background-color: #00ccff;
     position: absolute;
-    border-radius:0px 5px 5px 0px;
-    z-index: 0;
-    box-shadow: 4px 2px 10px 1px black inset;
+    border-radius:5px;
+    z-index: 1;
+    box-shadow:0px 0px 5px white inset;
+   
 }
 
 .btn-menu-width-open {
-    left:220px;
+    left:180px;
 
 }
 .btn-menu-width-close {
-    top:110px;
+    top:10px;
+    margin-left:5px;
 }
 
     #squadName {

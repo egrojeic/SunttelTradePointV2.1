@@ -3,6 +3,7 @@
 @using SunttelTradePointB.Shared.Sales;
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
 @inject ContextMenuService ContextMenuService
+@inject NavigationManager Navigation
 
 <PageTitleComponent Title="Sales" IconName="commercialActivities.png"
                     Description="With this tool you can create and edit Sales operations such as Orders and Invoices">
@@ -143,6 +144,7 @@
     {
         CommercialDocument argObj = (CommercialDocument)args.Value;
         Console.WriteLine($"Menu item with Value={argObj.Id} clicked");
+        Navigation.NavigateTo($"SaleItem/{argObj.Id}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();

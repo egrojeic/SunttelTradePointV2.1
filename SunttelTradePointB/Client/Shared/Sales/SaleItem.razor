@@ -390,7 +390,6 @@
 
 
 
-
     string page = "";
     string SearcherValue = "";
     bool menuVisible = false;
@@ -447,15 +446,16 @@
         if (commercialDocumentId != null)
         {
             commercialDocument = await DocumentServices.GetItemCommercialDocumentById(commercialDocumentId);
-            // var FiananceStatus =  DocumentServices.GetFinanceStatuses();
+           
         }
         LoadCommercialDocument();
+       
         documentTypeList = await DocumentServices.GetCommercialDocumentTypes();
-        businessLineDocList = await DocumentServices.GetCommercialBusinessLines();
-        var currentEntityActor = await actorsNodeServive.GetEntityActor(UIClientGlobalVariables.EntityUserId);
-        if (currentEntityActor != null) addressList = currentEntityActor.AddressList;//await DocumentServices.GetAddressList(currentEntityActor);
+        businessLineDocList = await DocumentServices.GetCommercialBusinessLines();      
+        addressList = await DocumentServices.GetEntityDetailsAddressList(UIClientGlobalVariables.EntityUserId);
         vendorWarehouseList = await DocumentServices.GetCommercialVendorWarehouseList();
         buyerWarehouseList = await DocumentServices.GetCommercialBuyerWarehouseList();
+        carrierList = await DocumentServices.GetCarrierList();
         LoadCommercialDocument();
         isLoading = false;
         StateHasChanged();
@@ -478,7 +478,6 @@
             }
 
         }
-
 
         StateHasChanged();
 
@@ -530,7 +529,7 @@
         }
         if (SearcherValue == "Vendor")
         {
-            vendorList = await DocumentServices.GetCommercialVendorList(arg.value);
+            vendorList = await DocumentServices.GetCommercialVendorList(arg.value,commercialDocument.DocumentType.IsASale);
         }
         if (SearcherValue == "SalesPerson")
         {
@@ -538,7 +537,7 @@
         }
         if (SearcherValue == "Buyer")
         {
-            buyerList = await DocumentServices.GetCommercialBuyerList(arg.value);
+            buyerList = await DocumentServices.GetCommercialBuyerList(arg.value,commercialDocument.DocumentType.IsASale);
         }
         if (SearcherValue == "Season")
         {

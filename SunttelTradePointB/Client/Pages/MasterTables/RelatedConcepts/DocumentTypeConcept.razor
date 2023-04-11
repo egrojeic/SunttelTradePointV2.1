@@ -35,6 +35,10 @@
         <div>
             <SfSwitch @bind-Checked="@commercialDocumentType.NeedsCheckPrices"></SfSwitch>
         </div>
+        <div><label>@GetName( "IsASale", new CommercialDocumentType())</label></div>
+        <div>
+            <SfSwitch @bind-Checked="@commercialDocumentType.IsASale"></SfSwitch>
+        </div>
         <br />
         <div>
             <div class="flex-horizontal-end">

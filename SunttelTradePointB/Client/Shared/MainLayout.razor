@@ -17,9 +17,10 @@
 
 <AuthorizeView>
     <Authorized>
+       
         <div class="top-row">
-
-                <div id="tradePointInfoSup">
+           
+            <div style="@(!collapseNavMenu?"margin-left:50px;":"")" id="tradePointInfoSup">
                     <div id="TradePointIdentifierDiv">
                         <img src="/images/logo.png" id="tradePintLogo" />
                         <a class="sunttelbrand" href="" id="SunttelBrand">Sunttel Software</a>
@@ -44,13 +45,12 @@
         <div class="page">
 
             <div @onclick="ToggleNavMenu">
-                <img class="btn-menu-close @(collapseNavMenu?"btn-menu-width-open":"btn-menu-width-close") " src="@(collapseNavMenu?"/images/close.svg":"images/open.svg")">
+                <img class="btn-menu-close @(collapseNavMenu?"btn-menu-width-open":"btn-menu-width-close") "  src="@(collapseNavMenu?"/images/close.svg":"images/menu-1.svg")">
             </div>
 
             <div class="@(NavMenuCssClass)">
-                <NavMenu/>
+                <NavMenu />
             </div>
-
 
             <div class="main">
                 @Body
