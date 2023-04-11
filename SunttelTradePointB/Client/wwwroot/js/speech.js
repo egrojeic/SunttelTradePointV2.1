@@ -30,12 +30,12 @@ var voiceConfig = {
 window.speak = function (value) {
     var synthesisUtterance = new SpeechSynthesisUtterance(value);
     synthesisUtterance.text = value;
-    synthesisUtterance.rate =0.5;
-    synthesisUtterance.pitch =5;
+    synthesisUtterance.rate =0.9;
+    synthesisUtterance.pitch =1;
     synthesisUtterance.volume = 8;
     //synthesisUtterance.lang = "en-US";  
-    //synthesisUtterance.lang = "en-AU";  
-    synthesisUtterance.lang = "en-CA";  
+    synthesisUtterance.lang = "en-AU";  
+    //synthesisUtterance.lang = "en-CA";  
     
     speechSynthesis.speak(synthesisUtterance);
 }
