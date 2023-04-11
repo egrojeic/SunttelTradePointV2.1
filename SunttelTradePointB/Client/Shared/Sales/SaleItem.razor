@@ -14,7 +14,6 @@
 @inject ActorsNodeService actorsNodeServive
 @inject IJSRuntime Js
 
-
 <MessageSaveComponent @ref="referAlert">
 </MessageSaveComponent>
 <PageTitleComponent Title=" Commercial Document"
@@ -50,7 +49,11 @@
 
 
         </div>
+
+       
         <SliderScrollAuto summary="commercialDocument.FinanceSummary"></SliderScrollAuto>
+        <TextToSpeech @ref="textToSpeech" Id="FinanceSummary" EventChange="EventChange" Class="speack">
+        </TextToSpeech>
         <div class="grid-columns-header grid-columns-6">
 
             <div class="item-1">
@@ -388,7 +391,7 @@
     [Parameter]
     public string filter { get; set; }
 
-
+    TextToSpeech textToSpeech;
 
     string page = "";
     string SearcherValue = "";
@@ -446,12 +449,22 @@
         if (commercialDocumentId != null)
         {
             commercialDocument = await DocumentServices.GetItemCommercialDocumentById(commercialDocumentId);
-           
+
         }
+
+        commercialDocument.FinanceSummary = new FinanceSalesDocumentSummary
+            {
+                TotalAmount = 2000,
+                TotalDiscounts = 1,
+                TotalTaxes = 2000,
+                TotalCosts = 2000
+            };
+
+
         LoadCommercialDocument();
-       
+
         documentTypeList = await DocumentServices.GetCommercialDocumentTypes();
-        businessLineDocList = await DocumentServices.GetCommercialBusinessLines();      
+        businessLineDocList = await DocumentServices.GetCommercialBusinessLines();
         addressList = await DocumentServices.GetEntityDetailsAddressList(UIClientGlobalVariables.EntityUserId);
         vendorWarehouseList = await DocumentServices.GetCommercialVendorWarehouseList();
         buyerWarehouseList = await DocumentServices.GetCommercialBuyerWarehouseList();
@@ -529,7 +542,7 @@
         }
         if (SearcherValue == "Vendor")
         {
-            vendorList = await DocumentServices.GetCommercialVendorList(arg.value,commercialDocument.DocumentType.IsASale);
+            vendorList = await DocumentServices.GetCommercialVendorList(arg.value, commercialDocument.DocumentType.IsASale);
         }
         if (SearcherValue == "SalesPerson")
         {
@@ -537,7 +550,7 @@
         }
         if (SearcherValue == "Buyer")
         {
-            buyerList = await DocumentServices.GetCommercialBuyerList(arg.value,commercialDocument.DocumentType.IsASale);
+            buyerList = await DocumentServices.GetCommercialBuyerList(arg.value, commercialDocument.DocumentType.IsASale);
         }
         if (SearcherValue == "Season")
         {
@@ -677,5 +690,20 @@
     {
         Navigation.NavigateTo(name);
     }
-
+    public void EventChange(string item)
+    {
+        string value = "";
+      
+        if (item == "FinanceSummary" && commercialDocument.FinanceSummary != null)
+        {
+            value = $@"Total, Amount, {commercialDocument.FinanceSummary.TotalAmount}.";
+            value += $@"Total, Taxes, {commercialDocument.FinanceSummary.TotalTaxes}.";
+            value += $@"Total, Discounts, {commercialDocument.FinanceSummary.TotalDiscounts}.";
+            value += $@"Total, Costs, {commercialDocument.FinanceSummary.TotalCosts}.";
+            textToSpeech.Speack(value);
+        }else{
+         textToSpeech.Speack("Valor nulo,");
+        }
+        StateHasChanged();
+    }
 }

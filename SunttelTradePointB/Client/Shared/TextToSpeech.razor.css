@@ -1,0 +1,17 @@
+﻿.container {
+    position: absolute;
+    width: 30px;   
+    padding: 0px;
+    background-color: transparent;
+    z-index: 10000;
+}
+
+.ico {
+    background-color: #00ccff;
+    height: 30px;
+    width: 30px;
+    padding:5px;
+    border-radius:5px;
+    box-shadow:0px 0px 5px;
+   
+}

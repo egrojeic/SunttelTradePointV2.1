@@ -4,7 +4,7 @@
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
-@inject  IJSRuntime Js
+
 
 <PageTitleComponent Title="Sales" IconName="commercialActivities.png"
                     Description="With this tool you can create and edit Sales operations such as Orders and Invoices">
@@ -16,13 +16,7 @@
     <RangeDatesInput StartDate="@startingDate" EndDate="@endDate"></RangeDatesInput>
 </div>
 
-<from id="form">
-    <div>
-        <input type="text" id="texto">
-        <input type="button" id="input" onclick="speak()">
-        <select id="slection"></select>
-    </div>
-</from>
+
 <div class="tableContainer">
 
 
@@ -138,7 +132,8 @@
         isLoading = true;
         commercialdocumentList = await DocumentServices.GetCommercialDocumentList(docsFilter);
         isLoading = false;
-       await Js.InvokeVoidAsync("speak", $"Se encontraron {commercialdocumentList.Count()}, resultados");
+       
+       //await SynthesisToSpeakerAsync( $"Se encontraron {commercialdocumentList.Count()}, resultados voz dos");
         StateHasChanged();
     }
 
@@ -146,7 +141,7 @@
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
         <RadzenMenuItem Text="Another" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
 
@@ -160,6 +155,10 @@
             ContextMenuService.Close();
         }
     }
+
+
+
+
 
 
 }

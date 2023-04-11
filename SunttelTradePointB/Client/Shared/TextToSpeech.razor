@@ -1,0 +1,83 @@
+﻿
+
+@inject IJSRuntime Js
+
+<div class="container @Class">
+    <img @onclick="Speack" class="ico" src="/images/speak.svg" >       
+   </img>
+</div>
+
+
+@code {    
+   
+    [Parameter]
+    public EventCallback<string> EventChange{get; set;}
+    [Parameter]
+    public string Class { get; set; } 
+    [Parameter]
+    public string Id { get; set; }
+
+    protected async override void OnInitialized()
+    {
+       // if (Js != null) await Js.InvokeVoidAsync("speak", $"{value}.");
+
+    }
+
+    public async void Speack()
+    {
+       await EventChange.InvokeAsync(Id);
+       // if (Js != null) await Js.InvokeVoidAsync("speak", $"prueba");
+    
+    }
+    public async void Speack(string value)
+    {       
+        if (Js != null) await Js.InvokeVoidAsync("speak", value);
+    }
+
+
+    //public async Task SynthesisToSpeakerAsync(string text)
+    //{@using Microsoft.CognitiveServices.Speech
+    //    try
+    //    {
+    //        var config = SpeechConfig.FromSubscription("YourSubscriptionKey", "northcentralus");
+    //        string path = string.Empty;
+
+    //        using (var synthesizer = new SpeechSynthesizer(config))
+    //        {
+
+    //            Console.WriteLine("Type some text that you want to speak...");
+
+
+    //            using (var result = await synthesizer.SpeakTextAsync(text))
+    //            {
+
+    //                if (result.Reason == ResultReason.SynthesizingAudioCompleted)
+    //                {
+    //                    Console.WriteLine($"Speech synthesized to speaker for text [{text}]");
+    //                    var stream = AudioDataStream.FromResult(result);
+
+    //                    Console.WriteLine("Successfully saved");
+    //                }
+    //                else if (result.Reason == ResultReason.Canceled)
+    //                {
+    //                    var cancellation = SpeechSynthesisCancellationDetails.FromResult(result);
+    //                    Console.WriteLine($"CANCELED: Reason={cancellation.Reason}");
+
+    //                    if (cancellation.Reason == CancellationReason.Error)
+    //                    {
+    //                        Console.WriteLine($"CANCELED: ErrorCode={cancellation.ErrorCode}");
+    //                        Console.WriteLine($"CANCELED: ErrorDetails=[{cancellation.ErrorDetails}]");
+    //                        Console.WriteLine($"CANCELED: Did you update the subscription info?");
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        string e = ex.Message;
+    //    }
+    //}
+
+
+}
