@@ -419,10 +419,6 @@ namespace SunttelTradePointB.Client.Services.SalesServices
 
        
 
-
-
-
-
         public async Task<HttpResponseMessage> Gethttp(string Url)
         {
             try

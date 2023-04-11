@@ -4,6 +4,7 @@
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
+@inject  IJSRuntime Js
 
 <PageTitleComponent Title="Sales" IconName="commercialActivities.png"
                     Description="With this tool you can create and edit Sales operations such as Orders and Invoices">
@@ -15,6 +16,13 @@
     <RangeDatesInput StartDate="@startingDate" EndDate="@endDate"></RangeDatesInput>
 </div>
 
+<from id="form">
+    <div>
+        <input type="text" id="texto">
+        <input type="button" id="input" onclick="speak()">
+        <select id="slection"></select>
+    </div>
+</from>
 <div class="tableContainer">
 
 
@@ -48,7 +56,7 @@
 
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentType.Name" Title="Document Type" Width="208px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="BusinessLineDoc.Name" Title="Business Line" Width="208px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="PO" Title="PO"  Width="64px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="PO" Title="PO" Width="64px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="ShipDate" Title="Ship Date" FormatString="{0:d}" Width="176px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="DeliveryDate" Title="Delivery Date" FormatString="{0:d}" Width="240px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="ArrivalDate" Title="Provider Arrival Date" FormatString="{0:d}" Width="368px" />
@@ -122,6 +130,7 @@
     {
         if (_filterItems != null) LoadData();
         base.OnInitialized();
+
     }
 
     public async void LoadData()
@@ -129,9 +138,10 @@
         isLoading = true;
         commercialdocumentList = await DocumentServices.GetCommercialDocumentList(docsFilter);
         isLoading = false;
+       await Js.InvokeVoidAsync("speak", $"Se encontraron {commercialdocumentList.Count()}, resultados");
         StateHasChanged();
     }
-     
+
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CommercialDocument> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
