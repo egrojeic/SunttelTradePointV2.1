@@ -165,11 +165,12 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         /// <summary>
         /// Retrieves a particular Transactional Item Type by Id
         /// </summary>
-        /// <param name="commercialDocumentType"></param>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="commercialDocumentTypeId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, CommercialDocumentType? commercialDocumentType, string? ErrorDescription)> GetCommercialDocumentTypeById(string userId, string ipAddress, string commercialDocumentTypeId)
+        public async Task<(bool IsSuccess, CommercialDocumentType? commercialDocumentType, string? ErrorDescription)> GetCommercialDocumentTypeById(string userId, string ipAddress, string squadId, string commercialDocumentTypeId)
         {
             try
             {

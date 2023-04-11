@@ -112,7 +112,10 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         [ActionName("GetCommercialDocumentTypeById")]
         public async Task<IActionResult> GetCommercialDocumentTypeById(string userId, string ipAddress, string commercialDocumentTypeId)
         {
-            var response = await _commercialDocument.GetCommercialDocumentTypeById(userId, ipAddress, commercialDocumentTypeId);
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+
+            var response = await _commercialDocument.GetCommercialDocumentTypeById(userId, ipAddress, squadId, commercialDocumentTypeId);
 
             if (response.IsSuccess)
             {

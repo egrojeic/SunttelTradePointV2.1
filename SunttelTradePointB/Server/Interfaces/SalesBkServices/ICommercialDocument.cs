@@ -58,8 +58,9 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <param name="commercialDocumentTypeId"></param>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, CommercialDocumentType? commercialDocumentType, string? ErrorDescription)> GetCommercialDocumentTypeById(string userId, string ipAddress, string commercialDocumentTypeId);
+        Task<(bool IsSuccess, CommercialDocumentType? commercialDocumentType, string? ErrorDescription)> GetCommercialDocumentTypeById(string userId, string ipAddress, string squadId, string commercialDocumentTypeId);
 
         /// <summary>
         /// Insert/ Updates a Transactional Type of the corresponding id

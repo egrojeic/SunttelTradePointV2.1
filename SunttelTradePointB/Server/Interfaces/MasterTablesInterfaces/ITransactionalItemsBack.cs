@@ -343,5 +343,16 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<(bool IsSuccess, PackingSpecs packingSpecsResponse, string? ErrorDescription)> GetTransactionalItemDetailsProductionSpecsById(string userId, string ipAdress, string transactionalItemId, string transactionalItemDetailsProductionSpecsId);
 
+
+        /// <summary>
+        /// Retrieves an entity transactional item details production looked by id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="customerId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, ProductModel? productModelResponse, string? ErrorDescription)> GetProductsByCustomerId(string userId, string ipAdress, string squadId, string customerId);
+
     }
 }

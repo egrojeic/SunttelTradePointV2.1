@@ -1568,6 +1568,51 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
         }
 
-       
+
+        /// <summary>
+        /// Retrieves the whole object of an Entity/Product Model 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="customerId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, ProductModel? productModelResponse, string? ErrorDescription)> GetProductsByCustomerId(string userId, string ipAdress, string squadId, string customerId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("TransactionalItemModels._id", new ObjectId(customerId)))
+                );
+
+                pipeline.Add(
+                   new BsonDocument("$unwind", "$TransactionalItemModels")
+               );
+                pipeline.Add(
+                  new BsonDocument("$match", new BsonDocument("TransactionalItemModels._id", new ObjectId(customerId)))
+              );
+                pipeline.Add(
+                 new BsonDocument("$replaceRoot", new BsonDocument("newRoot", "$TransactionalItemModels"))
+             );
+
+
+                // obtengo el transactional items //
+                var resultPrev = await _TransactionalItemsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                // deserializo transactional items //
+                ProductModel result = resultPrev.Select(d => BsonSerializer.Deserialize<ProductModel>(d)).ToList()[0];
+                // obtengo lista de productsPackingSpecs
+
+
+                return (true, result, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+
     }
 }

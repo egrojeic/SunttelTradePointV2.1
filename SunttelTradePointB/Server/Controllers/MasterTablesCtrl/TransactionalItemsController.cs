@@ -886,7 +886,30 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
                 return NotFound(response.ErrorDescription);
         }
 
-       
+
+        /// <summary>
+        /// Retrieve products by customer id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="customerId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetProductsByCustomerId")]
+        public async Task<IActionResult> GetProductsByCustomerId(string userId, string ipAdress, string squadId, string customerId)
+        {
+            var response = await _transactionalItems.GetProductsByCustomerId(userId, ipAdress, squadId, customerId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.productModelResponse);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+
 
     }
 }
