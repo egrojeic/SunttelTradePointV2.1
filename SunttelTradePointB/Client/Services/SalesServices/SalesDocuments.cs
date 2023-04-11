@@ -92,7 +92,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-                string path = basepath.Replace("Name", "GetCommercialDocumentsTypes");
+                string path = basepath.Replace("Name", "GetCommercialDocumentTypes");
                 var responseMessage = await Gethttp($"{path}?filterCondition={filter}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocumentType>>();
                 return list != null ? list : new List<CommercialDocumentType>();
@@ -208,12 +208,12 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<CommercialDocumentType?> GetCommercialDocumentTypeById(string filter)
+        public async Task<CommercialDocumentType?> GetCommercialDocumentTypeById(string commercialDocumentTypeId)
         {
             try
             {
                 string path = basepath.Replace("Name", "GetCommercialDocumentTypeById");
-                var responseMessage = await Gethttp($"{path}?filterCondition={filter}");
+                var responseMessage = await Gethttp($"{path}&commercialDocumentTypeId={commercialDocumentTypeId}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<CommercialDocumentType>();
                 return list != null ? list : new CommercialDocumentType();
             }
@@ -230,7 +230,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-                string path = basepath.Replace("Name", "GetBusinessLinesDocs");
+                string path = basepath.Replace("Name", "GetBusinessLines");
                 var responseMessage = await Gethttp($"{path}&filter={filter}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<BusinessLine>>();
                 return list != null ? list : new List<BusinessLine>();
