@@ -1,0 +1,124 @@
+﻿@using SunttelTradePointB.Shared.IA;
+@inject SunttelTradePointB.Client.Services.IAServices.IARecognition Recognition
+@inject NavigationManager Navigation
+@inject IJSRuntime Js
+
+<div class="container">
+    <div style="display:@(resulRecognition!=""?"block":"none");" class="item-1">
+        <p class="text">@resulRecognition</p>
+    </div>
+    <div class="item-2" >
+        <img @ondblclick="ActiveRecognition" @onclick="StartRecognition" class="img-mic" src="@(GetIco())" />
+        <img style="display:@(!status?"block":"none");" class="img-load" src="/images/loadingIco.gif" />
+    </div>      
+</div>
+
+
+
+@code {
+    bool status = true;
+    bool onstart =false;
+    bool ondblclickEnable = false;
+    bool recognitionEnable = false;
+    string resulRecognition = "";
+
+    DotNetObjectReference<SpeechRecognition> _reference;
+    public async void StartRecognition()
+    {
+        await Task.Delay(TimeSpan.FromSeconds(1));
+        if (status && !ondblclickEnable)
+        {
+            status = false;
+            resulRecognition = "";
+            StateHasChanged();
+            await Js.InvokeVoidAsync("Recognition", false);
+
+
+        }
+
+    }
+
+    public async void ActiveRecognition()
+    {
+
+        if (ondblclickEnable)
+        {
+            status = true;
+            ondblclickEnable = false;
+            StateHasChanged();
+        }
+        else
+        {
+
+            status = false;
+            resulRecognition = "";
+            ondblclickEnable = true;
+            StateHasChanged();
+            await Js.InvokeVoidAsync("Recognition", true);
+        }
+
+
+    }
+
+
+    [JSInvokable]
+    public async void SetTextRecognition(string result)
+    {
+        var RecognitionItem = await Recognition.GetValueRecognition(result);
+        if (RecognitionItem != null)
+        {
+            if (RecognitionItem.Command == "Create")
+            {
+               await Js.InvokeAsync<object>("open", RecognitionItem.Page, "_blank");
+            }
+        }
+        resulRecognition = result;       
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void OnstartRecognition()
+    {       
+        onstart = true;
+        status = false;
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void OnEndRecognition()
+    {
+        status = true;
+        onstart = false;
+        ondblclickEnable = false;       
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void OnerrorRecognition()
+    {
+        ondblclickEnable = false;
+        onstart = false;
+        status = true;
+        StateHasChanged();
+    }
+
+    public string GetIco()
+    {
+        if (ondblclickEnable) return "/images//headset.svg";
+        if (onstart) return "/images//mic-on.svg";
+        return "/images//mic-off.svg";
+    }
+
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (status)
+        {
+            _reference = DotNetObjectReference.Create(this);
+            await Js.InvokeVoidAsync("LoadReference", _reference);
+          
+        }
+    }
+
+
+}

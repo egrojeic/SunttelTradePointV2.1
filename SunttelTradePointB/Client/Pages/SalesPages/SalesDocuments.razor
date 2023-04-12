@@ -1,7 +1,7 @@
 ﻿@page "/SalesDocuments"
 @page "/SalesDocuments/{_filterItems}"
 @using SunttelTradePointB.Shared.Sales;
-@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject SunttelTradePointB.Client.Services.SalesServices.IA DocumentServices
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
 
@@ -9,6 +9,9 @@
 <PageTitleComponent Title="Sales" IconName="commercialActivities.png"
                     Description="With this tool you can create and edit Sales operations such as Orders and Invoices">
 </PageTitleComponent>
+
+
+
 
 <div class="panelMenuContainer">
     <CommercialDocsGrlMenu></CommercialDocsGrlMenu>
