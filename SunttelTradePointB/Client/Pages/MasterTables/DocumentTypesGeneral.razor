@@ -72,6 +72,14 @@ else
                     }
                 </Template>
             </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="CommercialDocumentType" Property="IsASale" Title="@GetName("IsASale", new CommercialDocumentType())" Width="120px" TextAlign="Radzen.TextAlign.Center">
+                <Template>
+                    @{
+                        bool IsASale = (bool)context.GetType().GetProperty(nameof(CommercialDocumentType.IsASale)).GetValue(context);
+                        <input type="checkbox" checked="@IsASale" />
+                    }
+                </Template>
+            </RadzenDataGridColumn>
         </Columns>
     </RadzenDataGrid>
 }

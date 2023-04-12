@@ -238,7 +238,7 @@
                 <select @onchange="SelectItemBusinessLineDoc" class="select-style">
                     @if (commercialDocument.BusinessLineDoc != null)
                     {
-                        <option value="@commercialDocument.DeliveryAddress.Id" selected>@commercialDocument.BusinessLineDoc.Name</option>
+                        <option value="@commercialDocument.BusinessLineDoc.Id" selected>@commercialDocument.BusinessLineDoc.Name</option>
                     }
                     @if (buyerWarehouseList != null && buyerWarehouseList.Count() > 0)
                     {

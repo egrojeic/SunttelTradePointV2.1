@@ -108,7 +108,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-                string path = $"/api/ConceptsSelector/GetSelectorListEntityActor?filter={filter}&roleIndex=1";
+                string path = $"/api/ConceptsSelector/GetSelectorListEntityActor?filterString={filter}&roleIndex=1";
                 var responseMessage = await Gethttp($"{path}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
                 if(IsSales && list !=null) list = list.Where(s=>s.SquadId == UIClientGlobalVariables.ActiveSquad.IDSquads.ToString()).ToList();
@@ -300,8 +300,8 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-                string path = basepath.Replace("Name", "GetCommercialDocumentById");
-                var responseMessage = await Gethttp($"{path}&documentId={commercialDocumentId}");
+                string path = basepath.Replace("Name", "GetCommercialDocumentTypeById");
+                var responseMessage = await Gethttp($"{path}&commercialDocumentTypeId={commercialDocumentId}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<CommercialDocument>();
                 return list != null ? list : new CommercialDocument();
             }
