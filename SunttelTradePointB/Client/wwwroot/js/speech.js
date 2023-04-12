@@ -34,8 +34,8 @@ window.speak = function (value) {
     synthesisUtterance.pitch =1;
     synthesisUtterance.volume = 8;
     //synthesisUtterance.lang = "en-US";  
-    synthesisUtterance.lang = "en-AU";  
-    //synthesisUtterance.lang = "en-CA";  
+    //synthesisUtterance.lang = "en-AU";  
+    synthesisUtterance.lang = "en-CA";  
     
     speechSynthesis.speak(synthesisUtterance);
 }
