@@ -178,7 +178,6 @@ namespace SunttelTradePointB.Shared.Sales
     public class SalesDocumentItemsDetails: RecordItem
     {
 
-        [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         [DisplayName("Document")]
         public string IdCommercialDocument { get; set; }
@@ -197,7 +196,7 @@ namespace SunttelTradePointB.Shared.Sales
         public double ChargeableQty { get; set; }
 
         [DisplayName("Chargeable Units")]
-        public string ChargeableUnitsName { get; set; }
+        public ChargeableUnits ChargeableUnits{ get; set; }
 
         [DisplayName("Unit Price")]
         public double UnitPrice { get; set; }
@@ -275,5 +274,10 @@ namespace SunttelTradePointB.Shared.Sales
     public class PurchaseItemDetails: RecordItem
     {
 
+    }
+
+    public class ChargeableUnits: BasicConcept
+    {
+      
     }
 }

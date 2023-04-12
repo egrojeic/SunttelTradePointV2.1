@@ -462,19 +462,23 @@ namespace SunttelTradePointB.Shared.Common
 
         [DisplayName("Weight Volume Rate")]
         [BsonIgnoreIfNull]
-        public decimal WeightVolumeRate { get; set; }
-        public decimal Cost { get; set; }
+        public double WeightVolumeRate { get; set; }
+        public double Cost { get; set; }
 
         [DisplayName("Container portion")]
         public double ContainersNumber { get; set; }
 
         [DisplayName("Pallets Equivalent")]
-        public int PalletsEquivalent { get; set; }
+        public double PalletsEquivalent { get; set; }
 
         [DisplayName("Is Wet")]
         public bool FlagWet { get; set; }
         public bool Enable { get; set; }
 
+
+        [DisplayName("Pallets Equivalent")]
+        public double FullBoxEquivalent { get; set; }
+        
 
     }
 

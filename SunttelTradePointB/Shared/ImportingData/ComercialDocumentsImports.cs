@@ -62,4 +62,52 @@ namespace SunttelTradePointB.Shared.ImportingData
     }
 
 
+    public class ComercialDocumentsDetailsImports
+    {
+
+        public string SquadId {get;set;}
+        public string LegacyObjectId {get;set;}
+        public string DocLegacyObjectId { get; set; }
+        public string TI_Id {get;set;}
+        public string TI_Name {get;set;}
+        public string TI_Groups_Id {get;set;}
+        public string TI_Groups_Name {get;set;}
+        public string TISpecs_SeasonBusiness_Id {get;set;}
+        public string TISpecs_SeasonBusiness_Nombre {get;set;}
+        public string TISpecs_IDFloresRecetaModelos_Id {get;set;}
+        public string TISpecs_IDFloresRecetaModelos_Name {get;set;}
+        public string TISpecs_ModelRecipeBuy_Id {get;set;}
+        public string TISpecs_ModelRecipeBuy_Name {get;set;}
+        public int TISpecs_PackPerBoxLayer {get;set;}
+        public int TISpecs_PackLayersToSale {get;set;}
+        public int TISpecs_PackLayersToBuy {get;set;}
+        public string TISpecs_PackingBoxToSale_Id {get;set;}
+        public string TISpecs_PackingBoxToSale_Code {get;set;}
+        public string TISpecs_PackingBoxToSale_Name {get;set;}
+        public double TISpecs_PackingBoxToSale_Length {get;set;}
+        public double TISpecs_PackingBoxToSale_Width {get;set;}
+        public double TISpecs_PackingBoxToSale_Height {get;set;}
+        public double TISpecs_PackingBoxToSale_WeightVolumeRate {get;set;}
+        public double TISpecs_PackingBoxToSale_PalletsEquivalent {get;set;}
+        public double TISpecs_PackingBoxToSale_ContainersNumber {get;set;}
+        public int TISpecs_PackingBoxToSale_FlagWet {get;set;}
+        public double TISpecs_PackingBoxToSale_FullBoxEquivalent {get;set;}
+        public double BoxesQty {get;set;}
+        public double ChargeableQty {get;set;}
+        public string IDChargeableUnitsType {get;set;}
+        public string ChargeableUnitsName {get;set;}
+        public double UnitPrice {get;set;}
+        public double TaxableUnitPrice {get;set;}
+        public string InventoryItemId {get;set;}
+        public int IDInventarioFinal {get;set;}
+        public double UnitCost {get;set;}
+        public double TaxRate {get;set;}
+        public int ProductSourceId {get;set;}
+        public double OriginalPrice {get;set;}
+        public DateTime PullDate {get;set;}
+        public string PullDateWithFormat { get; set; }
+
+
+    }
+
 }
