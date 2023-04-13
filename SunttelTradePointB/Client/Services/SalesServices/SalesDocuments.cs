@@ -20,12 +20,12 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         }
 
         ///Gets
-        public async Task<List<CommercialDocument>> GetCommercialDocumentList(string filterCriteria)
+        public async Task<List<CommercialDocument>> GetCommercialDocumentList(DateTime startDate, DateTime endDate, string documentTypeId)
         {
             try
             {
-                string path = basepath.Replace("Name", "GetCommercialDocumentTypes");
-                var responseMessage = await Gethttp($"{path}&filterCondition={filterCriteria}");
+                string path = basepath.Replace("Name", "GetCommercialDocumentsByDateSpan");
+                var responseMessage = await Gethttp($"{path}&startDate={startDate}&endDate={endDate}&endDate={documentTypeId}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocument>>();
                 return list != null ? list : new List<CommercialDocument>();
             }
@@ -479,9 +479,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
 
         }
 
-       
-
-
+      
     }
 
  
