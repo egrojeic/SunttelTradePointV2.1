@@ -42,15 +42,20 @@
 
 
 .btn-menu-close {
-    height: 40px;
-    background-color: #00ccff;
+    height: 40px;   
     position: fixed;
     top:55px;
     border-radius:5px;
     z-index: 1;
-    box-shadow:0px 0px 5px white inset;
+ 
+    filter:opacity(0.5);
    
 }
+
+    .btn-menu-close:hover {
+        filter: drop-shadow(0px 0px 2px white);
+        ) filter: opacity(1);
+    }
 
 .btn-menu-width-open {
     left:180px;

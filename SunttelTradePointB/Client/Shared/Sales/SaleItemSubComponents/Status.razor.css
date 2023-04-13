@@ -9,11 +9,12 @@
     .control p {
         height: 100%;
         margin: 0px;
-        width:auto;
+        padding: 5px;
+        padding-top: 8px;
+        width: auto;
         text-align: center;
         border-radius: 5px;
-        box-shadow:0px 0px 5px 1px black;
-        color:white;
-        font-size:20px;
-        font-weight:bold;
+        box-shadow: 0px 0px 5px 1px black;
+        color: white;
+        font-size: 12px;
     }

@@ -63,7 +63,6 @@ namespace SunttelTradePointB.Shared.Sales
 
     public class FinanceStatus : BasicConcept
     {
-
         [DisplayName("Affect Finance")]
         public bool AffectFinance { get; set; }
         [DisplayName("Editing Allowed")]

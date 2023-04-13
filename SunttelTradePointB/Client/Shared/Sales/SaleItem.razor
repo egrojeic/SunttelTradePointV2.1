@@ -58,10 +58,10 @@
 
             <div class="item-1">
                 <div><b class="c-red">*</b><label>@GetName("ShippingStatusDocument",new CommercialDocument())</label></div>
-                <Status listStatus="shippingStatusDocumentTypeList" Name="ACTIVE"></Status>
+                <Status color="#61c100" Name="@(commercialDocument.ShippingStatusDocument.Name)"></Status>
 
                 <div><b class="c-red">*</b><label>@GetName("FinanceStatusDocument",new CommercialDocument())</label></div>
-                <Status listStatus="financeStatusDocumenTypeList" Name="DISABLE"></Status>
+                <Status Name="@(commercialDocument.FinanceStatusDocument.Name)"></Status>
 
                 <div><b class="c-red">*</b><label>@GetName("PrintingSatus",new CommercialDocument())</label></div>
                 <StatusItem></StatusItem>
