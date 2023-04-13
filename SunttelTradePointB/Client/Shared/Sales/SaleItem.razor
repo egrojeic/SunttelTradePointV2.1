@@ -9,7 +9,7 @@
 @using Syncfusion.Blazor.Navigations
 @using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents
 @inject NavigationManager Navigation
-@inject SunttelTradePointB.Client.Services.SalesServices.IA DocumentServices
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
 @inject GeographicPlacesService geoPlaces
 @inject ActorsNodeService actorsNodeServive
 @inject IJSRuntime Js
@@ -58,10 +58,10 @@
 
             <div class="item-1">
                 <div><b class="c-red">*</b><label>@GetName("ShippingStatusDocument",new CommercialDocument())</label></div>
-                <Status listStatus="shippingStatusDocumentTypeList" Name="ACTIVE"></Status>
+                <Status color="#61c100" Name="@(commercialDocument.ShippingStatusDocument.Name)"></Status>
 
                 <div><b class="c-red">*</b><label>@GetName("FinanceStatusDocument",new CommercialDocument())</label></div>
-                <Status listStatus="financeStatusDocumenTypeList" Name="DISABLE"></Status>
+                <Status Name="@(commercialDocument.FinanceStatusDocument.Name)"></Status>
 
                 <div><b class="c-red">*</b><label>@GetName("PrintingSatus",new CommercialDocument())</label></div>
                 <StatusItem></StatusItem>
@@ -165,7 +165,6 @@
                     }
                 </select>
             </div>
-
 
             <div><b class="c-red">*</b><label>@GetName("Season",new CommercialDocument())</label></div>
             <InputTextSelector3 styleCaption="width:180px" TItem="SeasonBusiness"
@@ -464,10 +463,8 @@
         LoadCommercialDocument();
 
         documentTypeList = await DocumentServices.GetCommercialDocumentTypes();
-        businessLineDocList = await DocumentServices.GetCommercialBusinessLines();
-        addressList = await DocumentServices.GetEntityDetailsAddressList(UIClientGlobalVariables.EntityUserId);
-        vendorWarehouseList = await DocumentServices.GetCommercialVendorWarehouseList();
-        buyerWarehouseList = await DocumentServices.GetCommercialBuyerWarehouseList();
+        businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
+      
         carrierList = await DocumentServices.GetCarrierList();
         LoadCommercialDocument();
         isLoading = false;
@@ -543,6 +540,7 @@
         if (SearcherValue == "Vendor")
         {
             vendorList = await DocumentServices.GetCommercialVendorList(arg.value, commercialDocument.DocumentType.IsASale);
+      
         }
         if (SearcherValue == "SalesPerson")
         {
@@ -566,11 +564,13 @@
         commercialDocument.DocumentType = item;
     }
 
-    public void EventIdSelectionAndId(Concept item)
+    public async void EventIdSelectionAndId(Concept item)
     {
         if (SearcherValue == "Vendor")
         {
             commercialDocument.Vendor = item;
+            vendorWarehouseList = await DocumentServices.GetCommercialVendorWarehouseList(item.Id);
+          
         }
         if (SearcherValue == "SalesPerson")
         {
@@ -579,7 +579,11 @@
         if (SearcherValue == "Buyer")
         {
             commercialDocument.Buyer = item;
+            buyerWarehouseList = await DocumentServices.GetCommercialBuyerWarehouseList(item.Id);
+            addressList = await DocumentServices.GetEntityDetailsAddressList(item.Id);
+      
         }
+        StateHasChanged();
     }
 
     public void EventIdSelectionAndId(SeasonBusiness item)

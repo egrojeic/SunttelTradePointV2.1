@@ -10,11 +10,11 @@ using System.Net.Http;
 
 namespace SunttelTradePointB.Client.Services.SalesServices
 {
-    public class IA : TSalesDocuments
+    public class SalesDocuments : TSalesDocuments
     {
         private readonly HttpClient _httpClient;
         private string basepath = "/api/Sales/Name?userId=*Id&ipAdress=*Ip";
-        public IA(HttpClient httpClient)
+        public SalesDocuments(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
@@ -121,31 +121,71 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<List<BasicConcept>> GetCommercialVendorWarehouseList()
+        public async Task<List<BasicConcept>> GetCommercialVendorWarehouseList(string entityId, string? nameLike = "all")
         {
             try
             {
-                string path = basepath.Replace("Name", "GetCommercialDocumentsTypes");
-                var responseMessage = await Gethttp($"{path}");
-                var list = await responseMessage.Content.ReadFromJsonAsync<List<BasicConcept>>();
-                return list != null ? list : new List<BasicConcept>();
+                var responseMessage = await Gethttp($"/api/GeographicPlaces/GetWarehouses?entityId={entityId}&nameLike={nameLike}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<Warehouse>>();
+                List<BasicConcept> conceptLis = new();
+                if (list != null)
+                {
+                    foreach (var item in list)
+                    {
+                        conceptLis.Add(new BasicConcept
+                        {
+                            Id = item.Id,
+                            Name = item.Name
+                        });
+                    }
+                }
+                return conceptLis != null ? conceptLis : new List<BasicConcept>();
             }
             catch (Exception ex)
             {
                 string errMessage = ex.Message;
                 return null;
             }
-        }  
-        
-        
-        public async Task<List<BasicConcept>> GetCommercialBuyerWarehouseList()
+        }
+
+        public async Task<List<AddItemCommercialDocument>> GetCommercialDocumentDetails(string filterName = "",int? page=1,int? perPage=30)
         {
             try
             {
-                string path = basepath.Replace("Name", "GetCommercialDocumentsTypes");
-                var responseMessage = await Gethttp($"{path}");
-                var list = await responseMessage.Content.ReadFromJsonAsync<List<BasicConcept>>();
-                return list != null ? list : new List<BasicConcept>();
+                // page, perPage, filterName
+                string path = basepath.Replace("Name", "GetCommercialDocumentDetails");
+                var responseMessage = await Gethttp($"{path}page=0");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<AddItemCommercialDocument>>();
+                return list != null ? list : new List<AddItemCommercialDocument>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+               
+
+
+        public async Task<List<BasicConcept>> GetCommercialBuyerWarehouseList(string entityId,string? nameLike ="all")
+        {
+            try
+            {                
+                var responseMessage = await Gethttp($"/api/GeographicPlaces/GetWarehouses?entityId={entityId}&nameLike={nameLike}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<Warehouse>>();
+                List<BasicConcept> conceptLis = new();
+                if (list!=null) {
+                    foreach (var item in list)
+                    {
+                        conceptLis.Add(new BasicConcept {
+                            Id = item.Id,
+                            Name = item.Name
+                        });
+                    }
+                }
+
+                return conceptLis != null ? conceptLis : new List<BasicConcept>();
             }
             catch (Exception ex)
             {
@@ -250,7 +290,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-                string path = basepath.Replace("Name", "GetBusinessLines");
+                string path = basepath.Replace("Name", "GetBusinessLinesDocs");
                 var responseMessage = await Gethttp($"{path}&filter={filter}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<BusinessLine>>();
                 return list != null ? list : new List<BusinessLine>();
@@ -262,21 +302,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<List<BusinessLine>> GetCommercialBusinessLines()
-        {
-            try
-            {
-                string path = basepath.Replace("Name", "GetCommercialBusinessLines");
-                var responseMessage = await Gethttp($"{path}");
-                var list = await responseMessage.Content.ReadFromJsonAsync<List<BusinessLine>>();
-                return list != null ? list : new List<BusinessLine>();
-            }
-            catch (Exception ex)
-            {
-                string errMessage = ex.Message;
-                return null;
-            }
-        }
+     
 
         public async Task<BusinessLine?> GetCommercialBusinessLineById(string businessLineDocId)
         {

@@ -8,13 +8,17 @@
     public string Name { get; set; }
     [Parameter]
     public List<(string,string)> listStatus { get; set; }
+    [Parameter]
+    public string color { get; set; }
 
     public string statusColor()
     {
-        string color = "gray";
-        if(listStatus!=null)
-        color = listStatus.Where(s => s.Item1.Contains(Name)).FirstOrDefault().Item2;
-
+        if (color == null)
+        {
+             color = "gray";
+            if (listStatus != null)
+                color = listStatus.Where(s => s.Item1.Contains(Name)).FirstOrDefault().Item2;
+        }
         return color;
     }
 

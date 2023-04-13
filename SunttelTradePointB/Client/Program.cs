@@ -32,7 +32,7 @@ builder.Services.AddScoped<ActorsNodeService>();
 builder.Services.AddScoped<WarehouseService>();
 builder.Services.AddScoped<CommunicationService>();
 builder.Services.AddScoped<TransactionalItemsService>();
-builder.Services.AddScoped<IA>();
+builder.Services.AddScoped<SalesDocuments>();
 builder.Services.AddScoped<IARecognition>();
 
 
