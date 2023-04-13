@@ -13,6 +13,7 @@ namespace SunttelTradePointB.Shared.Sales
     {
 
 
+        // Grade of revelance (How often is call based on user behaviur)
         public int RelevatGrade { get; set; }
         
         [DisplayName("Item")]
