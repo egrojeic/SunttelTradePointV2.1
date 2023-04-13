@@ -457,12 +457,11 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Retrieves the list of Entity/Vendor filtered by the optional parameter
         /// </summary>
-        /// <param name="DocumentTypeId"></param>
         /// <param name="filterString"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetCarriers")]
-        public async Task<IActionResult> GetCarriers(string? filterString = null)
+        public async Task<IActionResult> GetCarriers(string filterString)
         {
 
             var response = await _selectorDatasource.GetSelectorListEntityActor(filterString, BasicRolesFilter.Carrier);
@@ -483,7 +482,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetSalesPersons")]
-        public async Task<IActionResult> GetSalesPersons(string? filterString = null)
+        public async Task<IActionResult> GetSalesPersons(string filterString)
         {
 
             var response = await _selectorDatasource.GetSelectorListEntityActor(filterString, BasicRolesFilter.SalesPerson);
