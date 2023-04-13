@@ -1,4 +1,5 @@
 ﻿using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.Sales;
 
 namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
@@ -20,6 +21,14 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <returns></returns>
         Task<(bool IsSuccess, CommercialDocument? CommercialDocument, string? ErrorDescription)> GetCommercialDocumentById(string userId, string ipAdress, string squadId, string documentId);
 
+        /// <summary>
+        /// Insert/ Updates a Transactional Type of the corresponding id
+        /// </summary>
+        /// <param name="commercialDocument"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, CommercialDocument? commercialDocument, string? ErrorDescription)> SaveCommercialDocument(string userId, string ipAddress, CommercialDocument commercialDocument);
 
         /// <summary>
         /// Retrieves a list of the documents having the specified type and date span
@@ -147,5 +156,44 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <param name="businessLineDocId"></param>
         /// <returns></returns>
         Task<(bool IsSuccess, ShippingStatus? shippingStatus, string? ErrorDescription)> GetShippingStatusDocById(string userId, string ipAdress, string squadId, string businessLineDocId);
+
+        /// <summary>
+        /// Saves an  Shipping Status document. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="comercialDocumentsDetailsImports"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, ComercialDocumentsDetailsImports? commercialDocumentDetailResponse, string? ErrorDescription)> SaveCommercialDocumentDetail(string userId, string ipAdress, string squadId, ComercialDocumentsDetailsImports comercialDocumentsDetailsImports);
+
+        /// <summary>
+        /// Retrievs a list of transactional Items filtered by the parameters name, group, and code
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="nameLike"></param>
+        /// <param name="groupName"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<ComercialDocumentsDetailsImports>? GetCommercialDocumentDetails, string? ErrorDescription)> GetCommercialDocumentDetails(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? nameLike = null, string? groupName = null, string? code = null);
+
+        /// <summary>
+        /// Retrieves an object of a transactional Item by id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="commercialDocumentDetailId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, ComercialDocumentsDetailsImports? GetCommercialDocumentDetailsById, string? ErrorDescription)> GetCommercialDocumentDetailById(string userId, string ipAddress, string commercialDocumentDetailId);
+
+
+
+
+
+
     }
 }

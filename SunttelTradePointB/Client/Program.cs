@@ -6,6 +6,7 @@ using SunttelTradePointB.Client;
 using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Client.Interfaces.SquadInterfaces;
 using SunttelTradePointB.Client.Services;
+using SunttelTradePointB.Client.Services.IAServices;
 using SunttelTradePointB.Client.Services.MasterTablesServices;
 using SunttelTradePointB.Client.Services.SalesServices;
 using SunttelTradePointB.Client.Services.SquadServices;
@@ -32,6 +33,7 @@ builder.Services.AddScoped<WarehouseService>();
 builder.Services.AddScoped<CommunicationService>();
 builder.Services.AddScoped<TransactionalItemsService>();
 builder.Services.AddScoped<SalesDocuments>();
+builder.Services.AddScoped<IARecognition>();
 
 
 builder.Services.AddScoped<ContextMenuService>();
