@@ -2,9 +2,11 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
+using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Client.Pages.SalesPages;
 using SunttelTradePointB.Server.Interfaces.SalesBkServices;
 using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.Sales;
 
 namespace SunttelTradePointB.Server.Services.SalesBkServices
@@ -19,6 +21,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         IMongoCollection<ShippingStatus> _ShippingStatusCollection;
         IMongoCollection<CommercialDocument> _CommercialDocumentCollection;
         IMongoCollection<CommercialDocumentType> _CommercialDocumentType;
+        IMongoCollection<ComercialDocumentsDetailsImports> _CommercialDocumentDetailImports;
         IMongoCollection<FinanceStatus> _FinanceStatusCollection;
 
 
@@ -36,7 +39,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
             _ShippingStatusCollection = mongoDatabase.GetCollection<ShippingStatus>("ShippingStatusDocuments");
             _CommercialDocumentType = mongoDatabase.GetCollection<CommercialDocumentType>("CommercialDocumentTypes");
             _FinanceStatusCollection = mongoDatabase.GetCollection<FinanceStatus>("FinanceStatus");
-
+            _CommercialDocumentDetailImports = mongoDatabase.GetCollection<ComercialDocumentsDetailsImports>("CommercialDocumentDetailsImports");
         }
 
 
@@ -46,34 +49,57 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         /// <param name="userId"></param>
         /// <param name="ipAdress"></param>
         /// <param name="squadId"></param>
-        /// <param name="documentId"></param>
+        /// <param name="commercialDocumentId"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, CommercialDocument? CommercialDocument, string? ErrorDescription)> GetCommercialDocumentById(string userId, string ipAdress, string squadId, string documentId)
+        public async Task<(bool IsSuccess, CommercialDocument? CommercialDocument, string? ErrorDescription)> GetCommercialDocumentById(string userId, string ipAdress, string squadId, string commercialDocumentId)
         {
-            var pipeline = new List<BsonDocument>();
             try
             {
+                var pipeline = new List<BsonDocument>();
+
                 pipeline.Add(
-                  new BsonDocument("$match", new BsonDocument("_id", new ObjectId(documentId)))
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(commercialDocumentId)))
                 );
 
-                var resultPrev = await _SalesDocumentsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
-
+                var resultPrev = await _CommercialDocumentCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
                 CommercialDocument result = resultPrev.Select(d => BsonSerializer.Deserialize<CommercialDocument>(d)).ToList()[0];
-
-
-
+               
                 return (true, result, null);
-
             }
             catch (Exception ex)
             {
                 return (false, null, ex.Message);
             }
+        }
 
 
+        /// <summary>
+        /// Inserts / Updates an Transactional Item Type object
+        /// </summary>
+        /// <param name="commercialDocument"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, CommercialDocument? commercialDocument, string? ErrorDescription)> SaveCommercialDocument(string userId, string ipAddress, CommercialDocument commercialDocument)
+        {
+            try
+            {
+                if (commercialDocument.Id == null)
+                {
+                    commercialDocument.Id = ObjectId.GenerateNewId().ToString();
+                }
 
+                var filterCommercialDocument = Builders<CommercialDocument>.Filter.Eq("_id", new ObjectId(commercialDocument.Id));
+                var updateCommercialDocument = new ReplaceOptions { IsUpsert = true };
+                var resultCommercialDocument = await _CommercialDocumentCollection.ReplaceOneAsync(filterCommercialDocument, commercialDocument, updateCommercialDocument);
+
+                return (true, commercialDocument, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
 
 
@@ -556,6 +582,142 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 return (false, null, e.Message);
             }
         }
+        #endregion
+
+        #region Commercial Document Detail
+        /// <summary>
+        /// Saves an Entity/Actor document. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="comercialDocumentsDetailsImports"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, ComercialDocumentsDetailsImports? commercialDocumentDetailResponse, string? ErrorDescription)> SaveCommercialDocumentDetail(string userId, string ipAdress, string squadId, ComercialDocumentsDetailsImports comercialDocumentsDetailsImports)
+        {
+            
+            try
+            {
+                if (comercialDocumentsDetailsImports.SquadId == null)
+                {
+                    comercialDocumentsDetailsImports.SquadId = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filter = Builders<ComercialDocumentsDetailsImports>.Filter.Eq("_id", new ObjectId(comercialDocumentsDetailsImports.SquadId));
+
+                var updateOptions = new ReplaceOptions { IsUpsert = true };
+
+                var result = await _CommercialDocumentDetailImports.ReplaceOneAsync(filter, comercialDocumentsDetailsImports, updateOptions);
+
+                return (true, comercialDocumentsDetailsImports, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+            
+        }
+
+        /// <summary>
+        ///  Retrives a list of PRoducts, services, and all Transactional Items based on a search criteria
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="nameLike"></param>
+        /// <param name="groupName"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<ComercialDocumentsDetailsImports>? GetCommercialDocumentDetails, string? ErrorDescription)> GetCommercialDocumentDetails(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? nameLike = null, string? groupName = null, string? code = null)
+        {
+            try
+            {
+                string strNameFiler = nameLike == null ? "" : nameLike;
+                var skip = (page - 1) * perPage;
+
+                var pipeline = new List<BsonDocument>();
+
+                if (!(strNameFiler.ToLower() == "all" || strNameFiler.ToLower() == "todos"))
+                {
+                    pipeline.Add(
+                    new BsonDocument{
+                        { "$match",  new BsonDocument {
+                            { "$text",
+                                new BsonDocument {
+                                    { "$search",strNameFiler },
+                                    { "$language","english" },
+                                    { "$caseSensitive",false },
+                                    { "$diacriticSensitive",false }
+                                }
+                            }
+                        }}
+                    }
+                );
+                }
+
+
+                
+
+                pipeline.Add(
+                    new BsonDocument{
+                        {"$skip",  skip}
+                    }
+                );
+
+                pipeline.Add(
+                    new BsonDocument{
+                        {"$limit",  perPage}
+                    }
+                );
+
+                List<ComercialDocumentsDetailsImports> results = await _CommercialDocumentDetailImports.Aggregate<ComercialDocumentsDetailsImports>(pipeline).ToListAsync();
+
+                //var results = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+                return (true, results, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves an object of a transactional Item by id
+        /// </summary>
+        /// <param name="transactionalItemId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, ComercialDocumentsDetailsImports? GetCommercialDocumentDetailsById, string? ErrorDescription)> GetCommercialDocumentDetailById(string userId, string ipAddress, string commercialDocumentDetailId)
+        {
+
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(commercialDocumentDetailId)))
+                );
+
+                var resultPrev = await _CommercialDocumentDetailImports.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+
+                ComercialDocumentsDetailsImports result = resultPrev.Select(d => BsonSerializer.Deserialize<ComercialDocumentsDetailsImports>(d)).ToList()[0];
+
+
+                return (true, result, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+
+        }
+
+
         #endregion
 
     }

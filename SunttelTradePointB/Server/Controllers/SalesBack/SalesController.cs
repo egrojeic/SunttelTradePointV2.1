@@ -4,6 +4,8 @@ using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Server.Controllers.MasterTablesCtrl;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Server.Interfaces.SalesBkServices;
+using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.Sales;
 using SunttelTradePointB.Shared.SquadsMgr;
 
@@ -34,14 +36,14 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAdress"></param>
-        /// <param name="squadId"></param>
         /// <param name="documentId"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetCommercialDocumentById")]
-        public async Task<IActionResult> GetCommercialDocumentById(string userId, string ipAdress, string squadId, string documentId)
+        public async Task<IActionResult> GetCommercialDocumentById(string userId, string ipAdress, string documentId)
         {
-
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
             var response = await _commercialDocument.GetCommercialDocumentById(userId, ipAdress, squadId, documentId);
 
             if (response.IsSuccess)
@@ -50,6 +52,29 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
             }
             else
                 return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Insert / Update a Commercial Document
+        /// </summary>
+        /// <param name="commercialDocument"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveCommercialDocument")]
+        public async Task<IActionResult> SaveCommercialDocument(string userId, string ipAddress, CommercialDocument commercialDocument)
+        {
+            var response = await _commercialDocument.SaveCommercialDocument(userId, ipAddress, commercialDocument);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.commercialDocument);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
         }
 
 
@@ -375,6 +400,89 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
                 return NotFound(response.ErrorDescription);
 
         }
+        #endregion
+
+        #region Commercial Document Detail
+        /// <summary>
+        /// Saves an commercial document. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="comercialDocumentsDetailsImports"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveCommercialDocumentDetail")]
+        public async Task<IActionResult> SaveCommercialDocumentDetail(string userId, string ipAdress, ComercialDocumentsDetailsImports comercialDocumentsDetailsImports)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+
+            var response = await _commercialDocument.SaveCommercialDocumentDetail(userId, ipAdress, squadId, comercialDocumentsDetailsImports);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.commercialDocumentDetailResponse);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Retrives a list of Transactional Items matching a search criteria
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="customHeaderValue"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filterName"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetCommercialDocumentDetails")]
+        public async Task<IActionResult> GetCommercialDocumentDetails(
+            string userId,
+            string ipAddress,
+            int? page = 1,
+            int? perPage = 10,
+            string? filterName = null)
+        {
+            var squadId = "";
+
+            var customHeaderValue = Request.Headers["SquadId"];
+            squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+
+            var response = await _commercialDocument.GetCommercialDocumentDetails(userId, ipAddress, squadId, page, perPage, filterName);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.GetCommercialDocumentDetails);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Retrieves an object of a transactional Item by id
+        /// </summary>
+        /// <param name="commercialDocumentDetailId"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetCommercialDocumentDetailById")]
+        public async Task<IActionResult> GetCommercialDocumentDetailById(string userId, string ipAddress, string commercialDocumentDetailId)
+        {
+            var response = await _commercialDocument.GetCommercialDocumentDetailById(userId, ipAddress, commercialDocumentDetailId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.GetCommercialDocumentDetailsById);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+
         #endregion
     }
 }
