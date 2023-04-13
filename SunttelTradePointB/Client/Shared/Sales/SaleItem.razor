@@ -9,7 +9,7 @@
 @using Syncfusion.Blazor.Navigations
 @using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents
 @inject NavigationManager Navigation
-@inject SunttelTradePointB.Client.Services.SalesServices.IA DocumentServices
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
 @inject GeographicPlacesService geoPlaces
 @inject ActorsNodeService actorsNodeServive
 @inject IJSRuntime Js
@@ -165,7 +165,6 @@
                     }
                 </select>
             </div>
-
 
             <div><b class="c-red">*</b><label>@GetName("Season",new CommercialDocument())</label></div>
             <InputTextSelector3 styleCaption="width:180px" TItem="SeasonBusiness"

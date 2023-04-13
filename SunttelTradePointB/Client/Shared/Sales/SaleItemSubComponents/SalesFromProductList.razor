@@ -27,7 +27,7 @@
     }
     else
     {
-        @if (Items != null)
+        @if (items != null)
         {
             <RadzenDataGrid @ref="GridItem" AllowFiltering="true"
                     AllowColumnResize="true"
@@ -38,7 +38,7 @@
                     AllowPaging="true"
                     PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                     ShowPagingSummary="true"
-                    Data="@Items"
+                    Data="@items"
                     TItem="SalesDocumentItemsDetails"
                     ColumnWidth="300px"
                     PageNumbersCount="100"
@@ -97,7 +97,8 @@
 @code {
     [Parameter]
     public string _filterItems { get; set; }
-    public List<SalesDocumentItemsDetails> Items { get; set; } = new();
+    public List<AddItemCommercialDocument> itemCommercialDocument { get; set; } = new();
+    public List<SalesDocumentItemsDetails> items { get; set; } = new();
     List<TransactionalItem>? itemList;
 
     RadzenDataGrid<SalesDocumentItemsDetails> GridItem;
@@ -118,13 +119,14 @@
     protected async override void OnInitialized()
     {
         if (_filterItems != null) LoadData();
+        itemCommercialDocument = await transactItemsService.GetTransactionalItemsList(1, 50, _filterItems);
         base.OnInitialized();
     }
 
     private async Task LoadData()
     {
         isLoading = true;
-        var data = await transactItemsService.GetTransactionalItemsList(1, 50, _filterItems);
+        itemCommercialDocument = await transactItemsService.GetTransactionalItemsList(1, 50, _filterItems);
         itemList = data;
         listItemByListProduct();
     }
@@ -191,13 +193,13 @@
                     foreach (var ProductPackingSpec in Transactional.ProductPackingSpecs)
                     {
 
-                        Items.Add(new SalesDocumentItemsDetails
+                        items.Add(new SalesDocumentItemsDetails
                             {
                                 TransactionalItem = Transactional,
                                 TransactionalItemSpecs = ProductPackingSpec
 
                             });
-                        foreach (var itemEdit in Items)
+                        foreach (var itemEdit in items)
                         {
                             GridItem.EditRow(itemEdit);
                         }

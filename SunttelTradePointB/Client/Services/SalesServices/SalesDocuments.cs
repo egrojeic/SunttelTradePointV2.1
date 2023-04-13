@@ -10,11 +10,11 @@ using System.Net.Http;
 
 namespace SunttelTradePointB.Client.Services.SalesServices
 {
-    public class IA : TSalesDocuments
+    public class SalesDocuments : TSalesDocuments
     {
         private readonly HttpClient _httpClient;
         private string basepath = "/api/Sales/Name?userId=*Id&ipAdress=*Ip";
-        public IA(HttpClient httpClient)
+        public SalesDocuments(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }

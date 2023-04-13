@@ -7,17 +7,17 @@
     <div style="display:@(resulRecognition!=""?"block":"none");" class="item-1">
         <p class="text">@resulRecognition</p>
     </div>
-    <div class="item-2" >
+    <div class="item-2">
         <img @ondblclick="ActiveRecognition" @onclick="StartRecognition" class="img-mic" src="@(GetIco())" />
         <img style="display:@(!status?"block":"none");" class="img-load" src="/images/loadingIco.gif" />
-    </div>      
+    </div>
 </div>
 
 
 
 @code {
     bool status = true;
-    bool onstart =false;
+    bool onstart = false;
     bool ondblclickEnable = false;
     bool recognitionEnable = false;
     string resulRecognition = "";
@@ -69,16 +69,20 @@
         {
             if (RecognitionItem.Command == "Create")
             {
-               await Js.InvokeAsync<object>("open", RecognitionItem.Page, "_blank");
+                try
+                {
+                     Js.InvokeAsync<object>("open", RecognitionItem.Page, "_blank");
+                }
+                catch { }
             }
         }
-        resulRecognition = result;       
-        StateHasChanged();
+        resulRecognition = result;
+        
     }
 
     [JSInvokable]
     public void OnstartRecognition()
-    {       
+    {
         onstart = true;
         status = false;
         StateHasChanged();
@@ -89,7 +93,7 @@
     {
         status = true;
         onstart = false;
-        ondblclickEnable = false;       
+        ondblclickEnable = false;
         StateHasChanged();
     }
 
@@ -116,7 +120,7 @@
         {
             _reference = DotNetObjectReference.Create(this);
             await Js.InvokeVoidAsync("LoadReference", _reference);
-          
+
         }
     }
 
