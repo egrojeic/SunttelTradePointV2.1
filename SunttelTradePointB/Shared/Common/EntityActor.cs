@@ -82,7 +82,12 @@ namespace SunttelTradePointB.Shared.Common
         /// <summary>
         /// Employee
         /// </summary>
-        Employee = 6
+        Employee = 6,
+
+        /// <summary>
+        /// Sales person
+        /// </summary>
+        SalesPerson = 7
 
     }
 

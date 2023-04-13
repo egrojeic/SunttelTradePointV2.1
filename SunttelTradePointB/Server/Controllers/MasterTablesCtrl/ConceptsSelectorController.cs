@@ -462,14 +462,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetCarriers")]
-        public async Task<IActionResult> GetCarriers(string DocumentTypeId, string? filterString = null)
+        public async Task<IActionResult> GetCarriers(string? filterString = null)
         {
 
-            var response = await _selectorDatasource.GetCarriers(DocumentTypeId, filterString);
+            var response = await _selectorDatasource.GetSelectorListEntityActor(filterString, BasicRolesFilter.Carrier);
 
             if (response.IsSuccess)
             {
-                return Ok(response.CarriersList);
+                return Ok(response.EntityActorList);
             }
             else
                 return NotFound(response.ErrorDescription);
@@ -483,14 +483,14 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetSalesPersons")]
-        public async Task<IActionResult> GetSalesPersons(string DocumentTypeId, string? filterString = null)
+        public async Task<IActionResult> GetSalesPersons(string? filterString = null)
         {
 
-            var response = await _selectorDatasource.GetSalesPersons(DocumentTypeId, filterString);
+            var response = await _selectorDatasource.GetSelectorListEntityActor(filterString, BasicRolesFilter.SalesPerson);
 
             if (response.IsSuccess)
             {
-                return Ok(response.SalesPersonsList);
+                return Ok(response.EntityActorList);
             }
             else
                 return NotFound(response.ErrorDescription);

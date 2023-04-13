@@ -92,7 +92,8 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     { BasicRolesFilter.Carrier, "Carrier" },
                     { BasicRolesFilter.Company, "Company" },
                     { BasicRolesFilter.User, "User" },
-                    { BasicRolesFilter.Employee, "Employee" }
+                    { BasicRolesFilter.Employee, "Employee" },
+                    { BasicRolesFilter.SalesPerson, "SalesPerson" }
                 };
 
                 string strNameFilter = filterString == null ? "" : filterString;
