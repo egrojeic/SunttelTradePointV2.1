@@ -25,6 +25,7 @@
         padding-left: 10px;
         cursor: pointer;
         border-radius: 10px;
+        
     }
 
         .CardList li:nth-child(odd) {

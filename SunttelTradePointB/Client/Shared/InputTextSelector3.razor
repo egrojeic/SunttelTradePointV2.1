@@ -8,7 +8,7 @@
         <button type="button" @onclick='SetViewElemnt' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
     </div>
     <div class="position-input">
-        <div class="component-input" style="@style; display:@(Visible?"block":"none");  position:relative; width:278px;">
+        <div class="component-input" style=" @style display:@(Visible?"block":"none");   ">
             <div style=" flex-direction:row; display:@(Items==null || Items.Count<=0 || !modeSearcher?"flex":"none"); ">
                 <input @bind="inputSearcherValue" class="form-control" autocomplete="on" />
                 <img id="btn-img" src="images/search.svg" @onclick="SearcherValue" />

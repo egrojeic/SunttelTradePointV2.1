@@ -104,14 +104,14 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<List<Concept>> GetCommercialVendorList(string filter,bool IsSales)
+        public async Task<List<Concept>> GetCommercialVendorList(string filter,bool isSales)
         {
             try
             {
-                string path = $"/api/ConceptsSelector/GetSelectorListEntityActor?filterString={filter}&roleIndex=1";
+                string path = $"/api/ConceptsSelector/GetVendors?filterString={filter}&IsSales={isSales}";
                 var responseMessage = await Gethttp($"{path}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
-                if(IsSales && list !=null) list = list.Where(s=>s.SquadId == UIClientGlobalVariables.ActiveSquad.IDSquads.ToString()).ToList();
+                if(isSales && list !=null) list = list.Where(s=>s.SquadId == UIClientGlobalVariables.ActiveSquad.IDSquads.ToString()).ToList();
                 return list != null ? list : new List<Concept>();
             }
             catch (Exception ex)
@@ -199,8 +199,8 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-                string path = basepath.Replace("Name", "GetCommercialDocumentsTypes");
-                var responseMessage = await Gethttp($"{path}?filterCondition={filter}");
+                string path = basepath.Replace("Name", "GetSalesPersons");
+                var responseMessage = await Gethttp($"{path}?filterString={filter}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
                 return list != null ? list : new List<Concept>();
             }
@@ -237,7 +237,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-                 string path = $"/api/ConceptsSelector/GetSelectorListEntityActor?filter=all&roleIndex=3";
+                 string path = $"/api/ConceptsSelector/GetBuyers?filterString={filter}&IsASale={isASale}";
                 var responseMessage = await Gethttp($"{path}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
                 if (!isASale) list = list.Where(s => s.Id == UIClientGlobalVariables.EntityUserId).ToList();
@@ -255,7 +255,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-                string path = $"/api/ConceptsSelector/GetSelectorListEntityActor?filter=all&roleIndex=4";
+                string path = $"/api/ConceptsSelector/GetCarriers?filterString=all";
                 var responseMessage = await Gethttp($"{path}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();              
                 return list != null ? list : new List<Concept>();

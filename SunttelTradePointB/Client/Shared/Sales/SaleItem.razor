@@ -140,7 +140,7 @@
             </InputTextSelector3>
 
             <div><b class="c-red">*</b><label>@GetName("SalesPerson",new CommercialDocument())</label></div>
-            <InputTextSelector3 styleCaption="width:180px" TItem="Concept"
+            <InputTextSelector3 styleCaption="width:180px; " style="right:-110px;" TItem="Concept"
                             Id="SalesPerson"
                             caption="@(commercialDocument.SalesPerson !=null ? commercialDocument.SalesPerson?.Name:"" )"
                             Items="salesPersonList"
