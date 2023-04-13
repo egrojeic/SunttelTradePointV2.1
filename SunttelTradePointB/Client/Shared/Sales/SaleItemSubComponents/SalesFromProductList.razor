@@ -136,7 +136,7 @@
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
         <RadzenMenuItem Text="Select" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
     public async void OnMenuItemClick(MenuItemEventArgs args)
@@ -213,9 +213,15 @@
         StateHasChanged();
     }
 
-    public async void ConvetToSalesDocumentItemsDetails(SalesDocumentItemsDetails item)
+    public  SalesDocumentItemsDetails ConvetToSalesDocumentItemsDetails(AddItemCommercialDocument item)
     {
 
+        var detail = new SalesDocumentItemsDetails();
+        detail.UnitPrice = item.UnitPrice;
+       
+        
+
+        return detail;
 
 
     }

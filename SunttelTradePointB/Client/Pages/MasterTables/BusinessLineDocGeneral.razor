@@ -63,8 +63,8 @@ else
     protected override void OnInitialized()
     {
         transactItemsService.Page = "BusinessLineDoc";
-        if (_filterItems == "" && _filterItems is null) return;
-        LoadData();
+        if (_filterItems != "" && _filterItems != null){
+        LoadData();}
     }
 
     bool isLoading = false;
