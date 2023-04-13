@@ -412,5 +412,89 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
             }
         }
 
+        /// <summary>
+        /// Retrieves the list of Entity/Vendor filtered by the optional parameter
+        /// </summary>
+        /// <param name="DocumentTypeId"></param>
+        /// <param name="filterString"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetVendors")]
+        public async Task<IActionResult> GetVendors(string DocumentTypeId,  string? filterString = null)
+        {
+
+            var response = await _selectorDatasource.GetVendors(DocumentTypeId, filterString);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.VendorsList);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Retrieves the list of Entity/Vendor filtered by the optional parameter
+        /// </summary>
+        /// <param name="DocumentTypeId"></param>
+        /// <param name="filterString"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetBuyers")]
+        public async Task<IActionResult> GetBuyers(string DocumentTypeId, string? filterString = null)
+        {
+
+            var response = await _selectorDatasource.GetBuyers(DocumentTypeId, filterString);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.BuyersList);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Retrieves the list of Entity/Vendor filtered by the optional parameter
+        /// </summary>
+        /// <param name="DocumentTypeId"></param>
+        /// <param name="filterString"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetCarriers")]
+        public async Task<IActionResult> GetCarriers(string DocumentTypeId, string? filterString = null)
+        {
+
+            var response = await _selectorDatasource.GetCarriers(DocumentTypeId, filterString);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.CarriersList);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Retrieves the list of Entity/Vendor filtered by the optional parameter
+        /// </summary>
+        /// <param name="DocumentTypeId"></param>
+        /// <param name="filterString"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetSalesPersons")]
+        public async Task<IActionResult> GetSalesPersons(string DocumentTypeId, string? filterString = null)
+        {
+
+            var response = await _selectorDatasource.GetSalesPersons(DocumentTypeId, filterString);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.SalesPersonsList);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
     }
 }

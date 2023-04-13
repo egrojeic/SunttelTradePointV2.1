@@ -879,5 +879,183 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 return (false, null, e.Message);
             }
         }
+
+        /// <summary>
+        /// Retrieves the list of Entity/Vendors filtered by the optional parameter
+        /// </summary>
+        /// <param name="filterString"></param>
+        /// <param name="DocumentTypeId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<AtomConcept>? VendorsList, string? ErrorDescription)> GetVendors(string DocumentTypeId, string? filterString)
+        {
+            try
+            {
+                string strNameFilter = filterString == null ? "" : filterString;
+                var pipe = new List<BsonDocument>();
+
+                if (strNameFilter.ToUpper() != "ALL" && strNameFilter.ToUpper() != "TODOS")
+                {
+
+                    pipe.Add(
+                        new BsonDocument
+                        {
+                            { "$match",
+                                new BsonDocument{
+                                    { "$text", new BsonDocument {
+                                            { "$search", strNameFilter },
+                                            { "$language", "english" },
+                                            { "$caseSensitive", false },
+                                            { "$diacriticSensitive", false}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    );
+                }
+
+                List<AtomConcept> results = await _entities.Aggregate<AtomConcept>(pipe).ToListAsync();
+
+                return (true, results, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the list of Entity/Buyers filtered by the optional parameter
+        /// </summary>
+        /// <param name="filterString"></param>
+        /// <param name="DocumentTypeId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<AtomConcept>? BuyersList, string? ErrorDescription)> GetBuyers(string DocumentTypeId, string? filterString)
+        {
+            try
+            {
+                string strNameFilter = filterString == null ? "" : filterString;
+                var pipe = new List<BsonDocument>();
+
+                if (strNameFilter.ToUpper() != "ALL" && strNameFilter.ToUpper() != "TODOS")
+                {
+
+                    pipe.Add(
+                        new BsonDocument
+                        {
+                            { "$match",
+                                new BsonDocument{
+                                    { "$text", new BsonDocument {
+                                            { "$search", strNameFilter },
+                                            { "$language", "english" },
+                                            { "$caseSensitive", false },
+                                            { "$diacriticSensitive", false}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    );
+                }
+
+                List<AtomConcept> results = await _entities.Aggregate<AtomConcept>(pipe).ToListAsync();
+
+                return (true, results, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the list of Entity/Carriers filtered by the optional parameter
+        /// </summary>
+        /// <param name="filterString"></param>
+        /// <param name="DocumentTypeId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<AtomConcept>? CarriersList, string? ErrorDescription)> GetCarriers(string DocumentTypeId, string? filterString)
+        {
+            try
+            {
+                string strNameFilter = filterString == null ? "" : filterString;
+                var pipe = new List<BsonDocument>();
+
+                if (strNameFilter.ToUpper() != "ALL" && strNameFilter.ToUpper() != "TODOS")
+                {
+
+                    pipe.Add(
+                        new BsonDocument
+                        {
+                            { "$match",
+                                new BsonDocument{
+                                    { "$text", new BsonDocument {
+                                            { "$search", strNameFilter },
+                                            { "$language", "english" },
+                                            { "$caseSensitive", false },
+                                            { "$diacriticSensitive", false}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    );
+                }
+
+                List<AtomConcept> results = await _entities.Aggregate<AtomConcept>(pipe).ToListAsync();
+
+                return (true, results, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the list of Entity/SalesPersons filtered by the optional parameter
+        /// </summary>
+        /// <param name="filterString"></param>
+        /// <param name="DocumentTypeId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<AtomConcept>? SalesPersonsList, string? ErrorDescription)> GetSalesPersons(string DocumentTypeId, string? filterString)
+        {
+            try
+            {
+                string strNameFilter = filterString == null ? "" : filterString;
+                var pipe = new List<BsonDocument>();
+
+                if (strNameFilter.ToUpper() != "ALL" && strNameFilter.ToUpper() != "TODOS")
+                {
+
+                    pipe.Add(
+                        new BsonDocument
+                        {
+                            { "$match",
+                                new BsonDocument{
+                                    { "$text", new BsonDocument {
+                                            { "$search", strNameFilter },
+                                            { "$language", "english" },
+                                            { "$caseSensitive", false },
+                                            { "$diacriticSensitive", false}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    );
+                }
+
+                List<AtomConcept> results = await _entities.Aggregate<AtomConcept>(pipe).ToListAsync();
+
+                return (true, results, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+
     }
 }

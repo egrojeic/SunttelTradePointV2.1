@@ -151,5 +151,37 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<(bool IsSuccess, List<AtomConcept>? labelPapers, string? ErrorDescription)> GetSelectorListLabelPaper();
 
+        /// <summary>
+        /// Retrieves the list of Entity/Nodes/Actors filtered by the optional parameter or/and by role
+        /// </summary>
+        /// <param name="filterString"></param>
+        /// <param name="DocumentTypeId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<AtomConcept>? VendorsList, string? ErrorDescription)> GetVendors(string DocumentTypeId, string? filterString);
+
+        /// <summary>
+        /// Retrieves the list of Entity/Nodes/Actors filtered by the optional parameter or/and by role
+        /// </summary>
+        /// <param name="filterString"></param>
+        /// <param name="DocumentTypeId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<AtomConcept>? BuyersList, string? ErrorDescription)> GetBuyers(string DocumentTypeId, string? filterString);
+
+        /// <summary>
+        /// Retrieves the list of Entity/Nodes/Actors filtered by the optional parameter or/and by role
+        /// </summary>
+        /// <param name="filterString"></param>
+        /// <param name="DocumentTypeId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<AtomConcept>? CarriersList, string? ErrorDescription)> GetCarriers(string DocumentTypeId, string? filterString);
+
+        /// <summary>
+        /// Retrieves the list of Entity/Nodes/Actors filtered by the optional parameter or/and by role
+        /// </summary>
+        /// <param name="filterString"></param>
+        /// <param name="DocumentTypeId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<AtomConcept>? SalesPersonsList, string? ErrorDescription)> GetSalesPersons(string DocumentTypeId, string? filterString);
+
     }
 }
