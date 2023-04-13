@@ -2,7 +2,7 @@
 @page "/SalesFromProductList/{_filterItems}"
 
 @using SunttelTradePointB.Shared.Sales;
-@inject SunttelTradePointB.Client.Services.SalesServices.IA DocumentServices
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
 @inject ContextMenuService ContextMenuService
 @inject TransactionalItemsService transactItemsService;
 @inject NavigationManager Navigation
@@ -119,15 +119,15 @@
     protected async override void OnInitialized()
     {
         if (_filterItems != null) LoadData();
-        itemCommercialDocument = await transactItemsService.GetTransactionalItemsList(1, 50, _filterItems);
+        itemCommercialDocument = await DocumentServices.GetCommercialDocumentDetails(_filterItems);
         base.OnInitialized();
     }
 
     private async Task LoadData()
     {
         isLoading = true;
-        itemCommercialDocument = await transactItemsService.GetTransactionalItemsList(1, 50, _filterItems);
-        itemList = data;
+        itemCommercialDocument = await DocumentServices.GetCommercialDocumentDetails(_filterItems);
+        
         listItemByListProduct();
     }
 

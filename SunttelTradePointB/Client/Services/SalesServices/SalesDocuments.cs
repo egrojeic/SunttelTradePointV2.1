@@ -135,9 +135,30 @@ namespace SunttelTradePointB.Client.Services.SalesServices
                 string errMessage = ex.Message;
                 return null;
             }
-        }  
+        }
+
+        public async Task<List<AddItemCommercialDocument>> GetCommercialDocumentDetails(string filterName = "",int? page=1,int? perPage=30)
+        {
+            try
+            {
+                // page, perPage, filterName
+                string path = basepath.Replace("Name", "GetCommercialDocumentDetails");
+                var responseMessage = await Gethttp($"{path}page=0");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<AddItemCommercialDocument>>();
+                return list != null ? list : new List<AddItemCommercialDocument>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+
+
         
-        
+
+
         public async Task<List<BasicConcept>> GetCommercialBuyerWarehouseList()
         {
             try
