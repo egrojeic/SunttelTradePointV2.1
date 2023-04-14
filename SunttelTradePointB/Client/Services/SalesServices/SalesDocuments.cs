@@ -8,7 +8,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
     public class SalesDocuments : TSalesDocuments
     {
         private readonly HttpClient _httpClient;
-        private string basepath = "/api/Sales/Name?userId=*Id&ipAdress=*Ip";
+        private string basepath = "/api/Sales/Name?userId=*Id&ipAddress=*Ip";
         public SalesDocuments(HttpClient httpClient)
         {
             _httpClient = httpClient;
@@ -169,11 +169,12 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<List<Concept>> GetCommercialVendorList(string filter, CommercialDocumentType documentType)
+        public async Task<List<Concept>> GetCommercialVendorList(string filter, CommercialDocumentType documentType, int? page = 1, int? perPage = 10)
         {
             try
             {
-                string path = $"/api/ConceptsSelector/GetVendors?filterString={filter}&isASale={documentType.IsASale}";
+              
+                string path = $"/api/ConceptsSelector/GetVendors?isASale={documentType.IsASale}&userId=*Id&ipAddress=*Ip&page={page}&perPage={perPage}&filterString={filter}";
                 var responseMessage = await Gethttp($"{path}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
                 //if(isSales && list !=null) list = list.Where(s=>s.SquadId == UIClientGlobalVariables.ActiveSquad.IDSquads.ToString()).ToList();
@@ -308,11 +309,12 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<List<Concept>> GetCommercialBuyerList(string filter, CommercialDocumentType documentType)
+        public async Task<List<Concept>> GetCommercialBuyerList(string filter, CommercialDocumentType documentType, int? page = 1, int? perPage = 10)
         {
             try
             {
-                 string path = $"/api/ConceptsSelector/GetBuyers?filterString={filter}&isASale={documentType.IsASale}";
+              
+                 string path = $"/api/ConceptsSelector/GetBuyers?isASale={documentType.IsASale}&userId=*Id&ipAddress=*Ip&page={page}&perPage={perPage}&filterString={filter}";
                 var responseMessage = await Gethttp($"{path}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
              //   if (!isASale) list = list.Where(s => s.Id == UIClientGlobalVariables.EntityUserId).ToList();
