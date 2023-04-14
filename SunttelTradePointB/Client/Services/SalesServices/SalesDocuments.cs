@@ -173,7 +173,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-                string path = $"/api/ConceptsSelector/GetVendors?filterString={filter}&DocumentTypeId={documentType.Id}";
+                string path = $"/api/ConceptsSelector/GetVendors?filterString={filter}&isASale={documentType.IsASale}";
                 var responseMessage = await Gethttp($"{path}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
                 //if(isSales && list !=null) list = list.Where(s=>s.SquadId == UIClientGlobalVariables.ActiveSquad.IDSquads.ToString()).ToList();
@@ -312,7 +312,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-                 string path = $"/api/ConceptsSelector/GetBuyers?filterString={filter}&DocumentTypeId={documentType.Id}";
+                 string path = $"/api/ConceptsSelector/GetBuyers?filterString={filter}&isASale={documentType.IsASale}";
                 var responseMessage = await Gethttp($"{path}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
              //   if (!isASale) list = list.Where(s => s.Id == UIClientGlobalVariables.EntityUserId).ToList();
