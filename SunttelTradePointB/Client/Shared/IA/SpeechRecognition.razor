@@ -11,7 +11,7 @@
     </div>
     <div class="item-2">
         <img @ondblclick="ActiveRecognition" @onclick="StartRecognition" class="img-mic" src="@(GetIco())" />
-        <img style="display:@(resulActive?"block":"none");" class="img-load" src="/images/loadingIco.gif" />
+        <img style="display:@(setTextRecognition?"block":"none");" class="img-load" src="/images/loadingIco.gif" />
     </div>
 </div>
 
@@ -22,8 +22,8 @@
     public EventCallback<string> SetFilter{ get; set; }
 
     bool status = true;
-    bool onstart = false;
-    bool resulActive = false;
+    bool onstartRecognition = false;
+    bool setTextRecognition = false;
     bool ondblclickEnable = false;
     bool recognitionEnable = false;
     string resulRecognition = "";
@@ -73,7 +73,7 @@
     [JSInvokable]
     public async void SetTextRecognition(string result)
     {
-        resulActive = true;
+        setTextRecognition = true;
         if (result.ToLower().Contains("buscar")) SetFilter.InvokeAsync(result.Replace("buscar",""));
         var RecognitionItem = await Recognition.GetValueRecognition(result);
         if (RecognitionItem != null)
@@ -88,13 +88,13 @@
             }
         }
         resulRecognition = result;
-        resulActive = false;
+        setTextRecognition = false;
     }
 
     [JSInvokable]
     public void OnstartRecognition()
     {
-        onstart = true;
+        onstartRecognition = true;
         status = false;
         StateHasChanged();
     }
@@ -103,7 +103,7 @@
     public void OnEndRecognition()
     {
         status = true;
-        onstart = false;
+        onstartRecognition = false;
         ondblclickEnable = false;
         StateHasChanged();
     }
@@ -112,7 +112,7 @@
     public void OnerrorRecognition()
     {
         ondblclickEnable = false;
-        onstart = false;
+        onstartRecognition = false;
         status = true;
         StateHasChanged();
     }
@@ -120,7 +120,7 @@
     public string GetIco()
     {
         if (ondblclickEnable) return "/images//headset.svg";
-        if (onstart) return "/images//mic-on.svg";
+        if (onstartRecognition) return "/images//mic-on.svg";
         return "/images//mic-off.svg";
     }
 
