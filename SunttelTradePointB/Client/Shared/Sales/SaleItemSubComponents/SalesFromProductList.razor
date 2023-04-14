@@ -118,15 +118,15 @@
 
     protected async override void OnInitialized()
     {
-        if (_filterItems != null) LoadData();
-        itemCommercialDocument = await DocumentServices.GetCommercialDocumentDetails(_filterItems);
+
+        LoadData();
         base.OnInitialized();
     }
 
     private async Task LoadData()
     {
         isLoading = true;
-        itemCommercialDocument = await DocumentServices.GetCommercialDocumentDetails(_filterItems);
+        itemCommercialDocument = await DocumentServices.GetCommercialDocumentDetails(_filterItems != null ? _filterItems : "all");
         
         listItemByListProduct();
     }
@@ -213,13 +213,23 @@
         StateHasChanged();
     }
 
-    public  SalesDocumentItemsDetails ConvetToSalesDocumentItemsDetails(AddItemCommercialDocument item)
+    public List<SalesDocumentItemsDetails> ConvetToSalesDocumentItemsDetails(List<AddItemCommercialDocument> list)
     {
 
-        var detail = new SalesDocumentItemsDetails();
-        detail.UnitPrice = item.UnitPrice;
-       
-        
+        var detail = new List<SalesDocumentItemsDetails>();
+        foreach (var detailItem in list)
+        {
+            detail.Add(new SalesDocumentItemsDetails
+                {
+                    TransactionalItem = detailItem.TransactionalItem,
+                    PullDate = detailItem.PullDate,
+                    FormatedPullDate = detailItem.FormatedPullDate,
+                    UnitPrice = detailItem.UnitPrice,
+                    TaxableUnitPrice = detailItem.TaxableUnitPrice
+
+                });
+        }
+
 
         return detail;
 

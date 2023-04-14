@@ -155,7 +155,7 @@
                     {
                         <option value="@commercialDocument.DeliveryAddress.Id" selected>@commercialDocument.DeliveryAddress.Name</option>
                     }
-                    @if (buyerWarehouseList != null && buyerWarehouseList.Count() > 0)
+                    @if (addressList != null && addressList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
                     }
@@ -239,7 +239,7 @@
                     {
                         <option value="@commercialDocument.BusinessLineDoc.Id" selected>@commercialDocument.BusinessLineDoc.Name</option>
                     }
-                    @if (buyerWarehouseList != null && buyerWarehouseList.Count() > 0)
+                    @if (businessLineDocList != null && businessLineDocList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
                     }
@@ -404,10 +404,7 @@
 
 
 
-    public List<(string, string)> shippingStatusDocumentTypeList = new List<(string, string)>{
-   ("ACTIVE", "#61c100"),  ("DISABLE", "#5d5d5d") };
-    public List<(string, string)> financeStatusDocumenTypeList = new List<(string, string)>{
-   ("ACTIVE", "#61c100"),  ("DISABLE", "#5d5d5d") };
+   
 
 
     public List<ShippingStatus> shippingStatusDocumentList = new();
@@ -484,7 +481,9 @@
             var result = await DocumentServices.SaveCommercialDocument(commercialDocument);
             if (result != null)
             {
-                alert("", 0);
+                alert("Saved", 0);
+            }else{
+                 alert("No saved", 1);
             }
 
         }
@@ -583,6 +582,7 @@
             addressList = await DocumentServices.GetEntityDetailsAddressList(item.Id);
       
         }
+        LoadCommercialDocument();
         StateHasChanged();
     }
 
