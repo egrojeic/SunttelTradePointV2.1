@@ -154,34 +154,28 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <summary>
         /// Retrieves the list of Entity/Nodes/Actors filtered by the optional parameter or/and by role
         /// </summary>
+        /// <param name="isASale"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="squadId"></param>
         /// <param name="filterString"></param>
-        /// <param name="DocumentTypeId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<AtomConcept>? VendorsList, string? ErrorDescription)> GetVendors(string DocumentTypeId, string? filterString);
+        Task<(bool IsSuccess, List<AtomConcept>? VendorsList, string? ErrorDescription)> GetVendors(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null);
 
         /// <summary>
         /// Retrieves the list of Entity/Nodes/Actors filtered by the optional parameter or/and by role
         /// </summary>
+        /// <param name="isASale"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
         /// <param name="filterString"></param>
-        /// <param name="DocumentTypeId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<AtomConcept>? BuyersList, string? ErrorDescription)> GetBuyers(string DocumentTypeId, string? filterString);
-
-        /// <summary>
-        /// Retrieves the list of Entity/Nodes/Actors filtered by the optional parameter or/and by role
-        /// </summary>
-        /// <param name="filterString"></param>
-        /// <param name="DocumentTypeId"></param>
-        /// <returns></returns>
-        Task<(bool IsSuccess, List<AtomConcept>? CarriersList, string? ErrorDescription)> GetCarriers(string DocumentTypeId, string? filterString);
-
-        /// <summary>
-        /// Retrieves the list of Entity/Nodes/Actors filtered by the optional parameter or/and by role
-        /// </summary>
-        /// <param name="filterString"></param>
-        /// <param name="DocumentTypeId"></param>
-        /// <returns></returns>
-        Task<(bool IsSuccess, List<AtomConcept>? SalesPersonsList, string? ErrorDescription)> GetSalesPersons(string DocumentTypeId, string? filterString);
+        Task<(bool IsSuccess, List<AtomConcept>? BuyersList, string? ErrorDescription)> GetBuyers(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null);
 
     }
 }
