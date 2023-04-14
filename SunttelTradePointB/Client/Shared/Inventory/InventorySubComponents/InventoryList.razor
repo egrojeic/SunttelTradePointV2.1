@@ -1,0 +1,230 @@
+@page "/SalesFromProductList"
+@page "/SalesFromProductList/{_filterItems}"
+
+@using SunttelTradePointB.Shared.Sales;
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject ContextMenuService ContextMenuService
+@inject TransactionalItemsService transactItemsService;
+@inject NavigationManager Navigation
+
+<PageTitleComponent Title="Sale item" IconName="commercialActivities.png"
+                    Description="With this tool you can create and edit item Sales">
+</PageTitleComponent>
+
+<div class="panelMenuContainer">
+    <button type="button" @onclick='()=>SetNavigateTo("SaleItem")' class="general-menu-button"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i> ...</button>
+
+    <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
+</div>
+
+<div class="tableContainer">
+
+    @if (isLoading)
+    {
+
+        <WaitingProcessIndicator loadingTopic="Characteristic Items"></WaitingProcessIndicator>
+
+    }
+    else
+    {
+        @if (items != null)
+        {
+            <RadzenDataGrid @ref="GridItem" AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@items"
+                    TItem="SalesDocumentItemsDetails"
+                    ColumnWidth="300px"
+                    PageNumbersCount="100"
+                    PageSize="20"
+                    CellContextMenu="@ShowContextMenuWithContent">
+
+                <Columns>
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName("TransactionalItem", new SalesDocumentItemsDetails())" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.ProductPackingSpecs.Code" Title="@GetName("TransactionalItemSpecs", new SalesDocumentItemsDetails())" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="IdCommercialDocument" Title="@GetName("IdCommercialDocument", new SalesDocumentItemsDetails())" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Qty" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableQty" Title="@GetName("ChargeableQty", new SalesDocumentItemsDetails())" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableUnitsName" Title="@GetName("ChargeableUnitsName", new SalesDocumentItemsDetails())" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitPrice" Title="@GetName("UnitPrice", new SalesDocumentItemsDetails())" Width="120px">
+                        <EditTemplate Context="itemEdit">
+                            <RadzenNumeric @bind-Value="itemEdit.UnitPrice" />
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxableUnitPrice" Title="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())" Width="120px">
+                        <EditTemplate Context="itemEdit">
+                            <RadzenNumeric @bind-Value="itemEdit.UnitPrice" />
+                        </EditTemplate>
+                    </RadzenDataGridColumn><RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitCost" Title="@GetName("UnitCost", new SalesDocumentItemsDetails())" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxRate" Title="@GetName("TaxRate", new SalesDocumentItemsDetails())" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxValue" Title="@GetName("TaxValue", new SalesDocumentItemsDetails())" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Total" Title="@GetName("Total", new SalesDocumentItemsDetails())" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PurchaseSpecs" Title="@GetName("PurchaseSpecs", new SalesDocumentItemsDetails())" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Provider" Title="@GetName("Provider", new SalesDocumentItemsDetails())" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="OriginalPrice" Title="@GetName("OriginalPrice", new SalesDocumentItemsDetails())" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ScannedBoxes" Title="@GetName("ScannedBoxes", new SalesDocumentItemsDetails())" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ProcurementPtje" Title="@GetName("ProcurementPtje", new SalesDocumentItemsDetails())" Width="120px">
+                        <Template>
+                            @{
+                                var MarkedForQCInspection = context.GetType().GetProperty(nameof(CommercialDocument.MarkedForQCInspection))?.GetValue(context);
+                                <input type="checkbox" checked="@(MarkedForQCInspection!=null? (bool)MarkedForQCInspection:false)" disabled />
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PullDate" Title="@GetName("PullDate", new SalesDocumentItemsDetails())" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="FormatedPullDate" Title="@GetName("FormatedPullDate", new SalesDocumentItemsDetails())" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ProcurementPtje" Title="@GetName("ProcurementPtje", new SalesDocumentItemsDetails())" Width="120px">
+                        <Template>
+                            @{
+                                <input class="btn-grid btn-grid-color" type="button" value="select" >
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+        }
+    }
+
+</div>
+
+
+@code {
+    [Parameter]
+    public string _filterItems { get; set; }
+    public List<AddItemCommercialDocument> itemCommercialDocument { get; set; } = new();
+    public List<SalesDocumentItemsDetails> items { get; set; } = new();
+    List<TransactionalItem>? itemList;
+
+    RadzenDataGrid<SalesDocumentItemsDetails> GridItem;
+    public SalesDocumentItemsDetails Item { get; set; } = new();
+    bool isLoading = false;
+    DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
+
+    public string docsFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+    protected async override void OnInitialized()
+    {
+        if (_filterItems != null) LoadData();
+        itemCommercialDocument = await DocumentServices.GetCommercialDocumentDetails(_filterItems);
+        base.OnInitialized();
+    }
+
+    private async Task LoadData()
+    {
+        isLoading = true;
+        itemCommercialDocument = await DocumentServices.GetCommercialDocumentDetails(_filterItems);
+        
+        listItemByListProduct();
+    }
+
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+        <RadzenMenuItem Text="Select" Value=args.Data Icon="edit"></RadzenMenuItem>
+        </RadzenMenu>
+    );
+
+    public async void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        SalesDocumentItemsDetails argObj = (SalesDocumentItemsDetails)args.Value;
+
+        if (args.Text.ToString() == "Edit")
+        {
+            await GridItem.EditRow(argObj);
+        }
+
+        if (args.Text.ToString() == "Select")
+        {
+            await GridItem.UpdateRow(argObj);
+        }
+
+
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+
+    async Task EditRow(SalesDocumentItemsDetails order)
+    {
+        Item = order;
+
+    }
+
+
+    public void SetNavigateTo(string name)
+    {
+        Navigation.NavigateTo(name);
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+
+    public async void listItemByListProduct()
+    {
+        if (itemList != null)
+        {
+            foreach (var Transactional in itemList)
+            {
+                var item = await transactItemsService.GetTransactionalItemById(Transactional.Id);
+                if (item != null) Transactional.ProductPackingSpecs = item.ProductPackingSpecs;
+                if (Transactional.ProductPackingSpecs != null)
+                {
+                    foreach (var ProductPackingSpec in Transactional.ProductPackingSpecs)
+                    {
+
+                        items.Add(new SalesDocumentItemsDetails
+                            {
+                                TransactionalItem = Transactional,
+                                TransactionalItemSpecs = ProductPackingSpec
+
+                            });
+                        foreach (var itemEdit in items)
+                        {
+                            GridItem.EditRow(itemEdit);
+                        }
+                    }
+                }
+
+            }
+        }
+
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    public  SalesDocumentItemsDetails ConvetToSalesDocumentItemsDetails(AddItemCommercialDocument item)
+    {
+
+        var detail = new SalesDocumentItemsDetails();
+        detail.UnitPrice = item.UnitPrice;
+       
+        
+
+        return detail;
+
+
+    }
+
+
+}
