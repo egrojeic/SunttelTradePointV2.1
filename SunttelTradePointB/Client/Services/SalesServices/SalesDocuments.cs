@@ -199,10 +199,20 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-                string path = basepath.Replace("Name", "GetSalesPersons");
-                var responseMessage = await Gethttp($"{path}?filterString={filter}");
-                var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
-                return list != null ? list : new List<Concept>();
+               
+                var responseMessage = await Gethttp($"/api/ConceptsSelector/GetSalesPersons?filterString={filter}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<AtomConcept>>();
+                List<Concept> conceptList = new();
+                foreach (var item in list)
+                {
+                    conceptList.Add(new Concept
+                    {
+                        Id = item.Id,
+                        Name = item.Name
+                        
+                    });
+                }
+                return conceptList != null ? conceptList : new List<Concept>();
             }
             catch (Exception ex)
             {
