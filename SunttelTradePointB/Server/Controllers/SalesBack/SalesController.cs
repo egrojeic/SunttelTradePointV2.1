@@ -446,10 +446,9 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
             int? perPage = 10,
             string? filterName = null)
         {
-            var squadId = "";
 
             var customHeaderValue = Request.Headers["SquadId"];
-            squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
 
             var response = await _commercialDocument.GetCommercialDocumentDetails(userId, ipAddress, squadId, page, perPage, filterName);
 
