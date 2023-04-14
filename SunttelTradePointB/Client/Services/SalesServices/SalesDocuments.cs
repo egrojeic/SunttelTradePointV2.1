@@ -1,12 +1,7 @@
-﻿using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
-using SunttelTradePointB.Shared.Communications;
+﻿using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 using SunttelTradePointB.Shared.Common;
-using System.Net;
-using System.Net.Http.Json;
-using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 using SunttelTradePointB.Shared.Sales;
-using System.Reflection;
-using System.Net.Http;
+using System.Net.Http.Json;
 
 namespace SunttelTradePointB.Client.Services.SalesServices
 {
@@ -18,6 +13,76 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             _httpClient = httpClient;
         }
+
+
+
+        public async Task<CommercialDocument> SaveCommercialDocument(CommercialDocument commercialDocument)
+        {
+            try
+            {
+                string path = basepath.Replace("Name", "SaveCommercialDocumentType");
+                commercialDocument.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                var responseMessage = await _httpClient.PostAsJsonAsync<CommercialDocument>($"{path}", commercialDocument);
+                return await responseMessage.Content.ReadFromJsonAsync<CommercialDocument>();
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+
+        public async Task<ShippingStatus> SaveShippingStatus(ShippingStatus shippingStatus)
+        {
+            try
+            {
+                string path = basepath.Replace("Name", "SaveShippingStatus");
+                var responseMessage = await _httpClient.PostAsJsonAsync<ShippingStatus>($"{path}", shippingStatus);
+                return await responseMessage.Content.ReadFromJsonAsync<ShippingStatus>();
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<CommercialDocumentType> SaveCommercialDocumentType(CommercialDocumentType commercialDocumentType)
+        {
+            try
+            {
+                string path = basepath.Replace("Name", "SaveCommercialDocumentType");
+                var responseMessage = await _httpClient.PostAsJsonAsync<CommercialDocumentType>($"{path}", commercialDocumentType);
+                return await responseMessage.Content.ReadFromJsonAsync<CommercialDocumentType>();
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+        public async Task<BusinessLine> SaveCommercialBusinessLine(BusinessLine businessLine)
+        {
+            try
+            {
+                string path = basepath.Replace("Name", "SaveBusinessLineDoc");
+                var responseMessage = await _httpClient.PostAsJsonAsync<BusinessLine>($"{path}", businessLine);
+                return await responseMessage.Content.ReadFromJsonAsync<BusinessLine>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+
+
+
 
         ///Gets
         public async Task<List<CommercialDocument>> GetCommercialDocumentList(DateTime startDate, DateTime endDate, string documentTypeId)
@@ -104,14 +169,14 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<List<Concept>> GetCommercialVendorList(string filter,bool isSales)
+        public async Task<List<Concept>> GetCommercialVendorList(string filter, CommercialDocumentType documentType)
         {
             try
             {
-                string path = $"/api/ConceptsSelector/GetVendors?filterString={filter}&IsSales={isSales}";
+                string path = $"/api/ConceptsSelector/GetVendors?filterString={filter}&DocumentTypeId={documentType.Id}";
                 var responseMessage = await Gethttp($"{path}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
-                if(isSales && list !=null) list = list.Where(s=>s.SquadId == UIClientGlobalVariables.ActiveSquad.IDSquads.ToString()).ToList();
+                //if(isSales && list !=null) list = list.Where(s=>s.SquadId == UIClientGlobalVariables.ActiveSquad.IDSquads.ToString()).ToList();
                 return list != null ? list : new List<Concept>();
             }
             catch (Exception ex)
@@ -243,14 +308,14 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<List<Concept>> GetCommercialBuyerList(string filter,bool isASale)
+        public async Task<List<Concept>> GetCommercialBuyerList(string filter, CommercialDocumentType documentType)
         {
             try
             {
-                 string path = $"/api/ConceptsSelector/GetBuyers?filterString={filter}&IsASale={isASale}";
+                 string path = $"/api/ConceptsSelector/GetBuyers?filterString={filter}&DocumentTypeId={documentType.Id}";
                 var responseMessage = await Gethttp($"{path}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
-                if (!isASale) list = list.Where(s => s.Id == UIClientGlobalVariables.EntityUserId).ToList();
+             //   if (!isASale) list = list.Where(s => s.Id == UIClientGlobalVariables.EntityUserId).ToList();
                 return list != null ? list : new List<Concept>();
             }
             catch (Exception ex)
@@ -389,71 +454,6 @@ namespace SunttelTradePointB.Client.Services.SalesServices
 
 
 
-        public async Task<CommercialDocument> SaveCommercialDocument(CommercialDocument commercialDocument)
-        {
-            try
-            {
-                string path = basepath.Replace("Name", "SaveCommercialDocumentType");
-                var responseMessage = await _httpClient.PostAsJsonAsync<CommercialDocument>($"{path}", commercialDocument);
-                return await responseMessage.Content.ReadFromJsonAsync<CommercialDocument>();
-
-            }
-            catch (Exception ex)
-            {
-                string errMessage = ex.Message;
-                return null;
-            }
-        }
-
-
-        public async Task<ShippingStatus> SaveShippingStatus(ShippingStatus shippingStatus)
-        {
-            try
-            {           
-                string path = basepath.Replace("Name", "SaveShippingStatus");
-                var responseMessage = await _httpClient.PostAsJsonAsync<ShippingStatus>($"{path}", shippingStatus);
-                return await responseMessage.Content.ReadFromJsonAsync<ShippingStatus>();
-               
-            }
-            catch (Exception ex)
-            {
-                string errMessage = ex.Message;
-                return null;
-            }
-        }
-
-        public async Task<CommercialDocumentType> SaveCommercialDocumentType(CommercialDocumentType commercialDocumentType)
-        {
-            try
-            {               
-                string path = basepath.Replace("Name", "SaveCommercialDocumentType");
-                var responseMessage = await _httpClient.PostAsJsonAsync<CommercialDocumentType>($"{path}", commercialDocumentType);
-                return await responseMessage.Content.ReadFromJsonAsync<CommercialDocumentType>();
-               
-            }
-            catch (Exception ex)
-            {
-                string errMessage = ex.Message;
-                return null;
-            }
-        }
-        public async Task<BusinessLine> SaveCommercialBusinessLine(BusinessLine businessLine)
-        {
-            try
-            {
-                //businessLine.SquadId = UIClientGlobalVariables.ActiveSquad.IDAppUserOwner;
-                string path = basepath.Replace("Name", "SaveBusinessLineDoc");
-                var responseMessage = await _httpClient.PostAsJsonAsync<BusinessLine>($"{path}", businessLine);
-                return await responseMessage.Content.ReadFromJsonAsync<BusinessLine>();
-            }
-            catch (Exception ex)
-            {
-                string errMessage = ex.Message;
-                return null;
-            }
-        }
-
-       
 
         public async Task<HttpResponseMessage> Gethttp(string Url)
         {
