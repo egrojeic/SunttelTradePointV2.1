@@ -14,6 +14,13 @@ using System.Globalization;
 namespace SunttelTradePointB.Shared.Common
 {
 
+    public enum DocumentType
+    {
+        CommercialDocument = 1,
+        TransferProductDocument = 2,
+        ProductionOrder = 3
+    }
+
     [BsonIgnoreExtraElements]
     public class RecordItem
     {
