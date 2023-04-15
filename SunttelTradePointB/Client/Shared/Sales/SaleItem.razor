@@ -140,7 +140,7 @@
             </InputTextSelector3>
 
             <div><b class="c-red">*</b><label>@GetName("SalesPerson",new CommercialDocument())</label></div>
-            <InputTextSelector3 styleCaption="width:180px" TItem="Concept"
+            <InputTextSelector3 styleCaption="width:180px; " style="right:-110px;" TItem="Concept"
                             Id="SalesPerson"
                             caption="@(commercialDocument.SalesPerson !=null ? commercialDocument.SalesPerson?.Name:"" )"
                             Items="salesPersonList"
@@ -155,7 +155,7 @@
                     {
                         <option value="@commercialDocument.DeliveryAddress.Id" selected>@commercialDocument.DeliveryAddress.Name</option>
                     }
-                    @if (buyerWarehouseList != null && buyerWarehouseList.Count() > 0)
+                    @if (addressList != null && addressList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
                     }
@@ -239,7 +239,7 @@
                     {
                         <option value="@commercialDocument.BusinessLineDoc.Id" selected>@commercialDocument.BusinessLineDoc.Name</option>
                     }
-                    @if (buyerWarehouseList != null && buyerWarehouseList.Count() > 0)
+                    @if (businessLineDocList != null && businessLineDocList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
                     }
@@ -404,10 +404,7 @@
 
 
 
-    public List<(string, string)> shippingStatusDocumentTypeList = new List<(string, string)>{
-   ("ACTIVE", "#61c100"),  ("DISABLE", "#5d5d5d") };
-    public List<(string, string)> financeStatusDocumenTypeList = new List<(string, string)>{
-   ("ACTIVE", "#61c100"),  ("DISABLE", "#5d5d5d") };
+   
 
 
     public List<ShippingStatus> shippingStatusDocumentList = new();
@@ -484,7 +481,9 @@
             var result = await DocumentServices.SaveCommercialDocument(commercialDocument);
             if (result != null)
             {
-                alert("", 0);
+                alert("Saved", 0);
+            }else{
+                 alert("No saved", 1);
             }
 
         }
@@ -539,7 +538,7 @@
         }
         if (SearcherValue == "Vendor")
         {
-            vendorList = await DocumentServices.GetCommercialVendorList(arg.value, commercialDocument.DocumentType.IsASale);
+            vendorList = await DocumentServices.GetCommercialVendorList(arg.value, commercialDocument.DocumentType);
       
         }
         if (SearcherValue == "SalesPerson")
@@ -548,7 +547,7 @@
         }
         if (SearcherValue == "Buyer")
         {
-            buyerList = await DocumentServices.GetCommercialBuyerList(arg.value, commercialDocument.DocumentType.IsASale);
+            buyerList = await DocumentServices.GetCommercialBuyerList(arg.value, commercialDocument.DocumentType);
         }
         if (SearcherValue == "Season")
         {
@@ -583,6 +582,7 @@
             addressList = await DocumentServices.GetEntityDetailsAddressList(item.Id);
       
         }
+        LoadCommercialDocument();
         StateHasChanged();
     }
 

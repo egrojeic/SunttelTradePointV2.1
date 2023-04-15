@@ -1,5 +1,6 @@
 ﻿@using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.SplitButtons
+@using SunttelTradePointB.Shared.Sales
 @inject NavigationManager Navigation
 
 
@@ -39,7 +40,11 @@
 </div>
 
 
+
 @code {
+    
+    [Parameter]
+    public EventCallback<string> SetDocumentTypeId { get; set; }
     static bool ShowMenu { get; set; } = false;
     public string commandStyle = "display: 'none';";
 
@@ -73,6 +78,16 @@
         var Selected_item = args.Item.Id;
         Navigation.NavigateTo(Selected_item);
     }
+
+    private void SetDocumentType(MenuEventArgs args)
+    {
+        var Selected_item = args.Item.Id;
+       SetDocumentTypeId.InvokeAsync(Selected_item);
+    }
+
+
+
+    
 
     private void CreateNew()
     {

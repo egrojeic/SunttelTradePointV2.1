@@ -415,15 +415,21 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Retrieves the list of Entity/Vendor filtered by the optional parameter
         /// </summary>
-        /// <param name="DocumentTypeId"></param>
+        /// <param name="isASale"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
         /// <param name="filterString"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetVendors")]
-        public async Task<IActionResult> GetVendors(string DocumentTypeId,  string? filterString = null)
+        public async Task<IActionResult> GetVendors(bool isASale, string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filterString = null)
         {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
 
-            var response = await _selectorDatasource.GetVendors(DocumentTypeId, filterString);
+            var response = await _selectorDatasource.GetVendors(isASale, userId, ipAddress, squadId, page, perPage, filterString);
 
             if (response.IsSuccess)
             {
@@ -436,15 +442,21 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Retrieves the list of Entity/Vendor filtered by the optional parameter
         /// </summary>
-        /// <param name="DocumentTypeId"></param>
+        /// <param name="isASale"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
         /// <param name="filterString"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetBuyers")]
-        public async Task<IActionResult> GetBuyers(string DocumentTypeId, string? filterString = null)
+        public async Task<IActionResult> GetBuyers(bool isASale, string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filterString = null)
         {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
 
-            var response = await _selectorDatasource.GetBuyers(DocumentTypeId, filterString);
+            var response = await _selectorDatasource.GetBuyers(isASale, userId, ipAddress,squadId, page, perPage, filterString);
 
             if (response.IsSuccess)
             {
@@ -457,12 +469,11 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Retrieves the list of Entity/Vendor filtered by the optional parameter
         /// </summary>
-        /// <param name="DocumentTypeId"></param>
         /// <param name="filterString"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetCarriers")]
-        public async Task<IActionResult> GetCarriers(string? filterString = null)
+        public async Task<IActionResult> GetCarriers(string filterString)
         {
 
             var response = await _selectorDatasource.GetSelectorListEntityActor(filterString, BasicRolesFilter.Carrier);
@@ -478,12 +489,11 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <summary>
         /// Retrieves the list of Entity/Vendor filtered by the optional parameter
         /// </summary>
-        /// <param name="DocumentTypeId"></param>
         /// <param name="filterString"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetSalesPersons")]
-        public async Task<IActionResult> GetSalesPersons(string? filterString = null)
+        public async Task<IActionResult> GetSalesPersons(string filterString)
         {
 
             var response = await _selectorDatasource.GetSelectorListEntityActor(filterString, BasicRolesFilter.SalesPerson);

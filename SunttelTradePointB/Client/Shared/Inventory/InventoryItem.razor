@@ -1,5 +1,5 @@
-@page "/SalesFromProductList"
-@page "/SalesFromProductList/{_filterItems}"
+@page "/InventoryItem"
+@page "/InventoryItemList/{_filterItems}"
 
 @using SunttelTradePointB.Shared.Sales;
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
@@ -22,7 +22,7 @@
     @if (isLoading)
     {
 
-        <WaitingProcessIndicator loadingTopic="Sales From Produc Items"></WaitingProcessIndicator>
+        <WaitingProcessIndicator loadingTopic="Characteristic Items"></WaitingProcessIndicator>
 
     }
     else
@@ -118,15 +118,15 @@
 
     protected async override void OnInitialized()
     {
-
-        LoadData();
+        if (_filterItems != null) LoadData();
+        itemCommercialDocument = await DocumentServices.GetCommercialDocumentDetails(_filterItems);
         base.OnInitialized();
     }
 
     private async Task LoadData()
     {
         isLoading = true;
-        itemCommercialDocument = await DocumentServices.GetCommercialDocumentDetails(_filterItems != null ? _filterItems : "all");
+        itemCommercialDocument = await DocumentServices.GetCommercialDocumentDetails(_filterItems);
         
         listItemByListProduct();
     }
@@ -213,23 +213,13 @@
         StateHasChanged();
     }
 
-    public List<SalesDocumentItemsDetails> ConvetToSalesDocumentItemsDetails(List<AddItemCommercialDocument> list)
+    public  SalesDocumentItemsDetails ConvetToSalesDocumentItemsDetails(AddItemCommercialDocument item)
     {
 
-        var detail = new List<SalesDocumentItemsDetails>();
-        foreach (var detailItem in list)
-        {
-            detail.Add(new SalesDocumentItemsDetails
-                {
-                    TransactionalItem = detailItem.TransactionalItem,
-                    PullDate = detailItem.PullDate,
-                    FormatedPullDate = detailItem.FormatedPullDate,
-                    UnitPrice = detailItem.UnitPrice,
-                    TaxableUnitPrice = detailItem.TaxableUnitPrice
-
-                });
-        }
-
+        var detail = new SalesDocumentItemsDetails();
+        detail.UnitPrice = item.UnitPrice;
+       
+        
 
         return detail;
 

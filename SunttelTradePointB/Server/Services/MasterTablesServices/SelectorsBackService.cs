@@ -884,17 +884,24 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Retrieves the list of Entity/Vendors filtered by the optional parameter
         /// </summary>
+        /// <param name="isASale"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <param name="filterString"></param>
-        /// <param name="DocumentTypeId"></param>
+        /// <param name="squadId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<AtomConcept>? VendorsList, string? ErrorDescription)> GetVendors(string DocumentTypeId, string? filterString)
+        public async Task<(bool IsSuccess, List<AtomConcept>? VendorsList, string? ErrorDescription)> GetVendors(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null)
         {
             try
             {
-                string strNameFilter = filterString == null ? "" : filterString;
                 var pipe = new List<BsonDocument>();
 
-                if (strNameFilter.ToUpper() != "ALL" && strNameFilter.ToUpper() != "TODOS")
+                string strNameFilter = filterString == null ? "" : filterString;
+                var skip = (page - 1) * perPage;
+
+                if (strNameFilter.ToUpper() != "ALL" && strNameFilter.ToUpper() != "TODOS" && strNameFilter != "")
                 {
 
                     pipe.Add(
@@ -914,6 +921,50 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         }
                     );
                 }
+
+                if (isASale)
+                {
+                    //Si es una venta 
+                    if (squadId != "")
+                    {
+                        pipe.Add(
+                        new BsonDocument
+                        {
+                            { "$match",
+                                new BsonDocument{
+                                    { "DefaultEntityRole.Name", new BsonRegularExpression("Company", "i") },
+                                    { "SquadId", squadId}
+                                }
+                            }
+                        }
+                        );
+                    }
+                    else
+                    {
+                        pipe.Add(
+                        new BsonDocument
+                        {
+                            { "$match",
+                                new BsonDocument{
+                                    { "DefaultEntityRole.Name", new BsonRegularExpression("Company", "i") },
+                                }
+                            }
+                        }
+                        );
+                    }
+                }
+
+                pipe.Add(
+                    new BsonDocument{
+                        {"$skip",  skip}
+                    }
+                );
+
+                pipe.Add(
+                    new BsonDocument{
+                        {"$limit",  perPage}
+                    }
+                );
 
                 List<AtomConcept> results = await _entities.Aggregate<AtomConcept>(pipe).ToListAsync();
 
@@ -928,17 +979,24 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <summary>
         /// Retrieves the list of Entity/Buyers filtered by the optional parameter
         /// </summary>
+        /// <param name="isASale"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
         /// <param name="filterString"></param>
         /// <param name="DocumentTypeId"></param>
+        /// <param name="squadId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<AtomConcept>? BuyersList, string? ErrorDescription)> GetBuyers(string DocumentTypeId, string? filterString)
+        public async Task<(bool IsSuccess, List<AtomConcept>? BuyersList, string? ErrorDescription)> GetBuyers(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null)
         {
             try
             {
-                string strNameFilter = filterString == null ? "" : filterString;
                 var pipe = new List<BsonDocument>();
+                string strNameFilter = filterString == null ? "" : filterString;
+                var skip = (page - 1) * perPage;
 
-                if (strNameFilter.ToUpper() != "ALL" && strNameFilter.ToUpper() != "TODOS")
+                if (strNameFilter.ToUpper() != "ALL" && strNameFilter.ToUpper() != "TODOS" && strNameFilter != "")
                 {
 
                     pipe.Add(
@@ -958,6 +1016,51 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         }
                     );
                 }
+
+                if (!isASale)
+                {
+                    //No es una venta 
+                    if (squadId != "")
+                    {
+                        pipe.Add(
+                        new BsonDocument
+                        {
+                            { "$match",
+                                new BsonDocument{
+                                    { "DefaultEntityRole.Name", new BsonRegularExpression("Company", "i") },
+                                    { "SquadId", squadId}
+                                }
+                            }
+                        }
+                        );
+                    }
+                    else
+                    {
+                        pipe.Add(
+                        new BsonDocument
+                        {
+                            { "$match",
+                                new BsonDocument{
+                                    { "DefaultEntityRole.Name", new BsonRegularExpression("Company", "i") },
+                                }
+                            }
+                        }
+                        );
+                    }
+                }
+
+                pipe.Add(
+                    new BsonDocument{
+                        {"$skip",  skip}
+                    }
+                );
+
+                pipe.Add(
+                    new BsonDocument{
+                        {"$limit",  perPage}
+                    }
+                );
+
 
                 List<AtomConcept> results = await _entities.Aggregate<AtomConcept>(pipe).ToListAsync();
 

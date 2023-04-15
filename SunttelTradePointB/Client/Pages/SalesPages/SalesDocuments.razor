@@ -14,9 +14,12 @@
 
 
 <div class="panelMenuContainer">
-    <CommercialDocsGrlMenu></CommercialDocsGrlMenu>
+    <CommercialDocsGrlMenu ></CommercialDocsGrlMenu>   
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
     <RangeDatesInput StartDate="@startingDate" EndDate="@endDate"></RangeDatesInput>
+</div>
+<div class="panelMenuContainer">  
+    <CommercialDocsGrlMenu2 SetDocumentTypeId="SetDocumentTypeId"></CommercialDocsGrlMenu2>   
 </div>
 
 
@@ -108,7 +111,9 @@
     [Parameter]
     public string _filterItems { get; set; }
     List<CommercialDocument>? commercialdocumentList;
+    public CommercialDocumentType commercialDocumentType { get; set; }
     IList<CommercialDocument>? selectedcommercialdocuments;
+  
     bool isLoading = false;
 
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
@@ -125,6 +130,7 @@
 
     protected async override void OnInitialized()
     {
+        
         if (_filterItems != null) LoadData();
         base.OnInitialized();
 
@@ -133,12 +139,23 @@
     public async void LoadData()
     {
         isLoading = true;
-        commercialdocumentList = await DocumentServices.GetCommercialDocumentList(docsFilter);
+        commercialdocumentList = await DocumentServices.GetCommercialDocumentList(startingDate, endDate, docsFilter);
         isLoading = false;
-       
-       //await SynthesisToSpeakerAsync( $"Se encontraron {commercialdocumentList.Count()}, resultados voz dos");
+
+        //await SynthesisToSpeakerAsync( $"Se encontraron {commercialdocumentList.Count()}, resultados voz dos");
         StateHasChanged();
     }
+
+    public async void SetDocumentTypeId(CommercialDocumentType item)
+    {
+       
+        if (item != null)
+        {
+            commercialDocumentType = item;
+        }
+        StateHasChanged();
+    }
+
 
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CommercialDocument> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
@@ -159,7 +176,11 @@
         }
     }
 
-
+    public void SetdocsFilter( string value)
+    {
+        docsFilter = value;
+         StateHasChanged();
+    }
 
 
 
