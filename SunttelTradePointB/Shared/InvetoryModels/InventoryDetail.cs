@@ -11,17 +11,7 @@ using System.Threading.Tasks;
 
 namespace SunttelTradePointB.Shared.InvetoryModels
 {
-    
-    public class InventoryOrigin
-    {
-        public DocumentType DocumentTypeId { get; set; }
-        public string DocumentId { get; set; }
 
-        public string DocumentDetailId { get; set; }
-
-        public string DocumentCode { get; set; }
-        public DateTime DocumentDate { get; set; }
-    }
     public class InventoryDetail: RecordItem
     {
 
@@ -86,10 +76,6 @@ namespace SunttelTradePointB.Shared.InvetoryModels
         [DisplayName("Basic Units")]
         public double BasicUnitsQty { get; set; }
 
-        [DisplayName("Business Line")]
         public BusinessLine InventoryBusinessLine { get; set; }
-
-        [DisplayName("Source")]
-        public List<InventoryOrigin> Origin { get; set; }
     }
 }

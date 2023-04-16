@@ -1,170 +1,231 @@
 @page "/InventoryItem"
-@page "/InventoryItemList/{_filterItems}"
+
 
 @using SunttelTradePointB.Shared.Sales;
+@using SunttelTradePointB.Shared.InvetoryModels
+@using SunttelTradePointB.Client.Shared.Inventory.InventorySubComponents
+@using Syncfusion.Blazor.SplitButtons
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
 @inject ContextMenuService ContextMenuService
 @inject TransactionalItemsService transactItemsService;
 @inject NavigationManager Navigation
 
-<PageTitleComponent Title="Sale item" IconName="commercialActivities.png"
-                    Description="With this tool you can create and edit item Sales">
+<PageTitleComponent Title="Inventory Item" IconName="InventoryItem.png"
+                    Description="With this tool you can create and edit inventory item">
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
-    <button type="button" @onclick='()=>SetNavigateTo("SaleItem")' class="general-menu-button"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i> ...</button>
-
-    <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
-</div>
-
-<div class="tableContainer">
-
-    @if (isLoading)
-    {
-
-        <WaitingProcessIndicator loadingTopic="Characteristic Items"></WaitingProcessIndicator>
-
-    }
-    else
-    {
-        @if (items != null)
-        {
-            <RadzenDataGrid @ref="GridItem" AllowFiltering="true"
-                    AllowColumnResize="true"
-                    AllowAlternatingRows="true"
-                    FilterMode="FilterMode.Advanced"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    AllowSorting="true"
-                    AllowPaging="true"
-                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    Data="@items"
-                    TItem="SalesDocumentItemsDetails"
-                    ColumnWidth="300px"
-                    PageNumbersCount="100"
-                    PageSize="20"
-                    CellContextMenu="@ShowContextMenuWithContent">
-
-                <Columns>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName("TransactionalItem", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.ProductPackingSpecs.Code" Title="@GetName("TransactionalItemSpecs", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="IdCommercialDocument" Title="@GetName("IdCommercialDocument", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Qty" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableQty" Title="@GetName("ChargeableQty", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableUnitsName" Title="@GetName("ChargeableUnitsName", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitPrice" Title="@GetName("UnitPrice", new SalesDocumentItemsDetails())" Width="120px">
-                        <EditTemplate Context="itemEdit">
-                            <RadzenNumeric @bind-Value="itemEdit.UnitPrice" />
-                        </EditTemplate>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxableUnitPrice" Title="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())" Width="120px">
-                        <EditTemplate Context="itemEdit">
-                            <RadzenNumeric @bind-Value="itemEdit.UnitPrice" />
-                        </EditTemplate>
-                    </RadzenDataGridColumn><RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitCost" Title="@GetName("UnitCost", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxRate" Title="@GetName("TaxRate", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxValue" Title="@GetName("TaxValue", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Total" Title="@GetName("Total", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PurchaseSpecs" Title="@GetName("PurchaseSpecs", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Provider" Title="@GetName("Provider", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="OriginalPrice" Title="@GetName("OriginalPrice", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ScannedBoxes" Title="@GetName("ScannedBoxes", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ProcurementPtje" Title="@GetName("ProcurementPtje", new SalesDocumentItemsDetails())" Width="120px">
-                        <Template>
-                            @{
-                                var MarkedForQCInspection = context.GetType().GetProperty(nameof(CommercialDocument.MarkedForQCInspection))?.GetValue(context);
-                                <input type="checkbox" checked="@(MarkedForQCInspection!=null? (bool)MarkedForQCInspection:false)" disabled />
-                            }
-                        </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PullDate" Title="@GetName("PullDate", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="FormatedPullDate" Title="@GetName("FormatedPullDate", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ProcurementPtje" Title="@GetName("ProcurementPtje", new SalesDocumentItemsDetails())" Width="120px">
-                        <Template>
-                            @{
-                                <input class="btn-grid btn-grid-color" type="button" value="select" >
-                            }
-                        </Template>
-                    </RadzenDataGridColumn>
-                </Columns>
-            </RadzenDataGrid>
-        }
-    }
+    <button type="button" @onclick='()=>SetNavigateTo("Inventory")' class="general-menu-button"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i> </button>
+    
+    <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+                <SplitButtonEvents ItemSelected="ItemSelected">
+                </SplitButtonEvents>
+                <DropDownMenuItems>
+                    <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                    <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                    <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+                </DropDownMenuItems>
+            </SfSplitButton>
 
 </div>
+<div class="grid-columns-header grid-columns-6">
+    <div><b class="c-red">*</b><label>@GetName("CurrentWarehouse",new InventoryDetail())</label></div>
+    <div>
+        <select @onchange="SelectItemVendorWarehous" class="select-style">
+            @if (inventoryDetail.CurrentWarehouse != null)
+            {
+                <option value="@inventoryDetail.CurrentWarehouse.Id" selected>@inventoryDetail.CurrentWarehouse.Name</option>
+            }
+            @if (warehouseList != null && warehouseList.Count() > 0)
+            {
+                <option value="0" selected>Select</option>
+            }
+            @if (warehouseList != null)
+            {
+                @foreach (var item in warehouseList)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            }
+        </select>
+    </div>
+
+    <div><b class="c-red">*</b><label>@GetName("InventoryItem",new InventoryDetail())</label></div>
+    <InputTextSelector3 TItem="Concept"
+                        Id="InventoryItem"
+                        caption="@(inventoryDetail.InventoryItem !=null ? inventoryDetail.InventoryItem.Name:"")"
+                        EventIdSelectionAndId="EventIdSelectionAndId"
+                        EventSearcherValueAndId="EventSearcherValueAndId">
+    </InputTextSelector3>
+
+    <div><b class="c-red">*</b><label>@GetName("Qty",new InventoryDetail())</label></div>
+    <input @bind-value="@inventoryDetail.Qty" type="number" class="form-control" />
+
+    <div><b class="c-red">*</b><label>@GetName("QtyAvailable",new InventoryDetail())</label></div>
+    <input @bind-value="@inventoryDetail.QtyAvailable" type="number" class="form-control" />
+
+    <div><b class="c-red">*</b><label>@GetName("QtyReserved",new InventoryDetail())</label></div>
+    <input @bind-value="@inventoryDetail.QtyReserved" type="number" class="form-control" />
+
+    <div><b class="c-red">*</b><label>@GetName("QtyOnHand",new InventoryDetail())</label></div>
+    <input @bind-value="@inventoryDetail.QtyOnHand" type="number" class="form-control" />
+
+    <div><b class="c-red">*</b><label>@GetName("QtyOnOrder",new InventoryDetail())</label></div>
+    <input @bind-value="@inventoryDetail.QtyOnOrder" type="number" class="form-control" />
+
+    <div><b class="c-red">*</b><label>@GetName("QtyOnPurchaseOrder",new InventoryDetail())</label></div>
+    <input @bind-value="@inventoryDetail.QtyOnPurchaseOrder" type="number" class="form-control" />
+
+    <div><b class="c-red">*</b><label>@GetName("QtyOnSalesOrder",new InventoryDetail())</label></div>
+    <input @bind-value="@inventoryDetail.QtyOnSalesOrder" type="number" class="form-control" />
+
+    <div><b class="c-red">*</b><label>@GetName("QtyOnTransferOrder",new InventoryDetail())</label></div>
+    <input @bind-value="@inventoryDetail.QtyOnTransferOrder" type="number" class="form-control" />
+
+    <div><b class="c-red">*</b><label>@GetName("QtyOnProductionOrder",new InventoryDetail())</label></div>
+    <input @bind-value="@inventoryDetail.QtyOnProductionOrder" type="number" class="form-control" />
+
+    <div><b class="c-red">*</b><label>@GetName("EntryScannedQty",new InventoryDetail())</label></div>
+    <input @bind-value="@inventoryDetail.EntryScannedQty" type="number" class="form-control" />
+
+    <div><b class="c-red">*</b><label>@GetName("EntryDate",new InventoryDetail())</label></div>
+    <input @bind-value="@inventoryDetail.EntryDate" type="date" class="form-control" />
+
+    <div><b class="c-red">*</b><label>@GetName("InventoryItem",new InventoryDetail())</label></div>
+    <InputTextSelector3 TItem="Box"
+                        Id="ItemBox"
+                        caption="@(inventoryDetail.ItemBox !=null ? inventoryDetail.ItemBox.Name:"")">
+    </InputTextSelector3>
+
+    <div><b class="c-red">*</b><label>@GetName("Pack",new InventoryDetail())</label></div>
+    <input @bind-value="@inventoryDetail.Pack" type="number" class="form-control" />
+
+    <div><b class="c-red">*</b><label>@GetName("BoxCode",new InventoryDetail())</label></div>
+    <input @bind-value="@inventoryDetail.BoxCode" type="number" class="form-control" />
+
+    <div><b class="c-red">*</b><label>@GetName("CustomerReservedFor",new InventoryDetail())</label></div>
+    <div>
+        <select class="select-style">
+            @if (inventoryDetail.CustomerReservedFor != null)
+            {
+                <option value="@inventoryDetail.CustomerReservedFor.Id" selected>@inventoryDetail.CustomerReservedFor.Name</option>
+            }
+            @if (ListCustomerReservedFor != null && ListCustomerReservedFor.Count() > 0)
+            {
+                <option value="0" selected>Select</option>
+            }
+            @if (ListCustomerReservedFor != null)
+            {
+                @foreach (var item in ListCustomerReservedFor)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            }
+        </select>
+    </div>
+
+
+    <div><b class="c-red">*</b><label>@GetName("BoxCode",new InventoryDetail())</label></div>
+    <InputTextDisable @bind-ValueDouble="inventoryDetail.UnitCost"> </InputTextDisable>
+
+
+    <div><b class="c-red">*</b><label>@GetName("BusinessLineDoc",new CommercialDocument())</label></div>
+    <div>
+        <select @onchange="SelectItemBusinessLineDoc" class="select-style">
+            @if (inventoryDetail.InventoryBusinessLine != null)
+            {
+                <option value="@inventoryDetail.InventoryBusinessLine.Id" selected>@inventoryDetail.InventoryBusinessLine.Name</option>
+            }
+            @if (businessLineDocList != null && businessLineDocList.Count() > 0)
+            {
+                <option value="0" selected>Select</option>
+            }
+            @foreach (var item in businessLineDocList)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        </select>
+    </div>
+
+</div>
+
 
 
 @code {
-    [Parameter]
-    public string _filterItems { get; set; }
-    public List<AddItemCommercialDocument> itemCommercialDocument { get; set; } = new();
-    public List<SalesDocumentItemsDetails> items { get; set; } = new();
-    List<TransactionalItem>? itemList;
+    public InventoryDetail inventoryDetail { get; set; }
 
-    RadzenDataGrid<SalesDocumentItemsDetails> GridItem;
-    public SalesDocumentItemsDetails Item { get; set; } = new();
-    bool isLoading = false;
-    DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
+    string searcherValue = "";
+    #region List
+    List<BasicConcept> ListCustomerReservedFor = new();
+    List<Warehouse> warehouseList = new();
+    List<Concept> inventoryItem = new();
+    public List<BusinessLine> businessLineDocList = new();
+    #endregion List
 
-    public string docsFilter
-    {
-        get { return _filterItems; }
-        set
-        {
-            _filterItems = value;
-            LoadData();
-        }
-    }
 
     protected async override void OnInitialized()
     {
-        if (_filterItems != null) LoadData();
-        itemCommercialDocument = await DocumentServices.GetCommercialDocumentDetails(_filterItems);
+        Load();
+        LoadData();
         base.OnInitialized();
     }
 
     private async Task LoadData()
     {
-        isLoading = true;
-        itemCommercialDocument = await DocumentServices.GetCommercialDocumentDetails(_filterItems);
-        
-        listItemByListProduct();
+
+        // inventoryItem = await DocumentServices.GetCommercialDocumentDetails(_filterItems != null ? _filterItems : "all");
+
+
     }
 
 
-    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> args) => ContextMenuService.Open(args, ds =>
-    @<RadzenMenu Click="OnMenuItemClick">
-        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-        <RadzenMenuItem Text="Select" Value=args.Data Icon="edit"></RadzenMenuItem>
-        </RadzenMenu>
-    );
-
-    public async void OnMenuItemClick(MenuItemEventArgs args)
+    public async void ItemSelected(MenuEventArgs e)
     {
-        SalesDocumentItemsDetails argObj = (SalesDocumentItemsDetails)args.Value;
-
-        if (args.Text.ToString() == "Edit")
+        StateHasChanged();
+        string tile = e.Item != null ? e.Item.Text : "";
+        if (tile == "Save")
         {
-            await GridItem.EditRow(argObj);
+          
+
         }
 
-        if (args.Text.ToString() == "Select")
-        {
-            await GridItem.UpdateRow(argObj);
-        }
+        StateHasChanged();
 
-
-        if (!args.Value.Equals(3) && !args.Value.Equals(4))
-        {
-            ContextMenuService.Close();
-        }
     }
 
 
-    async Task EditRow(SalesDocumentItemsDetails order)
+    public void SelectItemBusinessLineDoc(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
-        Item = order;
+        inventoryDetail.InventoryBusinessLine = businessLineDocList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
 
+    }
+
+
+    public async void EventSearcherValueAndId((string value, string IdControl) arg)
+    {
+        searcherValue = arg.IdControl;
+        if (searcherValue == "InventoryItem")
+        {
+            inventoryDetail.InventoryItem = new();
+        };
+
+    }
+
+    public void EventIdSelectionAndId(Concept item)
+    {
+        if (searcherValue == "InventoryItem")
+        {
+            inventoryDetail.InventoryItem = item;
+        };
+    }
+
+
+    public void SelectItemVendorWarehous(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    {
+        inventoryDetail.CurrentWarehouse = warehouseList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
     }
 
 
@@ -180,50 +241,14 @@
     }
 
 
-    public async void listItemByListProduct()
+
+    public void Load()
     {
-        if (itemList != null)
-        {
-            foreach (var Transactional in itemList)
-            {
-                var item = await transactItemsService.GetTransactionalItemById(Transactional.Id);
-                if (item != null) Transactional.ProductPackingSpecs = item.ProductPackingSpecs;
-                if (Transactional.ProductPackingSpecs != null)
-                {
-                    foreach (var ProductPackingSpec in Transactional.ProductPackingSpecs)
-                    {
-
-                        items.Add(new SalesDocumentItemsDetails
-                            {
-                                TransactionalItem = Transactional,
-                                TransactionalItemSpecs = ProductPackingSpec
-
-                            });
-                        foreach (var itemEdit in items)
-                        {
-                            GridItem.EditRow(itemEdit);
-                        }
-                    }
-                }
-
-            }
-        }
-
-        isLoading = false;
-        StateHasChanged();
-    }
-
-    public  SalesDocumentItemsDetails ConvetToSalesDocumentItemsDetails(AddItemCommercialDocument item)
-    {
-
-        var detail = new SalesDocumentItemsDetails();
-        detail.UnitPrice = item.UnitPrice;
-       
-        
-
-        return detail;
-
-
+        if (inventoryDetail == null) inventoryDetail = new();
+        if (inventoryDetail.CurrentWarehouse == null) inventoryDetail.CurrentWarehouse = new();
+        if (inventoryDetail.InventoryItem == null) inventoryDetail.InventoryItem = new();
+        if (inventoryDetail.CustomerReservedFor == null) inventoryDetail.CustomerReservedFor = new();
+        if (inventoryDetail.InventoryBusinessLine == null) inventoryDetail.InventoryBusinessLine = new();
     }
 
 

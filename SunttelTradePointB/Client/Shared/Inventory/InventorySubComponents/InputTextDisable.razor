@@ -18,24 +18,30 @@ else
     [Parameter]
     public string ValueString { get; set; }
     [Parameter]
+    public double ValueDouble { get; set; }
+    [Parameter]
     public bool Enable { get; set; } = true;
     [Parameter]
     public bool TypeInt { get; set; } = true;
     [Parameter]
-    public string style  { get; set; }
+    public string style { get; set; }
     [Parameter]
     public EventCallback<int> ValueIntChanged { get; set; }
     [Parameter]
     public EventCallback<string> ValueStringChanged { get; set; }
+    [Parameter]
+    public EventCallback<double> ValueDoubleChanged { get; set; }
 
     public void Onchange(ChangeEventArgs arg)
     {
-        try{
+        try
+        {
             Value = Convert.ToInt32(arg.Value.ToString());
         }
         catch { ValueInt = 0; }
         ValueIntChanged.InvokeAsync(Value);
         ValueStringChanged.InvokeAsync(Value.ToString());
+        ValueDoubleChanged.InvokeAsync(Value);
     }
 
 }
