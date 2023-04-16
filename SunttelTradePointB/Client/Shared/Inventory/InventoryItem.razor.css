@@ -6,3 +6,13 @@
 .btn-grid-color {
     background-color: #00ccff;
 }
+
+
+
+.grid-columns-6 {
+    grid-template-columns: 1fr 120px 1fr 120px 1fr 1fr;
+}
+
+    /*grid-template-columns: 140px 180px 176px 180px 150px 180px;*/
+
+   
