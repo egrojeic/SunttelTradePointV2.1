@@ -163,9 +163,9 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <param name="userId"></param>
         /// <param name="ipAdress"></param>
         /// <param name="squadId"></param>
-        /// <param name="comercialDocumentsDetailsImports"></param>
+        /// <param name="salesDocumentItemsDetails"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, ComercialDocumentsDetailsImports? commercialDocumentDetailResponse, string? ErrorDescription)> SaveCommercialDocumentDetail(string userId, string ipAdress, string squadId, ComercialDocumentsDetailsImports comercialDocumentsDetailsImports);
+        Task<(bool IsSuccess, SalesDocumentItemsDetails? salesDocumentItemsDetailsResponse, string? ErrorDescription)> SaveCommercialDocumentDetail(string userId, string ipAdress, string squadId, SalesDocumentItemsDetails salesDocumentItemsDetails);
 
         /// <summary>
         /// Retrievs a list of transactional Items filtered by the parameters name, group, and code

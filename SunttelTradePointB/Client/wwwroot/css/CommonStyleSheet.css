@@ -172,6 +172,10 @@
         border-color: transparent;
     }
 
+    .item-edit label {
+        font-size:12px;
+    }
+
 .grid-columns-4 {
     margin-top: 20px;
     display: grid;
@@ -462,15 +466,18 @@
 }
 
 .p-mode-text{
-  height:40px;
+  min-height:30px;
+  padding:5px;
   border-radius:5px;
   box-shadow:0px 0px 2px gray;
 }
 
 .p-mode-text p{
     margin:0px;
-    text-align:center;
-    margin-top:6px;
-    font-weight:bold;
-    font-size:20px;
+    text-align:start;
+    margin-top:auto;     
+}
+
+.sub-title{
+font-size:12px;
 }

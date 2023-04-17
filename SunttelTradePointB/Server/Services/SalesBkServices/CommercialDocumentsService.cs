@@ -21,7 +21,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         IMongoCollection<ShippingStatus> _ShippingStatusCollection;
         IMongoCollection<CommercialDocument> _CommercialDocumentCollection;
         IMongoCollection<CommercialDocumentType> _CommercialDocumentType;
-        IMongoCollection<ComercialDocumentsDetailsImports> _CommercialDocumentDetailImports;
+        IMongoCollection<SalesDocumentItemsDetails> _CommercialDocumentDetailImports;
         IMongoCollection<FinanceStatus> _FinanceStatusCollection;
 
 
@@ -39,7 +39,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
             _ShippingStatusCollection = mongoDatabase.GetCollection<ShippingStatus>("ShippingStatusDocuments");
             _CommercialDocumentType = mongoDatabase.GetCollection<CommercialDocumentType>("CommercialDocumentTypes");
             _FinanceStatusCollection = mongoDatabase.GetCollection<FinanceStatus>("FinanceStatus");
-            _CommercialDocumentDetailImports = mongoDatabase.GetCollection<ComercialDocumentsDetailsImports>("CommercialDocumentDetailsImports");
+            _CommercialDocumentDetailImports = mongoDatabase.GetCollection<SalesDocumentItemsDetails>("CommercialDocumentsDetails");
         }
 
 
@@ -586,30 +586,30 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
         #region Commercial Document Detail
         /// <summary>
-        /// Saves an Entity/Actor document. If it doesn't exists, it'll be created
+        /// Saves an Commercial Document Detail. If it doesn't exists, it'll be created
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAdress"></param>
         /// <param name="squadId"></param>
-        /// <param name="comercialDocumentsDetailsImports"></param>
+        /// <param name="salesDocumentItemsDetails"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, ComercialDocumentsDetailsImports? commercialDocumentDetailResponse, string? ErrorDescription)> SaveCommercialDocumentDetail(string userId, string ipAdress, string squadId, ComercialDocumentsDetailsImports comercialDocumentsDetailsImports)
+        public async Task<(bool IsSuccess, SalesDocumentItemsDetails? salesDocumentItemsDetailsResponse, string? ErrorDescription)> SaveCommercialDocumentDetail(string userId, string ipAdress, string squadId, SalesDocumentItemsDetails salesDocumentItemsDetails)
         {
             
             try
             {
-                if (comercialDocumentsDetailsImports.SquadId == null)
+                if (salesDocumentItemsDetails.SquadId == null)
                 {
-                    comercialDocumentsDetailsImports.SquadId = ObjectId.GenerateNewId().ToString();
+                    salesDocumentItemsDetails.SquadId = ObjectId.GenerateNewId().ToString();
                 }
 
-                var filter = Builders<ComercialDocumentsDetailsImports>.Filter.Eq("_id", new ObjectId(comercialDocumentsDetailsImports.SquadId));
+                var filter = Builders<SalesDocumentItemsDetails>.Filter.Eq("_id", new ObjectId(salesDocumentItemsDetails.Id));
 
                 var updateOptions = new ReplaceOptions { IsUpsert = true };
 
-                var result = await _CommercialDocumentDetailImports.ReplaceOneAsync(filter, comercialDocumentsDetailsImports, updateOptions);
+                var result = await _CommercialDocumentDetailImports.ReplaceOneAsync(filter, salesDocumentItemsDetails, updateOptions);
 
-                return (true, comercialDocumentsDetailsImports, null);
+                return (true, salesDocumentItemsDetails, null);
             }
             catch (Exception e)
             {

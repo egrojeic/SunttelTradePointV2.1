@@ -408,20 +408,20 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAdress"></param>
-        /// <param name="comercialDocumentsDetailsImports"></param>
+        /// <param name="salesDocumentItemsDetails"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveCommercialDocumentDetail")]
-        public async Task<IActionResult> SaveCommercialDocumentDetail(string userId, string ipAdress, ComercialDocumentsDetailsImports comercialDocumentsDetailsImports)
+        public async Task<IActionResult> SaveCommercialDocumentDetail(string userId, string ipAdress, [FromBody] SalesDocumentItemsDetails salesDocumentItemsDetails)
         {
             var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
 
-            var response = await _commercialDocument.SaveCommercialDocumentDetail(userId, ipAdress, squadId, comercialDocumentsDetailsImports);
+            var response = await _commercialDocument.SaveCommercialDocumentDetail(userId, ipAdress, squadId, salesDocumentItemsDetails);
 
             if (response.IsSuccess)
             {
-                return Ok(response.commercialDocumentDetailResponse);
+                return Ok(salesDocumentItemsDetails);
             }
             else
                 return NotFound(response.ErrorDescription);
