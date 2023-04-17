@@ -73,6 +73,8 @@ namespace SunttelTradePointB.Shared.Sales
     {
         [DisplayName("Document Type")]
         public CommercialDocumentType DocumentType { get; set; }
+
+        [DisplayName("Order No")]
         public int DocumentNumber { get; set; }
 
         [DisplayName("Business Line")]
