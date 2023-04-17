@@ -1,35 +1,62 @@
-@page "/SalesFromProductList"
-@page "/SalesFromProductList/{_filterItems}"
-
 @using SunttelTradePointB.Shared.Sales;
-@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
-@inject ContextMenuService ContextMenuService
-@inject TransactionalItemsService transactItemsService;
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+@using System.Reflection
+@using Syncfusion.Blazor.Navigations
+@using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents
 @inject NavigationManager Navigation
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject GeographicPlacesService geoPlaces
+@inject ActorsNodeService actorsNodeServive
+@inject ContextMenuService ContextMenuService
+@inject IJSRuntime Js
 
-<PageTitleComponent Title="Sale item" IconName="commercialActivities.png"
-                    Description="With this tool you can create and edit item Sales">
-</PageTitleComponent>
+<MessageSaveComponent @ref="referAlert">
+</MessageSaveComponent>
 
-<div class="panelMenuContainer">
-    <button type="button" @onclick='()=>SetNavigateTo("SaleItem")' class="general-menu-button"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i> </button>
 
-    <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
-</div>
+<div class="flex-horizontal-center ">
+    <div class="detailsTitleContainer">
+        <h3 class="subTitleDetailForm">@GetName("Items",new CommercialDocument())</h3>
+        <img @onclick="()=>CloseMenu(true)" class="img-menu" src="/images/menu.png">
+        <div class="menu-item" style="display:@(menuVisible?"flex":"none");">
+            <button type="button" class="exit-btn" @onclick="()=>CloseMenu(false)">
+                <i class="fa-regular fa-circle-xmark"></i>
+            </button>
+            <div class="item">
+                <button type="button" @onclick='()=>EventIdSelectionMenuItem("SalesFromProductList")'>
+                    <i class="fa-sharp fa-solid fa-circle-plus"></i>
+                </button>
+                <b @onclick='()=>EventIdSelectionMenuItem("SalesDocumentItems")' class="subTitleDetailForm">From product list</b>
+            </div>
+            <div class="item">
+                <button type="button" @onclick='()=>EventIdSelectionMenuItem("SalesFromInventroy")'>
+                    <i class="fa-sharp fa-solid fa-circle-plus"></i>
+                </button>
+                <b @onclick='()=>EventIdSelectionMenuItem("inventory")' class="subTitleDetailForm">From Inventroy</b>
+            </div>
+            <div class="item">
+                <button type="button" @onclick='()=>EventIdSelectionMenuItem("SalesFromProductionOrder")'>
+                    <i class="fa-sharp fa-solid fa-circle-plus"></i>
+                </button>
+                <b @onclick='()=>EventIdSelectionMenuItem("Product")' class="subTitleDetailForm">From Production Order </b>
+            </div>
+        </div>
 
-<div class="tableContainer">
+    </div>
 
     @if (isLoading)
     {
 
-        <WaitingProcessIndicator loadingTopic="Sales From Produc Items"></WaitingProcessIndicator>
+        <WaitingProcessIndicator loadingTopic="Characteristic Items"></WaitingProcessIndicator>
 
     }
     else
     {
         @if (items != null)
         {
-            <RadzenDataGrid @ref="GridItem" AllowFiltering="true"
+            <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
                     AllowAlternatingRows="true"
                     FilterMode="FilterMode.Advanced"
@@ -43,7 +70,7 @@
                     ColumnWidth="300px"
                     PageNumbersCount="100"
                     PageSize="20"
-                    CellContextMenu="@ShowContextMenuWithContent">
+                  >
 
                 <Columns>
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName("TransactionalItem", new SalesDocumentItemsDetails())" Width="120px" />
@@ -53,15 +80,10 @@
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableQty" Title="@GetName("ChargeableQty", new SalesDocumentItemsDetails())" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableUnitsName" Title="@GetName("ChargeableUnitsName", new SalesDocumentItemsDetails())" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitPrice" Title="@GetName("UnitPrice", new SalesDocumentItemsDetails())" Width="120px">
-                        <EditTemplate Context="itemEdit">
-                            <RadzenNumeric @bind-Value="itemEdit.UnitPrice" />
-                        </EditTemplate>
+
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxableUnitPrice" Title="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())" Width="120px">
-                        <EditTemplate Context="itemEdit">
-                            <RadzenNumeric @bind-Value="itemEdit.UnitPrice" />
-                        </EditTemplate>
-                    </RadzenDataGridColumn><RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitCost" Title="@GetName("UnitCost", new SalesDocumentItemsDetails())" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxableUnitPrice" Title="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitCost" Title="@GetName("UnitCost", new SalesDocumentItemsDetails())" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxRate" Title="@GetName("TaxRate", new SalesDocumentItemsDetails())" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxValue" Title="@GetName("TaxValue", new SalesDocumentItemsDetails())" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Total" Title="@GetName("Total", new SalesDocumentItemsDetails())" Width="120px" />
@@ -73,26 +95,14 @@
                         <Template>
                             @{
                                 var MarkedForQCInspection = context.GetType().GetProperty(nameof(CommercialDocument.MarkedForQCInspection))?.GetValue(context);
+
                                 <input type="checkbox" checked="@(MarkedForQCInspection!=null? (bool)MarkedForQCInspection:false)" disabled />
                             }
                         </Template>
                     </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PullDate" Title="@GetName("PullDate", new SalesDocumentItemsDetails())" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="FormatedPullDate" Title="@GetName("FormatedPullDate", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ProcurementPtje" Title="@GetName("ProcurementPtje", new SalesDocumentItemsDetails())" Width="120px">
-                        <Template>
-                            @{
-                                if (Edit)
-                                {
-                                    <input class="btn-grid btn-grid-color" type="button" value="select" >
-                                }
-                                else{
-                                
-                                }
-                            }
-                        </Template>
-                    </RadzenDataGridColumn>
-                    
+
                 </Columns>
             </RadzenDataGrid>
         }
@@ -101,86 +111,92 @@
 </div>
 
 
+
+
+
+
+
 @code {
     [Parameter]
-    public string _filterItems { get; set; }
-    public List<AddItemCommercialDocument> itemCommercialDocument { get; set; } = new();
     public List<SalesDocumentItemsDetails> items { get; set; } = new();
 
+    string page = "";
+    bool menuVisible = false;
 
-    RadzenDataGrid<SalesDocumentItemsDetails> GridItem;
-    public SalesDocumentItemsDetails Item { get; set; } = new();
+    MessageSaveComponent? referAlert;
+    string msg = "";
     bool isLoading = false;
-    bool Edit = false;
-    DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
 
-    public string docsFilter
+    protected override void OnParametersSet()
     {
-        get { return _filterItems; }
-        set
+        var r = page;
+        StateHasChanged();
+    }
+
+    public void EventIdSelectionMenuItem(string name)
+    {
+        Js.InvokeAsync<object>("open", name, "_blank");
+        CloseMenu(false);
+    }
+
+    public void alert(string msg, int status)
+    {
+        referAlert.isVisible = true;
+        referAlert.message = msg;
+        referAlert.status = status;
+    }
+
+
+    public void OpenAlert(string _msg, int _status, bool visible)
+    {
+        if (referAlert != null)
         {
-            _filterItems = value;
-            LoadData();
+            referAlert.isVisible = visible;
+            referAlert.message = _msg;
+            referAlert.status = _status;
+            StateHasChanged();
         }
     }
 
-    protected async override void OnInitialized()
+    public void CloseMenu(bool mode)
     {
-
-        LoadData();
-        base.OnInitialized();
+        menuVisible = mode;
+        StateHasChanged();
     }
 
-    private async Task LoadData()
-    {
-        isLoading = true;
-        itemCommercialDocument = await DocumentServices.GetCommercialDocumentDetails(_filterItems != null ? _filterItems : "all");
-        
-        listItemByListProduct();
 
-    }
-
+    #region Grid
 
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-        <RadzenMenuItem Text="Select" Value=args.Data Icon="edit"></RadzenMenuItem>
-        </RadzenMenu>
+    </RadzenMenu>
     );
 
-    public async void OnMenuItemClick(MenuItemEventArgs args)
+    void OnMenuItemClick(MenuItemEventArgs args)
     {
         SalesDocumentItemsDetails argObj = (SalesDocumentItemsDetails)args.Value;
 
-        if (args.Text.ToString() == "Edit")
+        if (argObj != null)
         {
-            await GridItem.EditRow(argObj);
-        }
-
-        if (args.Text.ToString() == "Select")
-        {
-            await GridItem.UpdateRow(argObj);
-        }
-
-
-        if (!args.Value.Equals(3) && !args.Value.Equals(4))
-        {
-            ContextMenuService.Close();
+            
         }
     }
 
+    #endregion Grid
 
-    async Task EditRow(SalesDocumentItemsDetails order)
+
+
+
+    #region Load
+
+    public void LoadCommercialDocument()
     {
-        Item = order;
-
+        if (items == null) items = new();
     }
 
 
-    public void SetNavigateTo(string name)
-    {
-        Navigation.NavigateTo(name);
-    }
+    #endregion Load
 
     public string GetName(string Name, Object Obj)
     {
@@ -188,50 +204,9 @@
         return Name;
     }
 
-
-    public async void listItemByListProduct()
+    public void NavigationTo(string name)
     {
-        if (itemCommercialDocument != null)
-        {
-            foreach (var detail in itemCommercialDocument)
-            {            
-              
-                if (detail != null)
-                {                   
-                    items.Add(ConvetToSalesDocumentItemsDetails(detail));
-                        foreach (var itemEdit in items)
-                        {
-                            GridItem.EditRow(itemEdit);
-                        }
-                    
-                }
-
-            }
-        }
-
-        isLoading = false;
-        StateHasChanged();
+        Navigation.NavigateTo(name);
     }
-
-    public SalesDocumentItemsDetails ConvetToSalesDocumentItemsDetails(AddItemCommercialDocument item)
-    {
-       
-       
-        var detail = new SalesDocumentItemsDetails
-                {
-                    TransactionalItem =item.TransactionalItem = item.TransactionalItem !=null ? item.TransactionalItem:new(),
-                    PullDate = item.PullDate = item.PullDate != DateTime.MinValue  ?item.PullDate :DateTime.Today,
-                    FormatedPullDate = item.FormatedPullDate = item.FormatedPullDate!=null ? item.FormatedPullDate:"",
-                    UnitPrice = item.UnitPrice,
-                    TaxableUnitPrice =item.TaxableUnitPrice =  item.TaxableUnitPrice != null ? item.TaxableUnitPrice : 0
-
-                };
-        
-
-        return detail;
-
-
-    }
-
 
 }

@@ -14,7 +14,6 @@ namespace SunttelTradePointB.Shared.InvetoryModels
 
     public class InventoryDetail: RecordItem
     {
-
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string InventoryId { get; set; }

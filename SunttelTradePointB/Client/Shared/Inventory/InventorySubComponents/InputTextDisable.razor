@@ -12,13 +12,13 @@ else
 }
 @code {
 
-    public int Value { get; set; }
+    public string Value { get; set; }
     [Parameter]
-    public int ValueInt { get; set; }
+    public int? ValueInt { get; set; }
     [Parameter]
-    public string ValueString { get; set; }
+    public string? ValueString { get; set; }
     [Parameter]
-    public double ValueDouble { get; set; }
+    public double? ValueDouble { get; set; }
     [Parameter]
     public bool Enable { get; set; } = true;
     [Parameter]
@@ -31,17 +31,60 @@ else
     public EventCallback<string> ValueStringChanged { get; set; }
     [Parameter]
     public EventCallback<double> ValueDoubleChanged { get; set; }
+    [Parameter]
+    public string Min {get; set;} 
+    [Parameter]
+    public string Max { get; set; }
+
+    protected override void OnInitialized()
+    {
+
+        if (ValueInt != null) ValueInt = ValidateRange(ValueInt.Value);
+        if (ValueDouble != null) ValueDouble = ValidateRange(ValueDouble.Value);
+
+        if (ValueString != null) {
+            Value = ValueString == "" ? " ... " : ValueString;
+        }
+        if (ValueInt != null) Value = ValueInt.Value.ToString();
+        if (ValueDouble != null) Value = ValueDouble.Value.ToString();
+
+    }
+
 
     public void Onchange(ChangeEventArgs arg)
     {
         try
         {
-            Value = Convert.ToInt32(arg.Value.ToString());
+            ValueInt = Convert.ToInt32(arg.Value.ToString());           
+            ValueDouble = Convert.ToDouble(arg.Value.ToString());
+            ValueInt = ValidateRange(ValueInt.Value);
+            ValueDouble = ValidateRange(ValueDouble.Value);
         }
-        catch { ValueInt = 0; }
-        ValueIntChanged.InvokeAsync(Value);
-        ValueStringChanged.InvokeAsync(Value.ToString());
-        ValueDoubleChanged.InvokeAsync(Value);
+        catch {  }
+        ValueIntChanged.InvokeAsync(ValueInt.Value);
+        ValueStringChanged.InvokeAsync(ValueString);
+        ValueDoubleChanged.InvokeAsync(ValueDouble.Value);
+
+      
+    }
+
+    public int ValidateRange(int  value)
+    {
+       
+        int min = Convert.ToInt32(Min);
+        int max = Convert.ToInt32(Max);
+        if (min > value) value = min;
+        if (max < value && max >0) value = max;
+        return value;
+    }
+
+    public double ValidateRange(double value)
+    {      
+        double min = Convert.ToInt32(Min);
+        double max = Convert.ToInt32(Max);
+        if (min > value) value = min;
+        if (max < value && max > 0) value = max;
+        return value;
     }
 
 }

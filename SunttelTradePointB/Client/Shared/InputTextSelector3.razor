@@ -2,7 +2,7 @@
 @typeparam TItem
 
 
-<div style="position:relative;">
+<div class="@ClassContainer" style="position:relative;">
     <div class="item-edit" style="display:@(!captionOff?"flex":"none"); @styleCaption">
         <label>@(caption)</label>
         <button type="button" @onclick='SetViewElemnt' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
@@ -42,28 +42,30 @@
 </div>
 
 
-@code {
+    @code {
 
-    [Parameter]
-    public EventCallback<(string, string)> EventSearcherValueAndId { get; set; }
-    [Parameter]
-    public EventCallback<TItem> EventIdSelectionAndId { get; set; }
-    [Parameter]
-    public EventCallback EventClosed { get; set; }
-    [Parameter]
-    public string Id { get; set; }
-    [Parameter]
-    public bool Visible { get; set; } = false;
-    [Parameter]
-    public string style { get; set; }
-    [Parameter]
-    public string styleCaption { get; set; }
-    [Parameter]
-    public string caption { get; set; }
-    [Parameter]
-    public bool captionOff { get; set; } = false;
-    [Parameter]
-    public List<TItem> Items { get; set; }
+        [Parameter]
+        public EventCallback<(string, string)> EventSearcherValueAndId { get; set; }
+        [Parameter]
+        public EventCallback<TItem> EventIdSelectionAndId { get; set; }
+        [Parameter]
+        public EventCallback EventClosed { get; set; }
+        [Parameter]
+        public string Id { get; set; }
+        [Parameter]
+        public bool Visible { get; set; } = false;
+        [Parameter]
+        public string style { get; set; }
+        [Parameter]
+        public string styleCaption { get; set; }
+        [Parameter]
+        public string caption { get; set; }
+        [Parameter]
+        public bool captionOff { get; set; } = false;
+        [Parameter]
+        public List<TItem> Items { get; set; }
+        [Parameter]
+        public string ClassContainer { get; set; }
 
     public string selectionId { get; set; }
     public string? inputSearcherValue { get; set; }

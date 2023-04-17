@@ -1,4 +1,5 @@
 @page "/InventoryItem"
+@page "/InventoryItem/{inventoryDetailId}"
 
 
 @using SunttelTradePointB.Shared.Sales;
@@ -16,23 +17,28 @@
 
 <div class="panelMenuContainer">
     <button type="button" @onclick='()=>SetNavigateTo("Inventory")' class="general-menu-button"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i> </button>
-    
+
     <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
-                <SplitButtonEvents ItemSelected="ItemSelected">
-                </SplitButtonEvents>
-                <DropDownMenuItems>
-                    <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
-                    <DropDownMenuItem Separator="true"></DropDownMenuItem>
-                    <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
-                    <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
-                    <DropDownMenuItem Separator="true"></DropDownMenuItem>
-                    <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
-                </DropDownMenuItems>
-     </SfSplitButton>
+        <SplitButtonEvents ItemSelected="ItemSelected">
+        </SplitButtonEvents>
+        <DropDownMenuItems>
+            <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+            <DropDownMenuItem Separator="true"></DropDownMenuItem>
+            <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+            <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+            <DropDownMenuItem Separator="true"></DropDownMenuItem>
+            <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+        </DropDownMenuItems>
+    </SfSplitButton>
 
 </div>
 <div class="grid-columns-header grid-columns-6">
-    <div><b class="c-red">*</b><label>@GetName("CurrentWarehouse",new InventoryDetail())</label></div>
+    <div>
+        <label>
+
+            @GetName("CurrentWarehouse",new InventoryDetail())
+        </label>
+    </div>
     <div>
         <select @onchange="SelectItemVendorWarehous" class="select-style">
             @if (inventoryDetail.CurrentWarehouse != null)
@@ -53,60 +59,73 @@
         </select>
     </div>
 
-    <div><b class="c-red">*</b><label>@GetName("InventoryItem",new InventoryDetail())</label></div>
-    <InputTextSelector3 TItem="Concept"
-                        Id="InventoryItem"
-                        caption="@(inventoryDetail.InventoryItem !=null ? inventoryDetail.InventoryItem.Name:"")"
-                        EventIdSelectionAndId="EventIdSelectionAndId"
-                        EventSearcherValueAndId="EventSearcherValueAndId">
-    </InputTextSelector3>
+    <div>
+        <label>
+            @GetName("InventoryItem",new InventoryDetail())
+        </label>
+    </div>
+    <div class="InventoryItem">
+        <InputTextSelector3 TItem="Concept"
+                            Id="InventoryItem"
+                            caption="@(inventoryDetail.InventoryItem !=null ? inventoryDetail.InventoryItem.Name:"")"
+                            EventIdSelectionAndId="EventIdSelectionAndId"
+                            EventSearcherValueAndId="EventSearcherValueAndId"
+                            styleCaption="min-width: 38vw;">
+        </InputTextSelector3>
+    </div>
 
-    <div><b class="c-red">*</b><label>@GetName("Qty",new InventoryDetail())</label></div>
-    <input @bind-value="@inventoryDetail.Qty" type="number" class="form-control" />
 
-    <div><b class="c-red">*</b><label>@GetName("QtyAvailable",new InventoryDetail())</label></div>
-    <input @bind-value="@inventoryDetail.QtyAvailable" type="number" class="form-control" />
+    <div><label>@GetName("Qty",new InventoryDetail())</label></div>
+    <InputTextDisable Enable="true" style="font-size:15px; font-weight:none; " @bind-ValueDouble="@inventoryDetail.Qty"></InputTextDisable>
 
-    <div><b class="c-red">*</b><label>@GetName("QtyReserved",new InventoryDetail())</label></div>
-    <input @bind-value="@inventoryDetail.QtyReserved" type="number" class="form-control" />
+    <div><label>@GetName("QtyAvailable",new InventoryDetail())</label></div>
+    <InputTextDisable Enable="true" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.QtyAvailable"></InputTextDisable>
 
-    <div><b class="c-red">*</b><label>@GetName("QtyOnHand",new InventoryDetail())</label></div>
-    <input @bind-value="@inventoryDetail.QtyOnHand" type="number" class="form-control" />
+    <div><label>@GetName("QtyReserved",new InventoryDetail())</label></div>
+    <InputTextDisable Enable="false" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.QtyReserved"></InputTextDisable>
 
-    <div><b class="c-red">*</b><label>@GetName("QtyOnOrder",new InventoryDetail())</label></div>
-    <input @bind-value="@inventoryDetail.QtyOnOrder" type="number" class="form-control" />
 
-    <div><b class="c-red">*</b><label>@GetName("QtyOnPurchaseOrder",new InventoryDetail())</label></div>
-    <input @bind-value="@inventoryDetail.QtyOnPurchaseOrder" type="number" class="form-control" />
+    <div><label>@GetName("QtyOnHand",new InventoryDetail())</label></div>
+    <InputTextDisable Enable="false" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.QtyOnHand"></InputTextDisable>
 
-    <div><b class="c-red">*</b><label>@GetName("QtyOnSalesOrder",new InventoryDetail())</label></div>
-    <input @bind-value="@inventoryDetail.QtyOnSalesOrder" type="number" class="form-control" />
+    <div><label>@GetName("QtyOnOrder",new InventoryDetail())</label></div>
+    <InputTextDisable Enable="false" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.QtyOnOrder"></InputTextDisable>
 
-    <div><b class="c-red">*</b><label>@GetName("QtyOnTransferOrder",new InventoryDetail())</label></div>
-    <input @bind-value="@inventoryDetail.QtyOnTransferOrder" type="number" class="form-control" />
 
-    <div><b class="c-red">*</b><label>@GetName("QtyOnProductionOrder",new InventoryDetail())</label></div>
-    <input @bind-value="@inventoryDetail.QtyOnProductionOrder" type="number" class="form-control" />
+    <div><label>@GetName("QtyOnPurchaseOrder",new InventoryDetail())</label></div>
+    <InputTextDisable Enable="false" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.QtyOnPurchaseOrder"></InputTextDisable>
 
-    <div><b class="c-red">*</b><label>@GetName("EntryScannedQty",new InventoryDetail())</label></div>
-    <input @bind-value="@inventoryDetail.EntryScannedQty" type="number" class="form-control" />
+    <div><label>@GetName("QtyOnSalesOrder",new InventoryDetail())</label></div>
+    <InputTextDisable Enable="false" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.QtyOnSalesOrder"></InputTextDisable>
 
-    <div><b class="c-red">*</b><label>@GetName("EntryDate",new InventoryDetail())</label></div>
-    <input @bind-value="@inventoryDetail.EntryDate" type="date" class="form-control" />
+    <div><label>@GetName("QtyOnTransferOrder",new InventoryDetail())</label></div>
+    <InputTextDisable Enable="false" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.QtyOnTransferOrder"></InputTextDisable>
 
-    <div><b class="c-red">*</b><label>@GetName("InventoryItem",new InventoryDetail())</label></div>
+    <div><label>@GetName("QtyOnProductionOrder",new InventoryDetail())</label></div>
+    <InputTextDisable Enable="false" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.QtyOnProductionOrder"></InputTextDisable>
+
+    <div><label>@GetName("EntryScannedQty",new InventoryDetail())</label></div>
+    <InputTextDisable Enable="false" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.EntryScannedQty"></InputTextDisable>
+
+
+    <div><label>@GetName("EntryDate",new InventoryDetail())</label></div>
+    <input @bind-value="@inventoryDetail.EntryDate" type="date" class="form-control" disabled />
+
+    <div><label>@GetName("ItemBox",new InventoryDetail())</label></div>
     <InputTextSelector3 TItem="Box"
                         Id="ItemBox"
                         caption="@(inventoryDetail.ItemBox !=null ? inventoryDetail.ItemBox.Name:"")">
     </InputTextSelector3>
 
-    <div><b class="c-red">*</b><label>@GetName("Pack",new InventoryDetail())</label></div>
-    <input @bind-value="@inventoryDetail.Pack" type="number" class="form-control" />
+    <div><label>@GetName("Pack",new InventoryDetail())</label></div>
+    <InputTextDisable Min="1" Enable="false" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.Pack"></InputTextDisable>
 
-    <div><b class="c-red">*</b><label>@GetName("BoxCode",new InventoryDetail())</label></div>
-    <input @bind-value="@inventoryDetail.BoxCode" type="number" class="form-control" />
 
-    <div><b class="c-red">*</b><label>@GetName("CustomerReservedFor",new InventoryDetail())</label></div>
+    <div><label>@GetName("BoxCode",new InventoryDetail())</label></div>
+    <InputTextDisable Enable="false" style="font-size:15px; font-weight:none;" @bind-ValueString="@inventoryDetail.BoxCode"></InputTextDisable>
+
+
+    <div><label>@GetName("CustomerReservedFor",new InventoryDetail())</label></div>
     <div>
         <select class="select-style">
             @if (inventoryDetail.CustomerReservedFor != null)
@@ -127,13 +146,16 @@
         </select>
     </div>
 
+    <div><label>@GetName("UnitCost",new InventoryDetail())</label></div>
+    <InputTextDisable Enable="false" @bind-ValueDouble="inventoryDetail.UnitCost"> </InputTextDisable>
 
-    <div><b class="c-red">*</b><label>@GetName("BoxCode",new InventoryDetail())</label></div>
-    <InputTextDisable @bind-ValueDouble="inventoryDetail.UnitCost"> </InputTextDisable>
+    <div><label>@GetName("BasicUnitsQty",new InventoryDetail())</label></div>
+    <InputTextDisable Enable="false" @bind-ValueDouble="inventoryDetail.BasicUnitsQty"> </InputTextDisable>
+    <div></div><div></div>
+    <div><label>@GetName("InventoryBusinessLine",new CommercialDocument())</label></div>
 
-
-    <div><b class="c-red">*</b><label>@GetName("BusinessLineDoc",new CommercialDocument())</label></div>
-    <div>
+   
+    <div class="InventoryBusinessLine">
         <select @onchange="SelectItemBusinessLineDoc" class="select-style">
             @if (inventoryDetail.InventoryBusinessLine != null)
             {
@@ -155,6 +177,9 @@
 
 
 @code {
+    [Parameter]
+    public string inventoryDetailId { get; set; }
+
     public InventoryDetail inventoryDetail { get; set; }
 
     string searcherValue = "";
@@ -175,9 +200,11 @@
 
     private async Task LoadData()
     {
-
-        // inventoryItem = await DocumentServices.GetCommercialDocumentDetails(_filterItems != null ? _filterItems : "all");
-
+        if (inventoryDetailId != null)
+        {
+            // inventoryItem = await DocumentServices.GetCommercialDocumentDetails(_filterItems != null ? _filterItems : "all");
+        }
+        if (inventoryDetail == null) inventoryDetail = new();
 
     }
 
@@ -188,7 +215,7 @@
         string tile = e.Item != null ? e.Item.Text : "";
         if (tile == "Save")
         {
-          
+
 
         }
 
@@ -240,8 +267,6 @@
         return Name;
     }
 
-
-
     public void Load()
     {
         if (inventoryDetail == null) inventoryDetail = new();
@@ -249,7 +274,16 @@
         if (inventoryDetail.InventoryItem == null) inventoryDetail.InventoryItem = new();
         if (inventoryDetail.CustomerReservedFor == null) inventoryDetail.CustomerReservedFor = new();
         if (inventoryDetail.InventoryBusinessLine == null) inventoryDetail.InventoryBusinessLine = new();
+        if (inventoryDetail.EntryDate == DateTime.MinValue) inventoryDetail.EntryDate = DateTime.Today;
     }
 
+
+    public string GetValidateNull(object item)
+    {
+        var Id = (string)item.GetType().GetProperty("Id").GetValue(item);
+
+        if (Id == null) return "visible";
+        return "hidden";
+    }
 
 }
