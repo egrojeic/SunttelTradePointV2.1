@@ -15,9 +15,7 @@ namespace SunttelTradePointB.Shared.InvetoryModels
     public class InventoryDetail: RecordItem
     {
 
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string InventoryId { get; set; }
+     
 
         [DisplayName("Warehouse")]
         public Warehouse CurrentWarehouse { get; set; }
@@ -77,5 +75,18 @@ namespace SunttelTradePointB.Shared.InvetoryModels
         public double BasicUnitsQty { get; set; }
 
         public BusinessLine InventoryBusinessLine { get; set; }
+
+        public InventoryOriginDescription OriginDesc{ get; set; }
+    }
+
+    public class InventoryOriginDescription
+    {
+        public string ProviderId { get; set; }
+        public string ProviderName { get; set; }
+
+        public string TarnsportationDocumentId { get; set; }
+        public string TarnsportationDocumentDetailId { get; set; }
+        public string TarnsportationDocumentCode { get; set; }
+        
     }
 }
