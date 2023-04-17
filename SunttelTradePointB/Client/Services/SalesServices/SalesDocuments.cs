@@ -92,7 +92,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             try
             {
                 string path = basepath.Replace("Name", "GetCommercialDocumentsByDateSpan");
-                var responseMessage = await Gethttp($"{path}&startDate={startDate}&endDate={endDate}&endDate={documentTypeId}");
+                var responseMessage = await Gethttp($"{path}&startDate={startDate}&endDate={endDate}&documentTypeId={documentTypeId}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocument>>();
                 return list != null ? list : new List<CommercialDocument>();
             }
