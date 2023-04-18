@@ -50,6 +50,7 @@ namespace SunttelTradePointB.Server.Services.InventoryBkServices
             try
             {
                 string filter = filterName == null ? "" : filterName;
+                var skip = (page - 1) * perPage;
 
                 if (filter.Length > 0)
                 {
@@ -65,6 +66,19 @@ namespace SunttelTradePointB.Server.Services.InventoryBkServices
                        )
                     );
                     }
+
+                    pipeline.Add(
+                    new BsonDocument{
+                        {"$skip",  skip}
+                    }
+                    );
+
+                    pipeline.Add(
+                        new BsonDocument{
+                        {"$limit",  perPage}
+                        }
+                    );
+
                     List<InventoryDetail> results = await _InventoryCollection.Aggregate<InventoryDetail>(pipeline).ToListAsync();
                     return (true, results, null);
                 }

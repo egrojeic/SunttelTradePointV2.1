@@ -108,18 +108,21 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         /// Document type
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="ipAdress"></param>
+        /// <param name="ipAddress"></param>
         /// <param name="squadId"></param>
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <param name="documentTypeId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, List<CommercialDocument>? CommercialDocuments, string? ErrorDescription)> GetCommercialDocumentsByDateSpan(string userId, string ipAdress, string squadId, DateTime startDate, DateTime endDate, string documentTypeId)
+        public async Task<(bool IsSuccess, List<CommercialDocument>? CommercialDocuments, string? ErrorDescription)> GetCommercialDocumentsByDateSpan(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, string documentTypeId, int? page = 1, int? perPage = 10)
         {
             try
             {
                 var pipeline = new List<BsonDocument>();
+                var skip = (page - 1) * perPage;
 
                 pipeline.Add(
                     new BsonDocument{
@@ -132,6 +135,18 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                                 } }
                             }
                         }
+                    }
+                );
+
+                pipeline.Add(
+                    new BsonDocument{
+                        {"$skip",  skip}
+                    }
+                );
+
+                pipeline.Add(
+                    new BsonDocument{
+                        {"$limit",  perPage}
                     }
                 );
 
