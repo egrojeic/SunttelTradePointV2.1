@@ -630,7 +630,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         /// <param name="groupName"></param>
         /// <param name="code"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<ComercialDocumentsDetailsImports>? GetCommercialDocumentDetails, string? ErrorDescription)> GetCommercialDocumentDetails(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? nameLike = null, string? groupName = null, string? code = null)
+        public async Task<(bool IsSuccess, List<SalesDocumentItemsDetails>? GetCommercialDocumentDetails, string? ErrorDescription)> GetCommercialDocumentDetails(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? nameLike = null, string? groupName = null, string? code = null)
         {
             try
             {
@@ -657,9 +657,6 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 );
                 }
 
-
-                
-
                 pipeline.Add(
                     new BsonDocument{
                         {"$skip",  skip}
@@ -672,7 +669,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     }
                 );
 
-                List<ComercialDocumentsDetailsImports> results = await _CommercialDocumentDetailImports.Aggregate<ComercialDocumentsDetailsImports>(pipeline).ToListAsync();
+                List<SalesDocumentItemsDetails> results = await _CommercialDocumentDetailImports.Aggregate<SalesDocumentItemsDetails>(pipeline).ToListAsync();
 
                 //var results = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
 
@@ -687,11 +684,11 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         /// <summary>
         /// Retrieves an object of a transactional Item by id
         /// </summary>
-        /// <param name="transactionalItemId"></param>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
+        /// <param name="commercialDocumentDetailId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, ComercialDocumentsDetailsImports? GetCommercialDocumentDetailsById, string? ErrorDescription)> GetCommercialDocumentDetailById(string userId, string ipAddress, string commercialDocumentDetailId)
+        public async Task<(bool IsSuccess, SalesDocumentItemsDetails? GetCommercialDocumentDetailsById, string? ErrorDescription)> GetCommercialDocumentDetailById(string userId, string ipAddress, string commercialDocumentDetailId)
         {
 
             try
@@ -705,7 +702,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 var resultPrev = await _CommercialDocumentDetailImports.Aggregate<BsonDocument>(pipeline).ToListAsync();
 
 
-                ComercialDocumentsDetailsImports result = resultPrev.Select(d => BsonSerializer.Deserialize<ComercialDocumentsDetailsImports>(d)).ToList()[0];
+                SalesDocumentItemsDetails result = resultPrev.Select(d => BsonSerializer.Deserialize<SalesDocumentItemsDetails>(d)).ToList()[0];
 
 
                 return (true, result, null);

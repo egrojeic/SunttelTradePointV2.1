@@ -7,6 +7,13 @@
 @inject TransactionalItemsService transactItemsService;
 @inject NavigationManager Navigation
 
+@if (@AlertOpen)
+{
+    <MessageSaveComponent isVisible="AlertOpen" message="@msg">
+    </MessageSaveComponent>
+}
+
+
 <PageTitleComponent Title="Sale item" IconName="commercialActivities.png"
                     Description="With this tool you can create and edit item Sales">
 </PageTitleComponent>
@@ -42,7 +49,7 @@
                     TItem="SalesDocumentItemsDetails"
                     ColumnWidth="300px"
                     PageNumbersCount="100"
-                    PageSize="20"
+                    PageSize="15"
                     CellContextMenu="@ShowContextMenuWithContent">
 
                 <Columns>
@@ -72,27 +79,29 @@
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ProcurementPtje" Title="@GetName("ProcurementPtje", new SalesDocumentItemsDetails())" Width="120px">
                         <Template>
                             @{
-                                var MarkedForQCInspection = context.GetType().GetProperty(nameof(CommercialDocument.MarkedForQCInspection))?.GetValue(context);
+                                var MarkedForQCInspection = context.GetType().GetProperty(nameof(SalesDocumentItemsDetails.ProcurementPtje))?.GetValue(context);
                                 <input type="checkbox" checked="@(MarkedForQCInspection!=null? (bool)MarkedForQCInspection:false)" disabled />
                             }
                         </Template>
                     </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PullDate" Title="@GetName("PullDate", new SalesDocumentItemsDetails())" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="FormatedPullDate" Title="@GetName("FormatedPullDate", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ProcurementPtje" Title="@GetName("ProcurementPtje", new SalesDocumentItemsDetails())" Width="120px">
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Id" Title="@GetName("Id", new SalesDocumentItemsDetails())" >
                         <Template>
                             @{
-                                if (Edit)
+                                var Id = context.GetType().GetProperty(nameof(SalesDocumentItemsDetails.Id))?.GetValue(context).ToString();
+                                if ( EditId != Id)
                                 {
-                                    <input class="btn-grid btn-grid-color" type="button" value="select" >
+                                    <input @onclick='()=>SaveItem(Id)'  class="btn-grid btn-grid-color" type="button" value="select">
                                 }
-                                else{
-                                
+                                if (EditId != "" && EditId == Id)
+                                {
+                                    <input @onclick='()=>SaveEdit(Id)' class="btn-grid btn-grid-color" type="button" value="save">
                                 }
                             }
                         </Template>
                     </RadzenDataGridColumn>
-                    
+
                 </Columns>
             </RadzenDataGrid>
         }
@@ -104,14 +113,17 @@
 @code {
     [Parameter]
     public string _filterItems { get; set; }
-    public List<AddItemCommercialDocument> itemCommercialDocument { get; set; } = new();
+
+
     public List<SalesDocumentItemsDetails> items { get; set; } = new();
 
 
     RadzenDataGrid<SalesDocumentItemsDetails> GridItem;
     public SalesDocumentItemsDetails Item { get; set; } = new();
     bool isLoading = false;
-    bool Edit = false;
+    string EditId = "";
+    bool AlertOpen=false;
+    string msg = "";
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
 
     public string docsFilter
@@ -124,27 +136,101 @@
         }
     }
 
-    protected async override void OnInitialized()
+    protected override void OnInitialized()
     {
 
         LoadData();
-        base.OnInitialized();
+
     }
 
     private async Task LoadData()
     {
         isLoading = true;
-        itemCommercialDocument = await DocumentServices.GetCommercialDocumentDetails(_filterItems != null ? _filterItems : "all");
-        
-        listItemByListProduct();
+        items = await DocumentServices.GetCommercialProductList(_filterItems != null ? _filterItems : "all");
+
+        // listItemByListProduct(itemCommercialDocument);
+        isLoading = false;
+        StateHasChanged();
 
     }
+
+
+
+    public async void  SaveItem(string Id)
+    {
+        var data = items.Where(s => s.Id == Id).FirstOrDefault();
+
+        if(data!=null){
+            var result = await DocumentServices.SaveCommercialDocumentDetail(data);
+            if (result !=null && result.Id !=null)
+            {
+                Alert(true, "Saved");
+            }
+            else
+            {
+                Alert(true, "No saved");
+            }
+            StateHasChanged();
+        }
+        else
+        {
+            Alert(true, "No saved");
+        }
+       
+       
+    }
+
+    public async void listItemByListProduct(List<AddItemCommercialDocument> itemCommercialDocument)
+    {
+        items = new();
+        if (itemCommercialDocument != null)
+        {
+            foreach (var detail in itemCommercialDocument)
+            {
+
+                if (detail != null)
+                {
+                    items.Add(ConvetToSalesDocumentItemsDetails(detail));
+                    foreach (var itemEdit in items)
+                    {
+                        GridItem.EditRow(itemEdit);
+                    }
+
+                }
+
+            }
+        }
+
+        StateHasChanged();
+    }
+
+    public SalesDocumentItemsDetails ConvetToSalesDocumentItemsDetails(AddItemCommercialDocument item)
+    {
+
+
+        var detail = new SalesDocumentItemsDetails
+                {
+                    TransactionalItem = item.TransactionalItem = item.TransactionalItem != null ? item.TransactionalItem : new(),
+                    PullDate = item.PullDate = item.PullDate != DateTime.MinValue ? item.PullDate : DateTime.Today,
+                    FormatedPullDate = item.FormatedPullDate = item.FormatedPullDate != null ? item.FormatedPullDate : "",
+                    UnitPrice = item.UnitPrice,
+                    TaxableUnitPrice = item.TaxableUnitPrice = item.TaxableUnitPrice != null ? item.TaxableUnitPrice : 0
+
+                };
+
+
+        return detail;
+
+
+    }
+
+
 
 
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-        <RadzenMenuItem Text="Select" Value=args.Data Icon="edit"></RadzenMenuItem>
+      
         </RadzenMenu>
     );
 
@@ -154,17 +240,13 @@
 
         if (args.Text.ToString() == "Edit")
         {
+            EditId = argObj.Id;
             await GridItem.EditRow(argObj);
-        }
-
-        if (args.Text.ToString() == "Select")
-        {
-            await GridItem.UpdateRow(argObj);
         }
 
 
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
-        {
+        {          
             ContextMenuService.Close();
         }
     }
@@ -173,9 +255,17 @@
     async Task EditRow(SalesDocumentItemsDetails order)
     {
         Item = order;
-
     }
 
+    public async void SaveEdit( string Id)
+    {
+        var data = items.Where(s => s.Id == Id).FirstOrDefault();
+        if(data!=null){
+            await GridItem.UpdateRow(data);
+            EditId = "";
+            StateHasChanged();
+        }
+    }
 
     public void SetNavigateTo(string name)
     {
@@ -188,50 +278,10 @@
         return Name;
     }
 
-
-    public async void listItemByListProduct()
+    public void Alert(bool visible, string msg)
     {
-        if (itemCommercialDocument != null)
-        {
-            foreach (var detail in itemCommercialDocument)
-            {            
-              
-                if (detail != null)
-                {                   
-                    items.Add(ConvetToSalesDocumentItemsDetails(detail));
-                        foreach (var itemEdit in items)
-                        {
-                            GridItem.EditRow(itemEdit);
-                        }
-                    
-                }
-
-            }
-        }
-
-        isLoading = false;
-        StateHasChanged();
+        AlertOpen = false;
+        msg = msg;
     }
-
-    public SalesDocumentItemsDetails ConvetToSalesDocumentItemsDetails(AddItemCommercialDocument item)
-    {
-       
-       
-        var detail = new SalesDocumentItemsDetails
-                {
-                    TransactionalItem =item.TransactionalItem = item.TransactionalItem !=null ? item.TransactionalItem:new(),
-                    PullDate = item.PullDate = item.PullDate != DateTime.MinValue  ?item.PullDate :DateTime.Today,
-                    FormatedPullDate = item.FormatedPullDate = item.FormatedPullDate!=null ? item.FormatedPullDate:"",
-                    UnitPrice = item.UnitPrice,
-                    TaxableUnitPrice =item.TaxableUnitPrice =  item.TaxableUnitPrice != null ? item.TaxableUnitPrice : 0
-
-                };
-        
-
-        return detail;
-
-
-    }
-
 
 }
