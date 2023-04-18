@@ -2,7 +2,7 @@
 @page "/Inventory/{_filterItems}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.InvetoryModels;
-
+@inject SunttelTradePointB.Client.Services.InventoryServices.Inventory _Inventory
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
 
@@ -84,8 +84,8 @@
     [Parameter]
     public string _filterItems { get; set; }
     List<InventoryDetail>? InventoryDetaiList;
-   
-  
+
+
     bool isLoading = false;
 
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
@@ -102,28 +102,23 @@
 
     protected async override void OnInitialized()
     {
-        
+
         if (_filterItems != null) LoadData();
         base.OnInitialized();
-
     }
 
     public async void LoadData()
     {
         isLoading = true;
-      //  commercialdocumentList = await DocumentServices.GetCommercialDocumentList(startingDate, endDate, docsFilter);
+        InventoryDetaiList = await _Inventory.GetInventoryList(_filterItems);
         isLoading = false;
-
         //await SynthesisToSpeakerAsync( $"Se encontraron {commercialdocumentList.Count()}, resultados voz dos");
         StateHasChanged();
-    }
-
-  
+    }  
 
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<InventoryDetail> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
-        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-        <RadzenMenuItem Text="Another" Value=args.Data Icon="edit"></RadzenMenuItem>
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>       
         </RadzenMenu>
     );
 
@@ -139,11 +134,6 @@
         }
     }
 
-    public void SetdocsFilter( string value)
-    {
-        docsFilter = value;
-         StateHasChanged();
-    }
 
     public string GetName(string Name, Object Obj)
     {

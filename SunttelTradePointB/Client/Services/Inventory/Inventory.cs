@@ -64,6 +64,24 @@ namespace SunttelTradePointB.Client.Services.InventoryServices
         }
 
 
+        public async Task<List<InventoryDetail>> GetInventoryList( string? nameLike = "all")
+        {
+            try
+            {
+                var responseMessage = await Gethttp($"/api/Inventory/pendiente?&{Configpath}&nameLike={nameLike}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<InventoryDetail>>();
+                List<InventoryDetail> conceptLis = new();
+               
+                return conceptLis != null ? conceptLis : new List<InventoryDetail>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+
 
 
 

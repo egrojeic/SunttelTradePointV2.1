@@ -64,7 +64,8 @@
                 <Status Name="@(commercialDocument.FinanceStatusDocument.Name)"></Status>
 
                 <div><label class="sub-tile">@GetName("PrintingSatus",new CommercialDocument())</label></div>
-                <StatusItem></StatusItem>
+                <StatusItem  item="commercialDocument.PrintingSatus" ></StatusItem>
+
                 <div class="item-check">
                     <div><label class="sub-tile">@GetName("MarkedForQCInspection",new CommercialDocument())</label></div>
                     <div>
@@ -172,7 +173,7 @@
             </div>
 
             <div><label class="sub-tile">@GetName("Season",new CommercialDocument())</label></div>
-            <InputTextSelector3 styleCaption="width:180px" TItem="SeasonBusiness"
+            <InputTextSelector3 styleCaption="width:180px" style="right:-100px;" TItem="SeasonBusiness"
                             Id="Season"
                             caption="@(commercialDocument.Season !=null ? commercialDocument.Season?.Name:"" )"
                             Items="seasonList"
@@ -355,7 +356,7 @@
         if (commercialDocumentId != null)
         {
             commercialDocument = await DocumentServices.GetItemCommercialDocumentById(commercialDocumentId);
-            var itemCommercialDocument = await DocumentServices.GetCommercialDocumentDetails(commercialDocumentId);
+            commercialDocument.Items = await DocumentServices.GetCommercialDocumentDetails(commercialDocumentId);
 
         }
 

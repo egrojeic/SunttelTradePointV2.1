@@ -1,6 +1,7 @@
 ﻿using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.Sales;
+using System.Globalization;
 using System.Net.Http.Json;
 
 namespace SunttelTradePointB.Client.Services.SalesServices
@@ -21,8 +22,8 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             try
             {
                 string path = basepath.Replace("Name", "SaveCommercialDocument");
-                basepath.Replace("*Id", UIClientGlobalVariables.UserId);
-                basepath.Replace("ipAddress", UIClientGlobalVariables.PublicIpAddress);
+                path = path.Replace("*Id", UIClientGlobalVariables.UserId ?? "00");
+                path = path.Replace("*Ip", UIClientGlobalVariables.PublicIpAddress??"00");              
                 commercialDocument.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<CommercialDocument>($"{path}", commercialDocument);
                 return await responseMessage.Content.ReadFromJsonAsync<CommercialDocument>();
@@ -88,7 +89,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             try
             {
                 salesDocumentItemsDetails.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
-                 var responseMessage = await _httpClient.PostAsJsonAsync<SalesDocumentItemsDetails>($"/api/Sales/SaveCommercialDocumentDetail?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}", salesDocumentItemsDetails);
+                var responseMessage = await _httpClient.PostAsJsonAsync<SalesDocumentItemsDetails>($"/api/Sales/SaveCommercialDocumentDetail?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}", salesDocumentItemsDetails);
                 return await responseMessage.Content.ReadFromJsonAsync<SalesDocumentItemsDetails>();
             }
             catch (Exception ex)
@@ -105,10 +106,12 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         ///Gets
         public async Task<List<CommercialDocument>> GetCommercialDocumentList(DateTime startDate, DateTime endDate, string documentTypeId)
         {
+            CultureInfo culture = new CultureInfo("en-US");
             try
             {
+
                 string path = basepath.Replace("Name", "GetCommercialDocumentsByDateSpan");
-                var responseMessage = await Gethttp($"{path}&startDate={startDate}&endDate={endDate}&documentTypeId={documentTypeId}");
+                var responseMessage = await Gethttp($"{path}&startDate={startDate.ToString("yyyy-MM-dd", culture)}&endDate={endDate.ToString("yyyy-MM-dd", culture)}&documentTypeId={documentTypeId}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocument>>();
                 return list != null ? list : new List<CommercialDocument>();
             }
@@ -152,7 +155,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-         public async Task<ShippingStatus> GetShippingStatusById(string ShippingStatusId)
+        public async Task<ShippingStatus> GetShippingStatusById(string ShippingStatusId)
         {
             try
             {
@@ -168,7 +171,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-       
+
 
         // Documents types
         public async Task<List<CommercialDocumentType>> GetCommercialDocumentsTypes(string filter)
@@ -191,7 +194,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-              
+
                 string path = $"/api/ConceptsSelector/GetVendors?isASale={documentType.IsASale}&userId=*Id&ipAddress=*Ip&page={page}&perPage={perPage}&filterString={filter}";
                 var responseMessage = await Gethttp($"{path}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
@@ -232,7 +235,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<List<SalesDocumentItemsDetails>> GetCommercialDocumentDetails(string commercialDocumentId, int? page=1,int? perPage=30)
+        public async Task<List<SalesDocumentItemsDetails>> GetCommercialDocumentDetails(string commercialDocumentId, int? page = 1, int? perPage = 30)
         {
             try
             {
@@ -249,15 +252,15 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<List<SalesDocumentItemsDetails>> GetCommercialProductList(string filterName, int? page = 1, int? perPage = 30)
+        public async Task<List<AddItemCommercialDocument>> GetCommercialProductList(string commercialDocumentId, int? page = 1, int? perPage = 30)
         {
             try
             {
                 // page, perPage, filterName
                 string path = basepath.Replace("Name", "GetCommercialDocumentDetails");
-                var responseMessage = await Gethttp($"{path}&page={page}&perPage={perPage}&filterName={filterName}");
-                var list = await responseMessage.Content.ReadFromJsonAsync<List<SalesDocumentItemsDetails>>();
-                return list != null ? list : new List<SalesDocumentItemsDetails>();
+                var responseMessage = await Gethttp($"{path}&page={page}&perPage={perPage}&commercialDocumentId={commercialDocumentId}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<AddItemCommercialDocument>>();
+                return list != null ? list : new List<AddItemCommercialDocument>();
             }
             catch (Exception ex)
             {
@@ -269,17 +272,19 @@ namespace SunttelTradePointB.Client.Services.SalesServices
 
 
 
-        public async Task<List<BasicConcept>> GetCommercialBuyerWarehouseList(string entityId,string? nameLike ="all")
+        public async Task<List<BasicConcept>> GetCommercialBuyerWarehouseList(string entityId, string? nameLike = "all")
         {
             try
-            {                
+            {
                 var responseMessage = await Gethttp($"/api/GeographicPlaces/GetWarehouses?&entityId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&entityId={entityId}&nameLike={nameLike}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Warehouse>>();
                 List<BasicConcept> conceptLis = new();
-                if (list!=null) {
+                if (list != null)
+                {
                     foreach (var item in list)
                     {
-                        conceptLis.Add(new BasicConcept {
+                        conceptLis.Add(new BasicConcept
+                        {
                             Id = item.Id,
                             Name = item.Name
                         });
@@ -300,7 +305,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-               
+
                 var responseMessage = await Gethttp($"/api/ConceptsSelector/GetSalesPersons?filterString={filter}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<AtomConcept>>();
                 List<Concept> conceptList = new();
@@ -310,7 +315,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
                     {
                         Id = item.Id,
                         Name = item.Name
-                        
+
                     });
                 }
                 return conceptList != null ? conceptList : new List<Concept>();
@@ -323,7 +328,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         }
 
 
-      
+
 
 
 
@@ -331,10 +336,10 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-               
+
                 var responseMessage = await Gethttp($"/api/ConceptsSelector/GetSelectorListSeasonBusiness?filterString={filter}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<SeasonBusiness>>();
-               
+
                 return list != null ? list : new List<SeasonBusiness>();
             }
             catch (Exception ex)
@@ -348,11 +353,11 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-              
-                 string path = $"/api/ConceptsSelector/GetBuyers?isASale={documentType.IsASale}&userId=*Id&ipAddress=*Ip&page={page}&perPage={perPage}&filterString={filter}";
+
+                string path = $"/api/ConceptsSelector/GetBuyers?isASale={documentType.IsASale}&userId=*Id&ipAddress=*Ip&page={page}&perPage={perPage}&filterString={filter}";
                 var responseMessage = await Gethttp($"{path}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
-             //   if (!isASale) list = list.Where(s => s.Id == UIClientGlobalVariables.EntityUserId).ToList();
+                //   if (!isASale) list = list.Where(s => s.Id == UIClientGlobalVariables.EntityUserId).ToList();
                 return list != null ? list : new List<Concept>();
             }
             catch (Exception ex)
@@ -369,7 +374,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             {
                 string path = $"/api/ConceptsSelector/GetCarriers?filterString=all";
                 var responseMessage = await Gethttp($"{path}");
-                var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();              
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
                 return list != null ? list : new List<Concept>();
             }
             catch (Exception ex)
@@ -395,7 +400,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
                 return null;
             }
         }
-     
+
 
         //Buisiness Lines
         public async Task<List<BusinessLine>> GetCommercialBusinessLines(string filter)
@@ -414,7 +419,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-     
+
 
         public async Task<BusinessLine?> GetCommercialBusinessLineById(string businessLineDocId)
         {
@@ -432,7 +437,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-       
+
 
         public async Task<CommercialDocument> GetItemCommercialDocumentById(string commercialDocumentId)
         {
@@ -474,10 +479,10 @@ namespace SunttelTradePointB.Client.Services.SalesServices
 
         public async Task<List<AtomConcept>> GetSelectorListEntityActor(string filterString, BasicRolesFilter? roleIndex)
         {
-          
+
             try
             {
-              
+
                 var response = await Gethttp($"/api/ConceptsSelector/GetSelectorListEntityActor?filterString ={filterString}&roleIndex={roleIndex}");
                 var list = await response.Content.ReadFromJsonAsync<List<AtomConcept>>();
                 return list;
@@ -496,19 +501,19 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-               
+
                 var SquadId = UIClientGlobalVariables.ActiveSquad;
                 var ReplaceIdUser = UIClientGlobalVariables.UserId;
                 var ReplacePublicIpAddress = UIClientGlobalVariables.PublicIpAddress;
 
-                Url = Url.Replace("*Id", ReplaceIdUser ?? "000").Replace("*Ip", ReplacePublicIpAddress??"000");
+                Url = Url.Replace("*Id", ReplaceIdUser ?? "000").Replace("*Ip", ReplacePublicIpAddress ?? "000");
 
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
 
-                if (SquadId !=null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString());
+                if (SquadId != null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString());
                 if (SquadId == null) request.Headers.Add("SquadId", "0000000000");
                 var response = await _httpClient.SendAsync(request);
-               
+
                 if (response.IsSuccessStatusCode)
                 {
                     return response;
@@ -518,17 +523,17 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
             catch (Exception ex)
             {
-                string errMessage = ex.Message;             
+                string errMessage = ex.Message;
                 return null;
 
             }
-            
+
 
         }
 
-      
+
     }
 
- 
+
 
 }

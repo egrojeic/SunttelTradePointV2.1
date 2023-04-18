@@ -1,0 +1,139 @@
+﻿@page "/Payments"
+@page "/Payments/{_filterItems}"
+@using SunttelTradePointB.Shared.Sales;
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject ContextMenuService ContextMenuService
+@inject NavigationManager Navigation
+
+
+<PageTitleComponent Title="Payments" IconName="commercialActivities.png"
+                    Description="With this tool you can create and edit payments ">
+</PageTitleComponent>
+
+<div class="panelMenuContainer">
+    <PaymentsMenu ></PaymentsMenu>   
+    <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
+    <RangeDatesInput StartDate="@startingDate" EndDate="@endDate"></RangeDatesInput>
+</div>
+<div class="panelMenuContainer">  
+    <CommercialDocsGrlMenu2 SetDocumentTypeId="SetDocumentTypeId"></CommercialDocsGrlMenu2>   
+</div>
+
+
+<div class="tableContainer">
+
+
+    @if (isLoading)
+    {
+
+        <WaitingProcessIndicator loadingTopic="Characteristic Items"></WaitingProcessIndicator>
+
+    }
+    else
+    {
+
+        <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="50"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                   
+                    TItem="CommercialDocument"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                   
+                    CellContextMenu="@ShowContextMenuCommercialDocument">
+            <Columns>
+
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentType.Name" Title="Document Type" Filterable="false" Sortable="false"  Width="208px" />
+            
+            </Columns>
+        </RadzenDataGrid>
+    }
+</div>
+
+
+
+@code {
+    [Parameter]
+    public string _filterItems { get; set; }
+ 
+  
+    bool isLoading = false;
+
+    DateTime startingDate = DateTime.Now , endDate= DateTime.Now.AddMonths(1) ;
+
+    public string docsFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+    protected async override void OnInitialized()
+    {
+       
+
+        if (_filterItems != null) LoadData();
+        base.OnInitialized();
+
+    }
+
+    public async void LoadData()
+    {
+        isLoading = true;
+     
+        isLoading = false;
+
+        //await SynthesisToSpeakerAsync( $"Se encontraron {commercialdocumentList.Count()}, resultados voz dos");
+        StateHasChanged();
+    }
+
+    public async void SetDocumentTypeId(CommercialDocumentType item)
+    {
+       
+        if (item != null)
+        {
+          
+        }
+        StateHasChanged();
+    }
+
+
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CommercialDocument> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+        <RadzenMenuItem Text="Another" Value=args.Data Icon="edit"></RadzenMenuItem>
+        </RadzenMenu>
+    );
+
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        CommercialDocument argObj = (CommercialDocument)args.Value;     
+        Navigation.NavigateTo($"SaleItem/{argObj.Id}");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+    public void SetdocsFilter( string value)
+    {
+        docsFilter = value;
+         StateHasChanged();
+    }
+
+
+
+
+}
