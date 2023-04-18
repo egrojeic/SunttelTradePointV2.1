@@ -7,6 +7,13 @@
 @inject TransactionalItemsService transactItemsService;
 @inject NavigationManager Navigation
 
+@if (@AlertOpen)
+{
+    <MessageSaveComponent isVisible="AlertOpen" message="@msg">
+    </MessageSaveComponent>
+}
+
+
 <PageTitleComponent Title="Sale item" IconName="commercialActivities.png"
                     Description="With this tool you can create and edit item Sales">
 </PageTitleComponent>
@@ -42,7 +49,7 @@
                     TItem="SalesDocumentItemsDetails"
                     ColumnWidth="300px"
                     PageNumbersCount="100"
-                    PageSize="20"
+                    PageSize="15"
                     CellContextMenu="@ShowContextMenuWithContent">
 
                 <Columns>
@@ -83,11 +90,11 @@
                         <Template>
                             @{
                                 var Id = context.GetType().GetProperty(nameof(SalesDocumentItemsDetails.Id))?.GetValue(context).ToString();
-                                if (EditId == "" && EditId != Id)
+                                if ( EditId != Id)
                                 {
-                                    <input class="btn-grid btn-grid-color" type="button" value="select">
+                                    <input @onclick='()=>SaveItem(Id)'  class="btn-grid btn-grid-color" type="button" value="select">
                                 }
-                                if (EditId == "" && EditId == Id)
+                                if (EditId != "" && EditId == Id)
                                 {
                                     <input @onclick='()=>SaveEdit(Id)' class="btn-grid btn-grid-color" type="button" value="save">
                                 }
@@ -106,7 +113,8 @@
 @code {
     [Parameter]
     public string _filterItems { get; set; }
-    //public List<AddItemCommercialDocument> itemCommercialDocument { get; set; } = new();
+
+
     public List<SalesDocumentItemsDetails> items { get; set; } = new();
 
 
@@ -114,6 +122,8 @@
     public SalesDocumentItemsDetails Item { get; set; } = new();
     bool isLoading = false;
     string EditId = "";
+    bool AlertOpen=false;
+    string msg = "";
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
 
     public string docsFilter
@@ -145,59 +155,30 @@
     }
 
 
-    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> args) => ContextMenuService.Open(args, ds =>
-    @<RadzenMenu Click="OnMenuItemClick">
-        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-        <RadzenMenuItem Text="Select" Value=args.Data Icon="edit"></RadzenMenuItem>
-        </RadzenMenu>
-    );
 
-    public async void OnMenuItemClick(MenuItemEventArgs args)
-    {
-        SalesDocumentItemsDetails argObj = (SalesDocumentItemsDetails)args.Value;
-
-        if (args.Text.ToString() == "Edit")
-        {
-            EditId = argObj.Id;
-            await GridItem.EditRow(argObj);
-        }
-
-
-        if (!args.Value.Equals(3) && !args.Value.Equals(4))
-        {
-          
-            ContextMenuService.Close();
-        }
-    }
-
-
-    async Task EditRow(SalesDocumentItemsDetails order)
-    {
-        Item = order;
-    }
-
-
-    public async void SaveEdit( string Id)
+    public async void  SaveItem(string Id)
     {
         var data = items.Where(s => s.Id == Id).FirstOrDefault();
+
         if(data!=null){
-            await GridItem.UpdateRow(data);
-              EditId = "";
+            var result = await DocumentServices.SaveCommercialDocumentDetail(data);
+            if (result !=null && result.Id !=null)
+            {
+                Alert(true, "Saved");
+            }
+            else
+            {
+                Alert(true, "No saved");
+            }
             StateHasChanged();
         }
+        else
+        {
+            Alert(true, "No saved");
+        }
+       
+       
     }
-
-    public void SetNavigateTo(string name)
-    {
-        Navigation.NavigateTo(name);
-    }
-
-    public string GetName(string Name, Object Obj)
-    {
-        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
-        return Name;
-    }
-
 
     public async void listItemByListProduct(List<AddItemCommercialDocument> itemCommercialDocument)
     {
@@ -228,14 +209,14 @@
 
 
         var detail = new SalesDocumentItemsDetails
-            {
-                TransactionalItem = item.TransactionalItem = item.TransactionalItem != null ? item.TransactionalItem : new(),
-                PullDate = item.PullDate = item.PullDate != DateTime.MinValue ? item.PullDate : DateTime.Today,
-                FormatedPullDate = item.FormatedPullDate = item.FormatedPullDate != null ? item.FormatedPullDate : "",
-                UnitPrice = item.UnitPrice,
-                TaxableUnitPrice = item.TaxableUnitPrice = item.TaxableUnitPrice != null ? item.TaxableUnitPrice : 0
+                {
+                    TransactionalItem = item.TransactionalItem = item.TransactionalItem != null ? item.TransactionalItem : new(),
+                    PullDate = item.PullDate = item.PullDate != DateTime.MinValue ? item.PullDate : DateTime.Today,
+                    FormatedPullDate = item.FormatedPullDate = item.FormatedPullDate != null ? item.FormatedPullDate : "",
+                    UnitPrice = item.UnitPrice,
+                    TaxableUnitPrice = item.TaxableUnitPrice = item.TaxableUnitPrice != null ? item.TaxableUnitPrice : 0
 
-            };
+                };
 
 
         return detail;
@@ -243,5 +224,64 @@
 
     }
 
+
+
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+      
+        </RadzenMenu>
+    );
+
+    public async void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        SalesDocumentItemsDetails argObj = (SalesDocumentItemsDetails)args.Value;
+
+        if (args.Text.ToString() == "Edit")
+        {
+            EditId = argObj.Id;
+            await GridItem.EditRow(argObj);
+        }
+
+
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {          
+            ContextMenuService.Close();
+        }
+    }
+
+
+    async Task EditRow(SalesDocumentItemsDetails order)
+    {
+        Item = order;
+    }
+
+    public async void SaveEdit( string Id)
+    {
+        var data = items.Where(s => s.Id == Id).FirstOrDefault();
+        if(data!=null){
+            await GridItem.UpdateRow(data);
+            EditId = "";
+            StateHasChanged();
+        }
+    }
+
+    public void SetNavigateTo(string name)
+    {
+        Navigation.NavigateTo(name);
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    public void Alert(bool visible, string msg)
+    {
+        AlertOpen = false;
+        msg = msg;
+    }
 
 }
