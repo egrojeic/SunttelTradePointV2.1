@@ -216,15 +216,15 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<List<AddItemCommercialDocument>> GetCommercialDocumentDetails(string filterName = "all",int? page=1,int? perPage=30)
+        public async Task<List<SalesDocumentItemsDetails>> GetCommercialDocumentDetails(string commercialDocumentId, int? page=1,int? perPage=30)
         {
             try
             {
                 // page, perPage, filterName
                 string path = basepath.Replace("Name", "GetCommercialDocumentDetails");
-                var responseMessage = await Gethttp($"{path}&page={page}&perPage={perPage}&filterName={filterName}");
-                var list = await responseMessage.Content.ReadFromJsonAsync<List<AddItemCommercialDocument>>();
-                return list != null ? list : new List<AddItemCommercialDocument>();
+                var responseMessage = await Gethttp($"{path}&page={page}&perPage={perPage}&commercialDocumentId={commercialDocumentId}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<SalesDocumentItemsDetails>>();
+                return list != null ? list : new List<SalesDocumentItemsDetails>();
             }
             catch (Exception ex)
             {
@@ -233,7 +233,24 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-               
+        public async Task<List<SalesDocumentItemsDetails>> GetCommercialProductList(string filterName, int? page = 1, int? perPage = 30)
+        {
+            try
+            {
+                // page, perPage, filterName
+                string path = basepath.Replace("Name", "GetCommercialDocumentDetails");
+                var responseMessage = await Gethttp($"{path}&page={page}&perPage={perPage}&filterName={filterName}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<SalesDocumentItemsDetails>>();
+                return list != null ? list : new List<SalesDocumentItemsDetails>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+
 
 
         public async Task<List<BasicConcept>> GetCommercialBuyerWarehouseList(string entityId,string? nameLike ="all")

@@ -355,6 +355,7 @@
         if (commercialDocumentId != null)
         {
             commercialDocument = await DocumentServices.GetItemCommercialDocumentById(commercialDocumentId);
+            var itemCommercialDocument = await DocumentServices.GetCommercialDocumentDetails(commercialDocumentId);
 
         }
 
