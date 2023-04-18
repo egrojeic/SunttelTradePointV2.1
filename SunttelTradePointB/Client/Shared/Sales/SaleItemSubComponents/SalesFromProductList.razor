@@ -53,10 +53,9 @@
                     CellContextMenu="@ShowContextMenuWithContent">
 
                 <Columns>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName("TransactionalItem", new SalesDocumentItemsDetails())" Width="120px" />
-                   
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName("TransactionalItem", new SalesDocumentItemsDetails())" Width="300px" />                  
                     
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Qty" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Qty" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Filterable="false" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableQty" Title="@GetName("ChargeableQty", new SalesDocumentItemsDetails())" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableUnits.Name" Title="@GetName("ChargeableUnits", new SalesDocumentItemsDetails())" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitPrice" Title="@GetName("UnitPrice", new SalesDocumentItemsDetails())" Width="120px">
