@@ -122,7 +122,7 @@
 
             <div><label class="sub-tile">@GetName("Vendor",new CommercialDocument())</label></div>
             <div class="Vendor">
-                <InputTextSelector3 styleCaption="min-width: 25vw;" TItem="Concept"
+                <InputTextSelector3 styleCaption="min-width: 27vw;" TItem="Concept"
                             Id="Vendor"
                             caption="@(commercialDocument.Vendor !=null ? commercialDocument.Vendor?.Name:"" )"
                             Items="vendorList"
@@ -134,7 +134,7 @@
 
             <div><label class="sub-tile">@GetName("Buyer",new CommercialDocument())</label></div>
             <div class="Buyer">
-            <InputTextSelector3  styleCaption="min-width: 25vw;" TItem="Concept"
+            <InputTextSelector3  styleCaption="min-width: 27vw;" TItem="Concept"
                             Id="Buyer"
                             caption="@(commercialDocument.Buyer !=null ? commercialDocument.Buyer?.Name:"" )"
                             Items="buyerList"                           
@@ -275,7 +275,9 @@
                         <TabHeader Text="@GetName("Items",new CommercialDocument())"></TabHeader>
                     </ChildContent>
                     <ContentTemplate>
+                        <div class="container-item">
                         <SalesDocumentItems items="@commercialDocument.Items"></SalesDocumentItems>
+                        </div>
                     </ContentTemplate>
                 </TabItem>
 

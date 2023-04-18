@@ -21,7 +21,7 @@ namespace SunttelTradePointB.Client.Services.InventoryServices
         {
             try
             {
-                string path = "";
+                string path = $"/api/Inventory/GetInventory?&{Configpath}";
                 commercialDocument.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<InventoryDetail>($"{path}", commercialDocument);
                 return await responseMessage.Content.ReadFromJsonAsync<InventoryDetail>();
@@ -64,11 +64,11 @@ namespace SunttelTradePointB.Client.Services.InventoryServices
         }
 
 
-        public async Task<List<InventoryDetail>> GetInventoryList( string? nameLike = "all")
+        public async Task<List<InventoryDetail>> GetInventoryList(string documentTypeId, string BuyerId, string DocumentDate, int? page = 1, int? perPage = 10, string? filterName = null)
         {
             try
             {
-                var responseMessage = await Gethttp($"/api/Inventory/pendiente?&{Configpath}&nameLike={nameLike}");
+                var responseMessage = await Gethttp($"/api/Inventory/GetInventory?&{Configpath}&documentTypeId={documentTypeId}&BuyerId={BuyerId}&DocumentDate={DocumentDate}&page={page}&perPage={perPage}&filterName={filterName}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<InventoryDetail>>();
                 List<InventoryDetail> conceptLis = new();
                

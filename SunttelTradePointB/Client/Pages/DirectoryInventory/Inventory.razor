@@ -13,12 +13,27 @@
 
 
 <div class="panelMenuContainer">
-    <InventoryMenu ></InventoryMenu>   
+    <InventoryMenu></InventoryMenu>
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
     <RangeDatesInput StartDate="@startingDate" EndDate="@endDate"></RangeDatesInput>
 </div>
 
+<div class="panelMenuContainer">
+    <div><label class="sub-tile">@GetName("Buyer",new CommercialDocument())</label></div>
+    <div class="Buyer">
+        <InputTextSelector3 styleCaption="min-width: 25vw;" TItem="Concept"
+                            Id="Buyer"
+                            caption="@(buyer !=null ? buyer?.Name:"" )"
+                            Items="buyerList"
+                            EventIdSelectionAndId="EventIdSelectionAndId"
+                           >
 
+        </InputTextSelector3>
+    </div>
+</div>
+
+
+ 
 
 <div class="tableContainer">
 
@@ -46,7 +61,7 @@
                     TItem="InventoryDetail"
                     ColumnWidth="300px"
                     SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"                 
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
             <Columns>
 
@@ -57,7 +72,7 @@
                 <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyReserved" Title="@GetName("QtyReserved", new InventoryDetail())" Width="100px" />
                 <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnHand" Title="@GetName("QtyOnHand", new InventoryDetail())" Width="100px" />
                 <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnOrder" Title="@GetName("QtyOnOrder", new InventoryDetail())" Width="100px" />
-                 <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnSalesOrder" Title="@GetName("QtyOnSalesOrder", new InventoryDetail())" Width="100px" />
+                <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnSalesOrder" Title="@GetName("QtyOnSalesOrder", new InventoryDetail())" Width="100px" />
                 <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnPurchaseOrder" Title="@GetName("QtyOnPurchaseOrder", new InventoryDetail())" Width="100px" />
                 <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnSalesOrder" Title="@GetName("QtyOnSalesOrder", new InventoryDetail())" Width="100px" />
                 <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnTransferOrder" Title="@GetName("QtyOnTransferOrder", new InventoryDetail())" Width="100px" />
@@ -71,8 +86,8 @@
                 <RadzenDataGridColumn TItem="InventoryDetail" Property="UnitCost" Title="@GetName("UnitCost", new InventoryDetail())" Width="100px" />
                 <RadzenDataGridColumn TItem="InventoryDetail" Property="BasicUnitsQty" Title="@GetName("BasicUnitsQty", new InventoryDetail())" Width="100px" />
                 <RadzenDataGridColumn TItem="InventoryDetail" Property="InventoryBusinessLine.Name" Title="@GetName("InventoryBusinessLine", new InventoryDetail())" Width="100px" />
-              
-               
+
+
             </Columns>
         </RadzenDataGrid>
     }
@@ -84,7 +99,8 @@
     [Parameter]
     public string _filterItems { get; set; }
     List<InventoryDetail>? InventoryDetaiList;
-
+    public List<Concept> buyerList { get; set; }
+    public Concept buyer { get; set; }
 
     bool isLoading = false;
 
@@ -110,29 +126,46 @@
     public async void LoadData()
     {
         isLoading = true;
-        InventoryDetaiList = await _Inventory.GetInventoryList(_filterItems);
+       // InventoryDetaiList = await _Inventory.GetInventoryList(documentTypeId, BuyerId, DateTime.Now, 1, 10, _filterItems);
         isLoading = false;
         //await SynthesisToSpeakerAsync( $"Se encontraron {commercialdocumentList.Count()}, resultados voz dos");
         StateHasChanged();
-    }  
+    }
 
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<InventoryDetail> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
-        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>       
-        </RadzenMenu>
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
     );
 
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         InventoryDetail argObj = (InventoryDetail)args.Value;
-      
+
         Navigation.NavigateTo($"SaleItem/{argObj.Id}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
         }
     }
+
+
+
+    public async void EventIdSelectionAndId(Concept item)
+    {
+      
+        //if (SearcherValue == "Buyer")
+        //{
+        //    commercialDocument.Buyer = item;
+        //    buyerWarehouseList = await DocumentServices.GetCommercialBuyerWarehouseList(item.Id);
+        //    addressList = await DocumentServices.GetEntityDetailsAddressList(item.Id);
+
+        //}
+       
+        StateHasChanged();
+    }
+
 
 
     public string GetName(string Name, Object Obj)

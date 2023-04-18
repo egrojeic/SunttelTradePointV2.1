@@ -16,7 +16,7 @@
 </MessageSaveComponent>
 
 
-<div class="flex-horizontal-center ">
+<div >
     <div class="detailsTitleContainer">
         <h3 class="subTitleDetailForm">@GetName("Items",new CommercialDocument())</h3>
         <img @onclick="()=>CloseMenu(true)" class="img-menu" src="/images/menu.png">
@@ -67,7 +67,7 @@
                     ShowPagingSummary="true"
                     Data="@items"
                     TItem="SalesDocumentItemsDetails"
-                    ColumnWidth="300px"
+                    ColumnWidth="100px"
                     PageNumbersCount="100"
                     PageSize="20"
                   >
@@ -78,7 +78,7 @@
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Qty" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" Width="200px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableQty" Title="@GetName("ChargeableQty", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" Width="200px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableUnits.Name" Title="@GetName("ChargeableUnits.Name", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" Width="200px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitPrice" Title="@GetName("UnitPrice", new SalesDocumentItemsDetails())" Width="200px">
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitPrice" Title="@GetName("UnitPrice", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" Width="200px">
                     </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxableUnitPrice" Title="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false"  Width="200px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitCost" Title="@GetName("UnitCost", new SalesDocumentItemsDetails())" Filterable="false"  Sortable="false"  Width="200px" />
