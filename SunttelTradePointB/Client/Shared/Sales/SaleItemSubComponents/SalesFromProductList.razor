@@ -54,11 +54,11 @@
 
                 <Columns>
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName("TransactionalItem", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.ProductPackingSpecs.Code" Title="@GetName("TransactionalItemSpecs", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="IdCommercialDocument" Title="@GetName("IdCommercialDocument", new SalesDocumentItemsDetails())" Width="120px" />
+                   
+                    
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Qty" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableQty" Title="@GetName("ChargeableQty", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableUnitsName" Title="@GetName("ChargeableUnitsName", new SalesDocumentItemsDetails())" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableUnits.Name" Title="@GetName("ChargeableUnits", new SalesDocumentItemsDetails())" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitPrice" Title="@GetName("UnitPrice", new SalesDocumentItemsDetails())" Width="120px">
                         <EditTemplate Context="itemEdit">
                             <RadzenNumeric @bind-Value="itemEdit.UnitPrice" />
