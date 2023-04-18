@@ -220,7 +220,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
                 if (resultCommercialDocumentType == null)
                 {
-                    return (false, null, "Unpopulated Transactional Item Types");
+                    return (false, null, "There is no type of commercial document with that id");
                 }
                 else
                 {
