@@ -67,6 +67,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
                 return null;
             }
         }
+
         public async Task<BusinessLine> SaveCommercialBusinessLine(BusinessLine businessLine)
         {
             try

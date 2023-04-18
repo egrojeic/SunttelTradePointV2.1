@@ -314,7 +314,7 @@
     bool menuVisible = false;
 
     public CommercialDocument commercialDocument = new();
-   // public SalesDocumentItemsDetails items = new();
+    // public SalesDocumentItemsDetails items = new();
 
     #region Status
     public List<ShippingStatus> shippingStatusDocumentList = new();
@@ -372,7 +372,7 @@
 
         documentTypeList = await DocumentServices.GetCommercialDocumentTypes();
         businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
-      
+
         carrierList = await DocumentServices.GetCarrierList();
         LoadCommercialDocument();
         isLoading = false;
@@ -394,7 +394,7 @@
             {
                 alert("Saved", 0);
             }else{
-                 alert("No saved", 1);
+                alert("No saved", 1);
             }
 
         }
@@ -450,7 +450,7 @@
         if (SearcherValue == "Vendor")
         {
             vendorList = await DocumentServices.GetCommercialVendorList(arg.value, commercialDocument.DocumentType);
-      
+
         }
         if (SearcherValue == "SalesPerson")
         {
@@ -480,7 +480,7 @@
         {
             commercialDocument.Vendor = item;
             vendorWarehouseList = await DocumentServices.GetCommercialVendorWarehouseList(item.Id);
-          
+
         }
         if (SearcherValue == "SalesPerson")
         {
@@ -491,7 +491,7 @@
             commercialDocument.Buyer = item;
             buyerWarehouseList = await DocumentServices.GetCommercialBuyerWarehouseList(item.Id);
             addressList = await DocumentServices.GetEntityDetailsAddressList(item.Id);
-      
+
         }
         LoadCommercialDocument();
         StateHasChanged();
@@ -557,7 +557,7 @@
         if (commercialDocument.Carrier == null) commercialDocument.Carrier = new();
         if (commercialDocument.DeliveryAddress == null) commercialDocument.DeliveryAddress = new();
         if (commercialDocument.ShippingStatusDocument == null) commercialDocument.ShippingStatusDocument = new();
-        if (commercialDocument.FinanceStatusDocument == null) commercialDocument.FinanceStatusDocument = new();
+        if (commercialDocument.FinanceStatusDocument == null) commercialDocument.FinanceStatusDocument = new() ;
         if (commercialDocument.OriginDocument == null) commercialDocument.OriginDocument = new();
         if (commercialDocument.VendorWarehouse == null) commercialDocument.VendorWarehouse = new();
         if (commercialDocument.BuyerWarehouse == null) commercialDocument.BuyerWarehouse = new();

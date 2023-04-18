@@ -36,7 +36,6 @@
     <Folder Include="Interfaces\AccountingInterfaces\" />
     <Folder Include="Interfaces\ECommerceInterfaces\" />
     <Folder Include="Interfaces\EDIInterfaceInterfaces\" />
-    <Folder Include="Interfaces\InventoryInterfaces\" />
     <Folder Include="Interfaces\MarketingInterfaces\" />
     <Folder Include="Interfaces\ProcurementInterfaces\" />
     <Folder Include="Interfaces\ProductionInterfaces\" />

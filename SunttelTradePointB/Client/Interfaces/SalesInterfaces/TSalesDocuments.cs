@@ -6,6 +6,42 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
     {
 
         /// <summary>
+        /// Save a commercialDocument item
+        /// </summary>
+        /// <param name="commercialDocument"></param>
+        /// <returns></returns>
+        Task<CommercialDocument> SaveCommercialDocument(CommercialDocument commercialDocument);
+
+        /// <summary>
+        /// Save a commercialDocumentType item
+        /// </summary>
+        /// <param name="commercialDocumentType"></param>
+        /// <returns></returns>
+        Task<CommercialDocumentType> SaveCommercialDocumentType(CommercialDocumentType commercialDocumentType);
+
+        /// <summary>
+        /// Save a shippingStatus item
+        /// </summary>
+        /// <param name="shippingStatus"></param>
+        /// <returns></returns>
+        Task<ShippingStatus> SaveShippingStatus(ShippingStatus shippingStatus);
+
+
+        /// <summary>
+        /// Save a SaveCommercialBusinessLine item
+        /// </summary>
+        /// <param name="businessLine"></param>
+        /// <returns></returns>
+        Task<BusinessLine> SaveCommercialBusinessLine(BusinessLine businessLine);
+
+        /// <summary>
+        /// Save a SaveCommercialBusinessLine item
+        /// </summary>
+        /// <param name="salesDocumentItemsDetails"></param>
+        /// <returns></returns>
+        Task<SalesDocumentItemsDetails> SaveCommercialDocumentDetail(SalesDocumentItemsDetails salesDocumentItemsDetails);
+
+        /// <summary>
         /// Retrives a list with commercialDocument items meeting search criteria
         /// </summary>
         /// <param name="filterCriteria"></param>

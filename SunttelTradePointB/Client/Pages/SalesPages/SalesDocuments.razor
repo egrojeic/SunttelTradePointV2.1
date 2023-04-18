@@ -139,7 +139,7 @@
     public async void LoadData()
     {
         isLoading = true;
-        commercialdocumentList = await DocumentServices.GetCommercialDocumentList(startingDate, endDate, docsFilter);
+        commercialdocumentList = await DocumentServices.GetCommercialDocumentList(startingDate, endDate,  commercialDocumentType.Id);
         isLoading = false;
 
         //await SynthesisToSpeakerAsync( $"Se encontraron {commercialdocumentList.Count()}, resultados voz dos");
