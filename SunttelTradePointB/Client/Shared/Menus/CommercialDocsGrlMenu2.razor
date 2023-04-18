@@ -9,18 +9,19 @@
 
 <div id="container-menu-general">
     <nav>
-        <SfSplitButton Content="Document Type " IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
-            <SplitButtonEvents ItemSelected="SetDocumentType">
-            </SplitButtonEvents>
-            <DropDownMenuItems>
-                @if(commercialDocumentTypeList!=null){
-                @foreach (var item in commercialDocumentTypeList)
+
+        <div class="InventoryBusinessLine">
+            <select @onchange="SetDocumentType" class="select-style">
+                @if (commercialDocumentTypeList != null)
                 {
-                        <DropDownMenuItem Id="@(item.Id)" Text="@(item.Name)" IconCss="fa-sharp fa-solid fa-circle-arrow-left color-hover"></DropDownMenuItem>
+                    @foreach (var item in commercialDocumentTypeList)
+                    {
+                        <option value="@(item.Id)" selected>@(item.Name)</option>                      
+                    }
                 }
-                }
-            </DropDownMenuItems>
-        </SfSplitButton>
+            </select>
+        </div>
+       
     </nav>
 
 </div>
@@ -74,9 +75,9 @@
         Navigation.NavigateTo(Selected_item);
     }
 
-    private void SetDocumentType(MenuEventArgs args)
+    private void SetDocumentType(ChangeEventArgs args)
     {
-        var Selected_item = commercialDocumentTypeList.Where(s=>s.Id == args.Item.Id).FirstOrDefault();
+        var Selected_item = commercialDocumentTypeList.Where(s=>s.Id == args.Value.ToString()).FirstOrDefault();
         if (Selected_item!= null){
        SetDocumentTypeId.InvokeAsync(Selected_item);
         }
