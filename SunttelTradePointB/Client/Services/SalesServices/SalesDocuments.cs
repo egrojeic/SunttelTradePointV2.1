@@ -257,7 +257,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {               
-                string path = $"/api/TransactionalItems/GetProductsByCustomerId?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&customerId={customerId}&filter={filter}";
+                string path = $"/api/TransactionalItems/GetProductsByCustomerId?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&customerId={customerId}&nameLike={filter}";
                 var responseMessage = await Gethttp(path);
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<AddItemCommercialDocument>>();
                 return list != null ? list : new List<AddItemCommercialDocument>();
