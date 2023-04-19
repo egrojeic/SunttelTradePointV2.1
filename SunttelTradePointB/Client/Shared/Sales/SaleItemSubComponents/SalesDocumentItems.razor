@@ -117,6 +117,10 @@
 @code {
     [Parameter]
     public List<SalesDocumentItemsDetails> items { get; set; } = new();
+    [Parameter]
+    public string buyerId { get; set; } 
+    [Parameter]
+    public string commercialDocumentId { get; set; }
 
     string page = "";
     bool menuVisible = false;
@@ -139,7 +143,7 @@
 
     public void EventIdSelectionMenuItem(string name)
     {
-        Js.InvokeAsync<object>("open", name, "_blank");
+        Js.InvokeAsync<object>("open", $"{name}/{commercialDocumentId}/{buyerId}", "_blank");
         CloseMenu(false);
     }
 
