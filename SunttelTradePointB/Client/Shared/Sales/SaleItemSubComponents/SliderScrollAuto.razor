@@ -25,7 +25,7 @@
 
     protected override void OnInitialized()
     {
-        if (list == null) list = new();
+       list = new();
         if (summary != null)
         {
             list.Add(($"{GetName("TotalAmount", new FinanceSalesDocumentSummary())}", summary.TotalAmount.ToString()));
@@ -37,7 +37,7 @@
 
     protected override void OnParametersSet()
     {
-        if (list == null) list = new();
+         list = new();
         if (summary != null)
         {
             list.Add(($"{GetName("TotalAmount", new FinanceSalesDocumentSummary())}", summary.TotalAmount.ToString()));
