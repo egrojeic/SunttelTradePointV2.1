@@ -1592,7 +1592,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 var pipeline = new List<BsonDocument>();
 
-                if (!(strNameFiler.ToLower() == "all" || strNameFiler.ToLower() == "todos"))
+                if (!(strNameFiler.ToLower() == "all" || strNameFiler.ToLower() == "todos" || strNameFiler.ToLower() == ""))
                 {
                     pipeline.Add(
                     new BsonDocument{
