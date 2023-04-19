@@ -924,34 +924,33 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 if (isASale)
                 {
-                    //Si es una venta 
-                    if (squadId != "")
-                    {
-                        pipe.Add(
+                    //Es venta
+                    pipe.Add(
                         new BsonDocument
                         {
                             { "$match",
                                 new BsonDocument{
-                                    { "DefaultEntityRole.Name", new BsonRegularExpression("Company", "i") },
+                                    { "DefaultEntityRole.EntityRoleClassifier.Name", new BsonRegularExpression("ORGANIZATION", "i") },
                                     { "SquadId", squadId}
                                 }
                             }
                         }
-                        );
-                    }
-                    else
-                    {
-                        pipe.Add(
+                    );
+                }
+                else
+                {
+                    //Es compra
+                    pipe.Add(
                         new BsonDocument
                         {
                             { "$match",
                                 new BsonDocument{
-                                    { "DefaultEntityRole.Name", new BsonRegularExpression("Company", "i") },
+                                    { "SquadId", squadId}
                                 }
                             }
                         }
-                        );
-                    }
+                    );
+
                 }
 
                 pipe.Add(
@@ -1019,34 +1018,32 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 if (!isASale)
                 {
-                    //No es una venta 
-                    if (squadId != "")
+                    //Es compra
+                    pipe.Add(
+                    new BsonDocument
                     {
-                        pipe.Add(
-                        new BsonDocument
-                        {
-                            { "$match",
-                                new BsonDocument{
-                                    { "DefaultEntityRole.Name", new BsonRegularExpression("Company", "i") },
-                                    { "SquadId", squadId}
-                                }
+                        { "$match",
+                            new BsonDocument{
+                                { "DefaultEntityRole.EntityRoleClassifier.Name", new BsonRegularExpression("ORGANIZATION", "i") },
+                                { "SquadId", squadId}
                             }
                         }
-                        );
                     }
-                    else
+                    );
+                }
+                else
+                {
+                    //Es venta
+                    pipe.Add(
+                    new BsonDocument
                     {
-                        pipe.Add(
-                        new BsonDocument
-                        {
-                            { "$match",
-                                new BsonDocument{
-                                    { "DefaultEntityRole.Name", new BsonRegularExpression("Company", "i") },
-                                }
+                        { "$match",
+                            new BsonDocument{
+                                { "SquadId", squadId}
                             }
                         }
-                        );
                     }
+                    );
                 }
 
                 pipe.Add(
