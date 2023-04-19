@@ -64,7 +64,8 @@
                 <Status Name="@(commercialDocument.FinanceStatusDocument.Name)"></Status>
 
                 <div><label class="sub-tile">@GetName("PrintingSatus",new CommercialDocument())</label></div>
-                <StatusItem></StatusItem>
+                <StatusItem  item="commercialDocument.PrintingSatus" ></StatusItem>
+
                 <div class="item-check">
                     <div><label class="sub-tile">@GetName("MarkedForQCInspection",new CommercialDocument())</label></div>
                     <div>
@@ -121,7 +122,7 @@
 
             <div><label class="sub-tile">@GetName("Vendor",new CommercialDocument())</label></div>
             <div class="Vendor">
-                <InputTextSelector3 styleCaption="min-width: 25vw;" TItem="Concept"
+                <InputTextSelector3 styleCaption="min-width: 27vw;" TItem="Concept"
                             Id="Vendor"
                             caption="@(commercialDocument.Vendor !=null ? commercialDocument.Vendor?.Name:"" )"
                             Items="vendorList"
@@ -133,7 +134,7 @@
 
             <div><label class="sub-tile">@GetName("Buyer",new CommercialDocument())</label></div>
             <div class="Buyer">
-            <InputTextSelector3  styleCaption="min-width: 25vw;" TItem="Concept"
+            <InputTextSelector3  styleCaption="min-width: 27vw;" TItem="Concept"
                             Id="Buyer"
                             caption="@(commercialDocument.Buyer !=null ? commercialDocument.Buyer?.Name:"" )"
                             Items="buyerList"                           
@@ -172,7 +173,7 @@
             </div>
 
             <div><label class="sub-tile">@GetName("Season",new CommercialDocument())</label></div>
-            <InputTextSelector3 styleCaption="width:180px" TItem="SeasonBusiness"
+            <InputTextSelector3 styleCaption="width:180px" style="right:-100px;" TItem="SeasonBusiness"
                             Id="Season"
                             caption="@(commercialDocument.Season !=null ? commercialDocument.Season?.Name:"" )"
                             Items="seasonList"
@@ -274,7 +275,9 @@
                         <TabHeader Text="@GetName("Items",new CommercialDocument())"></TabHeader>
                     </ChildContent>
                     <ContentTemplate>
+                        <div class="container-item">
                         <SalesDocumentItems items="@commercialDocument.Items"></SalesDocumentItems>
+                        </div>
                     </ContentTemplate>
                 </TabItem>
 
@@ -314,7 +317,7 @@
     bool menuVisible = false;
 
     public CommercialDocument commercialDocument = new();
-   // public SalesDocumentItemsDetails items = new();
+    // public SalesDocumentItemsDetails items = new();
 
     #region Status
     public List<ShippingStatus> shippingStatusDocumentList = new();
@@ -355,7 +358,7 @@
         if (commercialDocumentId != null)
         {
             commercialDocument = await DocumentServices.GetItemCommercialDocumentById(commercialDocumentId);
-            var itemCommercialDocument = await DocumentServices.GetCommercialDocumentDetails(commercialDocumentId);
+            commercialDocument.Items = await DocumentServices.GetCommercialDocumentDetails(commercialDocumentId);
 
         }
 
@@ -372,7 +375,7 @@
 
         documentTypeList = await DocumentServices.GetCommercialDocumentTypes();
         businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
-      
+
         carrierList = await DocumentServices.GetCarrierList();
         LoadCommercialDocument();
         isLoading = false;
@@ -394,7 +397,7 @@
             {
                 alert("Saved", 0);
             }else{
-                 alert("No saved", 1);
+                alert("No saved", 1);
             }
 
         }
@@ -450,7 +453,7 @@
         if (SearcherValue == "Vendor")
         {
             vendorList = await DocumentServices.GetCommercialVendorList(arg.value, commercialDocument.DocumentType);
-      
+
         }
         if (SearcherValue == "SalesPerson")
         {
@@ -480,7 +483,7 @@
         {
             commercialDocument.Vendor = item;
             vendorWarehouseList = await DocumentServices.GetCommercialVendorWarehouseList(item.Id);
-          
+
         }
         if (SearcherValue == "SalesPerson")
         {
@@ -491,7 +494,7 @@
             commercialDocument.Buyer = item;
             buyerWarehouseList = await DocumentServices.GetCommercialBuyerWarehouseList(item.Id);
             addressList = await DocumentServices.GetEntityDetailsAddressList(item.Id);
-      
+
         }
         LoadCommercialDocument();
         StateHasChanged();
@@ -557,7 +560,7 @@
         if (commercialDocument.Carrier == null) commercialDocument.Carrier = new();
         if (commercialDocument.DeliveryAddress == null) commercialDocument.DeliveryAddress = new();
         if (commercialDocument.ShippingStatusDocument == null) commercialDocument.ShippingStatusDocument = new();
-        if (commercialDocument.FinanceStatusDocument == null) commercialDocument.FinanceStatusDocument = new();
+        if (commercialDocument.FinanceStatusDocument == null) commercialDocument.FinanceStatusDocument = new() ;
         if (commercialDocument.OriginDocument == null) commercialDocument.OriginDocument = new();
         if (commercialDocument.VendorWarehouse == null) commercialDocument.VendorWarehouse = new();
         if (commercialDocument.BuyerWarehouse == null) commercialDocument.BuyerWarehouse = new();

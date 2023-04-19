@@ -63,7 +63,7 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveCommercialDocument")]
-        public async Task<IActionResult> SaveCommercialDocument(string userId, string ipAddress, CommercialDocument commercialDocument)
+        public async Task<IActionResult> SaveCommercialDocument(string userId, string ipAddress, [FromBody] CommercialDocument commercialDocument)
         {
             var response = await _commercialDocument.SaveCommercialDocument(userId, ipAddress, commercialDocument);
 
@@ -82,17 +82,21 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         /// Retrieves a list of Commercial documents of the Squad for the date span and Document type
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="ipAdress"></param>
-        /// <param name="squadId"></param>
+        /// <param name="ipAddress"></param>
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <param name="documentTypeId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name=""></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetCommercialDocumentsByDateSpan")]
-        public async Task<IActionResult> GetCommercialDocumentsByDateSpan(string userId, string ipAdress, string squadId, DateTime startDate, DateTime endDate, string documentTypeId)
+        public async Task<IActionResult> GetCommercialDocumentsByDateSpan(string userId, string ipAddress, DateTime startDate, DateTime endDate, string documentTypeId, int? page = 1, int? perPage = 10)
         {
-            var response = await _commercialDocument.GetCommercialDocumentsByDateSpan(userId, ipAdress, squadId, startDate, endDate, documentTypeId);
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _commercialDocument.GetCommercialDocumentsByDateSpan(userId, ipAddress, squadId, startDate, endDate, documentTypeId, page, perPage);
 
             if (response.IsSuccess)
             {
@@ -432,10 +436,9 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
-        /// <param name="customHeaderValue"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
-        /// <param name="filterName"></param>
+        /// <param name="filterId"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetCommercialDocumentDetails")]
@@ -444,13 +447,13 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
             string ipAddress,
             int? page = 1,
             int? perPage = 10,
-            string? filterName = null)
+            string? filterId = null)
         {
 
             var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
 
-            var response = await _commercialDocument.GetCommercialDocumentDetails(userId, ipAddress, squadId, page, perPage, filterName);
+            var response = await _commercialDocument.GetCommercialDocumentDetails(userId, ipAddress, squadId, page, perPage, filterId);
 
             if (response.IsSuccess)
             {

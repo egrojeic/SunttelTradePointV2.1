@@ -1,5 +1,5 @@
 @page "/SalesFromProductList"
-@page "/SalesFromProductList/{_filterItems}"
+@page "/SalesFromProductList/{commercialDocumentId}"
 
 @using SunttelTradePointB.Shared.Sales;
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
@@ -50,33 +50,35 @@
                     ColumnWidth="300px"
                     PageNumbersCount="100"
                     PageSize="15"
-                    CellContextMenu="@ShowContextMenuWithContent">
+                    CellContextMenu="@ShowContextMenuWithContent"
+                    AllowRowSelectOnRowClick="true"
+                    CellDoubleClick="OnCellDoubleClick">
 
                 <Columns>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName("TransactionalItem", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.ProductPackingSpecs.Code" Title="@GetName("TransactionalItemSpecs", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="IdCommercialDocument" Title="@GetName("IdCommercialDocument", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Qty" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableQty" Title="@GetName("ChargeableQty", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableUnitsName" Title="@GetName("ChargeableUnitsName", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitPrice" Title="@GetName("UnitPrice", new SalesDocumentItemsDetails())" Width="120px">
+                   
+                    <RadzenDataGridColumn  TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName("TransactionalItem", new SalesDocumentItemsDetails())" Width="300px" />
+
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Qty" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Filterable="false" Width="200px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableQty" Title="@GetName("ChargeableQty", new SalesDocumentItemsDetails())" Filterable="false" Width="200px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableUnits.Name" Title="@GetName("ChargeableUnits", new SalesDocumentItemsDetails())" Filterable="false" Width="200px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitPrice" Title="@GetName("UnitPrice", new SalesDocumentItemsDetails())" Filterable="false" Width="200px">
                         <EditTemplate Context="itemEdit">
                             <RadzenNumeric @bind-Value="itemEdit.UnitPrice" />
                         </EditTemplate>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxableUnitPrice" Title="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())" Width="120px">
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxableUnitPrice" Title="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())" Filterable="false" Width="200px">
                         <EditTemplate Context="itemEdit">
                             <RadzenNumeric @bind-Value="itemEdit.UnitPrice" />
                         </EditTemplate>
-                    </RadzenDataGridColumn><RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitCost" Title="@GetName("UnitCost", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxRate" Title="@GetName("TaxRate", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxValue" Title="@GetName("TaxValue", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Total" Title="@GetName("Total", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PurchaseSpecs" Title="@GetName("PurchaseSpecs", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Provider" Title="@GetName("Provider", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="OriginalPrice" Title="@GetName("OriginalPrice", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ScannedBoxes" Title="@GetName("ScannedBoxes", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ProcurementPtje" Title="@GetName("ProcurementPtje", new SalesDocumentItemsDetails())" Width="120px">
+                    </RadzenDataGridColumn><RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitCost" Title="@GetName("UnitCost", new SalesDocumentItemsDetails())" Filterable="false" Width="200px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxRate" Title="@GetName("TaxRate", new SalesDocumentItemsDetails())" Filterable="false" Width="200px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxValue" Title="@GetName("TaxValue", new SalesDocumentItemsDetails())" Filterable="false" Width="200px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Total" Title="@GetName("Total", new SalesDocumentItemsDetails())" Filterable="false" Width="200px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PurchaseSpecs" Title="@GetName("PurchaseSpecs", new SalesDocumentItemsDetails())" Filterable="false" Width="200px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Provider" Title="@GetName("Provider", new SalesDocumentItemsDetails())" Filterable="false" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="OriginalPrice" Title="@GetName("OriginalPrice", new SalesDocumentItemsDetails())" Filterable="false" Width="200px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ScannedBoxes" Title="@GetName("ScannedBoxes", new SalesDocumentItemsDetails())" Filterable="false" Width="200px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ProcurementPtje" Title="@GetName("ProcurementPtje", new SalesDocumentItemsDetails())" Width="200px">
                         <Template>
                             @{
                                 var MarkedForQCInspection = context.GetType().GetProperty(nameof(SalesDocumentItemsDetails.ProcurementPtje))?.GetValue(context);
@@ -84,8 +86,8 @@
                             }
                         </Template>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PullDate" Title="@GetName("PullDate", new SalesDocumentItemsDetails())" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="FormatedPullDate" Title="@GetName("FormatedPullDate", new SalesDocumentItemsDetails())" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PullDate" Title="@GetName("PullDate", new SalesDocumentItemsDetails())" Filterable="false" Width="200px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="FormatedPullDate" Title="@GetName("FormatedPullDate", new SalesDocumentItemsDetails())" Filterable="false" Width="200px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Id" Title="@GetName("Id", new SalesDocumentItemsDetails())" >
                         <Template>
                             @{
@@ -101,7 +103,8 @@
                             }
                         </Template>
                     </RadzenDataGridColumn>
-
+                    
+                   
                 </Columns>
             </RadzenDataGrid>
         }
@@ -113,7 +116,8 @@
 @code {
     [Parameter]
     public string _filterItems { get; set; }
-
+    [Parameter]
+    public string commercialDocumentId { get; set; }
 
     public List<SalesDocumentItemsDetails> items { get; set; } = new();
 
@@ -138,17 +142,18 @@
 
     protected override void OnInitialized()
     {
-
-        LoadData();
+        if (commercialDocumentId != null)
+        {
+            LoadData();
+        }
 
     }
 
     private async Task LoadData()
     {
         isLoading = true;
-        items = await DocumentServices.GetCommercialProductList(_filterItems != null ? _filterItems : "all");
-
-        // listItemByListProduct(itemCommercialDocument);
+        var list  = await DocumentServices.GetCommercialProductList(commercialDocumentId);
+        listItemByListProduct(list);
         isLoading = false;
         StateHasChanged();
 
@@ -224,9 +229,7 @@
 
     }
 
-
-
-
+    #region grid 
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
@@ -250,6 +253,16 @@
             ContextMenuService.Close();
         }
     }
+
+    #endregion grid
+
+
+    void OnCellDoubleClick(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> arg)
+    {
+        Console.WriteLine($"Double clicked cell value: ");
+     
+    }
+
 
 
     async Task EditRow(SalesDocumentItemsDetails order)

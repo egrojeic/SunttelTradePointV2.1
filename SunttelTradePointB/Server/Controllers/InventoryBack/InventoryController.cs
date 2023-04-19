@@ -86,7 +86,7 @@ namespace SunttelTradePointB.Server.Controllers.InventoryBack
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveInventory")]
-        public async Task<IActionResult> SaveInventory(string userId, string ipAddress, InventoryDetail inventory)
+        public async Task<IActionResult> SaveInventory(string userId, string ipAddress, [FromBody] InventoryDetail inventory)
         {
             var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];

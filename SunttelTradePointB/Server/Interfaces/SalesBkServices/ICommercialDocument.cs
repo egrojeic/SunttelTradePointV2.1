@@ -34,13 +34,15 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// Retrieves a list of the documents having the specified type and date span
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="ipAdress"></param>
+        /// <param name="ipAddress"></param>
         /// <param name="squadId"></param>
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <param name="documentTypeId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<CommercialDocument>? CommercialDocuments, string? ErrorDescription)> GetCommercialDocumentsByDateSpan(string userId, string ipAdress, string squadId, DateTime startDate, DateTime endDate, string documentTypeId);
+        Task<(bool IsSuccess, List<CommercialDocument>? CommercialDocuments, string? ErrorDescription)> GetCommercialDocumentsByDateSpan(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, string documentTypeId, int? page = 1, int? perPage = 10);
 
         /// <summary>
         /// Saves an  Business line document. If it doesn't exists, it'll be created
