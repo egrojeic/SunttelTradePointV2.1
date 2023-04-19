@@ -19,17 +19,7 @@
 </div>
 
 <div class="panelMenuContainer">
-    <div><label class="sub-tile">@GetName("Buyer",new CommercialDocument())</label></div>
-    <div class="Buyer">
-        <InputTextSelector3 styleCaption="min-width: 25vw;" TItem="Concept"
-                            Id="Buyer"
-                            caption="@(buyer !=null ? buyer?.Name:"" )"
-                            Items="buyerList"
-                            EventIdSelectionAndId="EventIdSelectionAndId"
-                           >
-
-        </InputTextSelector3>
-    </div>
+    <InventoryMenu2 SetDocumentTypeId="SetDocumentTypeId"></InventoryMenu2>
 </div>
 
 
@@ -101,6 +91,7 @@
     List<InventoryDetail>? InventoryDetaiList;
     public List<Concept> buyerList { get; set; }
     public Concept buyer { get; set; }
+    public CommercialDocumentType commercialDocumentType { get; set; }
 
     bool isLoading = false;
 
@@ -126,9 +117,8 @@
     public async void LoadData()
     {
         isLoading = true;
-       // InventoryDetaiList = await _Inventory.GetInventoryList(documentTypeId, BuyerId, DateTime.Now, 1, 10, _filterItems);
-        isLoading = false;
-        //await SynthesisToSpeakerAsync( $"Se encontraron {commercialdocumentList.Count()}, resultados voz dos");
+        InventoryDetaiList = await _Inventory.GetInventoryList(_filterItems, commercialDocumentType.Id , DateTime.Now.ToShortDateString() , 1, 10);
+        isLoading = false;      
         StateHasChanged();
     }
 
@@ -148,6 +138,17 @@
         {
             ContextMenuService.Close();
         }
+    }
+
+
+    public async void SetDocumentTypeId(CommercialDocumentType item)
+    {
+
+        if (item != null)
+        {
+            commercialDocumentType = item;
+        }
+        StateHasChanged();
     }
 
 

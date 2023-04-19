@@ -4,12 +4,15 @@
 
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.InvetoryModels
-@using SunttelTradePointB.Client.Shared.Inventory.InventorySubComponents
 @using Syncfusion.Blazor.SplitButtons
-@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject SunttelTradePointB.Client.Services.InventoryServices.Inventory InventoryServices
 @inject ContextMenuService ContextMenuService
 @inject TransactionalItemsService transactItemsService;
 @inject NavigationManager Navigation
+
+
+<MessageSaveComponent isVisible="isVisible" message="@alertMsg">
+</MessageSaveComponent>
 
 <PageTitleComponent Title="Inventory Item" IconName="InventoryItem.png"
                     Description="With this tool you can create and edit inventory item">
@@ -154,7 +157,7 @@
     <div></div><div></div>
     <div><label>@GetName("InventoryBusinessLine",new CommercialDocument())</label></div>
 
-   
+
     <div class="InventoryBusinessLine">
         <select @onchange="SelectItemBusinessLineDoc" class="select-style">
             @if (inventoryDetail.InventoryBusinessLine != null)
@@ -181,6 +184,11 @@
     public string inventoryDetailId { get; set; }
 
     public InventoryDetail inventoryDetail { get; set; }
+    public string _filterItems { get; set; }
+
+    bool isVisible = false;
+    string alertMsg = "";
+
 
     string searcherValue = "";
     #region List
@@ -191,22 +199,22 @@
     #endregion List
 
 
+
+
     protected async override void OnInitialized()
     {
         Load();
-        LoadData();
+        if (inventoryDetailId != null)
+        {
+            var result = await InventoryServices.GetInventoryById(inventoryDetailId);
+           
+        }
+
+        Load();
         base.OnInitialized();
     }
 
-    private async Task LoadData()
-    {
-        if (inventoryDetailId != null)
-        {
-            // inventoryItem = await DocumentServices.GetCommercialDocumentDetails(_filterItems != null ? _filterItems : "all");
-        }
-        if (inventoryDetail == null) inventoryDetail = new();
 
-    }
 
 
     public async void ItemSelected(MenuEventArgs e)
@@ -216,6 +224,16 @@
         if (tile == "Save")
         {
 
+            var result = await InventoryServices.SaveInventoryItem(inventoryDetail);
+            if (result != null)
+            {
+                inventoryDetail = result;
+                alert("Saved", 0);
+            }
+            else
+            {
+                alert("No saved", 11);
+            }
 
         }
 
@@ -275,6 +293,13 @@
         if (inventoryDetail.CustomerReservedFor == null) inventoryDetail.CustomerReservedFor = new();
         if (inventoryDetail.InventoryBusinessLine == null) inventoryDetail.InventoryBusinessLine = new();
         if (inventoryDetail.EntryDate == DateTime.MinValue) inventoryDetail.EntryDate = DateTime.Today;
+    }
+
+
+    public void alert(string msg, int status)
+    {
+        isVisible = true;
+        alertMsg = msg;
     }
 
 

@@ -334,7 +334,7 @@
     #endregion Status
 
     #region Input3
-    public List<CommercialDocumentType> documentTypeList = new();
+    public List<CommercialDocumentType> documentTypeList  = new();
     public List<BusinessLine> businessLineDocList = new();
     public List<Concept> salesPersonList = new();
     public List<Concept> vendorList = new();
@@ -392,8 +392,7 @@
             string tile = e.Item != null ? e.Item.Text : "";
             if (tile == "Save")
             {
-                LoadCommercialDocument();
-                commercialDocument.DeliveryAddress = geoPlaces.address;
+                LoadCommercialDocument();              
                 var result = await DocumentServices.SaveCommercialDocument(commercialDocument);
                 if (result != null)
                 {

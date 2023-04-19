@@ -1,7 +1,8 @@
 ﻿@page "/Payments"
 @page "/Payments/{_filterItems}"
 @using SunttelTradePointB.Shared.Sales;
-@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@using SunttelTradePointB.Shared.Accounting
+@inject SunttelTradePointB.Client.Services.PaymentServices.Payment PaymentServices
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
 
@@ -12,11 +13,11 @@
 
 <div class="panelMenuContainer">
     <PaymentsMenu ></PaymentsMenu>   
-    <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
-    <RangeDatesInput StartDate="@startingDate" EndDate="@endDate"></RangeDatesInput>
+    <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>   
 </div>
 <div class="panelMenuContainer">  
-    <CommercialDocsGrlMenu2 SetDocumentTypeId="SetDocumentTypeId"></CommercialDocsGrlMenu2>   
+    <PaymentMenu2 SetDocumentTypeId="SetDocumentTypeId"></PaymentMenu2>
+    <RangeDatesInput StartDate="@startingDate" EndDate="@endDate"></RangeDatesInput>
 </div>
 
 
@@ -42,16 +43,24 @@
                     AllowPaging="true"
                     PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                     ShowPagingSummary="true"
-                   
-                    TItem="CommercialDocument"
+                    Data="paymentList"
+                    TItem="Payment"
                     ColumnWidth="300px"
                     SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"
-                   
+                    LogicalFilterOperator="LogicalFilterOperator.Or"                   
                     CellContextMenu="@ShowContextMenuCommercialDocument">
             <Columns>
 
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentType.Name" Title="Document Type" Filterable="false" Sortable="false"  Width="208px" />
+                <RadzenDataGridColumn TItem="Payment" Property="DocumentType.Name" Title="@GetName("DocumentType",new Payment())"  Width="308px" />
+                <RadzenDataGridColumn TItem="Payment" Property="Code" Title="@GetName("Code",new Payment())"  Width="208px" />
+                <RadzenDataGridColumn TItem="Payment" Property="PaymentRef" Title="@GetName("PaymentRef",new Payment())" Filterable="false" Sortable="false" Width="208px" />
+                <RadzenDataGridColumn TItem="Payment" Property="PaymentDate" Title="@GetName("PaymentDate",new Payment())" Filterable="false" Sortable="false" Width="208px" />
+                <RadzenDataGridColumn TItem="Payment" Property="Payer.Name" Title="@GetName("Payer",new Payment())" Filterable="false" Sortable="false" Width="208px" />
+                <RadzenDataGridColumn TItem="Payment" Property="Receiver.Name" Title="@GetName("Receiver",new Payment())" Filterable="false" Sortable="false" Width="208px" />              
+                <RadzenDataGridColumn TItem="Payment" Property="Status.Name" Title="@GetName("Status",new Payment())" Width="208px" />
+                <RadzenDataGridColumn TItem="Payment" Property="Receiver.Name" Title="@GetName("Receiver",new Payment())" Filterable="false" Sortable="false" Width="208px" />
+                <RadzenDataGridColumn TItem="Payment" Property="PaymentValue" Title="@GetName("PaymentValue",new Payment())" Filterable="false" Sortable="false" Width="208px" />
+                <RadzenDataGridColumn TItem="Payment" Property="ReturnedPayment" Title="@GetName("ReturnedPayment",new Payment())" Filterable="false" Sortable="false" Width="208px" />
             
             </Columns>
         </RadzenDataGrid>
@@ -63,13 +72,14 @@
 @code {
     [Parameter]
     public string _filterItems { get; set; }
- 
-  
+    public List<Payment> paymentList { get; set; }
+    public CommercialDocumentType documentType { get; set; }
+
     bool isLoading = false;
 
     DateTime startingDate = DateTime.Now , endDate= DateTime.Now.AddMonths(1) ;
 
-    public string docsFilter
+    public string filter
     {
         get { return _filterItems; }
         set
@@ -81,7 +91,6 @@
 
     protected async override void OnInitialized()
     {
-       
 
         if (_filterItems != null) LoadData();
         base.OnInitialized();
@@ -91,49 +100,52 @@
     public async void LoadData()
     {
         isLoading = true;
-     
+        await PaymentServices.GetPaymentList((filter!=null?filter:"all"), documentType.Id, 1,10);
         isLoading = false;
-
-        //await SynthesisToSpeakerAsync( $"Se encontraron {commercialdocumentList.Count()}, resultados voz dos");
         StateHasChanged();
     }
 
     public async void SetDocumentTypeId(CommercialDocumentType item)
     {
-       
+
         if (item != null)
         {
-          
+            documentType = item;
         }
         StateHasChanged();
     }
 
 
-    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CommercialDocument> args) => ContextMenuService.Open(args, ds =>
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<Payment> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-        <RadzenMenuItem Text="Another" Value=args.Data Icon="edit"></RadzenMenuItem>
+      
         </RadzenMenu>
     );
 
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
-        CommercialDocument argObj = (CommercialDocument)args.Value;     
-        Navigation.NavigateTo($"SaleItem/{argObj.Id}");
+        Payment argObj = (Payment)args.Value;
+        Navigation.NavigateTo($"PaymentsItem/{argObj.Id}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
         }
     }
 
-    public void SetdocsFilter( string value)
+    public void Setfilter( string value)
     {
-        docsFilter = value;
+        filter = value;
          StateHasChanged();
     }
 
-
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+   
 
 
 }

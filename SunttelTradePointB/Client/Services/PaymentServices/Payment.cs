@@ -4,27 +4,27 @@ using SunttelTradePointB.Shared.InvetoryModels;
 using SunttelTradePointB.Shared.Sales;
 using System.Net.Http.Json;
 
-namespace SunttelTradePointB.Client.Services.InventoryServices
+namespace SunttelTradePointB.Client.Services.PaymentServices
 {
-    public class Inventory : TInventory
+    public class Payment
     {
         private readonly HttpClient _httpClient;
         private string Configpath = "userId=*Id&ipAddress=*Ip";
-        public Inventory(HttpClient httpClient)
+        public Payment(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
 
 
 
-        public async Task<InventoryDetail> SaveInventoryItem(InventoryDetail commercialDocument)
+        public async Task<Payment> SavePaymentItem(InventoryDetail commercialDocument)
         {
             try
             {
                 string path = $"/api/Inventory/GetInventory?&{Configpath}";
                 commercialDocument.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<InventoryDetail>($"{path}", commercialDocument);
-                return await responseMessage.Content.ReadFromJsonAsync<InventoryDetail>();
+                return await responseMessage.Content.ReadFromJsonAsync<Payment>();
 
             }
             catch (Exception ex)
@@ -36,25 +36,17 @@ namespace SunttelTradePointB.Client.Services.InventoryServices
 
 
 
-        public async Task<List<BasicConcept>> GetWarehouseList(string entityId, string? nameLike = "all")
+
+
+        public async Task<List<Payment>> GetPaymentList(string filterName, string documentTypeId, int? page = 1, int? perPage = 10)
         {
             try
             {
-                var responseMessage = await Gethttp($"/api/GeographicPlaces/GetWarehouses?&{Configpath}&entityId={entityId}&nameLike={nameLike}");
-                var list = await responseMessage.Content.ReadFromJsonAsync<List<Warehouse>>();
-                List<BasicConcept> conceptLis = new();
-                if (list != null)
-                {
-                    foreach (var item in list)
-                    {
-                        conceptLis.Add(new BasicConcept
-                        {
-                            Id = item.Id,
-                            Name = item.Name
-                        });
-                    }
-                }
-                return conceptLis != null ? conceptLis : new List<BasicConcept>();
+                string Url = GetGlobalVariables($"");
+                var responseMessage = await Gethttp(Url);
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<Payment>>();
+                List<Payment> conceptLis = new();
+                return conceptLis != null ? conceptLis : new List<Payment>();
             }
             catch (Exception ex)
             {
@@ -64,26 +56,18 @@ namespace SunttelTradePointB.Client.Services.InventoryServices
         }
 
 
-        public async Task<List<InventoryDetail>> GetInventoryList(string documentTypeId, string BuyerId, string DocumentDate, int? page = 1, int? perPage = 10, string? filterName = null)
+
+        public string GetGlobalVariables(string Url)
         {
-            try
-            {
-                var responseMessage = await Gethttp($"/api/Inventory/GetInventory?&{Configpath}&documentTypeId={documentTypeId}&BuyerId={BuyerId}&DocumentDate={DocumentDate}&page={page}&perPage={perPage}&filterName={filterName}");
-                var list = await responseMessage.Content.ReadFromJsonAsync<List<InventoryDetail>>();
-                List<InventoryDetail> conceptLis = new();
-               
-                return conceptLis != null ? conceptLis : new List<InventoryDetail>();
-            }
-            catch (Exception ex)
-            {
-                string errMessage = ex.Message;
-                return null;
-            }
+            var SquadId = UIClientGlobalVariables.ActiveSquad;
+            var ReplaceIdUser = UIClientGlobalVariables.UserId;
+            var ReplacePublicIpAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            Url = Url.Replace("*IP", ReplacePublicIpAddress??"000");
+            Url = Url.Replace("*Id", ReplaceIdUser ?? "000");
+
+            return Url;
         }
-
-
-
-
 
         public async Task<HttpResponseMessage> Gethttp(string Url)
         {
@@ -122,7 +106,7 @@ namespace SunttelTradePointB.Client.Services.InventoryServices
 
 
     }
-     
- 
+
+
 
 }

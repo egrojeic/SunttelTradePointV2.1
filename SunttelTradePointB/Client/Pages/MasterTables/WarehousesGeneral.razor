@@ -54,8 +54,10 @@
                     PageSize="2">
 
                 <Columns>
-                    <RadzenDataGridColumn TItem="Warehouse" Property="WareHouseParent.AssociatedEntity.Name" Title="@lblWareHouseParent" Width="80px" />
-                    <RadzenDataGridColumn TItem="Warehouse" Property="AssociatedEntity.Name" Title="@lblAssociatedEntity" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                     <RadzenDataGridColumn TItem="Warehouse" Property="Warehouse.Name" Title="@lblWareHouseParent" Width="200px" />
+                      <RadzenDataGridColumn TItem="Warehouse" Property="Warehouse.Code" Title="@lblWareHouseParent" Width="200px" />
+                    <RadzenDataGridColumn TItem="Warehouse" Property="WareHouseParent.AssociatedEntity.Name" Title="@lblWareHouseParent" Width="200px" />
+                    <RadzenDataGridColumn TItem="Warehouse" Property="AssociatedEntity.Name" Title="@lblAssociatedEntity" Width="200px" TextAlign="Radzen.TextAlign.Center" />
                     <RadzenDataGridColumn TItem="Warehouse" Property="IsExternal" Title="@lblIsExternal" Width="80px" TextAlign="Radzen.TextAlign.Center">
                         <Template>
                             @{
@@ -71,7 +73,7 @@
                             }
                         </Template>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="Warehouse" Property="ScanSimulated" Title="@lblScanSimulated" Width="80px" TextAlign="Radzen.TextAlign.Center">
+                    <RadzenDataGridColumn TItem="Warehouse" Property="ScanSimulated" Title="@lblScanSimulated" Width="200px" TextAlign="Radzen.TextAlign.Center">
                         <Template>
                                @{
                                 var ScanSimulated = (bool)context.GetType().GetProperty(nameof(Warehouse.ScanSimulated)).GetValue(context);
@@ -86,7 +88,7 @@
                             }
                         </Template>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="Warehouse" Property="IsInventoryControlled" Title="@lblIsInventoryControlled" Width="80px" TextAlign="Radzen.TextAlign.Center">
+                    <RadzenDataGridColumn TItem="Warehouse" Property="IsInventoryControlled" Title="@lblIsInventoryControlled" Width="200px" TextAlign="Radzen.TextAlign.Center">
                         <Template>
                             @{
                                 var isInventoryControlled = (bool)context.GetType().GetProperty(nameof(Warehouse.IsInventoryControlled)).GetValue(context);
@@ -102,24 +104,10 @@
                         </Template>
                     </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="Warehouse" Property="InventoryTransactionalItemType.Name" Title="@lblInventoryTransactionalItemType" Width="80px" />
-                    <RadzenDataGridColumn TItem="Warehouse" Property="WarehouseAddress.AddressLine1" Title="@lblWarehouseAddress" Width="80px" />
-                    <RadzenDataGridColumn TItem="Warehouse" Property="ContactPerson.Name" Title="@lblContactPerson" Width="80px" />
-                    <RadzenDataGridColumn TItem="Warehouse" Property="IsActive" Title="@lblIsActive" Width="80px" />
-                    <RadzenDataGridColumn TItem="Warehouse" Property="IsActive" Title="@lblIsInventoryControlled" Width="80px" TextAlign="Radzen.TextAlign.Center">
-                        <Template>
-                            @{
-                                var isActive = (bool)context.GetType().GetProperty(nameof(Warehouse.IsActive)).GetValue(context);
-                                if (isActive)
-                                {
-                                    <input type="checkbox" checked="isActive" />
-                                }
-                                else
-                                {
-                                    <input type="checkbox" />
-                                }
-                            }
-                        </Template>
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="Warehouse" Property="WarehouseAddress.AddressLine1" Title="@lblWarehouseAddress" Width="200px" />
+                    <RadzenDataGridColumn TItem="Warehouse" Property="ContactPerson.Name" Title="@lblContactPerson" Width="200px" />
+                    <RadzenDataGridColumn TItem="Warehouse" Property="IsActive" Title="@lblIsActive" Width="200px" />
+                   
                 </Columns>
             </RadzenDataGrid>
 
