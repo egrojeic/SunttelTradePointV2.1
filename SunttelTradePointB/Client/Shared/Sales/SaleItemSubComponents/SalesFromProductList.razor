@@ -1,5 +1,5 @@
 @page "/SalesFromProductList"
-@page "/SalesFromProductList/{commercialDocumentId}"
+@page "/SalesFromProductList/{commercialDocumentId}/{BuyerId}"
 
 @using SunttelTradePointB.Shared.Sales;
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
@@ -88,7 +88,7 @@
                     </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PullDate" Title="@GetName("PullDate", new SalesDocumentItemsDetails())" Filterable="false" Width="200px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="FormatedPullDate" Title="@GetName("FormatedPullDate", new SalesDocumentItemsDetails())" Filterable="false" Width="200px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Id" Title="@GetName("Id", new SalesDocumentItemsDetails())" >
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Id" Title=" " >
                         <Template>
                             @{
                                 var Id = context.GetType().GetProperty(nameof(SalesDocumentItemsDetails.Id))?.GetValue(context).ToString();
@@ -118,6 +118,8 @@
     public string _filterItems { get; set; }
     [Parameter]
     public string commercialDocumentId { get; set; }
+    [Parameter]
+    public string BuyerId { get; set; }
 
     public List<SalesDocumentItemsDetails> items { get; set; } = new();
 
@@ -151,8 +153,11 @@
 
     private async Task LoadData()
     {
-        //isLoading = true;
-        //var list  = await DocumentServices.GetCommercialProductList(commercialDocumentId);
+        isLoading = true;
+        if (BuyerId != null && commercialDocumentId !=null)
+        {
+            var list = await DocumentServices.GetCommercialProductList(commercialDocumentId, BuyerId, (_filterItems != null ? _filterItems : "all"), 1, 10);
+        }
         //listItemByListProduct(list);
         isLoading = false;
         StateHasChanged();
@@ -257,10 +262,12 @@
     #endregion grid
 
 
-    void OnCellDoubleClick(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> arg)
+    void  OnCellDoubleClick(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> arg)
     {
-        Console.WriteLine($"Double clicked cell value: ");
-     
+        SalesDocumentItemsDetails argObj = (SalesDocumentItemsDetails)arg.Data;
+        EditId = argObj.Id;
+        GridItem.EditRow(argObj);
+
     }
 
 
@@ -296,5 +303,8 @@
         AlertOpen = false;
         msg = msg;
     }
+
+
+  
 
 }

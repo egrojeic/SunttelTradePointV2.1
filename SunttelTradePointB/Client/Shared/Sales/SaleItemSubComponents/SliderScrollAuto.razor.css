@@ -13,6 +13,7 @@
 
     .div-scroll .div-scroll-item {
         display: flex;
+        min-width:120px;
         transform: translateX(1100px);
         justify-content: space-between;
         column-gap: 29px;

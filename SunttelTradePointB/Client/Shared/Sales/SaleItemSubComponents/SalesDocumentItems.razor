@@ -12,11 +12,10 @@
 @inject ContextMenuService ContextMenuService
 @inject IJSRuntime Js
 
-<MessageSaveComponent @ref="referAlert">
-</MessageSaveComponent>
 
 
-<div >
+
+<div>
     <div class="detailsTitleContainer">
         <h3 class="subTitleDetailForm">@GetName("Items",new CommercialDocument())</h3>
         <img @onclick="()=>CloseMenu(true)" class="img-menu" src="/images/menu.png">
@@ -69,25 +68,24 @@
                     TItem="SalesDocumentItemsDetails"
                     ColumnWidth="100px"
                     PageNumbersCount="100"
-                    PageSize="20"
-                  >
+                    PageSize="20">
 
                 <Columns>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName("TransactionalItem", new SalesDocumentItemsDetails())"   Width="300px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName("TransactionalItem", new SalesDocumentItemsDetails())" Width="300px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.ProductPackingSpecs.Code" Title="@GetName("TransactionalItemSpecs", new SalesDocumentItemsDetails())" Width="200px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Qty" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" Width="200px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableQty" Title="@GetName("ChargeableQty", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" Width="200px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableUnits.Name" Title="@GetName("ChargeableUnits.Name", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" Width="200px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitPrice" Title="@GetName("UnitPrice", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" Width="200px">
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxableUnitPrice" Title="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false"  Width="200px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitCost" Title="@GetName("UnitCost", new SalesDocumentItemsDetails())" Filterable="false"  Sortable="false"  Width="200px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxableUnitPrice" Title="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" Width="200px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitCost" Title="@GetName("UnitCost", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" Width="200px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxRate" Title="@GetName("TaxRate", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" Width="200px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxValue" Title="@GetName("TaxValue", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false"  Width="200px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxValue" Title="@GetName("TaxValue", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" Width="200px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Total" Title="@GetName("Total", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" Width="200px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PurchaseSpecs" Title="@GetName("PurchaseSpecs", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" Width="200px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Provider" Title="@GetName("Provider", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false"  Width="200px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="OriginalPrice" Title="@GetName("OriginalPrice", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false"  Width="200px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Provider" Title="@GetName("Provider", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" Width="200px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="OriginalPrice" Title="@GetName("OriginalPrice", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" Width="200px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ScannedBoxes" Title="@GetName("ScannedBoxes", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" Width="200px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ProcurementPtje" Title="@GetName("ProcurementPtje", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" Width="200px">
                         <Template>
@@ -117,10 +115,16 @@
 @code {
     [Parameter]
     public List<SalesDocumentItemsDetails> items { get; set; } = new();
+    [Parameter]
+    public string buyerId { get; set; }
+    [Parameter]
+    public string commercialDocumentId { get; set; }
+    [Parameter]
+    public EventCallback<string> alert{ get; set; }
 
     string page = "";
     bool menuVisible = false;
-
+    bool isVisible = false;
     MessageSaveComponent? referAlert;
     string msg = "";
     bool isLoading = false;
@@ -139,29 +143,19 @@
 
     public void EventIdSelectionMenuItem(string name)
     {
-        Js.InvokeAsync<object>("open", name, "_blank");
-        CloseMenu(false);
-    }
-
-    public void alert(string msg, int status)
-    {
-        referAlert.isVisible = true;
-        referAlert.message = msg;
-        referAlert.status = status;
-    }
-
-
-    public void OpenAlert(string _msg, int _status, bool visible)
-    {
-        if (referAlert != null)
+        if (commercialDocumentId != null)
         {
-            referAlert.isVisible = visible;
-            referAlert.message = _msg;
-            referAlert.status = _status;
-            StateHasChanged();
+            Js.InvokeAsync<object>("open", $"{name}/{commercialDocumentId}/{buyerId}", "_blank");
         }
+        else
+        {
+            alert.InvokeAsync("required fields");
+        }
+        CloseMenu(false);
+
     }
 
+   
     public void CloseMenu(bool mode)
     {
         menuVisible = mode;
@@ -183,7 +177,7 @@
 
         if (argObj != null)
         {
-            
+
         }
     }
 

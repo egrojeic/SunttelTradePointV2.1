@@ -37,6 +37,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
             _SalesDocumentsCollection = mongoDatabase.GetCollection<SalesDocuments>("CommercialDocuments");
             _BusinessLineCollection = mongoDatabase.GetCollection<BusinessLine>("BusinessLineDocuments");
             _ShippingStatusCollection = mongoDatabase.GetCollection<ShippingStatus>("ShippingStatusDocuments");
+            _CommercialDocumentCollection = mongoDatabase.GetCollection<CommercialDocument>("CommercialDocuments");
             _CommercialDocumentType = mongoDatabase.GetCollection<CommercialDocumentType>("CommercialDocumentTypes");
             _FinanceStatusCollection = mongoDatabase.GetCollection<FinanceStatus>("FinanceStatus");
             _CommercialDocumentDetailImports = mongoDatabase.GetCollection<SalesDocumentItemsDetails>("CommercialDocumentsDetails");
@@ -113,16 +114,40 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <param name="documentTypeId"></param>
+        /// <param name="filter"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, List<CommercialDocument>? CommercialDocuments, string? ErrorDescription)> GetCommercialDocumentsByDateSpan(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, string documentTypeId, int? page = 1, int? perPage = 10)
+        public async Task<(bool IsSuccess, List<CommercialDocument>? CommercialDocuments, string? ErrorDescription)> GetCommercialDocumentsByDateSpan(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, string documentTypeId, string? filter = null, int? page = 1, int? perPage = 10)
         {
             try
             {
-                var pipeline = new List<BsonDocument>();
+                string strNameFiler = filter == null ? "" : filter;
                 var skip = (page - 1) * perPage;
+
+                var pipeline = new List<BsonDocument>();
+
+                /*
+                if (!(strNameFiler.ToLower() == "all" || strNameFiler.ToLower() == "todos" || strNameFiler.ToLower() == ""))
+                {
+                    pipeline.Add(
+                    new BsonDocument{
+                        { "$match",  new BsonDocument {
+                            { "$text",
+                                new BsonDocument {
+                                    { "$search",strNameFiler },
+                                    { "$language","english" },
+                                    { "$caseSensitive",false },
+                                    { "$diacriticSensitive",false }
+                                }
+                            }
+                        }}
+                    }
+                );
+                }
+                */
+
 
                 pipeline.Add(
                     new BsonDocument{
@@ -149,7 +174,6 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                         {"$limit",  perPage}
                     }
                 );
-
 
                 List<CommercialDocument> results = await _SalesDocumentsCollection.Aggregate<CommercialDocument>(pipeline).ToListAsync();
 

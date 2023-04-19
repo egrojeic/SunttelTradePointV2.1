@@ -5,6 +5,7 @@ using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents;
 using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.Sales;
 using System.Net;
 using System.Reflection;
 
@@ -1576,43 +1577,76 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="ipAdress"></param>
         /// <param name="squadId"></param>
         /// <param name="customerId"></param>
+        /// <param name="nameLike"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, ProductModel? productModelResponse, string? ErrorDescription)> GetProductsByCustomerId(string userId, string ipAdress, string squadId, string customerId)
+        public async Task<(bool IsSuccess, List<AddItemCommercialDocument>? AddItemCommercialDocumentResponse, string? ErrorDescription)> GetProductsByCustomerId(string userId, string ipAdress, string squadId, string customerId, string? nameLike = null, int? page = 1, int? perPage = 10)
         {
             try
             {
+
+
+                string strNameFiler = nameLike == null ? "" : nameLike;
+                var skip = (page - 1) * perPage;
+
                 var pipeline = new List<BsonDocument>();
 
+                if (!(strNameFiler.ToLower() == "all" || strNameFiler.ToLower() == "todos" || strNameFiler.ToLower() == ""))
+                {
+                    pipeline.Add(
+                    new BsonDocument{
+                        { "$match",  new BsonDocument {
+                            { "$text",
+                                new BsonDocument {
+                                    { "$search",strNameFiler },
+                                    { "$language","english" },
+                                    { "$caseSensitive",false },
+                                    { "$diacriticSensitive",false }
+                                }
+                            }
+                        }}
+                    }
+                );
+                }
+
                 pipeline.Add(
-                    new BsonDocument("$match", new BsonDocument("TransactionalItemModels._id", new ObjectId(customerId)))
+                    new BsonDocument("$match", new BsonDocument("ProductPackingSpecs.Customer._id", new ObjectId(customerId)))
                 );
 
                 pipeline.Add(
-                   new BsonDocument("$unwind", "$TransactionalItemModels")
-               );
+                    new BsonDocument{
+                        {"$skip",  skip}
+                    }
+                );
+
                 pipeline.Add(
-                  new BsonDocument("$match", new BsonDocument("TransactionalItemModels._id", new ObjectId(customerId)))
-              );
-                pipeline.Add(
-                 new BsonDocument("$replaceRoot", new BsonDocument("newRoot", "$TransactionalItemModels"))
-             );
+                    new BsonDocument{
+                        {"$limit",  perPage}
+                    }
+                );
 
+                //List<AddItemCommercialDocument> results = await _TransactionalItemsCollection.Aggregate<AddItemCommercialDocument>(pipeline).ToListAsync();
 
-                // obtengo el transactional items //
-                var resultPrev = await _TransactionalItemsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
-                // deserializo transactional items //
-                ProductModel result = resultPrev.Select(d => BsonSerializer.Deserialize<ProductModel>(d)).ToList()[0];
-                // obtengo lista de productsPackingSpecs
+                List<TransactionalItem> results = await _TransactionalItemsCollection.Aggregate<TransactionalItem>(pipeline).ToListAsync();
 
+                var resultado = new List<AddItemCommercialDocument>();
 
-                return (true, result, null);
+                foreach ( var item in results ) 
+                {
+                    resultado.Add(new AddItemCommercialDocument
+                    {
+                        TransactionalItem = item
+
+                    });
+                }
+
+                return (true, resultado, null);
             }
             catch (Exception e)
             {
                 return (false, null, e.Message);
             }
         }
-
-
     }
 }
