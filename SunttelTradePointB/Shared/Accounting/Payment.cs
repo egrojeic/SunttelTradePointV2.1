@@ -22,7 +22,7 @@ namespace SunttelTradePointB.Shared.Accounting
         public string PaymentRef { get; set; }
 
         [DisplayName("Date")]
-        public DateTime ShipDate { get; set; }
+        public DateTime PaymentDate { get; set; }
 
         [DisplayName("Payer")]
         public Concept Payer { get; set; }
