@@ -276,7 +276,7 @@
                     </ChildContent>
                     <ContentTemplate>
                         <div class="container-item">
-                        <SalesDocumentItems items="@commercialDocument.Items"></SalesDocumentItems>
+                            <SalesDocumentItems items="@commercialDocument.Items" buyerId="@commercialDocument.Buyer.Id" commercialDocumentId="@commercialDocument.Id"   ></SalesDocumentItems>
                         </div>
                     </ContentTemplate>
                 </TabItem>
@@ -309,6 +309,7 @@
     public string commercialDocumentId { get; set; }
     [Parameter]
     public string filter { get; set; }
+
 
     TextToSpeech textToSpeech;
 
@@ -396,6 +397,7 @@
             if (result != null)
             {
                 alert("Saved", 0);
+                commercialDocument = result;
             }else{
                 alert("No saved", 1);
             }
@@ -520,6 +522,7 @@
         referAlert.isVisible = true;
         referAlert.message = msg;
         referAlert.status = status;
+        StateHasChanged();
     }
 
     public void Home()

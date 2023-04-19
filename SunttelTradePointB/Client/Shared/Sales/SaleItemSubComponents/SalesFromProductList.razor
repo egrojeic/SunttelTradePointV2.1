@@ -1,5 +1,5 @@
 @page "/SalesFromProductList"
-@page "/SalesFromProductList/{commercialDocumentId}"
+@page "/SalesFromProductList/{commercialDocumentId}/{BuyerId}"
 
 @using SunttelTradePointB.Shared.Sales;
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
@@ -118,6 +118,8 @@
     public string _filterItems { get; set; }
     [Parameter]
     public string commercialDocumentId { get; set; }
+    [Parameter]
+    public string BuyerId { get; set; }
 
     public List<SalesDocumentItemsDetails> items { get; set; } = new();
 
@@ -152,7 +154,10 @@
     private async Task LoadData()
     {
         isLoading = true;
-        var list = await DocumentServices.GetCommercialProductList(commercialDocumentId, "", _filterItems);
+        if (BuyerId != null && commercialDocumentId !=null)
+        {
+            var list = await DocumentServices.GetCommercialProductList(commercialDocumentId, BuyerId,( _filterItems!=null ?_filterItems:"all"),1,10 );
+        }
         //listItemByListProduct(list);
         isLoading = false;
         StateHasChanged();
