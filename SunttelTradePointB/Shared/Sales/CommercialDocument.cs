@@ -257,7 +257,7 @@ namespace SunttelTradePointB.Shared.Sales
         public string FormatedPullDate { get; set; }
     }
 
-    public class CancelationTrack
+    public class CancelationTrack: RecordItem
     {
 
         [DisplayName("Cancel Request")]
@@ -274,6 +274,26 @@ namespace SunttelTradePointB.Shared.Sales
 
     public class PurchaseItemDetails: RecordItem
     {
+
+        public string SalesDocumentItemsDetailsId { get; set; }
+
+        [BsonIgnoreIfNull]
+        [DisplayName("Provider")]
+        public BasicConcept Provider { get; set; }
+
+        [DisplayName("Assigned Qty")]
+        public int AssignedQty { get; set; }
+
+        [DisplayName("Confirmed Qty")]
+        public int ConfirmedQty { get; set; }
+
+        [DisplayName("Expected Cost")]
+        public int ExpectedCost { get; set; }
+
+        [DisplayName("Confirmed Qty")]
+        public int ConfirmedCost { get; set; }
+
+        public CancelationTrack CancelationInfo { get; set; }
 
     }
 

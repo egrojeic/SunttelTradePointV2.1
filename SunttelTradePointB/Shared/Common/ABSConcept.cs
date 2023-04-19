@@ -51,7 +51,10 @@ namespace SunttelTradePointB.Shared.Common
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string SquadId { get; set; }
 
-
+        [ObjectPropertyAttributes(ObjectPropertyAttributes.EditModes.LogAuditory)]
+        [BsonIgnoreIfNull]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public InfoAuditRecord AuditRecord { get; set; }
     }
 
     [BsonIgnoreExtraElements]
@@ -68,10 +71,7 @@ namespace SunttelTradePointB.Shared.Common
         public string Name { get; set; }
 
 
-        [ObjectPropertyAttributes(ObjectPropertyAttributes.EditModes.LogAuditory)]
-        [BsonIgnoreIfNull]
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public InfoAuditRecord AuditRecord { get; set; }
+       
      
 
         public AtomConcept()
