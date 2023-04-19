@@ -151,8 +151,8 @@
 
     private async Task LoadData()
     {
-        //isLoading = true;
-        //var list  = await DocumentServices.GetCommercialProductList(commercialDocumentId);
+        isLoading = true;
+        var list = await DocumentServices.GetCommercialProductList(commercialDocumentId, "", _filterItems);
         //listItemByListProduct(list);
         isLoading = false;
         StateHasChanged();
