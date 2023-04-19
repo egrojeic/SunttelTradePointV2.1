@@ -156,7 +156,7 @@
         isLoading = true;
         if (BuyerId != null && commercialDocumentId !=null)
         {
-            var list = await DocumentServices.GetCommercialProductList(commercialDocumentId, BuyerId,( _filterItems!=null ?_filterItems:"all"),1,10 );
+            var list = await DocumentServices.GetCommercialProductList(commercialDocumentId, BuyerId, (_filterItems != null ? _filterItems : "all"), 1, 10);
         }
         //listItemByListProduct(list);
         isLoading = false;
