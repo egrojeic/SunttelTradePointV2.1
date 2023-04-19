@@ -14,7 +14,7 @@
 @inject ActorsNodeService actorsNodeServive
 @inject IJSRuntime Js
 
-<MessageSaveComponent @ref="referAlert">
+<MessageSaveComponent isVisible="isVisible" message="@alertMsg">
 </MessageSaveComponent>
 <PageTitleComponent Title=" Commercial Document"
                     Description="Here you can add commercial document" IconName="commercialDocument.png">
@@ -50,8 +50,8 @@
 
         </div>
 
-       
-        <SliderScrollAuto summary="commercialDocument.FinanceSummary "></SliderScrollAuto>
+
+        <SliderScrollAuto summary="@commercialDocument.FinanceSummary"></SliderScrollAuto>
         <TextToSpeech @ref="textToSpeech" Id="FinanceSummary" EventChange="EventChange" Class="speack">
         </TextToSpeech>
         <div class="grid-columns-header grid-columns-6">
@@ -64,7 +64,7 @@
                 <Status Name="@(commercialDocument.FinanceStatusDocument !=null ? commercialDocument.FinanceStatusDocument.Name:"")"></Status>
 
                 <div><label class="sub-tile">@GetName("PrintingSatus",new CommercialDocument())</label></div>
-                <StatusItem  item="commercialDocument.PrintingSatus" ></StatusItem>
+                <StatusItem item="commercialDocument.PrintingSatus"></StatusItem>
 
                 <div class="item-check">
                     <div><label class="sub-tile">@GetName("MarkedForQCInspection",new CommercialDocument())</label></div>
@@ -82,10 +82,7 @@
 
             <div>
                 <select @onchange="SelectItemDocumentType" class="select-style">
-                    @if (commercialDocument !=null && commercialDocument.DocumentType != null)
-                    {
-                        <option value="@commercialDocument.DocumentType.Id" selected>@commercialDocument.DocumentType.Name</option>
-                    }
+                  
                     @if (documentTypeList != null && documentTypeList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
@@ -96,6 +93,10 @@
                         {
                             <option value="@item.Id">@item.Name</option>
                         }
+                    }
+                    @if (commercialDocument != null && commercialDocument.DocumentType != null)
+                    {
+                        <option value="@commercialDocument.DocumentType.Id" selected>@commercialDocument.DocumentType.Name</option>
                     }
                 </select>
             </div>
@@ -123,26 +124,25 @@
             <div><label class="sub-tile">@GetName("Vendor",new CommercialDocument())</label></div>
             <div class="Vendor">
                 <InputTextSelector3 styleCaption="min-width: 27vw;" TItem="Concept"
-                            Id="Vendor"
-                            caption="@(commercialDocument.Vendor !=null ? commercialDocument.Vendor?.Name:"" )"
-                            Items="vendorList"
-                            EventIdSelectionAndId="EventIdSelectionAndId"
-                            EventSearcherValueAndId="EventSearcherValueAndId">
+                                Id="Vendor"
+                                caption="@(commercialDocument.Vendor !=null ? commercialDocument.Vendor?.Name:"" )"
+                                Items="vendorList"
+                                EventIdSelectionAndId="EventIdSelectionAndId"
+                                EventSearcherValueAndId="EventSearcherValueAndId">
 
-            </InputTextSelector3>
+                </InputTextSelector3>
             </div>
 
             <div><label class="sub-tile">@GetName("Buyer",new CommercialDocument())</label></div>
             <div class="Buyer">
-            <InputTextSelector3  styleCaption="min-width: 27vw;" TItem="Concept"
-                            Id="Buyer"
-                            caption="@(commercialDocument.Buyer !=null ? commercialDocument.Buyer?.Name:"" )"
-                            Items="buyerList"                           
-                            EventIdSelectionAndId="EventIdSelectionAndId"
-                            EventSearcherValueAndId="EventSearcherValueAndId"           
-            >
+                <InputTextSelector3 styleCaption="min-width: 27vw;" TItem="Concept"
+                                Id="Buyer"
+                                caption="@(commercialDocument.Buyer !=null ? commercialDocument.Buyer?.Name:"" )"
+                                Items="buyerList"
+                                EventIdSelectionAndId="EventIdSelectionAndId"
+                                EventSearcherValueAndId="EventSearcherValueAndId">
 
-            </InputTextSelector3>
+                </InputTextSelector3>
             </div>
 
             <div><label class="sub-tile">@GetName("SalesPerson",new CommercialDocument())</label></div>
@@ -158,10 +158,7 @@
             <div>
                 <select @onchange="SelectItemDeliveryAddress" class="select-style">
 
-                    @if (commercialDocument !=null && commercialDocument.DeliveryAddress != null)
-                    {
-                        <option value="@commercialDocument.DeliveryAddress.Id" selected>@commercialDocument.DeliveryAddress.Name</option>
-                    }
+                   
                     @if (addressList != null && addressList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
@@ -169,6 +166,10 @@
                     @foreach (var item in addressList)
                     {
                         <option value="@item.Id">@item.Name</option>
+                    }
+                    @if (commercialDocument != null && commercialDocument.DeliveryAddress != null)
+                    {
+                        <option value="@commercialDocument.DeliveryAddress.Id" selected>@commercialDocument.DeliveryAddress.Name</option>
                     }
                 </select>
             </div>
@@ -185,10 +186,7 @@
             <div><label class="sub-tile">@GetName("Carrier",new CommercialDocument())</label></div>
             <div>
                 <select @onchange="SelectItemVendorWarehous" class="select-style">
-                    @if (commercialDocument.Carrier != null)
-                    {
-                        <option value="@commercialDocument.Carrier.Id" selected>@commercialDocument.Carrier.Name</option>
-                    }
+                  
                     @if (carrierList != null && carrierList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
@@ -196,6 +194,10 @@
                     @foreach (var item in carrierList)
                     {
                         <option value="@item.Id">@item.Name</option>
+                    }
+                    @if (commercialDocument.Carrier != null)
+                    {
+                        <option value="@commercialDocument.Carrier.Id" selected>@commercialDocument.Carrier.Name</option>
                     }
                 </select>
             </div>
@@ -206,10 +208,7 @@
             <div><label class="sub-tile">@GetName("VendorWarehouse",new CommercialDocument())</label></div>
             <div>
                 <select @onchange="SelectItemVendorWarehous" class="select-style">
-                    @if (commercialDocument.VendorWarehouse != null)
-                    {
-                        <option value="@commercialDocument.VendorWarehouse.Id" selected>@commercialDocument.VendorWarehouse.Name</option>
-                    }
+                   
                     @if (vendorWarehouseList != null && vendorWarehouseList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
@@ -218,16 +217,17 @@
                     {
                         <option value="@item.Id">@item.Name</option>
                     }
+                    @if (commercialDocument.VendorWarehouse != null)
+                    {
+                        <option value="@commercialDocument.VendorWarehouse.Id" selected>@commercialDocument.VendorWarehouse.Name</option>
+                    }
                 </select>
             </div>
 
             <div><label class="sub-tile">@GetName("BuyerWarehouse",new CommercialDocument())</label></div>
             <div>
                 <select @onchange="SelectItemVendorWarehous" class="select-style">
-                    @if (commercialDocument.BuyerWarehouse != null)
-                    {
-                        <option value="@commercialDocument.BuyerWarehouse" selected>@commercialDocument.BuyerWarehouse.Name</option>
-                    }
+                 
                     @if (buyerWarehouseList != null && buyerWarehouseList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
@@ -236,16 +236,17 @@
                     {
                         <option value="@item.Id">@item.Name</option>
                     }
+                    @if (commercialDocument.BuyerWarehouse != null)
+                    {
+                        <option value="@commercialDocument.BuyerWarehouse" selected>@commercialDocument.BuyerWarehouse.Name</option>
+                    }
                 </select>
             </div>
 
             <div><label class="sub-tile">@GetName("BusinessLineDoc",new CommercialDocument())</label></div>
             <div>
                 <select @onchange="SelectItemBusinessLineDoc" class="select-style">
-                    @if (commercialDocument.BusinessLineDoc != null)
-                    {
-                        <option value="@commercialDocument.BusinessLineDoc.Id" selected>@commercialDocument.BusinessLineDoc.Name</option>
-                    }
+                  
                     @if (businessLineDocList != null && businessLineDocList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
@@ -254,10 +255,12 @@
                     {
                         <option value="@item.Id">@item.Name</option>
                     }
+                    @if (commercialDocument.BusinessLineDoc != null)
+                    {
+                        <option value="@commercialDocument.BusinessLineDoc.Id" selected>@commercialDocument.BusinessLineDoc.Name</option>
+                    }
                 </select>
             </div>
-
-
 
 
         </div>
@@ -270,15 +273,16 @@
                 <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
             </TabAnimationSettings>
             <TabItems>
-                
+
                 <TabItem>
                     <ChildContent>
                         <TabHeader Text="@GetName("Items",new CommercialDocument())"></TabHeader>
                     </ChildContent>
                     <ContentTemplate>
                         <div class="container-item">
-                            @if(commercialDocument.Items!=null){
-                            <SalesDocumentItems items="@commercialDocument.Items" buyerId="@commercialDocument.Buyer.Id" commercialDocumentId="@commercialDocument.Id"   ></SalesDocumentItems>
+                            @if (commercialDocument.Items != null)
+                            {
+                                <SalesDocumentItems items="@commercialDocument.Items" alert="alert" buyerId="@commercialDocument.Buyer.Id" commercialDocumentId="@commercialDocument.Id"></SalesDocumentItems>
                             }
                         </div>
                     </ContentTemplate>
@@ -317,9 +321,10 @@
     TextToSpeech textToSpeech;
 
     string page = "";
+    string alertMsg = "";
     string SearcherValue = "";
     bool menuVisible = false;
-
+    bool isVisible = false;
     public CommercialDocument commercialDocument = new();
     // public SalesDocumentItemsDetails items = new();
 
@@ -357,7 +362,7 @@
     protected override async void OnInitialized()
     {
 
-        isLoading = true; 
+        isLoading = true;
         StateHasChanged();
         if (commercialDocumentId != null)
         {
@@ -365,7 +370,7 @@
             commercialDocument.Items = await DocumentServices.GetCommercialDocumentDetails(commercialDocumentId);
 
         }
-      
+
 
         documentTypeList = await DocumentServices.GetCommercialDocumentTypes();
         businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
@@ -380,21 +385,31 @@
 
     public async void ItemSelected(MenuEventArgs e)
     {
-        StateHasChanged();
-        string tile = e.Item != null ? e.Item.Text : "";
-        if (tile == "Save")
+        string msg = Validate();
+        if (msg == "")
         {
-            LoadCommercialDocument();
-            commercialDocument.DeliveryAddress = geoPlaces.address;
-            var result = await DocumentServices.SaveCommercialDocument(commercialDocument);
-            if (result != null)
+            StateHasChanged();
+            string tile = e.Item != null ? e.Item.Text : "";
+            if (tile == "Save")
             {
-                alert("Saved", 0);
-                commercialDocument = result;
-            }else{
-                alert("No saved", 1);
-            }
+                LoadCommercialDocument();
+                commercialDocument.DeliveryAddress = geoPlaces.address;
+                var result = await DocumentServices.SaveCommercialDocument(commercialDocument);
+                if (result != null)
+                {
+                    alert("Saved", 0);
+                    commercialDocument = result;
+                }
+                else
+                {
+                    alert("required fields", 1);
+                }
 
+            }
+        }
+        else
+        {
+            alert("Saved", 1);
         }
 
         StateHasChanged();
@@ -510,11 +525,19 @@
         CloseMenu(false);
     }
 
-    public void alert(string msg, int status)
+    public void alert(string _msg, int? status =0)
     {
-        referAlert.isVisible = true;
-        referAlert.message = msg;
-        referAlert.status = status;
+        isVisible = true;
+        alertMsg = _msg;
+       
+        StateHasChanged();
+    }
+
+    public void alert(string _msg)
+    {
+        isVisible = true;
+        alertMsg = _msg;
+
         StateHasChanged();
     }
 
@@ -542,6 +565,18 @@
         StateHasChanged();
     }
 
+    public string Validate()
+    {
+        string msg = "";
+        if (commercialDocument == null) msg = "required fields";
+        if (commercialDocument.DocumentType.Id == null) msg = "required fields";
+        if (commercialDocument.Vendor.Id == null) msg = "required fields";
+        if (commercialDocument.Buyer.Id == null) msg = "required fields";
+        if (commercialDocument.SalesPerson.Id == null) msg = "required fields";
+        if (commercialDocument.BusinessLineDoc.Id == null) msg = "required fields";
+        return msg;
+    }
+
 
     #region Load
 
@@ -556,7 +591,7 @@
         if (commercialDocument.Carrier == null) commercialDocument.Carrier = new();
         if (commercialDocument.DeliveryAddress == null) commercialDocument.DeliveryAddress = new();
         if (commercialDocument.ShippingStatusDocument == null) commercialDocument.ShippingStatusDocument = new();
-        if (commercialDocument.FinanceStatusDocument == null) commercialDocument.FinanceStatusDocument = new() ;
+        if (commercialDocument.FinanceStatusDocument == null) commercialDocument.FinanceStatusDocument = new();
         if (commercialDocument.OriginDocument == null) commercialDocument.OriginDocument = new();
         if (commercialDocument.VendorWarehouse == null) commercialDocument.VendorWarehouse = new();
         if (commercialDocument.BuyerWarehouse == null) commercialDocument.BuyerWarehouse = new();
@@ -568,7 +603,7 @@
         if (commercialDocument.ArrivalDate == DateTime.MinValue) commercialDocument.ArrivalDate = DateTime.Today;
 
 
-      
+
 
         if (businessLineDocList == null) businessLineDocList = new();
         if (documentTypeList == null) documentTypeList = new();
@@ -601,7 +636,7 @@
     public void EventChange(string item)
     {
         string value = "";
-      
+
         if (item == "FinanceSummary" && commercialDocument.FinanceSummary != null)
         {
             value = $@"Total, Amount, {commercialDocument.FinanceSummary.TotalAmount}.";
@@ -609,8 +644,10 @@
             value += $@"Total, Discounts, {commercialDocument.FinanceSummary.TotalDiscounts}.";
             value += $@"Total, Costs, {commercialDocument.FinanceSummary.TotalCosts}.";
             textToSpeech.Speack(value);
-        }else{
-         textToSpeech.Speack("Valor nulo,");
+        }
+        else
+        {
+            textToSpeech.Speack("Valor nulo,");
         }
         StateHasChanged();
     }

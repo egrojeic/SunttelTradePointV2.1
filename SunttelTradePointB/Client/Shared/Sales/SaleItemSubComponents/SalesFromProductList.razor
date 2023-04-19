@@ -88,7 +88,7 @@
                     </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PullDate" Title="@GetName("PullDate", new SalesDocumentItemsDetails())" Filterable="false" Width="200px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="FormatedPullDate" Title="@GetName("FormatedPullDate", new SalesDocumentItemsDetails())" Filterable="false" Width="200px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Id" Title="@GetName("Id", new SalesDocumentItemsDetails())" >
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Id" Title=" " >
                         <Template>
                             @{
                                 var Id = context.GetType().GetProperty(nameof(SalesDocumentItemsDetails.Id))?.GetValue(context).ToString();
