@@ -51,17 +51,17 @@
         </div>
 
        
-        <SliderScrollAuto summary="commercialDocument.FinanceSummary"></SliderScrollAuto>
+        <SliderScrollAuto summary="commercialDocument.FinanceSummary "></SliderScrollAuto>
         <TextToSpeech @ref="textToSpeech" Id="FinanceSummary" EventChange="EventChange" Class="speack">
         </TextToSpeech>
         <div class="grid-columns-header grid-columns-6">
 
             <div class="item-1">
                 <div><label class="sub-tile">@GetName("ShippingStatusDocument",new CommercialDocument())</label></div>
-                <Status color="#61c100" Name="@(commercialDocument.ShippingStatusDocument.Name)"></Status>
+                <Status color="#61c100" Name="@(commercialDocument.ShippingStatusDocument !=null ? commercialDocument.ShippingStatusDocument.Name:"")"></Status>
 
                 <div><label class="sub-tile">@GetName("FinanceStatusDocument",new CommercialDocument())</label></div>
-                <Status Name="@(commercialDocument.FinanceStatusDocument.Name)"></Status>
+                <Status Name="@(commercialDocument.FinanceStatusDocument !=null ? commercialDocument.FinanceStatusDocument.Name:"")"></Status>
 
                 <div><label class="sub-tile">@GetName("PrintingSatus",new CommercialDocument())</label></div>
                 <StatusItem  item="commercialDocument.PrintingSatus" ></StatusItem>
@@ -82,7 +82,7 @@
 
             <div>
                 <select @onchange="SelectItemDocumentType" class="select-style">
-                    @if (commercialDocument.DocumentType != null)
+                    @if (commercialDocument !=null && commercialDocument.DocumentType != null)
                     {
                         <option value="@commercialDocument.DocumentType.Id" selected>@commercialDocument.DocumentType.Name</option>
                     }
@@ -157,7 +157,8 @@
             <div><label class="sub-tile">@GetName("DeliveryAddress",new CommercialDocument())</label></div>
             <div>
                 <select @onchange="SelectItemDeliveryAddress" class="select-style">
-                    @if (commercialDocument.DeliveryAddress != null)
+
+                    @if (commercialDocument !=null && commercialDocument.DeliveryAddress != null)
                     {
                         <option value="@commercialDocument.DeliveryAddress.Id" selected>@commercialDocument.DeliveryAddress.Name</option>
                     }
@@ -276,7 +277,9 @@
                     </ChildContent>
                     <ContentTemplate>
                         <div class="container-item">
+                            @if(commercialDocument.Items!=null){
                             <SalesDocumentItems items="@commercialDocument.Items" buyerId="@commercialDocument.Buyer.Id" commercialDocumentId="@commercialDocument.Id"   ></SalesDocumentItems>
+                            }
                         </div>
                     </ContentTemplate>
                 </TabItem>
@@ -362,17 +365,7 @@
             commercialDocument.Items = await DocumentServices.GetCommercialDocumentDetails(commercialDocumentId);
 
         }
-
-        commercialDocument.FinanceSummary = new FinanceSalesDocumentSummary
-            {
-                TotalAmount = 2000,
-                TotalDiscounts = 1,
-                TotalTaxes = 2000,
-                TotalCosts = 2000
-            };
-
-
-        LoadCommercialDocument();
+      
 
         documentTypeList = await DocumentServices.GetCommercialDocumentTypes();
         businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");

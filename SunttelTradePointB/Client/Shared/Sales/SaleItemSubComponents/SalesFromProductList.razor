@@ -262,10 +262,12 @@
     #endregion grid
 
 
-    void OnCellDoubleClick(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> arg)
+    void  OnCellDoubleClick(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> arg)
     {
-        Console.WriteLine($"Double clicked cell value: ");
-     
+        SalesDocumentItemsDetails argObj = (SalesDocumentItemsDetails)arg.Data;
+        EditId = argObj.Id;
+        GridItem.EditRow(argObj);
+
     }
 
 
@@ -301,5 +303,8 @@
         AlertOpen = false;
         msg = msg;
     }
+
+
+  
 
 }
