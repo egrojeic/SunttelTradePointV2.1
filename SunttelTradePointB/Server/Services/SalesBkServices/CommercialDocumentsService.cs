@@ -37,6 +37,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
             _SalesDocumentsCollection = mongoDatabase.GetCollection<SalesDocuments>("CommercialDocuments");
             _BusinessLineCollection = mongoDatabase.GetCollection<BusinessLine>("BusinessLineDocuments");
             _ShippingStatusCollection = mongoDatabase.GetCollection<ShippingStatus>("ShippingStatusDocuments");
+            _CommercialDocumentCollection = mongoDatabase.GetCollection<CommercialDocument>("CommercialDocuments");
             _CommercialDocumentType = mongoDatabase.GetCollection<CommercialDocumentType>("CommercialDocumentTypes");
             _FinanceStatusCollection = mongoDatabase.GetCollection<FinanceStatus>("FinanceStatus");
             _CommercialDocumentDetailImports = mongoDatabase.GetCollection<SalesDocumentItemsDetails>("CommercialDocumentsDetails");

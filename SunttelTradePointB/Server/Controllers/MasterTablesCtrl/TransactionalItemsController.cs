@@ -39,7 +39,6 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
-        /// <param name="customHeaderValue"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="filterName"></param>
@@ -594,8 +593,6 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         [ActionName("SaveTags")]
         public async Task<IActionResult> SaveTags(string userId, string ipAddress, string transactionalItemId, TransactionalItemTag transactionalItemTag)
         {
-
-                
             var response = await _transactionalItems.SaveTags(userId, ipAddress, transactionalItemId, transactionalItemTag);
 
             if (response.IsSuccess)
@@ -892,18 +889,21 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAdress"></param>
-        /// <param name="squadId"></param>
         /// <param name="customerId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetProductsByCustomerId")]
-        public async Task<IActionResult> GetProductsByCustomerId(string userId, string ipAdress, string squadId, string customerId)
+        public async Task<IActionResult> GetProductsByCustomerId(string userId, string ipAdress, string customerId, int? page = 1, int? perPage = 10)
         {
-            var response = await _transactionalItems.GetProductsByCustomerId(userId, ipAdress, squadId, customerId);
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString()??""; // Request.Headers["SquadId"];
+            var response = await _transactionalItems.GetProductsByCustomerId(userId, ipAdress, squadId, customerId, page, perPage);
 
             if (response.IsSuccess)
             {
-                return Ok(response.productModelResponse);
+                return Ok(response.AddItemCommercialDocumentResponse);
             }
             else
                 return NotFound(response.ErrorDescription);

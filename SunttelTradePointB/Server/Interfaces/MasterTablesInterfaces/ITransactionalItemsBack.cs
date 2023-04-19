@@ -1,4 +1,5 @@
 ﻿using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.Sales;
 
 namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
 {
@@ -351,8 +352,10 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="ipAdress"></param>
         /// <param name="squadId"></param>
         /// <param name="customerId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, ProductModel? productModelResponse, string? ErrorDescription)> GetProductsByCustomerId(string userId, string ipAdress, string squadId, string customerId);
+        Task<(bool IsSuccess, List<TransactionalItem>? AddItemCommercialDocumentResponse, string? ErrorDescription)> GetProductsByCustomerId(string userId, string ipAdress, string squadId, string customerId, int? page = 1, int? perPage = 10);
 
     }
 }
