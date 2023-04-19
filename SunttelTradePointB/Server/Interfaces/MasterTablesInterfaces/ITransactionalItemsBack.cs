@@ -352,10 +352,11 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="ipAdress"></param>
         /// <param name="squadId"></param>
         /// <param name="customerId"></param>
+        /// <param name="nameLike"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<TransactionalItem>? AddItemCommercialDocumentResponse, string? ErrorDescription)> GetProductsByCustomerId(string userId, string ipAdress, string squadId, string customerId, int? page = 1, int? perPage = 10);
+        Task<(bool IsSuccess, List<TransactionalItem>? AddItemCommercialDocumentResponse, string? ErrorDescription)> GetProductsByCustomerId(string userId, string ipAdress, string squadId, string customerId, string? nameLike = null, int? page = 1, int? perPage = 10);
 
     }
 }

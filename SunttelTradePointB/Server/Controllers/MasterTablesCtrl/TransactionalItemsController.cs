@@ -890,16 +890,17 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <param name="userId"></param>
         /// <param name="ipAdress"></param>
         /// <param name="customerId"></param>
+        /// <param name="nameLike"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetProductsByCustomerId")]
-        public async Task<IActionResult> GetProductsByCustomerId(string userId, string ipAdress, string customerId, int? page = 1, int? perPage = 10)
+        public async Task<IActionResult> GetProductsByCustomerId(string userId, string ipAdress, string customerId, string? nameLike = null, int? page = 1, int? perPage = 10)
         {
             var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString()??""; // Request.Headers["SquadId"];
-            var response = await _transactionalItems.GetProductsByCustomerId(userId, ipAdress, squadId, customerId, page, perPage);
+            var response = await _transactionalItems.GetProductsByCustomerId(userId, ipAdress, squadId, customerId, nameLike, page, perPage);
 
             if (response.IsSuccess)
             {

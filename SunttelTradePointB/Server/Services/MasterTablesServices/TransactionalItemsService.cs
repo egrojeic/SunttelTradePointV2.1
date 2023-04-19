@@ -1577,16 +1577,38 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="ipAdress"></param>
         /// <param name="squadId"></param>
         /// <param name="customerId"></param>
+        /// <param name="nameLike"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<TransactionalItem>? AddItemCommercialDocumentResponse, string? ErrorDescription)> GetProductsByCustomerId(string userId, string ipAdress, string squadId, string customerId, int? page = 1, int? perPage = 10)
+        public async Task<(bool IsSuccess, List<AddItemCommercialDocument>? AddItemCommercialDocumentResponse, string? ErrorDescription)> GetProductsByCustomerId(string userId, string ipAdress, string squadId, string customerId, string? nameLike = null, int? page = 1, int? perPage = 10)
         {
             try
             {
+
+
+                string strNameFiler = nameLike == null ? "" : nameLike;
                 var skip = (page - 1) * perPage;
 
                 var pipeline = new List<BsonDocument>();
+
+                if (!(strNameFiler.ToLower() == "all" || strNameFiler.ToLower() == "todos"))
+                {
+                    pipeline.Add(
+                    new BsonDocument{
+                        { "$match",  new BsonDocument {
+                            { "$text",
+                                new BsonDocument {
+                                    { "$search",strNameFiler },
+                                    { "$language","english" },
+                                    { "$caseSensitive",false },
+                                    { "$diacriticSensitive",false }
+                                }
+                            }
+                        }}
+                    }
+                );
+                }
 
                 pipeline.Add(
                     new BsonDocument("$match", new BsonDocument("ProductPackingSpecs.Customer._id", new ObjectId(customerId)))
@@ -1608,7 +1630,18 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 List<TransactionalItem> results = await _TransactionalItemsCollection.Aggregate<TransactionalItem>(pipeline).ToListAsync();
 
-                return (true, results, null);
+                var resultado = new List<AddItemCommercialDocument>();
+
+                foreach ( var item in results ) 
+                {
+                    resultado.Add(new AddItemCommercialDocument
+                    {
+                        TransactionalItem = item
+
+                    });
+                }
+
+                return (true, resultado, null);
             }
             catch (Exception e)
             {
