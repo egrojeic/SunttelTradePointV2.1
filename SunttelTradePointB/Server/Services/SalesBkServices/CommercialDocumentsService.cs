@@ -128,6 +128,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
                 var pipeline = new List<BsonDocument>();
 
+                /*
                 if (!(strNameFiler.ToLower() == "all" || strNameFiler.ToLower() == "todos" || strNameFiler.ToLower() == ""))
                 {
                     pipeline.Add(
@@ -145,6 +146,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     }
                 );
                 }
+                */
 
 
                 pipeline.Add(
