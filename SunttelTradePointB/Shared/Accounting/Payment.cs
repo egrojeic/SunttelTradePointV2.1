@@ -58,6 +58,11 @@ namespace SunttelTradePointB.Shared.Accounting
         [DisplayName("Payment with Credits")]
         public List<PaymentWithCredit> PaymentWithCredits { get; set; }
 
+        public bool ReturnedPayment { get; set; } = false;
+
+        [DisplayName("Return Description")]
+        public ReturnedPaymentInfo ReturnInfo { get; set; }
+
     }
 
     public class PaymentStatus : BasicConcept
@@ -86,6 +91,10 @@ namespace SunttelTradePointB.Shared.Accounting
 
     }
 
+    public class ReturnedPaymentInfo: RecordItem
+    {
+        public string ReturnDescription { get; set; }
+    }
 
     public class PaymentImportFileRecord: RecordItem
     {
