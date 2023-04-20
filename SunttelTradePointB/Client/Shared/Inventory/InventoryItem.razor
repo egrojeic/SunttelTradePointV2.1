@@ -10,6 +10,7 @@
 @inject ContextMenuService ContextMenuService
 @inject TransactionalItemsService transactItemsService;
 @inject NavigationManager Navigation
+@inject WarehouseService warehouseService
 
 
 <MessageSaveComponent isVisible="isVisible" message="@alertMsg">
@@ -43,17 +44,8 @@
             @GetName("CurrentWarehouse",new InventoryDetail())
         </label>
     </div>
-    <div>
-
-        <InputTextSelector3 TItem="Warehouse"
-                            Id="CurrentWarehouse"
-                            caption="@( inventoryDetail.CurrentWarehouse !=null ? inventoryDetail.CurrentWarehouse.Name:"")"
-                            EventIdSelectionAndId="EventIdSelectionAndId"
-                            EventSearcherValueAndId="EventSearcherValueAndId"
-                            Items="warehouseList">
-        </InputTextSelector3>
-
-      @*  <select @onchange="SelectItemVendorWarehous" class="select-style">
+    <div>    
+        <select @onchange="SelectItemVendorWarehous" class="select-style">
             @if (inventoryDetail.CurrentWarehouse != null)
             {
                 <option value="@inventoryDetail.CurrentWarehouse.Id" selected>@inventoryDetail.CurrentWarehouse.Name</option>
@@ -69,7 +61,7 @@
                     <option value="@item.Id">@item.Name</option>
                 }
             }
-        </select>*@
+        </select>
     </div>
 
     <div>
@@ -145,16 +137,16 @@
 
     <div><label>@GetName("CustomerReservedFor",new InventoryDetail())</label></div>
 
-  
-        <InputTextSelector3 TItem="BasicConcept"
-                            Id="CustomerReservedFor"
-                            caption="@(inventoryDetail.CustomerReservedFor !=null ? inventoryDetail.CustomerReservedFor.Name:"")"
-                            EventIdSelectionAndId="EventIdSelectionAndId"
-                            EventSearcherValueAndId="EventSearcherValueAndId"
+
+    <InputTextSelector3 TItem="BasicConcept"
+                        Id="CustomerReservedFor"
+                        caption="@(inventoryDetail.CustomerReservedFor !=null ? inventoryDetail.CustomerReservedFor.Name:"")"
+                        EventIdSelectionAndId="EventIdSelectionAndId"
+                        EventSearcherValueAndId="EventSearcherValueAndId"
                         Items="customerReservedForList"
                         style="left:-150px;">
-        </InputTextSelector3>
-   
+    </InputTextSelector3>
+
 
 
     @* <div>
@@ -221,7 +213,7 @@
 
     string searcherValue = "";
     #region List
-   
+
     List<Warehouse> warehouseList = new();
     List<Concept> inventoryItem = new();
 
@@ -244,7 +236,10 @@
             {
                 inventoryDetail = result;
             }
+
         }
+
+        warehouseList = await InventoryServices.GetWarehouseList("all");        
         businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
         Load();
         StateHasChanged();
@@ -321,12 +316,7 @@
 
 
 
-        if (searcherValue == "CurrentWarehouse")
-        {
-            var list = await InventoryServices.GetWarehouseList(arg.value.ToString());
-
-            warehouseList = list;
-        };
+      
 
         StateHasChanged();
 
@@ -360,17 +350,24 @@
         StateHasChanged();
     }
 
-    public void EventIdSelectionAndId(Warehouse item)
+  
+
+
+
+    public async void SelectItemVendorWarehous(ChangeEventArgs arg)
     {
-        if (searcherValue == "CurrentWarehouse")
+        //warehouseList
+        Warehouse _warehouse = new Warehouse();
+        _warehouse = (Warehouse)arg.Value;
+        if (_warehouse != null)
         {
+            var item = await warehouseService.GetWarehouseById(_warehouse.Id);
             inventoryDetail.CurrentWarehouse = item;
-        };
+        }
         StateHasChanged();
     }
 
 
-   
 
     public void SetNavigateTo(string name)
     {

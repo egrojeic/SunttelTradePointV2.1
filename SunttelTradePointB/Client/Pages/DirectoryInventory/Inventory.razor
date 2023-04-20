@@ -5,6 +5,7 @@
 @inject SunttelTradePointB.Client.Services.InventoryServices.Inventory _Inventory
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
+@inject WarehouseService warehouseService
 
 
 <PageTitleComponent Title="Inventory" IconName="inventory.png"
@@ -15,7 +16,7 @@
 <div class="panelMenuContainer">
     <InventoryMenu></InventoryMenu>
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
-  @*  <RangeDatesInput StartDate="@startingDate" EndDate="@endDate"></RangeDatesInput>*@
+    <RangeDatesInput StartDate="@startingDate"></RangeDatesInput>
 </div>
 
 <div class="panelMenuContainer">
