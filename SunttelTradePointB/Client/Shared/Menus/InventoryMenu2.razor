@@ -8,14 +8,14 @@
 
 
 
-<div id="container-menu-general">
-    <nav>
+<div class="aling-div ">
+   
         <div>
-            <label>
+            <label class="lblControl col-form-label">
                 @GetName("WareHouseParent",new Warehouse())
             </label>
         </div>
-        <select @onchange="SelectItemVendorWarehous" class="select-style">           
+        <div>        <select @onchange="SelectItemVendorWarehous" class="select-style">           
             @if (warehouseList != null && warehouseList.Count() > 0)
             {
                 <option value="0" selected>Select</option>
@@ -32,8 +32,9 @@
                 <option value="@warehouse.Id" selected>@warehouse.Name</option>
             }
         </select>
-       
-    </nav>
+    </div>
+
+   
 
 </div>
 
@@ -102,11 +103,10 @@
     public async void SelectItemVendorWarehous(ChangeEventArgs arg)
     {       
         Warehouse _warehouse = new Warehouse();
-        _warehouse = (Warehouse)arg.Value;
+        _warehouse =  await warehouseService.GetWarehouseById(arg.Value.ToString());
         if (_warehouse != null)
-        {
-            var item = await warehouseService.GetWarehouseById(_warehouse.Id);
-            warehouse = item;
+        {       
+            warehouse = _warehouse;
         }
         StateHasChanged();
     }

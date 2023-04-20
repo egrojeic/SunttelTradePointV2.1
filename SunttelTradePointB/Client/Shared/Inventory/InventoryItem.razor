@@ -40,16 +40,12 @@
 <div class="grid-columns-header grid-columns-6">
     <div>
         <label>
-
             @GetName("CurrentWarehouse",new InventoryDetail())
         </label>
     </div>
     <div>    
         <select @onchange="SelectItemVendorWarehous" class="select-style">
-            @if (inventoryDetail.CurrentWarehouse != null)
-            {
-                <option value="@inventoryDetail.CurrentWarehouse.Id" selected>@inventoryDetail.CurrentWarehouse.Name</option>
-            }
+          
             @if (warehouseList != null && warehouseList.Count() > 0)
             {
                 <option value="0" selected>Select</option>
@@ -60,6 +56,10 @@
                 {
                     <option value="@item.Id">@item.Name</option>
                 }
+            }
+            @if (inventoryDetail.CurrentWarehouse != null)
+            {
+                <option value="@inventoryDetail.CurrentWarehouse.Id" selected>@inventoryDetail.CurrentWarehouse.Name</option>
             }
         </select>
     </div>
@@ -82,36 +82,7 @@
 
 
     <div><label>@GetName("Qty",new InventoryDetail())</label></div>
-    <InputTextDisable Enable="true" style="font-size:15px; font-weight:none; " @bind-ValueDouble="@inventoryDetail.Qty"></InputTextDisable>
-
-    <div><label>@GetName("QtyAvailable",new InventoryDetail())</label></div>
-    <InputTextDisable Enable="true" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.QtyAvailable"></InputTextDisable>
-
-    <div><label>@GetName("QtyReserved",new InventoryDetail())</label></div>
-    <InputTextDisable Enable="false" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.QtyReserved"></InputTextDisable>
-
-
-    <div><label>@GetName("QtyOnHand",new InventoryDetail())</label></div>
-    <InputTextDisable Enable="false" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.QtyOnHand"></InputTextDisable>
-
-    <div><label>@GetName("QtyOnOrder",new InventoryDetail())</label></div>
-    <InputTextDisable Enable="false" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.QtyOnOrder"></InputTextDisable>
-
-
-    <div><label>@GetName("QtyOnPurchaseOrder",new InventoryDetail())</label></div>
-    <InputTextDisable Enable="false" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.QtyOnPurchaseOrder"></InputTextDisable>
-
-    <div><label>@GetName("QtyOnSalesOrder",new InventoryDetail())</label></div>
-    <InputTextDisable Enable="false" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.QtyOnSalesOrder"></InputTextDisable>
-
-    <div><label>@GetName("QtyOnTransferOrder",new InventoryDetail())</label></div>
-    <InputTextDisable Enable="false" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.QtyOnTransferOrder"></InputTextDisable>
-
-    <div><label>@GetName("QtyOnProductionOrder",new InventoryDetail())</label></div>
-    <InputTextDisable Enable="false" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.QtyOnProductionOrder"></InputTextDisable>
-
-    <div><label>@GetName("EntryScannedQty",new InventoryDetail())</label></div>
-    <InputTextDisable Enable="false" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.EntryScannedQty"></InputTextDisable>
+    <InputTextDisable Enable="true" style="font-size:15px; font-weight:none; " @bind-ValueDouble="@inventoryDetail.Qty"></InputTextDisable>   
 
 
     <div><label>@GetName("EntryDate",new InventoryDetail())</label></div>
@@ -128,50 +99,28 @@
     </InputTextSelector3>
 
     <div><label>@GetName("Pack",new InventoryDetail())</label></div>
-    <InputTextDisable Min="1" Enable="false" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.Pack"></InputTextDisable>
+    <InputTextDisable Min="1" Enable="true" ChangedUpdate="ChangedUpdate" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.Pack"></InputTextDisable>
 
 
     <div><label>@GetName("BoxCode",new InventoryDetail())</label></div>
-    <InputTextDisable Enable="false" style="font-size:15px; font-weight:none;" @bind-ValueString="@inventoryDetail.BoxCode"></InputTextDisable>
+    <InputTextDisable Enable="true" style="font-size:15px; font-weight:none;" @bind-ValueString="@inventoryDetail.BoxCode"></InputTextDisable>
 
 
     <div><label>@GetName("CustomerReservedFor",new InventoryDetail())</label></div>
 
 
-    <InputTextSelector3 TItem="BasicConcept"
+    <InputTextSelector3 TItem="EntityActor"
                         Id="CustomerReservedFor"
                         caption="@(inventoryDetail.CustomerReservedFor !=null ? inventoryDetail.CustomerReservedFor.Name:"")"
                         EventIdSelectionAndId="EventIdSelectionAndId"
                         EventSearcherValueAndId="EventSearcherValueAndId"
-                        Items="customerReservedForList"
+                        Items="customerList"
                         style="left:-150px;">
     </InputTextSelector3>
-
-
-
-    @* <div>
-    <select class="select-style">
-    @if (inventoryDetail.CustomerReservedFor != null)
-    {
-    <option value="@inventoryDetail.CustomerReservedFor.Id" selected>@inventoryDetail.CustomerReservedFor.Name</option>
-    }
-    @if (ListCustomerReservedFor != null && ListCustomerReservedFor.Count() > 0)
-    {
-    <option value="0" selected>Select</option>
-    }
-    @if (ListCustomerReservedFor != null)
-    {
-    @foreach (var item in ListCustomerReservedFor)
-    {
-    <option value="@item.Id">@item.Name</option>
-    }
-    }
-    </select>
-    </div>*@
+      
 
     <div><label>@GetName("UnitCost",new InventoryDetail())</label></div>
-    <InputTextDisable Enable="false" @bind-ValueDouble="inventoryDetail.UnitCost"> </InputTextDisable>
-
+   <InputTextDisable Enable="false" @bind-ValueDouble="inventoryDetail.UnitCost"> </InputTextDisable>
     <div><label>@GetName("BasicUnitsQty",new InventoryDetail())</label></div>
     <InputTextDisable Enable="false" @bind-ValueDouble="inventoryDetail.BasicUnitsQty"> </InputTextDisable>
     <div></div><div></div>
@@ -217,8 +166,8 @@
     List<Warehouse> warehouseList = new();
     List<Concept> inventoryItem = new();
 
-    List<Box> boxList = new();
-    List<BasicConcept> customerReservedForList { get; set; }
+    List<Box> boxList = new();   
+    List<EntityActor> customerList { get; set; }
     public List<BusinessLine> businessLineDocList = new();
     #endregion List
 
@@ -239,10 +188,10 @@
 
         }
 
-        warehouseList = await InventoryServices.GetWarehouseList("all");        
-        businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
-        Load();
-        StateHasChanged();
+        //  warehouseList = await InventoryServices.GetWarehouseList("all");        
+        //businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
+        // Load();
+        // StateHasChanged();
     }
 
 
@@ -295,16 +244,7 @@
 
         if (searcherValue == "CustomerReservedFor")
         {
-            var list = await InventoryServices.GetEntityActorFaceList(arg.value.ToString());
-            customerReservedForList = new();
-            foreach (var item in list)
-            {
-                customerReservedForList.Add(new BasicConcept
-                    {
-                        Id = item.Id,
-                        Name = item.Name
-                    });
-            }
+            customerList = await InventoryServices.GetEntityActorFaceList(arg.value.ToString());
         };
 
         if (searcherValue == "ItemBox")
@@ -316,7 +256,7 @@
 
 
 
-      
+
 
         StateHasChanged();
 
@@ -332,11 +272,16 @@
         StateHasChanged();
     }
 
-    public void EventIdSelectionAndId(BasicConcept item)
+    public void EventIdSelectionAndId(EntityActor item)
     {
         if (searcherValue == "CustomerReservedFor")
         {
-            inventoryDetail.CustomerReservedFor = item;
+            inventoryDetail.CustomerReservedFor = new BasicConcept
+                {
+                    Id = item.Id,
+                    Name = item.Name
+                };
+
         };
         StateHasChanged();
     }
@@ -350,19 +295,17 @@
         StateHasChanged();
     }
 
-  
+
 
 
 
     public async void SelectItemVendorWarehous(ChangeEventArgs arg)
-    {
-        //warehouseList
+    {       
         Warehouse _warehouse = new Warehouse();
-        _warehouse = (Warehouse)arg.Value;
+        _warehouse =  await warehouseService.GetWarehouseById(arg.Value.ToString());
         if (_warehouse != null)
-        {
-            var item = await warehouseService.GetWarehouseById(_warehouse.Id);
-            inventoryDetail.CurrentWarehouse = item;
+        {       
+            inventoryDetail.CurrentWarehouse = _warehouse;
         }
         StateHasChanged();
     }
@@ -422,6 +365,11 @@
 
         if (Id == null) return "visible";
         return "hidden";
+    }
+
+    public void ChangedUpdate()
+    {
+        StateHasChanged();
     }
 
 }
