@@ -1,4 +1,5 @@
-﻿using SunttelTradePointB.Shared.Sales;
+﻿using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.Sales;
 
 namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
 {
@@ -58,6 +59,38 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// <returns></returns>
         Task<CommercialDocument> GetItemCommercialDocumentById(string commercialDocumentId);
 
+        /// <summary>
+        /// Retrives a item with CommercialDocumentType items
+        /// </summary>
+        /// <param">No</param>      
+        /// <returns></returns>
+        Task<List<CommercialDocumentType>> GetCommercialDocumentTypes();
 
+
+        /// <summary>
+        /// Retrives a item with ShippingStatus items meeting search criteria
+        /// </summary>
+        /// <param name="filter"></param>      
+        /// <returns></returns>
+        Task<List<ShippingStatus>> GetShippingStatuses(string filter);
+
+        /// <summary>
+        /// Retrives a item with ShippingStatus items meeting search criteria
+        /// </summary>
+        /// <param name="ShippingStatusId"></param>      
+        /// <returns></returns>
+        Task<ShippingStatus> GetShippingStatusById(string ShippingStatusId);
+
+
+
+        /// <summary>
+        /// Retrives a item with Concept vendor items meeting search criteria
+        /// </summary>
+        /// <param name="filter"></param>      
+        /// <param name="documentType"></param>     
+        /// <param name="page"></param>     
+        /// <param name="perPage"></param>     
+        /// <returns></returns>
+        Task<List<Concept>> GetCommercialVendorList(string filter, CommercialDocumentType documentType, int? page = 1, int? perPage = 10);
     }
 }
