@@ -10,7 +10,7 @@
 
 
 .grid-columns-6 {
-    grid-template-columns: 1fr 150px 1fr 150px 1fr 150px;
+    grid-template-columns: 1fr 195px 1fr 195px 1fr 195px;
 }
 
     .grid-columns-6 .InventoryItem {

@@ -36,25 +36,14 @@ namespace SunttelTradePointB.Client.Services.InventoryServices
 
 
 
-        public async Task<List<BasicConcept>> GetWarehouseList(string entityId, string? nameLike = "all")
+        public async Task<List<Warehouse>> GetWarehouseList( string? nameLike = "all")
         {
             try
             {
-                var responseMessage = await Gethttp($"/api/GeographicPlaces/GetWarehouses?&{Configpath}&entityId={entityId}&nameLike={nameLike}");
+                var responseMessage = await Gethttp($"/api/GeographicPlaces/GetWarehouses?&entityId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&nameLike={nameLike}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Warehouse>>();
-                List<BasicConcept> conceptLis = new();
-                if (list != null)
-                {
-                    foreach (var item in list)
-                    {
-                        conceptLis.Add(new BasicConcept
-                        {
-                            Id = item.Id,
-                            Name = item.Name
-                        });
-                    }
-                }
-                return conceptLis != null ? conceptLis : new List<BasicConcept>();
+             
+                return list != null ? list : new List<Warehouse>();
             }
             catch (Exception ex)
             {
@@ -70,9 +59,9 @@ namespace SunttelTradePointB.Client.Services.InventoryServices
             {
                 var responseMessage = await Gethttp($"/api/Inventory/GetInventory?&{Configpath}&documentTypeId={documentTypeId}&DocumentDate={DocumentDate}&page={page}&perPage={perPage}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<InventoryDetail>>();
-                List<InventoryDetail> conceptLis = new();
                
-                return conceptLis != null ? conceptLis : new List<InventoryDetail>();
+               
+                return list != null ? list : new List<InventoryDetail>();
             }
             catch (Exception ex)
             {
@@ -100,6 +89,113 @@ namespace SunttelTradePointB.Client.Services.InventoryServices
         }
 
 
+
+        public async Task<List<TransactionalItem>> GetTransactionalItemsList(int? page = 1, int? perPage = 10, string? nameLike = null)
+        {
+            string namteToFind = nameLike != null ? nameLike : "";
+
+            try
+            {
+                var responseMessage = await Gethttp($"/api/TransactionalItems/GetTransactionalItems?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}&page={page}&perPage={perPage}&filterName={namteToFind}");
+               var transactionalItemsList = await responseMessage.Content.ReadFromJsonAsync<List<TransactionalItem>>();
+
+                page = page == 0 ? 1 : page;
+                return transactionalItemsList != null ? transactionalItemsList : new List<TransactionalItem>();
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<TransactionalItem> GetTransactionalItemById(string? transactionalItemId = null)
+        {
+            transactionalItemId = transactionalItemId != null ? transactionalItemId : "";
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress == "" ? "127.0.0.0" : UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+
+
+                var responseMessage = await Gethttp($"/api/TransactionalItems/GetTransactionalItemById?userId={userId}&ipAddress={ipAddress}&transactionalItemId={transactionalItemId}");
+                var transactionalItem = await responseMessage.Content.ReadFromJsonAsync<TransactionalItem>();
+
+
+                return transactionalItem != null ? transactionalItem : new TransactionalItem();
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+
+                return null;
+
+            }
+        }
+
+        public async Task<List<EntityActor>> GetEntityActorFaceList(string? nameLike = null)
+        {
+
+            string nameToFind = nameLike != null ? nameLike : "";
+         
+            try
+            {
+              
+
+                var response = await Gethttp($"/api/EntityNodesMaintenance/GetEntityNodes?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&filterName={nameToFind}");
+                var entityNodesList = await response.Content.ReadFromJsonAsync<List<EntityActor>>();
+
+                return entityNodesList.Take(20).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+
+            }
+        }
+
+
+        public async Task<List<Box>> GetBoxes(string filter)
+        {
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+                var responseMessage = await Gethttp($"/api/TransactionalItemsRelatedConcepts/GetBoxTable?userId={userId}&ipAddress={ipAddress}");
+                var boxsList = await responseMessage.Content.ReadFromJsonAsync<List<Box>>();
+                boxsList = boxsList.Where(s => s.Name !=null &&  s.Name.ToLower().Contains(filter.ToLower())).Take(20).ToList();
+                return boxsList;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+
+                return null;
+
+            }
+        }
+
+        public async Task<List<Box>> GetWarehouses(string filter)
+        {
+            try
+            {
+                var responseMessage = await Gethttp($"​/api​/GeographicPlaces​/GetWarehouses/entityId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&nameLike={filter}");
+                var boxsList = await responseMessage.Content.ReadFromJsonAsync<List<Box>>();
+
+                return boxsList != null ? boxsList.Where(s => s.Name.ToLower().Contains(filter.ToLower())).ToList() : new List<Box>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+
+                return null;
+
+            }
+        }
 
 
 
