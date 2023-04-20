@@ -154,6 +154,10 @@ namespace SunttelTradePointB.Shared.Common
         [DisplayName("Shipping Setup")]
         public List<ShippingInfo> ShippingInformation { get; set; }
 
+        public override string ToString()
+        {
+            return $"{Name}";
+        }
         public virtual string GetFirstPhone
         {
             get

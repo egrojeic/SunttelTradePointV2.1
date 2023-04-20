@@ -34,4 +34,23 @@ namespace SunttelTradePointB.Shared.ImportingData
 
 
     }
+
+    public class PaymentSalesDetailsImport
+    {
+        public string SquadId {get;set;}
+        public string LegacyObjectId { get; set; }
+        public string PaymentId {get;set;}
+        public string InvoiceId {get;set;}
+        public string InvoiceCode {get;set;}
+        public DateTime InvoiceDate {get;set;}
+        public string InvoiceBuyer_Id {get;set;}
+        public string InvoiceBuyer_Name {get;set;}
+        public string InvoiceBuyer_Code {get;set;}
+        public double AppliedAmount {get;set;}
+        public double Discount {get;set;}
+        public double Credit {get;set;}
+        public string Notes { get; set; }
+
+        public string InvoicePO { get; set; }
+    }
 }

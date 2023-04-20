@@ -90,6 +90,10 @@ namespace SunttelTradePointB.Shared.Accounting
     {
 
     }
+    public class BuyerInfoForPayment: BasicConcept
+    {
+        public string Code { get; set; }
+    }
 
     public class ReturnedPaymentInfo: RecordItem
     {
@@ -137,32 +141,37 @@ namespace SunttelTradePointB.Shared.Accounting
 
         public string PaymentId { get; set; }
 
+        public string InvoiceId { get; set; }
+
         [DisplayName("Invoice to Apply")]
-        public string InvoiceToApplyRef { get; set; }
+        public string InvoiceCode { get; set; }
 
         [DisplayName("PO Number")]
-        public string PONumberToPay { get; set; }
+        public string InvoicePO { get; set; }
 
         [DisplayName("Invoice Date")]
         public DateTime InvoiceDate { get; set; }
 
-        [DisplayName("BuyerRef")]
-        public string BuyerRef { get; set; }
-
-        [DisplayName("Buyer Name")]
-        public string BuyerName { get; set; }
+        [DisplayName("Buyer")]
+        public BuyerInfoForPayment InvoiceBuyer { get; set; }
 
         [DisplayName("Invoice Total Amount")]
         public double InvoiceTotalAmount { get; set; }
 
+        [DisplayName("Applied Amount")]
+        public double AppliedAmount { get; set; }
+
+
         [DisplayName("Discount")]
         public double Discount { get; set; }
 
-        [DisplayName("Credits")]
-        public double Credits { get; set; }
+        [DisplayName("Credit")]
+        public double Credit { get; set; }
 
         [DisplayName("Discount Reason")]
         public string DiscountReason { get; set; }
+
+
 
 
     }
