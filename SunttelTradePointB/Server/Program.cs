@@ -27,6 +27,7 @@ using SunttelTradePointB.Server.Services.SalesBkServices;
 using SunttelTradePointB.Client.Pages.DirectoryInventory;
 using SunttelTradePointB.Server.Services.InventoryBkServices;
 using SunttelTradePointB.Server.Interfaces.InventoryBkServices;
+using SunttelTradePointB.Server.InterfaceSwagger;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +49,7 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(xmlPath);
     c.EnableAnnotations();
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "TradePoint - API", Version = "v1.0" });
+    c.OperationFilter<HeaderSquadIdFilter>();
 });
 
 
