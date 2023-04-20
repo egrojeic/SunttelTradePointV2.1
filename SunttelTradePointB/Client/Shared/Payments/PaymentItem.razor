@@ -1,0 +1,304 @@
+@page "/PaymentsItem"
+@page "/PaymentsItem/{PaymentsItemId}"
+@page "/PaymentsItem/{filter}/{PaymentsItemId}"
+@using SunttelTradePointB.Shared.Sales;
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+@using System.Reflection
+@using Syncfusion.Blazor.Navigations
+@using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents
+@using SunttelTradePointB.Shared.Accounting
+@inject NavigationManager Navigation
+@inject SunttelTradePointB.Client.Services.PaymentServices.Payment PaymentServices
+
+@inject IJSRuntime Js
+
+<MessageSaveComponent isVisible="isVisible" message="@msg">
+</MessageSaveComponent>
+<PageTitleComponent Title=" Commercial Document"
+                    Description="Here you can add commercial document" IconName="commercialDocument.png">
+</PageTitleComponent>
+
+
+<form>
+
+
+
+
+
+    <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
+        <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+
+        <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+            <SplitButtonEvents ItemSelected="ItemSelected">
+            </SplitButtonEvents>
+            <DropDownMenuItems>
+                <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+            </DropDownMenuItems>
+        </SfSplitButton>
+
+
+    </div>
+
+
+
+    <div class="grid-columns-header grid-columns-6">
+
+        <div><label class="sub-tile">@GetName("DocumentType",new CommercialDocument())</label></div>
+
+        <div>
+            <select @onchange="SelectItemDocumentType" class="select-style">
+
+                @if (documentTypeList != null && documentTypeList.Count() > 0)
+                {
+                    <option value="0" selected>Select</option>
+                }
+                @if (documentTypeList != null)
+                {
+                    @foreach (var item in documentTypeList)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                }
+                @if (payment != null && payment.DocumentType != null)
+                {
+                    <option value="@payment.DocumentType.Id" selected>@payment.DocumentType.Name</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <hr />
+
+    <SfTab Height="250px" CssClass="tab-adaptive" HeaderPlacement="HeaderPosition.Left">
+        <TabAnimationSettings>
+            <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
+            <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
+        </TabAnimationSettings>
+        <TabItems>
+
+            <TabItem>
+                <ChildContent>
+                    <TabHeader Text="@GetName("Items",new CommercialDocument())"></TabHeader>
+                </ChildContent>
+                <ContentTemplate>
+                    <div class="container-item">
+                        @if (true)
+                        {
+                        }
+                    </div>
+                </ContentTemplate>
+            </TabItem>
+
+            <TabItem>
+                <ChildContent>
+                    <TabHeader Text="@GetName("SpecsNotes",new CommercialDocument())"></TabHeader>
+                </ChildContent>
+                <ContentTemplate>
+
+
+
+                </ContentTemplate>
+            </TabItem>
+
+        </TabItems>
+    </SfTab>
+
+
+</form>
+
+
+
+
+@code {
+    [Parameter]
+    public string commercialDocumentId { get; set; }
+    [Parameter]
+    public string filter { get; set; }
+    public Payment payment { get; set; }
+
+    TextToSpeech textToSpeech;
+
+
+    #region Status
+
+    #endregion Status
+
+    #region List
+    public List<CommercialDocumentType> documentTypeList = new();
+
+    #endregion List
+
+
+    MessageSaveComponent? referAlert;
+    string msg = "";
+    bool isLoading = false;
+    string SearcherValue = "";
+    bool isVisible = false;
+
+    protected override void OnParametersSet()
+    {
+        StateHasChanged();
+    }
+
+    protected override async void OnInitialized()
+    {
+
+        isLoading = true;
+
+
+
+
+        isLoading = false;
+        StateHasChanged();
+    }
+
+
+
+    public async void ItemSelected(MenuEventArgs e)
+    {
+        string msg = Validate();
+        if (msg == "")
+        {
+            StateHasChanged();
+            string tile = e.Item != null ? e.Item.Text : "";
+            if (tile == "Save")
+            {
+                Load();
+
+                // var result = await DocumentServices.SaveCommercialDocument(commercialDocument);
+                if (true)
+                {
+                    alert("Saved", 0);
+
+                }
+                else
+                {
+                    alert("required fields", 1);
+                }
+
+            }
+        }
+        else
+        {
+            alert("Saved", 1);
+        }
+
+        StateHasChanged();
+
+    }
+
+
+
+    public void SelectItemDocumentType(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    {
+
+    }
+
+
+
+
+
+    public async void EventSearcherValueAndId((string value, string IdControl) arg)
+    {
+        SearcherValue = arg.IdControl.ToString();
+        if (SearcherValue == "")
+        {
+        }
+
+
+        StateHasChanged();
+    }
+
+
+    public void EventIdSelectionAndId(CommercialDocumentType item)
+    {
+
+    }
+
+
+
+    public void EventIdSelectionMenuItem(string name)
+    {
+        Js.InvokeAsync<object>("open", name, "_blank");
+        
+    }
+
+    public void alert(string _msg, int? status = 0)
+    {
+        isVisible = true;
+        msg = _msg;
+
+        StateHasChanged();
+    }
+
+    public void alert(string _msg)
+    {
+        isVisible = true;
+        msg = _msg;
+
+        StateHasChanged();
+    }
+
+    public void Home()
+    {
+        string paramFilter = filter != null ? filter : "";
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/SalesDocuments/{paramFilter}");
+        Navigation.NavigateTo($"/SalesDocuments");
+    }
+
+    public void OpenAlert(string _msg, int _status, bool visible)
+    {
+        if (referAlert != null)
+        {
+            referAlert.isVisible = visible;
+            referAlert.message = _msg;
+            referAlert.status = _status;
+            StateHasChanged();
+        }
+    }
+
+   
+
+    public string Validate()
+    {
+        string msg = "";
+       
+        return msg;
+    }
+
+
+    #region Load
+
+    public void Load()
+    {
+      
+
+
+
+
+
+
+    }
+
+
+    #endregion Load
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    public void NavigationTo(string name)
+    {
+        Navigation.NavigateTo(name);
+    }
+   
+}

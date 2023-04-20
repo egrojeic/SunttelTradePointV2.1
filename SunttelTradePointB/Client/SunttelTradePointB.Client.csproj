@@ -55,11 +55,12 @@
     <Folder Include="Services\ECommerceServices\" />
     <Folder Include="Services\EDIInterfaceServices\" />
     <Folder Include="Services\Hubs\" />
-    <Folder Include="Services\InventoryServices\" />
     <Folder Include="Services\MarketingServices\" />
     <Folder Include="Services\ProcurementServices\" />
     <Folder Include="Services\ProductionServices\" />
     <Folder Include="Services\QualityControlServices\" />
+    <Folder Include="Shared\Inventory\InventorySubComponents\" />
+    <Folder Include="Shared\Payments\PaymentsSubComponents\" />
     <Folder Include="wwwroot\lib\microsoft\signalr\dist\browser\" />
     <Folder Include="wwwroot\uploads\squadImages\" />
   </ItemGroup>

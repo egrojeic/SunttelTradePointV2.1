@@ -4,12 +4,16 @@
 
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.InvetoryModels
-@using SunttelTradePointB.Client.Shared.Inventory.InventorySubComponents
 @using Syncfusion.Blazor.SplitButtons
+@inject SunttelTradePointB.Client.Services.InventoryServices.Inventory InventoryServices
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
 @inject ContextMenuService ContextMenuService
 @inject TransactionalItemsService transactItemsService;
 @inject NavigationManager Navigation
+
+
+<MessageSaveComponent isVisible="isVisible" message="@alertMsg">
+</MessageSaveComponent>
 
 <PageTitleComponent Title="Inventory Item" IconName="InventoryItem.png"
                     Description="With this tool you can create and edit inventory item">
@@ -40,7 +44,16 @@
         </label>
     </div>
     <div>
-        <select @onchange="SelectItemVendorWarehous" class="select-style">
+
+        <InputTextSelector3 TItem="Warehouse"
+                            Id="CurrentWarehouse"
+                            caption="@( inventoryDetail.CurrentWarehouse !=null ? inventoryDetail.CurrentWarehouse.Name:"")"
+                            EventIdSelectionAndId="EventIdSelectionAndId"
+                            EventSearcherValueAndId="EventSearcherValueAndId"
+                            Items="warehouseList">
+        </InputTextSelector3>
+
+      @*  <select @onchange="SelectItemVendorWarehous" class="select-style">
             @if (inventoryDetail.CurrentWarehouse != null)
             {
                 <option value="@inventoryDetail.CurrentWarehouse.Id" selected>@inventoryDetail.CurrentWarehouse.Name</option>
@@ -56,7 +69,7 @@
                     <option value="@item.Id">@item.Name</option>
                 }
             }
-        </select>
+        </select>*@
     </div>
 
     <div>
@@ -70,7 +83,8 @@
                             caption="@(inventoryDetail.InventoryItem !=null ? inventoryDetail.InventoryItem.Name:"")"
                             EventIdSelectionAndId="EventIdSelectionAndId"
                             EventSearcherValueAndId="EventSearcherValueAndId"
-                            styleCaption="min-width: 38vw;">
+                            styleCaption="min-width: 41vw;"
+                            Items="inventoryItem">
         </InputTextSelector3>
     </div>
 
@@ -114,7 +128,11 @@
     <div><label>@GetName("ItemBox",new InventoryDetail())</label></div>
     <InputTextSelector3 TItem="Box"
                         Id="ItemBox"
-                        caption="@(inventoryDetail.ItemBox !=null ? inventoryDetail.ItemBox.Name:"")">
+                        caption="@(inventoryDetail.ItemBox !=null ? inventoryDetail.ItemBox.Name:"")"
+                        Items="boxList"
+                        EventIdSelectionAndId="EventIdSelectionAndId"
+                        EventSearcherValueAndId="EventSearcherValueAndId"
+                        style="left:-150px;">
     </InputTextSelector3>
 
     <div><label>@GetName("Pack",new InventoryDetail())</label></div>
@@ -126,25 +144,38 @@
 
 
     <div><label>@GetName("CustomerReservedFor",new InventoryDetail())</label></div>
-    <div>
-        <select class="select-style">
-            @if (inventoryDetail.CustomerReservedFor != null)
-            {
-                <option value="@inventoryDetail.CustomerReservedFor.Id" selected>@inventoryDetail.CustomerReservedFor.Name</option>
-            }
-            @if (ListCustomerReservedFor != null && ListCustomerReservedFor.Count() > 0)
-            {
-                <option value="0" selected>Select</option>
-            }
-            @if (ListCustomerReservedFor != null)
-            {
-                @foreach (var item in ListCustomerReservedFor)
-                {
-                    <option value="@item.Id">@item.Name</option>
-                }
-            }
-        </select>
-    </div>
+
+  
+        <InputTextSelector3 TItem="BasicConcept"
+                            Id="CustomerReservedFor"
+                            caption="@(inventoryDetail.CustomerReservedFor !=null ? inventoryDetail.CustomerReservedFor.Name:"")"
+                            EventIdSelectionAndId="EventIdSelectionAndId"
+                            EventSearcherValueAndId="EventSearcherValueAndId"
+                        Items="customerReservedForList"
+                        style="left:-150px;">
+        </InputTextSelector3>
+   
+
+
+    @* <div>
+    <select class="select-style">
+    @if (inventoryDetail.CustomerReservedFor != null)
+    {
+    <option value="@inventoryDetail.CustomerReservedFor.Id" selected>@inventoryDetail.CustomerReservedFor.Name</option>
+    }
+    @if (ListCustomerReservedFor != null && ListCustomerReservedFor.Count() > 0)
+    {
+    <option value="0" selected>Select</option>
+    }
+    @if (ListCustomerReservedFor != null)
+    {
+    @foreach (var item in ListCustomerReservedFor)
+    {
+    <option value="@item.Id">@item.Name</option>
+    }
+    }
+    </select>
+    </div>*@
 
     <div><label>@GetName("UnitCost",new InventoryDetail())</label></div>
     <InputTextDisable Enable="false" @bind-ValueDouble="inventoryDetail.UnitCost"> </InputTextDisable>
@@ -154,7 +185,7 @@
     <div></div><div></div>
     <div><label>@GetName("InventoryBusinessLine",new CommercialDocument())</label></div>
 
-   
+
     <div class="InventoryBusinessLine">
         <select @onchange="SelectItemBusinessLineDoc" class="select-style">
             @if (inventoryDetail.InventoryBusinessLine != null)
@@ -179,34 +210,47 @@
 @code {
     [Parameter]
     public string inventoryDetailId { get; set; }
-
+    [Parameter]
+    public string _filterItems { get; set; }
     public InventoryDetail inventoryDetail { get; set; }
+
+
+    bool isVisible = false;
+    string alertMsg = "";
+
 
     string searcherValue = "";
     #region List
-    List<BasicConcept> ListCustomerReservedFor = new();
+   
     List<Warehouse> warehouseList = new();
     List<Concept> inventoryItem = new();
+
+    List<Box> boxList = new();
+    List<BasicConcept> customerReservedForList { get; set; }
     public List<BusinessLine> businessLineDocList = new();
     #endregion List
+
+
 
 
     protected async override void OnInitialized()
     {
         Load();
-        LoadData();
-        base.OnInitialized();
-    }
-
-    private async Task LoadData()
-    {
         if (inventoryDetailId != null)
         {
-            // inventoryItem = await DocumentServices.GetCommercialDocumentDetails(_filterItems != null ? _filterItems : "all");
-        }
-        if (inventoryDetail == null) inventoryDetail = new();
+            var result = await InventoryServices.GetInventoryById(inventoryDetailId);
 
+            if (result != null)
+            {
+                inventoryDetail = result;
+            }
+        }
+        businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
+        Load();
+        StateHasChanged();
     }
+
+
 
 
     public async void ItemSelected(MenuEventArgs e)
@@ -216,6 +260,16 @@
         if (tile == "Save")
         {
 
+            var result = await InventoryServices.SaveInventoryItem(inventoryDetail);
+            if (result != null)
+            {
+                inventoryDetail = result;
+                alert("Saved", 0);
+            }
+            else
+            {
+                alert("No saved", 11);
+            }
 
         }
 
@@ -230,14 +284,51 @@
 
     }
 
-
     public async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
         searcherValue = arg.IdControl;
         if (searcherValue == "InventoryItem")
         {
-            inventoryDetail.InventoryItem = new();
+            var list = await InventoryServices.GetTransactionalItemsList(1, 20, arg.value.ToString());
+            inventoryItem = new();
+            foreach (var item in list)
+            {
+                inventoryItem.Add(item);
+            }
+
         };
+
+        if (searcherValue == "CustomerReservedFor")
+        {
+            var list = await InventoryServices.GetEntityActorFaceList(arg.value.ToString());
+            customerReservedForList = new();
+            foreach (var item in list)
+            {
+                customerReservedForList.Add(new BasicConcept
+                    {
+                        Id = item.Id,
+                        Name = item.Name
+                    });
+            }
+        };
+
+        if (searcherValue == "ItemBox")
+        {
+            var list = await InventoryServices.GetBoxes(arg.value.ToString());
+
+            boxList = list;
+        };
+
+
+
+        if (searcherValue == "CurrentWarehouse")
+        {
+            var list = await InventoryServices.GetWarehouseList(arg.value.ToString());
+
+            warehouseList = list;
+        };
+
+        StateHasChanged();
 
     }
 
@@ -246,15 +337,40 @@
         if (searcherValue == "InventoryItem")
         {
             inventoryDetail.InventoryItem = item;
+            AditProduct(item.Id);
         };
+        StateHasChanged();
     }
 
-
-    public void SelectItemVendorWarehous(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    public void EventIdSelectionAndId(BasicConcept item)
     {
-        inventoryDetail.CurrentWarehouse = warehouseList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+        if (searcherValue == "CustomerReservedFor")
+        {
+            inventoryDetail.CustomerReservedFor = item;
+        };
+        StateHasChanged();
     }
 
+    public void EventIdSelectionAndId(Box item)
+    {
+        if (searcherValue == "ItemBox")
+        {
+            inventoryDetail.ItemBox = item;
+        };
+        StateHasChanged();
+    }
+
+    public void EventIdSelectionAndId(Warehouse item)
+    {
+        if (searcherValue == "CurrentWarehouse")
+        {
+            inventoryDetail.CurrentWarehouse = item;
+        };
+        StateHasChanged();
+    }
+
+
+   
 
     public void SetNavigateTo(string name)
     {
@@ -267,6 +383,24 @@
         return Name;
     }
 
+
+
+    public async void AditProduct(string productId)
+    {
+        var item = await InventoryServices.GetTransactionalItemById(productId);
+        if (item != null)
+        {
+            try
+            {
+                inventoryDetail.UnitCost = item.PriceOverridenByPriceList.ItemPrice.UnitPrice;
+            }
+            catch { }
+        }
+
+    }
+
+
+
     public void Load()
     {
         if (inventoryDetail == null) inventoryDetail = new();
@@ -275,6 +409,13 @@
         if (inventoryDetail.CustomerReservedFor == null) inventoryDetail.CustomerReservedFor = new();
         if (inventoryDetail.InventoryBusinessLine == null) inventoryDetail.InventoryBusinessLine = new();
         if (inventoryDetail.EntryDate == DateTime.MinValue) inventoryDetail.EntryDate = DateTime.Today;
+    }
+
+
+    public void alert(string msg, int status)
+    {
+        isVisible = true;
+        alertMsg = msg;
     }
 
 
