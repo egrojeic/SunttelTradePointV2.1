@@ -1,0 +1,330 @@
+
+@using SunttelTradePointB.Shared.Sales;
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+@using System.Reflection
+@using Syncfusion.Blazor.Navigations
+@using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents
+@using SunttelTradePointB.Shared.Accounting
+@inject NavigationManager Navigation
+@inject SunttelTradePointB.Client.Services.PaymentServices.PaymentServices PaymentServices
+@inject ContextMenuService ContextMenuService
+
+@inject IJSRuntime Js
+
+<form>
+
+    <SfTab Height="250px" CssClass="tab-adaptive" HeaderPlacement="HeaderPosition.Top">
+        <TabAnimationSettings>
+            <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
+            <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
+        </TabAnimationSettings>
+        <TabItems>
+
+            <TabItem>
+                <ChildContent>
+                    <TabHeader Text="@GetName("PaymentWithOverpayments",new Payment())"></TabHeader>
+                </ChildContent>
+                <ContentTemplate>
+                    <div class="container-item">
+
+                        @if (isLoading)
+                        {
+
+                            <WaitingProcessIndicator loadingTopic="Payment With Overpayments"></WaitingProcessIndicator>
+
+                        }
+                        else
+                        {
+                            <div class="detailsTitleContainer" style="width:100%;">
+                                <h3 class="subTitleDetailForm">@GetName("PaymentWithOverpayments",new Payment())</h3>
+                                <svg style="margin-left:20px;" title="Add new Recipe Item" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style " viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                </svg>
+                            </div>
+
+                            <RadzenDataGrid AllowFiltering="true"
+                                        AllowColumnResize="true"
+                                        AllowAlternatingRows="true"
+                                        FilterMode="FilterMode.Advanced"
+                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                        AllowSorting="true"
+                                        PageSize="50"
+                                        AllowPaging="true"
+                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                        ShowPagingSummary="true"
+                                        Data="@paymentWithOverpaymentList"
+                                        TItem="PaymentWithOverpayment"
+                                        ColumnWidth="300px"
+                                        SelectionMode="DataGridSelectionMode.Single"
+                                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                                        CellContextMenu="@ShowContextMenuCommercialDocument">
+                                <Columns>
+
+
+                                    <RadzenDataGridColumn TItem="PaymentWithOverpayment" Property="OriginalCode" Title="@GetName("OriginalCode", new AppliedPayment())" Width="208px" />
+                                    <RadzenDataGridColumn TItem="PaymentWithOverpayment" Property="OverpaymentValue" Title="@GetName("OverpaymentValue", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />
+                                    <RadzenDataGridColumn TItem="PaymentWithOverpayment" Property="OverpaymentApplied" Title="@GetName("OverpaymentApplied", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />
+
+                                </Columns>
+                            </RadzenDataGrid>
+                        }
+
+
+                    </div>
+                </ContentTemplate>
+            </TabItem>
+
+            <TabItem>
+                <ChildContent>
+                    <TabHeader Text="@GetName("PaymentWithOverplus",new Payment())"></TabHeader>
+                </ChildContent>
+                <ContentTemplate>
+                      <div class="container-item">
+
+                        @if (isLoading)
+                        {
+
+                            <WaitingProcessIndicator loadingTopic="Payment With Overplus"></WaitingProcessIndicator>
+
+                        }
+                        else
+                        {
+                            <div class="detailsTitleContainer" style="width:100%;">
+                                <h3 class="subTitleDetailForm">@GetName("PaymentWithOverplus",new Payment())</h3>
+                                <svg style="margin-left:20px;" title="Add new Recipe Item" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style " viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                </svg>
+                            </div>
+                            <RadzenDataGrid AllowFiltering="true"
+                                        AllowColumnResize="true"
+                                        AllowAlternatingRows="true"
+                                        FilterMode="FilterMode.Advanced"
+                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                        AllowSorting="true"
+                                        PageSize="50"
+                                        AllowPaging="true"
+                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                        ShowPagingSummary="true"
+                                        Data="@paymentWithOverpluList"
+                                        TItem="PaymentWithOverplus"
+                                        ColumnWidth="300px"
+                                        SelectionMode="DataGridSelectionMode.Single"
+                                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                                        CellContextMenu="@ShowContextMenuCommercialDocument">
+                                <Columns>
+                                    <RadzenDataGridColumn TItem="PaymentWithOverplus" Property="OriginalCode" Title="@GetName("OriginalCode", new AppliedPayment())" Width="208px" />
+                                    <RadzenDataGridColumn TItem="PaymentWithOverplus" Property="OverpaymentValue" Title="@GetName("OverpaymentValue", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />
+                                    <RadzenDataGridColumn TItem="PaymentWithOverplus" Property="OverpaymentApplied" Title="@GetName("OverpaymentApplied", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />
+
+                                </Columns>
+                            </RadzenDataGrid>
+                        }
+
+                    </div>
+                </ContentTemplate>
+            </TabItem>
+
+            <TabItem>
+                <ChildContent>
+                    <TabHeader Text="@GetName("PaymentWithCredits",new Payment())"></TabHeader>
+                </ChildContent>
+                <ContentTemplate>
+                    <div class="container-item">
+                           @if (isLoading)
+                        {
+
+                            <WaitingProcessIndicator loadingTopic="Payment With Credits"></WaitingProcessIndicator>
+
+                        }
+                        else
+                        {
+                            <div class="detailsTitleContainer" style="width:100%;">
+                                <h3 class="subTitleDetailForm">@GetName("PaymentWithCredits",new Payment())</h3>
+                                <svg style="margin-left:20px;" title="Add new Recipe Item" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style " viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                </svg>
+                            </div>
+                            <RadzenDataGrid AllowFiltering="true"
+                                        AllowColumnResize="true"
+                                        AllowAlternatingRows="true"
+                                        FilterMode="FilterMode.Advanced"
+                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                        AllowSorting="true"
+                                        PageSize="50"
+                                        AllowPaging="true"
+                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                        ShowPagingSummary="true"
+                                        Data="@paymentWithCreditList"
+                                        TItem="PaymentWithCredit"
+                                        ColumnWidth="300px"
+                                        SelectionMode="DataGridSelectionMode.Single"
+                                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                                        CellContextMenu="@ShowContextMenuCommercialDocument">
+                                <Columns>
+
+
+                                    <RadzenDataGridColumn TItem="PaymentWithCredit" Property="OriginalCode" Title="@GetName("OriginalCode", new AppliedPayment())" Width="208px" />
+                                    <RadzenDataGridColumn TItem="PaymentWithCredit" Property="OverpaymentValue" Title="@GetName("OverpaymentValue", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />
+                                    <RadzenDataGridColumn TItem="PaymentWithCredit" Property="OverpaymentApplied" Title="@GetName("OverpaymentApplied", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />
+
+                                </Columns>
+                            </RadzenDataGrid>
+                        }
+
+                    </div>
+                </ContentTemplate>
+            </TabItem>
+
+        </TabItems>
+    </SfTab>
+
+
+</form>
+
+
+
+
+@code {
+   
+    TextToSpeech textToSpeech;
+
+
+    #region Status
+
+    #endregion Status
+
+    #region List
+    public List<PaymentWithOverpayment> paymentWithOverpaymentList { get; set; }
+      public List<PaymentWithOverplus> paymentWithOverpluList { get; set; }
+      public List<PaymentWithCredit> paymentWithCreditList { get; set; }
+
+    #endregion List
+
+
+    MessageSaveComponent? referAlert;
+
+    bool isLoading = false;
+    
+
+    protected override void OnParametersSet()
+    {
+        StateHasChanged();
+    }
+
+    protected override async void OnInitialized()
+    {
+
+        isLoading = true;
+
+
+
+
+        isLoading = false;
+        StateHasChanged();
+    }
+
+
+
+ 
+    #region grid
+
+
+       void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<PaymentWithOverpayment> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        PaymentWithOverpayment argObj = (PaymentWithOverpayment)args.Value;
+     
+        Navigation.NavigateTo($"SaleItem/{argObj.Id}");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<PaymentWithOverplus> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClickPaymentWithOverplus">
+             <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+     </RadzenMenu>
+    );
+
+
+    void OnMenuItemClickPaymentWithOverplus(MenuItemEventArgs args)
+    {
+        PaymentWithOverplus argObj = (PaymentWithOverplus)args.Value;
+
+        Navigation.NavigateTo($"SaleItem/{argObj.Id}");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+
+
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<PaymentWithCredit> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClickPaymentWithCredit">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+
+    void OnMenuItemClickPaymentWithCredit(MenuItemEventArgs args)
+    {
+        PaymentWithCredit argObj = (PaymentWithCredit)args.Value;
+
+        Navigation.NavigateTo($"SaleItem/{argObj.Id}");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+    #endregion grid
+
+
+
+    public void EventIdSelectionMenuItem(string name)
+    {
+        Js.InvokeAsync<object>("open", name, "_blank");
+
+    }
+
+  
+
+
+    #region Load
+
+    public void Load()
+    {
+
+
+
+
+
+
+
+    }
+
+
+    #endregion Load
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    
+
+}

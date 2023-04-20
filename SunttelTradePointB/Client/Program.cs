@@ -37,7 +37,7 @@ builder.Services.AddScoped<TransactionalItemsService>();
 builder.Services.AddScoped<SalesDocuments>();
 builder.Services.AddScoped<IARecognition>();
 builder.Services.AddScoped<Inventory>();
-builder.Services.AddScoped<Payment>();
+builder.Services.AddScoped<PaymentServices>();
 builder.Services.AddScoped<ContextMenuService>();
 builder.Services.AddScoped<DialogService>();
 

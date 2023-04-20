@@ -1,14 +1,20 @@
 ﻿@using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.SplitButtons
 @using SunttelTradePointB.Shared.Sales
+@using SunttelTradePointB.Shared.Accounting
 @inject NavigationManager Navigation
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
 
 
 
 
-<div id="container-menu-general">
-    <nav>
+<div class="aling-div ">
+
+    <div>
+        <label class="lblControl col-form-label">
+            @GetName("DocumentType",new Payment())
+        </label>
+    </div>
 
         <div class="InventoryBusinessLine">
             <select @onchange="SetDocumentType" class="select-style">
@@ -21,9 +27,6 @@
                 }
             </select>
         </div>
-       
-    </nav>
-
 </div>
 
 
@@ -84,7 +87,11 @@
     }
 
 
-
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
     
 
     private void CreateNew()

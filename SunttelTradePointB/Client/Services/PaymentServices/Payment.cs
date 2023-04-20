@@ -3,14 +3,15 @@ using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.InvetoryModels;
 using SunttelTradePointB.Shared.Sales;
 using System.Net.Http.Json;
+using SunttelTradePointB.Shared.Accounting;
 
 namespace SunttelTradePointB.Client.Services.PaymentServices
 {
-    public class Payment
+    public class PaymentServices
     {
         private readonly HttpClient _httpClient;
         private string Configpath = "userId=*Id&ipAddress=*Ip";
-        public Payment(HttpClient httpClient)
+        public PaymentServices(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
@@ -38,7 +39,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
 
 
 
-        public async Task<List<Payment>> GetPaymentList(string filterName, string documentTypeId, int? page = 1, int? perPage = 10)
+        public async Task<List<Payment>> GetPaymentList(string filterName, string documentTypeId,string date, int? page = 1, int? perPage = 10)
         {
             try
             {
