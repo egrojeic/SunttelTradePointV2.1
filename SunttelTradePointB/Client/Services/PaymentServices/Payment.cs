@@ -18,13 +18,13 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
 
 
 
-        public async Task<Payment> SavePaymentItem(InventoryDetail commercialDocument)
+        public async Task<Payment> SavePaymentItem(Payment payment)
         {
             try
             {
-                string path = $"/api/Inventory/GetInventory?&{Configpath}";
-                commercialDocument.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
-                var responseMessage = await _httpClient.PostAsJsonAsync<InventoryDetail>($"{path}", commercialDocument);
+                string path = $"/api/Payment/pendiente?&{Configpath}";
+                payment.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                var responseMessage = await _httpClient.PostAsJsonAsync<Payment>($"{path}", payment);
                 return await responseMessage.Content.ReadFromJsonAsync<Payment>();
 
             }
@@ -35,7 +35,107 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
             }
         }
 
+        public async Task<PaymentType> SavePaymentType(PaymentType paymentType)
+        {
+            try
+            {
+                string path = $"/api/Inventory/GetInventory?&{Configpath}";
+               // paymentType.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                var responseMessage = await _httpClient.PostAsJsonAsync<PaymentType>($"{path}", paymentType);
+                return await responseMessage.Content.ReadFromJsonAsync<PaymentType>();
 
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<PaymentStatus> SavePaymentType(PaymentStatus paymentType)
+        {
+            try
+            {
+                string path = $"/api/Inventory/GetInventory?&{Configpath}";
+                //paymentType.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                var responseMessage = await _httpClient.PostAsJsonAsync<PaymentStatus>($"{path}", paymentType);
+                return await responseMessage.Content.ReadFromJsonAsync<PaymentStatus>();
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<PaymentMode> SavePaymentMode(PaymentMode paymentMode)
+        {
+            try
+            {
+                string path = $"/api/Inventory/GetInventory?&{Configpath}";
+                //paymentType.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                var responseMessage = await _httpClient.PostAsJsonAsync<PaymentMode>($"{path}", paymentMode);
+                return await responseMessage.Content.ReadFromJsonAsync<PaymentMode>();
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<PaymentVia> SavePaymentVia(PaymentVia paymentVia)
+        {
+            try
+            {
+                string path = $"/api/Inventory/GetInventory?&{Configpath}";
+                //paymentVia.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                var responseMessage = await _httpClient.PostAsJsonAsync<PaymentVia>($"{path}", paymentVia);
+                return await responseMessage.Content.ReadFromJsonAsync<PaymentVia>();
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+
+
+        public async Task<List<PaymentMode>> GetPaymentViaById(string paymentViaId)
+        {
+            try
+            {
+                string Url = GetGlobalVariables($"");
+                var responseMessage = await Gethttp(Url);
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<PaymentMode>>();
+                return list != null ? list : new List<PaymentMode>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<List<PaymentMode>> GetPaymentById(string paymentTypeId)
+        {
+            try
+            {
+                string Url = GetGlobalVariables($"");
+                var responseMessage = await Gethttp(Url);
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<PaymentMode>>();
+                return list != null ? list : new List<PaymentMode>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
 
 
 
@@ -48,6 +148,39 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Payment>>();
                 List<Payment> conceptLis = new();
                 return conceptLis != null ? conceptLis : new List<Payment>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<List<PaymentType>> GetPaymentModeById(string paymentModeById)
+        {
+            try
+            {
+                string Url = GetGlobalVariables($"");
+                var responseMessage = await Gethttp(Url);
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<PaymentType>>();              
+                return list != null ? list : new List<PaymentType>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<List<PaymentStatus>> GetPaymentStatusById(string paymentTypeId)
+        {
+            try
+            {
+                string Url = GetGlobalVariables($"");
+                var responseMessage = await Gethttp(Url);
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<PaymentStatus>>();
+              
+                return list != null ? list : new List<PaymentStatus>();
             }
             catch (Exception ex)
             {
