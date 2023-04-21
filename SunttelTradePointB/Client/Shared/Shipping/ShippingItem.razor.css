@@ -1,0 +1,38 @@
+﻿.btn-grid {
+    height:40px;
+    width:45px;
+    border-radius:5px;
+}
+.btn-grid-color {
+    background-color: #00ccff;
+}
+
+
+
+.grid-columns-6 {
+    grid-template-columns: 1fr 195px 1fr 195px 1fr 195px;
+}
+
+    .grid-columns-6 .InventoryItem {
+        grid-column: 4/7;
+        display: flex;
+        flex-direction: row;
+        justify-content: stretch;
+        column-gap: 20px;
+        align-items: stretch;
+      
+    }
+
+    .grid-columns-6 .InventoryBusinessLine {
+        grid-column: 2/4;
+        display: flex;
+        flex-direction: row;
+        justify-content: stretch;
+        column-gap: 20px;
+        align-items: stretch;
+    }
+
+
+    /*grid-template-columns: 140px 180px 176px 180px 150px 180px;*/
+
+   
