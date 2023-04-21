@@ -1,0 +1,164 @@
+﻿@page "/PaymentStatusGeneral"
+@page "/PaymentStatusGeneral/{_filterItems}"
+@using SunttelTradePointB.Shared.Sales;
+@using SunttelTradePointB.Shared.Accounting
+@inject SunttelTradePointB.Client.Services.PaymentServices.PaymentServices PaymentServices
+@inject ContextMenuService ContextMenuService
+@inject NavigationManager Navigation
+@inject IJSRuntime Js
+
+<PageTitleComponent Title="Payment Vias" IconName="Payments.png"
+                    Description="With this tool you can create and edit payment vias ">
+</PageTitleComponent>
+
+<div class="panelMenuContainer">
+    <PaymentStatusMenu></PaymentStatusMenu>
+    <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>   
+</div>
+
+
+
+<div class="tableContainer">
+
+    <div class="detailsTitleContainer" style="width:100%;">
+        <h3 class="subTitleDetailForm">@GetName("ImportFileRecords",new Payment())</h3>
+        <svg @onclick='()=>EventIdSelectionMenuItem("PaymentStatus")' style="margin-left:20px;" title="Add new Recipe Item" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style " viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+        </svg>
+    </div>
+    @if (isLoading)
+    {
+
+        <WaitingProcessIndicator loadingTopic="Payments"></WaitingProcessIndicator>
+
+    }
+    else
+    {
+
+
+        <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="50"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="PaymentStatustViatList"
+                    TItem="PaymentStatus"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"                   
+                    CellContextMenu="@ShowContextMenuCommercialDocument">
+            <Columns>
+
+                <RadzenDataGridColumn TItem="PaymentStatus" Property="Name" Title="@GetName("Name",new BasicConcept())" Width="308px" />
+                <RadzenDataGridColumn TItem="PaymentStatus" Property="Name" Title="@GetName("Name",new PaymentStatus())" Width="308px">
+                    <Template>
+                        @{
+                            var EditingAllowed = (bool)context.GetType().GetProperty(nameof(PaymentStatus.EditingAllowed)).GetValue(context);
+                            <input type="checkbox" checked="@EditingAllowed" />                           
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="PaymentStatus" Property="Name" Title="@GetName("Enabled",new PaymentStatus())" Width="308px">
+                    <Template>
+                        @{
+                            var Enabled = (bool)context.GetType().GetProperty(nameof(PaymentStatus.Enabled)).GetValue(context);
+                            <input type="checkbox" checked="@Enabled" />
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+
+            </Columns>
+        </RadzenDataGrid>
+    }
+</div>
+
+
+
+@code {
+    [Parameter]
+    public string _filterItems { get; set; }
+    public List<PaymentStatus> PaymentStatustViatList { get; set; }
+   
+
+    bool isLoading = false;
+
+    DateTime startingDate = DateTime.Now;
+
+    public string filter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+    protected async override void OnInitialized()
+    {
+
+        if (_filterItems != null) LoadData();
+        base.OnInitialized();
+
+    }
+
+    public async void LoadData()
+    {
+        isLoading = true;       
+            await PaymentServices.GetPaymentStatusList(0,1,(filter != null ? filter : "all"));      
+        isLoading = false;
+        StateHasChanged();
+    }
+
+   
+
+
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<PaymentStatus> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+      
+        </RadzenMenu>
+    );
+
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        PaymentStatus argObj = (PaymentStatus)args.Value;
+        Navigation.NavigateTo($"PaymentStatus/{argObj.Id}/{_filterItems}");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+    public void Setfilter( string value)
+    {
+        filter = value;
+        StateHasChanged();
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    public void Add()
+    {
+        
+    }
+
+
+    public void EventIdSelectionMenuItem(string name)
+    {
+        Js.InvokeAsync<object>("open", name, "_blank");
+
+    }
+
+}

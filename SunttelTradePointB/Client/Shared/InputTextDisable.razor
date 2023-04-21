@@ -44,16 +44,16 @@ else
     {
         if (ValueInt != null) ValueInt = GetValidateRange(Convert.ToInt32(arg.Value.ToString()));
         if (ValueDouble != null) ValueDouble = GetValidateRange(Convert.ToDouble(arg.Value.ToString()));
-        if (ValueString != null) ValueString = arg.Value.ToString();
+        ValueString = arg.Value.ToString();
 
 
         if (ValueInt != null) ValueIntChanged.InvokeAsync(ValueInt.Value);
         if (ValueDouble != null) ValueDoubleChanged.InvokeAsync(ValueDouble.Value);
-        if (ValueString != null) ValueStringChanged.InvokeAsync(ValueString);
+        if (!TypeInt) ValueStringChanged.InvokeAsync(ValueString);
 
-        if (ValueInt != null) Value = ValueInt.ToString();
-        if (ValueDouble != null) Value = ValueDouble.ToString();
-        if (ValueString != null) Value = ValueString.ToString();
+        if (ValueInt != null && TypeInt) Value = ValueInt.ToString();
+        if (ValueDouble != null && TypeInt) Value = ValueDouble.ToString();
+        if (!TypeInt) Value = ValueString.ToString();
       
         ChangedUpdate.InvokeAsync(null);
         StateHasChanged();
@@ -78,16 +78,16 @@ else
 
         if (ValueInt != null) ValueInt = GetValidateRange(ValueInt);
         if (ValueDouble != null) ValueDouble = GetValidateRange(ValueDouble);
-        if (ValueString != null) Value = ValueString.ToString();
+        if (!TypeInt && ValueString !=null) Value = ValueString.ToString();
 
         if (ValueInt != null) Value = ValueInt.ToString();
         if (ValueDouble != null) Value = ValueDouble.ToString();
-        if (ValueString != null) Value = ValueString.ToString();
+        if (!TypeInt && ValueString != null) Value = ValueString.ToString();
 
 
         if (ValueInt != null) ValueIntChanged.InvokeAsync(ValueInt.Value);
         if (ValueDouble != null) ValueDoubleChanged.InvokeAsync(ValueDouble.Value);
-        if (ValueString != null) ValueStringChanged.InvokeAsync(ValueString);
+        if (!TypeInt && ValueString !=null) ValueStringChanged.InvokeAsync(ValueString);
 
 
       

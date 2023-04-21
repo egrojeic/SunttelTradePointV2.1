@@ -7,6 +7,8 @@
 @inject NavigationManager Navigation
 
 
+@inject IJSRuntime Js
+
 <PageTitleComponent Title="Payments" IconName="Payments.png"
                     Description="With this tool you can create and edit payments ">
 </PageTitleComponent>
@@ -102,7 +104,7 @@
         isLoading = true;
         if (documentType != null)
         {
-            await PaymentServices.GetPaymentList((filter != null ? filter : "all"), startingDate.ToString(), documentType.Id, 1, 10);
+           paymentList = await PaymentServices.GetPaymentList((filter != null ? filter : "all"), documentType.Id, startingDate.ToString(), 1, 10);
         }
         isLoading = false;
         StateHasChanged();

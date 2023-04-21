@@ -1,0 +1,34 @@
+﻿
+.red-button {
+    background-color: red;
+    color: white;
+    border-radius: 10px;
+}
+
+
+.dropdown {
+    margin: auto;
+    z-index: 101;
+    max-width: 220px;
+    align-self: center;
+}
+
+nav {
+    display: inline-flex;
+}
+
+.e-split-btn {
+    background-color: red;
+}
+
+.e-btn {
+    background-color: red;
+}
+
+.btn-new{  
+    display:flex;
+    flex-direction:row;
+    justify-items:center;
+    align-items:center;   
+    margin-right:0px;
+}

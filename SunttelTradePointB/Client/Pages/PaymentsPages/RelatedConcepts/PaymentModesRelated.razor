@@ -18,8 +18,8 @@
 
 <MessageSaveComponent isVisible="isVisible" message="@msg">
 </MessageSaveComponent>
-<PageTitleComponent Title="Payment Status"
-                    Description="Here you can add payment status" IconName="Payments.png">
+<PageTitleComponent Title="Payment Mode"
+                    Description="Here you can add payment mode" IconName="Payments.png">
 </PageTitleComponent>
 
 
@@ -48,7 +48,7 @@
     <div class="flex-horizontal-center">
         <div class="grid-mode-row grid-colum">
             <div><label>@GetName("Name",new BasicConcept())</label></div>
-            <InputTextDisable Enable="true" style="font-size:15px; font-weight:none; " @bind-ValueString="@paymentMode.Name"></InputTextDisable>
+            <InputTextDisable TypeInt="false" Enable="true" style="font-size:15px; font-weight:none;"  @bind-ValueString="@paymentMode.Name"></InputTextDisable>
 
         </div>
     </div>
@@ -127,7 +127,7 @@
         }
         else
         {
-            alert("Saved", 1);
+            alert("No Saved", 1);
         }
 
         StateHasChanged();
@@ -210,7 +210,7 @@
     {
         string msg = "";
         if (paymentMode == null) msg = "required fields";
-        if (paymentMode == null || paymentMode.Name != null) msg = "required fields Name";
+        if (paymentMode == null || paymentMode.Name == null) msg = "required fields Name";
         return msg;
     }
 

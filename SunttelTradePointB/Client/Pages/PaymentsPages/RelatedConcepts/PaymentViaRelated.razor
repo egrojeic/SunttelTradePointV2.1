@@ -18,8 +18,8 @@
 
 <MessageSaveComponent isVisible="isVisible" message="@msg">
 </MessageSaveComponent>
-<PageTitleComponent Title="Payment Status"
-                    Description="Here you can add payment status" IconName="Payments.png">
+<PageTitleComponent Title="Payment Vias"
+                    Description="Here you can add payment vias" IconName="Payments.png">
 </PageTitleComponent>
 
 
@@ -48,7 +48,7 @@
         <div class="grid-mode-row  grid-colum ">
 
             <div><label>@GetName("Name",new BasicConcept())</label></div>
-            <InputTextDisable Enable="true" style="font-size:15px; font-weight:none; " @bind-ValueString="paymentVia.Name"></InputTextDisable>
+            <InputTextDisable TypeInt="false" Enable="true" style="font-size:15px; font-weight:none; " @bind-ValueString="paymentVia.Name"></InputTextDisable>
         </div>
     </div>
 
@@ -186,8 +186,8 @@
     public void Home()
     {
         string paramFilter = filter != null ? filter : "";
-        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/Payments/{paramFilter}");
-        Navigation.NavigateTo($"/Payments");
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/PaymentViaGeneral/{paramFilter}");
+        Navigation.NavigateTo($"/PaymentViaGeneral");
     }
 
     public void OpenAlert(string _msg, int _status, bool visible)
@@ -207,7 +207,7 @@
     {
         string msg = "";
         if (paymentVia == null) msg = "required fields";
-        if (paymentVia == null || paymentVia.Name != null) msg = "required fields Name";
+        if (paymentVia == null || paymentVia.Name == null) msg = "required fields Name";
         return msg;
     }
 

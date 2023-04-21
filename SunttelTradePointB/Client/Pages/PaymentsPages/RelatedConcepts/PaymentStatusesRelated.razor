@@ -204,8 +204,8 @@
     public void Home()
     {
         string paramFilter = filter != null ? filter : "";
-        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/Payments/{paramFilter}");
-        Navigation.NavigateTo($"/Payments");
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/PaymentStatusGeneral/{paramFilter}");
+        Navigation.NavigateTo($"/PaymentStatusGeneral");
     }
 
     public void OpenAlert(string _msg, int _status, bool visible)

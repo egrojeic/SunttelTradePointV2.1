@@ -355,7 +355,7 @@
         Load();
         if (PaymentItemId != null)
         {
-            
+            payment = await PaymentServices.GetPaymentById(PaymentItemId);
         }
 
         isLoading = false;
@@ -375,7 +375,7 @@
             {
                 Load();
 
-                // var result = await DocumentServices.SaveCommercialDocument(commercialDocument);
+                var result = await PaymentServices.SavePaymentItem(payment);
                 if (true)
                 {
                     alert("Saved", 0);
