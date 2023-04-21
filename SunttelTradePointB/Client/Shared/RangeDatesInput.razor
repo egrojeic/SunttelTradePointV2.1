@@ -4,18 +4,27 @@
 
 <div class="controlContainer">
     <label class="col-sm-2 col-form-label text-right lblControl">Start</label>
-    <div class="col-sm-4">
-        <input @bind-value="StartDate" type="date" class="form-control" />
+    @if (StartDate != DateTime.MinValue)
+    {
+        <div class="col-sm-4">
+            <input @bind-value="StartDate" type="date" class="form-control" />
     </div>
-    <label class="col-sm-2 col-form-label text-right lblControl">Until</label>
-    <div class="col-sm-4">
+    }
+    @if (EndDate != DateTime.MinValue)
+    {
+        <label class="col-sm-2 col-form-label text-right lblControl">Until</label>
+        <div class="col-sm-4">
         <input @bind-value="EndDate" type="date" class="form-control" />
     </div>
-    <div>
-        <button class="reload-button">
-            <img src="/images/findreload.png" />
-        </button>
-    </div>
+    }
+    @if (!disableBtn)
+    {
+        <div>
+            <button class="reload-button">
+                <img src="/images/findreload.png" />
+            </button>
+        </div>
+    }
 </div>
 
 @code {
@@ -24,6 +33,9 @@
 
     [Parameter]
     public DateTime EndDate { get; set; }
+
+    [Parameter]
+    public bool disableBtn { get; set; }
 
     protected override Task OnInitializedAsync()
     {

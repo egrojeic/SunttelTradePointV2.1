@@ -59,10 +59,16 @@
     <Folder Include="Services\ProcurementServices\" />
     <Folder Include="Services\ProductionServices\" />
     <Folder Include="Services\QualityControlServices\" />
+    <Folder Include="Shared\Shipping\InventorySubComponents\" />
     <Folder Include="Shared\Inventory\InventorySubComponents\" />
-    <Folder Include="Shared\Payments\PaymentsSubComponents\" />
     <Folder Include="wwwroot\lib\microsoft\signalr\dist\browser\" />
     <Folder Include="wwwroot\uploads\squadImages\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Shared\Shipping\ShippingItem.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties wwwroot_4css_4bootstrap_4bootstrap_1min_1css_1map__JsonSchema="" /></VisualStudio></ProjectExtensions>

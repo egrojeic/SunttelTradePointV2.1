@@ -1,6 +1,6 @@
-@page "/PaymentsItem"
-@page "/PaymentsItem/{PaymentsItemId}"
-@page "/PaymentsItem/{filter}/{PaymentsItemId}"
+@page "/PaymentItem"
+@page "/PaymentItem/{PaymentItemId}"
+@page "/PaymentItem/{filter}/{PaymentItemId}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
@@ -9,15 +9,17 @@
 @using Syncfusion.Blazor.Navigations
 @using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents
 @using SunttelTradePointB.Shared.Accounting
+@using SunttelTradePointB.Client.Shared.Payments.PaymentsSubComponents
 @inject NavigationManager Navigation
-@inject SunttelTradePointB.Client.Services.PaymentServices.Payment PaymentServices
+@inject SunttelTradePointB.Client.Services.PaymentServices.PaymentServices PaymentServices
+@inject ContextMenuService ContextMenuService
 
 @inject IJSRuntime Js
 
 <MessageSaveComponent isVisible="isVisible" message="@msg">
 </MessageSaveComponent>
-<PageTitleComponent Title=" Commercial Document"
-                    Description="Here you can add commercial document" IconName="commercialDocument.png">
+<PageTitleComponent Title=" Payment"
+                    Description="Here you can add payment" IconName="Payments.png">
 </PageTitleComponent>
 
 
@@ -51,7 +53,6 @@
     <div class="grid-columns-header grid-columns-6">
 
         <div><label class="sub-tile">@GetName("DocumentType",new CommercialDocument())</label></div>
-
         <div>
             <select @onchange="SelectItemDocumentType" class="select-style">
 
@@ -72,6 +73,91 @@
                 }
             </select>
         </div>
+
+        <div><label>@GetName("Code",new Payment())</label></div>
+        <InputTextDisable Enable="true" style="font-size:15px; font-weight:none; " @bind-ValueString="@payment.Code"></InputTextDisable>
+
+
+        <div><label>@GetName("PaymentRef",new Payment())</label></div>
+        <InputTextDisable Enable="true" style="font-size:15px; font-weight:none; " @bind-ValueString="@payment.PaymentRef"></InputTextDisable>
+
+        <div><label>@GetName("Payer",new Payment())</label></div>
+        <input type="data" @bind-value="@payment.PaymentDate" class="form-control" />
+
+        <div><label class="sub-tile">@GetName("Payer",new Payment())</label></div>
+        <div >
+            <InputTextSelector3  TItem="EntityActor"
+                                Id="Payer"
+                                caption="@(payment.Payer !=null ?payment.Payer?.Name:"" )"
+                               
+                               >
+
+            </InputTextSelector3>
+        </div>
+
+        <div><label class="sub-tile">@GetName("Receiver",new Payment())</label></div>
+        <div>
+            <InputTextSelector3  TItem="EntityActor"
+                                Id="Receiver"
+                                caption="@(payment.Receiver !=null ?payment.Receiver?.Name:"" )">
+
+            </InputTextSelector3>
+        </div>
+
+        <div><label class="sub-tile">@GetName("DocPaymentMode",new Payment())</label></div>
+        <div>
+            <select @onchange="SelectItemDocumentType" class="select-style">
+
+                @if (docPaymentModeList != null && docPaymentModeList.Count() > 0)
+                {
+                    <option value="0" selected>Select</option>
+                }
+                @if (docPaymentModeList != null)
+                {
+                    @foreach (var item in docPaymentModeList)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                }
+                @if (payment != null && payment.DocumentType != null)
+                {
+                    <option value="@payment.DocPaymentMode.Id" selected>@payment.DocPaymentMode.Name</option>
+                }
+            </select>
+        </div>
+
+        <div><label class="sub-tile">@GetName("Status",new Payment())</label></div>
+        <Status Name="@(payment.Status !=null ? payment.Status.Name:"")"></Status>
+
+        <div><label class="sub-tile">@GetName("DocPaymentVia",new Payment())</label></div>
+        <div>
+            <select @onchange="SelectItemDocumentType" class="select-style">
+
+                @if (docPaymentModeList != null && docPaymentModeList.Count() > 0)
+                {
+                    <option value="0" selected>Select</option>
+                }
+                @if (docPaymentViaList != null)
+                {
+                    @foreach (var item in docPaymentViaList)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                }
+                @if (payment != null && payment.DocPaymentVia != null)
+                {
+                    <option value="@payment.DocPaymentVia.Id" selected>@payment.DocPaymentVia.Name</option>
+                }
+            </select>
+        </div>
+
+        <div><label>@GetName("Surplus",new Payment())</label></div>
+        <InputTextDisable Enable="true" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@payment.Surplus"></InputTextDisable>
+
+        <div><label>@GetName("PaymentValue",new Payment())</label></div>
+        <InputTextDisable Enable="true" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@payment.PaymentValue"></InputTextDisable>
+
+
     </div>
 
     <hr />
@@ -85,25 +171,134 @@
 
             <TabItem>
                 <ChildContent>
-                    <TabHeader Text="@GetName("Items",new CommercialDocument())"></TabHeader>
+                    <TabHeader Text="@GetName("ImportFileRecords",new Payment())"></TabHeader>
                 </ChildContent>
                 <ContentTemplate>
                     <div class="container-item">
-                        @if (true)
+
+
+                        @if (isLoading)
                         {
+
+                            <WaitingProcessIndicator loadingTopic="Import File Records"></WaitingProcessIndicator>
+
                         }
+                        else
+                        {
+                            <div class="detailsTitleContainer" style="width:100%;">
+                                <h3 class="subTitleDetailForm">@GetName("ImportFileRecords",new Payment())</h3>
+                                <svg style="margin-left:20px;" title="Add new Recipe Item" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style " viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                </svg>
+                            </div>
+                            <RadzenDataGrid AllowFiltering="true"
+                                        AllowColumnResize="true"
+                                        AllowAlternatingRows="true"
+                                        FilterMode="FilterMode.Advanced"
+                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                        AllowSorting="true"
+                                        PageSize="50"
+                                        AllowPaging="true"
+                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                        ShowPagingSummary="true"
+                                        Data="@ImportFileRecordList"
+                                        TItem="PaymentImportFileRecord"
+                                        ColumnWidth="300px"
+                                        SelectionMode="DataGridSelectionMode.Single"
+                                        LogicalFilterOperator="LogicalFilterOperator.Or"                                       
+                                        CellContextMenu="@ShowContextMenuCommercialDocument">
+                                <Columns>
+                                  
+                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="PayerCode" Title="@GetName("PayerCode", new PaymentImportFileRecord())" Width="200px" />
+                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="PaymentDocRef" Title="@GetName("PaymentDocRef", new PaymentImportFileRecord())"  Width="208px" />
+                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="PaymentDocDate" Title="@GetName("PaymentDocDate", new PaymentImportFileRecord())"  Width="208px" />
+                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="InvoiceToPay" Title="@GetName("InvoiceToPay", new PaymentImportFileRecord())" Width="208px" />
+                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="PaymentDocRef" Title="@GetName("PaymentDocRef", new PaymentImportFileRecord())"  Width="208px" />
+                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="PONumberToPay" Title="@GetName("PONumberToPay", new PaymentImportFileRecord())"  Width="208px" />
+                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="InvoiceTotalAmount" Title="@GetName("InvoiceTotalAmount", new PaymentImportFileRecord())" Filterable="false" Sortable="false" Width="208px" />
+                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="Discount" Title="@GetName("Discount", new PaymentImportFileRecord())" Filterable="false" Sortable="false" Width="208px" />
+                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="Credits" Title="@GetName("Credits", new PaymentImportFileRecord())" Filterable="false" Sortable="false" Width="208px" />
+                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="DiscountReason" Title="@GetName("DiscountReason", new PaymentImportFileRecord())" Width="208px" />
+                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="HasCustomerError" Title="@GetName("HasCustomerError", new PaymentImportFileRecord())" Width="208px" />
+                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="HasInvoiceError" Title="@GetName("HasInvoiceError", new PaymentImportFileRecord())" Width="208px" />
+                                  
+                                </Columns>
+                            </RadzenDataGrid>
+                        }
+                      
                     </div>
                 </ContentTemplate>
             </TabItem>
 
             <TabItem>
                 <ChildContent>
-                    <TabHeader Text="@GetName("SpecsNotes",new CommercialDocument())"></TabHeader>
+                    <TabHeader Text="@GetName("AppliedPayments",new Payment())"></TabHeader>
                 </ChildContent>
                 <ContentTemplate>
+                      <div class="container-item">
 
 
+                        @if (isLoading)
+                        {
 
+                            <WaitingProcessIndicator loadingTopic="App lied Payments"></WaitingProcessIndicator>
+
+                        }
+                        else
+                        {
+                            <div class="detailsTitleContainer" style="width:100%;">
+                                <h3 class="subTitleDetailForm">@GetName("AppliedPayments",new Payment())</h3>
+                                <svg style="margin-left:20px;" title="Add new Recipe Item" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style " viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                </svg>
+                            </div>
+                            <RadzenDataGrid AllowFiltering="true"
+                                        AllowColumnResize="true"
+                                        AllowAlternatingRows="true"
+                                        FilterMode="FilterMode.Advanced"
+                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                        AllowSorting="true"
+                                        PageSize="50"
+                                        AllowPaging="true"
+                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                        ShowPagingSummary="true"
+                                        Data="@appliedPaymentList"
+                                        TItem="AppliedPayment"
+                                        ColumnWidth="300px"
+                                        SelectionMode="DataGridSelectionMode.Single"
+                                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                                        CellContextMenu="@ShowContextMenuCommercialDocument">
+                                <Columns>
+
+
+                                    <RadzenDataGridColumn TItem="AppliedPayment" Property="InvoiceCode" Title="@GetName("InvoiceCode", new AppliedPayment())" Width="308px" />
+                                    <RadzenDataGridColumn TItem="AppliedPayment" Property="PaymentDocRef" Title="@GetName("PaymentDocRef", new AppliedPayment())" Width="208px" />
+                                    <RadzenDataGridColumn TItem="AppliedPayment" Property="InvoicePO" Title="@GetName("InvoicePO", new AppliedPayment())" Width="208px" />
+                                    <RadzenDataGridColumn TItem="AppliedPayment" Property="InvoiceDate" Title="@GetName("InvoiceDate", new AppliedPayment())" Width="208px" />
+                                    <RadzenDataGridColumn TItem="AppliedPayment" Property="InvoiceBuyer" Title="@GetName("InvoiceBuyer", new AppliedPayment())" Width="208px" />
+                                    <RadzenDataGridColumn TItem="AppliedPayment" Property="InvoiceTotalAmount" Title="@GetName("InvoiceTotalAmount", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />
+                                    <RadzenDataGridColumn TItem="AppliedPayment" Property="AppliedAmount" Title="@GetName("AppliedAmount", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />
+                                    <RadzenDataGridColumn TItem="AppliedPayment" Property="Discount" Title="@GetName("Discount", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />
+                                    <RadzenDataGridColumn TItem="AppliedPayment" Property="Credit" Title="@GetName("Credit", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />
+                                    <RadzenDataGridColumn TItem="AppliedPayment" Property="DiscountReason" Title="@GetName("DiscountReason", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />
+                                   
+                                </Columns>
+                            </RadzenDataGrid>
+                        }
+
+
+                    </div>
+                </ContentTemplate>
+            </TabItem>
+
+            <TabItem>
+                <ChildContent>
+                    <TabHeader Text="Payment With"></TabHeader>
+                </ChildContent>
+                <ContentTemplate>
+                   <PaymentWith></PaymentWith>
                 </ContentTemplate>
             </TabItem>
 
@@ -117,8 +312,10 @@
 
 
 @code {
+
+
     [Parameter]
-    public string commercialDocumentId { get; set; }
+    public string PaymentItemId { get; set; }
     [Parameter]
     public string filter { get; set; }
     public Payment payment { get; set; }
@@ -132,7 +329,10 @@
 
     #region List
     public List<CommercialDocumentType> documentTypeList = new();
-
+    public List<PaymentMode> docPaymentModeList { get; set; }
+    public List<PaymentVia> docPaymentViaList { get; set; }
+    public List<PaymentImportFileRecord> ImportFileRecordList { get; set; }
+    public List<AppliedPayment> appliedPaymentList { get; set; }
     #endregion List
 
 
@@ -152,8 +352,11 @@
 
         isLoading = true;
 
-
-
+        Load();
+        if (PaymentItemId != null)
+        {
+            
+        }
 
         isLoading = false;
         StateHasChanged();
@@ -227,8 +430,53 @@
     public void EventIdSelectionMenuItem(string name)
     {
         Js.InvokeAsync<object>("open", name, "_blank");
-        
+
     }
+    
+
+
+    #region Grid
+
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<AppliedPayment> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClickAppliedPayment">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClickAppliedPayment(MenuItemEventArgs args)
+    {
+        AppliedPayment argObj = (AppliedPayment)args.Value;
+     
+        Navigation.NavigateTo($"SaleItem/{argObj.Id}");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+      void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<PaymentImportFileRecord> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        PaymentImportFileRecord argObj = (PaymentImportFileRecord)args.Value;
+     
+        Navigation.NavigateTo($"SaleItem/{argObj.Id}");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+    #endregion grid
+
+
+
+
 
     public void alert(string _msg, int? status = 0)
     {
@@ -249,8 +497,8 @@
     public void Home()
     {
         string paramFilter = filter != null ? filter : "";
-        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/SalesDocuments/{paramFilter}");
-        Navigation.NavigateTo($"/SalesDocuments");
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/Payments/{paramFilter}");
+        Navigation.NavigateTo($"/Payments");
     }
 
     public void OpenAlert(string _msg, int _status, bool visible)
@@ -264,12 +512,12 @@
         }
     }
 
-   
+
 
     public string Validate()
     {
         string msg = "";
-       
+
         return msg;
     }
 
@@ -278,13 +526,19 @@
 
     public void Load()
     {
-      
-
-
-
-
-
-
+        if(payment== null)payment = new();
+        if(payment.DocPaymentMode == null)payment.DocPaymentMode = new();
+        if(payment.DocPaymentVia == null)payment.DocPaymentVia = new();
+        if(payment.DocumentType == null)payment.DocumentType = new();
+        if(payment.ImportFileRecords == null)payment.ImportFileRecords = new();
+        if (payment.Payer == null) payment.Payer = new();
+        if (payment.PaymentWithCredits == null) payment.PaymentWithCredits = new();
+        if (payment.PaymentWithOverpayments == null) payment.PaymentWithOverpayments = new();
+        if (payment.PaymentWithOverplus == null) payment.PaymentWithOverplus = new();
+        if (payment.Receiver == null) payment.Receiver = new();
+        if (payment.ReturnInfo == null) payment.ReturnInfo = new();
+        if (payment.Status == null) payment.Status = new();
+        if (payment.PaymentDate == DateTime.MinValue) payment.PaymentDate = DateTime.Now;
     }
 
 
@@ -300,5 +554,5 @@
     {
         Navigation.NavigateTo(name);
     }
-   
+
 }

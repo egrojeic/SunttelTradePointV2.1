@@ -1,5 +1,5 @@
-@page "/InventoryItem"
-@page "/InventoryItem/{inventoryDetailId}"
+@page "/ShippingItem"
+@page "/ShippingItem/{shippingId}"
 
 
 @using SunttelTradePointB.Shared.Sales;
@@ -16,8 +16,8 @@
 <MessageSaveComponent isVisible="isVisible" message="@alertMsg">
 </MessageSaveComponent>
 
-<PageTitleComponent Title="Inventory Item" IconName="InventoryItem.png"
-                    Description="With this tool you can create and edit inventory item">
+<PageTitleComponent Title="Shipping Item" IconName="InventoryItem.png"
+                    Description="With this tool you can create and edit shipping item">
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
@@ -150,7 +150,7 @@
 
 @code {
     [Parameter]
-    public string inventoryDetailId { get; set; }
+    public string shippingId { get; set; }
     [Parameter]
     public string _filterItems { get; set; }
     public InventoryDetail inventoryDetail { get; set; }
@@ -177,9 +177,9 @@
     protected async override void OnInitialized()
     {
         Load();
-        if (inventoryDetailId != null)
+        if (shippingId != null)
         {
-            var result = await InventoryServices.GetInventoryById(inventoryDetailId);
+            var result = await InventoryServices.GetInventoryById(shippingId);
 
             if (result != null)
             {

@@ -1,5 +1,5 @@
-﻿@page "/Inventory"
-@page "/Inventory/{_filterItems}"
+﻿@page "/Shipping"
+@page "/Shipping/{_filterItems}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.InvetoryModels;
 @inject SunttelTradePointB.Client.Services.InventoryServices.Inventory _Inventory
@@ -8,13 +8,13 @@
 @inject WarehouseService warehouseService
 
 
-<PageTitleComponent Title="Inventory" IconName="inventory.png"
-                    Description="With this tool you can create and edit inventory">
+<PageTitleComponent Title="Shipping" IconName="inventory.png"
+                    Description="With this tool you can create and edit shipping">
 </PageTitleComponent>
 
 
 <div class="panelMenuContainer">
-    <InventoryMenu></InventoryMenu>
+    <ShippingMenu></ShippingMenu>
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
     <RangeDatesInput StartDate="@startingDate" disableBtn="true"></RangeDatesInput>
 </div>

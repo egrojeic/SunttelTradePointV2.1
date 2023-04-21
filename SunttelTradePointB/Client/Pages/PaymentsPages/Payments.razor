@@ -2,12 +2,12 @@
 @page "/Payments/{_filterItems}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Accounting
-@inject SunttelTradePointB.Client.Services.PaymentServices.Payment PaymentServices
+@inject SunttelTradePointB.Client.Services.PaymentServices.PaymentServices PaymentServices
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
 
 
-<PageTitleComponent Title="Payments" IconName="commercialActivities.png"
+<PageTitleComponent Title="Payments" IconName="Payments.png"
                     Description="With this tool you can create and edit payments ">
 </PageTitleComponent>
 
@@ -17,7 +17,7 @@
 </div>
 <div class="panelMenuContainer">  
     <PaymentMenu2 SetDocumentTypeId="SetDocumentTypeId"></PaymentMenu2>
-    <RangeDatesInput StartDate="@startingDate" EndDate="@endDate"></RangeDatesInput>
+    <RangeDatesInput StartDate="@startingDate" disableBtn="true" ></RangeDatesInput>
 </div>
 
 
@@ -27,7 +27,7 @@
     @if (isLoading)
     {
 
-        <WaitingProcessIndicator loadingTopic="Characteristic Items"></WaitingProcessIndicator>
+        <WaitingProcessIndicator loadingTopic="Payments"></WaitingProcessIndicator>
 
     }
     else
@@ -77,7 +77,7 @@
 
     bool isLoading = false;
 
-    DateTime startingDate = DateTime.Now , endDate= DateTime.Now.AddMonths(1) ;
+    DateTime startingDate = DateTime.Now;
 
     public string filter
     {
@@ -100,7 +100,10 @@
     public async void LoadData()
     {
         isLoading = true;
-        await PaymentServices.GetPaymentList((filter!=null?filter:"all"), documentType.Id, 1,10);
+        if (documentType != null)
+        {
+            await PaymentServices.GetPaymentList((filter != null ? filter : "all"), startingDate.ToString(), documentType.Id, 1, 10);
+        }
         isLoading = false;
         StateHasChanged();
     }
@@ -127,7 +130,7 @@
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         Payment argObj = (Payment)args.Value;
-        Navigation.NavigateTo($"PaymentsItem/{argObj.Id}");
+        Navigation.NavigateTo($"PaymentsItem/{argObj.Id}/{_filterItems}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
