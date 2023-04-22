@@ -111,7 +111,7 @@
     public async void LoadData()
     {
         isLoading = true;       
-            await PaymentServices.GetPaymentStatusList(0,1,(filter != null ? filter : "all"));      
+         PaymentStatustViatList =   await PaymentServices.GetPaymentStatusList(0,1,(filter != null ? filter : "all"));      
         isLoading = false;
         StateHasChanged();
     }

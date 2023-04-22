@@ -97,14 +97,15 @@
         if (_filterItems != null) LoadData();
         base.OnInitialized();
 
+
     }
 
     public async void LoadData()
     {
         isLoading = true;
-        if (documentType != null)
+        if (documentType != null || true)
         {
-           paymentList = await PaymentServices.GetPaymentList((filter != null ? filter : "all"), documentType.Id, startingDate.ToString(), 1, 10);
+            paymentList = await PaymentServices.GetPaymentList((filter != null ? filter : "all"), (documentType != null ? documentType?.Id : ""), startingDate.ToString(), 1, 10);
         }
         isLoading = false;
         StateHasChanged();

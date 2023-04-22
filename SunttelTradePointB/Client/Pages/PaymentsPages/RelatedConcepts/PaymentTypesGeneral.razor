@@ -45,7 +45,7 @@
                     AllowPaging="true"
                     PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                     ShowPagingSummary="true"
-                    Data="paymentTypetViatList"
+                    Data="paymentTypettList"
                     TItem="PaymentType"
                     ColumnWidth="300px"
                     SelectionMode="DataGridSelectionMode.Single"
@@ -65,7 +65,7 @@
 @code {
     [Parameter]
     public string _filterItems { get; set; }
-    public List<PaymentType> paymentTypetViatList { get; set; }
+    public List<PaymentType> paymentTypettList { get; set; }
    
 
     bool isLoading = false;
@@ -93,7 +93,7 @@
     public async void LoadData()
     {
         isLoading = true;       
-            await PaymentServices.GetPaymentTypeList(0,1,(filter != null ? filter : "all"));      
+           paymentTypettList =  await PaymentServices.GetPaymentTypeList(0,1,(filter != null ? filter : "all"));      
         isLoading = false;
         StateHasChanged();
     }
