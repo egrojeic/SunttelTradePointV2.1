@@ -1,0 +1,155 @@
+﻿@page "/PaymentWithCredit"
+@page "/PaymentWithCredit/{_filterItems}"
+@using SunttelTradePointB.Shared.Sales;
+@using SunttelTradePointB.Shared.Accounting
+@using Syncfusion.Blazor.SplitButtons
+@inject SunttelTradePointB.Client.Services.PaymentServices.PaymentServices PaymentServices
+@inject ContextMenuService ContextMenuService
+@inject NavigationManager Navigation
+@inject IJSRuntime Js
+
+<MessageSaveComponent isVisible="isVisible" message="@msg">
+</MessageSaveComponent>
+
+<PageTitleComponent Title="Payment With Overplus" IconName="Payments.png"
+                    Description="With this tool you can create and edit payment with oerplus ">
+</PageTitleComponent>
+
+
+
+
+<div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
+    <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+
+    <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+        <SplitButtonEvents ItemSelected="ItemSelected">
+        </SplitButtonEvents>
+        <DropDownMenuItems>
+            <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+            <DropDownMenuItem Separator="true"></DropDownMenuItem>
+            <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+            <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+            <DropDownMenuItem Separator="true"></DropDownMenuItem>
+            <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+        </DropDownMenuItems>
+    </SfSplitButton>
+
+
+</div>
+
+
+<div class="flex-horizontal-center">
+
+    <div class="grid-mode-row grid-colum">
+        <div><label>@GetName("InvoiceCode",new PaymentWithCredit())</label></div>
+        <InputTextDisable TypeInt="false" Enable="true" style="font-size:15px; font-weight:none;" @bind-ValueString="@paymentWithCredit.CreditDocumentCode"></InputTextDisable>
+
+        <div><label>@GetName("OverplusValue",new PaymentWithCredit())</label></div>
+        <InputTextDisable TypeInt="true" Enable="true" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@paymentWithCredit.CreditValue"></InputTextDisable>
+
+        <div><label>@GetName("OverplusApplied",new PaymentWithCredit())</label></div>
+        <InputTextDisable TypeInt="true" Enable="true" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@paymentWithCredit.CreditApplied"></InputTextDisable>
+
+        <div><label>@GetName("Notes",new PaymentWithCredit())</label></div>
+        <InputTextDisable TypeInt="true" Enable="true" style="font-size:15px; font-weight:none;" @bind-ValueString="@paymentWithCredit.Notes"></InputTextDisable>
+
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public string _filterItems { get; set; }
+    public PaymentWithCredit paymentWithCredit { get; set; }
+
+    string SearcherValue = "";
+    string msg = "";
+    bool isLoading = false;
+    bool isVisible = false;
+
+
+    #region List
+    List<Concept> InvoiceBuyerList { get; set; }
+
+    #endregion List
+
+
+    protected async override void OnInitialized()
+    {
+        base.OnInitialized();
+
+    }
+
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    public void Add()
+    {
+
+    }
+
+
+    public async void ItemSelected(MenuEventArgs e)
+    {
+
+        StateHasChanged();
+        string tile = e.Item != null ? e.Item.Text : "";
+        if (tile == "Save")
+        {
+            var result = await PaymentServices.SavPymentWithCredit(paymentWithCredit);
+            if (true)
+            {
+
+                alert("Saved", 0);
+                paymentWithCredit = result;
+            }
+            else
+            {
+                alert("No saved", 1);
+            }
+
+        }
+
+
+        StateHasChanged();
+
+    }
+
+
+
+
+
+    public void alert(string _msg, int? status = 0)
+    {
+        isVisible = true;
+        msg = _msg;
+
+        StateHasChanged();
+    }
+
+    public void alert(string _msg)
+    {
+        isVisible = true;
+        msg = _msg;
+
+        StateHasChanged();
+    }
+
+
+    public void Home()
+    {
+        if (_filterItems != null) Navigation.NavigateTo($"/PaymentItem/{_filterItems}");
+        Navigation.NavigateTo($"/PaymentItem");
+    }
+
+    public void EventIdSelectionMenuItem(string name)
+    {
+        Js.InvokeAsync<object>("open", name, "_blank");
+
+    }
+
+}

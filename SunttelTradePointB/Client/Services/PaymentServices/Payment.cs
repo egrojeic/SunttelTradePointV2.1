@@ -89,6 +89,82 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
             }
         }
 
+        public async Task<AppliedPayment> SaveAppliedPayment(AppliedPayment appliedPayment)
+        {
+            try
+            {
+                string path = $"{pathApi}";
+                path = path.Replace("*Name", "pendiente");
+                path = GetGlobalVariables(path);
+                appliedPayment.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                var responseMessage = await _httpClient.PostAsJsonAsync<AppliedPayment>($"{path}", appliedPayment);
+                return await responseMessage.Content.ReadFromJsonAsync<AppliedPayment>();
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<PaymentWithOverpayment> SavepaymentWithOverpayment(PaymentWithOverpayment paymentWithOverpayment)
+        {
+            try
+            {
+                string path = $"{pathApi}";
+                path = path.Replace("*Name", "pendiente");
+                path = GetGlobalVariables(path);
+                paymentWithOverpayment.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                var responseMessage = await _httpClient.PostAsJsonAsync<PaymentWithOverpayment>($"{path}", paymentWithOverpayment);
+                return await responseMessage.Content.ReadFromJsonAsync<PaymentWithOverpayment>();
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<PaymentWithOverplus> SavePaymentWithOverplus(PaymentWithOverplus paymentWithOverplus)
+        {
+            try
+            {
+                string path = $"{pathApi}";
+                path = path.Replace("*Name", "pendiente");
+                path = GetGlobalVariables(path);
+                paymentWithOverplus.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                var responseMessage = await _httpClient.PostAsJsonAsync<PaymentWithOverplus>($"{path}", paymentWithOverplus);
+                return await responseMessage.Content.ReadFromJsonAsync<PaymentWithOverplus>();
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<PaymentWithCredit> SavPymentWithCredit(PaymentWithCredit pymentWithCredit)
+        {
+            try
+            {
+                string path = $"{pathApi}";
+                path = path.Replace("*Name", "pendiente");
+                path = GetGlobalVariables(path);
+                pymentWithCredit.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                var responseMessage = await _httpClient.PostAsJsonAsync<PaymentWithCredit>($"{path}", pymentWithCredit);
+                return await responseMessage.Content.ReadFromJsonAsync<PaymentWithCredit>();
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
         public async Task<PaymentVia> SavePaymentVia(PaymentVia paymentVia)
         {
             try
@@ -106,8 +182,6 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
                 return null;
             }
         }
-
-
 
         public async Task<List<PaymentMode>> GetPaymentViaById(string paymentViaId)
         {
@@ -136,6 +210,40 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
                 var responseMessage = await Gethttp($"{path}&paymentId={paymentTypeId}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<Payment>();
                 return list != null ? list : new Payment();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+
+        public async Task<List<Concept>> GetPayerList(string filter, bool isASale, int? page = 1, int? perPage = 10)
+        {
+            try
+            {
+
+                string path = $"/api/ConceptsSelector/GetBuyers?isASale={isASale}&userId=*Id&ipAddress=*Ip&page={page}&perPage={perPage}&filterString={filter}";
+                var responseMessage = await Gethttp($"{path}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();             
+                return list != null ? list : new List<Concept>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<List<Concept>> GetReceiverList(string filter, bool isASale, int? page = 1, int? perPage = 10)
+        {
+            try
+            {
+                string path = $"/api/ConceptsSelector/GetBuyers?isASale={isASale}&userId=*Id&ipAddress=*Ip&page={page}&perPage={perPage}&filterString={filter}";
+                var responseMessage = await Gethttp($"{path}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();               
+                return list != null ? list : new List<Concept>();
             }
             catch (Exception ex)
             {
