@@ -13,14 +13,15 @@ namespace SunttelTradePointB.Server.Interfaces.InventoryBkServices
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
         /// <param name="squadId"></param>
-        /// <param name="documentTypeId"></param>
+        /// <param name="warehouseId"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
         /// <param name="BuyerId"></param>
-        /// <param name="DocumentDate"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="filterName"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<InventoryDetail>? InventoryList, string? ErrorDescription)> GetInventory(string userId, string ipAddress, string squadId, string documentTypeId, string BuyerId, string DocumentDate, int? page = 1, int? perPage = 10, string? filterName = null);
+        Task<(bool IsSuccess, List<InventoryDetail>? InventoryList, string? ErrorDescription)> GetInventory(string userId, string ipAddress, string squadId, string warehouseId, DateTime startDate, DateTime endDate, string BuyerId, int? page = 1, int? perPage = 10, string? filterName = null);
 
         /// <summary>
         /// Retrieves a inventory having the specified id

@@ -19,7 +19,10 @@
 </div>
 <div class="panelMenuContainer">  
     <PaymentMenu2 SetDocumentTypeId="SetDocumentTypeId"></PaymentMenu2>
-    <RangeDatesInput StartDate="@startingDate" disableBtn="true" ></RangeDatesInput>
+    <RangeDatesInput StartDate="@startingDate"
+                     StartDateName="Date"
+                     EventSearchAll="EventSearchAll"        
+       ></RangeDatesInput>
 </div>
 
 
@@ -152,6 +155,9 @@
         return Name;
     }
    
-
+    public void EventSearchAll(string value)
+    {
+        filter = value;
+    }
 
 }

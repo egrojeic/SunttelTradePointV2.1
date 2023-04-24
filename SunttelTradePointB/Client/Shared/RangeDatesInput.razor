@@ -3,16 +3,16 @@
 
 
 <div class="controlContainer">
-    <label class="col-sm-2 col-form-label text-right lblControl">Start</label>
+    <label class="col-sm-2 col-form-label text-right lblControl">@(StartDateName != null ? StartDateName : "Start")</label>
     @if (StartDate != DateTime.MinValue)
     {
-        <div class="col-sm-4">
+        <div >
             <input @bind-value="StartDate" type="date" class="form-control" />
     </div>
     }
     @if (EndDate != DateTime.MinValue)
     {
-        <label class="col-sm-2 col-form-label text-right lblControl">Until</label>
+        <label class="col-sm-2 col-form-label text-right lblControl"> @(EndDateName != null ? EndDateName : "Until")</label>
         <div class="col-sm-4">
         <input @bind-value="EndDate" type="date" class="form-control" />
     </div>
@@ -20,7 +20,7 @@
     @if (!disableBtn)
     {
         <div>
-            <button class="reload-button">
+            <button @onclick="@SearchAll" class="reload-button">
                 <img src="/images/findreload.png" />
             </button>
         </div>
@@ -30,9 +30,14 @@
 @code {
     [Parameter]
     public DateTime StartDate { get; set; }
-
+    [Parameter]
+    public string StartDateName { get; set; }
     [Parameter]
     public DateTime EndDate { get; set; }
+    [Parameter]
+    public string EndDateName { get; set; }
+    [Parameter]
+    public EventCallback<string> EventSearchAll { get; set; }
 
     [Parameter]
     public bool disableBtn { get; set; }
@@ -44,6 +49,11 @@
         return base.OnInitializedAsync();
 
 
+    }
+
+    public void SearchAll(){
+        EventSearchAll.InvokeAsync("all");
+        StateHasChanged();
     }
 
 }

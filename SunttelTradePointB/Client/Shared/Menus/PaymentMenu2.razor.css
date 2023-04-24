@@ -38,7 +38,7 @@ nav {
     flex-direction: row;
     align-items: center;
     justify-content: start;
-    width: 100%;
+    width: auto;
     height: 45px;
     column-gap: 10px;
 }

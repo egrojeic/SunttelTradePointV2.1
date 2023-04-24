@@ -9,6 +9,11 @@
 
 <div id="container-menu-general">
     <nav>
+        <div>
+            <label class="lblControl col-form-label">
+                @GetName("DocumentType",new CommercialDocument())
+            </label>
+        </div>
 
         <div class="InventoryBusinessLine">
             <select @onchange="SetDocumentType" class="select-style">
@@ -16,12 +21,12 @@
                 {
                     @foreach (var item in commercialDocumentTypeList)
                     {
-                        <option value="@(item.Id)" selected>@(item.Name)</option>                      
+                        <option value="@(item.Id)" selected>@(item.Name)</option>
                     }
                 }
             </select>
         </div>
-       
+
     </nav>
 
 </div>
@@ -32,7 +37,7 @@
     public List<CommercialDocumentType> commercialDocumentTypeList { get; set; }
     [Parameter]
     public EventCallback<CommercialDocumentType> SetDocumentTypeId { get; set; }
-   
+
     static bool ShowMenu { get; set; } = false;
     public string commandStyle = "display: 'none';";
 
@@ -77,15 +82,20 @@
 
     private void SetDocumentType(ChangeEventArgs args)
     {
-        var Selected_item = commercialDocumentTypeList.Where(s=>s.Id == args.Value.ToString()).FirstOrDefault();
-        if (Selected_item!= null){
-       SetDocumentTypeId.InvokeAsync(Selected_item);
+        var Selected_item = commercialDocumentTypeList.Where(s => s.Id == args.Value.ToString()).FirstOrDefault();
+        if (Selected_item != null)
+        {
+            SetDocumentTypeId.InvokeAsync(Selected_item);
         }
     }
 
 
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
 
-    
 
     private void CreateNew()
     {
