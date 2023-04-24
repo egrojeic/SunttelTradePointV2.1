@@ -1,6 +1,7 @@
 ﻿@using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.SplitButtons
 @using SunttelTradePointB.Shared.Sales
+@using SunttelTradePointB.Shared.InvetoryModels
 @inject NavigationManager Navigation
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
 @inject WarehouseService warehouseService
@@ -12,7 +13,7 @@
    
         <div>
             <label class="lblControl col-form-label">
-                @GetName("WareHouseParent",new Warehouse())
+            @GetName("CurrentWarehouse",new InventoryDetail())
             </label>
         </div>
         <div>        <select @onchange="SelectItemVendorWarehous" class="select-style">           
