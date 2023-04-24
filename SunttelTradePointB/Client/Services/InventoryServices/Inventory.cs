@@ -2,6 +2,7 @@
 using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.InvetoryModels;
 using SunttelTradePointB.Shared.Sales;
+using System.Globalization;
 using System.Net.Http.Json;
 
 namespace SunttelTradePointB.Client.Services.InventoryServices
@@ -14,8 +15,6 @@ namespace SunttelTradePointB.Client.Services.InventoryServices
         {
             _httpClient = httpClient;
         }
-
-
 
         public async Task<InventoryDetail> SaveInventoryItem(InventoryDetail inventoryDetail)
         {
@@ -53,11 +52,12 @@ namespace SunttelTradePointB.Client.Services.InventoryServices
         }
 
 
-        public async Task<List<InventoryDetail>> GetInventoryList(string filterName,string documentTypeId,string DocumentDate,  int? page = 1, int? perPage = 10)
+        public async Task<List<InventoryDetail>> GetInventoryList(string filterName,string documentTypeId,DateTime statrDate, DateTime endDate, int? page = 1, int? perPage = 10)
         {
+            CultureInfo culture = new CultureInfo("en-US");
             try
             {
-                var responseMessage = await Gethttp($"/api/Inventory/GetInventory?&{Configpath}&documentTypeId={documentTypeId}&DocumentDate={DocumentDate}&page={page}&perPage={perPage}");
+                var responseMessage = await Gethttp($"/api/Inventory/GetInventory?&{Configpath}&documentTypeId={documentTypeId}&DocumentDate={statrDate.ToString("yyyy-MM-dd", culture)}&endDate={endDate.ToString("yyyy-MM-dd", culture)}&page={page}&perPage={perPage}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<InventoryDetail>>();
                
                
@@ -233,8 +233,7 @@ namespace SunttelTradePointB.Client.Services.InventoryServices
 
         }
 
-
-
+      
     }
      
  

@@ -118,13 +118,12 @@
         docsFilter = value;
     }
 
-
     public async void LoadData()
     {
         isLoading = true;
         if (commercialDocumentType != null && commercialDocumentType.Id != null)
         {
-            InventoryDetaiList = await _Inventory.GetInventoryList(_filterItems, commercialDocumentType.Id, DateTime.Now.ToShortDateString(), 1, 10);
+            InventoryDetaiList = await _Inventory.GetInventoryList(_filterItems, commercialDocumentType.Id, startingDate, endDate, 1, 10);
         }
         isLoading = false;
         StateHasChanged();
