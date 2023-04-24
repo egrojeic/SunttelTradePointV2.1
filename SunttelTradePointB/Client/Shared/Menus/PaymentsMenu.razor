@@ -2,6 +2,7 @@
 @using Syncfusion.Blazor.SplitButtons
 @using SunttelTradePointB.Shared.Sales
 @inject NavigationManager Navigation
+@inject IJSRuntime Js
 
 
 <div id="container-menu-general">
@@ -24,6 +25,17 @@
             </DropDownMenuItems>
         </SfSplitButton>
 
+         <SfSplitButton Content="Related Concepts" IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
+            <SplitButtonEvents ItemSelected="ItemSelected">
+            </SplitButtonEvents>
+            <DropDownMenuItems>
+                <DropDownMenuItem Id="PaymentTypeGeneral" Text="Payment Types" IconCss="fa-solid fa-sitemap"></DropDownMenuItem>
+                <DropDownMenuItem Id="PaymentStatuse" Text="Payment Statuses" IconCss="fa-solid fa-sitemap"></DropDownMenuItem>
+                <DropDownMenuItem Id="PaymentModeGeneral" Text="Payment Modes" IconCss="fa-solid fa-sitemap"></DropDownMenuItem>
+                <DropDownMenuItem Id="PaymentViaGeneral" Text="Payment Vias" IconCss="fa-solid fa-sitemap"></DropDownMenuItem>               
+            </DropDownMenuItems>
+        </SfSplitButton>
+
     </nav>
 
 </div>
@@ -31,24 +43,13 @@
 
 
 @code {
-    
+
     [Parameter]
     public EventCallback<string> SetDocumentTypeId { get; set; }
-    static bool ShowMenu { get; set; } = false;
-    public string commandStyle = "display: 'none';";
 
-    const string PASTE = "e-btn-icons e-paste";
-    const string PASTESPECIAL = "e-btn-icons e-paste-special";
-    const string PASTEASFORMULA = "e-btn-icons e-paste-formula";
-    const string PASTEASHYPERLINK = "e-btn-icons e-paste-hyperlink";
 
-    void ToggleMenu()
-    {
-        ShowMenu = !ShowMenu;
-        commandStyle = $"display: {(ShowMenu ? "block" : "none")}";
-        StateHasChanged();
 
-    }
+
 
     void OnClick(RadzenSplitButtonItem item, string buttonName)
     {
@@ -65,7 +66,8 @@
     private void ItemSelected(MenuEventArgs args)
     {
         var Selected_item = args.Item.Id;
-        Navigation.NavigateTo(Selected_item);
+        // Navigation.NavigateTo(Selected_item);
+         CreateNewTab(args.Item.Id);
     }
 
     private void SetDocumentType(MenuEventArgs args)
@@ -76,11 +78,15 @@
 
 
 
-    
+    public void CreateNewTab(string name)
+    {
+        Js.InvokeAsync<object>("open", name, "_blank");
+
+    }
 
     private void CreateNew()
     {
-        Navigation.NavigateTo("/SaleItem");
+        Navigation.NavigateTo("/PaymentItem");
     }
 
 }

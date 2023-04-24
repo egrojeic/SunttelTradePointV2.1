@@ -1,0 +1,255 @@
+@page "/PaymentStatuse"
+@page "/PaymentStatuse/{PaymentStatusesId}"
+@page "/PaymentStatuse/{filter}/{PaymentStatusesId}"
+@using SunttelTradePointB.Shared.Sales;
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+@using System.Reflection
+@using Syncfusion.Blazor.Navigations
+@using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents
+@using SunttelTradePointB.Shared.Accounting
+@using SunttelTradePointB.Client.Shared.Payments.PaymentsSubComponents
+@inject NavigationManager Navigation
+@inject SunttelTradePointB.Client.Services.PaymentServices.PaymentServices PaymentServices
+@inject ContextMenuService ContextMenuService
+
+@inject IJSRuntime Js
+
+<MessageSaveComponent isVisible="isVisible" message="@msg">
+</MessageSaveComponent>
+<PageTitleComponent Title="Payment Status"
+                    Description="Here you can add payment status" IconName="Payments.png">
+</PageTitleComponent>
+
+
+<form>
+
+    <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
+        <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+
+        <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+            <SplitButtonEvents ItemSelected="ItemSelected">
+            </SplitButtonEvents>
+            <DropDownMenuItems>
+                <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+            </DropDownMenuItems>
+        </SfSplitButton>
+
+
+    </div>
+
+    <div class="flex-horizontal-center">
+        <div class="grid-mode-row grid-colum">
+
+            <div><label>@GetName("Name",new BasicConcept())</label></div>
+            <InputTextDisable Enable="true" style="font-size:15px; font-weight:none; " @bind-ValueString="@paymentStatus.Name"></InputTextDisable>
+
+            <div><label>@GetName("EditingAllowed",new PaymentStatus())</label></div>
+            <div>
+                <SfSwitch @bind-Checked="@paymentStatus.EditingAllowed"></SfSwitch>
+            </div>
+
+            <div><label>@GetName("EditingAllowed",new PaymentStatus())</label></div>
+            <div>
+                <SfSwitch @bind-Checked="@paymentStatus.EditingAllowed"></SfSwitch>
+            </div>
+
+            <div><label>@GetName("Enabled",new PaymentStatus())</label></div>
+            <div>
+                <SfSwitch @bind-Checked="@paymentStatus.Enabled"></SfSwitch>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+
+
+
+@code {
+    [Parameter]
+    public string paymentStatusesId { get; set; }
+    [Parameter]
+    public string filter { get; set; }
+
+    public PaymentStatus paymentStatus { get; set; }
+
+    TextToSpeech textToSpeech;
+
+
+
+    #region List
+
+
+    #endregion List
+
+
+    MessageSaveComponent? referAlert;
+    string msg = "";
+    bool isLoading = false;
+    string SearcherValue = "";
+    bool isVisible = false;
+
+    protected override void OnParametersSet()
+    {
+        StateHasChanged();
+    }
+
+    protected override async void OnInitialized()
+    {
+        isLoading = true;
+        Load();
+        if (paymentStatusesId != null)
+        {
+            var result = await PaymentServices.GetPaymentStatusById(paymentStatusesId);
+        }
+        isLoading = false;
+        StateHasChanged();
+    }
+
+
+
+    public async void ItemSelected(MenuEventArgs e)
+    {
+        string msg = Validate();
+        if (msg == "")
+        {
+            StateHasChanged();
+            string tile = e.Item != null ? e.Item.Text : "";
+            if (tile == "Save")
+            {
+                Load();
+
+                var result = await PaymentServices.SavePaymentType(paymentStatus);
+                if (true)
+                {
+                    paymentStatus = result;
+                    alert("Saved", 0);
+
+                }
+                else
+                {
+                    alert("required fields", 1);
+                }
+
+            }
+        }
+        else
+        {
+            alert("Saved", 1);
+        }
+
+        StateHasChanged();
+
+    }
+
+
+
+    public void SelectItemDocumentType(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    {
+
+    }
+
+
+
+
+
+    public async void EventSearcherValueAndId((string value, string IdControl) arg)
+    {
+        SearcherValue = arg.IdControl.ToString();
+        if (SearcherValue == "")
+        {
+        }
+
+
+        StateHasChanged();
+    }
+
+
+
+
+    public void EventIdSelectionMenuItem(string name)
+    {
+        Js.InvokeAsync<object>("open", name, "_blank");
+
+    }
+
+
+
+
+
+
+    public void alert(string _msg, int? status = 0)
+    {
+        isVisible = true;
+        msg = _msg;
+
+        StateHasChanged();
+    }
+
+    public void alert(string _msg)
+    {
+        isVisible = true;
+        msg = _msg;
+
+        StateHasChanged();
+    }
+
+    public void Home()
+    {
+        string paramFilter = filter != null ? filter : "";
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/PaymentStatusGeneral/{paramFilter}");
+        Navigation.NavigateTo($"/PaymentStatusGeneral");
+    }
+
+    public void OpenAlert(string _msg, int _status, bool visible)
+    {
+        if (referAlert != null)
+        {
+            referAlert.isVisible = visible;
+            referAlert.message = _msg;
+            referAlert.status = _status;
+            StateHasChanged();
+        }
+    }
+
+
+
+    public string Validate()
+    {
+        string msg = "";
+        if (paymentStatus == null) msg = "required fields";
+        if (paymentStatus == null || paymentStatus.Name != null) msg = "required fields Name";
+        return msg;
+    }
+
+
+    #region Load
+
+    public void Load()
+    {
+        if (paymentStatus == null) paymentStatus = new();
+
+    }
+
+
+    #endregion Load
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    public void NavigationTo(string name)
+    {
+        Navigation.NavigateTo(name);
+    }
+
+}

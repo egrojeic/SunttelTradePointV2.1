@@ -3,26 +3,38 @@
 @using SunttelTradePointB.Shared.Sales
 @inject NavigationManager Navigation
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject WarehouseService warehouseService
+@inject SunttelTradePointB.Client.Services.InventoryServices.Inventory InventoryServices
 
 
 
-
-<div id="container-menu-general">
-    <nav>
-
-        <div class="InventoryBusinessLine">
-            <select @onchange="SetDocumentType" class="select-style">
-                @if (commercialDocumentTypeList != null)
-                {
-                    @foreach (var item in commercialDocumentTypeList)
-                    {
-                        <option value="@(item.Id)" selected>@(item.Name)</option>                      
-                    }
-                }
-            </select>
+<div class="aling-div ">
+   
+        <div>
+            <label class="lblControl col-form-label">
+                @GetName("WareHouseParent",new Warehouse())
+            </label>
         </div>
-       
-    </nav>
+        <div>        <select @onchange="SelectItemVendorWarehous" class="select-style">           
+            @if (warehouseList != null && warehouseList.Count() > 0)
+            {
+                <option value="0" selected>Select</option>
+            }
+            @if (warehouseList != null)
+            {
+                @foreach (var item in warehouseList)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            }
+            @if (warehouse != null)
+            {
+                <option value="@warehouse.Id" selected>@warehouse.Name</option>
+            }
+        </select>
+    </div>
+
+   
 
 </div>
 
@@ -32,7 +44,10 @@
     public List<CommercialDocumentType> commercialDocumentTypeList { get; set; }
     [Parameter]
     public EventCallback<CommercialDocumentType> SetDocumentTypeId { get; set; }
-   
+
+    List<Warehouse> warehouseList = new();
+    Warehouse warehouse = new();
+
     static bool ShowMenu { get; set; } = false;
     public string commandStyle = "display: 'none';";
 
@@ -54,6 +69,7 @@
     protected async override void OnInitialized()
     {
         commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes();
+        warehouseList = await InventoryServices.GetWarehouseList("all");
         StateHasChanged();
     }
 
@@ -84,12 +100,28 @@
     }
 
 
+    public async void SelectItemVendorWarehous(ChangeEventArgs arg)
+    {       
+        Warehouse _warehouse = new Warehouse();
+        _warehouse =  await warehouseService.GetWarehouseById(arg.Value.ToString());
+        if (_warehouse != null)
+        {       
+            warehouse = _warehouse;
+        }
+        StateHasChanged();
+    }
+
+     public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
 
     
 
     private void CreateNew()
     {
-        Navigation.NavigateTo("/SaleItem");
+        Navigation.NavigateTo("/Inventory");
     }
 
 }

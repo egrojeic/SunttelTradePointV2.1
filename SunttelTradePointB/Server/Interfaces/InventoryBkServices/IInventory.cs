@@ -1,5 +1,4 @@
 ﻿using SunttelTradePointB.Shared.InvetoryModels;
-using SunttelTradePointB.Shared.Sales;
 
 namespace SunttelTradePointB.Server.Interfaces.InventoryBkServices
 {

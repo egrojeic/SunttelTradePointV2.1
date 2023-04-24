@@ -27,6 +27,9 @@ using SunttelTradePointB.Server.Services.SalesBkServices;
 using SunttelTradePointB.Client.Pages.DirectoryInventory;
 using SunttelTradePointB.Server.Services.InventoryBkServices;
 using SunttelTradePointB.Server.Interfaces.InventoryBkServices;
+using SunttelTradePointB.Server.InterfaceSwagger;
+using SunttelTradePointB.Server.Interfaces.PaymentBkServices;
+using SunttelTradePointB.Server.Services.PaymentBkServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +51,7 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(xmlPath);
     c.EnableAnnotations();
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "TradePoint - API", Version = "v1.0" });
+    c.OperationFilter<HeaderSquadIdFilter>();
 });
 
 
@@ -82,6 +86,7 @@ builder.Services.AddTransient<ITransactionalItemsRelatedConceptsBKService, Trans
 builder.Services.AddTransient<IEntitiesRelatedConcepts, EntityActorsRelatedConceptsService>();
 builder.Services.AddTransient<IMessagesValet, MessageValet>();
 builder.Services.AddTransient<IInventory, InventoryService>();
+builder.Services.AddTransient<IPayment, PaymentService>();
 
 builder.Services.AddTransient<ICommercialDocument, CommercialDocumentsService>();
 

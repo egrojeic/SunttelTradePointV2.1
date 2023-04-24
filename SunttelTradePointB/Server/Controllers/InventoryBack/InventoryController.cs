@@ -30,7 +30,7 @@ namespace SunttelTradePointB.Server.Controllers.InventoryBack
         /// Retrieves a Sales Documemt matching with its Id
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="ipAdress"></param>
+        /// <param name="ipAddress"></param>
         /// <param name="documentTypeId"></param>
         /// <param name="BuyerId"></param>
         /// <param name="DocumentDate"></param>

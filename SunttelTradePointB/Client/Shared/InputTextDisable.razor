@@ -1,7 +1,7 @@
 @if (Enable)
 {
     <div style="@style">
-        <input type="@(TypeInt?"number":"")" class="form-control" @onchange="Onchange">
+        <input type="@(TypeInt?"number":"")" value="@Value" class="form-control" @onchange="Onchange">
     </div>
 }
 else
@@ -14,11 +14,11 @@ else
 
     public string Value { get; set; }
     [Parameter]
-    public int ValueInt { get; set; }
+    public int? ValueInt { get; set; }
     [Parameter]
-    public string ValueString { get; set; }
+    public string? ValueString { get; set; }
     [Parameter]
-    public double ValueDouble { get; set; }
+    public double? ValueDouble { get; set; }
     [Parameter]
     public bool Enable { get; set; } = true;
     [Parameter]
@@ -35,32 +35,67 @@ else
     public EventCallback<string> ValueStringChanged { get; set; }
     [Parameter]
     public EventCallback<double> ValueDoubleChanged { get; set; }
+    [Parameter]
+    public EventCallback ChangedUpdate { get; set; }
+
+
 
     public void Onchange(ChangeEventArgs arg)
     {
         if (ValueInt != null) ValueInt = GetValidateRange(Convert.ToInt32(arg.Value.ToString()));
         if (ValueDouble != null) ValueDouble = GetValidateRange(Convert.ToDouble(arg.Value.ToString()));
-        if (ValueString != null) ValueString = arg.Value.ToString();
+        ValueString = arg.Value.ToString();
 
-        if (ValueInt != null) ValueIntChanged.InvokeAsync(ValueInt);
-        if (ValueDouble != null) ValueDoubleChanged.InvokeAsync(ValueDouble);
-        if (ValueString != null) ValueStringChanged.InvokeAsync(ValueString);
 
-        Value = arg.Value.ToString();
+        if (ValueInt != null) ValueIntChanged.InvokeAsync(ValueInt.Value);
+        if (ValueDouble != null) ValueDoubleChanged.InvokeAsync(ValueDouble.Value);
+        if (!TypeInt) ValueStringChanged.InvokeAsync(ValueString);
+
+        if (ValueInt != null && TypeInt) Value = ValueInt.ToString();
+        if (ValueDouble != null && TypeInt) Value = ValueDouble.ToString();
+        if (!TypeInt) Value = ValueString.ToString();
+      
+        ChangedUpdate.InvokeAsync(null);
+        StateHasChanged();
+
     }
 
+
+    protected async override void OnInitialized()
+    {
+        Load();
+    }
 
 
     protected override void OnParametersSet()
     {
-        if (ValueInt != null) Value = ValueInt.ToString();
-        if (ValueDouble != null) Value = ValueDouble.ToString();
-        if (ValueString != null) Value =ValueString.ToString();
-
-
+        StateHasChanged();
     }
 
-    public int GetValidateRange(int value)
+
+    public void Load(){
+
+
+        if (ValueInt != null) ValueInt = GetValidateRange(ValueInt);
+        if (ValueDouble != null) ValueDouble = GetValidateRange(ValueDouble);
+        if (!TypeInt && ValueString !=null) Value = ValueString.ToString();
+
+        if (ValueInt != null) Value = ValueInt.ToString();
+        if (ValueDouble != null) Value = ValueDouble.ToString();
+        if (!TypeInt && ValueString != null) Value = ValueString.ToString();
+
+
+        if (ValueInt != null) ValueIntChanged.InvokeAsync(ValueInt.Value);
+        if (ValueDouble != null) ValueDoubleChanged.InvokeAsync(ValueDouble.Value);
+        if (!TypeInt && ValueString !=null) ValueStringChanged.InvokeAsync(ValueString);
+
+
+      
+    }
+
+
+
+    public int GetValidateRange(int? value)
     {
         int min = 0;
         int max = 0;
@@ -71,13 +106,13 @@ else
 
         if (min > value) return min;
         if (max < value) return max;
-        return 0;
+        return value.Value;
 
     }
 
   
 
-    public double GetValidateRange(double value)
+    public double GetValidateRange(double? value)
     {
         double min = 0;
         double max = 0;
@@ -87,8 +122,8 @@ else
 
 
         if (min > value) return min;
-        if (max < value) return max;
-        return 0;
+        if (max < value && max > 0) return max;
+        return value.Value;
 
     }
 
