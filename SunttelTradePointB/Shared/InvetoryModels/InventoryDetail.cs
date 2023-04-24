@@ -15,8 +15,6 @@ namespace SunttelTradePointB.Shared.InvetoryModels
     public class InventoryDetail: RecordItem
     {
 
-     
-
         [DisplayName("Warehouse")]
         public Warehouse CurrentWarehouse { get; set; }
 

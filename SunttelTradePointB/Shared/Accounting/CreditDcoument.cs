@@ -44,7 +44,7 @@ namespace SunttelTradePointB.Shared.Accounting
 
     public class CreditType : BasicConcept
     {
-
+        public bool IsASale { get; set; }
     }
 
     public class CreditStatus : BasicConcept
