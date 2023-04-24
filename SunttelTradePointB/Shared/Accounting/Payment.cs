@@ -78,7 +78,7 @@ namespace SunttelTradePointB.Shared.Accounting
 
     public class PaymentType : BasicConcept
     {
-       
+        public bool IsASale { get; set; }
     }
 
     public class PaymentMode : BasicConcept

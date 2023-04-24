@@ -24,7 +24,7 @@
 }
 
 .grid-columns-6 {
-    grid-template-columns: 1fr 150px 1fr 150px 1fr 150px;
+    grid-template-columns: 1fr 290px 1fr 290px 1fr 290px;
 }
 
 /*grid-template-columns: 140px 180px 176px 180px 150px 180px;*/
