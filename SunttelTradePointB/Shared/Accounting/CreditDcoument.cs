@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SunttelTradePointB.Shared.Accounting
 {
-    public class CreditDcoument : RecordItem
+    public class CreditDocument : RecordItem
     {
         [DisplayName("Credit Type")]
         public CreditType DocumentType { get; set; }
