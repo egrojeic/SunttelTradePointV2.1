@@ -76,10 +76,9 @@ namespace SunttelTradePointB.Client.Services.InventoryServices
             try
             {
                 var responseMessage = await Gethttp($"/api/Inventory/GetInventoryById?&{Configpath}&inventoryId={inventoryId}");
-                var list = await responseMessage.Content.ReadFromJsonAsync<InventoryDetail>();
-                InventoryDetail conceptLis = new();
-
-                return conceptLis != null ? conceptLis : new InventoryDetail();
+                var item = await responseMessage.Content.ReadFromJsonAsync<InventoryDetail>();
+           
+                return item != null ? item : new InventoryDetail();
             }
             catch (Exception ex)
             {
