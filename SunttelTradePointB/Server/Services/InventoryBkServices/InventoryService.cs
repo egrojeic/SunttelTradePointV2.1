@@ -38,14 +38,15 @@ namespace SunttelTradePointB.Server.Services.InventoryBkServices
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
         /// <param name="squadId"></param>
-        /// <param name="documentTypeId"></param>
+        /// <param name="warehouseId"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
         /// <param name="BuyerId"></param>
-        /// <param name="DocumentDate"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="filterName"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<InventoryDetail>? InventoryList, string? ErrorDescription)> GetInventory(string userId, string ipAddress, string squadId, string documentTypeId, string BuyerId, string DocumentDate, int? page = 1, int? perPage = 10, string? filterName = null)
+        public async Task<(bool IsSuccess, List<InventoryDetail>? InventoryList, string? ErrorDescription)> GetInventory(string userId, string ipAddress, string squadId, string warehouseId, DateTime startDate, DateTime endDate, string BuyerId, int? page = 1, int? perPage = 10, string? filterName = null)
         {
             try
             {
@@ -58,13 +59,28 @@ namespace SunttelTradePointB.Server.Services.InventoryBkServices
 
                     if (filter.ToLower() != "all")
                     {
+                        /*
+                        if(warehouseId != null)
+                        {
+                            pipeline.Add(
+                                new BsonDocument("$match", new BsonDocument("CurrentWarehouse._id", new ObjectId(warehouseId)))
+                            );
+                        }
+                        */
                         pipeline.Add(
-                       new BsonDocument(
-                           "$match", new BsonDocument(
-                               "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filter}/i"))
-                           )
-                       )
-                    );
+                            new BsonDocument {
+                                { "$match",
+                                    new BsonDocument{
+                                        { "CurrentWarehouse.Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filter}/i")) },
+                                        { "EntryDate", new BsonDocument{
+                                            { "$gte", startDate },
+                                            { "$lte", endDate }
+                                        }
+                                        }
+                                    }
+                                }
+                            }
+                        );
                     }
 
                     pipeline.Add(

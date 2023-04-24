@@ -31,7 +31,9 @@ namespace SunttelTradePointB.Server.Controllers.InventoryBack
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
-        /// <param name="documentTypeId"></param>
+        /// <param name="warehouseId"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
         /// <param name="BuyerId"></param>
         /// <param name="DocumentDate"></param>
         /// <param name="page"></param>
@@ -40,11 +42,11 @@ namespace SunttelTradePointB.Server.Controllers.InventoryBack
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetInventory")]
-        public async Task<IActionResult> GetInventory(string userId, string ipAddress, string documentTypeId, string BuyerId, string DocumentDate, int? page = 1, int? perPage = 10, string? filterName = null)
+        public async Task<IActionResult> GetInventory(string userId, string ipAddress, string warehouseId, DateTime startDate, DateTime endDate,  string BuyerId, int? page = 1, int? perPage = 10, string? filterName = null)
         {
             var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
-            var response = await _inventory.GetInventory(userId, ipAddress, squadId, documentTypeId, BuyerId, DocumentDate, page, perPage, filterName);
+            var response = await _inventory.GetInventory(userId, ipAddress, squadId, warehouseId, startDate, endDate, BuyerId, page, perPage, filterName);
 
             if (response.IsSuccess)
             {
