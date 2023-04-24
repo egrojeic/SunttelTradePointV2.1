@@ -42,11 +42,11 @@ namespace SunttelTradePointB.Server.Controllers.InventoryBack
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetInventory")]
-        public async Task<IActionResult> GetInventory(string userId, string ipAddress, string warehouseId, DateTime startDate, DateTime endDate,  string BuyerId, int? page = 1, int? perPage = 10, string? filterName = null)
+        public async Task<IActionResult> GetInventory(string userId, string ipAddress, string warehouseId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filterName = null)
         {
             var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
-            var response = await _inventory.GetInventory(userId, ipAddress, squadId, warehouseId, startDate, endDate, BuyerId, page, perPage, filterName);
+            var response = await _inventory.GetInventory(userId, ipAddress, squadId, warehouseId, startDate, endDate, page, perPage, filterName);
 
             if (response.IsSuccess)
             {

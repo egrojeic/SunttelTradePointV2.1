@@ -46,7 +46,7 @@ namespace SunttelTradePointB.Server.Services.InventoryBkServices
         /// <param name="perPage"></param>
         /// <param name="filterName"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<InventoryDetail>? InventoryList, string? ErrorDescription)> GetInventory(string userId, string ipAddress, string squadId, string warehouseId, DateTime startDate, DateTime endDate, string BuyerId, int? page = 1, int? perPage = 10, string? filterName = null)
+        public async Task<(bool IsSuccess, List<InventoryDetail>? InventoryList, string? ErrorDescription)> GetInventory(string userId, string ipAddress, string squadId, string warehouseId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filterName = null)
         {
             try
             {
