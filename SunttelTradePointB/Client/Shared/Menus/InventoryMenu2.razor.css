@@ -35,10 +35,10 @@ nav {
 
 .aling-div {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: start;   
-    width: 100%;
+    flex-direction: row;     
+    justify-content:start;
+    align-items:center;
+    width: auto;
     height: 45px;
     column-gap:10px;
 }
