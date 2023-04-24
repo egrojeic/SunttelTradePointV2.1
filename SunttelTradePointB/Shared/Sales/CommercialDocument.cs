@@ -293,6 +293,10 @@ namespace SunttelTradePointB.Shared.Sales
         [DisplayName("Confirmed Qty")]
         public int ConfirmedCost { get; set; }
 
+        [DisplayName("Ship Date")]
+        public int ProviderShipDate { get; set; }
+
+
         public CancelationTrack CancelationInfo { get; set; }
 
     }
