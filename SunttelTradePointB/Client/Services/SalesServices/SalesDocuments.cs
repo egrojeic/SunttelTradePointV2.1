@@ -17,7 +17,6 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         }
 
 
-
         public async Task<CommercialDocument> SaveCommercialDocument(CommercialDocument commercialDocument)
         {
             try
