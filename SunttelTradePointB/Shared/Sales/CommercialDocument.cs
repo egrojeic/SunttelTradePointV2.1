@@ -277,6 +277,8 @@ namespace SunttelTradePointB.Shared.Sales
 
         public string SalesDocumentItemsDetailsId { get; set; }
 
+        public string PurchaseDocumentItemsDetailsId { get; set; }
+
         [BsonIgnoreIfNull]
         [DisplayName("Provider")]
         public BasicConcept Provider { get; set; }
@@ -290,7 +292,7 @@ namespace SunttelTradePointB.Shared.Sales
         [DisplayName("Expected Cost")]
         public int ExpectedCost { get; set; }
 
-        [DisplayName("Confirmed Qty")]
+        [DisplayName("Confirmed Cost")]
         public int ConfirmedCost { get; set; }
 
         [DisplayName("Ship Date")]

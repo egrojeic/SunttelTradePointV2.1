@@ -166,8 +166,8 @@ namespace SunttelTradePointB.Shared.ImportingData
            public int VecesPadre {get;set;}
            public string ArmelliniCode   {get;set;}
            public string Codigo {get;set;}
-           public decimal PesoVolumen {get;set;}
-           public decimal Costo {get;set;}
+           public double PesoVolumen {get;set;}
+           public double Costo {get;set;}
            public double NumBuckets  {get;set;}
            public int PalletEquivalent {get;set;}
            public int FlagWet {get;set;}
