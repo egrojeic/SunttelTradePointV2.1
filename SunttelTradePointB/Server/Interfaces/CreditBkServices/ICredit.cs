@@ -125,7 +125,7 @@ namespace SunttelTradePointB.Server.Interfaces.CreditBkServices
         /// <param name="perPage"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<CreditReason>? CreditReasonsList, string? ErrorDescription)> GetCreditReasons(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null);
+        Task<(bool IsSuccess, List<CreditReason>? CreditReasonsList, string? ErrorDescription)> GetCreditReasons(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filter = null);
 
         /// <summary>
         /// Retrieves a credit comercial having the specified id
@@ -135,7 +135,7 @@ namespace SunttelTradePointB.Server.Interfaces.CreditBkServices
         /// <param name="squadId"></param>
         /// <param name="creditDocumentId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, CreditReason? CreditReason, string? ErrorDescription)> CreditReasonById(string userId, string ipAddress, string squadId, string creditDocumentId);
+        Task<(bool IsSuccess, CreditReason? CreditReason, string? ErrorDescription)> CreditReasonById(string userId, string ipAddress, string squadId, string creditReasonId);
 
         /// <summary>
         /// Insert/ Updates a Credit Document 

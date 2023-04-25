@@ -270,11 +270,11 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetCreditReasons")]
-        public async Task<IActionResult> GetCreditReasons(string userId, string ipAddress, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null)
+        public async Task<IActionResult> GetCreditReasons(string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filter = null)
         {
             var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
-            var response = await _credit.GetCreditReasons(userId, ipAddress, squadId, startDate, endDate, page, perPage, filter);
+            var response = await _credit.GetCreditReasons(userId, ipAddress, squadId, page, perPage, filter);
 
             if (response.IsSuccess)
             {

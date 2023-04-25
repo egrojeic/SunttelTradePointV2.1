@@ -294,7 +294,9 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
             }
 
         }
+        #endregion
 
+        #region Credit Status
         /// <summary>
         /// Saves an Credit document. If it doesn't exists, it'll be created
         /// </summary>
@@ -369,13 +371,6 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
             try
             {
                 var pipeline = new List<BsonDocument>();
-                // Filtro por SquadId
-                //pipeline.Add(
-                //    new BsonDocument("$match", new BsonDocument("SquadId", squadId))
-                //);
-                //pipeline.Add(
-                //    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(creditStatusId)))
-                //);
 
                 pipeline.Add(
                     new BsonDocument {
@@ -427,18 +422,68 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
                 return (false, null, e.Message);
             }
         }
+        #endregion
 
+        #region Credit Reason
         /// <summary>
         /// Saves an Credit document. If it doesn't exists, it'll be created
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
         /// <param name="squadId"></param>
-        /// <param name="creditTypeId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filter"></param>
         /// <returns></returns>
-        public Task<(bool IsSuccess, List<CreditReason>? CreditReasonsList, string? ErrorDescription)> GetCreditReasons(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null)
+        public async Task<(bool IsSuccess, List<CreditReason>? CreditReasonsList, string? ErrorDescription)> GetCreditReasons(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filter = null)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string filterString = filter == null ? "" : filter;
+                var skip = (page - 1) * perPage;
+
+                var pipeline = new List<BsonDocument>();
+
+                // Filtro general
+                if (filterString.ToLower() != "all")
+                {
+                    pipeline.Add(
+                    new BsonDocument(
+                        "$match",
+                        new BsonDocument(
+                                 "Name",
+                                    new BsonDocument(
+                                        "$regex", new BsonRegularExpression($"/{filterString}/i"))
+                            )
+                    )
+                    );
+                }
+                // Filtro por SquadId
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                );
+
+                pipeline.Add(
+                    new BsonDocument{
+                        {"$skip",  skip}
+                    }
+                    );
+
+                pipeline.Add(
+                    new BsonDocument{
+                        {"$limit",  perPage}
+                    }
+                );
+
+                List<CreditReason> results = await _CreditReasonCollection.Aggregate<CreditReason>(pipeline).ToListAsync();
+                return (true, results, null);
+
+            }
+
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
 
         /// <summary>
@@ -449,9 +494,32 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
         /// <param name="squadId"></param>
         /// <param name="creditTypeId"></param>
         /// <returns></returns>
-        public Task<(bool IsSuccess, CreditReason? CreditReason, string? ErrorDescription)> CreditReasonById(string userId, string ipAddress, string squadId, string creditDocumentId)
+        public async Task<(bool IsSuccess, CreditReason? CreditReason, string? ErrorDescription)> CreditReasonById(string userId, string ipAddress, string squadId, string creditReasonId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument {
+                        { "$match",
+                            new BsonDocument{
+                                { "SquadId", squadId },
+                                { "_id", new ObjectId(creditReasonId) }
+                            }
+                        }
+                    }
+                );
+
+                var resultPrev = await _CreditReasonCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                CreditReason result = resultPrev.Select(d => BsonSerializer.Deserialize<CreditReason>(d)).ToList()[0];
+
+                return (true, result, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, null, ex.Message);
+            }
         }
 
         /// <summary>
@@ -460,11 +528,27 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
         /// <param name="squadId"></param>
-        /// <param name="creditTypeId"></param>
+        /// <param name="creditReason"></param>
         /// <returns></returns>
-        public Task<(bool IsSuccess, CreditReason? CreditReason, string? ErrorDescription)> SaveCreditReason(string userId, string ipAddress, string squadId, CreditReason creditReason)
+        public async Task<(bool IsSuccess, CreditReason? CreditReason, string? ErrorDescription)> SaveCreditReason(string userId, string ipAddress, string squadId, CreditReason creditReason)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (creditReason.Id == null)
+                {
+                    creditReason.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterCreditReason = Builders<CreditReason>.Filter.Eq("_id", new ObjectId(creditReason.Id));
+                var updateCreditReason = new ReplaceOptions { IsUpsert = true };
+                var resultCreditReason = await _CreditReasonCollection.ReplaceOneAsync(filterCreditReason, creditReason, updateCreditReason);
+
+                return (true, creditReason, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
         #endregion
 
