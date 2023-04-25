@@ -3,7 +3,6 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using SunttelTradePointB.Server.Interfaces.CreditBkServices;
 using SunttelTradePointB.Shared.Accounting;
-using SunttelTradePointB.Shared.InvetoryModels;
 
 namespace SunttelTradePointB.Server.Services.CreditBkServices
 {
@@ -16,6 +15,9 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
         /// Credit Documents service
         /// </summary>
         IMongoCollection<CreditDocument> _CreditDocumentCollection;
+        IMongoCollection<CreditType> _CreditTypeCollection;
+        IMongoCollection<CreditStatus> _CreditStatusCollection;
+        IMongoCollection<CreditReason> _CreditReasonCollection;
 
         /// <summary>
         /// Constructor
@@ -28,6 +30,9 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
 
             var mongoDatabase = mongoClient.GetDatabase(DataBaseName);
             _CreditDocumentCollection = mongoDatabase.GetCollection<CreditDocument>("Credits");
+            _CreditTypeCollection = mongoDatabase.GetCollection<CreditType>("CreditTypes");
+            _CreditStatusCollection = mongoDatabase.GetCollection<CreditStatus>("CreditStatuses");
+            _CreditReasonCollection = mongoDatabase.GetCollection<CreditReason>("CreditReasons");
 
         }
 
@@ -167,19 +172,126 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
         }
         #endregion
 
-        public Task<(bool IsSuccess, List<CreditType>? CreditTypesList, string? ErrorDescription)> GetCreditTypes(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null)
+        #region Credit Types
+        /// <summary>
+        /// Saves an Credit document. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<CreditType>? CreditTypesList, string? ErrorDescription)> GetCreditTypes(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filter = null)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string filterString = filter == null ? "" : filter;
+                var skip = (page - 1) * perPage;
+
+                var pipeline = new List<BsonDocument>();
+
+                // Filtro general
+                if (filterString.ToLower() != "all")
+                {
+                    pipeline.Add(
+                    new BsonDocument(
+                        "$match",
+                        new BsonDocument(
+                                 "Name",
+                                    new BsonDocument(
+                                        "$regex", new BsonRegularExpression($"/{filterString}/i"))
+                            )
+                    )
+                    );
+                }
+                // Filtro por SquadId
+                /*
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                );
+                */
+
+                pipeline.Add(
+                    new BsonDocument{
+                        {"$skip",  skip}
+                    }
+                    );
+
+                pipeline.Add(
+                    new BsonDocument{
+                        {"$limit",  perPage}
+                    }
+                );
+
+                List<CreditType> results = await _CreditTypeCollection.Aggregate<CreditType>(pipeline).ToListAsync();
+                return (true, results, null);
+
+            }
+
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
 
-        public Task<(bool IsSuccess, CreditType? CreditType, string? ErrorDescription)> GetCreditTypeById(string userId, string ipAddress, string squadId, string creditTypeId)
+        /// <summary>
+        /// Saves an Credit document. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="creditTypeId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, CreditType? CreditType, string? ErrorDescription)> GetCreditTypeById(string userId, string ipAddress, string squadId, string creditTypeId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(creditTypeId)))
+                );
+
+                var resultPrev = await _CreditTypeCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                CreditType result = resultPrev.Select(d => BsonSerializer.Deserialize<CreditType>(d)).ToList()[0];
+
+                return (true, result, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, null, ex.Message);
+            }
         }
 
-        public Task<(bool IsSuccess, CreditType? CreditType, string? ErrorDescription)> SaveCreditType(string userId, string ipAddress, string squadId, CreditType creditType)
+        /// <summary>
+        /// Saves an Credit document. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="creditTypeId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, CreditType? CreditType, string? ErrorDescription)> SaveCreditType(string userId, string ipAddress, string squadId, CreditType creditType)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (creditType.Id == null)
+                {
+                    creditType.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterCreditType = Builders<CreditType>.Filter.Eq("_id", new ObjectId(creditType.Id));
+                var updateCreditType = new ReplaceOptions { IsUpsert = true };
+                var resultCreditType = await _CreditTypeCollection.ReplaceOneAsync(filterCreditType, creditType, updateCreditType);
+
+                return (true, creditType, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+
         }
 
         public Task<(bool IsSuccess, List<CreditStatus>? CreditStatusesList, string? ErrorDescription)> GetCreditStatuses(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null)
@@ -192,7 +304,7 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
             throw new NotImplementedException();
         }
 
-        public Task<(bool IsSuccess, CreditStatus? CreditStatus, string? ErrorDescription)> SaveCreditStatus(string userId, string ipAddress, string squadId, CreditDocument creditDocument)
+        public Task<(bool IsSuccess, CreditStatus? CreditStatus, string? ErrorDescription)> SaveCreditStatus(string userId, string ipAddress, string squadId, CreditStatus creditStatus)
         {
             throw new NotImplementedException();
         }
@@ -211,10 +323,7 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
         {
             throw new NotImplementedException();
         }
+        #endregion
 
-        public Task<(bool IsSuccess, CreditStatus? CreditStatus, string? ErrorDescription)> SaveCreditStatus(string userId, string ipAddress, string squadId, CreditStatus creditStatus)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
