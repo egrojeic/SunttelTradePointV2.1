@@ -7,7 +7,7 @@ using System.Net.Http.Json;
 
 namespace SunttelTradePointB.Client.Services.SalesServices
 {
-    public class SalesDocuments : TSalesDocuments
+    public class SalesDocuments : ISalesDocuments
     {
         private readonly HttpClient _httpClient;
         private string basepath = "/api/Sales/Name?userId=*Id&ipAddress=*Ip";
