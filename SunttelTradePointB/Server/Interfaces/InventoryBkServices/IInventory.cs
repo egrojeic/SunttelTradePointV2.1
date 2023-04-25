@@ -16,7 +16,6 @@ namespace SunttelTradePointB.Server.Interfaces.InventoryBkServices
         /// <param name="warehouseId"></param>
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
-        /// <param name="BuyerId"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="filterName"></param>
@@ -42,8 +41,6 @@ namespace SunttelTradePointB.Server.Interfaces.InventoryBkServices
         /// <param name="inventory"></param>
         /// <returns></returns>
         Task<(bool IsSuccess, InventoryDetail? Inventory, string? ErrorDescription)> SaveInventory(string userId, string ipAddress, string squadId, InventoryDetail inventory);
-
-
 
     }
 

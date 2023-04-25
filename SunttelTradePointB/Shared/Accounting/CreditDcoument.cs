@@ -11,7 +11,7 @@ namespace SunttelTradePointB.Shared.Accounting
     public class CreditDocument : RecordItem
     {
         [DisplayName("Credit Type")]
-        public CreditType DocumentType { get; set; }
+        public CreditType CreditDocumentType { get; set; }
 
         [DisplayName("Code")]
         public string Code { get; set; }
@@ -27,10 +27,10 @@ namespace SunttelTradePointB.Shared.Accounting
         public Concept Buyer { get; set; }
 
         [DisplayName("Status")]
-        public CreditStatus Status { get; set; }
+        public CreditStatus CreditDocumentStatus { get; set; }
 
         [DisplayName("Reason")]
-        public CreditReason Reazon { get; set; }
+        public CreditReason CreditDocumentReason { get; set; }
 
         [DisplayName("Value")]
         public double CreditValue { get; set; }
