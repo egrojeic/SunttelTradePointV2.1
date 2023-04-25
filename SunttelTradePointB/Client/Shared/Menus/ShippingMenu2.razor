@@ -10,27 +10,28 @@
 
 
 <div class="aling-div ">
-   
-        <div>
-            <label class="lblControl col-form-label" style="color:white">
-            @GetName("DocumentType",new CommercialDocument())
-            </label>
-        </div>
-        <div>        <select @onchange="SelectItemVendor" class="select-style">           
-            @if (commercialDocumentTypeList != null && commercialDocumentTypeList.Count() > 0)
+
+    <div>
+        <label class="lblControl col-form-label">
+            Warehouse
+        </label>
+    </div>
+    <div>
+        <select @onchange="SelectItemWarehous" class="select-style">
+            @if (warehouseList != null && warehouseList.Count() > 0)
             {
                 <option value="0" selected>Select</option>
             }
-            @if (commercialDocumentTypeList != null)
+            @if (warehouseList != null)
             {
-                @foreach (var item in commercialDocumentTypeList)
+                @foreach (var item in warehouseList)
                 {
                     <option value="@item.Id">@item.Name</option>
                 }
             }
-            @if (commercialDocumentType != null)
+            @if (warehouse != null)
             {
-                <option value="@commercialDocumentType.Id" selected>@commercialDocumentType.Name</option>
+                <option value="@warehouse.Id" selected>@warehouse.Name</option>
             }
         </select>
     </div>
@@ -43,11 +44,10 @@
 @code {
     [Parameter]
     public List<CommercialDocumentType> commercialDocumentTypeList { get; set; }
-    [Parameter]
-    public CommercialDocumentType commercialDocumentType { get; set; }
+  
 
     [Parameter]
-    public EventCallback<CommercialDocumentType> SetDocumentType { get; set; }
+    public EventCallback<Warehouse> SetWarehouse { get; set; }
 
     List<Warehouse> warehouseList = new();
     Warehouse warehouse = new();
@@ -72,7 +72,7 @@
 
     protected async override void OnInitialized()
     {
-        commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes();
+       // commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes();
         warehouseList = await InventoryServices.GetWarehouseList("all");
         StateHasChanged();
     }
@@ -98,14 +98,14 @@
 
 
 
-    public async void SelectItemVendor(ChangeEventArgs arg)
+    public async void SelectItemWarehous(ChangeEventArgs arg)
     {       
 
-        CommercialDocumentType item = commercialDocumentTypeList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
-        if (item != null)
+        warehouse = warehouseList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+        if (warehouse != null)
         {
-            commercialDocumentType = item;
-            SetDocumentType.InvokeAsync(item);
+           
+            SetWarehouse.InvokeAsync(warehouse);
         }
         StateHasChanged();
     }
