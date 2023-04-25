@@ -1,0 +1,153 @@
+﻿@page "/CreditTypeGeneral"
+@page "/CreditTypeGeneral/{_filterItems}"
+@using SunttelTradePointB.Shared.Sales;
+@using SunttelTradePointB.Shared.Accounting
+
+@inject SunttelTradePointB.Client.Services.CreditDocumentServices.CreditDocumentServices CreditDocumentServices
+@inject ContextMenuService ContextMenuService
+@inject NavigationManager Navigation
+@inject IJSRuntime Js
+
+<PageTitleComponent Title="Credit Type" IconName="Payments.png"
+                    Description="With this tool you can create and edit credit type ">
+</PageTitleComponent>
+
+<div class="panelMenuContainer">
+    <PaymentModeMenu></PaymentModeMenu>
+    <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>   
+</div>
+
+
+
+<div class="tableContainer">
+
+   
+    @if (isLoading)
+    {
+
+        <WaitingProcessIndicator loadingTopic="Payments"></WaitingProcessIndicator>
+
+    }
+    else
+    {
+
+
+        <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="50"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="creditTypeList"
+                    TItem="CreditType"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"                   
+                    CellContextMenu="@ShowContextMenuCommercialDocument">
+            <Columns>
+
+                <RadzenDataGridColumn TItem="CreditType" Property="Name" Title="@GetName("Name",new BasicConcept())" Width="308px" />
+                <RadzenDataGridColumn TItem="CreditType" Property="Name" Title="@GetName("IsASale",new BasicConcept())" Width="308px" >
+
+                    <Template>
+                        @{
+                            var IsASale = (bool)context.GetType().GetProperty(nameof(CreditType.IsASale)).GetValue(context);
+
+                            <input type="checkbox" checked="@IsASale" />                          
+                        }
+                    </Template>
+
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    }
+</div>
+
+
+
+@code {
+    [Parameter]
+    public string _filterItems { get; set; }
+    public List<CreditType> creditTypeList { get; set; }
+   
+
+    bool isLoading = false;
+
+    DateTime startingDate = DateTime.Now;
+
+    public string filter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+    protected async override void OnInitialized()
+    {
+
+        if (_filterItems != null) LoadData();
+        base.OnInitialized();
+
+    }
+
+    public async void LoadData()
+    {
+        isLoading = true;       
+        creditTypeList = await CreditDocumentServices.GetCreditTypes((filter != null ? filter : "all"), 1, 20);
+        isLoading = false;
+        StateHasChanged();
+    }
+
+   
+
+
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CreditType> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+      
+        </RadzenMenu>
+    );
+
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        CreditType argObj = (CreditType)args.Value;
+        Navigation.NavigateTo($"CreditType/{argObj.Id}/{_filterItems}");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+    public void Setfilter( string value)
+    {
+        filter = value;
+        StateHasChanged();
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    public void Add()
+    {
+        
+    }
+
+
+    public void EventIdSelectionMenuItem(string name)
+    {
+        Js.InvokeAsync<object>("open", name, "_blank");
+
+    }
+
+}

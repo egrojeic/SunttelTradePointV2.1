@@ -9,7 +9,7 @@
 
 @inject IJSRuntime Js
 
-<PageTitleComponent Title="CreditDocument" IconName="Payments.png"
+<PageTitleComponent Title="Credit Document" IconName="Payments.png"
                     Description="With this tool you can create and edit creditDocument ">
 </PageTitleComponent>
 
@@ -126,7 +126,6 @@
 
     public async void SetDocumentTypeId(CommercialDocumentType item)
     {
-
         if (item != null)
         {
             documentType = item;
@@ -138,7 +137,6 @@
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CreditDocument> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-
     </RadzenMenu>
     );
 

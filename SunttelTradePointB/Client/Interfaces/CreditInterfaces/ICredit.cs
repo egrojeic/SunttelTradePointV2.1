@@ -59,20 +59,17 @@ namespace SunttelTradePointB.Client.Interfaces.ICreditInterfaces
         /// <summary>
         /// Retrives a list with creditType meeting search criteria
         /// </summary>
-        /// <param name="filter"></param>           
-        /// <param name="endDate"></param>           
+        /// <param name="filter"></param>        
         /// <param name="filter"></param>           
         /// <param name="page"></param>           
         /// <param name="perPage"></param>         
         /// <returns></returns>
-        Task<List<CreditType>> GetCreditTypes(DateTime startDate, DateTime endDate, string? filter = null, int? page = 1, int? perPage = 10);
-
+        Task<List<CreditType>> GetCreditTypes(string? filter = null, int? page = 1, int? perPage = 10);
 
         /// <summary>
         /// Retrives a item with CreditType meeting search criteria
         /// </summary>
-        /// <param name="creditTypeId"></param>          
-
+        /// <param name="creditTypeId"></param>         
         /// <returns></returns>
         Task<CreditType> GetCreditTypeById(string creditTypeId);
 
@@ -96,8 +93,22 @@ namespace SunttelTradePointB.Client.Interfaces.ICreditInterfaces
         /// <returns></returns>
         Task<CreditStatus> CreditStatusById(string creditStatusById);
 
-        
+        /// <summary>
+        /// Retrives a item with CreditReason meeting search criteria
+        /// </summary>
+        /// <param name="creditReasonById"></param>      
+        /// <returns></returns>
+        Task<CreditReason> CreditReasonById(string creditReasonById);
 
+
+        /// <summary>
+        /// Retrives a item with CreditReason meeting search criteria
+        /// </summary>
+        /// <param name="filter"></param>      
+        /// <param name="page"></param>      
+        /// <param name="perPage"></param>      
+        /// <returns></returns>
+        Task<List<CreditReason>> GetCreditReasonList(string? filter = null, int? page = 1, int? perPage = 10);
 
     }
 

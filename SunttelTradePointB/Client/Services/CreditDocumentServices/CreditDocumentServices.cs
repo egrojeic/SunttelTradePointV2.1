@@ -18,14 +18,13 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
             _httpClient = httpClient;
         }
 
-
-
         public async Task<CreditDocument> SaveCreditDocument(CreditDocument creditDocument)
         {
             try
             {
                 string path = $"{pathApi}";
-                path.Replace("*Name", "SaveCreditDocument");
+                path = GetGlobalVariables(path);
+                path = path.Replace("*Name", "SaveCreditDocument");
                 creditDocument.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<CreditDocument>($"{path}", creditDocument);
                 return await responseMessage.Content.ReadFromJsonAsync<CreditDocument>();
@@ -44,8 +43,9 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
             try
             {
                 string path = $"{pathApi}";
-                path.Replace("*Name", "SaveCreditType");
-               // creditType.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                path = GetGlobalVariables(path);
+                path = path.Replace("*Name", "SaveCreditType");
+                creditType.SquadId = UIClientGlobalVariables.ActiveSquad != null ? UIClientGlobalVariables.ActiveSquad.IDSquads.ToString() : "000";
                 var responseMessage = await _httpClient.PostAsJsonAsync<CreditType>($"{path}", creditType);
                 return await responseMessage.Content.ReadFromJsonAsync<CreditType>();
 
@@ -63,8 +63,9 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
             try
             {
                 string path = $"{pathApi}";
-                path.Replace("*Name", "SaveCreditStatus");
-               // creditStatus.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                // path = GetGlobalVariables(path);
+                 path = path.Replace("*Name", "SaveCreditStatus");
+                creditStatus.SquadId = UIClientGlobalVariables.ActiveSquad!=null ?  UIClientGlobalVariables.ActiveSquad.IDSquads.ToString():"000";
                 var responseMessage = await _httpClient.PostAsJsonAsync<CreditStatus>($"{path}", creditStatus);
                 return await responseMessage.Content.ReadFromJsonAsync<CreditStatus>();
 
@@ -82,8 +83,9 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
             try
             {
                 string path = $"{pathApi}";
-                path.Replace("*Name", "SaveCreditReason");
-                // creditStatus.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                path = GetGlobalVariables(path);
+                path = path.Replace("*Name", "SaveCreditReason");
+                creditReason.SquadId = UIClientGlobalVariables.ActiveSquad !=null ? UIClientGlobalVariables.ActiveSquad.IDSquads.ToString():"000";
                 var responseMessage = await _httpClient.PostAsJsonAsync<CreditReason>($"{path}", creditReason);
                 return await responseMessage.Content.ReadFromJsonAsync<CreditReason>();
 
@@ -132,13 +134,13 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
         }
 
 
-        public async Task<List<CreditType>> GetCreditTypes(DateTime startDate, DateTime endDate, string? filter = null, int? page = 1, int? perPage = 10)
+        public async Task<List<CreditType>> GetCreditTypes( string? filter = null, int? page = 1, int? perPage = 10)
         {
             try
             {
                 string path = $"{pathApi}";
-                path = path.Replace("*Name", "GetCreditDocumentById");
-                var responseMessage = await Gethttp($"{path}&startDate={startDate.ToString("yyyy-MM-dd")}&endDate={endDate.ToString("yyyy-MM-dd")}&filter={filter}&page={page}&perPage={perPage}");
+                path = path.Replace("*Name", "GetCreditTypes");
+                var responseMessage = await Gethttp($"{path}&filter={filter}&page={page}&perPage={perPage}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<CreditType>>();
                 return list != null ? list : new List<CreditType>();
             }
@@ -148,7 +150,6 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
                 return null;
             }
         }
-
 
 
         public async Task<CreditType> GetCreditTypeById(string creditTypeId)
@@ -203,6 +204,41 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
             }
         }
 
+        public async Task<CreditReason> CreditReasonById(string creditReasonById)
+        {
+            try
+            {
+                string path = $"{pathApi}";
+                path = path.Replace("*Name", "CreditReasonById");
+                var responseMessage = await Gethttp($"{path}&creditStatusById={creditReasonById}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<CreditReason>();
+                return list != null ? list : new CreditReason();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<List<CreditReason>> GetCreditReasonList(string? filter = null, int? page = 1, int? perPage = 10)
+        {
+            try
+            {
+                string path = $"{pathApi}";
+                path = path.Replace("*Name", "GetCreditReasons");
+                var responseMessage = await Gethttp($"{path}&filter={filter}&page={page}&perPage={perPage}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<CreditReason>>();
+                return list != null ? list : new List<CreditReason>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+       
 
 
         public string GetGlobalVariables(string Url)
@@ -216,7 +252,6 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
 
             return Url;
         }
-
 
 
         public async Task<HttpResponseMessage> Gethttp(string Url)
@@ -254,10 +289,6 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
 
         }
 
-
-
     }
-
-
 
 }

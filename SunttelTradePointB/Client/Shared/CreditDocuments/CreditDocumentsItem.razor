@@ -10,6 +10,7 @@
 
 @inject NavigationManager Navigation
 @inject SunttelTradePointB.Client.Services.CreditDocumentServices.CreditDocumentServices CreditDocumentServices
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
 @inject GeographicPlacesService geoPlaces
 @inject ActorsNodeService actorsNodeServive
 @inject IJSRuntime Js
@@ -164,7 +165,7 @@
             creditDocument = await CreditDocumentServices.GetCreditDocumentById(creditDocumentsItemId);
 
         }
-        //creditTypeList = await CreditDocumentServices.GetCreditTypes(creditDocumentsItemId);
+        creditTypeList = await CreditDocumentServices.GetCreditTypes((filter!=null? filter:"all"),1,20);
         LoadDocument();
         isLoading = false;
         StateHasChanged();
@@ -218,19 +219,16 @@
     public async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
         SearcherValue = arg.IdControl.ToString();
-        if (SearcherValue == "DocumentType")
-        {
-            // documentTypeList = await DocumentServices.GetCommercialDocumentsTypes(arg.value);
-        }
+       
         if (SearcherValue == "Vendor")
         {
-            // vendorList = await DocumentServices.GetCommercialVendorList(arg.value, creditDocument.DocumentType);
+          vendorList=  await DocumentServices.GetCommercialVendorList(arg.value, creditDocument.CreditDocumentType.IsASale,1,20);
 
         }
 
         if (SearcherValue == "Buyer")
-        {
-            //   buyerList = await DocumentServices.GetCommercialBuyerList(arg.value, creditDocument.DocumentType);
+        {           
+            buyerList = await DocumentServices.GetCommercialBuyerList(arg.value, creditDocument.CreditDocumentType.IsASale,1,20);
         }
 
         StateHasChanged();
@@ -246,14 +244,10 @@
     {
         if (SearcherValue == "Vendor")
         {
-            creditDocument.Vendor = item;
-            //  vendorWarehouseList = await DocumentServices.GetCommercialVendorWarehouseList(item.Id);
+            creditDocument.Vendor = item;          
 
         }
-        if (SearcherValue == "SalesPerson")
-        {
-            // creditDocument.SalesPerson = item;
-        }
+       
         if (SearcherValue == "Buyer")
         {
             creditDocument.Buyer = item;
