@@ -2,9 +2,9 @@
 using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.Sales;
 
-namespace SunttelTradePointB.Client.Interfaces.PaymentInterfaces
+namespace SunttelTradePointB.Client.Interfaces.IPaymentInterfaces
 {
-    public interface TPayment
+    public interface IPayment
     {
 
         /// <summary>

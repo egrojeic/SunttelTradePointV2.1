@@ -7,7 +7,7 @@ using System.Net.Http.Json;
 
 namespace SunttelTradePointB.Client.Services.InventoryServices
 {
-    public class Inventory : TInventory
+    public class Inventory : IInventory
     {
         private readonly HttpClient _httpClient;
         private string Configpath = "userId=*Id&ipAddress=*Ip";

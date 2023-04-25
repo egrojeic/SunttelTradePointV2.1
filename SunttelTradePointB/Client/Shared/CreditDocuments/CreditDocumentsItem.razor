@@ -9,7 +9,7 @@
 @using SunttelTradePointB.Shared.Accounting
 
 @inject NavigationManager Navigation
-@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject SunttelTradePointB.Client.Services.CreditDocumentServices.CreditDocumentServices CreditDocumentServices
 @inject GeographicPlacesService geoPlaces
 @inject ActorsNodeService actorsNodeServive
 @inject IJSRuntime Js
@@ -49,13 +49,13 @@
 
         <div>
             <label>
-                @GetName("DocumentType",new CreditDocument())
+                @GetName("CreditDocumentType",new CreditDocument())
             </label>
         </div>
         <div>
             <select @onchange="SelectItem" class="select-style">
 
-                @if (creditDocumentListr != null && creditDocumentListr.Count() > 0)
+                @if (creditTypeList != null && creditTypeList.Count() > 0)
                 {
                     <option value="0" selected>Select</option>
                 }
@@ -80,7 +80,6 @@
 
         <div><label>@GetName("CreditDate",new CreditDocument())</label></div>
         <input type="date" @bind="@creditDocument.CreditDate" class="form-control" />
-
 
 
         <div><label>@GetName("Vendor",new CreditDocument())</label></div>
@@ -140,6 +139,7 @@
     public List<Concept> vendorList = new();
     public List<Concept> buyerList = new();
     public List<CreditDocument> creditDocumentListr { get; set; }
+    public List<CreditType> creditTypeList { get; set; }
 
     #endregion Input3
 
@@ -161,12 +161,11 @@
         StateHasChanged();
         if (creditDocumentsItemId != null)
         {
-
+            creditDocument = await CreditDocumentServices.GetCreditDocumentById(creditDocumentsItemId);
 
         }
-
-
-        LoadCommercialDocument();
+        //creditTypeList = await CreditDocumentServices.GetCreditTypes(creditDocumentsItemId);
+        LoadDocument();
         isLoading = false;
         StateHasChanged();
     }
@@ -182,17 +181,17 @@
             string tile = e.Item != null ? e.Item.Text : "";
             if (tile == "Save")
             {
-                LoadCommercialDocument();
-                //    var result = await DocumentServices.SaveCommercialDocument(creditDocument);
-                //if (result != null)
-                //{
-                //    alert("Saved", 0);
-                //    creditDocument = result;
-                //}
-                //else
-                //{
-                //    alert("required fields", 1);
-                //}
+                LoadDocument();
+                var result = await CreditDocumentServices.SaveCreditDocument(creditDocument);
+                if (result != null)
+                {
+                    alert("Saved", 0);
+                    creditDocument = result;
+                }
+                else
+                {
+                    alert("required fields", 1);
+                }
 
             }
         }
@@ -212,13 +211,6 @@
 
 
     }
-
-
-
-
-
-
-
 
 
 
@@ -267,7 +259,7 @@
             creditDocument.Buyer = item;
 
         }
-        LoadCommercialDocument();
+        LoadDocument();
         StateHasChanged();
     }
 
@@ -333,7 +325,7 @@
 
     #region Load
 
-    public void LoadCommercialDocument()
+    public void LoadDocument()
     {
         if (creditDocument == null) creditDocument = new();
         if (creditDocument.CreditDocumentType == null) creditDocument.CreditDocumentType = new();

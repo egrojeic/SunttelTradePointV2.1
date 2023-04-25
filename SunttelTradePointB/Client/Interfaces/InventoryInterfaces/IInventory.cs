@@ -3,7 +3,7 @@ using SunttelTradePointB.Shared.InvetoryModels;
 
 namespace SunttelTradePointB.Client.Interfaces.InventoryInterfaces
 {
-    public interface TInventory
+    public interface IInventory
     {
         /// <summary>
         /// Save a inventoryDetail item 
