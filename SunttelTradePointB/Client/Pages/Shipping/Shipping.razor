@@ -22,8 +22,8 @@
 
 </div>
 <div class="panelMenuContainer aling">
-    <ShippingMenu2 SetDocumentType="SetDocumentTypeId"></ShippingMenu2>
-    <RangeDatesInput StartDate="@startingDate" EndDate="@endDate"
+    <ShippingMenu2 SetWarehouse="Setwarehouse"></ShippingMenu2>
+    <RangeDatesInput StartDate="@startingDate"
                      EventSearchAll="EventSearchAll"></RangeDatesInput>
 </div>
 
@@ -55,16 +55,21 @@
                     ColumnWidth="300px"
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"
-                    @bind-Value="@selectedcommercialdocuments"
+                    @bind-Value="@selectedcommercialdocuments"                    
                     CellContextMenu="@ShowContextMenuCommercialDocument">
             <Columns>
 
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentType.Name" Title="Document Type" Width="308px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentNumber" Title="@GetName("DocumentNumber", new CommercialDocument() )"  Width="208px" />               
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="ShipDate" Title="Ship Date" FormatString="{0:d}" Width="200px" />                
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentNumber" Title="@GetName("DocumentNumber", new CommercialDocument() )" Width="208px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="ShipDate" Title="Ship Date" FormatString="{0:d}" Width="200px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="DeliveryDate" Title="Delivery Date" FormatString="{0:d}" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="ArrivalDate" Title="Provider Arrival Date" FormatString="{0:d}" Width="200px" />              
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="Buyer.Name" Title="Customer" Width="200px" />               
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="Buyer.Name" Title="Customer" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentPrinted" Title="@GetName("DocumentPrinted", new CommercialDocument() )" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="PrintingSatus.PickingTicketPrinted" Title="@GetName("PickingTicketPrinted", new SalesDocumentPrintingSatus() )" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="PrintingSatus.LabelsPrinted" Title="@GetName("LabelsPrinted", new SalesDocumentPrintingSatus() )" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="PrintingSatus.BillOfLandingPrinted" Title="@GetName("BillOfLandingPrinted", new SalesDocumentPrintingSatus() )" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="ShippingStatusDocument.Name" Title="@GetName("ShippingStatusDocument", new CommercialDocument() )" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="@nameof(CommercialDocument.FinanceStatusDocument)" Title="@GetName("FinanceStatusDocument", new CommercialDocument() )" Width="200px" />
+
             </Columns>
         </RadzenDataGrid>
     }
@@ -78,7 +83,7 @@
     public string _filterItems { get; set; }
     List<CommercialDocument>? commercialdocumentList { get; set; }
 
-    public CommercialDocumentType commercialDocumentType { get; set; }
+    public Warehouse warehouse { get; set; }
     IList<CommercialDocument>? selectedcommercialdocuments;
 
     bool isLoading = false;
@@ -107,9 +112,9 @@
     public async void LoadData()
     {
         isLoading = true;
-        if (commercialDocumentType != null)
+        if (warehouse != null)
         {
-            commercialdocumentList = await DocumentServices.GetCommercialDocumentList(startingDate, endDate, commercialDocumentType.Id, (_filterItems != null ? _filterItems : "all"));
+            commercialdocumentList = await DocumentServices.GetCommercialDocumentList(startingDate, warehouse.Id, (_filterItems != null ? _filterItems : "all"));
 
         }
         isLoading = false;
@@ -123,12 +128,12 @@
         docsFilter = value;
     }
 
-    public async void SetDocumentTypeId(CommercialDocumentType item)
+    public async void Setwarehouse(Warehouse item)
     {
 
         if (item != null)
         {
-            commercialDocumentType = item;
+            warehouse = item;
         }
         StateHasChanged();
     }
