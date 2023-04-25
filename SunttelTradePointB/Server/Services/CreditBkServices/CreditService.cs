@@ -3,6 +3,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using SunttelTradePointB.Server.Interfaces.CreditBkServices;
 using SunttelTradePointB.Shared.Accounting;
+using Syncfusion.Blazor.Grids;
 
 namespace SunttelTradePointB.Server.Services.CreditBkServices
 {
@@ -294,31 +295,173 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
 
         }
 
-        public Task<(bool IsSuccess, List<CreditStatus>? CreditStatusesList, string? ErrorDescription)> GetCreditStatuses(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null)
+        /// <summary>
+        /// Saves an Credit document. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<CreditStatus>? CreditStatusesList, string? ErrorDescription)> GetCreditStatuses(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filter = null)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string filterString = filter == null ? "" : filter;
+                var skip = (page - 1) * perPage;
+
+                var pipeline = new List<BsonDocument>();
+
+                // Filtro general
+                if (filterString.ToLower() != "all")
+                {
+                    pipeline.Add(
+                    new BsonDocument(
+                        "$match",
+                        new BsonDocument(
+                                 "Name",
+                                    new BsonDocument(
+                                        "$regex", new BsonRegularExpression($"/{filterString}/i"))
+                            )
+                    )
+                    );
+                }
+                // Filtro por SquadId
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                );
+
+                pipeline.Add(
+                    new BsonDocument{
+                        {"$skip",  skip}
+                    }
+                    );
+
+                pipeline.Add(
+                    new BsonDocument{
+                        {"$limit",  perPage}
+                    }
+                );
+
+                List<CreditStatus> results = await _CreditStatusCollection.Aggregate<CreditStatus>(pipeline).ToListAsync();
+                return (true, results, null);
+
+            }
+
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
 
-        public Task<(bool IsSuccess, CreditStatus? CreditStatus, string? ErrorDescription)> CreditStatusById(string userId, string ipAddress, string squadId, string creditStatusId)
+        /// <summary>
+        /// Saves an Credit document. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="creditStatusId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, CreditStatus? CreditStatus, string? ErrorDescription)> CreditStatusById(string userId, string ipAddress, string squadId, string creditStatusId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+                // Filtro por SquadId
+                //pipeline.Add(
+                //    new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                //);
+                //pipeline.Add(
+                //    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(creditStatusId)))
+                //);
+
+                pipeline.Add(
+                    new BsonDocument {
+                        { "$match",
+                            new BsonDocument{
+                                { "SquadId", squadId },
+                                { "_id", new ObjectId(creditStatusId) }
+                            }
+                        }
+                    }
+                );
+
+                var resultPrev = await _CreditStatusCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                CreditStatus result = resultPrev.Select(d => BsonSerializer.Deserialize<CreditStatus>(d)).ToList()[0];
+
+                return (true, result, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, null, ex.Message);
+            }
         }
 
-        public Task<(bool IsSuccess, CreditStatus? CreditStatus, string? ErrorDescription)> SaveCreditStatus(string userId, string ipAddress, string squadId, CreditStatus creditStatus)
+        /// <summary>
+        /// Saves an Credit document. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="creditStatus"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, CreditStatus? CreditStatus, string? ErrorDescription)> SaveCreditStatus(string userId, string ipAddress, string squadId, CreditStatus creditStatus)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (creditStatus.Id == null)
+                {
+                    creditStatus.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterCreditStatus = Builders<CreditStatus>.Filter.Eq("_id", new ObjectId(creditStatus.Id));
+                var updateCreditStatus = new ReplaceOptions { IsUpsert = true };
+                var resultCreditStatus = await _CreditStatusCollection.ReplaceOneAsync(filterCreditStatus, creditStatus, updateCreditStatus);
+
+                return (true, creditStatus, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
 
+        /// <summary>
+        /// Saves an Credit document. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="creditTypeId"></param>
+        /// <returns></returns>
         public Task<(bool IsSuccess, List<CreditReason>? CreditReasonsList, string? ErrorDescription)> GetCreditReasons(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Saves an Credit document. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="creditTypeId"></param>
+        /// <returns></returns>
         public Task<(bool IsSuccess, CreditReason? CreditReason, string? ErrorDescription)> CreditReasonById(string userId, string ipAddress, string squadId, string creditDocumentId)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Saves an Credit document. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="creditTypeId"></param>
+        /// <returns></returns>
         public Task<(bool IsSuccess, CreditReason? CreditReason, string? ErrorDescription)> SaveCreditReason(string userId, string ipAddress, string squadId, CreditReason creditReason)
         {
             throw new NotImplementedException();

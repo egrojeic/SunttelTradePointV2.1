@@ -177,7 +177,7 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
 
         #endregion
 
-        #region Credit Types
+        #region Credit Status
         /// <summary>
         /// Returns a list of entities with a name like the parameter
         /// </summary>
@@ -191,11 +191,11 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetCreditStatuses")]
-        public async Task<IActionResult> GetCreditStatuses(string userId, string ipAddress, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null)
+        public async Task<IActionResult> GetCreditStatuses(string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filter = null)
         {
             var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
-            var response = await _credit.GetCreditStatuses(userId, ipAddress, squadId, startDate, endDate, page, perPage, filter);
+            var response = await _credit.GetCreditStatuses(userId, ipAddress, squadId, page, perPage, filter);
 
             if (response.IsSuccess)
             {
