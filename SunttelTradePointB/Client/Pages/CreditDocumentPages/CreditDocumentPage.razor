@@ -58,19 +58,17 @@
                     CellContextMenu="@ShowContextMenuCommercialDocument">
                 <Columns>
 
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="DocumentType.Name" Title="@GetName("DocumentType",new CreditDocument())" Width="308px" />
+                    <RadzenDataGridColumn TItem="CreditDocument" Property="CreditDocumentType.Name" Title="@GetName("CreditDocumentType",new CreditDocument())" Width="308px" />
                     <RadzenDataGridColumn TItem="CreditDocument" Property="Code" Title="@GetName("Code",new CreditDocument())" Width="208px" />
                     <RadzenDataGridColumn TItem="CreditDocument" Property="Vendor.Name" Title="@GetName("Vendor",new CreditDocument())" Width="208px" />
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="Vendor.Buyer" Title="@GetName("Vendor",new CreditDocument())" Width="208px" />
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="Status.Name" Title="@GetName("Status",new CreditDocument())" Width="208px" />
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="Reazon.DocumentCode" Title="@GetName("Reazon",new CreditDocument())" Width="208px" />
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="Reazon.DocumentDate" Title="@GetName("Reazon",new CommercialDocumentSummaryInfo())" Width="208px" />
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="CreditValue" Title="@GetName("CreditValue",new CreditDocument())" Width="208px" />
-
+                    <RadzenDataGridColumn TItem="CreditDocument" Property="Vendor.Buyer" Title="@GetName("Buyer",new CreditDocument())" Width="208px" />
+                    <RadzenDataGridColumn TItem="CreditDocument" Property="CreditDocumentStatus.Name" Title="@GetName("CreditDocumentStatus",new CreditDocument())" Width="208px" />
+                    <RadzenDataGridColumn TItem="CreditDocument" Property="CreditDocumentReason.Name" Title="@GetName("CreditDocumentReason",new CreditDocument())" Width="208px" />                   
+                   <RadzenDataGridColumn TItem="CreditDocument" Property="CreditValue" Title="@GetName("CreditValue",new CreditDocument())" Width="208px" />
                     <RadzenDataGridColumn TItem="CreditDocument" Property="IsDirect" Title="@GetName("IsDirect",new CreditDocument())" Width="200px" TextAlign="Radzen.TextAlign.Center">
                         <Template>
                             @{
-                                var IsDirect = (bool)context.GetType().GetProperty(nameof(Warehouse.IsInventoryControlled)).GetValue(context);
+                                var IsDirect = (bool)context.GetType().GetProperty(nameof(CreditDocument.IsDirect)).GetValue(context);
                                 <input type="checkbox" checked="@IsDirect" />
                             }
                         </Template>

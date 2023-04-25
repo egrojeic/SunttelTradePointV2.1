@@ -12,7 +12,7 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
     public class CreditDocumentServices : ICredit
     {
         private readonly HttpClient _httpClient;
-        private string pathApi = "/api/Credit/*Name?userId=*Id&ipAddress=*Ip";
+        private string pathApi = "/api/Credit/*Name?userId=*Id&ipAddress=*Ip"; 
         public CreditDocumentServices(HttpClient httpClient)
         {
             _httpClient = httpClient;
@@ -157,8 +157,8 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
             try
             {
                 string path = $"{pathApi}";
-                path = path.Replace("*Name", "GetCreditDocumentById");
-                var responseMessage = await Gethttp($"{path}&creditId={creditTypeId}");
+                path = path.Replace("*Name", "GetCreditTypeById");
+                var responseMessage = await Gethttp($"{path}&creditTypeId={creditTypeId}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<CreditType>();
                 return list != null ? list : new CreditType();
             }
@@ -210,7 +210,7 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
             {
                 string path = $"{pathApi}";
                 path = path.Replace("*Name", "CreditReasonById");
-                var responseMessage = await Gethttp($"{path}&creditStatusById={creditReasonById}");
+                var responseMessage = await Gethttp($"{path}&creditReasonById={creditReasonById}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<CreditReason>();
                 return list != null ? list : new CreditReason();
             }
@@ -262,6 +262,8 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
                 var SquadId = UIClientGlobalVariables.ActiveSquad;
                 var ReplaceIdUser = UIClientGlobalVariables.UserId;
                 var ReplacePublicIpAddress = UIClientGlobalVariables.PublicIpAddress;
+                if (ReplaceIdUser == "") ReplaceIdUser = "000";
+                if (ReplacePublicIpAddress == "") ReplacePublicIpAddress = "000";
 
                 Url = Url.Replace("*Id", ReplaceIdUser ?? "000");
                 Url  = Url.Replace("*Ip", ReplacePublicIpAddress ?? "000");

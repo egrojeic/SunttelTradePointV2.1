@@ -1,6 +1,6 @@
 @page "/CreditType"
 @page "/CreditType/{creditTypeId}"
-@page "/CreditType/{filter}/{creditTypeId}"
+@page "/CreditType/{creditTypeId}/{filter}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
@@ -49,7 +49,6 @@
             <div><label>@GetName("Name",new CreditType())</label></div>
             <InputTextDisable TypeInt="false" Enable="true" style="font-size:15px; font-weight:none;"  @bind-ValueString="@creditType.Name"></InputTextDisable>
         </div>
-
 
         <div><label>@GetName("IsASale",new CreditType())</label></div>
         <div>

@@ -1,6 +1,6 @@
 @page "/CreditDocumentsItem"
 @page "/CreditDocumentsItem/{creditDocumentsItemId}"
-@page "/CreditDocumentsItem/{filter}/{creditDocumentsItemId}"
+@page "/CreditDocumentsItem/{creditDocumentsItemId}/{filter}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
@@ -60,11 +60,11 @@
                 {
                     <option value="0" selected>Select</option>
                 }
-                @if (creditDocumentListr != null)
+                @if (creditTypeList != null)
                 {
-                    @foreach (var item in creditDocumentListr)
+                    @foreach (var item in creditTypeList)
                     {
-                        <option value="@item.Id">@item.Id</option> // falta .Name
+                        <option value="@item.Id">@item.Name</option> // falta .Name
                     }
                 }
                 @if (creditDocument.CreditDocumentType!= null)
@@ -191,7 +191,7 @@
                 }
                 else
                 {
-                    alert("required fields", 1);
+                    alert("No Saved", 1);
                 }
 
             }
@@ -219,10 +219,10 @@
     public async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
         SearcherValue = arg.IdControl.ToString();
-       
+
         if (SearcherValue == "Vendor")
         {
-          vendorList=  await DocumentServices.GetCommercialVendorList(arg.value, creditDocument.CreditDocumentType.IsASale,1,20);
+            vendorList=  await DocumentServices.GetCommercialVendorList(arg.value, creditDocument.CreditDocumentType.IsASale,1,20);
 
         }
 
@@ -247,7 +247,7 @@
             creditDocument.Vendor = item;          
 
         }
-       
+
         if (SearcherValue == "Buyer")
         {
             creditDocument.Buyer = item;
@@ -326,6 +326,7 @@
 
         if (creditDocument.Vendor == null) creditDocument.Vendor = new();
         if (creditDocument.Buyer == null) creditDocument.Buyer = new();
+        if (creditDocument.CreditDate == DateTime.MinValue) creditDocument.CreditDate = DateTime.Now;
 
 
     }
