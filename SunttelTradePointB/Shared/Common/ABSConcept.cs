@@ -97,6 +97,7 @@ namespace SunttelTradePointB.Shared.Common
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         public string Name { get; set; }
+        public string SquadId { get; set; }
     }
 
     [BsonIgnoreExtraElements]

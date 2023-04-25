@@ -21,9 +21,7 @@
 <div class="panelMenuContainer">
     <InventoryMenu2 Setwarehouse="Setwarehouse"></InventoryMenu2>
          <RangeDatesInput StartDate="@startingDate"
-                     StartDateName="From"
-                     EndDate="@endDate"
-                     EndDateName="To"
+                     StartDateName="Date"                   
                      EventSearchAll="EventSearchAll"></RangeDatesInput>
 </div>
 
@@ -123,7 +121,7 @@
         isLoading = true;
         if (warehouse != null && warehouse.Id != null)
         {
-            InventoryDetaiList = await _Inventory.GetInventoryList(_filterItems, warehouse.Id, startingDate, endDate, 1, 10);
+            InventoryDetaiList = await _Inventory.GetInventoryList(_filterItems, warehouse.Id, startingDate, 1, 10);
         }
         isLoading = false;
         StateHasChanged();
