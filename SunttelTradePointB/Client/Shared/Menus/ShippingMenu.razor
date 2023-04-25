@@ -9,8 +9,7 @@
 
 <div id="container-menu-general">
     <nav>
-        <button class="general-menu-button btn-new" @onclick="CreateNew"><i class="fa-solid fa-file"></i></button>
-
+      @*  <button class="general-menu-button btn-new" @onclick="CreateNew"><i class="fa-solid fa-file"></i></button>*@
         <SfSplitButton Content="Import..." IconCss="fa-solid fa-file-import" CssClass="splitButtonsStyle">
             <DropDownMenuItems>
                 <DropDownMenuItem Text="Importing from the cloud..." IconCss="fa-solid fa-cloud-arrow-up"></DropDownMenuItem>
@@ -18,7 +17,7 @@
             </DropDownMenuItems>
         </SfSplitButton>     
 
-        <SfSplitButton Content="Views" IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
+     @*   <SfSplitButton Content="Views" IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
             <SplitButtonEvents ItemSelected="ItemSelected">
             </SplitButtonEvents>
             <DropDownMenuItems>
@@ -27,7 +26,7 @@
 
             </DropDownMenuItems>
         </SfSplitButton>
-
+*@
     </nav>
 
 </div>

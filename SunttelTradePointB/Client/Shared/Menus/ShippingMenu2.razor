@@ -1,33 +1,41 @@
 ﻿@using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.SplitButtons
 @using SunttelTradePointB.Shared.Sales
+@using SunttelTradePointB.Shared.InvetoryModels
 @inject NavigationManager Navigation
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject WarehouseService warehouseService
+@inject SunttelTradePointB.Client.Services.InventoryServices.Inventory InventoryServices
 
 
 
-
-<div id="container-menu-general">
-    <nav>
+<div class="aling-div ">
+   
         <div>
-            <label class="lblControl col-form-label" style="color:white" >
-                @GetName("DocumentType",new CommercialDocument())
+            <label class="lblControl col-form-label" style="color:white">
+            @GetName("DocumentType",new CommercialDocument())
             </label>
         </div>
-
-        <div class="InventoryBusinessLine">
-            <select @onchange="SetDocumentType" class="select-style">
-                @if (commercialDocumentTypeList != null)
+        <div>        <select @onchange="SelectItemVendor" class="select-style">           
+            @if (commercialDocumentTypeList != null && commercialDocumentTypeList.Count() > 0)
+            {
+                <option value="0" selected>Select</option>
+            }
+            @if (commercialDocumentTypeList != null)
+            {
+                @foreach (var item in commercialDocumentTypeList)
                 {
-                    @foreach (var item in commercialDocumentTypeList)
-                    {
-                        <option value="@(item.Id)" selected>@(item.Name)</option>
-                    }
+                    <option value="@item.Id">@item.Name</option>
                 }
-            </select>
-        </div>
+            }
+            @if (commercialDocumentType != null)
+            {
+                <option value="@commercialDocumentType.Id" selected>@commercialDocumentType.Name</option>
+            }
+        </select>
+    </div>
 
-    </nav>
+   
 
 </div>
 
@@ -36,7 +44,13 @@
     [Parameter]
     public List<CommercialDocumentType> commercialDocumentTypeList { get; set; }
     [Parameter]
-    public EventCallback<CommercialDocumentType> SetDocumentTypeId { get; set; }
+    public CommercialDocumentType commercialDocumentType { get; set; }
+
+    [Parameter]
+    public EventCallback<CommercialDocumentType> SetDocumentType { get; set; }
+
+    List<Warehouse> warehouseList = new();
+    Warehouse warehouse = new();
 
     static bool ShowMenu { get; set; } = false;
     public string commandStyle = "display: 'none';";
@@ -59,6 +73,7 @@
     protected async override void OnInitialized()
     {
         commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes();
+        warehouseList = await InventoryServices.GetWarehouseList("all");
         StateHasChanged();
     }
 
@@ -80,26 +95,32 @@
         Navigation.NavigateTo(Selected_item);
     }
 
-    private void SetDocumentType(ChangeEventArgs args)
-    {
-        var Selected_item = commercialDocumentTypeList.Where(s => s.Id == args.Value.ToString()).FirstOrDefault();
-        if (Selected_item != null)
+
+
+
+    public async void SelectItemVendor(ChangeEventArgs arg)
+    {       
+
+        CommercialDocumentType item = commercialDocumentTypeList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+        if (item != null)
         {
-            SetDocumentTypeId.InvokeAsync(Selected_item);
+            commercialDocumentType = item;
+            SetDocumentType.InvokeAsync(item);
         }
+        StateHasChanged();
     }
 
-
-    public string GetName(string Name, Object Obj)
+     public string GetName(string Name, Object Obj)
     {
         if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
     }
 
+    
 
     private void CreateNew()
     {
-        Navigation.NavigateTo("/SaleItem");
+        Navigation.NavigateTo("/Inventory");
     }
 
 }

@@ -3,148 +3,312 @@
 
 
 @using SunttelTradePointB.Shared.Sales;
-@using SunttelTradePointB.Shared.InvetoryModels
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.SplitButtons
-@inject SunttelTradePointB.Client.Services.InventoryServices.Inventory InventoryServices
-@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
-@inject ContextMenuService ContextMenuService
-@inject TransactionalItemsService transactItemsService;
+@using System.Reflection
+@using Syncfusion.Blazor.Navigations
+@using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents
 @inject NavigationManager Navigation
-@inject WarehouseService warehouseService
-
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject GeographicPlacesService geoPlaces
+@inject ActorsNodeService actorsNodeServive
+@inject IJSRuntime Js
 
 <MessageSaveComponent isVisible="isVisible" message="@alertMsg">
 </MessageSaveComponent>
-
-<PageTitleComponent Title="Shipping Item" IconName="InventoryItem.png"
-                    Description="With this tool you can create and edit shipping item">
+<PageTitleComponent Title="Shipping"
+                    Description="Here you can follow shipping" IconName="commercialDocument.png">
 </PageTitleComponent>
 
-<div class="panelMenuContainer">
-    <button type="button" @onclick='()=>SetNavigateTo("Inventory")' class="general-menu-button"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i> </button>
 
-    <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+<form>
+
+    @if (page == "")
+    {
+
+    }
+
+    @if (page == "")
+    {
+
+        <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
+            <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+            @*
+        <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
         <SplitButtonEvents ItemSelected="ItemSelected">
         </SplitButtonEvents>
         <DropDownMenuItems>
-            <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
-            <DropDownMenuItem Separator="true"></DropDownMenuItem>
-            <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
-            <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
-            <DropDownMenuItem Separator="true"></DropDownMenuItem>
-            <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+        <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+        <DropDownMenuItem Separator="true"></DropDownMenuItem>
+        <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+        <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+        <DropDownMenuItem Separator="true"></DropDownMenuItem>
+        <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
         </DropDownMenuItems>
-    </SfSplitButton>
+        </SfSplitButton>*@
 
-</div>
-<div class="grid-columns-header grid-columns-6">
-    <div>
-        <label>
-            @GetName("CurrentWarehouse",new InventoryDetail())
-        </label>
-    </div>
-    <div>    
-        <select @onchange="SelectItemVendorWarehous" class="select-style">
-          
-            @if (warehouseList != null && warehouseList.Count() > 0)
-            {
-                <option value="0" selected>Select</option>
-            }
-            @if (warehouseList != null)
-            {
-                @foreach (var item in warehouseList)
-                {
-                    <option value="@item.Id">@item.Name</option>
-                }
-            }
-            @if (inventoryDetail.CurrentWarehouse != null)
-            {
-                <option value="@inventoryDetail.CurrentWarehouse.Id" selected>@inventoryDetail.CurrentWarehouse.Name</option>
-            }
-        </select>
-    </div>
 
-    <div>
-        <label>
-            @GetName("InventoryItem",new InventoryDetail())
-        </label>
-    </div>
-    <div class="InventoryItem">
-        <InputTextSelector3 TItem="Concept"
-                            Id="InventoryItem"
-                            caption="@(inventoryDetail.InventoryItem !=null ? inventoryDetail.InventoryItem.Name:"")"
+        </div>
+
+
+        <SliderScrollAuto summary="@commercialDocument.FinanceSummary"></SliderScrollAuto>
+        <TextToSpeech @ref="textToSpeech" Id="FinanceSummary" EventChange="EventChange" Class="speack">
+        </TextToSpeech>
+        <div class="grid-columns-header grid-columns-6">
+
+            <div class="item-1">
+                <div><label class="sub-tile">@GetName("ShippingStatusDocument",new CommercialDocument())</label></div>
+                <Status color="#61c100" Name="@(commercialDocument.ShippingStatusDocument !=null ? commercialDocument.ShippingStatusDocument.Name:"")"></Status>
+
+                <div><label class="sub-tile">@GetName("FinanceStatusDocument",new CommercialDocument())</label></div>
+                <Status Name="@(commercialDocument.FinanceStatusDocument !=null ? commercialDocument.FinanceStatusDocument.Name:"")"></Status>
+
+                <div><label class="sub-tile">@GetName("PrintingSatus",new CommercialDocument())</label></div>
+                <StatusItem item="commercialDocument.PrintingSatus"></StatusItem>
+
+                <div class="item-check">
+                    <div><label class="sub-tile">@GetName("MarkedForQCInspection",new CommercialDocument())</label></div>
+                    <div>
+                        <SfSwitch @bind-Checked="@commercialDocument.MarkedForQCInspection"></SfSwitch>
+                    </div>
+                    <div><label class="sub-tile">@GetName("ToInvoice",new CommercialDocument())</label></div>
+                    <div>
+                        <SfSwitch @bind-Checked="@commercialDocument.ToInvoice"></SfSwitch>
+                    </div>
+                </div>
+
+            </div>
+            <div><label class="sub-tile">@GetName("DocumentType",new CommercialDocument())</label></div>
+
+            <div>
+                <select @onchange="SelectItemDocumentType" class="select-style">
+
+                    @if (documentTypeList != null && documentTypeList.Count() > 0)
+                    {
+                        <option value="0" selected>Select</option>
+                    }
+                    @if (documentTypeList != null)
+                    {
+                        @foreach (var item in documentTypeList)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    }
+                    @if (commercialDocument != null && commercialDocument.DocumentType != null)
+                    {
+                        <option value="@commercialDocument.DocumentType.Id" selected>@commercialDocument.DocumentType.Name</option>
+                    }
+                </select>
+            </div>
+
+
+
+            <div><label class="sub-tile">@GetName("DocumentNumber",new CommercialDocument())</label></div>
+            <InputTextDisable style="width:180px" Enable="@(commercialDocument.DocumentType !=null && commercialDocument.DocumentType.DocNumberAutogenerated !=null ? commercialDocument.DocumentType.DocNumberAutogenerated:false)"
+                          TypeInt="true"
+                          @bind-ValueInt="commercialDocument.DocumentNumber">
+            </InputTextDisable>
+
+            <div><label class="sub-tile">@GetName("PO",new CommercialDocument())</label></div>
+            <InputTextDisable Enable="true" TypeInt="false" @bind-ValueString="commercialDocument.PO"></InputTextDisable>
+
+            <div><label class="sub-tile">@GetName("ShipDate",new CommercialDocument())</label></div>
+            <div><input type="date" @bind-value="commercialDocument.ShipDate" class="form-control" /></div>
+
+            <div><label class="sub-tile">@GetName("DeliveryDate",new CommercialDocument())</label></div>
+            <div><input type="date" @bind-value="commercialDocument.DeliveryDate" class="form-control" /></div>
+
+            <div><label class="sub-tile">@GetName("ArrivalDate",new CommercialDocument())</label></div>
+            <div><input type="date" @bind-value="commercialDocument.ArrivalDate" class="form-control" /></div>
+
+            <div><label class="sub-tile">@GetName("Vendor",new CommercialDocument())</label></div>
+            <div class="Vendor">
+                <InputTextSelector3 styleCaption="min-width: 27vw;" TItem="Concept"
+                                Id="Vendor"
+                                caption="@(commercialDocument.Vendor !=null ? commercialDocument.Vendor?.Name:"" )"
+                                Items="vendorList"
+                                EventIdSelectionAndId="EventIdSelectionAndId"
+                                EventSearcherValueAndId="EventSearcherValueAndId">
+
+                </InputTextSelector3>
+            </div>
+
+            <div><label class="sub-tile">@GetName("Buyer",new CommercialDocument())</label></div>
+            <div class="Buyer">
+                <InputTextSelector3 styleCaption="min-width: 27vw;" TItem="Concept"
+                                Id="Buyer"
+                                caption="@(commercialDocument.Buyer !=null ? commercialDocument.Buyer?.Name:"" )"
+                                Items="buyerList"
+                                EventIdSelectionAndId="EventIdSelectionAndId"
+                                EventSearcherValueAndId="EventSearcherValueAndId">
+
+                </InputTextSelector3>
+            </div>
+
+            <div><label class="sub-tile">@GetName("SalesPerson",new CommercialDocument())</label></div>
+            <InputTextSelector3 styleCaption="width:180px; " style="right:-110px;" TItem="Concept"
+                            Id="SalesPerson"
+                            caption="@(commercialDocument.SalesPerson !=null ? commercialDocument.SalesPerson?.Name:"" )"
+                            Items="salesPersonList"
                             EventIdSelectionAndId="EventIdSelectionAndId"
-                            EventSearcherValueAndId="EventSearcherValueAndId"
-                            styleCaption="min-width: 41vw;"
-                            Items="inventoryItem">
-        </InputTextSelector3>
-    </div>
+                            EventSearcherValueAndId="EventSearcherValueAndId">
+            </InputTextSelector3>
+
+            <div><label class="sub-tile">@GetName("DeliveryAddress",new CommercialDocument())</label></div>
+            <div>
+                <select @onchange="SelectItemDeliveryAddress" class="select-style">
 
 
-    <div><label>@GetName("Qty",new InventoryDetail())</label></div>
-    <InputTextDisable Enable="true" style="font-size:15px; font-weight:none; " @bind-ValueDouble="@inventoryDetail.Qty"></InputTextDisable>   
+                    @if (addressList != null && addressList.Count() > 0)
+                    {
+                        <option value="0" selected>Select</option>
+                    }
+                    @foreach (var item in addressList)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                    @if (commercialDocument != null && commercialDocument.DeliveryAddress != null)
+                    {
+                        <option value="@commercialDocument.DeliveryAddress.Id" selected>@commercialDocument.DeliveryAddress.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div><label class="sub-tile">@GetName("Season",new CommercialDocument())</label></div>
+            <InputTextSelector3 styleCaption="width:180px" style="right:-100px;" TItem="SeasonBusiness"
+                            Id="Season"
+                            caption="@(commercialDocument.Season !=null ? commercialDocument.Season?.Name:"" )"
+                            Items="seasonList"
+                            EventIdSelectionAndId="EventIdSelectionAndId"
+                            EventSearcherValueAndId="EventSearcherValueAndId">
+            </InputTextSelector3>
+
+            <div><label class="sub-tile">@GetName("Carrier",new CommercialDocument())</label></div>
+            <div>
+                <select @onchange="SelectItemVendorWarehous" class="select-style">
+
+                    @if (carrierList != null && carrierList.Count() > 0)
+                    {
+                        <option value="0" selected>Select</option>
+                    }
+                    @foreach (var item in carrierList)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                    @if (commercialDocument.Carrier != null)
+                    {
+                        <option value="@commercialDocument.Carrier.Id" selected>@commercialDocument.Carrier.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div><label class="sub-tile">@GetName("TrackingNumber",new CommercialDocument())</label></div>
+            <InputTextDisable Enable="true" TypeInt="false" @bind-ValueString="commercialDocument.TrackingNumber"></InputTextDisable>
+
+            <div><label class="sub-tile">@GetName("VendorWarehouse",new CommercialDocument())</label></div>
+            <div>
+                <select @onchange="SelectItemVendorWarehous" class="select-style">
+
+                    @if (vendorWarehouseList != null && vendorWarehouseList.Count() > 0)
+                    {
+                        <option value="0" selected>Select</option>
+                    }
+                    @foreach (var item in vendorWarehouseList)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                    @if (commercialDocument.VendorWarehouse != null)
+                    {
+                        <option value="@commercialDocument.VendorWarehouse.Id" selected>@commercialDocument.VendorWarehouse.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div><label class="sub-tile">@GetName("BuyerWarehouse",new CommercialDocument())</label></div>
+            <div>
+                <select @onchange="SelectItemVendorWarehous" class="select-style">
+
+                    @if (buyerWarehouseList != null && buyerWarehouseList.Count() > 0)
+                    {
+                        <option value="0" selected>Select</option>
+                    }
+                    @foreach (var item in buyerWarehouseList)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                    @if (commercialDocument.BuyerWarehouse != null)
+                    {
+                        <option value="@commercialDocument.BuyerWarehouse" selected>@commercialDocument.BuyerWarehouse.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div><label class="sub-tile">@GetName("BusinessLineDoc",new CommercialDocument())</label></div>
+            <div>
+                <select @onchange="SelectItemBusinessLineDoc" class="select-style">
+
+                    @if (businessLineDocList != null && businessLineDocList.Count() > 0)
+                    {
+                        <option value="0" selected>Select</option>
+                    }
+                    @foreach (var item in businessLineDocList)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                    @if (commercialDocument.BusinessLineDoc != null)
+                    {
+                        <option value="@commercialDocument.BusinessLineDoc.Id" selected>@commercialDocument.BusinessLineDoc.Name</option>
+                    }
+                </select>
+            </div>
 
 
-    <div><label>@GetName("EntryDate",new InventoryDetail())</label></div>
-    <input @bind-value="@inventoryDetail.EntryDate" type="date" class="form-control" disabled />
+        </div>
 
-    <div><label>@GetName("ItemBox",new InventoryDetail())</label></div>
-    <InputTextSelector3 TItem="Box"
-                        Id="ItemBox"
-                        caption="@(inventoryDetail.ItemBox !=null ? inventoryDetail.ItemBox.Name:"")"
-                        Items="boxList"
-                        EventIdSelectionAndId="EventIdSelectionAndId"
-                        EventSearcherValueAndId="EventSearcherValueAndId"
-                        style="left:-150px;">
-    </InputTextSelector3>
+        <hr />
 
-    <div><label>@GetName("Pack",new InventoryDetail())</label></div>
-    <InputTextDisable Min="1" Enable="true" ChangedUpdate="ChangedUpdate" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.Pack"></InputTextDisable>
+        <SfTab Height="250px" CssClass="tab-adaptive" HeaderPlacement="HeaderPosition.Left">
+            <TabAnimationSettings>
+                <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
+                <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
+            </TabAnimationSettings>
+            <TabItems>
 
+                <TabItem>
+                    <ChildContent>
+                        <TabHeader Text="@GetName("Items",new CommercialDocument())"></TabHeader>
+                    </ChildContent>
+                    <ContentTemplate>
+                        <div class="container-item">
+                            @if (commercialDocument.Items != null)
+                            {
+                                <SalesDocumentItems items="@commercialDocument.Items" alert="alert" buyerId="@commercialDocument.Buyer.Id" commercialDocumentId="@commercialDocument.Id"></SalesDocumentItems>
+                            }
+                        </div>
+                    </ContentTemplate>
+                </TabItem>
 
-    <div><label>@GetName("BoxCode",new InventoryDetail())</label></div>
-    <InputTextDisable Enable="true" style="font-size:15px; font-weight:none;" @bind-ValueString="@inventoryDetail.BoxCode"></InputTextDisable>
+                <TabItem>
+                    <ChildContent>
+                        <TabHeader Text="@GetName("SpecsNotes",new CommercialDocument())"></TabHeader>
+                    </ChildContent>
+                    <ContentTemplate>
+                        <div>
+                            <div class="detailsTitleContainer">
+                                <h3 class="subTitleDetailForm">@GetName("SpecsNotes",new CommercialDocument())</h3>
+                            </div>
+                            <textarea @bind="commercialDocument.SpecsNotes" class="textarea-control"></textarea>
+                        </div>
+                    </ContentTemplate>
+                </TabItem>
 
+            </TabItems>
+        </SfTab>
+    }
 
-    <div><label>@GetName("CustomerReservedFor",new InventoryDetail())</label></div>
+</form>
 
-
-    <InputTextSelector3 TItem="EntityActor"
-                        Id="CustomerReservedFor"
-                        caption="@(inventoryDetail.CustomerReservedFor !=null ? inventoryDetail.CustomerReservedFor.Name:"")"
-                        EventIdSelectionAndId="EventIdSelectionAndId"
-                        EventSearcherValueAndId="EventSearcherValueAndId"
-                        Items="customerList"
-                        style="left:-150px;">
-    </InputTextSelector3>
-      
-
-    <div><label>@GetName("UnitCost",new InventoryDetail())</label></div>
-   <InputTextDisable Enable="false" @bind-ValueDouble="inventoryDetail.UnitCost"> </InputTextDisable>
-    <div><label>@GetName("BasicUnitsQty",new InventoryDetail())</label></div>
-    <InputTextDisable Enable="false" @bind-ValueDouble="inventoryDetail.BasicUnitsQty"> </InputTextDisable>
-    <div></div><div></div>
-    <div><label>@GetName("InventoryBusinessLine",new CommercialDocument())</label></div>
-
-
-    <div class="InventoryBusinessLine">
-        <select @onchange="SelectItemBusinessLineDoc" class="select-style">
-            @if (inventoryDetail.InventoryBusinessLine != null)
-            {
-                <option value="@inventoryDetail.InventoryBusinessLine.Id" selected>@inventoryDetail.InventoryBusinessLine.Name</option>
-            }
-            @if (businessLineDocList != null && businessLineDocList.Count() > 0)
-            {
-                <option value="0" selected>Select</option>
-            }
-            @foreach (var item in businessLineDocList)
-            {
-                <option value="@item.Id">@item.Name</option>
-            }
-        </select>
-    </div>
-
-</div>
 
 
 
@@ -152,170 +316,312 @@
     [Parameter]
     public string shippingId { get; set; }
     [Parameter]
-    public string _filterItems { get; set; }
-    public InventoryDetail inventoryDetail { get; set; }
+    public string filter { get; set; }
 
 
-    bool isVisible = false;
+    TextToSpeech textToSpeech;
+
+    string page = "";
     string alertMsg = "";
+    string SearcherValue = "";
+    bool menuVisible = false;
+    bool isVisible = false;
+    public CommercialDocument commercialDocument = new();
+    // public SalesDocumentItemsDetails items = new();
 
+    #region Status
+    public List<ShippingStatus> shippingStatusDocumentList = new();
+    public List<FinanceStatus> financeStatusDocumentList = new();
+    #endregion Status
 
-    string searcherValue = "";
-    #region List
-
-    List<Warehouse> warehouseList = new();
-    List<Concept> inventoryItem = new();
-
-    List<Box> boxList = new();   
-    List<EntityActor> customerList { get; set; }
+    #region Input3
+    public List<CommercialDocumentType> documentTypeList = new();
     public List<BusinessLine> businessLineDocList = new();
-    #endregion List
+    public List<Concept> salesPersonList = new();
+    public List<Concept> vendorList = new();
+    public List<Concept> carrierList = new();
+    public List<Concept> buyerList = new();
+    public List<SeasonBusiness> seasonList = new();
+    public List<CommercialDocument> originDocument = new();
+    public List<BasicConcept> vendorWarehouseList = new();
+    public List<BasicConcept> buyerWarehouseList = new();
+    public List<Address> addressList = new();
+
+    #endregion Input3
 
 
+    MessageSaveComponent? referAlert;
+    string msg = "";
+    bool isLoading = false;
 
-
-    protected async override void OnInitialized()
+    protected override void OnParametersSet()
     {
-        Load();
+        var r = page;
+        StateHasChanged();
+    }
+
+    protected override async void OnInitialized()
+    {
+
+        isLoading = true;
+        StateHasChanged();
         if (shippingId != null)
         {
-            var result = await InventoryServices.GetInventoryById(shippingId);
-
-            if (result != null)
-            {
-                inventoryDetail = result;
-            }
+            commercialDocument = await DocumentServices.GetItemCommercialDocumentById(shippingId);
+            commercialDocument.Items = await DocumentServices.GetCommercialDocumentDetails(shippingId);
 
         }
 
-        //  warehouseList = await InventoryServices.GetWarehouseList("all");        
-        //businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
-        // Load();
-        // StateHasChanged();
-    }
 
+        documentTypeList = await DocumentServices.GetCommercialDocumentTypes();
+        businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
+
+        carrierList = await DocumentServices.GetCarrierList();
+        LoadCommercialDocument();
+        isLoading = false;
+        StateHasChanged();
+    }
 
 
 
     public async void ItemSelected(MenuEventArgs e)
     {
-        StateHasChanged();
-        string tile = e.Item != null ? e.Item.Text : "";
-        if (tile == "Save")
+        string msg = Validate();
+        if (msg == "")
         {
-
-            var result = await InventoryServices.SaveInventoryItem(inventoryDetail);
-            if (result != null)
+            StateHasChanged();
+            string tile = e.Item != null ? e.Item.Text : "";
+            if (tile == "Save")
             {
-                inventoryDetail = result;
-                alert("Saved", 0);
-            }
-            else
-            {
-                alert("No saved", 11);
-            }
+                LoadCommercialDocument();
+                var result = await DocumentServices.SaveCommercialDocument(commercialDocument);
+                if (result != null)
+                {
+                    alert("Saved", 0);
+                    commercialDocument = result;
+                }
+                else
+                {
+                    alert("required fields", 1);
+                }
 
+            }
+        }
+        else
+        {
+            alert("Saved", 1);
         }
 
         StateHasChanged();
 
     }
 
+
+    public void SelectItemVendorWarehous(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    {
+        commercialDocument.VendorWarehouse = vendorWarehouseList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+    }
+
+    public void SelectItemDeliveryAddress(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    {
+        commercialDocument.DeliveryAddress = addressList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+
+    }
 
     public void SelectItemBusinessLineDoc(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
-        inventoryDetail.InventoryBusinessLine = businessLineDocList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+        commercialDocument.BusinessLineDoc = businessLineDocList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
 
     }
+
+    public void SelectItemDocumentType(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    {
+        commercialDocument.DocumentType = documentTypeList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+    }
+
+
+    public string GetDeliveryAddress(Address address)
+    {
+        string _address = "";
+        if (address != null)
+        {
+            _address = address.ZipCode;
+            if (address.CityAddress != null && address.CityAddress.RegionCity != null && address.CityAddress.RegionCity.CountryRegion != null)
+                _address += address.CityAddress.RegionCity.CountryRegion.Name;
+        }
+        return _address;
+    }
+
 
     public async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
-        searcherValue = arg.IdControl;
-        if (searcherValue == "InventoryItem")
+        SearcherValue = arg.IdControl.ToString();
+        if (SearcherValue == "DocumentType")
         {
-            var list = await InventoryServices.GetTransactionalItemsList(1, 20, arg.value.ToString());
-            inventoryItem = new();
-            foreach (var item in list)
-            {
-                inventoryItem.Add(item);
-            }
-
-        };
-
-        if (searcherValue == "CustomerReservedFor")
-        {
-            customerList = await InventoryServices.GetEntityActorFaceList(arg.value.ToString());
-        };
-
-        if (searcherValue == "ItemBox")
-        {
-            var list = await InventoryServices.GetBoxes(arg.value.ToString());
-
-            boxList = list;
-        };
-
-
-
-
-
-        StateHasChanged();
-
-    }
-
-    public void EventIdSelectionAndId(Concept item)
-    {
-        if (searcherValue == "InventoryItem")
-        {
-            inventoryDetail.InventoryItem = item;
-            AditProduct(item.Id);
-        };
-        StateHasChanged();
-    }
-
-    public void EventIdSelectionAndId(EntityActor item)
-    {
-        if (searcherValue == "CustomerReservedFor")
-        {
-            inventoryDetail.CustomerReservedFor = new BasicConcept
-                {
-                    Id = item.Id,
-                    Name = item.Name
-                };
-
-        };
-        StateHasChanged();
-    }
-
-    public void EventIdSelectionAndId(Box item)
-    {
-        if (searcherValue == "ItemBox")
-        {
-            inventoryDetail.ItemBox = item;
-        };
-        StateHasChanged();
-    }
-
-
-
-
-
-    public async void SelectItemVendorWarehous(ChangeEventArgs arg)
-    {       
-        Warehouse _warehouse = new Warehouse();
-        _warehouse =  await warehouseService.GetWarehouseById(arg.Value.ToString());
-        if (_warehouse != null)
-        {       
-            inventoryDetail.CurrentWarehouse = _warehouse;
+            documentTypeList = await DocumentServices.GetCommercialDocumentsTypes(arg.value);
         }
+        if (SearcherValue == "Vendor")
+        {
+            vendorList = await DocumentServices.GetCommercialVendorList(arg.value, commercialDocument.DocumentType);
+
+        }
+        if (SearcherValue == "SalesPerson")
+        {
+            salesPersonList = await DocumentServices.GetCommercialSalesPersonList(arg.value);
+        }
+        if (SearcherValue == "Buyer")
+        {
+            buyerList = await DocumentServices.GetCommercialBuyerList(arg.value, commercialDocument.DocumentType);
+        }
+        if (SearcherValue == "Season")
+        {
+            seasonList = await DocumentServices.GetCommercialSeasonList(arg.value);
+        }
+
         StateHasChanged();
     }
 
 
-
-    public void SetNavigateTo(string name)
+    public void EventIdSelectionAndId(CommercialDocumentType item)
     {
-        Navigation.NavigateTo(name);
+        commercialDocument.DocumentType = item;
     }
+
+    public async void EventIdSelectionAndId(Concept item)
+    {
+        if (SearcherValue == "Vendor")
+        {
+            commercialDocument.Vendor = item;
+            vendorWarehouseList = await DocumentServices.GetCommercialVendorWarehouseList(item.Id);
+
+        }
+        if (SearcherValue == "SalesPerson")
+        {
+            commercialDocument.SalesPerson = item;
+        }
+        if (SearcherValue == "Buyer")
+        {
+            commercialDocument.Buyer = item;
+            buyerWarehouseList = await DocumentServices.GetCommercialBuyerWarehouseList(item.Id);
+            addressList = await DocumentServices.GetEntityDetailsAddressList(item.Id);
+
+        }
+        LoadCommercialDocument();
+        StateHasChanged();
+    }
+
+    public void EventIdSelectionAndId(SeasonBusiness item)
+    {
+        if (item != null)
+        {
+            commercialDocument.Season = item;
+        }
+    }
+
+
+    public void EventIdSelectionMenuItem(string name)
+    {
+        Js.InvokeAsync<object>("open", name, "_blank");
+        CloseMenu(false);
+    }
+
+    public void alert(string _msg, int? status = 0)
+    {
+        isVisible = true;
+        alertMsg = _msg;
+
+        StateHasChanged();
+    }
+
+    public void alert(string _msg)
+    {
+        isVisible = true;
+        alertMsg = _msg;
+
+        StateHasChanged();
+    }
+
+    public void Home()
+    {
+        string paramFilter = filter != null ? filter : "";
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/Shipping/{paramFilter}");
+        Navigation.NavigateTo($"/Shipping");
+    }
+
+    public void OpenAlert(string _msg, int _status, bool visible)
+    {
+        if (referAlert != null)
+        {
+            referAlert.isVisible = visible;
+            referAlert.message = _msg;
+            referAlert.status = _status;
+            StateHasChanged();
+        }
+    }
+
+    public void CloseMenu(bool mode)
+    {
+        menuVisible = mode;
+        StateHasChanged();
+    }
+
+    public string Validate()
+    {
+        string msg = "";
+        if (commercialDocument == null) msg = "required fields";
+        if (commercialDocument.DocumentType.Id == null) msg = "required fields";
+        if (commercialDocument.Vendor.Id == null) msg = "required fields";
+        if (commercialDocument.Buyer.Id == null) msg = "required fields";
+        if (commercialDocument.SalesPerson.Id == null) msg = "required fields";
+        if (commercialDocument.BusinessLineDoc.Id == null) msg = "required fields";
+        return msg;
+    }
+
+
+    #region Load
+
+    public void LoadCommercialDocument()
+    {
+        if (commercialDocument == null) commercialDocument = new();
+        if (commercialDocument.DocumentType == null) commercialDocument.DocumentType = new();
+        if (commercialDocument.BusinessLineDoc == null) commercialDocument.BusinessLineDoc = new();
+        if (commercialDocument.Vendor == null) commercialDocument.Vendor = new();
+        if (commercialDocument.Buyer == null) commercialDocument.Buyer = new();
+        if (commercialDocument.SalesPerson == null) commercialDocument.SalesPerson = new();
+        if (commercialDocument.Carrier == null) commercialDocument.Carrier = new();
+        if (commercialDocument.DeliveryAddress == null) commercialDocument.DeliveryAddress = new();
+        if (commercialDocument.ShippingStatusDocument == null) commercialDocument.ShippingStatusDocument = new();
+        if (commercialDocument.FinanceStatusDocument == null) commercialDocument.FinanceStatusDocument = new();
+        if (commercialDocument.OriginDocument == null) commercialDocument.OriginDocument = new();
+        if (commercialDocument.VendorWarehouse == null) commercialDocument.VendorWarehouse = new();
+        if (commercialDocument.BuyerWarehouse == null) commercialDocument.BuyerWarehouse = new();
+        if (commercialDocument.Season == null) commercialDocument.Season = new();
+        if (commercialDocument.PrintingSatus == null) commercialDocument.PrintingSatus = new();
+        if (commercialDocument.FinanceSummary == null) commercialDocument.FinanceSummary = new();
+        if (commercialDocument.Items == null) commercialDocument.Items = new();
+        if (commercialDocument.ShipDate == DateTime.MinValue) commercialDocument.ShipDate = DateTime.Today;
+        if (commercialDocument.ArrivalDate == DateTime.MinValue) commercialDocument.ArrivalDate = DateTime.Today;
+
+
+
+
+        if (businessLineDocList == null) businessLineDocList = new();
+        if (documentTypeList == null) documentTypeList = new();
+        if (salesPersonList == null) salesPersonList = new();
+        if (vendorList == null) vendorList = new();
+        if (carrierList == null) carrierList = new();
+        if (buyerList == null) buyerList = new();
+        if (seasonList == null) seasonList = new();
+        if (originDocument == null) originDocument = new();
+        if (vendorWarehouseList == null) vendorWarehouseList = new();
+        if (buyerWarehouseList == null) buyerWarehouseList = new();
+        if (addressList == null) addressList = new();
+
+
+    }
+
+
+    #endregion Load
 
     public string GetName(string Name, Object Obj)
     {
@@ -323,53 +629,26 @@
         return Name;
     }
 
-
-
-    public async void AditProduct(string productId)
+    public void NavigationTo(string name)
     {
-        var item = await InventoryServices.GetTransactionalItemById(productId);
-        if (item != null)
+        Navigation.NavigateTo(name);
+    }
+    public void EventChange(string item)
+    {
+        string value = "";
+
+        if (item == "FinanceSummary" && commercialDocument.FinanceSummary != null)
         {
-            try
-            {
-                inventoryDetail.UnitCost = item.PriceOverridenByPriceList.ItemPrice.UnitPrice;
-            }
-            catch { }
+            value = $@"Total, Amount, {commercialDocument.FinanceSummary.TotalAmount}.";
+            value += $@"Total, Taxes, {commercialDocument.FinanceSummary.TotalTaxes}.";
+            value += $@"Total, Discounts, {commercialDocument.FinanceSummary.TotalDiscounts}.";
+            value += $@"Total, Costs, {commercialDocument.FinanceSummary.TotalCosts}.";
+            textToSpeech.Speack(value);
         }
-
-    }
-
-
-
-    public void Load()
-    {
-        if (inventoryDetail == null) inventoryDetail = new();
-        if (inventoryDetail.CurrentWarehouse == null) inventoryDetail.CurrentWarehouse = new();
-        if (inventoryDetail.InventoryItem == null) inventoryDetail.InventoryItem = new();
-        if (inventoryDetail.CustomerReservedFor == null) inventoryDetail.CustomerReservedFor = new();
-        if (inventoryDetail.InventoryBusinessLine == null) inventoryDetail.InventoryBusinessLine = new();
-        if (inventoryDetail.EntryDate == DateTime.MinValue) inventoryDetail.EntryDate = DateTime.Today;
-    }
-
-
-    public void alert(string msg, int status)
-    {
-        isVisible = true;
-        alertMsg = msg;
-    }
-
-
-    public string GetValidateNull(object item)
-    {
-        var Id = (string)item.GetType().GetProperty("Id").GetValue(item);
-
-        if (Id == null) return "visible";
-        return "hidden";
-    }
-
-    public void ChangedUpdate()
-    {
+        else
+        {
+            textToSpeech.Speack("Valor nulo,");
+        }
         StateHasChanged();
     }
-
 }

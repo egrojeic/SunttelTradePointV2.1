@@ -1,28 +1,32 @@
 ﻿@page "/Shipping"
 @page "/Shipping/{_filterItems}"
+
+
+
 @using SunttelTradePointB.Shared.Sales;
-@using SunttelTradePointB.Shared.InvetoryModels;
-@inject SunttelTradePointB.Client.Services.InventoryServices.Inventory _Inventory
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
-@inject WarehouseService warehouseService
 
 
-<PageTitleComponent Title="Shipping" IconName="inventory.png"
-                    Description="With this tool you can create and edit shipping">
+<PageTitleComponent Title="Shipping" IconName="commercialActivities.png"
+                    Description="With this tool you can create and edit Sales operations such as Orders and Invoices">
 </PageTitleComponent>
+
+
 
 
 <div class="panelMenuContainer">
     <ShippingMenu></ShippingMenu>
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
-</div>
 
-<div class="panelMenuContainer">
-    <InventoryMenu2 SetDocumentTypeId="SetDocumentTypeId"></InventoryMenu2>
-    <RangeDatesInput StartDate="@startingDate" StartDateName="Date"
+</div>
+<div class="panelMenuContainer aling">
+    <ShippingMenu2 SetDocumentType="SetDocumentTypeId"></ShippingMenu2>
+    <RangeDatesInput StartDate="@startingDate" EndDate="@endDate"
                      EventSearchAll="EventSearchAll"></RangeDatesInput>
 </div>
+
 
 <div class="tableContainer">
 
@@ -42,41 +46,25 @@
                     FilterMode="FilterMode.Advanced"
                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                     AllowSorting="true"
-                    PageSize="20"
+                    PageSize="50"
                     AllowPaging="true"
                     PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                     ShowPagingSummary="true"
-                    Data="@InventoryDetaiList"
-                    TItem="InventoryDetail"
+                    Data="@commercialdocumentList"
+                    TItem="CommercialDocument"
                     ColumnWidth="300px"
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"
+                    @bind-Value="@selectedcommercialdocuments"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
             <Columns>
 
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="CurrentWarehouse.Name" Title="@GetName("CurrentWarehouse", new InventoryDetail())" Width="180px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="InventoryItem.Name" Title="@GetName("InventoryItem", new InventoryDetail())" Width="180px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="Qty" Title="@GetName("Qty", new InventoryDetail())" Width="100px" Filterable="false" Sortable="false" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyAvailable" Title="@GetName("QtyAvailable", new InventoryDetail())" Filterable="false" Sortable="false" Width="100px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyReserved" Title="@GetName("QtyReserved", new InventoryDetail())" Filterable="false" Sortable="false" Width="100px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnHand" Title="@GetName("QtyOnHand", new InventoryDetail())" Filterable="false" Sortable="false" Width="100px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnOrder" Title="@GetName("QtyOnOrder", new InventoryDetail())" Filterable="false" Sortable="false" Width="100px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnSalesOrder" Title="@GetName("QtyOnSalesOrder", new InventoryDetail())" Filterable="false" Sortable="false" Width="100px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnPurchaseOrder" Title="@GetName("QtyOnPurchaseOrder", new InventoryDetail())" Filterable="false" Sortable="false" Width="100px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnSalesOrder" Title="@GetName("QtyOnSalesOrder", new InventoryDetail())" Filterable="false" Sortable="false" Width="100px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnTransferOrder" Title="@GetName("QtyOnTransferOrder", new InventoryDetail())" Filterable="false" Sortable="false" Width="100px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnProductionOrder" Title="@GetName("QtyOnProductionOrder", new InventoryDetail())" Filterable="false" Sortable="false" Width="100px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="EntryScannedQty" Title="@GetName("EntryScannedQty", new InventoryDetail())" Filterable="false" Sortable="false" Width="100px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="EntryDate" Title="@GetName("EntryDate", new InventoryDetail())" Width="100px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="ItemBox.Name" Title="@GetName("ItemBox", new InventoryDetail())" Width="100px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="Pack" Title="@GetName("Pack", new InventoryDetail())" Filterable="false" Sortable="false" Width="100px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="BoxCode" Title="@GetName("BoxCode", new InventoryDetail())" Width="100px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="CustomerReservedFor.Name" Title="@GetName("CustomerReservedFor", new InventoryDetail())" Filterable="false" Sortable="false" Width="180px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="UnitCost" Title="@GetName("UnitCost", new InventoryDetail())" Filterable="false" Sortable="false" Width="100px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="BasicUnitsQty" Title="@GetName("BasicUnitsQty", new InventoryDetail())" Filterable="false" Sortable="false" Width="100px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="InventoryBusinessLine.Name" Title="@GetName("InventoryBusinessLine", new InventoryDetail())" Filterable="false" Sortable="false" Width="100px" />
-
-
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentType.Name" Title="Document Type" Width="308px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentNumber" Title="@GetName("DocumentNumber", new CommercialDocument() )"  Width="208px" />               
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="ShipDate" Title="Ship Date" FormatString="{0:d}" Width="200px" />                
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="DeliveryDate" Title="Delivery Date" FormatString="{0:d}" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="ArrivalDate" Title="Provider Arrival Date" FormatString="{0:d}" Width="200px" />              
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="Buyer.Name" Title="Customer" Width="200px" />               
             </Columns>
         </RadzenDataGrid>
     }
@@ -85,12 +73,13 @@
 
 
 @code {
+
     [Parameter]
     public string _filterItems { get; set; }
-    List<InventoryDetail>? InventoryDetaiList;
-    public List<Concept> buyerList { get; set; }
-    public Concept buyer { get; set; }
+    List<CommercialDocument>? commercialdocumentList { get; set; }
+
     public CommercialDocumentType commercialDocumentType { get; set; }
+    IList<CommercialDocument>? selectedcommercialdocuments;
 
     bool isLoading = false;
 
@@ -109,45 +98,30 @@
     protected async override void OnInitialized()
     {
 
+
         if (_filterItems != null) LoadData();
         base.OnInitialized();
+
+    }
+
+    public async void LoadData()
+    {
+        isLoading = true;
+        if (commercialDocumentType != null)
+        {
+            commercialdocumentList = await DocumentServices.GetCommercialDocumentList(startingDate, endDate, commercialDocumentType.Id, (_filterItems != null ? _filterItems : "all"));
+
+        }
+        isLoading = false;
+
+        //await SynthesisToSpeakerAsync( $"Se encontraron {commercialdocumentList.Count()}, resultados voz dos");
+        StateHasChanged();
     }
 
     public void EventSearchAll(string value)
     {
         docsFilter = value;
     }
-
-
-    public async void LoadData()
-    {
-        isLoading = true;
-        if (commercialDocumentType != null && commercialDocumentType.Id != null)
-        {
-            InventoryDetaiList = await _Inventory.GetInventoryList(_filterItems, commercialDocumentType.Id, DateTime.Now.ToShortDateString(), 1, 10);
-        }
-        isLoading = false;
-        StateHasChanged();
-    }
-
-    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<InventoryDetail> args) => ContextMenuService.Open(args, ds =>
-    @<RadzenMenu Click="OnMenuItemClick">
-        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
-    );
-
-
-    void OnMenuItemClick(MenuItemEventArgs args)
-    {
-        InventoryDetail argObj = (InventoryDetail)args.Value;
-
-        Navigation.NavigateTo($"SaleItem/{argObj.Id}");
-        if (!args.Value.Equals(3) && !args.Value.Equals(4))
-        {
-            ContextMenuService.Close();
-        }
-    }
-
 
     public async void SetDocumentTypeId(CommercialDocumentType item)
     {
@@ -160,22 +134,29 @@
     }
 
 
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CommercialDocument> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
 
-    public async void EventIdSelectionAndId(Concept item)
+
+    void OnMenuItemClick(MenuItemEventArgs args)
     {
-
-        //if (SearcherValue == "Buyer")
-        //{
-        //    commercialDocument.Buyer = item;
-        //    buyerWarehouseList = await DocumentServices.GetCommercialBuyerWarehouseList(item.Id);
-        //    addressList = await DocumentServices.GetEntityDetailsAddressList(item.Id);
-
-        //}
-
-        StateHasChanged();
+        CommercialDocument argObj = (CommercialDocument)args.Value;
+        Console.WriteLine($"Menu item with Value={argObj.Id} clicked");
+        Navigation.NavigateTo($"ShippingItem/{argObj.Id}");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
     }
 
-
+    public void SetdocsFilter(string value)
+    {
+        docsFilter = value;
+        StateHasChanged();
+    }
 
     public string GetName(string Name, Object Obj)
     {

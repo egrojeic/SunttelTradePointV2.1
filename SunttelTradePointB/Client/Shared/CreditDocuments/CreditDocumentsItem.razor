@@ -1,0 +1,367 @@
+@page "/CreditDocumentsItem"
+@page "/CreditDocumentsItem/{creditDocumentsItemId}"
+@page "/CreditDocumentsItem/{filter}/{creditDocumentsItemId}"
+@using SunttelTradePointB.Shared.Sales;
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+@using System.Reflection
+@using SunttelTradePointB.Shared.Accounting
+
+@inject NavigationManager Navigation
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject GeographicPlacesService geoPlaces
+@inject ActorsNodeService actorsNodeServive
+@inject IJSRuntime Js
+
+<MessageSaveComponent isVisible="isVisible" message="@alertMsg">
+</MessageSaveComponent>
+<PageTitleComponent Title=" Credit Document"
+                    Description="Here you can add credit document" IconName="commercialDocument.png">
+</PageTitleComponent>
+
+
+<form>
+
+
+    <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
+        <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+
+        <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+            <SplitButtonEvents ItemSelected="ItemSelected">
+            </SplitButtonEvents>
+            <DropDownMenuItems>
+                <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+            </DropDownMenuItems>
+        </SfSplitButton>
+
+
+    </div>
+
+
+
+    <div class="grid-columns-header grid-columns-6">
+
+        <div>
+            <label>
+                @GetName("DocumentType",new CreditDocument())
+            </label>
+        </div>
+        <div>
+            <select @onchange="SelectItem" class="select-style">
+
+                @if (creditDocumentListr != null && creditDocumentListr.Count() > 0)
+                {
+                    <option value="0" selected>Select</option>
+                }
+                @if (creditDocumentListr != null)
+                {
+                    @foreach (var item in creditDocumentListr)
+                    {
+                        <option value="@item.Id">@item.Id</option> // falta .Name
+                    }
+                }
+                @if (creditDocument.DocumentType != null)
+                {
+                    <option value="@creditDocument.DocumentType.Id" selected>@creditDocument.DocumentType.Name</option>
+                }
+            </select>
+        </div>
+
+
+        <div><label>@GetName("Code",new CreditDocument())</label></div>
+        <InputTextDisable Enable="true" style="font-size:15px; font-weight:none; " @bind-ValueString="@creditDocument.Code"></InputTextDisable>
+
+
+        <div><label>@GetName("CreditDate",new CreditDocument())</label></div>
+        <input type="date" @bind="@creditDocument.CreditDate" class="form-control" />
+
+
+
+        <div><label>@GetName("Vendor",new CreditDocument())</label></div>
+
+
+        <InputTextSelector3 TItem="Concept"
+                            Id="Vendor"
+                            caption="@(creditDocument.Vendor !=null ? creditDocument.Vendor.Name:"")"
+                            EventIdSelectionAndId="EventIdSelectionAndId"
+                            EventSearcherValueAndId="EventSearcherValueAndId"                           
+                            style="left:-150px;">
+        </InputTextSelector3>
+
+
+        <div><label>@GetName("Buyer",new CreditDocument())</label></div>
+
+
+        <InputTextSelector3 TItem="Concept"
+                            Id="Buyer"
+                            caption="@(creditDocument.Vendor !=null ? creditDocument.Vendor.Name:"")"
+                            EventIdSelectionAndId="EventIdSelectionAndId"
+                            EventSearcherValueAndId="EventSearcherValueAndId"
+                            style="left:-150px;">
+        </InputTextSelector3>
+
+
+    </div>
+
+</form>
+
+
+
+
+@code {
+    [Parameter]
+    public string creditDocumentsItemId { get; set; }
+    [Parameter]
+    public string filter { get; set; }
+
+
+    TextToSpeech textToSpeech;
+
+    string page = "";
+    string alertMsg = "";
+    string SearcherValue = "";
+    bool menuVisible = false;
+    bool isVisible = false;
+    public CreditDocument creditDocument = new();
+
+
+    #region Status
+
+    #endregion Status
+
+    #region Input3
+
+    public List<Concept> vendorList = new();
+    public List<Concept> buyerList = new();
+    public List<CreditDocument> creditDocumentListr { get; set; }
+
+    #endregion Input3
+
+
+    MessageSaveComponent? referAlert;
+    string msg = "";
+    bool isLoading = false;
+
+    protected override void OnParametersSet()
+    {
+        var r = page;
+        StateHasChanged();
+    }
+
+    protected override async void OnInitialized()
+    {
+
+        isLoading = true;
+        StateHasChanged();
+        if (creditDocumentsItemId != null)
+        {
+
+
+        }
+
+
+        LoadCommercialDocument();
+        isLoading = false;
+        StateHasChanged();
+    }
+
+
+
+    public async void ItemSelected(MenuEventArgs e)
+    {
+        string msg = Validate();
+        if (msg == "")
+        {
+            StateHasChanged();
+            string tile = e.Item != null ? e.Item.Text : "";
+            if (tile == "Save")
+            {
+                LoadCommercialDocument();
+                //    var result = await DocumentServices.SaveCommercialDocument(creditDocument);
+                //if (result != null)
+                //{
+                //    alert("Saved", 0);
+                //    creditDocument = result;
+                //}
+                //else
+                //{
+                //    alert("required fields", 1);
+                //}
+
+            }
+        }
+        else
+        {
+            alert("Saved", 1);
+        }
+
+        StateHasChanged();
+
+    }
+
+
+
+    public async void SelectItem( ChangeEventArgs arg)
+    {
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+    public async void EventSearcherValueAndId((string value, string IdControl) arg)
+    {
+        SearcherValue = arg.IdControl.ToString();
+        if (SearcherValue == "DocumentType")
+        {
+            // documentTypeList = await DocumentServices.GetCommercialDocumentsTypes(arg.value);
+        }
+        if (SearcherValue == "Vendor")
+        {
+            // vendorList = await DocumentServices.GetCommercialVendorList(arg.value, creditDocument.DocumentType);
+
+        }
+
+        if (SearcherValue == "Buyer")
+        {
+            //   buyerList = await DocumentServices.GetCommercialBuyerList(arg.value, creditDocument.DocumentType);
+        }
+
+        StateHasChanged();
+    }
+
+
+    public void EventIdSelectionAndId(CommercialDocumentType item)
+    {
+        // creditDocument.DocumentType = item;
+    }
+
+    public async void EventIdSelectionAndId(Concept item)
+    {
+        if (SearcherValue == "Vendor")
+        {
+            creditDocument.Vendor = item;
+            //  vendorWarehouseList = await DocumentServices.GetCommercialVendorWarehouseList(item.Id);
+
+        }
+        if (SearcherValue == "SalesPerson")
+        {
+            // creditDocument.SalesPerson = item;
+        }
+        if (SearcherValue == "Buyer")
+        {
+            creditDocument.Buyer = item;
+
+        }
+        LoadCommercialDocument();
+        StateHasChanged();
+    }
+
+
+
+    public void EventIdSelectionMenuItem(string name)
+    {
+        Js.InvokeAsync<object>("open", name, "_blank");
+        CloseMenu(false);
+    }
+
+    public void alert(string _msg, int? status = 0)
+    {
+        isVisible = true;
+        alertMsg = _msg;
+
+        StateHasChanged();
+    }
+
+    public void alert(string _msg)
+    {
+        isVisible = true;
+        alertMsg = _msg;
+
+        StateHasChanged();
+    }
+
+    public void Home()
+    {
+        string paramFilter = filter != null ? filter : "";
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/Credits/{paramFilter}");
+        Navigation.NavigateTo($"/Credits");
+    }
+
+    public void OpenAlert(string _msg, int _status, bool visible)
+    {
+        if (referAlert != null)
+        {
+            referAlert.isVisible = visible;
+            referAlert.message = _msg;
+            referAlert.status = _status;
+            StateHasChanged();
+        }
+    }
+
+    public void CloseMenu(bool mode)
+    {
+        menuVisible = mode;
+        StateHasChanged();
+    }
+
+    public string Validate()
+    {
+        string msg = "";
+        if (creditDocument == null) msg = "required fields";
+        if (creditDocument.DocumentType.Id == null) msg = "required fields";
+        if (creditDocument.Vendor.Id == null) msg = "required fields";
+        if (creditDocument.Buyer.Id == null) msg = "required fields";
+
+        return msg;
+    }
+
+
+    #region Load
+
+    public void LoadCommercialDocument()
+    {
+        if (creditDocument == null) creditDocument = new();
+        if (creditDocument.DocumentType == null) creditDocument.DocumentType = new();
+
+        if (creditDocument.Vendor == null) creditDocument.Vendor = new();
+        if (creditDocument.Buyer == null) creditDocument.Buyer = new();
+
+
+    }
+
+
+    #endregion Load
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    public void NavigationTo(string name)
+    {
+        Navigation.NavigateTo(name);
+    }
+    public void EventChange(string item)
+    {
+        string value = "";
+
+
+        StateHasChanged();
+    }
+}
