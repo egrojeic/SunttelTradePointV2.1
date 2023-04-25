@@ -66,9 +66,9 @@
                         <option value="@item.Id">@item.Id</option> // falta .Name
                     }
                 }
-                @if (creditDocument.DocumentType != null)
+                @if (creditDocument.CreditDocumentType!= null)
                 {
-                    <option value="@creditDocument.DocumentType.Id" selected>@creditDocument.DocumentType.Name</option>
+                    <option value="@creditDocument.CreditDocumentType.Id" selected>@creditDocument.CreditDocumentType.Name</option>
                 }
             </select>
         </div>
@@ -323,7 +323,7 @@
     {
         string msg = "";
         if (creditDocument == null) msg = "required fields";
-        if (creditDocument.DocumentType.Id == null) msg = "required fields";
+        if (creditDocument.CreditDocumentType.Id == null) msg = "required fields";
         if (creditDocument.Vendor.Id == null) msg = "required fields";
         if (creditDocument.Buyer.Id == null) msg = "required fields";
 
@@ -336,7 +336,7 @@
     public void LoadCommercialDocument()
     {
         if (creditDocument == null) creditDocument = new();
-        if (creditDocument.DocumentType == null) creditDocument.DocumentType = new();
+        if (creditDocument.CreditDocumentType == null) creditDocument.CreditDocumentType = new();
 
         if (creditDocument.Vendor == null) creditDocument.Vendor = new();
         if (creditDocument.Buyer == null) creditDocument.Buyer = new();
