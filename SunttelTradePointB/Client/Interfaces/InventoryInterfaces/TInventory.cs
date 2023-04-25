@@ -35,7 +35,7 @@ namespace SunttelTradePointB.Client.Interfaces.InventoryInterfaces
         /// <param name="filterName"></para
         /// <param name="documentTypeId"></para>
         /// <param name="documentTypeId"></para>
-        Task<List<InventoryDetail>> GetInventoryList(string filterName, string documentTypeId, string DocumentDate, int? page = 1, int? perPage = 10);
+        Task<List<InventoryDetail>> GetInventoryList(string filterName, string documentTypeId, DateTime statrDate, DateTime endDate, int? page = 1, int? perPage = 10);
 
         /// <summary>
         /// Save a list with InventoryDetail items meeting search criteria

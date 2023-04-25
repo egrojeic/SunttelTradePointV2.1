@@ -12,25 +12,25 @@
 <div class="aling-div ">
    
         <div>
-            <label class="lblControl col-form-label">
-            @GetName("CurrentWarehouse",new InventoryDetail())
+            <label class="lblControl col-form-label" style="color:white">
+            @GetName("DocumentType",new CommercialDocument())
             </label>
         </div>
-        <div>        <select @onchange="SelectItemVendorWarehous" class="select-style">           
-            @if (warehouseList != null && warehouseList.Count() > 0)
+        <div>        <select @onchange="SelectItemVendor" class="select-style">           
+            @if (commercialDocumentTypeList != null && commercialDocumentTypeList.Count() > 0)
             {
                 <option value="0" selected>Select</option>
             }
-            @if (warehouseList != null)
+            @if (commercialDocumentTypeList != null)
             {
-                @foreach (var item in warehouseList)
+                @foreach (var item in commercialDocumentTypeList)
                 {
                     <option value="@item.Id">@item.Name</option>
                 }
             }
-            @if (warehouse != null)
+            @if (commercialDocumentType != null)
             {
-                <option value="@warehouse.Id" selected>@warehouse.Name</option>
+                <option value="@commercialDocumentType.Id" selected>@commercialDocumentType.Name</option>
             }
         </select>
     </div>
@@ -44,7 +44,10 @@
     [Parameter]
     public List<CommercialDocumentType> commercialDocumentTypeList { get; set; }
     [Parameter]
-    public EventCallback<Warehouse> Setwarehouse { get; set; }
+    public CommercialDocumentType commercialDocumentType { get; set; }
+
+    [Parameter]
+    public EventCallback<CommercialDocumentType> SetDocumentType { get; set; }
 
     List<Warehouse> warehouseList = new();
     Warehouse warehouse = new();
@@ -92,20 +95,17 @@
         Navigation.NavigateTo(Selected_item);
     }
 
-    private void SetDocumentType(ChangeEventArgs args)
-    {
-
-    }
 
 
-    public async void SelectItemVendorWarehous(ChangeEventArgs arg)
+
+    public async void SelectItemVendor(ChangeEventArgs arg)
     {       
-        Warehouse _warehouse = new Warehouse();
-        _warehouse =  await warehouseService.GetWarehouseById(arg.Value.ToString());
-        if (_warehouse != null)
-        {       
-            warehouse = _warehouse;
-            Setwarehouse.InvokeAsync(_warehouse);
+
+        CommercialDocumentType item = commercialDocumentTypeList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+        if (item != null)
+        {
+            commercialDocumentType = item;
+            SetDocumentType.InvokeAsync(item);
         }
         StateHasChanged();
     }

@@ -6,13 +6,13 @@ using System.Net.Http.Json;
 using SunttelTradePointB.Shared.Accounting;
 using Syncfusion.Blazor.PivotView;
 
-namespace SunttelTradePointB.Client.Services.PaymentServices
+namespace SunttelTradePointB.Client.Services.CreditDocumentServices
 {
-    public class PaymentServices
+    public class CreditDocumentServices
     {
         private readonly HttpClient _httpClient;
         private string pathApi = "/api/Payment/*Name?userId=*Id&ipAddress=*Ip";
-        public PaymentServices(HttpClient httpClient)
+        public CreditDocumentServices(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }

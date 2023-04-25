@@ -41,6 +41,7 @@
     <Folder Include="Interfaces\ProductionInterfaces\" />
     <Folder Include="Interfaces\QualityControlServices\" />
     <Folder Include="Pages\Accounting\" />
+    <Folder Include="Pages\CreditDocumentPages\RelatedConcepts\" />
     <Folder Include="Pages\ECommerce\" />
     <Folder Include="Pages\EDIInterface\" />
     <Folder Include="Pages\Inventory\" />

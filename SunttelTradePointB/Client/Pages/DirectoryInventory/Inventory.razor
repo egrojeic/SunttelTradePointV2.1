@@ -19,7 +19,7 @@
 </div>
 
 <div class="panelMenuContainer">
-    <InventoryMenu2 SetDocumentTypeId="SetDocumentTypeId"></InventoryMenu2>
+    <InventoryMenu2 Setwarehouse="Setwarehouse"></InventoryMenu2>
          <RangeDatesInput StartDate="@startingDate"
                      StartDateName="From"
                      EndDate="@endDate"
@@ -96,7 +96,7 @@
     List<InventoryDetail>? InventoryDetaiList;
     public List<Concept> buyerList { get; set; }
     public Concept buyer { get; set; }
-    public CommercialDocumentType commercialDocumentType { get; set; }
+    public Warehouse warehouse { get; set; }
 
     bool isLoading = false;
 
@@ -114,7 +114,6 @@
 
     protected async override void OnInitialized()
     {
-
         if (_filterItems != null) LoadData();
         base.OnInitialized();
     }
@@ -122,9 +121,9 @@
     public async void LoadData()
     {
         isLoading = true;
-        if (commercialDocumentType != null && commercialDocumentType.Id != null)
+        if (warehouse != null && warehouse.Id != null)
         {
-            InventoryDetaiList = await _Inventory.GetInventoryList(_filterItems, commercialDocumentType.Id, DateTime.Now.ToShortDateString(), 1, 10);
+            InventoryDetaiList = await _Inventory.GetInventoryList(_filterItems, warehouse.Id, startingDate, endDate, 1, 10);
         }
         isLoading = false;
         StateHasChanged();
@@ -141,7 +140,7 @@
     {
         InventoryDetail argObj = (InventoryDetail)args.Value;
 
-        Navigation.NavigateTo($"SaleItem/{argObj.Id}");
+        Navigation.NavigateTo($"InventoryItem/{argObj.Id}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
@@ -149,12 +148,12 @@
     }
 
 
-    public async void SetDocumentTypeId(CommercialDocumentType item)
+    public async void Setwarehouse(Warehouse item)
     {
 
         if (item != null)
         {
-            commercialDocumentType = item;
+            warehouse = item;
         }
         StateHasChanged();
     }

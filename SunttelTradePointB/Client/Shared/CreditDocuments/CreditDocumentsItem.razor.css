@@ -24,10 +24,10 @@
 }
 
 .grid-columns-6 {
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 280px 1fr 280px 1fr 280px;
 }
 
-    /*grid-template-columns: 140px 180px 176px 180px 150px 180px;*/
+/*grid-template-columns: 140px 180px 176px 180px 150px 180px;*/
 
     .grid-columns-6 .item-1 {
         grid-column: 1/7;
@@ -37,6 +37,7 @@
         justify-content: space-between;
         column-gap: 20px;
         align-items: center;
+        
     }
 
 
@@ -48,7 +49,6 @@
         column-gap: 20px;
         align-items: center;
     }
-
     .grid-columns-6 .Buyer {
         grid-column: 5/7;
         display: flex;
@@ -57,7 +57,7 @@
         column-gap: 20px;
         align-items: center;
     }
-
+   
 
 .item-check {
     display: grid;
@@ -74,10 +74,10 @@
     display: flex;
     flex-direction: column;
     border-radius: 5px;
-    padding: 8px;
+    padding:8px;
     justify-items: start;
     z-index: 100;
-    box-shadow: 0px 0px 2px, 0px 0px 1px 1px inset;
+    box-shadow: 0px 0px 2px, 0px 0px 1px 1px inset;   
 }
 
     .menu-item .item button {
@@ -92,10 +92,10 @@
 
     .menu-item .exit-btn {
         width: 25px;
-        height: 25px;
-        padding: 0px;
-        top: -15px;
-        right: -8px;
+        height:25px;
+        padding:0px;
+        top:-15px;
+        right:-8px;
         position: absolute;
         border-radius: 100%;
         border: none;
@@ -106,8 +106,8 @@
     .menu-item b {
         text-shadow: 0px 0px 0px;
         cursor: pointer;
-        color: black;
-        font-weight: normal;
+        color:black;
+        font-weight:normal;
     }
 
 .img-menu {
@@ -117,5 +117,8 @@
     width: 20px;
 }
 
-.container-item {
+.container-item{
+ 
+   
+    
 }
