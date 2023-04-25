@@ -31,6 +31,7 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
 
         }
 
+        #region Credit Documents
         /// <summary>
         /// Retrives the list of an Credit documents
         /// </summary>
@@ -163,6 +164,57 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
             {
                 return (false, null, e.Message);
             }
+        }
+        #endregion
+
+        public Task<(bool IsSuccess, List<CreditType>? CreditTypesList, string? ErrorDescription)> GetCreditTypes(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<(bool IsSuccess, CreditType? CreditType, string? ErrorDescription)> GetCreditTypeById(string userId, string ipAddress, string squadId, string creditTypeId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<(bool IsSuccess, CreditType? CreditType, string? ErrorDescription)> SaveCreditType(string userId, string ipAddress, string squadId, CreditType creditType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<(bool IsSuccess, List<CreditStatus>? CreditStatusesList, string? ErrorDescription)> GetCreditStatuses(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<(bool IsSuccess, CreditStatus? CreditStatus, string? ErrorDescription)> CreditStatusById(string userId, string ipAddress, string squadId, string creditStatusId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<(bool IsSuccess, CreditStatus? CreditStatus, string? ErrorDescription)> SaveCreditStatus(string userId, string ipAddress, string squadId, CreditDocument creditDocument)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<(bool IsSuccess, List<CreditReason>? CreditReasonsList, string? ErrorDescription)> GetCreditReasons(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<(bool IsSuccess, CreditReason? CreditReason, string? ErrorDescription)> CreditReasonById(string userId, string ipAddress, string squadId, string creditDocumentId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<(bool IsSuccess, CreditReason? CreditReason, string? ErrorDescription)> SaveCreditReason(string userId, string ipAddress, string squadId, CreditReason creditReason)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<(bool IsSuccess, CreditStatus? CreditStatus, string? ErrorDescription)> SaveCreditStatus(string userId, string ipAddress, string squadId, CreditStatus creditStatus)
+        {
+            throw new NotImplementedException();
         }
     }
 }
