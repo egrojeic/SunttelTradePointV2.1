@@ -13,7 +13,7 @@ namespace SunttelTradePointB.Client.Services.StandingOrderServices
     public class StandingOrderServices : IStandingOrderDetails
     {
         private readonly HttpClient _httpClient;
-        private string pathApi = "/api/Credit/*Name?userId=*Id&ipAddress=*Ip"; 
+        private string pathApi = "/api/StandingOrder/*Name?userId=*Id&ipAddress=*Ip"; 
         public StandingOrderServices(HttpClient httpClient)
         {
             _httpClient = httpClient;
@@ -25,7 +25,7 @@ namespace SunttelTradePointB.Client.Services.StandingOrderServices
             {
                 string path = $"{pathApi}";
                 path = GetGlobalVariables(path);
-                path = path.Replace("*Name", "pendiente");
+                path = path.Replace("*Name", "SaveStandingOrder ");
                 standingOrder.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<StandingOrder>($"{path}", standingOrder);
                 return await responseMessage.Content.ReadFromJsonAsync<StandingOrder>();
@@ -43,7 +43,7 @@ namespace SunttelTradePointB.Client.Services.StandingOrderServices
             try
             {
                 string path = $"{pathApi}";
-                path = path.Replace("*Name", "pendiente");
+                path = path.Replace("*Name", "GetStandingOrders");
                 var responseMessage = await Gethttp($"{path}&filter={filter}&page={page}&perPage={perPage}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<StandingOrder>>();
                 return list != null ? list : new List<StandingOrder>();
@@ -62,7 +62,7 @@ namespace SunttelTradePointB.Client.Services.StandingOrderServices
             try
             {
                 string path = $"{pathApi}";
-                path = path.Replace("*Name", "pendiente");
+                path = path.Replace("*Name", "GetStandingOrderById");
                 var responseMessage = await Gethttp($"{path}&standingOrderId={standingOrderId}");
                 var item = await responseMessage.Content.ReadFromJsonAsync<StandingOrder>();
                 return item != null ? item : new StandingOrder();
