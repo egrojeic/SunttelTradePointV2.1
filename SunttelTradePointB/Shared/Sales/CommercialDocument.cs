@@ -40,6 +40,8 @@ namespace SunttelTradePointB.Shared.Sales
         public bool IsASale { get; set; }
 
         public string Description { get; set; }
+
+        public TransportationMode TransportationMode { get; set; }
     }
 
     public class ShippingStatus : BasicConcept
@@ -132,6 +134,9 @@ namespace SunttelTradePointB.Shared.Sales
 
         [DisplayName("To Invoice")]
         public bool ToInvoice { get; set; }
+
+        public string StandingOrderId { get; set; }
+
 
     }
 
@@ -255,6 +260,12 @@ namespace SunttelTradePointB.Shared.Sales
         [BsonIgnoreIfNull]
         [DisplayName("Pull Date Formated")]
         public string FormatedPullDate { get; set; }
+
+
+        public string StandingOrderId { get; set; }
+        public string StandingOrderDetailsId { get; set; }
+
+
     }
 
     public class CancelationTrack: RecordItem
@@ -307,4 +318,17 @@ namespace SunttelTradePointB.Shared.Sales
     {
       
     }
+
+    public enum TransportationMode
+    {
+        [Description("Airplane")]
+        Airplane = 1,
+        [Description("Cargo Ship")]
+        CargoShip = 2,
+        [Description("Ground Trasportation")]
+        Ground = 3
+    }
+
+
+
 }
