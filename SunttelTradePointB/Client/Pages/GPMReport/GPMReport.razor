@@ -1,0 +1,123 @@
+﻿@page "/GPMReport"
+@page "/GPMReport/{_filterItems}"
+@using SunttelTradePointB.Shared.Sales;
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject ContextMenuService ContextMenuService
+@inject NavigationManager Navigation
+
+
+<PageTitleComponent Title="G P M Report" IconName="commercialActivities.png"
+                    Description="With this tool you can create and edit G P M report">
+</PageTitleComponent>
+
+
+
+<div class="panelMenuContainer">
+    <CommercialDocsGrlMenu></CommercialDocsGrlMenu>
+    <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
+
+</div>
+<div class="panelMenuContainer aling">
+    <CommercialDocsGrlMenu2 SetDocumentTypeId="SetDocumentTypeId"></CommercialDocsGrlMenu2>
+    <RangeDatesInput StartDate="@startingDate" EndDate="@endDate"
+                     EventSearchAll="EventSearchAll"></RangeDatesInput>
+</div>
+
+
+<div class="tableContainer">
+
+
+  
+</div>
+
+
+
+@code {
+
+    [Parameter]
+    public string _filterItems { get; set; }
+    List<CommercialDocument>? commercialdocumentList { get; set; }
+
+    public CommercialDocumentType commercialDocumentType { get; set; }
+    IList<CommercialDocument>? selectedcommercialdocuments;
+
+    bool isLoading = false;
+
+    DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
+
+    public string docsFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+    protected async override void OnInitialized()
+    {
+
+
+        if (_filterItems != null) LoadData();
+        base.OnInitialized();
+
+    }
+
+    public async void LoadData()
+    {
+        isLoading = true;
+        if (commercialDocumentType != null)
+        {
+            commercialdocumentList = await DocumentServices.GetCommercialDocumentList(startingDate, endDate, commercialDocumentType.Id, (_filterItems != null ? _filterItems : "all"));
+
+        }
+        isLoading = false;
+
+        //await SynthesisToSpeakerAsync( $"Se encontraron {commercialdocumentList.Count()}, resultados voz dos");
+        StateHasChanged();
+    }
+
+    public void EventSearchAll(string value ){
+        docsFilter = value;
+    }
+
+    public async void SetDocumentTypeId(CommercialDocumentType item)
+    {
+
+        if (item != null)
+        {
+            commercialDocumentType = item;
+        }
+        StateHasChanged();
+    }
+
+
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CommercialDocument> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        CommercialDocument argObj = (CommercialDocument)args.Value;
+        Console.WriteLine($"Menu item with Value={argObj.Id} clicked");
+        Navigation.NavigateTo($"SaleItem/{argObj.Id}");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+    public void SetdocsFilter(string value)
+    {
+        docsFilter = value;
+        StateHasChanged();
+    }
+
+
+
+
+}

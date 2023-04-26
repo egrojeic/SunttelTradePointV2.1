@@ -1,5 +1,5 @@
-﻿@page "/Shipping"
-@page "/Shipping/{_filterItems}"
+﻿@page "/AccountsReceivable"
+@page "/AccountsReceivable/{_filterItems}"
 
 
 
@@ -7,22 +7,22 @@
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
+@inject IJSRuntime Js
 
-
-<PageTitleComponent Title="Shipping" IconName="commercialActivities.png"
-                    Description="With this tool you can create and edit Sales operations such as Orders and Invoices">
+<PageTitleComponent Title="Accounts Receivable" IconName="commercialActivities.png"
+                    Description="With this tool you can view accounts receivable">
 </PageTitleComponent>
 
 
 
 
 <div class="panelMenuContainer">
-    <ShippingMenu></ShippingMenu>
+    <AccountsReceivableMenu></AccountsReceivableMenu>
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
 
 </div>
 <div class="panelMenuContainer aling">
-    <ShippingMenu2 SetWarehouse="Setwarehouse"></ShippingMenu2>
+    <AccountsReceivableMenu2 SetWarehouse="Setwarehouse"></AccountsReceivableMenu2>
     <RangeDatesInput StartDate="@startingDate"
                      EventSearchAll="EventSearchAll"></RangeDatesInput>
 </div>
@@ -76,7 +76,6 @@
 </div>
 
 
-
 @code {
 
     [Parameter]
@@ -115,7 +114,7 @@
         if (warehouse != null)
         {
             commercialdocumentList = await DocumentServices.GetCommercialDocumentList(startingDate, startingDate, warehouse.Id, (_filterItems != null ? _filterItems : "all"));
-
+            commercialdocumentList = commercialdocumentList.Where(s => s.DocumentType.IsASale == false).ToList();
         }
         isLoading = false;
 
@@ -148,9 +147,8 @@
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
-        CommercialDocument argObj = (CommercialDocument)args.Value;
-        Console.WriteLine($"Menu item with Value={argObj.Id} clicked");
-        Navigation.NavigateTo($"ShippingItem/{argObj.Id}");
+        CommercialDocument argObj = (CommercialDocument)args.Value;       
+        Navigation.NavigateTo($"AccountsReceivableippingItem/{argObj.Id}/{docsFilter}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
