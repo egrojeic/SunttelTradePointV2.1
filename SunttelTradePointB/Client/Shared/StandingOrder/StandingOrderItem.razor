@@ -101,7 +101,7 @@
 
         <div><label>@GetName("PO",new StandingOrder())</label></div>
         <InputTextDisable Enable="true" style="size:15px; font-weight:none;" @bind-ValueString="@standingOrderDetails.PO"></InputTextDisable>
-       
+
 
         <div><label>@GetName("StartingShipDate",new StandingOrder())</label></div>
         <input type="date" @bind="@standingOrderDetails.StartingShipDate" class="form-control" />
@@ -111,7 +111,7 @@
 
 
         <div><label class="sub-tile">@GetName("Season",new CommercialDocument())</label></div>
-        <InputTextSelector3  style="right:-100px;" TItem="SeasonBusiness"
+        <InputTextSelector3 style="right:-100px;" TItem="SeasonBusiness"
                             Id="Season"
                             caption="@(standingOrderDetails.Season !=null ? standingOrderDetails.Season?.Name:"" )"
                             Items="seasonList"
@@ -143,7 +143,7 @@
 
 
         <div><label class="sub-tile">@GetName("SalesPerson",new StandingOrder())</label></div>
-        <InputTextSelector3  style="right:-110px;" TItem="Concept"
+        <InputTextSelector3 style="right:-110px;" TItem="Concept"
                             Id="SalesPerson"
                             caption="@(standingOrderDetails.SalesPerson !=null ? standingOrderDetails.SalesPerson?.Name:"" )"
                             Items="salesPersonList"
@@ -174,6 +174,25 @@
                 }
             </select>
         </div>
+
+
+        <div><label class="sub-tile">@GetName("TransportationMode",new StandingOrder())</label></div>
+        <div>
+            <select @onchange="SelectItemTransportationMode" class="select-style">
+
+
+                <option value="">Select</option>
+                <option value="@(TransportationMode.Airplane)">Airplane</option>
+                <option value="@(TransportationMode.Ground)">Ground</option>
+                <option value="@(TransportationMode.CargoShip)">CargoShip</option>
+
+                @if (standingOrderDetails != null && standingOrderDetails.TransportationMode != null)
+                {
+                    <option value="@standingOrderDetails.TransportationMode" selected>@standingOrderDetails.TransportationMode.ToString()</option>
+                }
+            </select>
+        </div>
+
 
         <div><label>@GetName("IsASale",new StandingOrder())</label></div>
         <div>
@@ -252,7 +271,7 @@
     public async void ItemSelected(MenuEventArgs e)
     {
         string msg = Validate();
-        if (msg == "")
+        if (msg == "" || true)
         {
             StateHasChanged();
             string tile = e.Item != null ? e.Item.Text : "";
@@ -274,7 +293,7 @@
         }
         else
         {
-            alert("Saved", 1);
+            alert("No saved", 1);
         }
 
         StateHasChanged();
@@ -285,12 +304,25 @@
 
     public async void SelectItem(ChangeEventArgs arg)
     {
+        LoadDocument();
+        standingOrderDetails.DocumentType = documentType.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+        StateHasChanged();
 
+    }
+
+    public async void SelectItemTransportationMode(ChangeEventArgs arg)
+    {
+        LoadDocument();
+        if (arg.Value.ToString() == "Ground") standingOrderDetails.TransportationMode = TransportationMode.Ground;
+        if (arg.Value.ToString() == "CargoShip") standingOrderDetails.TransportationMode = TransportationMode.CargoShip;
+        if (arg.Value.ToString() == "Airplane") standingOrderDetails.TransportationMode = TransportationMode.Airplane;
+       
+        StateHasChanged();
 
     }
 
 
-
+     
 
     public async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
@@ -352,7 +384,9 @@
         }
     }
 
+   
 
+   
 
     public void SelectItemBusinessLineDoc(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
@@ -428,7 +462,7 @@
         if (standingOrderDetails.Vendor == null) standingOrderDetails.Vendor = new();
         if (standingOrderDetails.Buyer == null) standingOrderDetails.Buyer = new();
         if (standingOrderDetails.FinalShipDate == DateTime.MinValue) standingOrderDetails.FinalShipDate = DateTime.Now;
-        if (standingOrderDetails.StartingShipDate == DateTime.MinValue) standingOrderDetails.StartingShipDate  = DateTime.Now;
+        if (standingOrderDetails.StartingShipDate == DateTime.MinValue) standingOrderDetails.StartingShipDate = DateTime.Now;
 
     }
 

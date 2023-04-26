@@ -19,15 +19,15 @@ namespace SunttelTradePointB.Client.Services.StandingOrderServices
             _httpClient = httpClient;
         }
 
-        public async Task<StandingOrder> SaveStandingOrde(StandingOrder standingOrder)
+        public async Task<StandingOrder> SaveStandingOrde(StandingOrder standing)
         {
             try
             {
                 string path = $"{pathApi}";
                 path = GetGlobalVariables(path);
-                path = path.Replace("*Name", "SaveStandingOrder ");
-                standingOrder.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
-                var responseMessage = await _httpClient.PostAsJsonAsync<StandingOrder>($"{path}", standingOrder);
+                path = path.Replace("*Name", "SaveStandingOrder");
+                standing.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                var responseMessage = await _httpClient.PostAsJsonAsync<StandingOrder>($"{path}", standing);
                 return await responseMessage.Content.ReadFromJsonAsync<StandingOrder>();
 
             }
