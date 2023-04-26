@@ -124,6 +124,10 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                 pipeline.Add(
                     new BsonDocument("$match", new BsonDocument("_id", new ObjectId(qualityId)))
                 );
+                // Filtro por SquadId
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                );
 
                 var resultPrev = await _QualityParameterCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
                 QualityAssuranceParameter result = resultPrev.Select(d => BsonSerializer.Deserialize<QualityAssuranceParameter>(d)).ToList()[0];
