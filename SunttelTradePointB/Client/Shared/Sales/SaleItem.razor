@@ -461,7 +461,7 @@
         }
         if (SearcherValue == "Vendor")
         {
-            vendorList = await DocumentServices.GetCommercialVendorList(arg.value, commercialDocument.DocumentType);
+            vendorList = await DocumentServices.GetCommercialVendorList(arg.value, commercialDocument.DocumentType.IsASale);
 
         }
         if (SearcherValue == "SalesPerson")
@@ -470,7 +470,7 @@
         }
         if (SearcherValue == "Buyer")
         {
-            buyerList = await DocumentServices.GetCommercialBuyerList(arg.value, commercialDocument.DocumentType);
+            buyerList = await DocumentServices.GetCommercialBuyerList(arg.value, commercialDocument.DocumentType.IsASale);
         }
         if (SearcherValue == "Season")
         {

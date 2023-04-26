@@ -5,10 +5,11 @@ using SunttelTradePointB.Shared.Sales;
 using System.Net.Http.Json;
 using SunttelTradePointB.Shared.Accounting;
 using Syncfusion.Blazor.PivotView;
+using SunttelTradePointB.Client.Interfaces.IPaymentInterfaces;
 
 namespace SunttelTradePointB.Client.Services.PaymentServices
 {
-    public class PaymentServices
+    public class PaymentServices  : IPayment
     {
         private readonly HttpClient _httpClient;
         private string pathApi = "/api/Payment/*Name?userId=*Id&ipAddress=*Ip";
@@ -41,7 +42,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
             try
             {
                 string path = $"/api/Inventory/GetInventory?&";
-               // paymentType.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                // paymentType.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<PaymentType>($"{path}", paymentType);
                 return await responseMessage.Content.ReadFromJsonAsync<PaymentType>();
 
@@ -53,13 +54,13 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
             }
         }
 
-        public async Task<PaymentStatus> SavePaymentType(PaymentStatus paymentType)
+        public async Task<PaymentStatus> SavePaymentStatus(PaymentStatus paymentStatus)
         {
             try
             {
                 string path = $"/api/Inventory/GetInventory?";
-                //paymentType.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
-                var responseMessage = await _httpClient.PostAsJsonAsync<PaymentStatus>($"{path}", paymentType);
+               // paymentStatus.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                var responseMessage = await _httpClient.PostAsJsonAsync<PaymentStatus>($"{path}", paymentStatus);
                 return await responseMessage.Content.ReadFromJsonAsync<PaymentStatus>();
 
             }
@@ -200,14 +201,14 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
             }
         }
 
-        public async Task<Payment> GetPaymentById(string paymentTypeId)
+        public async Task<Payment> GetPaymentById(string paymentId)
         {
             try
             {
                 string path = $"{pathApi}";
                 path = path.Replace("*Name", "GetPaymentById");
                 path = GetGlobalVariables(path);
-                var responseMessage = await Gethttp($"{path}&paymentId={paymentTypeId}");
+                var responseMessage = await Gethttp($"{path}&paymentId={paymentId}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<Payment>();
                 return list != null ? list : new Payment();
             }

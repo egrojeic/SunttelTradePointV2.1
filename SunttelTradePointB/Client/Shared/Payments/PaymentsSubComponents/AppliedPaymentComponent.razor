@@ -97,9 +97,17 @@
 
 
     protected async override void OnInitialized()
-    {       
+    {
+        Load();
         base.OnInitialized();
 
+    }
+
+    public void Load()
+    {
+       if(appliedPayment==null) appliedPayment = new();
+       if(appliedPayment.InvoiceBuyer==null) appliedPayment.InvoiceBuyer = new();
+      
     }
 
 

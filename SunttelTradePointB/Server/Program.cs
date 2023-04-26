@@ -30,6 +30,8 @@ using SunttelTradePointB.Server.Interfaces.InventoryBkServices;
 using SunttelTradePointB.Server.InterfaceSwagger;
 using SunttelTradePointB.Server.Interfaces.PaymentBkServices;
 using SunttelTradePointB.Server.Services.PaymentBkServices;
+using SunttelTradePointB.Server.Interfaces.CreditBkServices;
+using SunttelTradePointB.Server.Services.CreditBkServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -87,6 +89,7 @@ builder.Services.AddTransient<IEntitiesRelatedConcepts, EntityActorsRelatedConce
 builder.Services.AddTransient<IMessagesValet, MessageValet>();
 builder.Services.AddTransient<IInventory, InventoryService>();
 builder.Services.AddTransient<IPayment, PaymentService>();
+builder.Services.AddTransient<ICredit, CreditService>();
 
 builder.Services.AddTransient<ICommercialDocument, CommercialDocumentsService>();
 

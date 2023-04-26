@@ -34,8 +34,6 @@ namespace SunttelTradePointB.Server.Controllers.InventoryBack
         /// <param name="warehouseId"></param>
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
-        /// <param name="BuyerId"></param>
-        /// <param name="DocumentDate"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="filterName"></param>

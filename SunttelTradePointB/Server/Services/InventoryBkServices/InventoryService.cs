@@ -3,9 +3,6 @@ using MongoDB.Bson;
 using SunttelTradePointB.Server.Interfaces.InventoryBkServices;
 using SunttelTradePointB.Shared.InvetoryModels;
 using MongoDB.Driver;
-using SunttelTradePointB.Client.Pages.DirectoryInventory;
-using SunttelTradePointB.Server.Controllers.InventoryBack;
-using SunttelTradePointB.Shared.Sales;
 
 namespace SunttelTradePointB.Server.Services.InventoryBkServices
 {
@@ -41,7 +38,6 @@ namespace SunttelTradePointB.Server.Services.InventoryBkServices
         /// <param name="warehouseId"></param>
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
-        /// <param name="BuyerId"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="filterName"></param>

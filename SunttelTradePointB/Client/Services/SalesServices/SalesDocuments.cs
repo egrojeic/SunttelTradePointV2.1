@@ -7,7 +7,7 @@ using System.Net.Http.Json;
 
 namespace SunttelTradePointB.Client.Services.SalesServices
 {
-    public class SalesDocuments : TSalesDocuments
+    public class SalesDocuments : ISalesDocuments
     {
         private readonly HttpClient _httpClient;
         private string basepath = "/api/Sales/Name?userId=*Id&ipAddress=*Ip";
@@ -15,7 +15,6 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             _httpClient = httpClient;
         }
-
 
 
         public async Task<CommercialDocument> SaveCommercialDocument(CommercialDocument commercialDocument)
@@ -105,14 +104,14 @@ namespace SunttelTradePointB.Client.Services.SalesServices
 
 
         ///Gets
-        public async Task<List<CommercialDocument>> GetCommercialDocumentList(DateTime startDate, DateTime endDate, string documentTypeId, string filter)
+        public async Task<List<CommercialDocument>> GetCommercialDocumentList(DateTime startDate, string documentTypeId, string filter)
         {
             CultureInfo culture = new CultureInfo("en-US");
             try
             {
 
                 string path = basepath.Replace("Name", "GetCommercialDocumentsByDateSpan");
-                var responseMessage = await Gethttp($"{path}&startDate={startDate.ToString("yyyy-MM-dd", culture)}&endDate={endDate.ToString("yyyy-MM-dd", culture)}&documentTypeId={documentTypeId}&&filter={filter}");
+                var responseMessage = await Gethttp($"{path}&startDate={startDate.ToString("yyyy-MM-dd", culture)}&documentTypeId={documentTypeId}&&filter={filter}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocument>>();
                 return list != null ? list : new List<CommercialDocument>();
             }
@@ -191,12 +190,12 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<List<Concept>> GetCommercialVendorList(string filter, CommercialDocumentType documentType, int? page = 1, int? perPage = 10)
+        public async Task<List<Concept>> GetCommercialVendorList(string filter, bool IsASale, int? page = 1, int? perPage = 10)
         {
             try
             {
 
-                string path = $"/api/ConceptsSelector/GetVendors?isASale={documentType.IsASale}&userId=*Id&ipAddress=*Ip&page={page}&perPage={perPage}&filterString={filter}";
+                string path = $"/api/ConceptsSelector/GetVendors?isASale={IsASale}&userId=*Id&ipAddress=*Ip&page={page}&perPage={perPage}&filterString={filter}";
                 var responseMessage = await Gethttp($"{path}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
                 //if(isSales && list !=null) list = list.Where(s=>s.SquadId == UIClientGlobalVariables.ActiveSquad.IDSquads.ToString()).ToList();
@@ -353,12 +352,12 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<List<Concept>> GetCommercialBuyerList(string filter, CommercialDocumentType documentType, int? page = 1, int? perPage = 10)
+        public async Task<List<Concept>> GetCommercialBuyerList(string filter, bool IsASale, int? page = 1, int? perPage = 10)
         {
             try
             {
 
-                string path = $"/api/ConceptsSelector/GetBuyers?isASale={documentType.IsASale}&userId=*Id&ipAddress=*Ip&page={page}&perPage={perPage}&filterString={filter}";
+                string path = $"/api/ConceptsSelector/GetBuyers?isASale={IsASale}&userId=*Id&ipAddress=*Ip&page={page}&perPage={perPage}&filterString={filter}";
                 var responseMessage = await Gethttp($"{path}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
                 //   if (!isASale) list = list.Where(s => s.Id == UIClientGlobalVariables.EntityUserId).ToList();
@@ -535,7 +534,10 @@ namespace SunttelTradePointB.Client.Services.SalesServices
 
         }
 
-
+        public Task<List<CommercialDocument>> GetCommercialDocumentList(DateTime startDate, DateTime endDate, string documentTypeId, string filter)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

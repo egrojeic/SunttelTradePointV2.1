@@ -54,7 +54,7 @@ else
         if (ValueInt != null && TypeInt) Value = ValueInt.ToString();
         if (ValueDouble != null && TypeInt) Value = ValueDouble.ToString();
         if (!TypeInt) Value = ValueString.ToString();
-      
+
         ChangedUpdate.InvokeAsync(null);
         StateHasChanged();
 
@@ -66,12 +66,23 @@ else
         Load();
     }
 
+    //protected override Task OnParametersSetAsync()
+    //{
+    //    if (ValueInt != null) ValueIntChanged.InvokeAsync(ValueInt.Value);
+    //    if (ValueDouble != null) ValueDoubleChanged.InvokeAsync(ValueDouble.Value);
+    //    if (!TypeInt && ValueString != null) ValueStringChanged.InvokeAsync(ValueString);
+    //    return base.OnParametersSetAsync();
+    //}
+
 
     protected override void OnParametersSet()
     {
+        if (ValueInt != null && ValueInt != Convert.ToInt32(Value)) Value = ValueInt.Value.ToString();
+        if (ValueDouble != null && ValueDouble != Convert.ToDouble(Value))  Value = ValueDouble.Value.ToString();
+        if (!TypeInt && ValueString != null && ValueString != Value )  Value = ValueString;
         StateHasChanged();
     }
-
+    
 
     public void Load(){
 

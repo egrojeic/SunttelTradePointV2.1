@@ -9,7 +9,7 @@
 
 @inject IJSRuntime Js
 
-<PageTitleComponent Title="CreditDocument" IconName="Payments.png"
+<PageTitleComponent Title="Credit Document" IconName="Payments.png"
                     Description="With this tool you can create and edit creditDocument ">
 </PageTitleComponent>
 
@@ -18,9 +18,11 @@
     <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
 </div>
 <div class="panelMenuContainer">
-   @* <CreditDocumentMenu2 SetDocumentTypeId="SetDocumentTypeId"></CreditDocumentMenu2>*@
+    @* <CreditDocumentMenu2 SetDocumentTypeId="SetDocumentTypeId"></CreditDocumentMenu2>*@
     <RangeDatesInput StartDate="@startingDate"
-                     StartDateName="Date"
+        EndDate="endDate"
+                     StartDateName="From"
+                     EndDateName="To"
                      EventSearchAll="EventSearchAll"></RangeDatesInput>
 </div>
 
@@ -36,8 +38,9 @@
     }
     else
     {
-
-        <RadzenDataGrid AllowFiltering="true"
+        if (CreditDocumentList != null)
+        {
+            <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
                     AllowAlternatingRows="true"
                     FilterMode="FilterMode.Advanced"
@@ -53,28 +56,27 @@
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
-            <Columns>
+                <Columns>
 
-                <RadzenDataGridColumn TItem="CreditDocument" Property="DocumentType.Name" Title="@GetName("DocumentType",new CreditDocument())" Width="308px" />
-                <RadzenDataGridColumn TItem="CreditDocument" Property="Code" Title="@GetName("Code",new CreditDocument())" Width="208px" />
-                <RadzenDataGridColumn TItem="CreditDocument" Property="Vendor.Name" Title="@GetName("Vendor",new CreditDocument())" Width="208px" />
-                <RadzenDataGridColumn TItem="CreditDocument" Property="Vendor.Buyer" Title="@GetName("Vendor",new CreditDocument())" Width="208px" />
-                <RadzenDataGridColumn TItem="CreditDocument" Property="Status.Name" Title="@GetName("Status",new CreditDocument())" Width="208px" />
-                <RadzenDataGridColumn TItem="CreditDocument" Property="Reazon.DocumentCode" Title="@GetName("Reazon",new CreditDocument())" Width="208px" />
-                <RadzenDataGridColumn TItem="CreditDocument" Property="Reazon.DocumentDate" Title="@GetName("Reazon",new CommercialDocumentSummaryInfo())" Width="208px" />
-                <RadzenDataGridColumn TItem="CreditDocument" Property="CreditValue" Title="@GetName("CreditValue",new CreditDocument())" Width="208px" />
+                    <RadzenDataGridColumn TItem="CreditDocument" Property="CreditDocumentType.Name" Title="@GetName("CreditDocumentType",new CreditDocument())" Width="308px" />
+                    <RadzenDataGridColumn TItem="CreditDocument" Property="Code" Title="@GetName("Code",new CreditDocument())" Width="208px" />
+                    <RadzenDataGridColumn TItem="CreditDocument" Property="Vendor.Name" Title="@GetName("Vendor",new CreditDocument())" Width="208px" />
+                    <RadzenDataGridColumn TItem="CreditDocument" Property="Vendor.Buyer" Title="@GetName("Buyer",new CreditDocument())" Width="208px" />
+                    <RadzenDataGridColumn TItem="CreditDocument" Property="CreditDocumentStatus.Name" Title="@GetName("CreditDocumentStatus",new CreditDocument())" Width="208px" />
+                    <RadzenDataGridColumn TItem="CreditDocument" Property="CreditDocumentReason.Name" Title="@GetName("CreditDocumentReason",new CreditDocument())" Width="208px" />                   
+                   <RadzenDataGridColumn TItem="CreditDocument" Property="CreditValue" Title="@GetName("CreditValue",new CreditDocument())" Width="208px" />
+                    <RadzenDataGridColumn TItem="CreditDocument" Property="IsDirect" Title="@GetName("IsDirect",new CreditDocument())" Width="200px" TextAlign="Radzen.TextAlign.Center">
+                        <Template>
+                            @{
+                                var IsDirect = (bool)context.GetType().GetProperty(nameof(CreditDocument.IsDirect)).GetValue(context);
+                                <input type="checkbox" checked="@IsDirect" />
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
 
-                <RadzenDataGridColumn TItem="CreditDocument" Property="IsDirect" Title="@GetName("IsDirect",new CreditDocument())" Width="200px" TextAlign="Radzen.TextAlign.Center">
-                    <Template>
-                        @{
-                            var IsDirect = (bool)context.GetType().GetProperty(nameof(Warehouse.IsInventoryControlled)).GetValue(context);
-                            <input type="checkbox" checked="@IsDirect" />
-                        }
-                    </Template>
-                </RadzenDataGridColumn>
-
-            </Columns>
-        </RadzenDataGrid>
+                </Columns>
+            </RadzenDataGrid>
+        }
     }
 </div>
 
@@ -88,7 +90,7 @@
 
     bool isLoading = false;
 
-    DateTime startingDate = DateTime.Now;
+    DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
 
     public string filter
     {
@@ -114,7 +116,7 @@
         isLoading = true;
         if (documentType != null || true)
         {
-           // CreditDocumentList = await CreditDocumentServices.GetCreditDocumentList((filter != null ? filter : "all"), (documentType != null ? documentType?.Id : ""), startingDate.ToString(), 1, 10);
+            CreditDocumentList = await CreditDocumentServices.GetCreditDocumentList(startingDate, endDate, (filter != null ? filter : "all"), 1, 10);
         }
         isLoading = false;
         StateHasChanged();
@@ -122,7 +124,6 @@
 
     public async void SetDocumentTypeId(CommercialDocumentType item)
     {
-
         if (item != null)
         {
             documentType = item;
@@ -134,7 +135,6 @@
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CreditDocument> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-
     </RadzenMenu>
     );
 
@@ -142,7 +142,7 @@
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         CreditDocument argObj = (CreditDocument)args.Value;
-        //  Navigation.NavigateTo($"CreditDocumentsItem/{argObj.Id}/{_filterItems}");
+        Navigation.NavigateTo($"CreditDocumentsItem/{argObj.Id}/{_filterItems}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
@@ -150,7 +150,7 @@
     }
 
 
-   
+
 
 
     public void Setfilter(string value)

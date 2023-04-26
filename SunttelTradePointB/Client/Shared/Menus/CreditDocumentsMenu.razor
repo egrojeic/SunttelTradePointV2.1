@@ -30,10 +30,10 @@
             <SplitButtonEvents ItemSelected="ItemSelected">
             </SplitButtonEvents>
             <DropDownMenuItems>
-                <DropDownMenuItem Id="PaymentTypeGeneral" Text="Payment Types" IconCss="fa-solid fa-sitemap"></DropDownMenuItem>
-                <DropDownMenuItem Id="PaymentStatuse" Text="Payment Statuses" IconCss="fa-solid fa-sitemap"></DropDownMenuItem>
-                <DropDownMenuItem Id="PaymentModeGeneral" Text="Payment Modes" IconCss="fa-solid fa-sitemap"></DropDownMenuItem>
-                <DropDownMenuItem Id="PaymentViaGeneral" Text="Payment Vias" IconCss="fa-solid fa-sitemap"></DropDownMenuItem>               
+                <DropDownMenuItem Id="CreditStatusGeneral" Text="Credit Status" IconCss="fa-solid fa-sitemap"></DropDownMenuItem>
+                <DropDownMenuItem Id="CreditTypeGeneral" Text="Credit Type" IconCss="fa-solid fa-sitemap"></DropDownMenuItem>
+                <DropDownMenuItem Id="CreditReasonGeneral" Text="Credit Reason" IconCss="fa-solid fa-sitemap"></DropDownMenuItem>
+                      
             </DropDownMenuItems>
         </SfSplitButton>
 
@@ -47,10 +47,6 @@
 
     [Parameter]
     public EventCallback<string> SetDocumentTypeId { get; set; }
-
-
-
-
 
     void OnClick(RadzenSplitButtonItem item, string buttonName)
     {
