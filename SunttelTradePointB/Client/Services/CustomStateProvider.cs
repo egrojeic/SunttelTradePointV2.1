@@ -86,5 +86,15 @@ namespace SunttelTradePointB.Client.Services
             await api.Register(registerParameters);
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
+
+        public async Task RegisterUserByAdmin(RegisterRequest registerParameters)
+        {
+            await api.RegisterUserByAdmin(registerParameters);
+        }
+
+        public async Task<List<UserEntity>> GetUsersByRolname(string rolname)
+        {
+            return await api.GetUsersByRolname(rolname);
+        }
     }
 }

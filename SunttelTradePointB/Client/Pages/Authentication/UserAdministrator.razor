@@ -1,0 +1,62 @@
+﻿@page "/UserAdministrator";
+@using SunttelTradePointB.Client.Services;
+@using SunttelTradePointB.Shared.Enums;
+@using SunttelTradePointB.Shared.Security;
+@inject NavigationManager _NavigationManager;
+@inject CustomStateProvider authStateProvider
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <button class="btn btn-primary" @onclick="@(() => AddNewUser())">
+            <span class="oi oi-plus me-1" aria-hidden="true"></span>
+             Agregar nuevo usuario
+        </button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <RadzenDataGrid TItem="UserEntity" Data="@users" PageSize="10" ColumnWidth="150px">
+            <Columns>
+                <RadzenDataGridColumn TItem="UserEntity" Property="Name" Title="Nombre de usuario" />
+                <RadzenDataGridColumn TItem="UserEntity" Title="Acciones">
+                    <Template Context="user">
+                        <div class="btn-group" role="group">
+                            @*<button class="btn btn-warning me-2" title="Editar" @onclick="@(() => EditUser(user))">
+                                <span class="oi oi-pencil" aria-hidden="true"></span>
+                            </button>*@
+                            <button class="btn btn-danger" title="Eliminar" @onclick="@(() => DeleteUser(user))">
+                                <span class="oi oi-trash" aria-hidden="true"></span>
+
+                            </button>
+                        </div>
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    </div>
+</div>
+
+@code {
+    public IList<UserEntity>? users;
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await authStateProvider.GetUsersByRolname(UserType.User.ToString());
+    }
+
+    public void AddNewUser()
+    {
+        _NavigationManager.NavigateTo("/RegisterUser");
+    }
+
+    public void EditUser(UserEntity user)
+    {
+        //NavigationManager.NavigateTo($"/EditarUsuario/{user.Id}");
+    }
+
+    public async void DeleteUser(UserEntity user)
+    {
+        
+    }
+}
