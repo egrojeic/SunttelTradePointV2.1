@@ -1,9 +1,9 @@
-﻿@page "/StandingOrder"
-@page "/StandingOrder/{_filterItems}"
+﻿@page "/StandingOrdersSales"
+@page "/StandingOrdersSales/{_filterItems}"
 @using SunttelTradePointB.Client.Shared.Menus.StandingOrder;
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Accounting
-@inject SunttelTradePointB.Client.Services.CreditDocumentServices.StandingOrderServices CreditDocumentServices
+@inject SunttelTradePointB.Client.Services.StandingOrderServices.StandingOrderServices StandingOrderServices
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
 
@@ -19,7 +19,7 @@
     <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
 </div>
 <div class="panelMenuContainer">
-    <StandingOrderMenu2 SetDocumentType="SetDocumentType"></StandingOrderMenu2>
+    <StandingOrderMenu2 SetDocumentTypeMode="SetDocumentType"></StandingOrderMenu2>
     <RangeDatesInput StartDate="@startingDate"
         EndDate="endDate"
                      StartDateName="From"
@@ -123,7 +123,7 @@
         isLoading = true;
         if (documentType != null || true)
         {
-            //CreditDocumentList = await CreditDocumentServices.GetCreditDocumentList(startingDate, endDate, (filter != null ? filter : "all"), 1, 10);
+            standingOrderList = await StandingOrderServices.GetStandingOrderList((filter!=null? filter:"all"),1,100);
         }
         isLoading = false;
         StateHasChanged();
@@ -150,7 +150,7 @@
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         StandingOrder argObj = (StandingOrder)args.Value;
-        Navigation.NavigateTo($"StandingOrder/{argObj.Id}/{_filterItems}");
+        Navigation.NavigateTo($"StandingOrderItem/{argObj.Id}/{_filterItems}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();

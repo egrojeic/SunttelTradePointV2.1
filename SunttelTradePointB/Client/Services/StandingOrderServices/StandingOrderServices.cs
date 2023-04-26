@@ -6,10 +6,11 @@ using System.Net.Http.Json;
 using SunttelTradePointB.Shared.Accounting;
 using Syncfusion.Blazor.PivotView;
 using SunttelTradePointB.Client.Interfaces.ICreditInterfaces;
+using SunttelTradePointB.Client.Interfaces.StandingOrderDetails;
 
 namespace SunttelTradePointB.Client.Services.StandingOrderServices
 {
-    public class StandingOrderServices 
+    public class StandingOrderServices : IStandingOrderDetails
     {
         private readonly HttpClient _httpClient;
         private string pathApi = "/api/Credit/*Name?userId=*Id&ipAddress=*Ip"; 
@@ -18,16 +19,16 @@ namespace SunttelTradePointB.Client.Services.StandingOrderServices
             _httpClient = httpClient;
         }
 
-        public async Task<CreditDocument> SaveCreditDocument(CreditDocument creditDocument)
+        public async Task<StandingOrder> SaveStandingOrde(StandingOrder standingOrder)
         {
             try
             {
                 string path = $"{pathApi}";
                 path = GetGlobalVariables(path);
-                path = path.Replace("*Name", "SaveCreditDocument");
-                creditDocument.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
-                var responseMessage = await _httpClient.PostAsJsonAsync<CreditDocument>($"{path}", creditDocument);
-                return await responseMessage.Content.ReadFromJsonAsync<CreditDocument>();
+                path = path.Replace("*Name", "pendiente");
+                standingOrder.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                var responseMessage = await _httpClient.PostAsJsonAsync<StandingOrder>($"{path}", standingOrder);
+                return await responseMessage.Content.ReadFromJsonAsync<StandingOrder>();
 
             }
             catch (Exception ex)
@@ -37,39 +38,15 @@ namespace SunttelTradePointB.Client.Services.StandingOrderServices
             }
         }
 
-
-     
-
-
-    
-        public async Task<CreditStatus> CreditStatusById(   string creditStatusById)
+        public async Task<List<StandingOrder>> GetStandingOrderList(string? filter = null, int? page = 1, int? perPage = 10)
         {
             try
             {
                 string path = $"{pathApi}";
-                path = path.Replace("*Name", "CreditStatusById");
-                var responseMessage = await Gethttp($"{path}&creditStatusById={creditStatusById}");
-                var list = await responseMessage.Content.ReadFromJsonAsync<CreditStatus>();
-                return list != null ? list : new CreditStatus();
-            }
-            catch (Exception ex)
-            {
-                string errMessage = ex.Message;
-                return null;
-            }
-        }
-
-    
-
-        public async Task<List<CreditReason>> GetStandingOrderList(string? filter = null, int? page = 1, int? perPage = 10)
-        {
-            try
-            {
-                string path = $"{pathApi}";
-                path = path.Replace("*Name", "GetCreditReasons");
+                path = path.Replace("*Name", "pendiente");
                 var responseMessage = await Gethttp($"{path}&filter={filter}&page={page}&perPage={perPage}");
-                var list = await responseMessage.Content.ReadFromJsonAsync<List<CreditReason>>();
-                return list != null ? list : new List<CreditReason>();
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<StandingOrder>>();
+                return list != null ? list : new List<StandingOrder>();
             }
             catch (Exception ex)
             {
@@ -78,7 +55,24 @@ namespace SunttelTradePointB.Client.Services.StandingOrderServices
             }
         }
 
-       
+
+
+        public async Task<StandingOrder> GetStandingOrderById(string? standingOrderId)
+        {
+            try
+            {
+                string path = $"{pathApi}";
+                path = path.Replace("*Name", "pendiente");
+                var responseMessage = await Gethttp($"{path}&standingOrderId={standingOrderId}");
+                var item = await responseMessage.Content.ReadFromJsonAsync<StandingOrder>();
+                return item != null ? item : new StandingOrder();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
 
 
         public string GetGlobalVariables(string Url)
@@ -92,6 +86,10 @@ namespace SunttelTradePointB.Client.Services.StandingOrderServices
 
             return Url;
         }
+
+
+
+
 
 
         public async Task<HttpResponseMessage> Gethttp(string Url)

@@ -59,6 +59,7 @@
     <Folder Include="Services\ProcurementServices\" />
     <Folder Include="Services\ProductionServices\" />
     <Folder Include="Services\QualityControlServices\" />
+    <Folder Include="Shared\StandingOrder\SubComponents\" />
     <Folder Include="Shared\CreditDocuments\SubComponents\" />
     <Folder Include="Shared\GPMReport\SaleItemSubComponents\" />
     <Folder Include="Shared\AccountsReceivable\InventorySubComponents\" />
