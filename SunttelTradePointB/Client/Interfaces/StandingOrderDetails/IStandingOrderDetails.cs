@@ -1,7 +1,7 @@
 ﻿using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.Sales;
 
-namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
+namespace SunttelTradePointB.Client.Interfaces.StandingOrderDetails
 {
     public interface IStandingOrderDetails
     {
@@ -16,7 +16,7 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// <param name="page"></param>       
         /// <param name="perPage"></param>       
         /// <returns></returns>
-        Task<List<CommercialDocument>> GetShippingtList(DateTime startDate, DateTime endDate, string warehouseId, string filter, int page, int perPage);
+    //    Task<List<CommercialDocument>> GetShippingtList(DateTime startDate, DateTime endDate, string warehouseId, string filter, int page, int perPage);
 
        
     }

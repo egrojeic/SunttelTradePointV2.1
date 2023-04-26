@@ -2,7 +2,7 @@
 @page "/Credits/{_filterItems}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Accounting
-@inject SunttelTradePointB.Client.Services.CreditDocumentServices.StandingOrderServices CreditDocumentServices
+@inject SunttelTradePointB.Client.Services.CreditDocumentServices.CreditDocumentServices CreditDocumentServices
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
 
@@ -141,7 +141,7 @@
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
-        CreditDocument argObj = (CreditDocument)args.Value;
+            CreditDocument argObj = (CreditDocument)args.Value;
         Navigation.NavigateTo($"CreditDocumentsItem/{argObj.Id}/{_filterItems}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {

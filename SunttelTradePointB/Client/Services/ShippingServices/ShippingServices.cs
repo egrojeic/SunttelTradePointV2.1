@@ -7,23 +7,25 @@ using System.Net.Http.Json;
 
 namespace SunttelTradePointB.Client.Services.ShippingServices
 {
-    public class ShippingServices : IShipping
+    public class ShippingServices : Interfaces.SalesInterfaces.IStandingOrderDetails
     {
         private readonly HttpClient _httpClient;
         private string basepath = "/api/Sales/Name?userId=*Id&ipAddress=*Ip";
+      
         public ShippingServices(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
 
         ///Gets
-        public async Task<List<CommercialDocument>> GetShippingtList(DateTime startDate, DateTime endDate, string documentTypeId, string filter)
-        {
+        public async Task<List<CommercialDocument>> GetShippingtList(DateTime startDate, DateTime endDate, string warehouseId, string filter,int page,int perPage)
+        {           
             CultureInfo culture = new CultureInfo("en-US");
             try
             {
-                string path = basepath.Replace("Name", "GetCommercialDocumentsByDateSpan");
-                var responseMessage = await Gethttp($"{path}&startDate={startDate.ToString("yyyy-MM-dd", culture)}&endDate={endDate}&documentTypeId={documentTypeId}&&filter={filter}");
+                //
+                string path = basepath.Replace("Name", "GetShippingInvoices");
+                var responseMessage = await Gethttp($"{path}&shippingDate={startDate.ToString("yyyy-MM-dd", culture)}&warehouseId={warehouseId}&filter={filter}&page={page}&perPage={perPage}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocument>>();
                 return list != null ? list : new List<CommercialDocument>();
             }
@@ -34,7 +36,26 @@ namespace SunttelTradePointB.Client.Services.ShippingServices
             }
         }
 
-     
+
+        public async Task<List<CommercialDocument>> GetShippingtById(string shippingId)
+        {
+            CultureInfo culture = new CultureInfo("en-US");
+            try
+            {
+                //
+                string path = basepath.Replace("Name", "GetShippingInvoices");
+                var responseMessage = await Gethttp($"{path}&shippingId={shippingId}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocument>>();
+                return list != null ? list : new List<CommercialDocument>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+
 
         public async Task<HttpResponseMessage> Gethttp(string Url)
         {
