@@ -25,14 +25,13 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
             _quality = quality;
         }
 
+
+        #region Quality Parameters
         /// <summary>
         /// Retrieves a Quality Parameters matching with its Id
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
-        /// <param name="warehouseId"></param>
-        /// <param name="startDate"></param>
-        /// <param name="endDate"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="filterName"></param>
@@ -58,7 +57,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
-        /// <param name="inventoryId"></param>
+        /// <param name="qualityId"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetQualityParameteById")]
@@ -101,7 +100,84 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
                 return NotFound(response.ErrorDescription);
             }
         }
+        #endregion
 
+        #region Quality Groups
+        /// <summary>
+        /// Retrieves a Quality Groups matching with its Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetQualityParametersGroups")]
+        public async Task<IActionResult> GetQualityParametersGroups(string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filter = null)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _quality.GetQualityParametersGroups(userId, ipAddress, squadId, page, perPage, filter);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.QualityGroupsList);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Retrieves a Quality Groups matching with its Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="qualityId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetQualityParameteGroupsById")]
+        public async Task<IActionResult> GetQualityParameteGroupsById(string userId, string ipAddress, string qualityId)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _quality.GetQualityParameteGroupsById(userId, ipAddress, squadId, qualityId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.QualityGroup);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Insert / Update a Quality Parameters
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="quality"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveQualityParameterGroups")]
+        public async Task<IActionResult> SaveQualityParameterGroups(string userId, string ipAddress, [FromBody] QualityParameterGroup quality)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+
+            var response = await _quality.SaveQualityParameterGroups(userId, ipAddress, squadId, quality);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.QualityGroup);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+        #endregion
 
 
 
