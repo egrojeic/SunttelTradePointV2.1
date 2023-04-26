@@ -9,11 +9,11 @@ using SunttelTradePointB.Client.Interfaces.ICreditInterfaces;
 
 namespace SunttelTradePointB.Client.Services.CreditDocumentServices
 {
-    public class CreditDocumentServices : ICredit
+    public class StandingOrderServices : ICredit
     {
         private readonly HttpClient _httpClient;
         private string pathApi = "/api/Credit/*Name?userId=*Id&ipAddress=*Ip"; 
-        public CreditDocumentServices(HttpClient httpClient)
+        public StandingOrderServices(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }

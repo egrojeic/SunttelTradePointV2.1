@@ -41,7 +41,7 @@ builder.Services.AddScoped<Inventory>();
 builder.Services.AddScoped<PaymentServices>();
 builder.Services.AddScoped<ContextMenuService>();
 builder.Services.AddScoped<DialogService>();
-builder.Services.AddScoped<CreditDocumentServices>();
+builder.Services.AddScoped<StandingOrderServices>();
 
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
