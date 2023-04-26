@@ -106,19 +106,17 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
-        /// <param name="startDate"></param>
-        /// <param name="endDate"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetCreditTypes")]
-        public async Task<IActionResult> GetCreditTypes(string userId, string ipAddress, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null)
+        public async Task<IActionResult> GetCreditTypes(string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filter = null)
         {
             var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
-            var response = await _credit.GetCreditTypes(userId, ipAddress, squadId, startDate, endDate, page, perPage, filter);
+            var response = await _credit.GetCreditTypes(userId, ipAddress, squadId, page, perPage, filter);
 
             if (response.IsSuccess)
             {
@@ -179,7 +177,7 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
 
         #endregion
 
-        #region Credit Types
+        #region Credit Status
         /// <summary>
         /// Returns a list of entities with a name like the parameter
         /// </summary>
@@ -193,11 +191,11 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetCreditStatuses")]
-        public async Task<IActionResult> GetCreditStatuses(string userId, string ipAddress, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null)
+        public async Task<IActionResult> GetCreditStatuses(string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filter = null)
         {
             var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
-            var response = await _credit.GetCreditStatuses(userId, ipAddress, squadId, startDate, endDate, page, perPage, filter);
+            var response = await _credit.GetCreditStatuses(userId, ipAddress, squadId, page, perPage, filter);
 
             if (response.IsSuccess)
             {
@@ -272,11 +270,11 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetCreditReasons")]
-        public async Task<IActionResult> GetCreditReasons(string userId, string ipAddress, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null)
+        public async Task<IActionResult> GetCreditReasons(string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filter = null)
         {
             var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
-            var response = await _credit.GetCreditReasons(userId, ipAddress, squadId, startDate, endDate, page, perPage, filter);
+            var response = await _credit.GetCreditReasons(userId, ipAddress, squadId, page, perPage, filter);
 
             if (response.IsSuccess)
             {

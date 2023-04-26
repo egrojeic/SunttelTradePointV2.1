@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using SunttelTradePointB.Shared.Enums;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SunttelTradePointB.Shared.Models

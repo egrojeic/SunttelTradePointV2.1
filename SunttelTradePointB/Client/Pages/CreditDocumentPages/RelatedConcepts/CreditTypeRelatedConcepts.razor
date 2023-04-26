@@ -1,0 +1,196 @@
+@page "/CreditType"
+@page "/CreditType/{creditTypeId}"
+@page "/CreditType/{creditTypeId}/{filter}"
+@using SunttelTradePointB.Shared.Sales;
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+@using System.Reflection
+@using Syncfusion.Blazor.Navigations
+@using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents
+@using SunttelTradePointB.Shared.Accounting
+@using SunttelTradePointB.Client.Shared.Payments.PaymentsSubComponents
+@inject NavigationManager Navigation
+@inject SunttelTradePointB.Client.Services.CreditDocumentServices.CreditDocumentServices CreditDocumentServices
+@inject ContextMenuService ContextMenuService
+
+@inject IJSRuntime Js
+
+<MessageSaveComponent isVisible="isVisible" message="@msg">
+</MessageSaveComponent>
+<PageTitleComponent Title="Credit Type"
+                    Description="Here you can add credit type" IconName="Payments.png">
+</PageTitleComponent>
+
+
+<form>
+
+    <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
+        <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+
+        <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+            <SplitButtonEvents ItemSelected="ItemSelected">
+            </SplitButtonEvents>
+            <DropDownMenuItems>
+                <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+            </DropDownMenuItems>
+        </SfSplitButton>
+
+
+    </div>
+
+    <div class="flex-horizontal-center">
+        <div class="grid-mode-row grid-colum">
+            <div><label>@GetName("Name",new CreditType())</label></div>
+            <InputTextDisable TypeInt="false" Enable="true" style="font-size:15px; font-weight:none;"  @bind-ValueString="@creditType.Name"></InputTextDisable>
+        </div>
+
+        <div><label>@GetName("IsASale",new CreditType())</label></div>
+        <div>
+            <SfSwitch @bind-Checked="@creditType.IsASale"></SfSwitch>
+        </div>
+    </div>
+
+</form>
+
+
+
+
+@code {
+    [Parameter]
+    public string creditTypeId { get; set; }
+    [Parameter]
+    public string filter { get; set; }
+
+    public CreditType creditType { get; set; }
+    TextToSpeech textToSpeech;
+
+
+
+    #region List
+
+
+    #endregion List
+
+
+    MessageSaveComponent? referAlert;
+    string msg = "";
+    bool isLoading = false;
+    string SearcherValue = "";
+    bool isVisible = false;
+
+    protected override void OnParametersSet()
+    {
+        StateHasChanged();
+    }
+
+    protected override async void OnInitialized()
+    {
+        isLoading = true;
+        Load();
+        if (creditTypeId != null)
+        {
+            creditType = await CreditDocumentServices.GetCreditTypeById(creditTypeId);
+        }
+        Load();
+        isLoading = false;
+        StateHasChanged();
+    }
+
+
+
+    public async void ItemSelected(MenuEventArgs e)
+    {
+        string msg = Validate();
+        if (msg == "")
+        {
+            StateHasChanged();
+            string tile = e.Item != null ? e.Item.Text : "";
+            if (tile == "Save")
+            {
+                Load();
+
+                var result = await CreditDocumentServices.SaveCreditType(creditType);
+                if (result!=null)
+                {
+                    creditType = result;
+                    alert("Saved", 0);
+
+                }
+                else
+                {
+                    alert("No saved", 1);
+                }
+
+            }
+        }
+        else
+        {
+            alert("No Saved", 1);
+        }
+
+        StateHasChanged();
+
+    }
+
+
+    public void EventIdSelectionMenuItem(string name)
+    {
+        Js.InvokeAsync<object>("open", name, "_blank");
+    }
+
+
+    public void alert(string _msg, int? status = 0)
+    {
+        isVisible = true;
+        msg = _msg;
+
+        StateHasChanged();
+    }
+
+    
+
+    public void Home()
+    {
+        string paramFilter = filter != null ? filter : "";
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/Credits/{paramFilter}");
+        Navigation.NavigateTo($"/Credits");
+    }
+
+ 
+
+    public string Validate()
+    {
+        string msg = "";
+       
+        return msg;
+    }
+
+
+    #region Load
+
+    public void Load()
+    {
+        if (creditType == null) creditType = new();
+
+    }
+    #endregion Load
+
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    public void NavigationTo(string name)
+    {
+        Navigation.NavigateTo(name);
+    }
+
+}

@@ -5,11 +5,11 @@ using SunttelTradePointB.Shared.Sales;
 using System.Net.Http.Json;
 using SunttelTradePointB.Shared.Accounting;
 using Syncfusion.Blazor.PivotView;
-using SunttelTradePointB.Client.Interfaces.PaymentInterfaces;
+using SunttelTradePointB.Client.Interfaces.IPaymentInterfaces;
 
 namespace SunttelTradePointB.Client.Services.PaymentServices
 {
-    public class PaymentServices  : TPayment
+    public class PaymentServices  : IPayment
     {
         private readonly HttpClient _httpClient;
         private string pathApi = "/api/Payment/*Name?userId=*Id&ipAddress=*Ip";
@@ -42,7 +42,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
             try
             {
                 string path = $"/api/Inventory/GetInventory?&";
-               // paymentType.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                // paymentType.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<PaymentType>($"{path}", paymentType);
                 return await responseMessage.Content.ReadFromJsonAsync<PaymentType>();
 
@@ -59,7 +59,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
             try
             {
                 string path = $"/api/Inventory/GetInventory?";
-                //paymentType.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+               // paymentStatus.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<PaymentStatus>($"{path}", paymentStatus);
                 return await responseMessage.Content.ReadFromJsonAsync<PaymentStatus>();
 

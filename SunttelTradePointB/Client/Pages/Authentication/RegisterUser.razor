@@ -1,0 +1,111 @@
+﻿@page "/RegisterUser";
+@using System.ComponentModel.DataAnnotations;
+@using Microsoft.AspNetCore.Components.Forms;
+@using Microsoft.AspNetCore.Components
+@using SunttelTradePointB.Client.Services;
+@using SunttelTradePointB.Shared.Enums;
+@using SunttelTradePointB.Shared.Security;
+@inject NavigationManager _navigationManager;
+@inject CustomStateProvider authStateProvider
+
+<EditForm Model="user" OnSubmit="OnPostAsync">
+    <DataAnnotationsValidator />
+
+    <div class="card">
+        <div class="card-header">
+            <span>
+                <i class="oi oi-person" /> Registrar Nuevo Usuario
+                <button class="btn btn-sm btn-primary float-end" type="submit"><i class="oi oi-check" /> Registrar</button>
+                <a class="btn btn-sm btn-success float-end mx-2" href="/UsersManagment"><i class="oi oi-arrow-thick-left"></i> Regresar</a>
+            </span>
+        </div>
+        <div class="card-body">
+
+            <div class="row">
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label>Email:</label>
+                        <div>
+                            <InputText class="form-control" @bind-Value="@user.Email" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label>Contraseña:</label>
+                        <div>
+                            <InputText type="password" class="form-control" @bind-Value="@user.Password" />
+                            <ValidationMessage For="@(() => user.Password)" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                @*<div class="col-6">
+                    <div class="mb-3">
+                        <label>Rol:</label>
+                        <div>
+                            <select class="form-select" @onchange="EnableSelector">
+                               
+                                @if (rolNames is not null)
+                                {
+                                    @foreach (var rol in rolNames)
+                                    {
+                                                <option value="@rol">@rol.ToString()</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>*@
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label>Nombre de usuario:</label>
+                        <div>
+                            <InputText type="text" class="form-control" @bind-Value="@user.UserName" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label>Confirmación de contraseñaaa:</label>
+                        <div>
+                            <InputText type="password" class="form-control" @bind-Value="@user.PasswordConfirm" />
+                            <ValidationMessage For="@(() => user.PasswordConfirm)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+
+    public RegisterRequest? user = new RegisterRequest();
+
+    public List<UserType> rolNames = new List<UserType>();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        StateHasChanged();
+    }
+
+    public async void OnPostAsync()
+    {
+        string error;
+        try
+        {
+            user.EntityId = "0";
+            user.UserType = UserType.User;
+            await authStateProvider.RegisterUserByAdmin(user);
+            _navigationManager.NavigateTo("/UserAdministrator");
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+    }
+}

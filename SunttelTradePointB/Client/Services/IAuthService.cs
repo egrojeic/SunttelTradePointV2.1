@@ -8,6 +8,10 @@ namespace SunttelTradePointB.Client.Services
         Task Register(RegisterRequest registerRequest);
         Task Logout();
         Task<CurrentUser> CurrentUserInfo();
+
+        Task RegisterUserByAdmin(RegisterRequest registerRequest);
+
+        Task<List<UserEntity>> GetUsersByRolname(string rolname);
     }
 
 }

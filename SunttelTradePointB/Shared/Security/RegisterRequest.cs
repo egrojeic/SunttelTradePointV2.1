@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SunttelTradePointB.Shared.Enums;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SunttelTradePointB.Shared.Security
 {
@@ -16,9 +12,13 @@ namespace SunttelTradePointB.Shared.Security
         [Required]
         [Compare(nameof(Password), ErrorMessage = "Passwords do not match!")]
         public string PasswordConfirm { get; set; }
-        
+
         [Required]
         public string EntityId { get; set; }
+
+        public UserType UserType { get; set; }
+
+        public string Email { get; set; }
 
     }
 }

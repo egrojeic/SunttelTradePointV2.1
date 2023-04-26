@@ -6,9 +6,11 @@ using SunttelTradePointB.Server.Interfaces;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Server.Interfaces.UserTracking;
 using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.Enums;
 using SunttelTradePointB.Shared.Models;
 using SunttelTradePointB.Shared.Security;
 using SunttelTradePointB.Shared.SquadsMgr;
+using Syncfusion.Blazor.RichTextEditor;
 
 namespace SunttelTradePointB.Server.Controllers
 {
@@ -18,6 +20,7 @@ namespace SunttelTradePointB.Server.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUserTracking _userTracking;
 
         private ISquadBack _squad;
@@ -32,16 +35,14 @@ namespace SunttelTradePointB.Server.Controllers
         /// <param name="userTracking"></param>
         /// <param name="entityNodes"></param>
         /// <param name="squad"></param>
-        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IUserTracking userTracking, IActorsNodes entityNodes, ISquadBack squad)
+        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IUserTracking userTracking, IActorsNodes entityNodes, ISquadBack squad, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _userTracking = userTracking;
             _entityNodes = entityNodes;
             _squad = squad;
-
-
-
+            _roleManager = roleManager;
         }
 
 
@@ -126,7 +127,94 @@ namespace SunttelTradePointB.Server.Controllers
             });
         }
 
+        /// <summary>
+        /// Register new User rol
+        /// </summary>
+        /// <param name="rolname"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> RegisterUserRol(string rolname)
+        {
+            try
+            {
+                var result = await _roleManager.CreateAsync(new IdentityRole
+                {
+                    Name = rolname
+                });
 
+                if (result.Succeeded)
+                {
+                    return Ok();
+                } else
+                {
+                    return BadRequest(result.Errors.FirstOrDefault()?.Description);
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Register user with rol
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> RegisterUser(RegisterRequest parameters)
+        {
+            try
+            {
+                var user = new ApplicationUser();
+                user.UserName = parameters.UserName;
+                //user.UserType = parameters.UserType;
+                user.Email = parameters.Email;
+                //user.EntityID = parameters.EntityId;
+
+                var result = await _userManager.CreateAsync(user, parameters.Password);
+                if (!result.Succeeded) return BadRequest(result.Errors.FirstOrDefault()?.Description);
+                var result2 = await _userManager.AddToRoleAsync(user, parameters.UserType.ToString());
+                if (!result.Succeeded) return BadRequest(result.Errors.FirstOrDefault()?.Description);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Get a list of users by rolname
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> GetUsersByRol()
+        {
+            try
+            {
+                string rolname = "User";
+                var list = await _userManager.GetUsersInRoleAsync(rolname);
+
+                List<UserEntity> users = new List<UserEntity>();
+
+                for (int i = 0; i < list.Count; i++)
+                {
+                    users.Add(new UserEntity()
+                    {
+                        Id = list[i].Id,
+                        Name = list[i].UserName
+                    });
+                }
+
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [Authorize]
         [HttpPost]

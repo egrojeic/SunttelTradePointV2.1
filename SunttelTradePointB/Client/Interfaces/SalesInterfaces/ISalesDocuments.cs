@@ -3,7 +3,7 @@ using SunttelTradePointB.Shared.Sales;
 
 namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
 {
-    public interface TSalesDocuments
+    public interface ISalesDocuments
     {
 
         /// <summary>
@@ -91,6 +91,6 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// <param name="page"></param>     
         /// <param name="perPage"></param>     
         /// <returns></returns>
-        Task<List<Concept>> GetCommercialVendorList(string filter, CommercialDocumentType documentType, int? page = 1, int? perPage = 10);
+        Task<List<Concept>> GetCommercialVendorList(string filter, bool IsASale, int? page = 1, int? perPage = 10);
     }
 }
