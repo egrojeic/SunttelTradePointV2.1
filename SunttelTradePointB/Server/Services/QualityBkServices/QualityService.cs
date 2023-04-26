@@ -173,6 +173,7 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
         }
         #endregion
 
+        #region Quality Parameters Groups
         /// <summary>
         /// Saves an Entity/Actor document. If it doesn't exists, it'll be created
         /// </summary>
@@ -309,5 +310,7 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                 return (false, null, e.Message);
             }
         }
+
+        #endregion
     }
 }
