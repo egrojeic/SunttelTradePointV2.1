@@ -1,0 +1,107 @@
+﻿@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+@using SunttelTradePointB.Shared.Sales
+@inject NavigationManager Navigation
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+
+
+
+
+<div id="container-menu-general">
+    <nav>
+        <div>
+            <label class="lblControl col-form-label" style="color:white" >
+                @GetName("DocumentType",new CommercialDocument())
+            </label>
+        </div>
+
+        <div class="InventoryBusinessLine">
+            <select @onchange="SetDocumentType" class="select-style">
+                @if (commercialDocumentTypeList != null)
+                {
+                    @foreach (var item in commercialDocumentTypeList)
+                    {
+                        <option value="@(item.Id)" selected>@(item.Name)</option>
+                    }
+                }
+            </select>
+        </div>
+
+    </nav>
+
+</div>
+
+
+@code {
+    [Parameter]
+    public List<CommercialDocumentType> commercialDocumentTypeList { get; set; }
+    [Parameter]
+    public EventCallback<CommercialDocumentType> SetDocumentTypeMode { get; set; }
+
+    static bool ShowMenu { get; set; } = false;
+    public string commandStyle = "display: 'none';";
+
+    const string PASTE = "e-btn-icons e-paste";
+    const string PASTESPECIAL = "e-btn-icons e-paste-special";
+    const string PASTEASFORMULA = "e-btn-icons e-paste-formula";
+    const string PASTEASHYPERLINK = "e-btn-icons e-paste-hyperlink";
+
+    void ToggleMenu()
+    {
+        ShowMenu = !ShowMenu;
+        commandStyle = $"display: {(ShowMenu ? "block" : "none")}";
+        StateHasChanged();
+
+    }
+
+
+
+    protected async override void OnInitialized()
+    {
+        commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes();
+        StateHasChanged();
+    }
+
+    void OnClick(RadzenSplitButtonItem item, string buttonName)
+    {
+        if (item != null)
+        {
+            Console.WriteLine($"{buttonName}, item with value {item.Value} clicked");
+        }
+        else
+        {
+            Console.WriteLine($"{buttonName} clicked");
+        }
+    }
+
+    private void ItemSelected(MenuEventArgs args)
+    {
+        var Selected_item = args.Item.Id;
+        Navigation.NavigateTo(Selected_item);
+    }
+
+    private void SetDocumentType(ChangeEventArgs args)
+    {
+        var Selected_item = commercialDocumentTypeList.Where(s => s.Id == args.Value.ToString()).FirstOrDefault();
+        if (Selected_item != null)
+        {
+            SetDocumentTypeMode.InvokeAsync(Selected_item);
+        }
+    }
+
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+
+    private void CreateNew()
+    {
+        Navigation.NavigateTo("/SaleItem");
+    }
+
+}
+
+

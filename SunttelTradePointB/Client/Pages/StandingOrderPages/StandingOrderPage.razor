@@ -1,5 +1,6 @@
-﻿@page "/Credits"
-@page "/Credits/{_filterItems}"
+﻿@page "/StandingOrder"
+@page "/StandingOrder/{_filterItems}"
+@using SunttelTradePointB.Client.Shared.Menus.StandingOrder;
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Accounting
 @inject SunttelTradePointB.Client.Services.CreditDocumentServices.StandingOrderServices CreditDocumentServices
@@ -14,11 +15,11 @@
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
-    <CreditDocumentsMenu></CreditDocumentsMenu>
+    <StandingOrderMenu></StandingOrderMenu>
     <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
 </div>
 <div class="panelMenuContainer">
-    @* <CreditDocumentMenu2 SetDocumentTypeId="SetDocumentTypeId"></CreditDocumentMenu2>*@
+    <StandingOrderMenu2 SetDocumentType="SetDocumentType"></StandingOrderMenu2>
     <RangeDatesInput StartDate="@startingDate"
         EndDate="endDate"
                      StartDateName="From"
@@ -38,7 +39,7 @@
     }
     else
     {
-        if (CreditDocumentList != null)
+        if (standingOrderList != null)
         {
             <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
@@ -50,29 +51,35 @@
                     AllowPaging="true"
                     PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                     ShowPagingSummary="true"
-                    Data="CreditDocumentList"
-                    TItem="CreditDocument"
+                    Data="standingOrderList"
+                    TItem="StandingOrder"
                     ColumnWidth="300px"
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
                 <Columns>
 
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="CreditDocumentType.Name" Title="@GetName("CreditDocumentType",new CreditDocument())" Width="308px" />
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="Code" Title="@GetName("Code",new CreditDocument())" Width="208px" />
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="Vendor.Name" Title="@GetName("Vendor",new CreditDocument())" Width="208px" />
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="Vendor.Buyer" Title="@GetName("Buyer",new CreditDocument())" Width="208px" />
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="CreditDocumentStatus.Name" Title="@GetName("CreditDocumentStatus",new CreditDocument())" Width="208px" />
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="CreditDocumentReason.Name" Title="@GetName("CreditDocumentReason",new CreditDocument())" Width="208px" />                   
-                   <RadzenDataGridColumn TItem="CreditDocument" Property="CreditValue" Title="@GetName("CreditValue",new CreditDocument())" Width="208px" />
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="IsDirect" Title="@GetName("IsDirect",new CreditDocument())" Width="200px" TextAlign="Radzen.TextAlign.Center">
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="DocumentType.Name" Title="@GetName("DocumentType",new StandingOrder())" Width="308px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="DocumentNumbere" Title="@GetName("DocumentNumber",new StandingOrder())" Width="208px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="BusinessLineDoc.Name" Title="@GetName("BusinessLineDoc",new StandingOrder())" Width="308px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="PO" Title="@GetName("PO",new StandingOrder())" Width="308px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="StartingShipDate" Title="@GetName("StartingShipDate",new StandingOrder())" Width="208px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="FinalShipDate" Title="@GetName("FinalShipDate",new StandingOrder())" Width="208px" />                  
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="IsDirect" Title="@GetName("IsDirect",new StandingOrder())" Width="200px" TextAlign="Radzen.TextAlign.Center">
                         <Template>
                             @{
-                                var IsDirect = (bool)context.GetType().GetProperty(nameof(CreditDocument.IsDirect)).GetValue(context);
-                                <input type="checkbox" checked="@IsDirect" />
+                                var IsEndUndefined = (bool)context.GetType().GetProperty(nameof(StandingOrder.IsEndUndefined)).GetValue(context);
+                                <input type="checkbox" checked="@IsEndUndefined" />
                             }
                         </Template>
                     </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="Season.Name" Title="@GetName("Season",new StandingOrder())" Width="208px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="Vendor.Name" Title="@GetName("Vendor",new StandingOrder())" Width="208px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="Buyer.Name" Title="@GetName("Buyer",new StandingOrder())" Width="208px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="SalesPerson" Title="@GetName("SalesPerson",new StandingOrder())"  Width="208px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="FrequencyInDays" Title="@GetName("FrequencyInDays",new StandingOrder())" Sortable="false" Width="208px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="DeliveryAddress" Title="@GetName("DeliveryAddress",new StandingOrder())" Sortable="false" Filterable="false" Width="208px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="TransportationMode" Title="@GetName("TransportationMode",new StandingOrder())" Sortable="false" Filterable="false" Width="208px" />
 
                 </Columns>
             </RadzenDataGrid>
@@ -85,7 +92,7 @@
 @code {
     [Parameter]
     public string _filterItems { get; set; }
-    public List<CreditDocument> CreditDocumentList { get; set; }
+    public List<StandingOrder> standingOrderList { get; set; }
     public CommercialDocumentType documentType { get; set; }
 
     bool isLoading = false;
@@ -116,23 +123,24 @@
         isLoading = true;
         if (documentType != null || true)
         {
-            CreditDocumentList = await CreditDocumentServices.GetCreditDocumentList(startingDate, endDate, (filter != null ? filter : "all"), 1, 10);
+            //CreditDocumentList = await CreditDocumentServices.GetCreditDocumentList(startingDate, endDate, (filter != null ? filter : "all"), 1, 10);
         }
         isLoading = false;
         StateHasChanged();
     }
 
-    public async void SetDocumentTypeId(CommercialDocumentType item)
+    public async void SetDocumentType(CommercialDocumentType item)
     {
         if (item != null)
         {
             documentType = item;
         }
         StateHasChanged();
+
     }
 
 
-    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CreditDocument> args) => ContextMenuService.Open(args, ds =>
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<StandingOrder> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
@@ -141,8 +149,8 @@
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
-        CreditDocument argObj = (CreditDocument)args.Value;
-        Navigation.NavigateTo($"CreditDocumentsItem/{argObj.Id}/{_filterItems}");
+        StandingOrder argObj = (StandingOrder)args.Value;
+        Navigation.NavigateTo($"StandingOrder/{argObj.Id}/{_filterItems}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
