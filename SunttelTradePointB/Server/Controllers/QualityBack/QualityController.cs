@@ -8,8 +8,10 @@ using SunttelTradePointB.Shared.Quality;
 namespace SunttelTradePointB.Server.Controllers.QualityBack
 {
     /// <summary>
-    /// Controller for quality
+    /// Controller for inventory
     /// </summary>
+    [Tags("Quality operations EndPoints")]
+    [Route("api/[controller]/[action]")]
     public class QualityController : ControllerBase
     {
         private IQuality _quality;

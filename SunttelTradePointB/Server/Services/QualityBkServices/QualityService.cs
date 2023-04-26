@@ -59,13 +59,17 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                             new BsonDocument {
                                 { "$match",
                                     new BsonDocument{
-                                        { "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filter}/i")) },
-                                        { "SquadId", squadId}
+                                        { "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filter}/i")) }
                                     }
                                 }
                             }
                         );
                     }
+
+                    // Filtro por SquadId
+                    pipeline.Add(
+                        new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                    );
 
                     pipeline.Add(
                     new BsonDocument{
