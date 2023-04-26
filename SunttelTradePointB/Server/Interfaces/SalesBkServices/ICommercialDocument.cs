@@ -161,6 +161,21 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         Task<(bool IsSuccess, ShippingStatus? shippingStatus, string? ErrorDescription)> GetShippingStatusDocById(string userId, string ipAdress, string squadId, string businessLineDocId);
 
         /// <summary>
+        /// Retrieves a list of the documents having the specified type and date span
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="shippingDate"></param>
+        /// <param name="warehouseId"></param>
+        /// <param name="filter"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<CommercialDocument>? CommercialDocuments, string? ErrorDescription)> GetShippingInvoices(string userId, string ipAddress, string squadId, DateTime shippingDate, string warehouseId, string? filter = null, int? page = 1, int? perPage = 10);
+
+
+        /// <summary>
         /// Saves an  Shipping Status document. If it doesn't exists, it'll be created
         /// </summary>
         /// <param name="userId"></param>

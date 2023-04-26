@@ -208,11 +208,9 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
                     );
                 }
                 // Filtro por SquadId
-                /*
                 pipeline.Add(
                     new BsonDocument("$match", new BsonDocument("SquadId", squadId))
                 );
-                */
 
                 pipeline.Add(
                     new BsonDocument{
