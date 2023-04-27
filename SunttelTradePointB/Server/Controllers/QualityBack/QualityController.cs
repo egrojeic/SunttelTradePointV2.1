@@ -179,9 +179,157 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
 
         #endregion
 
+        #region Quality Traffic Light
+        /// <summary>
+        /// Retrieves a Quality Action matching with its Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetQualityTrafficLights")]
+        public async Task<IActionResult> GetQualityTrafficLights(string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filter = null)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _quality.GetQualityTrafficLights(userId, ipAddress, squadId, page, perPage, filter);
 
+            if (response.IsSuccess)
+            {
+                return Ok(response.QualityTrafficLightsList);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
 
+        /// <summary>
+        /// Retrieves a Quality Paramete matching with its Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="qualityId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetQualityTrafficLightById")]
+        public async Task<IActionResult> GetQualityTrafficLightById(string userId, string ipAddress, string qualityId)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _quality.GetQualityTrafficLightById(userId, ipAddress, squadId, qualityId);
 
+            if (response.IsSuccess)
+            {
+                return Ok(response.QualityTrafficLight);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Insert / Update a Quality Parameters
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="quality"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveQualityTrafficLight")]
+        public async Task<IActionResult> SaveQualityTrafficLight(string userId, string ipAddress, [FromBody] QualityTrafficLight quality)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+
+            var response = await _quality.SaveQualityTrafficLight(userId, ipAddress, squadId, quality);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.QualityTrafficLight);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+        #endregion
+
+        #region Quality Action
+        /// <summary>
+        /// Retrieves a Quality Action matching with its Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetQualityActions")]
+        public async Task<IActionResult> GetQualityActions(string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filter = null)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _quality.GetQualityActions(userId, ipAddress, squadId, page, perPage, filter);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.QualityActionsList);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Retrieves a Quality Paramete matching with its Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="qualityId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetQualityActionById")]
+        public async Task<IActionResult> GetQualityActionById(string userId, string ipAddress, string qualityId)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _quality.GetQualityActionById(userId, ipAddress, squadId, qualityId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.QualityAction);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Insert / Update a Quality Parameters
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="quality"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveQualityAction")]
+        public async Task<IActionResult> SaveQualityAction(string userId, string ipAddress, [FromBody] QualityAction quality)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+
+            var response = await _quality.SaveQualityAction(userId, ipAddress, squadId, quality);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.QualityAction);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+        #endregion
 
 
     }
