@@ -109,7 +109,6 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             CultureInfo culture = new CultureInfo("en-US");
             try
             {
-
                 string path = basepath.Replace("Name", "GetCommercialDocumentsByDateSpan");
                 var responseMessage = await Gethttp($"{path}&startDate={startDate.ToString("yyyy-MM-dd", culture)}&endDate={endDate}&documentTypeId={documentTypeId}&filter={filter}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocument>>();
@@ -511,7 +510,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
 
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
 
-                if (SquadId != null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString().ToLower());
+                if (SquadId != null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString().ToUpper());
                 if (SquadId == null) request.Headers.Add("SquadId", "0000000000");
                 var response = await _httpClient.SendAsync(request);
 

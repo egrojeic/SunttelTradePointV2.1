@@ -1,0 +1,63 @@
+﻿@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+@using SunttelTradePointB.Shared.Sales
+@inject NavigationManager Navigation
+@inject SunttelTradePointB.Client.Services.QualityEvaluationServices.QualityEvaluationServices QualityEvaluationServices
+@inject IJSRuntime Js
+
+
+
+<div id="container-menu-general">
+    <nav>
+        <button class="general-menu-button btn-new" @onclick="CreateNew"><i class="fa-solid fa-file"></i></button>
+        <SfSplitButton Content="Import..." IconCss="fa-solid fa-file-import" CssClass="splitButtonsStyle">
+            <DropDownMenuItems>
+                <DropDownMenuItem Text="Importing from the cloud..." IconCss="fa-solid fa-cloud-arrow-up"></DropDownMenuItem>
+                <DropDownMenuItem Text="Uploading a csv file..." IconCss="fa-solid fa-file-csv"></DropDownMenuItem>
+            </DropDownMenuItems>
+        </SfSplitButton>
+
+        <SfSplitButton Content="Related Concepts" IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
+            <SplitButtonEvents ItemSelected="ItemSelected">
+            </SplitButtonEvents>
+            <DropDownMenuItems>
+                <DropDownMenuItem Id="QualityReportType" Text="Quality Report Type" IconCss="fa-sharp fa-solid fa-circle-plus"></DropDownMenuItem>               
+                <DropDownMenuItem Id="QualityTrafficLight" Text="Quality Traffic Light" IconCss="fa-sharp fa-solid fa-circle-plus"></DropDownMenuItem>
+                <DropDownMenuItem Id="QualityParameterGroup" Text="Quality Parameter Group" IconCss="fa-sharp fa-solid fa-circle-plus"></DropDownMenuItem>
+            </DropDownMenuItems>
+        </SfSplitButton>
+    
+    </nav>
+
+</div>
+
+
+@code {
+  
+    protected async override void OnInitialized()
+    {
+       // commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes();
+        StateHasChanged();
+    }
+
+  
+
+    private void ItemSelected(MenuEventArgs args)
+    {
+        var Selected_item = args.Item.Id;
+        EventIdSelectionMenuItem(Selected_item);
+    }
+
+    public void EventIdSelectionMenuItem(string name)
+    {
+        Js.InvokeAsync<object>("open", name, "_blank");
+    }
+
+    private void CreateNew()
+    {
+        Navigation.NavigateTo("/QualityEvaluationItem");
+    }
+
+}
+
+

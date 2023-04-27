@@ -24,6 +24,7 @@
 <div class="panelMenuContainer aling">
     <ShippingMenu2 SetWarehouse="Setwarehouse"></ShippingMenu2>
     <RangeDatesInput StartDate="@startingDate"
+                     StartDateName="Date"
                      EventSearchAll="EventSearchAll"></RangeDatesInput>
 </div>
 
@@ -55,20 +56,33 @@
                     ColumnWidth="300px"
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"
-                    @bind-Value="@selectedcommercialdocuments"                    
+                    @bind-Value="@selectedcommercialdocuments"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
             <Columns>
 
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentNumber" Title="@GetName("DocumentNumber", new CommercialDocument() )" Width="208px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="ShipDate" Title="Ship Date" FormatString="{0:d}" Filterable="false" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="DeliveryDate" Title="Delivery Date" Filterable="false" FormatString="{0:d}" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="Buyer.Name" Title="Customer" Width="200px"  />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentPrinted" Title="@GetName("DocumentPrinted", new CommercialDocument() )" Sortable="false" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="PrintingSatus.PickingTicketPrinted" Title="@GetName("PickingTicketPrinted", new SalesDocumentPrintingSatus() )" Sortable="false" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="PrintingSatus.LabelsPrinted" Title="@GetName("LabelsPrinted", new SalesDocumentPrintingSatus() )" Sortable="false" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="PrintingSatus.BillOfLandingPrinted" Title="@GetName("BillOfLandingPrinted", new SalesDocumentPrintingSatus() )" Sortable="false" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="ShippingStatusDocument.Name" Title="@GetName("ShippingStatusDocument", new CommercialDocument() )" Width="200px" Sortable="false" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="@nameof(CommercialDocument.FinanceStatusDocument)" Title="@GetName("FinanceStatusDocument", new CommercialDocument() )"  Sortable="false" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentNumber" Title="@GetName("DocumentNumber", new CommercialDocument() )" Width="108px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="ShipDate" Title="Ship Date"  Filterable="false" Width="150px" >                  <Template>
+                        @{
+                            var item = (DateTime)context.GetType().GetProperty(nameof(CommercialDocument.ShipDate)).GetValue(context);
+                            <p>@item.ToString("MM/dd/yyyy")</p>
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="DeliveryDate" Title="Delivery Date" Filterable="false" Width="150px">
+                    <Template>
+                        @{
+                            var item = (DateTime)context.GetType().GetProperty(nameof(CommercialDocument.DeliveryDate)).GetValue(context);
+                            <p>@item.ToString("MM/dd/yyyy")</p>
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="Buyer.Name" Title="Customer" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentPrinted" Title="@GetName("DocumentPrinted", new CommercialDocument() )" Sortable="false" Width="180px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="PrintingSatus.PickingTicketPrinted" Title="@GetName("PickingTicketPrinted", new SalesDocumentPrintingSatus() )" Sortable="false" Width="180px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="PrintingSatus.LabelsPrinted" Title="@GetName("LabelsPrinted", new SalesDocumentPrintingSatus() )" Sortable="false" Width="180px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="PrintingSatus.BillOfLandingPrinted" Title="@GetName("BillOfLandingPrinted", new SalesDocumentPrintingSatus() )" Sortable="false" Width="180px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="ShippingStatusDocument.Name" Title="@GetName("ShippingStatusDocument", new CommercialDocument() )" Width="180px" Sortable="false" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="@nameof(CommercialDocument.FinanceStatusDocument)" Title="@GetName("FinanceStatusDocument", new CommercialDocument() )" Sortable="false" Width="180px" />
 
             </Columns>
         </RadzenDataGrid>
@@ -114,11 +128,11 @@
         isLoading = true;
         if (warehouse != null)
         {
-            commercialdocumentList = await ShippingServices.GetShippingtList(startingDate, startingDate, warehouse.Id, (_filterItems != null ? _filterItems : "all"),1,20);
+            commercialdocumentList = await ShippingServices.GetShippingtList(startingDate, startingDate, warehouse.Id, (_filterItems != null ? _filterItems : "all"), 1, 20);
 
         }
         isLoading = false;
-    
+
         StateHasChanged();
     }
 

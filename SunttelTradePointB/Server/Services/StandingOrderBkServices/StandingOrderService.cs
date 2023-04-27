@@ -96,7 +96,7 @@ namespace SunttelTradePointB.Server.Services.StandingOrderBkServices
 
                     if (standingOrders == null || standingOrders.Count == 0)
                     {
-                        return (false, null, "Unpopulated Inventory");
+                        return (false, null, "Unpopulated  Standing Order");
                     }
                     else
                     {
@@ -183,11 +183,71 @@ namespace SunttelTradePointB.Server.Services.StandingOrderBkServices
         /// <param name="squadId"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
-        /// <param name="filterName"></param>
+        /// <param name="filter"></param>
         /// <returns></returns>
-        public Task<(bool IsSuccess, List<StandingOrderDetails>? StandingOrdersDetailsList, string? ErrorDescription)> GetStandingOrdersDetails(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filter = null)
+        public async Task<(bool IsSuccess, List<StandingOrderDetails>? StandingOrdersDetailsList, string? ErrorDescription)> GetStandingOrdersDetails(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filter = null)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string filterString = filter == null ? "" : filter;
+                var skip = (page - 1) * perPage;
+
+                if (filterString.Length > 0)
+                {
+                    var pipeline = new List<BsonDocument>();
+
+                    if (filterString.ToLower() != "all")
+                    {
+                        pipeline.Add(
+                            new BsonDocument {
+                                { "$match",
+                                    new BsonDocument{
+                                        { "UnitPrice", new BsonDocument("$regex", new BsonRegularExpression($"/{filter}/i")) }
+                                    }
+                                }
+                            }
+                        );
+                    }
+
+                    // Filtro por SquadId
+                    pipeline.Add(
+                        new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                    );
+
+                    pipeline.Add(
+                    new BsonDocument{
+                        {"$skip",  skip}
+                    }
+                    );
+
+                    pipeline.Add(
+                        new BsonDocument{
+                        {"$limit",  perPage}
+                        }
+                    );
+
+                    List<StandingOrderDetails> results = await _StandingOrderDetailsCollection.Aggregate<StandingOrderDetails>(pipeline).ToListAsync();
+                    return (true, results, null);
+                }
+                else
+                {
+                    var standingOrdersDetails = await _StandingOrderDetailsCollection.Find<StandingOrderDetails>(new BsonDocument()).ToListAsync();
+
+                    if (standingOrdersDetails == null || standingOrdersDetails.Count == 0)
+                    {
+                        return (false, null, "Unpopulated Standing Order Detail");
+                    }
+                    else
+                    {
+                        return (true, standingOrdersDetails, null);
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
 
         /// <summary>
@@ -196,11 +256,31 @@ namespace SunttelTradePointB.Server.Services.StandingOrderBkServices
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
         /// <param name="squadId"></param>
-        /// <param name="qualityId"></param>
+        /// <param name="standingOrderDetailId"></param>
         /// <returns></returns>
-        public Task<(bool IsSuccess, StandingOrderDetails? StandingOrderDetail, string? ErrorDescription)> GetStandingOrderDetailById(string userId, string ipAddress, string squadId, string standingOrderDetailId)
+        public async Task<(bool IsSuccess, StandingOrderDetails? StandingOrderDetail, string? ErrorDescription)> GetStandingOrderDetailById(string userId, string ipAddress, string squadId, string standingOrderDetailId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(standingOrderDetailId)))
+                );
+                // Filtro por SquadId
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                );
+
+                var resultPrev = await _StandingOrderDetailsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                StandingOrderDetails result = resultPrev.Select(d => BsonSerializer.Deserialize<StandingOrderDetails>(d)).ToList()[0];
+
+                return (true, result, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, null, ex.Message);
+            }
         }
 
         /// <summary>
@@ -209,12 +289,29 @@ namespace SunttelTradePointB.Server.Services.StandingOrderBkServices
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
         /// <param name="squadId"></param>
-        /// <param name="quality"></param>
+        /// <param name="standing"></param>
         /// <returns></returns>
-        public Task<(bool IsSuccess, StandingOrderDetails? StandingOrderDetail, string? ErrorDescription)> SaveStandingOrderDetail(string userId, string ipAddress, string squadId, StandingOrderDetails standing)
+        public async Task<(bool IsSuccess, StandingOrderDetails? StandingOrderDetail, string? ErrorDescription)> SaveStandingOrderDetail(string userId, string ipAddress, string squadId, StandingOrderDetails standing)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (standing.Id == null)
+                {
+                    standing.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterStading = Builders<StandingOrderDetails>.Filter.Eq("_id", new ObjectId(standing.Id));
+                var updateStading = new ReplaceOptions { IsUpsert = true };
+                var resultStading = await _StandingOrderDetailsCollection.ReplaceOneAsync(filterStading, standing, updateStading);
+
+                return (true, standing, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
         }
+
         #endregion
     }
 }

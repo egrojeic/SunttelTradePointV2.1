@@ -518,5 +518,34 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
 
 
         #endregion
+
+        #region Account Receivable
+        /// <summary>
+        /// Retrieves a list of Commercial documents of the Squad for the date span and Document type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="shippingDate"></param>
+        /// <param name="filter"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name=""></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetAccountReceivable")]
+        public async Task<IActionResult> GetAccountReceivable(string userId, string ipAddress, DateTime shippingDate, string? filter = null, int? page = 1, int? perPage = 10)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _commercialDocument.GetAccountReceivable(userId, ipAddress, squadId, shippingDate, filter, page, perPage);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.CommercialDocuments);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+        #endregion
     }
 }

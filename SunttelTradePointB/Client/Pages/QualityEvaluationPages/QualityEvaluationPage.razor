@@ -1,0 +1,185 @@
+﻿@page "/QualityControlPanel"
+@page "/QualityControlPanel/{_filterItems}"
+
+
+
+@using SunttelTradePointB.Shared.Quality;
+@using SunttelTradePointB.Client.Shared.Menus.QualityEvaluation;
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject SunttelTradePointB.Client.Services.QualityEvaluationServices.QualityEvaluationServices QualityEvaluationServices
+@inject ContextMenuService ContextMenuService
+@inject NavigationManager Navigation
+@inject IJSRuntime Js
+
+<PageTitleComponent Title="Accounts Receivable" IconName="commercialActivities.png"
+                    Description="With this tool you can view accounts receivable">
+</PageTitleComponent>
+
+
+
+
+<div class="panelMenuContainer">
+    <QualityEvaluationMenu>
+        </QualityEvaluationMenu>
+            <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
+            <RangeDatesInput StartDate="@startingDate"
+                             StartDateName="Form"
+                             EndDateName="To"
+                             EndDate="endDate"
+                             EventSearchAll="EventSearchAll"></RangeDatesInput>
+
+</div>
+
+<div class="panelMenuContainer">
+    <QualityEvaluationMenu2 SetType="SetType"></QualityEvaluationMenu2>
+</div>
+
+
+
+<div class="tableContainer">
+
+
+    @if (isLoading)
+    {
+
+        <WaitingProcessIndicator loadingTopic="Characteristic Items"></WaitingProcessIndicator>
+
+    }
+    else
+    {
+
+        <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="20"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@qualityEvaluationList"
+                    TItem="QualityEvaluation"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    @bind-Value="@selectedcommercialdocuments"
+                    CellContextMenu="@ShowContextMenuCommercialDocument">
+            <Columns>
+
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="QualityReportType.Name" Title="@GetName("QualityReportType", new QualityEvaluation() )" Width="158px" />
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="QualityReportType.Name" Title="@GetName("QualityReportType", new QualityEvaluation() )" Width="158px" />
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="InspectionDate" Title="@GetName("InspectionDate", new QualityEvaluation() )" Filterable="false" Sortable="false" Width="158px">
+                    <Template>
+                        @{
+                            var item = (DateTime)context.GetType().GetProperty(nameof(QualityEvaluation.InspectionDate)).GetValue(context);
+                            <p>@item.ToString("MM/dd/yyyy")</p>
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="QuantityToInspect" Title="@GetName("QuantityToInspect", new QualityEvaluation() )" Filterable="false" Width="158px" />
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="QuantityInspected" Title="@GetName("QuantityInspected", new QualityEvaluation() )" Filterable="false" Width="158px" />
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="QuantityWithIssues" Title="@GetName("QuantityWithIssues", new QualityEvaluation() )" Filterable="false" Width="158px" />
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="Pack" Title="@GetName("Pack", new QualityEvaluation() )" Filterable="false" Width="158px" />
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="TrafficLightStatus.Name" Title="@GetName("TrafficLightStatus", new QualityEvaluation() )" Filterable="false" Width="158px" />
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="QualityAction.Name" Title="@GetName("QualityAction", new QualityEvaluation() )" Filterable="false" Width="158px" />
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="OverKill" Title="@GetName("OverKill", new QualityEvaluation() )" Filterable="false" Sortable="false" Width="158px" />
+
+
+            </Columns>
+        </RadzenDataGrid>
+    }
+</div>
+
+
+@code {
+
+    [Parameter]
+    public string _filterItems { get; set; }
+    List<QualityEvaluation>? qualityEvaluationList { get; set; }
+
+    public QualityReportType qualityReportType { get; set; }
+    IList<QualityEvaluation>? selectedcommercialdocuments;
+
+    bool isLoading = false;
+
+    DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
+
+    public string docsFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+    protected async override void OnInitialized()
+    {
+
+
+        if (_filterItems != null) LoadData();
+        base.OnInitialized();
+
+    }
+
+    public async void LoadData()
+    {
+        isLoading = true;
+        if (qualityReportType != null)
+        {
+            qualityEvaluationList = await QualityEvaluationServices.GetQualityEvaluationServicesList(startingDate, endDate, qualityReportType.Id, (_filterItems != null ? _filterItems : "all"), 1, 20);
+
+        }
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    public void EventSearchAll(string value)
+    {
+        docsFilter = value;
+    }
+
+    public async void SetType(QualityReportType item)
+    {
+
+        if (item != null)
+        {
+            qualityReportType = item;
+        }
+        StateHasChanged();
+    }
+
+
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<QualityEvaluation> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        QualityEvaluation argObj = (QualityEvaluation)args.Value;
+        Navigation.NavigateTo($"AccountsReceivableippingItem/{argObj.Id}/{docsFilter}");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+    public void SetdocsFilter(string value)
+    {
+        docsFilter = value;
+        StateHasChanged();
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+
+}

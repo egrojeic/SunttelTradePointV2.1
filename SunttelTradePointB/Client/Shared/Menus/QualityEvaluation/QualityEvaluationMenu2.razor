@@ -1,0 +1,100 @@
+﻿@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+@using SunttelTradePointB.Shared.Quality
+@inject NavigationManager Navigation
+@inject SunttelTradePointB.Client.Services.QualityEvaluationServices.QualityEvaluationServices QualityEvaluationServices
+
+
+
+<div class="aling-div ">
+
+    <div>
+        <label class="lblControl col-form-label">
+            @GetName("QualityReportType",new QualityReportType())
+        </label>
+    </div>
+    <div>
+        <select @onchange="SelectItemType" class="select-style">
+            @if (TypeList != null && TypeList.Count() > 0)
+            {
+                <option value="0" selected>Select</option>
+            }
+            @if (TypeList != null)
+            {
+                @foreach (var item in TypeList)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            }
+            @if (qualityReportType != null)
+            {
+                <option value="@qualityReportType.Id" selected>@qualityReportType.Name</option>
+            }
+        </select>
+    </div>
+
+
+
+</div>
+
+
+@code {
+    
+    public List<QualityReportType> TypeList { get; set; }
+    [Parameter]
+    public EventCallback<QualityReportType> SetType { get; set; }
+
+    QualityReportType qualityReportType = new();
+
+
+    protected async override void OnInitialized()
+    {
+        TypeList = await QualityEvaluationServices.GetQualityReportTypeList("all",1,50);
+
+        StateHasChanged();
+    }
+
+    void OnClick(RadzenSplitButtonItem item, string buttonName)
+    {
+        if (item != null)
+        {
+            Console.WriteLine($"{buttonName}, item with value {item.Value} clicked");
+        }
+        else
+        {
+            Console.WriteLine($"{buttonName} clicked");
+        }
+    }
+
+    private void ItemSelected(MenuEventArgs args)
+    {
+        var Selected_item = args.Item.Id;
+        Navigation.NavigateTo(Selected_item);
+    }
+
+    private void SelectItemType(ChangeEventArgs args)
+    {
+        qualityReportType = TypeList.Where(s => s.Id == args.Value.ToString()).FirstOrDefault();
+
+        SetType.InvokeAsync(qualityReportType);
+
+    }
+
+
+  
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+
+
+    private void CreateNew()
+    {
+        Navigation.NavigateTo("/Inventory");
+    }
+
+}
+
+

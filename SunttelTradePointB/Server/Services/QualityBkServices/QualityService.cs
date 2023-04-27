@@ -19,6 +19,8 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
         /// 
         IMongoCollection<QualityAssuranceParameter> _QualityParameterCollection;
         IMongoCollection<QualityParameterGroup> _QualityGroupCollection;
+        IMongoCollection<QualityTrafficLight> _QualityTrafficLightCollection;
+        IMongoCollection<QualityAction> _QualityActionCollection;
 
         /// <summary>
         /// Constructor
@@ -31,6 +33,7 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
             var mongoDatabase = mongoClient.GetDatabase(DataBaseName);
             _QualityParameterCollection = mongoDatabase.GetCollection<QualityAssuranceParameter>("QualityParameters");
             _QualityGroupCollection = mongoDatabase.GetCollection<QualityParameterGroup>("QualityParameterGroups");
+            _QualityActionCollection = mongoDatabase.GetCollection<QualityAction>("QualityActions");
 
         }
 
@@ -310,7 +313,285 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                 return (false, null, e.Message);
             }
         }
-
         #endregion
+
+        #region Quality Traffic Lights
+        /// <summary>
+        /// Saves an Entity/Actor document. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<QualityTrafficLight>? QualityTrafficLightsList, string? ErrorDescription)> GetQualityTrafficLights(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filter = null)
+        {
+            try
+            {
+                string filterString = filter == null ? "" : filter;
+                var skip = (page - 1) * perPage;
+
+                if (filterString.Length > 0)
+                {
+                    var pipeline = new List<BsonDocument>();
+
+                    if (filterString.ToLower() != "all")
+                    {
+                        pipeline.Add(
+                            new BsonDocument {
+                                { "$match",
+                                    new BsonDocument{
+                                        { "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filterString}/i")) }
+                                    }
+                                }
+                            }
+                        );
+                    }
+
+                    // Filtro por SquadId
+                    pipeline.Add(
+                        new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                    );
+
+                    pipeline.Add(
+                    new BsonDocument{
+                        {"$skip",  skip}
+                    }
+                    );
+
+                    pipeline.Add(
+                        new BsonDocument{
+                        {"$limit",  perPage}
+                        }
+                    );
+
+                    List<QualityTrafficLight> results = await _QualityTrafficLightCollection.Aggregate<QualityTrafficLight>(pipeline).ToListAsync();
+                    return (true, results, null);
+                }
+                else
+                {
+                    var quality = await _QualityTrafficLightCollection.Find<QualityTrafficLight>(new BsonDocument()).ToListAsync();
+
+                    if (quality == null || quality.Count == 0)
+                    {
+                        return (false, null, "Unpopulated Quality Traffic Light");
+                    }
+                    else
+                    {
+                        return (true, quality, null);
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves a particular Transactional Item Type by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="qualityId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, QualityTrafficLight? QualityTrafficLight, string? ErrorDescription)> GetQualityTrafficLightById(string userId, string ipAddress, string squadId, string qualityId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(qualityId)))
+                );
+                // Filtro por SquadId
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                );
+
+                var resultPrev = await _QualityTrafficLightCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                QualityTrafficLight result = resultPrev.Select(d => BsonSerializer.Deserialize<QualityTrafficLight>(d)).ToList()[0];
+
+                return (true, result, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, null, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Inserts / Updates an Quanlity Item Type object
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="quality"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, QualityTrafficLight? QualityTrafficLight, string? ErrorDescription)> SaveQualityTrafficLight(string userId, string ipAddress, string squadId, QualityTrafficLight quality)
+        {
+            try
+            {
+                if (quality.Id == null)
+                {
+                    quality.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterQuantity = Builders<QualityTrafficLight>.Filter.Eq("_id", new ObjectId(quality.Id));
+                var updateQuantity = new ReplaceOptions { IsUpsert = true };
+                var resultQuantity = await _QualityTrafficLightCollection.ReplaceOneAsync(filterQuantity, quality, updateQuantity);
+
+                return (true, quality, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+        #endregion
+
+        #region Quality Actions
+        /// <summary>
+        /// Saves an Entity/Actor document. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<QualityAction>? QualityActionsList, string? ErrorDescription)> GetQualityActions(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filter = null)
+        {
+            try
+            {
+                string filterString = filter == null ? "" : filter;
+                var skip = (page - 1) * perPage;
+
+                if (filterString.Length > 0)
+                {
+                    var pipeline = new List<BsonDocument>();
+
+                    if (filterString.ToLower() != "all")
+                    {
+                        pipeline.Add(
+                            new BsonDocument {
+                                { "$match",
+                                    new BsonDocument{
+                                        { "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filterString}/i")) }
+                                    }
+                                }
+                            }
+                        );
+                    }
+
+                    // Filtro por SquadId
+                    pipeline.Add(
+                        new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                    );
+
+                    pipeline.Add(
+                    new BsonDocument{
+                        {"$skip",  skip}
+                    }
+                    );
+
+                    pipeline.Add(
+                        new BsonDocument{
+                        {"$limit",  perPage}
+                        }
+                    );
+
+                    List<QualityAction> results = await _QualityActionCollection.Aggregate<QualityAction>(pipeline).ToListAsync();
+                    return (true, results, null);
+                }
+                else
+                {
+                    var quality = await _QualityActionCollection.Find<QualityAction>(new BsonDocument()).ToListAsync();
+
+                    if (quality == null || quality.Count == 0)
+                    {
+                        return (false, null, "Unpopulated Quality Action");
+                    }
+                    else
+                    {
+                        return (true, quality, null);
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves a particular Transactional Item Type by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="qualityId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, QualityAction? QualityAction, string? ErrorDescription)> GetQualityActionById(string userId, string ipAddress, string squadId, string qualityId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(qualityId)))
+                );
+                // Filtro por SquadId
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                );
+
+                var resultPrev = await _QualityActionCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                QualityAction result = resultPrev.Select(d => BsonSerializer.Deserialize<QualityAction>(d)).ToList()[0];
+
+                return (true, result, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, null, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Inserts / Updates an Quanlity Item Type object
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="quality"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, QualityAction? QualityAction, string? ErrorDescription)> SaveQualityAction(string userId, string ipAddress, string squadId, QualityAction quality)
+        {
+            try
+            {
+                if (quality.Id == null)
+                {
+                    quality.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterQuantity = Builders<QualityAction>.Filter.Eq("_id", new ObjectId(quality.Id));
+                var updateQuantity = new ReplaceOptions { IsUpsert = true };
+                var resultQuantity = await _QualityActionCollection.ReplaceOneAsync(filterQuantity, quality, updateQuantity);
+
+                return (true, quality, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+        #endregion
+
     }
 }

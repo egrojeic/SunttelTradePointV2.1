@@ -18,8 +18,6 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
             _httpClient = httpClient;
         }
 
-
-
         public async Task<Payment> SavePaymentItem(Payment payment)
         {
             try

@@ -2,10 +2,11 @@
 @page "/AccountsReceivable/{_filterItems}"
 
 
-
+@using System;
+@using System.Globalization;
 @using SunttelTradePointB.Shared.Sales;
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
-@inject SunttelTradePointB.Client.Services.ShippingServices.ShippingServices ShippingServices
+@inject SunttelTradePointB.Client.Services.AccountsReceivableServices.IQualityEvaluationServices AccountsReceivableServices
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
 @inject IJSRuntime Js
@@ -20,13 +21,12 @@
 <div class="panelMenuContainer">
     <AccountsReceivableMenu></AccountsReceivableMenu>
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
+    <RangeDatesInput StartDate="@startingDate"
+                     StartDateName="Date"
+                     EventSearchAll="EventSearchAll"></RangeDatesInput>
 
 </div>
-<div class="panelMenuContainer aling">
-    <AccountsReceivableMenu2 SetWarehouse="Setwarehouse"></AccountsReceivableMenu2>
-    <RangeDatesInput StartDate="@startingDate"
-                     EventSearchAll="EventSearchAll"></RangeDatesInput>
-</div>
+
 
 
 <div class="tableContainer">
@@ -60,11 +60,51 @@
                     CellContextMenu="@ShowContextMenuCommercialDocument">
             <Columns>
 
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentNumber" Title="@GetName("DocumentNumber", new CommercialDocument() )" Width="208px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="ShipDate" Title="Ship Date" FormatString="{0:d}" Filterable="false" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="DeliveryDate" Title="Delivery Date" Filterable="false" FormatString="{0:d}" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="Buyer.Name" Title="Customer" Width="200px" />
-
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="@nameof(CommercialDocument.DocumentNumber)" Title="@GetName("DocumentNumber", new CommercialDocument() )" Width="208px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="@nameof(CommercialDocument.DeliveryDate)" Title="@GetName("DeliveryDate", new CommercialDocument() )" Filterable="false" Width="200px">
+                    <Template>
+                        @{
+                            var item = (DateTime)context.GetType().GetProperty(nameof(StandingOrder.FinalShipDate)).GetValue(context);
+                            <p>@item.ToString("MM/dd/yyyy")</p>
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="Vendor.Name" Title="@GetName("Vendor", new CommercialDocument() )" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="Buyer.Name" Title="@GetName("Buyer", new CommercialDocument() )" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="ShippingStatusDocument.Name" Title="@GetName("Buyer", new CommercialDocument() )" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="Season.Name" Title="@GetName("Season", new CommercialDocument() )" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalTaxes" Title="@GetName("TotalTaxes", new FinanceSalesDocumentSummary() )" Width="100px">
+                    <Template>
+                        @{
+                            var item = (Double)context.GetType().GetProperty(nameof(CommercialDocument.FinanceSummary.TotalTaxes)).GetValue(context);
+                            <p>@item.ToString("C0", CultureInfo.CreateSpecificCulture("en-US") )</p>
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalDiscounts Title="@GetName("TotalDiscounts", new FinanceSalesDocumentSummary() )" Width="1000px" >
+                    <Template>
+                        @{
+                            var item = (Double)context.GetType().GetProperty(nameof(CommercialDocument.FinanceSummary.TotalDiscounts)).GetValue(context);
+                            <p>@item.ToString("C0", CultureInfo.CreateSpecificCulture("en-US") )</p>
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalCosts" Title="@GetName("TotalCosts", new FinanceSalesDocumentSummary() )" Width="1000px" >
+                    <Template>
+                        @{
+                            var item = (Double)context.GetType().GetProperty(nameof(CommercialDocument.FinanceSummary.TotalCosts)).GetValue(context);
+                            <p>@item.ToString("C0", CultureInfo.CreateSpecificCulture("en-US") )</p>
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalAmount" Title="@GetName("TotalAmount", new FinanceSalesDocumentSummary() )" Width="1000px" >
+                    <Template>
+                        @{
+                            var item = (Double)context.GetType().GetProperty(nameof(CommercialDocument.FinanceSummary.TotalCosts)).GetValue(context);
+                            <p>@item.ToString("C0", CultureInfo.CreateSpecificCulture("en-US") )</p>
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
             </Columns>
         </RadzenDataGrid>
     }
@@ -76,7 +116,7 @@
     [Parameter]
     public string _filterItems { get; set; }
     List<CommercialDocument>? commercialdocumentList { get; set; }
-
+    NumberFormatInfo Us = new CultureInfo("en-US", false).NumberFormat;
     public Warehouse warehouse { get; set; }
     IList<CommercialDocument>? selectedcommercialdocuments;
 
@@ -108,11 +148,11 @@
         isLoading = true;
         if (warehouse != null)
         {
-            commercialdocumentList = await ShippingServices.GetShippingtList(startingDate, startingDate, warehouse.Id, (_filterItems != null ? _filterItems : "all"), 1, 20);
+            commercialdocumentList = await AccountsReceivableServices.GetAccountsReceivableServicesList(startingDate, startingDate, warehouse.Id, (_filterItems != null ? _filterItems : "all"), 1, 20);
 
             commercialdocumentList = commercialdocumentList.Where(s => s.DocumentType.IsASale == true).ToList();
         }
-        isLoading = false;      
+        isLoading = false;
         StateHasChanged();
     }
 
