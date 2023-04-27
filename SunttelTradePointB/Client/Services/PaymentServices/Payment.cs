@@ -42,7 +42,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
             try
             {
                 string path = $"/api/Inventory/GetInventory?&";
-                // paymentType.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                paymentType.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<PaymentType>($"{path}", paymentType);
                 return await responseMessage.Content.ReadFromJsonAsync<PaymentType>();
 
@@ -59,7 +59,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
             try
             {
                 string path = $"/api/Inventory/GetInventory?";
-               // paymentStatus.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                paymentStatus.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<PaymentStatus>($"{path}", paymentStatus);
                 return await responseMessage.Content.ReadFromJsonAsync<PaymentStatus>();
 
@@ -78,7 +78,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
                 string path = $"{pathApi}";
                 path = path.Replace("*Name", "SaveDocPaymentMode");
                 path = GetGlobalVariables(path);               
-                //paymentMode.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                paymentMode.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<PaymentMode>($"{path}", paymentMode);
                 return await responseMessage.Content.ReadFromJsonAsync<PaymentMode>();
 

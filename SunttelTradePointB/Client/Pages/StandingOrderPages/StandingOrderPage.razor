@@ -1,0 +1,181 @@
+﻿@page "/StandingOrdersSales"
+@page "/StandingOrdersSales/{_filterItems}"
+@using SunttelTradePointB.Client.Shared.Menus.StandingOrder;
+@using SunttelTradePointB.Shared.Sales;
+@using SunttelTradePointB.Shared.Accounting
+@inject SunttelTradePointB.Client.Services.StandingOrderServices.StandingOrderServices StandingOrderServices
+@inject ContextMenuService ContextMenuService
+@inject NavigationManager Navigation
+
+
+@inject IJSRuntime Js
+
+<PageTitleComponent Title="Standing Orders Sales" IconName="Payments.png"
+                    Description="With this tool you can create and edit standing orders sales ">
+</PageTitleComponent>
+
+<div class="panelMenuContainer">
+    <StandingOrderMenu></StandingOrderMenu>
+    <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
+</div>
+<div class="panelMenuContainer">
+    <StandingOrderMenu2 SetDocumentTypeMode="SetDocumentType"></StandingOrderMenu2>
+    <RangeDatesInput StartDate="@startingDate"
+        EndDate="endDate"
+                     StartDateName="From"
+                     EndDateName="To"
+                     EventSearchAll="EventSearchAll"></RangeDatesInput>
+</div>
+
+
+<div class="tableContainer">
+
+
+    @if (isLoading)
+    {
+
+        <WaitingProcessIndicator loadingTopic="CreditDocuments"></WaitingProcessIndicator>
+
+    }
+    else
+    {
+        if (standingOrderList != null)
+        {
+            <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="50"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="standingOrderList"
+                    TItem="StandingOrder"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    CellContextMenu="@ShowContextMenuCommercialDocument">
+                <Columns>
+
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="DocumentType.Name" Title="@GetName("DocumentType",new StandingOrder())" Width="308px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="DocumentNumbere" Title="@GetName("DocumentNumber",new StandingOrder())" Width="208px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="BusinessLineDoc.Name" Title="@GetName("BusinessLineDoc",new StandingOrder())" Width="308px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="PO" Title="@GetName("PO",new StandingOrder())" Width="308px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="StartingShipDate" Title="@GetName("StartingShipDate",new StandingOrder())" Width="208px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="FinalShipDate" Title="@GetName("FinalShipDate",new StandingOrder())" Width="208px" />                  
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="IsDirect" Title="@GetName("IsDirect",new StandingOrder())" Width="200px" TextAlign="Radzen.TextAlign.Center">
+                        <Template>
+                            @{
+                                var IsEndUndefined = (bool)context.GetType().GetProperty(nameof(StandingOrder.IsEndUndefined)).GetValue(context);
+                                <input type="checkbox" checked="@IsEndUndefined" />
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="Season.Name" Title="@GetName("Season",new StandingOrder())" Width="208px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="Vendor.Name" Title="@GetName("Vendor",new StandingOrder())" Width="208px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="Buyer.Name" Title="@GetName("Buyer",new StandingOrder())" Width="208px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="SalesPerson" Title="@GetName("SalesPerson",new StandingOrder())"  Width="208px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="FrequencyInDays" Title="@GetName("FrequencyInDays",new StandingOrder())" Sortable="false" Width="208px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="DeliveryAddress" Title="@GetName("DeliveryAddress",new StandingOrder())" Sortable="false" Filterable="false" Width="208px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="TransportationMode" Title="@GetName("TransportationMode",new StandingOrder())" Sortable="false" Filterable="false" Width="208px" />
+
+                </Columns>
+            </RadzenDataGrid>
+        }
+    }
+</div>
+
+
+
+@code {
+    [Parameter]
+    public string _filterItems { get; set; }
+    public List<StandingOrder> standingOrderList { get; set; }
+    public CommercialDocumentType documentType { get; set; }
+
+    bool isLoading = false;
+
+    DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
+
+    public string filter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+    protected async override void OnInitialized()
+    {
+
+        if (_filterItems != null) LoadData();
+        base.OnInitialized();
+
+
+    }
+
+    public async void LoadData()
+    {
+        isLoading = true;
+        if (documentType != null || true)
+        {
+            standingOrderList = await StandingOrderServices.GetStandingOrderList((filter!=null? filter:"all"),1,100);
+        }
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    public async void SetDocumentType(CommercialDocumentType item)
+    {
+        if (item != null)
+        {
+            documentType = item;
+        }
+        StateHasChanged();
+
+    }
+
+
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<StandingOrder> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        StandingOrder argObj = (StandingOrder)args.Value;
+        Navigation.NavigateTo($"StandingOrderItem/{argObj.Id}/{_filterItems}");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+
+
+
+
+    public void Setfilter(string value)
+    {
+        filter = value;
+        StateHasChanged();
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    public void EventSearchAll(string value)
+    {
+        filter = value;
+    }
+
+}

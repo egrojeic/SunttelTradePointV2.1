@@ -1,0 +1,489 @@
+@page "/StandingOrderItem"
+@page "/StandingOrderItem/{standingOrderId}"
+@page "/StandingOrderItem/{standingOrderId}/{filter}"
+@using SunttelTradePointB.Shared.Sales;
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+@using System.Reflection
+@using SunttelTradePointB.Shared.Accounting
+
+@inject NavigationManager Navigation
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject SunttelTradePointB.Client.Services.StandingOrderServices.StandingOrderServices StandingOrderServices
+@inject GeographicPlacesService geoPlaces
+@inject ActorsNodeService actorsNodeServive
+@inject IJSRuntime Js
+
+<MessageSaveComponent isVisible="isVisible" message="@alertMsg">
+</MessageSaveComponent>
+<PageTitleComponent Title=" standing orders sale item"
+                    Description="Here you can add standing orders sale item" IconName="commercialDocument.png">
+</PageTitleComponent>
+
+
+<form>
+
+
+    <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
+        <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+
+        <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+            <SplitButtonEvents ItemSelected="ItemSelected">
+            </SplitButtonEvents>
+            <DropDownMenuItems>
+                <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+            </DropDownMenuItems>
+        </SfSplitButton>
+
+
+    </div>
+
+
+
+    <div class="grid-columns-header grid-columns-6">
+
+        <div>
+            <label>
+                @GetName("DocumentType",new StandingOrder())
+            </label>
+        </div>
+        <div>
+            <select @onchange="SelectItem" class="select-style">
+
+                @if (documentType != null && documentType.Count() > 0)
+                {
+                    <option value="0" selected>Select</option>
+                }
+                @if (documentType != null)
+                {
+                    @foreach (var item in documentType)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                        // falta .Name
+                    }
+                }
+                @if (standingOrderDetails.DocumentType != null)
+                {
+                    <option value="@standingOrderDetails.DocumentType.Id" selected>@standingOrderDetails.DocumentType.Name</option>
+                }
+            </select>
+        </div>
+
+        <div><label>@GetName("DocumentNumber",new StandingOrder())</label></div>
+        <InputTextDisable Enable="true" style="size:15px; font-weight:none;" @bind-ValueInt="@standingOrderDetails.DocumentNumber"></InputTextDisable>
+
+
+
+        <div><label class="sub-tile">@GetName("BusinessLineDoc",new StandingOrder())</label></div>
+        <div>
+            <select @onchange="SelectItemBusinessLineDoc" class="select-style">
+
+                @if (businessLineDocList != null && businessLineDocList.Count() > 0)
+                {
+                    <option value="0" selected>Select</option>
+                }
+                @foreach (var item in businessLineDocList)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+                @if (standingOrderDetails.BusinessLineDoc != null)
+                {
+                    <option value="@standingOrderDetails.BusinessLineDoc.Id" selected>@standingOrderDetails.BusinessLineDoc.Name</option>
+                }
+            </select>
+        </div>
+
+        <div><label>@GetName("PO",new StandingOrder())</label></div>
+        <InputTextDisable Enable="true" style="size:15px; font-weight:none;" @bind-ValueString="@standingOrderDetails.PO"></InputTextDisable>
+
+
+        <div><label>@GetName("StartingShipDate",new StandingOrder())</label></div>
+        <input type="date" @bind="@standingOrderDetails.StartingShipDate" class="form-control" />
+
+        <div><label>@GetName("FinalShipDate",new StandingOrder())</label></div>
+        <input type="date" @bind="@standingOrderDetails.FinalShipDate" class="form-control" />
+
+
+        <div><label class="sub-tile">@GetName("Season",new CommercialDocument())</label></div>
+        <InputTextSelector3 style="right:-100px;" TItem="SeasonBusiness"
+                            Id="Season"
+                            caption="@(standingOrderDetails.Season !=null ? standingOrderDetails.Season?.Name:"" )"
+                            Items="seasonList"
+                            EventIdSelectionAndId="EventIdSelectionAndId"
+                            EventSearcherValueAndId="EventSearcherValueAndId">
+        </InputTextSelector3>
+
+        <div><label>@GetName("Vendor",new StandingOrder())</label></div>
+
+        <InputTextSelector3 TItem="Concept"
+                            Id="Vendor"
+                            caption="@(standingOrderDetails.Vendor !=null ? standingOrderDetails.Vendor.Name:"")"
+                            EventIdSelectionAndId="EventIdSelectionAndId"
+                            EventSearcherValueAndId="EventSearcherValueAndId"
+                            style="left:-150px;"
+                            Items="vendorList">
+        </InputTextSelector3>
+
+
+        <div><label>@GetName("Buyer",new StandingOrder())</label></div>
+        <InputTextSelector3 TItem="Concept"
+                            Id="Buyer"
+                            caption="@(standingOrderDetails.Vendor !=null ? standingOrderDetails.Vendor.Name:"")"
+                            EventIdSelectionAndId="EventIdSelectionAndId"
+                            EventSearcherValueAndId="EventSearcherValueAndId"
+                            Items="@buyerList"
+                            style="left:-150px;">
+        </InputTextSelector3>
+
+
+        <div><label class="sub-tile">@GetName("SalesPerson",new StandingOrder())</label></div>
+        <InputTextSelector3 style="right:-110px;" TItem="Concept"
+                            Id="SalesPerson"
+                            caption="@(standingOrderDetails.SalesPerson !=null ? standingOrderDetails.SalesPerson?.Name:"" )"
+                            Items="salesPersonList"
+                            EventIdSelectionAndId="EventIdSelectionAndId"
+                            EventSearcherValueAndId="EventSearcherValueAndId">
+        </InputTextSelector3>
+
+        <div><label>@GetName("FrequencyInDays",new StandingOrder())</label></div>
+        <InputTextDisable Enable="true" style="size:15px; font-weight:none;" @bind-ValueInt="@standingOrderDetails.FrequencyInDays"></InputTextDisable>
+
+
+        <div><label class="sub-tile">@GetName("DeliveryAddress",new StandingOrder())</label></div>
+        <div>
+            <select @onchange="SelectItemDeliveryAddress" class="select-style">
+
+
+                @if (addressList != null && addressList.Count() > 0)
+                {
+                    <option value="0" selected>Select</option>
+                }
+                @foreach (var item in addressList)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+                @if (standingOrderDetails != null && standingOrderDetails.DeliveryAddress != null)
+                {
+                    <option value="@standingOrderDetails.DeliveryAddress.Id" selected>@standingOrderDetails.DeliveryAddress.Name</option>
+                }
+            </select>
+        </div>
+
+
+        <div><label class="sub-tile">@GetName("TransportationMode",new StandingOrder())</label></div>
+        <div>
+            <select @onchange="SelectItemTransportationMode" class="select-style">
+
+
+                <option value="">Select</option>
+                <option value="@(TransportationMode.Airplane)">Airplane</option>
+                <option value="@(TransportationMode.Ground)">Ground</option>
+                <option value="@(TransportationMode.CargoShip)">CargoShip</option>
+
+                @if (standingOrderDetails != null && standingOrderDetails.TransportationMode != null)
+                {
+                    <option value="@standingOrderDetails.TransportationMode" selected>@standingOrderDetails.TransportationMode.ToString()</option>
+                }
+            </select>
+        </div>
+
+
+        <div><label>@GetName("IsASale",new StandingOrder())</label></div>
+        <div>
+            <SfSwitch @bind-Checked="@standingOrderDetails.IsEndUndefined"></SfSwitch>
+        </div>
+
+    </div>
+
+</form>
+
+
+
+
+@code {
+    [Parameter]
+    public string standingOrderId { get; set; }
+    [Parameter]
+    public string filter { get; set; }
+
+    public List<BusinessLine> businessLineDocList = new();
+
+
+    TextToSpeech textToSpeech;
+
+    string page = "";
+    string alertMsg = "";
+    string SearcherValue = "";
+    bool isVisible = false;
+    public StandingOrder standingOrderDetails = new();
+
+
+    #region Status
+
+    #endregion Status
+
+    #region Input3
+    List<CommercialDocumentType> documentType { get; set; }
+    List<Concept> vendorList { get; set; }
+    List<Concept> buyerList { get; set; }
+    public List<SeasonBusiness> seasonList = new();
+    public List<Concept> salesPersonList = new();
+    public List<Address> addressList = new();
+    #endregion Input3
+
+
+    MessageSaveComponent? referAlert;
+    string msg = "";
+    bool isLoading = false;
+
+    protected override void OnParametersSet()
+    {
+        var r = page;
+        StateHasChanged();
+    }
+
+    protected override async void OnInitialized()
+    {
+
+        isLoading = true;
+        StateHasChanged();
+        if (standingOrderId != null)
+        {
+            standingOrderDetails = await StandingOrderServices.GetStandingOrderById(standingOrderId);
+
+        }
+        documentType = await DocumentServices.GetCommercialDocumentsTypes("all");
+
+        businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
+        LoadDocument();
+        isLoading = false;
+        StateHasChanged();
+    }
+
+
+
+    public async void ItemSelected(MenuEventArgs e)
+    {
+        string msg = Validate();
+        if (msg == "" || true)
+        {
+            StateHasChanged();
+            string tile = e.Item != null ? e.Item.Text : "";
+            if (tile == "Save")
+            {
+                LoadDocument();
+                var result = await StandingOrderServices.SaveStandingOrde(standingOrderDetails);
+                if (result != null)
+                {
+                    alert("Saved", 0);
+                    standingOrderDetails = result;
+                }
+                else
+                {
+                    alert("No Saved", 1);
+                }
+
+            }
+        }
+        else
+        {
+            alert("No saved", 1);
+        }
+
+        StateHasChanged();
+
+    }
+
+
+
+    public async void SelectItem(ChangeEventArgs arg)
+    {
+        LoadDocument();
+        standingOrderDetails.DocumentType = documentType.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+        StateHasChanged();
+
+    }
+
+    public async void SelectItemTransportationMode(ChangeEventArgs arg)
+    {
+        LoadDocument();
+        if (arg.Value.ToString() == "Ground") standingOrderDetails.TransportationMode = TransportationMode.Ground;
+        if (arg.Value.ToString() == "CargoShip") standingOrderDetails.TransportationMode = TransportationMode.CargoShip;
+        if (arg.Value.ToString() == "Airplane") standingOrderDetails.TransportationMode = TransportationMode.Airplane;
+       
+        StateHasChanged();
+
+    }
+
+
+     
+
+    public async void EventSearcherValueAndId((string value, string IdControl) arg)
+    {
+        SearcherValue = arg.IdControl.ToString();
+
+        if (SearcherValue == "Vendor")
+        {
+            vendorList = await DocumentServices.GetCommercialVendorList(arg.value, standingOrderDetails.DocumentType.IsASale, 1, 20);
+
+        }
+
+        if (SearcherValue == "Buyer")
+        {
+            buyerList = await DocumentServices.GetCommercialBuyerList(arg.value, standingOrderDetails.DocumentType.IsASale, 1, 20);
+        }
+
+        if (SearcherValue == "Season")
+        {
+            seasonList = await DocumentServices.GetCommercialSeasonList(arg.value);
+        }
+
+        if (SearcherValue == "SalesPerson")
+        {
+            salesPersonList = await DocumentServices.GetCommercialSalesPersonList(arg.value);
+        }
+
+        StateHasChanged();
+    }
+
+
+    public async void EventIdSelectionAndId(Concept item)
+    {
+        if (SearcherValue == "Vendor")
+        {
+            standingOrderDetails.Vendor = item;
+            // vendorWarehouseList = await DocumentServices.GetCommercialVendorWarehouseList(item.Id);
+
+        }
+        if (SearcherValue == "SalesPerson")
+        {
+            standingOrderDetails.SalesPerson = item;
+        }
+        if (SearcherValue == "Buyer")
+        {
+            standingOrderDetails.Buyer = item;
+            //buyerWarehouseList = await DocumentServices.GetCommercialBuyerWarehouseList(item.Id);
+            addressList = await DocumentServices.GetEntityDetailsAddressList(item.Id);
+
+        }
+
+        StateHasChanged();
+    }
+
+    public void EventIdSelectionAndId(SeasonBusiness item)
+    {
+        if (item != null)
+        {
+            standingOrderDetails.Season = item;
+        }
+    }
+
+   
+
+   
+
+    public void SelectItemBusinessLineDoc(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    {
+        standingOrderDetails.BusinessLineDoc = businessLineDocList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+
+    }
+
+    public void SelectItemDeliveryAddress(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    {
+        standingOrderDetails.DeliveryAddress = addressList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+
+    }
+
+
+    public void EventIdSelectionMenuItem(string name)
+    {
+        Js.InvokeAsync<object>("open", name, "_blank");
+
+    }
+
+    public void alert(string _msg, int? status = 0)
+    {
+        isVisible = true;
+        alertMsg = _msg;
+
+        StateHasChanged();
+    }
+
+    public void alert(string _msg)
+    {
+        isVisible = true;
+        alertMsg = _msg;
+
+        StateHasChanged();
+    }
+
+    public void Home()
+    {
+        string paramFilter = filter != null ? filter : "";
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/StandingOrdersSales/{paramFilter}");
+        Navigation.NavigateTo($"/StandingOrdersSales");
+    }
+
+    public void OpenAlert(string _msg, int _status, bool visible)
+    {
+        if (referAlert != null)
+        {
+            referAlert.isVisible = visible;
+            referAlert.message = _msg;
+            referAlert.status = _status;
+            StateHasChanged();
+        }
+    }
+
+    public string Validate()
+    {
+        string msg = "";
+        if (standingOrderDetails == null) msg = "required fields";
+        if (standingOrderDetails.DocumentType.Id == null) msg = "required fields";
+        if (standingOrderDetails.Vendor.Id == null) msg = "required fields";
+        if (standingOrderDetails.Buyer.Id == null) msg = "required fields";
+
+        return msg;
+    }
+
+
+    #region Load
+
+    public void LoadDocument()
+    {
+        if (standingOrderDetails == null) standingOrderDetails = new();
+        if (standingOrderDetails.DocumentType == null) standingOrderDetails.DocumentType = new();
+        if (standingOrderDetails.Vendor == null) standingOrderDetails.Vendor = new();
+        if (standingOrderDetails.Buyer == null) standingOrderDetails.Buyer = new();
+        if (standingOrderDetails.FinalShipDate == DateTime.MinValue) standingOrderDetails.FinalShipDate = DateTime.Now;
+        if (standingOrderDetails.StartingShipDate == DateTime.MinValue) standingOrderDetails.StartingShipDate = DateTime.Now;
+
+    }
+
+
+    #endregion Load
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    public void NavigationTo(string name)
+    {
+        Navigation.NavigateTo(name);
+    }
+    public void EventChange(string item)
+    {
+        string value = "";
+
+
+        StateHasChanged();
+    }
+}

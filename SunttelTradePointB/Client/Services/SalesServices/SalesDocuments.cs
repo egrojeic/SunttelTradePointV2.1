@@ -104,14 +104,14 @@ namespace SunttelTradePointB.Client.Services.SalesServices
 
 
         ///Gets
-        public async Task<List<CommercialDocument>> GetCommercialDocumentList(DateTime startDate, string documentTypeId, string filter)
+        public async Task<List<CommercialDocument>> GetCommercialDocumentList(DateTime startDate, DateTime endDate, string documentTypeId, string filter)
         {
             CultureInfo culture = new CultureInfo("en-US");
             try
             {
 
                 string path = basepath.Replace("Name", "GetCommercialDocumentsByDateSpan");
-                var responseMessage = await Gethttp($"{path}&startDate={startDate.ToString("yyyy-MM-dd", culture)}&documentTypeId={documentTypeId}&&filter={filter}");
+                var responseMessage = await Gethttp($"{path}&startDate={startDate.ToString("yyyy-MM-dd", culture)}&endDate={endDate}&documentTypeId={documentTypeId}&filter={filter}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocument>>();
                 return list != null ? list : new List<CommercialDocument>();
             }
@@ -197,8 +197,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
 
                 string path = $"/api/ConceptsSelector/GetVendors?isASale={IsASale}&userId=*Id&ipAddress=*Ip&page={page}&perPage={perPage}&filterString={filter}";
                 var responseMessage = await Gethttp($"{path}");
-                var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
-                //if(isSales && list !=null) list = list.Where(s=>s.SquadId == UIClientGlobalVariables.ActiveSquad.IDSquads.ToString()).ToList();
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();               
                 return list != null ? list : new List<Concept>();
             }
             catch (Exception ex)
@@ -359,8 +358,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
 
                 string path = $"/api/ConceptsSelector/GetBuyers?isASale={IsASale}&userId=*Id&ipAddress=*Ip&page={page}&perPage={perPage}&filterString={filter}";
                 var responseMessage = await Gethttp($"{path}");
-                var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
-                //   if (!isASale) list = list.Where(s => s.Id == UIClientGlobalVariables.EntityUserId).ToList();
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();           
                 return list != null ? list : new List<Concept>();
             }
             catch (Exception ex)
@@ -513,7 +511,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
 
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
 
-                if (SquadId != null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString());
+                if (SquadId != null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString().ToLower());
                 if (SquadId == null) request.Headers.Add("SquadId", "0000000000");
                 var response = await _httpClient.SendAsync(request);
 
@@ -534,10 +532,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
 
         }
 
-        public Task<List<CommercialDocument>> GetCommercialDocumentList(DateTime startDate, DateTime endDate, string documentTypeId, string filter)
-        {
-            throw new NotImplementedException();
-        }
+      
     }
 
 

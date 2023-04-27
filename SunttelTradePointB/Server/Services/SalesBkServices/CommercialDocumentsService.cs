@@ -128,7 +128,6 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
                 var pipeline = new List<BsonDocument>();
 
-                /*
                 if (!(strNameFiler.ToLower() == "all" || strNameFiler.ToLower() == "todos" || strNameFiler.ToLower() == ""))
                 {
                     pipeline.Add(
@@ -146,9 +145,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     }
                 );
                 }
-                */
-
-
+                
                 pipeline.Add(
                     new BsonDocument{
                         { "$match",
@@ -621,6 +618,84 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 return (false, null, e.Message);
             }
         }
+
+        /// <summary>
+        /// Retrieves a list of Commercial documents of the Squad for the date span and 
+        /// Document type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="shippingDate"></param>
+        /// <param name="warehouseId"></param>
+        /// <param name="filter"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<(bool IsSuccess, List<CommercialDocument>? CommercialDocuments, string? ErrorDescription)> GetShippingInvoices(string userId, string ipAddress, string squadId, DateTime shippingDate, string warehouseId, string? filter = null, int? page = 1, int? perPage = 10)
+        {
+            try
+            {
+                string strNameFiler = filter == null ? "" : filter;
+                var skip = (page - 1) * perPage;
+
+                var pipeline = new List<BsonDocument>();
+
+                if (!(strNameFiler.ToLower() == "all" || strNameFiler.ToLower() == "todos" || strNameFiler.ToLower() == ""))
+                {
+                    pipeline.Add(
+                    new BsonDocument{
+                        { "$match",  new BsonDocument {
+                            { "$text",
+                                new BsonDocument {
+                                    { "$search",strNameFiler },
+                                    { "$language","english" },
+                                    { "$caseSensitive",false },
+                                    { "$diacriticSensitive",false }
+                                }
+                            }
+                        }}
+                    }
+                    );
+                }
+
+
+                pipeline.Add(
+                    new BsonDocument{
+                        { "$match",
+                            new BsonDocument{
+                                { "DocumentType._id", new ObjectId(warehouseId)},
+                                { "ShipDate", new BsonDocument{
+                                    { "$gt", shippingDate }
+                                } }
+                            }
+                        }
+                    }
+                );
+
+                pipeline.Add(
+                    new BsonDocument{
+                        {"$skip",  skip}
+                    }
+                );
+
+                pipeline.Add(
+                    new BsonDocument{
+                        {"$limit",  perPage}
+                    }
+                );
+
+                List<CommercialDocument> results = await _SalesDocumentsCollection.Aggregate<CommercialDocument>(pipeline).ToListAsync();
+
+                return (true, results, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
         #endregion
 
         #region Commercial Document Detail

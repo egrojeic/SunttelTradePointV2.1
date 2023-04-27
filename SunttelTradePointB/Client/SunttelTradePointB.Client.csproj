@@ -59,7 +59,10 @@
     <Folder Include="Services\ProcurementServices\" />
     <Folder Include="Services\ProductionServices\" />
     <Folder Include="Services\QualityControlServices\" />
+    <Folder Include="Shared\StandingOrder\SubComponents\" />
     <Folder Include="Shared\CreditDocuments\SubComponents\" />
+    <Folder Include="Shared\GPMReport\SaleItemSubComponents\" />
+    <Folder Include="Shared\AccountsReceivable\InventorySubComponents\" />
     <Folder Include="Shared\Shipping\InventorySubComponents\" />
     <Folder Include="Shared\Inventory\InventorySubComponents\" />
     <Folder Include="wwwroot\lib\microsoft\signalr\dist\browser\" />
@@ -67,6 +70,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Shared\AccountsReceivable\AccountsReceivableItem.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
     <Content Update="Shared\Shipping\ShippingItem.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>

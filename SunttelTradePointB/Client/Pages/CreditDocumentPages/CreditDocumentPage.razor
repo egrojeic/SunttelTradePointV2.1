@@ -141,7 +141,7 @@
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
-        CreditDocument argObj = (CreditDocument)args.Value;
+            CreditDocument argObj = (CreditDocument)args.Value;
         Navigation.NavigateTo($"CreditDocumentsItem/{argObj.Id}/{_filterItems}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {

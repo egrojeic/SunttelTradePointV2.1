@@ -1,0 +1,383 @@
+@page "/GPMReportItem"
+@page "/GPMReportItem/{GPMReportItemId}"
+@page "/GPMReportItem/{GPMReportItemId}/{filter}"
+@using SunttelTradePointB.Shared.Sales;
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+@using System.Reflection
+@using Syncfusion.Blazor.Navigations
+@using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents
+@inject NavigationManager Navigation
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject GeographicPlacesService geoPlaces
+@inject ActorsNodeService actorsNodeServive
+@inject IJSRuntime Js
+
+<MessageSaveComponent isVisible="isVisible" message="@alertMsg">
+</MessageSaveComponent>
+<PageTitleComponent Title=" GPMR eport "
+                    Description="Here you can add GPMR eport" IconName="commercialDocument.png">
+</PageTitleComponent>
+
+<form>
+
+   
+
+    @if (page == "")
+    {
+
+      
+
+
+        <SliderScrollAuto summary="@commercialDocument.FinanceSummary"></SliderScrollAuto>
+      
+      
+    
+    }
+
+</form>
+
+
+
+
+@code {
+    [Parameter]
+    public string commercialDocumentId { get; set; }
+    [Parameter]
+    public string filter { get; set; }
+
+
+    TextToSpeech textToSpeech;
+
+    string page = "";
+    string alertMsg = "";
+    string SearcherValue = "";
+    bool menuVisible = false;
+    bool isVisible = false;
+    public CommercialDocument commercialDocument = new();
+    // public SalesDocumentItemsDetails items = new();
+
+    #region Status
+    public List<ShippingStatus> shippingStatusDocumentList = new();
+    public List<FinanceStatus> financeStatusDocumentList = new();
+    #endregion Status
+
+    #region Input3
+    public List<CommercialDocumentType> documentTypeList  = new();
+    public List<BusinessLine> businessLineDocList = new();
+    public List<Concept> salesPersonList = new();
+    public List<Concept> vendorList = new();
+    public List<Concept> carrierList = new();
+    public List<Concept> buyerList = new();
+    public List<SeasonBusiness> seasonList = new();
+    public List<CommercialDocument> originDocument = new();
+    public List<BasicConcept> vendorWarehouseList = new();
+    public List<BasicConcept> buyerWarehouseList = new();
+    public List<Address> addressList = new();
+
+    #endregion Input3
+
+
+    MessageSaveComponent? referAlert;
+    string msg = "";
+    bool isLoading = false;
+
+    protected override void OnParametersSet()
+    {
+        var r = page;
+        StateHasChanged();
+    }
+
+    protected override async void OnInitialized()
+    {
+
+        isLoading = true;
+        StateHasChanged();
+        if (commercialDocumentId != null)
+        {
+            commercialDocument = await DocumentServices.GetItemCommercialDocumentById(commercialDocumentId);
+            commercialDocument.Items = await DocumentServices.GetCommercialDocumentDetails(commercialDocumentId);
+
+        }
+
+
+        documentTypeList = await DocumentServices.GetCommercialDocumentTypes();
+        businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
+
+        carrierList = await DocumentServices.GetCarrierList();
+        LoadCommercialDocument();
+        isLoading = false;
+        StateHasChanged();
+    }
+
+
+
+    public async void ItemSelected(MenuEventArgs e)
+    {
+        string msg = Validate();
+        if (msg == "")
+        {
+            StateHasChanged();
+            string tile = e.Item != null ? e.Item.Text : "";
+            if (tile == "Save")
+            {
+                LoadCommercialDocument();              
+                var result = await DocumentServices.SaveCommercialDocument(commercialDocument);
+                if (result != null)
+                {
+                    alert("Saved", 0);
+                    commercialDocument = result;
+                }
+                else
+                {
+                    alert("required fields", 1);
+                }
+
+            }
+        }
+        else
+        {
+            alert("Saved", 1);
+        }
+
+        StateHasChanged();
+
+    }
+
+
+    public void SelectItemVendorWarehous(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    {
+        commercialDocument.VendorWarehouse = vendorWarehouseList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+    }
+
+    public void SelectItemDeliveryAddress(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    {
+        commercialDocument.DeliveryAddress = addressList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+
+    }
+
+    public void SelectItemBusinessLineDoc(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    {
+        commercialDocument.BusinessLineDoc = businessLineDocList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+
+    }
+
+    public void SelectItemDocumentType(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    {
+        commercialDocument.DocumentType = documentTypeList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+    }
+
+
+    public string GetDeliveryAddress(Address address)
+    {
+        string _address = "";
+        if (address != null)
+        {
+            _address = address.ZipCode;
+            if (address.CityAddress != null && address.CityAddress.RegionCity != null && address.CityAddress.RegionCity.CountryRegion != null)
+                _address += address.CityAddress.RegionCity.CountryRegion.Name;
+        }
+        return _address;
+    }
+
+
+    public async void EventSearcherValueAndId((string value, string IdControl) arg)
+    {
+        SearcherValue = arg.IdControl.ToString();
+        if (SearcherValue == "DocumentType")
+        {
+            documentTypeList = await DocumentServices.GetCommercialDocumentsTypes(arg.value);
+        }
+        if (SearcherValue == "Vendor")
+        {
+            vendorList = await DocumentServices.GetCommercialVendorList(arg.value, commercialDocument.DocumentType.IsASale);
+
+        }
+        if (SearcherValue == "SalesPerson")
+        {
+            salesPersonList = await DocumentServices.GetCommercialSalesPersonList(arg.value);
+        }
+        if (SearcherValue == "Buyer")
+        {
+            buyerList = await DocumentServices.GetCommercialBuyerList(arg.value, commercialDocument.DocumentType.IsASale);
+        }
+        if (SearcherValue == "Season")
+        {
+            seasonList = await DocumentServices.GetCommercialSeasonList(arg.value);
+        }
+
+        StateHasChanged();
+    }
+
+
+    public void EventIdSelectionAndId(CommercialDocumentType item)
+    {
+        commercialDocument.DocumentType = item;
+    }
+
+    public async void EventIdSelectionAndId(Concept item)
+    {
+        if (SearcherValue == "Vendor")
+        {
+            commercialDocument.Vendor = item;
+            vendorWarehouseList = await DocumentServices.GetCommercialVendorWarehouseList(item.Id);
+
+        }
+        if (SearcherValue == "SalesPerson")
+        {
+            commercialDocument.SalesPerson = item;
+        }
+        if (SearcherValue == "Buyer")
+        {
+            commercialDocument.Buyer = item;
+            buyerWarehouseList = await DocumentServices.GetCommercialBuyerWarehouseList(item.Id);
+            addressList = await DocumentServices.GetEntityDetailsAddressList(item.Id);
+
+        }
+        LoadCommercialDocument();
+        StateHasChanged();
+    }
+
+    public void EventIdSelectionAndId(SeasonBusiness item)
+    {
+        if (item != null)
+        {
+            commercialDocument.Season = item;
+        }
+    }
+
+
+    public void EventIdSelectionMenuItem(string name)
+    {
+        Js.InvokeAsync<object>("open", name, "_blank");
+        CloseMenu(false);
+    }
+
+    public void alert(string _msg, int? status =0)
+    {
+        isVisible = true;
+        alertMsg = _msg;
+       
+        StateHasChanged();
+    }
+
+    public void alert(string _msg)
+    {
+        isVisible = true;
+        alertMsg = _msg;
+
+        StateHasChanged();
+    }
+
+    public void Home()
+    {
+        string paramFilter = filter != null ? filter : "";
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/SalesDocuments/{paramFilter}");
+        Navigation.NavigateTo($"/SalesDocuments");
+    }
+
+    public void OpenAlert(string _msg, int _status, bool visible)
+    {
+        if (referAlert != null)
+        {
+            referAlert.isVisible = visible;
+            referAlert.message = _msg;
+            referAlert.status = _status;
+            StateHasChanged();
+        }
+    }
+
+    public void CloseMenu(bool mode)
+    {
+        menuVisible = mode;
+        StateHasChanged();
+    }
+
+    public string Validate()
+    {
+        string msg = "";
+        if (commercialDocument == null) msg = "required fields";
+        if (commercialDocument.DocumentType.Id == null) msg = "required fields";
+        if (commercialDocument.Vendor.Id == null) msg = "required fields";
+        if (commercialDocument.Buyer.Id == null) msg = "required fields";
+        if (commercialDocument.SalesPerson.Id == null) msg = "required fields";
+        if (commercialDocument.BusinessLineDoc.Id == null) msg = "required fields";
+        return msg;
+    }
+
+
+    #region Load
+
+    public void LoadCommercialDocument()
+    {
+        if (commercialDocument == null) commercialDocument = new();
+        if (commercialDocument.DocumentType == null) commercialDocument.DocumentType = new();
+        if (commercialDocument.BusinessLineDoc == null) commercialDocument.BusinessLineDoc = new();
+        if (commercialDocument.Vendor == null) commercialDocument.Vendor = new();
+        if (commercialDocument.Buyer == null) commercialDocument.Buyer = new();
+        if (commercialDocument.SalesPerson == null) commercialDocument.SalesPerson = new();
+        if (commercialDocument.Carrier == null) commercialDocument.Carrier = new();
+        if (commercialDocument.DeliveryAddress == null) commercialDocument.DeliveryAddress = new();
+        if (commercialDocument.ShippingStatusDocument == null) commercialDocument.ShippingStatusDocument = new();
+        if (commercialDocument.FinanceStatusDocument == null) commercialDocument.FinanceStatusDocument = new();
+        if (commercialDocument.OriginDocument == null) commercialDocument.OriginDocument = new();
+        if (commercialDocument.VendorWarehouse == null) commercialDocument.VendorWarehouse = new();
+        if (commercialDocument.BuyerWarehouse == null) commercialDocument.BuyerWarehouse = new();
+        if (commercialDocument.Season == null) commercialDocument.Season = new();
+        if (commercialDocument.PrintingSatus == null) commercialDocument.PrintingSatus = new();
+        if (commercialDocument.FinanceSummary == null) commercialDocument.FinanceSummary = new();
+        if (commercialDocument.Items == null) commercialDocument.Items = new();
+        if (commercialDocument.ShipDate == DateTime.MinValue) commercialDocument.ShipDate = DateTime.Today;
+        if (commercialDocument.ArrivalDate == DateTime.MinValue) commercialDocument.ArrivalDate = DateTime.Today;
+
+
+
+
+        if (businessLineDocList == null) businessLineDocList = new();
+        if (documentTypeList == null) documentTypeList = new();
+        if (salesPersonList == null) salesPersonList = new();
+        if (vendorList == null) vendorList = new();
+        if (carrierList == null) carrierList = new();
+        if (buyerList == null) buyerList = new();
+        if (seasonList == null) seasonList = new();
+        if (originDocument == null) originDocument = new();
+        if (vendorWarehouseList == null) vendorWarehouseList = new();
+        if (buyerWarehouseList == null) buyerWarehouseList = new();
+        if (addressList == null) addressList = new();
+
+
+    }
+
+
+    #endregion Load
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    public void NavigationTo(string name)
+    {
+        Navigation.NavigateTo(name);
+    }
+    public void EventChange(string item)
+    {
+        string value = "";
+
+        if (item == "FinanceSummary" && commercialDocument.FinanceSummary != null)
+        {
+            value = $@"Total, Amount, {commercialDocument.FinanceSummary.TotalAmount}.";
+            value += $@"Total, Taxes, {commercialDocument.FinanceSummary.TotalTaxes}.";
+            value += $@"Total, Discounts, {commercialDocument.FinanceSummary.TotalDiscounts}.";
+            value += $@"Total, Costs, {commercialDocument.FinanceSummary.TotalCosts}.";
+            textToSpeech.Speack(value);
+        }
+        else
+        {
+            textToSpeech.Speack("Valor nulo,");
+        }
+        StateHasChanged();
+    }
+}

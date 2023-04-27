@@ -32,6 +32,10 @@ using SunttelTradePointB.Server.Interfaces.PaymentBkServices;
 using SunttelTradePointB.Server.Services.PaymentBkServices;
 using SunttelTradePointB.Server.Interfaces.CreditBkServices;
 using SunttelTradePointB.Server.Services.CreditBkServices;
+using SunttelTradePointB.Server.Interfaces.QualityBkServices;
+using SunttelTradePointB.Server.Services.QualityBkServices;
+using SunttelTradePointB.Server.Interfaces.StandingOrderBkServices;
+using SunttelTradePointB.Server.Services.StandingOrderBkServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -90,6 +94,8 @@ builder.Services.AddTransient<IMessagesValet, MessageValet>();
 builder.Services.AddTransient<IInventory, InventoryService>();
 builder.Services.AddTransient<IPayment, PaymentService>();
 builder.Services.AddTransient<ICredit, CreditService>();
+builder.Services.AddTransient<IQuality, QualityService>();
+builder.Services.AddTransient<IStandingOrder, StandingOrderService>();
 
 builder.Services.AddTransient<ICommercialDocument, CommercialDocumentsService>();
 
