@@ -16,18 +16,7 @@
                 <DropDownMenuItem Text="Uploading a csv file..." IconCss="fa-solid fa-file-csv"></DropDownMenuItem>
             </DropDownMenuItems>
         </SfSplitButton>
-
-        <SfSplitButton Content="Related Concepts" IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
-            <SplitButtonEvents ItemSelected="ItemSelected">
-            </SplitButtonEvents>
-            <DropDownMenuItems>
-                <DropDownMenuItem Id="QualityReportTypeGeneral" Text="Quality Report Type" IconCss="fa-sharp fa-solid fa-circle-plus"></DropDownMenuItem>               
-                <DropDownMenuItem Id="QualityTrafficLightGeneral" Text="Quality Traffic Light" IconCss="fa-sharp fa-solid fa-circle-plus"></DropDownMenuItem>
-                <DropDownMenuItem Id="QualityParameterGroupGeneral" Text="Quality Parameter Group" IconCss="fa-sharp fa-solid fa-circle-plus"></DropDownMenuItem>
-                <DropDownMenuItem Id="QualityActionGeneral" Text="Quality Action" IconCss="fa-sharp fa-solid fa-circle-plus"></DropDownMenuItem>
-            </DropDownMenuItems>
-        </SfSplitButton>
-    
+              
     </nav>
 
 </div>
@@ -58,7 +47,7 @@
 
     private void CreateNew()
     {
-        Navigation.NavigateTo("/QualityEvaluationItem");
+        Navigation.NavigateTo("/QualityReportTypeItem");
     }
 
 }

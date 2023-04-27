@@ -1,0 +1,168 @@
+﻿@page "/QualityTrafficLightGeneral"
+@page "/QualityTrafficLightGeneral/{_filterItems}"
+
+
+
+@using SunttelTradePointB.Shared.Quality;
+@using SunttelTradePointB.Client.Shared.Menus.QualityEvaluation;
+@inject TransactionalItemsService transactItemsService;
+@inject SunttelTradePointB.Client.Services.QualityEvaluationServices.QualityEvaluationServices QualityEvaluationServices
+@inject ContextMenuService ContextMenuService
+@inject NavigationManager Navigation
+@inject IJSRuntime Js
+
+<PageTitleComponent Title="Quality Traffic Light" IconName="commercialActivities.png"
+                    Description="With this tool you can add Edit quality traffic light">
+</PageTitleComponent>
+
+
+
+
+<div class="panelMenuContainer">
+    <QualityReportTypeGeneralMenu>
+    </QualityReportTypeGeneralMenu>
+    <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
+    <RangeDatesInput StartDate="@startingDate"
+                     StartDateName="Date"
+                     EventSearchAll="EventSearchAll"></RangeDatesInput>
+
+</div>
+
+
+
+
+
+<div class="tableContainer">
+
+
+    @if (isLoading)
+    {
+
+        <WaitingProcessIndicator loadingTopic="Quality Report Type Item"></WaitingProcessIndicator>
+
+    }
+    else
+    {
+
+        <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="20"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@qualityTrafficLightList"
+                    TItem="QualityTrafficLight"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    @bind-Value="@selectedcommercialdocuments"
+                    CellContextMenu="@ShowContextMenuCommercialDocument">
+            <Columns>
+
+                <RadzenDataGridColumn TItem="QualityTrafficLight" Property="@nameof(QualityTrafficLight.Name)" Title="@GetName("Name", new QualityTrafficLight() )" Width="208px" />
+
+            </Columns>
+        </RadzenDataGrid>
+    }
+</div>
+
+
+@code {
+
+    [Parameter]
+    public string _filterItems { get; set; }
+    List<QualityTrafficLight>? qualityTrafficLightList { get; set; }
+
+    public QualityTrafficLight qualityTrafficLight { get; set; }
+    IList<QualityTrafficLight>? selectedcommercialdocuments;
+
+    bool isLoading = false;
+
+    DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
+
+    public string docsFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+    protected async override void OnInitialized()
+    {
+
+
+        if (_filterItems != null) LoadData();
+        base.OnInitialized();
+
+    }
+
+    public async void LoadData()
+    {
+        isLoading = true;
+        if (qualityTrafficLight != null)
+        {
+            qualityTrafficLightList = await QualityEvaluationServices.GetQualityTrafficLightList((_filterItems != null ? _filterItems : "all"), 1, 20);
+
+        }
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    public void EventSearchAll(string value)
+    {
+        docsFilter = value;
+    }
+
+    public async void SetType(QualityTrafficLight item)
+    {
+
+        if (item != null)
+        {
+            qualityTrafficLight = item;
+        }
+        StateHasChanged();
+    }
+
+
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<QualityTrafficLight> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        QualityTrafficLight argObj = (QualityTrafficLight)args.Value;
+        EventIdSelectionMenuItem($"QualityTrafficLightItem/{argObj.Id}/{docsFilter}");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+    public void SetdocsFilter(string value)
+    {
+        docsFilter = value;
+        StateHasChanged();
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    public void EventIdSelectionMenuItem(string name)
+    {
+        Js.InvokeAsync<object>("open", name, "_blank");
+    }
+
+}

@@ -1,0 +1,198 @@
+@page "/QualityReportTypeItem"
+@page "/QualityReportTypeItem/{qualityReportTypeId}/{filter}"
+
+
+@using SunttelTradePointB.Shared.Quality;
+@using SunttelTradePointB.Shared.Sales;
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+@using System.Reflection
+@using Syncfusion.Blazor.Navigations
+@using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents
+@inject NavigationManager Navigation
+@inject SunttelTradePointB.Client.Services.QualityEvaluationServices.QualityEvaluationServices QualityEvaluationServices
+@inject ContextMenuService ContextMenuService
+@inject TransactionalItemsService transactionalService;
+@inject IJSRuntime Js
+
+<MessageSaveComponent isVisible="isVisible" message="@alertMsg">
+</MessageSaveComponent>
+<PageTitleComponent Title="Quality Evaluation"
+                    Description="Here you can add and edit quality evaluation" IconName="QualityParameters.png">
+</PageTitleComponent>
+
+
+<form>
+    <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
+        <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+
+        <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+            <SplitButtonEvents ItemSelected="ItemSelected">
+            </SplitButtonEvents>
+            <DropDownMenuItems>
+                <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+            </DropDownMenuItems>
+        </SfSplitButton>
+    </div>
+
+    <div class="grid-columns-header grid-columns-6">
+
+        <div><label class="sub-tile">@GetName("Name",new QualityReportType())</label></div>
+        <InputTextDisable Enable="true" TypeInt="false" @bind-ValueString="qualityReportType.Name"></InputTextDisable>
+
+
+
+    </div>
+
+    <hr />
+
+ 
+
+</form>
+
+
+
+
+@code {
+    [Parameter]
+    public string qualityReportTypeId { get; set; }
+    [Parameter]
+    public string filter { get; set; }
+
+
+
+    string alertMsg = "";
+    string SearcherValue = "";
+    string msg = "";
+    bool isLoading = false;
+    bool isVisible = false;
+    MessageSaveComponent? referAlert;
+    TextToSpeech textToSpeech;
+    public QualityReportType qualityReportType = new();
+
+    #region Status
+
+    #endregion Status
+
+    #region Input3
+  
+
+ 
+
+    #endregion Input3
+
+
+
+    protected override void OnParametersSet()
+    {
+        StateHasChanged();
+    }
+
+    protected override async void OnInitialized()
+    {
+
+        isLoading = true;
+        StateHasChanged();
+        LoadQualityEvaluation();
+        if (qualityReportTypeId != null)
+        {
+            qualityReportType = await QualityEvaluationServices.GetQualityReportType(qualityReportTypeId);
+          
+        }      
+
+        LoadQualityEvaluation();
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    public async void ItemSelected(MenuEventArgs e)
+    {
+        string msg = Validate();
+        if (msg == "")
+        {
+            StateHasChanged();
+            string tile = e.Item != null ? e.Item.Text : "";
+            if (tile == "Save")
+            {
+                LoadQualityEvaluation();
+                var result = await QualityEvaluationServices.SaveQualityReportType(qualityReportType);
+                if (result != null)
+                {
+                    alert("Saved", 0);
+                    qualityReportType = result;
+                }
+                else
+                {
+                    alert("No saved", 1);
+                }
+
+            }
+        }
+        else
+        {
+            alert("Saved", 1);
+        }
+
+        StateHasChanged();
+
+    }
+
+
+
+
+   
+    public void alert(string _msg, int? status = 0)
+    {
+        isVisible = true;
+        alertMsg = _msg;
+        StateHasChanged();
+    }
+
+
+
+    public void Home()
+    {
+        string paramFilter = filter != null ? filter : "";
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/QualityReportTypeGeneral/{paramFilter}");
+        Navigation.NavigateTo($"/QualityReportTypeGeneral");
+    }
+
+  
+
+    public string Validate()
+    {
+        string msg = "";
+        if (qualityReportType.Name == null) msg = "required fields Name";
+        return msg;
+    }
+
+
+    #region Load
+
+    public void LoadQualityEvaluation()
+    {
+        if (qualityReportType == null) qualityReportType = new();    
+
+    }
+
+
+    #endregion Load
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    public void NavigationTo(string name)
+    {
+        Navigation.NavigateTo(name);
+    }
+
+}

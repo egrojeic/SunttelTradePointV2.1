@@ -3,6 +3,7 @@
 
 
 @using SunttelTradePointB.Shared.Quality;
+@using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.SplitButtons
@@ -11,77 +12,77 @@
 @using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents
 @inject NavigationManager Navigation
 @inject SunttelTradePointB.Client.Services.QualityEvaluationServices.QualityEvaluationServices QualityEvaluationServices
-@inject GeographicPlacesService geoPlaces
-@inject ActorsNodeService actorsNodeServive
+@inject ContextMenuService ContextMenuService
+@inject TransactionalItemsService transactionalService;
 @inject IJSRuntime Js
 
 <MessageSaveComponent isVisible="isVisible" message="@alertMsg">
 </MessageSaveComponent>
 <PageTitleComponent Title="Quality Evaluation"
-                    Description="Here you can add and edit quality evaluation" IconName="QualityEvaluation.png">
+                    Description="Here you can add and edit quality evaluation" IconName="QualityParameters.png">
 </PageTitleComponent>
 
 
 <form>
-
     <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
-        <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-    </div>
+            <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
-
-    <div><label class="sub-tile">@GetName("QualityReportType",new QualityEvaluation())</label></div>
-    <div>
-        <select @onchange="SelectItemDocumentType" class="select-style">
-
-            @if (typeList != null && typeList.Count() > 0)
-            {
-                <option value="0" selected>Select</option>
-            }
-            @if (typeList != null)
-            {
-                @foreach (var item in typeList)
-                {
-                    <option value="@item.Id">@item.Name</option>
-                }
-            }
-            @if (QualityEvaluation != null && QualityEvaluation.QualityReportType != null)
-            {
-                <option value="@QualityEvaluation.QualityReportType.Id" selected>@QualityEvaluation.QualityReportType.Name</option>
-            }
-        </select>
-    </div>
-
-
-
+        <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+            <SplitButtonEvents ItemSelected="ItemSelected">
+            </SplitButtonEvents>
+            <DropDownMenuItems>
+                <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+            </DropDownMenuItems>
+        </SfSplitButton>
+        </div>
 
     <div class="grid-columns-header grid-columns-6">
 
 
+        <div><label class="sub-tile">@GetName("QualityReportType",new QualityEvaluation())</label></div>
+        <div>
+            <select @onchange="SelectItemDocumentType" class="select-style">
+
+                @if (typeList != null && typeList.Count() > 0)
+                {
+                    <option value="0" selected>Select</option>
+                }
+                @if (typeList != null)
+                {
+                    @foreach (var item in typeList)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                }
+                @if (QualityEvaluation != null && QualityEvaluation.QualityReportType != null)
+                {
+                    <option value="@QualityEvaluation.QualityReportType.Id" selected>@QualityEvaluation.QualityReportType.Name</option>
+                }
+            </select>
+        </div>
+
         <div><label class="sub-tile">@GetName("SalesDocumentItemsDetailsId",new QualityEvaluation())</label></div>
-
-        <InputTextSelector3 styleCaption="min-width: 27vw;" TItem="TransactionalItem"
-                            Id="Vendor"
-                            caption="@(transactionalItem.Id !=null ? transactionalItem?.Name:"" )">
-
-        </InputTextSelector3>
-
+        <InputTextDisable Enable="false" TypeInt="false" @bind-ValueString="itemName"></InputTextDisable>
 
         <div><label class="sub-tile">@GetName("InspectionDate",new QualityEvaluation())</label></div>
         <div><input type="date" @bind-value="QualityEvaluation.InspectionDate" class="form-control" /></div>
 
-
         <div><label class="sub-tile">@GetName("QuantityToInspect",new QualityEvaluation())</label></div>
-        <InputTextDisable Enable="true" TypeInt="true" @bind-bind-ValueDouble="QualityEvaluation.QuantityToInspect"></InputTextDisable>
+        <InputTextDisable Enable="true" TypeInt="true" @bind-ValueDouble="QualityEvaluation.QuantityToInspect"></InputTextDisable>
 
         <div><label class="sub-tile">@GetName("QuantityInspected",new QualityEvaluation())</label></div>
-        <InputTextDisable Enable="true" TypeInt="true" @bind-bind-ValueDouble="QualityEvaluation.QuantityInspected"></InputTextDisable>
+        <InputTextDisable Enable="true" TypeInt="true" @bind-ValueDouble="QualityEvaluation.QuantityInspected"></InputTextDisable>
 
         <div><label class="sub-tile">@GetName("QuantityWithIssues",new QualityEvaluation())</label></div>
-        <InputTextDisable Enable="true" TypeInt="true" @bind-bind-ValueDouble="QualityEvaluation.QuantityWithIssues"></InputTextDisable>
+        <InputTextDisable Enable="true" TypeInt="true" @bind-ValueDouble="QualityEvaluation.QuantityWithIssues"></InputTextDisable>
 
         <div><label class="sub-tile">@GetName("Pack",new QualityEvaluation())</label></div>
-        <InputTextDisable Enable="true" TypeInt="true" @bind-bind-ValueDouble="QualityEvaluation.Pack"></InputTextDisable>
-
+        <InputTextDisable Enable="true" TypeInt="true" @bind-ValueDouble="QualityEvaluation.Pack"></InputTextDisable>
 
         <div><label class="sub-tile">@GetName("TrafficLightStatus",new QualityEvaluation())</label></div>
         <div>
@@ -128,13 +129,10 @@
             </select>
         </div>
 
-
         <div><label class="sub-tile">@GetName("OverKill",new QualityEvaluation())</label></div>
         <div>
             <SfSwitch @bind-Checked="@QualityEvaluation.OverKill"></SfSwitch>
         </div>
-
-
 
     </div>
 
@@ -146,7 +144,6 @@
             <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
         </TabAnimationSettings>
         <TabItems>
-
             <TabItem>
                 <ChildContent>
                     <TabHeader Text="@GetName("QualityEvaluationImages",new QualityEvaluation())"></TabHeader>
@@ -155,6 +152,59 @@
                     <div class="container-item">
                         @if (true)
                         {
+
+                            @if (isLoading)
+                            {
+
+                                <WaitingProcessIndicator loadingTopic="Quality Evaluation Detail"></WaitingProcessIndicator>
+
+                            }
+                            else
+                            {
+                                  if(QualityEvaluation.Id!=null || true){
+                                <div class="detailsTitleContainer" style="width:100%;">
+                                    <h3 class="subTitleDetailForm">@GetName("QualityEvaluationImages",new QualityEvaluation())</h3>
+                                    <svg @onclick='()=>Add("QualityEvaluationImages")' style="margin-left:20px;" title="Add new Recipe Item" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style " viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                    </svg>
+                                </div>
+                                }
+
+                                if (QualityEvaluation.EvaluationParameters != null)
+                                {
+                                    <RadzenDataGrid AllowFiltering="true"
+                                        AllowColumnResize="true"
+                                        AllowAlternatingRows="true"
+                                        FilterMode="FilterMode.Advanced"
+                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                        AllowSorting="true"
+                                        PageSize="20"
+                                        AllowPaging="true"
+                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                        ShowPagingSummary="true"
+                                        Data="@QualityEvaluation.EvaluationParameters"
+                                        TItem="QualityEvaluationDetail"
+                                        ColumnWidth="300px"
+                                        SelectionMode="DataGridSelectionMode.Single"
+                                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                                        CellContextMenu="@ShowContextMenuTransactionalItem">
+                                        <Columns>
+
+                                            <RadzenDataGridColumn TItem="QualityEvaluation" Property="QualityReportType.Name" Title="@GetName("Parameter", new QualityEvaluationDetail() )" Width="158px" />
+                                            <RadzenDataGridColumn TItem="QualityEvaluation" Property="IsPresent" Title="@GetName("IsPresent", new QualityEvaluationDetail() )" Filterable="false" Sortable="false" Width="158px">
+                                                <Template>
+                                                    @{
+                                                        var item = (bool)context.GetType().GetProperty(nameof(QualityEvaluationDetail.IsPresent)).GetValue(context);
+                                                        <input type="checkbox" checked="@item" />
+                                                    }
+                                                </Template>
+                                            </RadzenDataGridColumn>
+
+                                        </Columns>
+                                    </RadzenDataGrid>
+                                }
+                            }
 
                         }
                     </div>
@@ -167,9 +217,53 @@
                 </ChildContent>
                 <ContentTemplate>
                     <div class="container-item">
-                        @if (true)
+
+                        @if (isLoading)
                         {
 
+                            <WaitingProcessIndicator loadingTopic="Quality Evaluation Images"></WaitingProcessIndicator>
+
+                        }
+                        else
+                        {
+                            if (QualityEvaluation.Id != null || true)
+                            {
+                            <div class="detailsTitleContainer" style="width:100%;">
+                                    <h3 class="subTitleDetailForm">@GetName("EvaluationParameters",new QualityEvaluation())</h3>
+                                    <svg @onclick='()=>Add("QualityEvaluationDetailItem")' style="margin-left:20px;" title="Add new Recipe Item" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style " viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                </svg>
+                            </div>
+                            }
+
+                            if (QualityEvaluation.QualityEvaluationImages != null)
+                            {
+                                <RadzenDataGrid AllowFiltering="true"
+                                        AllowColumnResize="true"
+                                        AllowAlternatingRows="true"
+                                        FilterMode="FilterMode.Advanced"
+                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                        AllowSorting="true"
+                                        PageSize="20"
+                                        AllowPaging="true"
+                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                        ShowPagingSummary="true"
+                                        Data="@QualityEvaluation.QualityEvaluationImages"
+                                        TItem="QualityEvaluationPhoto"
+                                        ColumnWidth="300px"
+                                        SelectionMode="DataGridSelectionMode.Single"
+                                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                                        CellContextMenu="@ShowContextMenuTransactionalItem">
+                                    <Columns>
+
+                                        <RadzenDataGridColumn TItem="QualityEvaluationPhoto" Property="@nameof(QualityEvaluationPhoto.ImageName)" Title="@GetName("ImageName", new QualityEvaluationPhoto() )" Width="158px" />
+                                        <RadzenDataGridColumn TItem="QualityEvaluationPhoto" Property="ParameterGroup.Name" Title="@GetName("ParameterGroup", new QualityEvaluationPhoto() )" Width="158px" />
+
+                                    </Columns>
+                                </RadzenDataGrid>
+
+                            }
                         }
                     </div>
                 </ContentTemplate>
@@ -208,7 +302,8 @@
     #region Input3
     List<QualityReportType> typeList { get; set; }
     List<QualityTrafficLight> trafficLightStatusList { get; set; }
-    TransactionalItem transactionalItem { get; set; }
+
+    public string itemName { get; set; }
 
     #endregion Input3
 
@@ -224,9 +319,16 @@
 
         isLoading = true;
         StateHasChanged();
+        LoadQualityEvaluation();
         if (qualityEvaluationId != null)
         {
             QualityEvaluation = await QualityEvaluationServices.GetItemQualityEvaluationById(qualityEvaluationId);
+
+            if (QualityEvaluation.SalesDocumentItemsDetailsId != null)
+            {
+                var   transactionalItem = await transactionalService.GetTransactionalItemById(QualityEvaluation.SalesDocumentItemsDetailsId);
+                if (transactionalItem != null) itemName = transactionalItem.Name;
+            }
         }
 
         typeList = await QualityEvaluationServices.GetQualityReportTypeList("all", 1, 20);
@@ -254,7 +356,7 @@
                 }
                 else
                 {
-                    alert("required fields", 1);
+                    alert("No saved", 1);
                 }
 
             }
@@ -270,9 +372,6 @@
 
 
 
-
-
-
     public void SelectItemDocumentType(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
         QualityEvaluation.QualityReportType = typeList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
@@ -284,24 +383,61 @@
     }
 
 
-
-
     public async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
         SearcherValue = arg.IdControl.ToString();
-
-
         StateHasChanged();
     }
 
+    public void EventIdSelectionAndId(TransactionalItem item)
+    {
 
-    //public void EventIdSelectionAndId(QualityEvaluationType item)
-    //{
-    //    QualityEvaluation.DocumentType = item;
-    //}
+    }
+
+    #region grid
 
 
+    void ShowContextMenuTransactionalItem(DataGridCellMouseEventArgs<QualityEvaluationPhoto> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
 
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        QualityEvaluationPhoto argObj = (QualityEvaluationPhoto)args.Value;
+        Navigation.NavigateTo($"QualityEvaluationPhotoItem/{argObj.Id}");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+    void ShowContextMenuTransactionalItem(DataGridCellMouseEventArgs<QualityEvaluationDetail> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick1">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+        </RadzenMenu>
+    );
+
+
+    void OnMenuItemClick1(MenuItemEventArgs args)
+    {
+        QualityEvaluationDetail argObj = (QualityEvaluationDetail)args.Value;
+        Navigation.NavigateTo($"QualityEvaluationPhotoItem/{argObj.Id}");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+    #endregion grid
+
+
+    public void Add(string value)
+    {
+        EventIdSelectionMenuItem(value);
+    }
 
 
     public void EventIdSelectionMenuItem(string name)
@@ -314,7 +450,6 @@
     {
         isVisible = true;
         alertMsg = _msg;
-
         StateHasChanged();
     }
 
@@ -323,8 +458,8 @@
     public void Home()
     {
         string paramFilter = filter != null ? filter : "";
-        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/QualityEvaluation/{paramFilter}");
-        Navigation.NavigateTo($"/QualityEvaluation");
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/QualityControlPanel/{paramFilter}");
+        Navigation.NavigateTo($"/QualityControlPanel");
     }
 
     public void OpenAlert(string _msg, int _status, bool visible)
@@ -343,7 +478,7 @@
     public string Validate()
     {
         string msg = "";
-
+        if (QualityEvaluation.QualityReportType == null) msg = "required fields Quality Report Type";
         return msg;
     }
 
@@ -353,6 +488,12 @@
     public void LoadQualityEvaluation()
     {
         if (QualityEvaluation == null) QualityEvaluation = new();
+        if (QualityEvaluation.QualityEvaluationImages == null) QualityEvaluation.QualityEvaluationImages = new();
+        if (QualityEvaluation.TrafficLightStatus == null) QualityEvaluation.TrafficLightStatus = new();
+        if (QualityEvaluation.ActionToTake == null) QualityEvaluation.ActionToTake = new();
+        if (QualityEvaluation.EvaluationParameters == null) QualityEvaluation.EvaluationParameters = new();
+        if (QualityEvaluation.InspectionDate == DateTime.MinValue) QualityEvaluation.InspectionDate = DateTime.Now;
+       
     }
 
 
