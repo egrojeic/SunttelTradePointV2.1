@@ -48,7 +48,6 @@ namespace SunttelTradePointB.Shared.Common
         public string Notes { get; set; }
 
         [BsonIgnoreIfNull]
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string SquadId { get; set; }
 
         [ObjectPropertyAttributes(ObjectPropertyAttributes.EditModes.LogAuditory)]

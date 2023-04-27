@@ -11,6 +11,7 @@ namespace SunttelTradePointB.Shared.ImportingData
     {
 
         public string SquadId {get; set;}
+        public int DocumentNumber { get; set; }
         public string LegacyObjectId {get; set;}
         public string LegacyId {get; set;}
         public string IDOrderTypes {get; set;}
@@ -18,6 +19,8 @@ namespace SunttelTradePointB.Shared.ImportingData
         public string CommercialDocumentType_Name {get; set;}
         public string CommercialDocumentType_Description {get; set;}
         public string BusinessLineDocId {get; set;}
+
+        public string BusinessLineDoc_Name { get; set; }
         public string Vendor_ObjectId {get; set;}
         public string Vendor_Name {get; set;}
         public string Buyer_ObjectId {get; set;}
@@ -30,12 +33,12 @@ namespace SunttelTradePointB.Shared.ImportingData
         public string DeliveryAddress_State {get; set;}
         public string DeliveryAddress_City {get; set;}
         public string PO {get; set;}
-        public string StartingShipDate {get; set;}
-        public string FinalShipDate {get; set;}
-        public string IsEndUndefined {get; set;}
+        public DateTime StartingShipDate {get; set;}
+        public DateTime FinalShipDate {get; set;}
+        public Boolean IsEndUndefined {get; set;}
         public string Season_ObjectId {get; set;}
         public string Season_Name {get; set;}
-        public string FrequencyInDays {get; set;}
+        public int FrequencyInDays {get; set;}
         public string TransportationMode { get; set; }
 
 
