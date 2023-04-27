@@ -20,7 +20,7 @@ namespace SunttelTradePointB.Server.Interfaces.PaymentBkServices
         /// <param name="perPage"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<Payment>? PaymentList, string? ErrorDescription)> GetPaymentsByDateSpan(string userId, string ipAddress, string squadId, string PaymentDate, int? page = 1, int? perPage = 10, string? filter = null);
+        Task<(bool IsSuccess, List<Payment>? PaymentList, string? ErrorDescription)> GetPaymentsByDateSpan(string userId, string ipAddress, string squadId, DateTime PaymentDate, int? page = 1, int? perPage = 10, string? filter = null);
 
         /// <summary>
         /// Retrieves a inventory having the specified id
