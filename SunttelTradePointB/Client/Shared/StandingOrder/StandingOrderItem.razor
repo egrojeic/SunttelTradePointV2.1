@@ -24,7 +24,6 @@
 
 <form>
 
-
     <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
         <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
@@ -40,7 +39,6 @@
                 <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
             </DropDownMenuItems>
         </SfSplitButton>
-
 
     </div>
 
@@ -77,7 +75,6 @@
 
         <div><label>@GetName("DocumentNumber",new StandingOrder())</label></div>
         <InputTextDisable Enable="true" style="size:15px; font-weight:none;" @bind-ValueInt="@standingOrderDetails.DocumentNumber"></InputTextDisable>
-
 
 
         <div><label class="sub-tile">@GetName("BusinessLineDoc",new StandingOrder())</label></div>
@@ -134,7 +131,7 @@
         <div><label>@GetName("Buyer",new StandingOrder())</label></div>
         <InputTextSelector3 TItem="Concept"
                             Id="Buyer"
-                            caption="@(standingOrderDetails.Vendor !=null ? standingOrderDetails.Vendor.Name:"")"
+                            caption="@(standingOrderDetails.Buyer !=null ? standingOrderDetails.Buyer.Name:"")"
                             EventIdSelectionAndId="EventIdSelectionAndId"
                             EventSearcherValueAndId="EventSearcherValueAndId"
                             Items="@buyerList"
@@ -159,7 +156,6 @@
         <div>
             <select @onchange="SelectItemDeliveryAddress" class="select-style">
 
-
                 @if (addressList != null && addressList.Count() > 0)
                 {
                     <option value="0" selected>Select</option>
@@ -179,7 +175,6 @@
         <div><label class="sub-tile">@GetName("TransportationMode",new StandingOrder())</label></div>
         <div>
             <select @onchange="SelectItemTransportationMode" class="select-style">
-
 
                 <option value="">Select</option>
                 <option value="@(TransportationMode.Airplane)">Airplane</option>

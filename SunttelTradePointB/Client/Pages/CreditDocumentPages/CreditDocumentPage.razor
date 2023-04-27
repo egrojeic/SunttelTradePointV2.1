@@ -58,14 +58,14 @@
                     CellContextMenu="@ShowContextMenuCommercialDocument">
                 <Columns>
 
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="CreditDocumentType.Name" Title="@GetName("CreditDocumentType",new CreditDocument())" Width="308px" />
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="Code" Title="@GetName("Code",new CreditDocument())" Width="208px" />
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="Vendor.Name" Title="@GetName("Vendor",new CreditDocument())" Width="208px" />
+                    <RadzenDataGridColumn TItem="CreditDocument" Property="CreditDocumentType.Name" Title="@GetName("CreditDocumentType",new CreditDocument())" Filterable="false" Width="18px" />
+                    <RadzenDataGridColumn TItem="CreditDocument" Property="Code" Title="@GetName("Code",new CreditDocument())" Filterable="false"  Sortable="false"  Width="208px" />
+                    <RadzenDataGridColumn TItem="CreditDocument" Property="Vendor.Name" Title="@GetName("Vendor",new CreditDocument())"  Width="208px" />
                     <RadzenDataGridColumn TItem="CreditDocument" Property="Vendor.Buyer" Title="@GetName("Buyer",new CreditDocument())" Width="208px" />
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="CreditDocumentStatus.Name" Title="@GetName("CreditDocumentStatus",new CreditDocument())" Width="208px" />
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="CreditDocumentReason.Name" Title="@GetName("CreditDocumentReason",new CreditDocument())" Width="208px" />                   
-                   <RadzenDataGridColumn TItem="CreditDocument" Property="CreditValue" Title="@GetName("CreditValue",new CreditDocument())" Width="208px" />
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="IsDirect" Title="@GetName("IsDirect",new CreditDocument())" Width="200px" TextAlign="Radzen.TextAlign.Center">
+                    <RadzenDataGridColumn TItem="CreditDocument" Property="CreditDocumentStatus.Name" Title="@GetName("CreditDocumentStatus",new CreditDocument())" Sortable="false" Width="108px" />
+                    <RadzenDataGridColumn TItem="CreditDocument" Property="CreditDocumentReason.Name" Title="@GetName("CreditDocumentReason",new CreditDocument())"  Width="208px" />                   
+                   <RadzenDataGridColumn TItem="CreditDocument" Property="CreditValue" Title="@GetName("CreditValue",new CreditDocument())" Filterable="false" Width="108px" />
+                    <RadzenDataGridColumn TItem="CreditDocument" Property="IsDirect" Title="@GetName("IsDirect",new CreditDocument())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
                         <Template>
                             @{
                                 var IsDirect = (bool)context.GetType().GetProperty(nameof(CreditDocument.IsDirect)).GetValue(context);

@@ -21,7 +21,7 @@
 <div class="panelMenuContainer">
     <StandingOrderMenu2 SetDocumentTypeMode="SetDocumentType"></StandingOrderMenu2>
     <RangeDatesInput StartDate="@startingDate"
-        EndDate="endDate"
+                     EndDate="endDate"
                      StartDateName="From"
                      EndDateName="To"
                      EventSearchAll="EventSearchAll"></RangeDatesInput>
@@ -47,7 +47,7 @@
                     FilterMode="FilterMode.Advanced"
                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                     AllowSorting="true"
-                    PageSize="50"
+                    PageSize="20"
                     AllowPaging="true"
                     PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                     ShowPagingSummary="true"
@@ -56,16 +56,30 @@
                     ColumnWidth="300px"
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"
-                    CellContextMenu="@ShowContextMenuCommercialDocument">
+                    CellContextMenu="@ShowContextMenuCommercialDocument"
+                    PageNumbersCount="100">
                 <Columns>
-
-                    <RadzenDataGridColumn TItem="StandingOrder" Property="DocumentType.Name" Title="@GetName("DocumentType",new StandingOrder())" Width="308px" />
-                    <RadzenDataGridColumn TItem="StandingOrder" Property="DocumentNumbere" Title="@GetName("DocumentNumber",new StandingOrder())" Width="208px" />
-                    <RadzenDataGridColumn TItem="StandingOrder" Property="BusinessLineDoc.Name" Title="@GetName("BusinessLineDoc",new StandingOrder())" Width="308px" />
-                    <RadzenDataGridColumn TItem="StandingOrder" Property="PO" Title="@GetName("PO",new StandingOrder())" Width="308px" />
-                    <RadzenDataGridColumn TItem="StandingOrder" Property="StartingShipDate" Title="@GetName("StartingShipDate",new StandingOrder())" Width="208px" />
-                    <RadzenDataGridColumn TItem="StandingOrder" Property="FinalShipDate" Title="@GetName("FinalShipDate",new StandingOrder())" Width="208px" />                  
-                    <RadzenDataGridColumn TItem="StandingOrder" Property="IsDirect" Title="@GetName("IsDirect",new StandingOrder())" Width="200px" TextAlign="Radzen.TextAlign.Center">
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="DocumentType.Name" Title="@GetName("DocumentType",new StandingOrder())" Width="208px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="DocumentNumber" Title="@GetName("DocumentNumber",new StandingOrder())" Width="108px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="BusinessLineDoc.Name" Title="@GetName("BusinessLineDoc",new StandingOrder())" Width="188px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="PO" Title="@GetName("PO",new StandingOrder())" Width="98px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="StartingShipDate" Title="@GetName("StartingShipDate",new StandingOrder())" Width="158px">
+                        <Template>
+                            @{
+                                var FinalShipDate = (DateTime)context.GetType().GetProperty(nameof(StandingOrder.FinalShipDate)).GetValue(context);
+                                <p>@FinalShipDate.ToString("MM/dd/yyyy")</p>
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="FinalShipDate" FormatString="MM/dd/yyyy" Title="@GetName("FinalShipDate",new StandingOrder())" Width="150px">
+                        <Template>
+                            @{
+                                var FinalShipDate = (DateTime)context.GetType().GetProperty(nameof(StandingOrder.FinalShipDate)).GetValue(context);
+                                <p>@FinalShipDate.ToString("MM/dd/yyyy")</p>
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="IsDirect" Title="@GetName("IsDirect",new StandingOrder())" Width="150px" TextAlign="Radzen.TextAlign.Center">
                         <Template>
                             @{
                                 var IsEndUndefined = (bool)context.GetType().GetProperty(nameof(StandingOrder.IsEndUndefined)).GetValue(context);
@@ -73,13 +87,13 @@
                             }
                         </Template>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="StandingOrder" Property="Season.Name" Title="@GetName("Season",new StandingOrder())" Width="208px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="Season.Name" Title="@GetName("Season",new StandingOrder())" Width="150px" />
                     <RadzenDataGridColumn TItem="StandingOrder" Property="Vendor.Name" Title="@GetName("Vendor",new StandingOrder())" Width="208px" />
                     <RadzenDataGridColumn TItem="StandingOrder" Property="Buyer.Name" Title="@GetName("Buyer",new StandingOrder())" Width="208px" />
-                    <RadzenDataGridColumn TItem="StandingOrder" Property="SalesPerson" Title="@GetName("SalesPerson",new StandingOrder())"  Width="208px" />
-                    <RadzenDataGridColumn TItem="StandingOrder" Property="FrequencyInDays" Title="@GetName("FrequencyInDays",new StandingOrder())" Sortable="false" Width="208px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="SalesPerson" Title="@GetName("SalesPerson",new StandingOrder())" Width="208px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="FrequencyInDays" Title="@GetName("FrequencyInDays",new StandingOrder())" Filterable="false" Width="108px" />
                     <RadzenDataGridColumn TItem="StandingOrder" Property="DeliveryAddress" Title="@GetName("DeliveryAddress",new StandingOrder())" Sortable="false" Filterable="false" Width="208px" />
-                    <RadzenDataGridColumn TItem="StandingOrder" Property="TransportationMode" Title="@GetName("TransportationMode",new StandingOrder())" Sortable="false" Filterable="false" Width="208px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="TransportationMode" Title="@GetName("TransportationMode",new StandingOrder())" Sortable="false" Filterable="false" Width="150px" />
 
                 </Columns>
             </RadzenDataGrid>
@@ -123,7 +137,7 @@
         isLoading = true;
         if (documentType != null || true)
         {
-            standingOrderList = await StandingOrderServices.GetStandingOrderList((filter!=null? filter:"all"),1,100);
+            standingOrderList = await StandingOrderServices.GetStandingOrderList((filter != null ? filter : "all"), 1, 100);
         }
         isLoading = false;
         StateHasChanged();

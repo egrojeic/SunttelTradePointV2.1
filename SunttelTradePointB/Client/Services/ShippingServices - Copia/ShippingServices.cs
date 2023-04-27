@@ -7,7 +7,7 @@ using System.Net.Http.Json;
 
 namespace SunttelTradePointB.Client.Services.ShippingServices
 {
-    public class ShippingServices : Interfaces.SalesInterfaces.IStandingOrderDetails
+    public class ShippingServices : IShipping
     {
         private readonly HttpClient _httpClient;
         private string basepath = "/api/Sales/Name?userId=*Id&ipAddress=*Ip";
@@ -37,24 +37,7 @@ namespace SunttelTradePointB.Client.Services.ShippingServices
         }
 
 
-        public async Task<List<CommercialDocument>> GetShippingtById(string shippingId)
-        {
-            CultureInfo culture = new CultureInfo("en-US");
-            try
-            {
-                //
-                string path = basepath.Replace("Name", "GetShippingInvoices");
-                var responseMessage = await Gethttp($"{path}&shippingId={shippingId}");
-                var list = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocument>>();
-                return list != null ? list : new List<CommercialDocument>();
-            }
-            catch (Exception ex)
-            {
-                string errMessage = ex.Message;
-                return null;
-            }
-        }
-
+      
 
 
         public async Task<HttpResponseMessage> Gethttp(string Url)
