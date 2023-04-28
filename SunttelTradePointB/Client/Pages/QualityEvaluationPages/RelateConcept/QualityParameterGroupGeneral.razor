@@ -11,34 +11,24 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime Js
 
-<PageTitleComponent Title="Quality Report Types" IconName="commercialActivities.png"
-                    Description="With this tool you can add Edit Quality Report Types">
+<PageTitleComponent Title="Quality Parameter Group" IconName="commercialActivities.png"
+                    Description="With this tool you can add edit quality parameter group">
 </PageTitleComponent>
-
-
 
 
 <div class="panelMenuContainer">
     <QualityParameterGroupGeneralMenu>
     </QualityParameterGroupGeneralMenu>
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
-    <RangeDatesInput StartDate="@startingDate"
-                     StartDateName="Date"
-                     EventSearchAll="EventSearchAll"></RangeDatesInput>
-
 </div>
-
-
-
 
 
 <div class="tableContainer">
 
-
     @if (isLoading)
     {
 
-        <WaitingProcessIndicator loadingTopic="Quality Report Type Item"></WaitingProcessIndicator>
+        <WaitingProcessIndicator loadingTopic="Quality Parameter Group"></WaitingProcessIndicator>
 
     }
     else

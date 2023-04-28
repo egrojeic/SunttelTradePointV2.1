@@ -8,12 +8,12 @@ using System.Net.Http.Json;
 
 namespace SunttelTradePointB.Client.Services.AccountsReceivableServices
 {
-    public class IQualityEvaluationServices : QualityEvaluation
+    public class AccountsReceivableServices : QualityEvaluation
     {
         private readonly HttpClient _httpClient;
         private string basepath = "/api/AccountsReceivableServices/Name?userId=*Id&ipAddress=*Ip";
       
-        public IQualityEvaluationServices(HttpClient httpClient)
+        public AccountsReceivableServices(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }

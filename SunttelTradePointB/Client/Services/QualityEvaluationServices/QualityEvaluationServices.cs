@@ -183,7 +183,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
 
         public async Task<QualityReportType> GetQualityReportType(string qualityReportTypeId)
         {
-            CultureInfo culture = new CultureInfo("en-US");
+            
             try
             {
                 string path = basepath.Replace("Name", "Pendiente");
