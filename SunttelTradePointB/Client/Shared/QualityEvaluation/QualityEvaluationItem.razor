@@ -10,6 +10,7 @@
 @using System.Reflection
 @using Syncfusion.Blazor.Navigations
 @using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents
+@using SunttelTradePointB.Client.Shared.QualityEvaluation.SubComponents
 @inject NavigationManager Navigation
 @inject SunttelTradePointB.Client.Services.QualityEvaluationServices.QualityEvaluationServices QualityEvaluationServices
 @inject ContextMenuService ContextMenuService
@@ -25,7 +26,7 @@
 
 <form>
     <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
-            <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+        <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
         <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
             <SplitButtonEvents ItemSelected="ItemSelected">
@@ -39,8 +40,33 @@
                 <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
             </DropDownMenuItems>
         </SfSplitButton>
-        </div>
+    </div>
 
+    <div class="grid-columns-header grid-columns-6 style-color">
+
+        <div><label class="sub-tile">@GetName("Buyer",new CommercialDocument())</label></div>
+        <InputTextDisable Enable="false" TypeInt="true" @bind-ValueString="commercialDocument.Buyer.Name"></InputTextDisable>
+       
+        <div><label class="sub-tile">@GetName("Vendor",new CommercialDocument())</label></div>
+        <InputTextDisable Enable="false" TypeInt="true" @bind-ValueString="commercialDocument.Vendor.Name"></InputTextDisable>
+       
+        <div><label class="sub-tile">@GetName("TrackingNumber",new CommercialDocument())</label></div>
+        <InputTextDisable Enable="false" TypeInt="true" @bind-ValueString="commercialDocument.TrackingNumber"></InputTextDisable>
+
+        <div><label class="sub-tile">@GetName("ShipDate",new CommercialDocument())</label></div>
+        <div><input type="date" value="@commercialDocument.ShipDate" class="form-control" disabled /></div>
+        
+        <div><label class="sub-tile">@GetName("ArrivalDate",new CommercialDocument())</label></div>
+        <div><input type="date" value="@commercialDocument.ArrivalDate" class="form-control" disabled /></div>
+
+        <div><label class="sub-tile">@GetName("Notes",new CommercialDocument())</label></div>
+        <InputTextDisable Enable="false" TypeInt="true" @bind-ValueString="commercialDocument.Notes"></InputTextDisable>
+        
+        <div><label class="sub-tile">@GetName("Notes",new CommercialDocument())</label></div>
+        <InputTextDisable Enable="false" TypeInt="true" @bind-ValueString="commercialDocument.SpecsNotes"></InputTextDisable>  
+    </div>
+
+    <div class="div-container-flex">
     <div class="grid-columns-header grid-columns-6">
 
 
@@ -66,9 +92,6 @@
             </select>
         </div>
 
-        <div><label class="sub-tile">@GetName("SalesDocumentItemsDetailsId",new QualityEvaluation())</label></div>
-        <InputTextDisable Enable="false" TypeInt="false" @bind-ValueString="itemName"></InputTextDisable>
-
         <div><label class="sub-tile">@GetName("InspectionDate",new QualityEvaluation())</label></div>
         <div><input type="date" @bind-value="QualityEvaluation.InspectionDate" class="form-control" /></div>
 
@@ -84,27 +107,7 @@
         <div><label class="sub-tile">@GetName("Pack",new QualityEvaluation())</label></div>
         <InputTextDisable Enable="true" TypeInt="true" @bind-ValueDouble="QualityEvaluation.Pack"></InputTextDisable>
 
-        <div><label class="sub-tile">@GetName("TrafficLightStatus",new QualityEvaluation())</label></div>
-        <div>
-            <select @onchange="SelectItemTrafficLightStatus" class="select-style">
-
-                @if (trafficLightStatusList != null && trafficLightStatusList.Count() > 0)
-                {
-                    <option value="0" selected>Select</option>
-                }
-                @if (trafficLightStatusList != null)
-                {
-                    @foreach (var item in trafficLightStatusList)
-                    {
-                        <option value="@item.Id">@item.Name</option>
-                    }
-                }
-                @if (trafficLightStatusList != null && QualityEvaluation.TrafficLightStatus != null)
-                {
-                    <option value="@QualityEvaluation.TrafficLightStatus.Id" selected>@QualityEvaluation.TrafficLightStatus.Name</option>
-                }
-            </select>
-        </div>
+       
 
 
         <div><label class="sub-tile">@GetName("ActionToTake",new QualityEvaluation())</label></div>
@@ -136,6 +139,10 @@
 
     </div>
 
+    <TrafficLight trafficLight="QualityEvaluation.TrafficLightStatus"   >
+    </TrafficLight>
+
+   </div>
     <hr />
 
     <SfTab Height="250px" CssClass="tab-adaptive" HeaderPlacement="HeaderPosition.Left">
@@ -161,14 +168,15 @@
                             }
                             else
                             {
-                                  if(QualityEvaluation.Id!=null || true){
-                                <div class="detailsTitleContainer" style="width:100%;">
-                                    <h3 class="subTitleDetailForm">@GetName("QualityEvaluationImages",new QualityEvaluation())</h3>
+                                if (QualityEvaluation.Id != null || true)
+                                {
+                                    <div class="detailsTitleContainer" style="width:100%;">
+                                        <h3 class="subTitleDetailForm">@GetName("QualityEvaluationImages",new QualityEvaluation())</h3>
                                         <svg @onclick='()=>Add("QualityEvaluationPhotoItem")' style="margin-left:20px;" title="Add new Recipe Item" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style " viewBox="0 0 16 16">
-                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                                    </svg>
-                                </div>
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                        </svg>
+                                    </div>
                                 }
 
                                 if (QualityEvaluation.EvaluationParameters != null)
@@ -228,13 +236,13 @@
                         {
                             if (QualityEvaluation.Id != null || true)
                             {
-                            <div class="detailsTitleContainer" style="width:100%;">
+                                <div class="detailsTitleContainer" style="width:100%;">
                                     <h3 class="subTitleDetailForm">@GetName("EvaluationParameters",new QualityEvaluation())</h3>
                                     <svg @onclick='()=>Add("QualityEvaluationDetailItem")' style="margin-left:20px;" title="Add new Recipe Item" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style " viewBox="0 0 16 16">
-                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                                </svg>
-                            </div>
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                    </svg>
+                                </div>
                             }
 
                             if (QualityEvaluation.QualityEvaluationImages != null)
@@ -302,6 +310,7 @@
     #region Input3
     List<QualityReportType> typeList { get; set; }
     List<QualityTrafficLight> trafficLightStatusList { get; set; }
+    public CommercialDocument commercialDocument = new();
 
     public string itemName { get; set; }
 
@@ -326,7 +335,7 @@
 
             if (QualityEvaluation.SalesDocumentItemsDetailsId != null)
             {
-                var   transactionalItem = await transactionalService.GetTransactionalItemById(QualityEvaluation.SalesDocumentItemsDetailsId);
+                var transactionalItem = await transactionalService.GetTransactionalItemById(QualityEvaluation.SalesDocumentItemsDetailsId);
                 if (transactionalItem != null) itemName = transactionalItem.Name;
             }
         }
@@ -401,7 +410,7 @@
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
-    );
+        );
 
 
     void OnMenuItemClick(MenuItemEventArgs args)
@@ -493,7 +502,15 @@
         if (QualityEvaluation.ActionToTake == null) QualityEvaluation.ActionToTake = new();
         if (QualityEvaluation.EvaluationParameters == null) QualityEvaluation.EvaluationParameters = new();
         if (QualityEvaluation.InspectionDate == DateTime.MinValue) QualityEvaluation.InspectionDate = DateTime.Now;
-       
+
+        if (commercialDocument == null) commercialDocument = new();
+        if (commercialDocument.Buyer == null) commercialDocument.Buyer = new();
+        if (commercialDocument.Buyer.Name == null) commercialDocument.Buyer.Name = "";
+
+         if (commercialDocument.Vendor == null) commercialDocument.Vendor = new();
+        if (commercialDocument.Vendor.Name == null) commercialDocument.Vendor.Name = "";
+
+
     }
 
 

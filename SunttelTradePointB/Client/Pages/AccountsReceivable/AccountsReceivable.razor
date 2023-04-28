@@ -66,12 +66,10 @@
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="Buyer.Name" Title="@GetName("Buyer", new CommercialDocument() )" Width="200px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="ShippingStatusDocument.Name" Title="@GetName("ShippingStatusDocument", new CommercialDocument() )" Width="200px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="Season.Name" Title="@GetName("Season", new CommercialDocument() )" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalTaxes" Title="@GetName("TotalTaxes", new FinanceSalesDocumentSummary() )" FormatString="{0:C0}"  Filterable="false" Width="100px"/>               
-               
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalDiscounts" FormatString="c" Title="@GetName("TotalDiscounts", new FinanceSalesDocumentSummary() )" Filterable="false" Width="100px"/>
-              
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalCosts" FormatString="c" Title="@GetName("TotalCosts", new FinanceSalesDocumentSummary() )" Filterable="false" Width="100px"/>
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalAmount" FormatString="c" Title="@GetName("TotalAmount", new FinanceSalesDocumentSummary() )" Filterable="false" Width="100px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalTaxes" Title="@GetName("TotalTaxes", new FinanceSalesDocumentSummary() )" FormatString="${0:N2}" Filterable="false" Width="150px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalDiscounts"  Title="@GetName("TotalDiscounts", new FinanceSalesDocumentSummary() )" FormatString="${0:N2}" Filterable="false" Width="150px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalCosts"  Title="@GetName("TotalCosts", new FinanceSalesDocumentSummary() )" FormatString="${0:N2}" Filterable="false" Width="150px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalAmount" Title="@GetName("TotalAmount", new FinanceSalesDocumentSummary() )" FormatString="${0:N2}" Filterable="false" Width="150px" />
                 
             </Columns>
         </RadzenDataGrid>
@@ -117,9 +115,6 @@
 
         commercialdocumentList = await AccountsReceivableServices.GetAccountsReceivableServicesList(date, (_filterItems != null ? _filterItems : "all"), 1, 20);
 
-        //commercialdocumentList = commercialdocumentList.Where(s => s.DocumentType.IsASale == true).ToList();
-        if (warehouse != null)
-        { }
         isLoading = false;
         StateHasChanged();
     }

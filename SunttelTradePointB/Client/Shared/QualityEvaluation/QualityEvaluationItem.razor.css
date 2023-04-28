@@ -119,3 +119,18 @@
 
 .container-item {
 }
+
+
+.style-color {
+    background-color: #eeeff0;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 1px 2px 1px gray;
+}
+
+
+.div-container-flex{   
+    display:flex;
+    flex-direction:row;
+
+}

@@ -157,8 +157,8 @@
     public void Home()
     {
         string paramFilter = filter != null ? filter : "";
-        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/QualityParameterGroupGeneral/{paramFilter}");
-        Navigation.NavigateTo($"/QualityParameterGroupGeneral");
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/QualityActionGeneral/{paramFilter}");
+        Navigation.NavigateTo($"/QualityActionGeneral");
     }
 
   

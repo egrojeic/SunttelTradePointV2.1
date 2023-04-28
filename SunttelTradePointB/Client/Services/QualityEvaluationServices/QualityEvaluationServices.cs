@@ -46,7 +46,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
             {
                 string path = $"{basepath}";
                 path = GetGlobalVariables(path);
-                path = path.Replace("*Name", "pendiente");
+                path = path.Replace("*Name", "SaveQualityReportType");
                 qualityReportType.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<QualityReportType>($"{path}", qualityReportType);
                 return await responseMessage.Content.ReadFromJsonAsync<QualityReportType>();
@@ -58,6 +58,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
                 return null;
             }
         }
+
         public async Task<QualityTrafficLight> SaveQualityTrafficLight(QualityTrafficLight quality)
         {
             try
@@ -155,8 +156,6 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
         }
 
 
-
-
         ///Gets
         public async Task<List<QualityEvaluation>> GetQualityEvaluationServicesList(string filter, int? page = 1, int? perPage = 10)
         {
@@ -182,7 +181,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
             CultureInfo culture = new CultureInfo("en-US");
             try
             {
-                string path = basepath.Replace("*Name", "Pendiente");
+                string path = basepath.Replace("*Name", "GetQualityReportTypes");
                 var responseMessage = await Gethttp($"{path}&filter={filter}&page={page}&perPage={perPage}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<QualityReportType>>();
                 return list != null ? list : new List<QualityReportType>();
@@ -193,8 +192,6 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
                 return null;
             }
         }
-
-
 
 
         public async Task<List<QualityAction>> GetQualityActionList(string filter, int page, int perPage)
@@ -217,14 +214,12 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
         }
 
 
-
-
         public async Task<QualityReportType> GetQualityReportType(string qualityReportTypeId)
         {
 
             try
             {
-                string path = basepath.Replace("Name", "Pendiente");
+                string path = basepath.Replace("Name", "GetQualityReportTypeById");
                 var responseMessage = await Gethttp($"{path}&qualityReportTypeId={qualityReportTypeId}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<QualityReportType>();
                 return list;
@@ -252,6 +247,8 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
                 return null;
             }
         }
+
+
         public async Task<QualityAction> GetQualityActionById(string qualityId)
         {
             CultureInfo culture = new CultureInfo("en-US");
@@ -270,8 +267,6 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
         }
 
 
-
-
         public async Task<QualityEvaluation> GetItemQualityEvaluationById(string qualityReportTypeId)
         {
             CultureInfo culture = new CultureInfo("en-US");
@@ -288,7 +283,6 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
                 return null;
             }
         }
-
 
 
         public async Task<CommercialDocument> GetItemSalesDocumentItemsDetailsById(string salesDocumentItemsDetailsId)
