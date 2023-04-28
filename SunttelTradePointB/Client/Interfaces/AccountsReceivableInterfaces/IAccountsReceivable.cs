@@ -3,7 +3,7 @@ using SunttelTradePointB.Shared.Sales;
 
 namespace SunttelTradePointB.Client.Interfaces.AccountsReceivableInterfaces
 {
-    public interface QualityEvaluation
+    public interface IAccountsReceivable
     {
         /// <summary>
         /// Retrives a item with CommercialDocument meeting search criteria
@@ -15,7 +15,7 @@ namespace SunttelTradePointB.Client.Interfaces.AccountsReceivableInterfaces
         /// <param name="page"></param>       
         /// <param name="perPage"></param>       
         /// <returns></returns>
-        Task<List<CommercialDocument>> GetAccountsReceivableServicesList(DateTime startDate, DateTime endDate, string warehouseId, string filter, int page, int perPage);
+        Task<List<CommercialDocument>> GetAccountsReceivableServicesList(DateTime startDate, string filter, int page, int perPage);
 
 
 

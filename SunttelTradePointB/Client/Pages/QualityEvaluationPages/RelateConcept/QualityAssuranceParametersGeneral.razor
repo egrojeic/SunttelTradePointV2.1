@@ -1,5 +1,5 @@
-﻿@page "/QualityActionGeneral"
-@page "/QualityActionGeneral/{_filterItems}"
+﻿@page "/QualityAssuranceParameterGeneral"
+@page "/QualityAssuranceParameterGeneral/{_filterItems}"
 
 
 
@@ -11,18 +11,21 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime Js
 
-<PageTitleComponent Title="Quality Action" IconName="commercialActivities.png"
-                    Description="With this tool you can add Edit quality actions">
+<PageTitleComponent Title="Quality Parameter" IconName="commercialActivities.png"
+                    Description="With this tool you can add edit quality parameter">
 </PageTitleComponent>
 
 
 
 
 <div class="panelMenuContainer">
-    <QualityActionGeneralMenu>
-    </QualityActionGeneralMenu>
+    <QualityAssuranceParameterMenu>
+    </QualityAssuranceParameterMenu>
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
-  
+   @* <RangeDatesInput StartDate="@startingDate"
+                     StartDateName="Date"
+                     EventSearchAll="EventSearchAll"></RangeDatesInput>*@
+
 </div>
 
 
@@ -51,8 +54,8 @@
                     AllowPaging="true"
                     PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                     ShowPagingSummary="true"
-                    Data="@qualityActionList"
-                    TItem="QualityAction"
+                    Data="@qualityAssuranceParameterList"
+                    TItem="QualityAssuranceParameter"
                     ColumnWidth="300px"
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"
@@ -60,7 +63,7 @@
                     CellContextMenu="@ShowContextMenuCommercialDocument">
             <Columns>
 
-                <RadzenDataGridColumn TItem="QualityAction" Property="@nameof(QualityAction.Name)" Title="@GetName("Name", new QualityAction() )" Width="208px" />
+                <RadzenDataGridColumn TItem="QualityAssuranceParameter" Property="@nameof(QualityAssuranceParameter.Name)" Title="@GetName("Name", new QualityAssuranceParameter() )" Width="208px" />
 
             </Columns>
         </RadzenDataGrid>
@@ -72,10 +75,10 @@
 
     [Parameter]
     public string _filterItems { get; set; }
-    List<QualityAction>? qualityActionList { get; set; }
+    List<QualityAssuranceParameter>? qualityAssuranceParameterList { get; set; }
 
-    public QualityAction qualityAction { get; set; }
-    IList<QualityAction>? selectedcommercialdocuments;
+    public QualityAssuranceParameter qualityAssuranceParameter { get; set; }
+    IList<QualityAssuranceParameter>? selectedcommercialdocuments;
 
     bool isLoading = false;
 
@@ -103,11 +106,10 @@
     public async void LoadData()
     {
         isLoading = true;
-        if (qualityAction != null)
-        {
-            qualityActionList = await QualityEvaluationServices.GetQualityActionList((_filterItems != null ? _filterItems : "all"), 1, 20);
+      
+            qualityAssuranceParameterList = await QualityEvaluationServices.GetQualityAssuranceParameterlList((_filterItems != null ? _filterItems : "all"), 1, 20);
 
-        }
+       
         isLoading = false;
         StateHasChanged();
     }
@@ -117,18 +119,18 @@
         docsFilter = value;
     }
 
-    public async void SetType(QualityAction item)
+    public async void SetType(QualityAssuranceParameter item)
     {
 
         if (item != null)
         {
-            qualityAction = item;
+            qualityAssuranceParameter = item;
         }
         StateHasChanged();
     }
 
 
-    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<QualityAction> args) => ContextMenuService.Open(args, ds =>
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<QualityAssuranceParameter> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
@@ -137,8 +139,8 @@
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
-        QualityAction argObj = (QualityAction)args.Value;
-        EventIdSelectionMenuItem($"QualityParameterGroupItem/{argObj.Id}/{docsFilter}");
+        QualityAssuranceParameter argObj = (QualityAssuranceParameter)args.Value;
+        EventIdSelectionMenuItem($"QualityAssuranceParameterItem/{argObj.Id}/{docsFilter}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();

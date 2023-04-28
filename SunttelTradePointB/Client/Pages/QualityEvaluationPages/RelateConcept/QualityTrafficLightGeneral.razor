@@ -22,9 +22,9 @@
     <QualityTrafficLightGeneralMenu>
     </QualityTrafficLightGeneralMenu>
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
-    <RangeDatesInput StartDate="@startingDate"
+    @*<RangeDatesInput StartDate="@startingDate"
                      StartDateName="Date"
-                     EventSearchAll="EventSearchAll"></RangeDatesInput>
+                     EventSearchAll="EventSearchAll"></RangeDatesInput>*@
 
 </div>
 
@@ -38,7 +38,7 @@
     @if (isLoading)
     {
 
-        <WaitingProcessIndicator loadingTopic="Quality Report Type Item"></WaitingProcessIndicator>
+        <WaitingProcessIndicator loadingTopic="Quality Traffic Light"></WaitingProcessIndicator>
 
     }
     else
@@ -106,11 +106,11 @@
     public async void LoadData()
     {
         isLoading = true;
-        if (qualityTrafficLight != null)
-        {
+       
             qualityTrafficLightList = await QualityEvaluationServices.GetQualityTrafficLightList((_filterItems != null ? _filterItems : "all"), 1, 20);
 
-        }
+        if (qualityTrafficLight != null)
+        { }
         isLoading = false;
         StateHasChanged();
     }

@@ -1,0 +1,258 @@
+@page "/QualityAssuranceParameterItem"
+@page "/QualityAssuranceParameterItem/{qualityAssuranceParameterId}/{filter}"
+
+
+@using SunttelTradePointB.Shared.Quality;
+@using SunttelTradePointB.Shared.Sales;
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+@using System.Reflection
+@using Syncfusion.Blazor.Navigations
+@using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents
+@inject NavigationManager Navigation
+@inject SunttelTradePointB.Client.Services.QualityEvaluationServices.QualityEvaluationServices QualityEvaluationServices
+@inject ContextMenuService ContextMenuService
+@inject TransactionalItemsService transactionalService;
+@inject IJSRuntime Js
+
+<MessageSaveComponent isVisible="isVisible" message="@alertMsg">
+</MessageSaveComponent>
+<PageTitleComponent Title="Quality Action"
+                    Description="Here you can add and edit quality action " IconName="QualityParameters.png">
+</PageTitleComponent>
+
+
+<form>
+    <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
+        <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+
+        <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+            <SplitButtonEvents ItemSelected="ItemSelected">
+            </SplitButtonEvents>
+            <DropDownMenuItems>
+                <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+            </DropDownMenuItems>
+        </SfSplitButton>
+    </div>
+
+    <div class="grid-columns-header grid-columns-6">
+
+        <div><label class="sub-tile">@GetName("Name",new QualityAssuranceParameter())</label></div>
+        <InputTextDisable Enable="true" TypeInt="false" @bind-ValueString="qualityAssuranceParameter.Name"></InputTextDisable>
+
+
+        <div>
+            <label class="lblControl col-form-label">
+                @GetName("ParameterGroup",new QualityAssuranceParameter())
+            </label>
+        </div>
+        <div>
+            <select @onchange="SelectItemParameterGroup" class="select-style">
+
+                @if (parameterGroupList != null && parameterGroupList.Count() > 0)
+                {
+                    @foreach (var item in parameterGroupList)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+
+                    <option value="0" selected>Select</option>
+                }
+                @if (qualityAssuranceParameter != null && qualityAssuranceParameter.ParameterGroup != null)
+                {
+                    <option value="@qualityAssuranceParameter.ParameterGroup.Id" selected>@qualityAssuranceParameter.ParameterGroup.Name</option>
+                }
+            </select>
+        </div>
+
+
+        <div>
+            <label class="lblControl col-form-label">
+                @GetName("ParameterGroup",new QualityAssuranceParameter())
+            </label>
+        </div>
+        <div>
+            <select @onchange="SelectItemReportType" class="select-style">
+
+                @if (reportTypeList != null && reportTypeList.Count() > 0)
+                {
+                    @foreach (var item in reportTypeList)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+
+                    <option value="0" selected>Select</option>
+                }
+                @if (qualityAssuranceParameter != null && qualityAssuranceParameter.ParameterGroup != null)
+                {
+                    <option value="@qualityAssuranceParameter.ReportType.Id" selected>@qualityAssuranceParameter.ReportType.Name</option>
+                }
+            </select>
+        </div>
+
+    </div>
+
+    <hr />
+
+
+
+</form>
+
+
+
+
+@code {
+    [Parameter]
+    public string qualityAssuranceParameterId { get; set; }
+    [Parameter]
+    public string filter { get; set; }
+
+
+
+    string alertMsg = "";
+    string SearcherValue = "";
+    string msg = "";
+    bool isLoading = false;
+    bool isVisible = false;
+    MessageSaveComponent? referAlert;
+    TextToSpeech textToSpeech;
+    public QualityAssuranceParameter qualityAssuranceParameter = new();
+
+    #region Status
+
+    #endregion Status
+
+    #region Input3
+
+    List<QualityReportType> reportTypeList { get; set; }
+    List<QualityParameterGroup> parameterGroupList { get; set; }
+
+
+    #endregion Input3
+
+
+
+    protected override void OnParametersSet()
+    {
+        StateHasChanged();
+    }
+
+    protected override async void OnInitialized()
+    {
+
+        isLoading = true;
+        StateHasChanged();
+        LoadQualityEvaluation();
+        if (qualityAssuranceParameterId != null)
+        {
+            qualityAssuranceParameter = await QualityEvaluationServices.GetQualityAssuranceParameterById(qualityAssuranceParameterId);
+
+        }
+        reportTypeList = await QualityEvaluationServices.GetQualityReportTypeList("all",1,80);
+        parameterGroupList = await QualityEvaluationServices.GetQualityParameterGrouplList("all",1,80);
+        LoadQualityEvaluation();
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    public async void ItemSelected(MenuEventArgs e)
+    {
+        string msg = Validate();
+        if (msg == "")
+        {
+            StateHasChanged();
+            string tile = e.Item != null ? e.Item.Text : "";
+            if (tile == "Save")
+            {
+                LoadQualityEvaluation();
+                var result = await QualityEvaluationServices.SaveQualityAssuranceParameter(qualityAssuranceParameter);
+                if (result != null)
+                {
+                    alert("Saved", 0);
+                    qualityAssuranceParameter = result;
+                }
+                else
+                {
+                    alert("No saved", 1);
+                }
+
+            }
+        }
+        else
+        {
+            alert("Saved", 1);
+        }
+
+        StateHasChanged();
+
+    }
+
+
+    private void SelectItemParameterGroup(Microsoft.AspNetCore.Components.ChangeEventArgs args)
+    {
+        qualityAssuranceParameter.ParameterGroup = parameterGroupList.Where(s => s.Id == args.Value.ToString()).FirstOrDefault();
+    }
+
+    private void SelectItemReportType(Microsoft.AspNetCore.Components.ChangeEventArgs args)
+    {
+        qualityAssuranceParameter.ReportType = reportTypeList.Where(s => s.Id == args.Value.ToString()).FirstOrDefault();
+    }
+
+
+    public void alert(string _msg, int? status = 0)
+    {
+        isVisible = true;
+        alertMsg = _msg;
+        StateHasChanged();
+    }
+
+
+
+    public void Home()
+    {
+        string paramFilter = filter != null ? filter : "";
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/QualityAssuranceParameterGeneral/{paramFilter}");
+        Navigation.NavigateTo($"/QualityAssuranceParameterGeneral");
+    }
+
+
+
+    public string Validate()
+    {
+        string msg = "";
+        if (qualityAssuranceParameter.Name == null) msg = "required fields Name";
+        return msg;
+    }
+
+
+    #region Load
+
+    public void LoadQualityEvaluation()
+    {
+        if (qualityAssuranceParameter == null) qualityAssuranceParameter = new();
+        if (qualityAssuranceParameter.ReportType == null) qualityAssuranceParameter.ReportType = new();
+        if (qualityAssuranceParameter.ParameterGroup == null) qualityAssuranceParameter.ParameterGroup = new();
+       
+    }
+
+
+    #endregion Load
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    public void NavigationTo(string name)
+    {
+        Navigation.NavigateTo(name);
+    }
+
+}

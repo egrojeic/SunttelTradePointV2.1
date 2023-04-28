@@ -101,9 +101,7 @@
         if (qualityTrafficLightId != null)
         {
             qualityTrafficLight = await QualityEvaluationServices.GetQualityTrafficLightById(qualityTrafficLightId);
-          
         }      
-
         LoadQualityEvaluation();
         isLoading = false;
         StateHasChanged();

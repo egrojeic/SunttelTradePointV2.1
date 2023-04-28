@@ -8,10 +8,10 @@ using System.Net.Http.Json;
 
 namespace SunttelTradePointB.Client.Services.AccountsReceivableServices
 {
-    public class AccountsReceivableServices : QualityEvaluation
+    public class AccountsReceivableServices : IAccountsReceivable
     {
         private readonly HttpClient _httpClient;
-        private string basepath = "/api/AccountsReceivableServices/Name?userId=*Id&ipAddress=*Ip";
+        private string basepath = "/api/Sales/*Name?userId=*Id&ipAddress=*Ip";
       
         public AccountsReceivableServices(HttpClient httpClient)
         {
@@ -19,14 +19,14 @@ namespace SunttelTradePointB.Client.Services.AccountsReceivableServices
         }
 
         ///Gets
-        public async Task<List<CommercialDocument>> GetAccountsReceivableServicesList(DateTime startDate, DateTime endDate, string warehouseId, string filter,int page,int perPage)
+        public async Task<List<CommercialDocument>> GetAccountsReceivableServicesList(DateTime Date, string filter,int page,int perPage)
         {           
             CultureInfo culture = new CultureInfo("en-US");
             try
             {
                 //
-                string path = basepath.Replace("Name", "Pendiente");
-                var responseMessage = await Gethttp($"{path}&shippingDate={startDate.ToString("yyyy-MM-dd", culture)}&warehouseId={warehouseId}&filter={filter}&page={page}&perPage={perPage}");
+                string path = basepath.Replace("*Name", "GetAccountReceivable");
+                var responseMessage = await Gethttp($"{path}&shippingDate={Date.ToString("yyyy-MM-dd", culture)}&filter={filter}&page={page}&perPage={perPage}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocument>>();
                 return list != null ? list : new List<CommercialDocument>();
             }

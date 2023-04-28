@@ -13,13 +13,12 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
     public class QualityEvaluationServices : IQualityEvaluation
     {
         private readonly HttpClient _httpClient;
-        private string basepath = "/api/QualityEvaluation/Name?userId=*Id&ipAddress=*Ip";
+        private string basepath = "/api/Quality/*Name?userId=*Id&ipAddress=*Ip";
 
         public QualityEvaluationServices(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
-
 
 
         public async Task<QualityEvaluation> SaveQualityEvaluation(QualityEvaluation qualityEvaluation)
@@ -28,7 +27,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
             {
                 string path = $"{basepath}";
                 path = GetGlobalVariables(path);
-                path = path.Replace("*Name", "SaveStandingOrder");
+                path = path.Replace("*Name", "Pendiente");
                 qualityEvaluation.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<QualityEvaluation>($"{path}", qualityEvaluation);
                 return await responseMessage.Content.ReadFromJsonAsync<QualityEvaluation>();
@@ -59,15 +58,15 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
                 return null;
             }
         }
-           public async Task<QualityTrafficLight> SaveQualityTrafficLight(QualityTrafficLight qualityTrafficLight)
+        public async Task<QualityTrafficLight> SaveQualityTrafficLight(QualityTrafficLight quality)
         {
             try
             {
                 string path = $"{basepath}";
                 path = GetGlobalVariables(path);
-                path = path.Replace("*Name", "pendiente");
-                qualityTrafficLight.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
-                var responseMessage = await _httpClient.PostAsJsonAsync<QualityTrafficLight>($"{path}", qualityTrafficLight);
+                path = path.Replace("*Name", "SaveQualityTrafficLight");
+                quality.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                var responseMessage = await _httpClient.PostAsJsonAsync<QualityTrafficLight>($"{path}", quality);
                 return await responseMessage.Content.ReadFromJsonAsync<QualityTrafficLight>();
 
             }
@@ -78,15 +77,34 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
             }
         }
 
-        public async Task<QualityParameterGroup> SaveQualityParameterGroup(QualityParameterGroup qualityParameterGroup)
+        public async Task<QualityAssuranceParameter> SaveQualityAssuranceParameter(QualityAssuranceParameter quality)
         {
             try
             {
                 string path = $"{basepath}";
                 path = GetGlobalVariables(path);
-                path = path.Replace("*Name", "pendiente");
-                qualityParameterGroup.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
-                var responseMessage = await _httpClient.PostAsJsonAsync<QualityParameterGroup>($"{path}", qualityParameterGroup);
+                path = path.Replace("*Name", "SaveQualityParameter");
+                quality.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                var responseMessage = await _httpClient.PostAsJsonAsync<QualityAssuranceParameter>($"{path}", quality);
+                return await responseMessage.Content.ReadFromJsonAsync<QualityAssuranceParameter>();
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<QualityParameterGroup> SaveQualityParameterGroup(QualityParameterGroup quality)
+        {
+            try
+            {
+                string path = $"{basepath}";
+                path = GetGlobalVariables(path);
+                path = path.Replace("*Name", "SaveQualityParameterGroups");
+                quality.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                var responseMessage = await _httpClient.PostAsJsonAsync<QualityParameterGroup>($"{path}", quality);
                 return await responseMessage.Content.ReadFromJsonAsync<QualityParameterGroup>();
 
             }
@@ -97,15 +115,35 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
             }
         }
 
-        public async Task<QualityAction> SaveQualityPaction(QualityAction qualityAction)
+
+        public async Task<QualityAssuranceParameter> SaveQualityParameterGroup(QualityAssuranceParameter quality)
         {
             try
             {
                 string path = $"{basepath}";
                 path = GetGlobalVariables(path);
-                path = path.Replace("*Name", "pendiente");
-                qualityAction.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
-                var responseMessage = await _httpClient.PostAsJsonAsync<QualityAction>($"{path}", qualityAction);
+                path = path.Replace("*Name", "SaveQualityParameter");
+                quality.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                var responseMessage = await _httpClient.PostAsJsonAsync<QualityAssuranceParameter>($"{path}", quality);
+                return await responseMessage.Content.ReadFromJsonAsync<QualityAssuranceParameter>();
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<QualityAction> SaveQualityPaction(QualityAction quality)
+        {
+            try
+            {
+                string path = $"{basepath}";
+                path = GetGlobalVariables(path);
+                path = path.Replace("*Name", "SaveQualityAction");
+                quality.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                var responseMessage = await _httpClient.PostAsJsonAsync<QualityAction>($"{path}", quality);
                 return await responseMessage.Content.ReadFromJsonAsync<QualityAction>();
 
             }
@@ -120,14 +158,14 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
 
 
         ///Gets
-        public async Task<List<QualityEvaluation>> GetQualityEvaluationServicesList(DateTime startDate, DateTime endDate, string qualityReportTypeId, string filter, int page, int perPage)
+        public async Task<List<QualityEvaluation>> GetQualityEvaluationServicesList(string filter, int? page = 1, int? perPage = 10)
         {
             CultureInfo culture = new CultureInfo("en-US");
             try
             {
                 //
-                string path = basepath.Replace("Name", "Pendiente");
-                var responseMessage = await Gethttp($"{path}&shippingDate={startDate.ToString("yyyy-MM-dd", culture)}&warehouseId={qualityReportTypeId}&filter={filter}&page={page}&perPage={perPage}");
+                string path = basepath.Replace("*Name", "GetQualityParametersGroups");
+                var responseMessage = await Gethttp($"{path}&filter={filter}&page={page}&perPage={perPage}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<QualityEvaluation>>();
                 return list != null ? list : new List<QualityEvaluation>();
             }
@@ -144,7 +182,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
             CultureInfo culture = new CultureInfo("en-US");
             try
             {
-                string path = basepath.Replace("Name", "Pendiente");
+                string path = basepath.Replace("*Name", "Pendiente");
                 var responseMessage = await Gethttp($"{path}&filter={filter}&page={page}&perPage={perPage}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<QualityReportType>>();
                 return list != null ? list : new List<QualityReportType>();
@@ -161,10 +199,10 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
 
         public async Task<List<QualityAction>> GetQualityActionList(string filter, int page, int perPage)
         {
-            CultureInfo culture = new CultureInfo("en-US");
+
             try
             {
-                string path = basepath.Replace("Name", "Pendiente");
+                string path = basepath.Replace("*Name", "GetQualityActions");
                 var responseMessage = await Gethttp($"{path}&filter={filter}&page={page}&perPage={perPage}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<QualityAction>>();
                 return list != null ? list : new List<QualityAction>();
@@ -183,7 +221,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
 
         public async Task<QualityReportType> GetQualityReportType(string qualityReportTypeId)
         {
-            
+
             try
             {
                 string path = basepath.Replace("Name", "Pendiente");
@@ -199,15 +237,14 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
         }
 
 
-        public async Task<QualityParameterGroup> GetQualityParameterGroupById(string qualityParameterGroupId)
+        public async Task<QualityParameterGroup> GetQualityParameterGroupById(string qualityId)
         {
-            CultureInfo culture = new CultureInfo("en-US");
             try
             {
-                string path = basepath.Replace("Name", "Pendiente");
-                var responseMessage = await Gethttp($"{path}&qualityParameterGroupId={qualityParameterGroupId}");
-                var list = await responseMessage.Content.ReadFromJsonAsync<QualityParameterGroup>();
-                return list;
+                string path = basepath.Replace("*Name", "GetQualityParameteGroupsById");
+                var responseMessage = await Gethttp($"{path}&qualityId={qualityId}");
+                var item = await responseMessage.Content.ReadFromJsonAsync<QualityParameterGroup>();
+                return item;
             }
             catch (Exception ex)
             {
@@ -215,13 +252,13 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
                 return null;
             }
         }
-        public async Task<QualityAction> GetQualityActionById(string qualityActionId)
+        public async Task<QualityAction> GetQualityActionById(string qualityId)
         {
             CultureInfo culture = new CultureInfo("en-US");
             try
             {
-                string path = basepath.Replace("Name", "Pendiente");
-                var responseMessage = await Gethttp($"{path}&qualityParameterGroupId={qualityActionId}");
+                string path = basepath.Replace("*Name", "GetQualityActionById");
+                var responseMessage = await Gethttp($"{path}&qualityParameterGroupId={qualityId}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<QualityAction>();
                 return list;
             }
@@ -240,7 +277,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
             CultureInfo culture = new CultureInfo("en-US");
             try
             {
-                string path = basepath.Replace("Name", "Pendiente");
+                string path = basepath.Replace("*Name", "Pendiente");
                 var responseMessage = await Gethttp($"{path}&qualityReportTypeId={qualityReportTypeId}");
                 var item = await responseMessage.Content.ReadFromJsonAsync<QualityEvaluation>();
                 return item;
@@ -259,7 +296,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
             CultureInfo culture = new CultureInfo("en-US");
             try
             {
-                string path = basepath.Replace("Name", "Pendiente");
+                string path = basepath.Replace("*Name", "Pendiente");
                 var responseMessage = await Gethttp($"{path}&salesDocumentItemsDetailsId={salesDocumentItemsDetailsId}");
                 var item = await responseMessage.Content.ReadFromJsonAsync<CommercialDocument>();
                 return item;
@@ -271,14 +308,31 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
             }
         }
 
-          public async Task<QualityTrafficLight> GetQualityTrafficLightById(string qualityTrafficLightId)
+        public async Task<QualityTrafficLight> GetQualityTrafficLightById(string qualityId)
         {
             CultureInfo culture = new CultureInfo("en-US");
             try
             {
-                string path = basepath.Replace("Name", "Pendiente");
-                var responseMessage = await Gethttp($"{path}&qualityTrafficLightId={qualityTrafficLightId}");
+                string path = basepath.Replace("*Name", "GetQualityTrafficLightById");
+                var responseMessage = await Gethttp($"{path}&qualityId={qualityId}");
                 var item = await responseMessage.Content.ReadFromJsonAsync<QualityTrafficLight>();
+                return item;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<QualityAssuranceParameter> GetQualityAssuranceParameterById(string qualityId)
+        {
+
+            try
+            {
+                string path = basepath.Replace("*Name", "GetQualityTrafficLightById");
+                var responseMessage = await Gethttp($"{path}&qualityId={qualityId}");
+                var item = await responseMessage.Content.ReadFromJsonAsync<QualityAssuranceParameter>();
                 return item;
             }
             catch (Exception ex)
@@ -294,7 +348,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
             CultureInfo culture = new CultureInfo("en-US");
             try
             {
-                string path = basepath.Replace("Name", "Pendiente");
+                string path = basepath.Replace("*Name", "Pendiente");
                 var responseMessage = await Gethttp($"{path}&filter={filter}&page={page}&perPage={perPage}");
                 var item = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocument>>();
                 return item;
@@ -308,10 +362,10 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
 
         public async Task<List<QualityTrafficLight>> GetQualityTrafficLightList(string filter, int page, int perPage)
         {
-            CultureInfo culture = new CultureInfo("en-US");
+
             try
             {
-                string path = basepath.Replace("Name", "Pendiente");
+                string path = basepath.Replace("*Name", "GetQualityTrafficLights");
                 var responseMessage = await Gethttp($"{path}&filter={filter}&page={page}&perPage={perPage}");
                 var item = await responseMessage.Content.ReadFromJsonAsync<List<QualityTrafficLight>>();
                 return item;
@@ -329,9 +383,27 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
             CultureInfo culture = new CultureInfo("en-US");
             try
             {
-                string path = basepath.Replace("Name", "Pendiente");
+                string path = basepath.Replace("*Name", "GetQualityParametersGroups");
                 var responseMessage = await Gethttp($"{path}&filter={filter}&page={page}&perPage={perPage}");
                 var item = await responseMessage.Content.ReadFromJsonAsync<List<QualityParameterGroup>>();
+                return item;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+
+        public async Task<List<QualityAssuranceParameter>> GetQualityAssuranceParameterlList(string filter, int page, int perPage)
+        {
+            CultureInfo culture = new CultureInfo("en-US");
+            try
+            {
+                string path = basepath.Replace("*Name", "GetQualityParameters");
+                var responseMessage = await Gethttp($"{path}&filter={filter}&page={page}&perPage={perPage}");
+                var item = await responseMessage.Content.ReadFromJsonAsync<List<QualityAssuranceParameter>>();
                 return item;
             }
             catch (Exception ex)

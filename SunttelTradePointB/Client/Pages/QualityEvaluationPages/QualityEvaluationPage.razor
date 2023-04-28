@@ -129,11 +129,11 @@
     public async void LoadData()
     {
         isLoading = true;
-        if (qualityReportType != null)
-        {
-            qualityEvaluationList = await QualityEvaluationServices.GetQualityEvaluationServicesList(startingDate, endDate, qualityReportType.Id, (_filterItems != null ? _filterItems : "all"), 1, 20);
+       
+            qualityEvaluationList = await QualityEvaluationServices.GetQualityEvaluationServicesList((_filterItems != null ? _filterItems : "all"), 1, 20);
 
-        }
+        if (qualityReportType != null)
+        { }
         isLoading = false;
         StateHasChanged();
     }

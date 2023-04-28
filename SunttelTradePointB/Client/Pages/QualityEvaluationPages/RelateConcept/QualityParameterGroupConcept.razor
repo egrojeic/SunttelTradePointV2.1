@@ -1,5 +1,5 @@
-@page "/QualityParameterGroupGeneralItem"
-@page "/QualityParameterGroupGeneralItem/{qualityReportTypeId}/{filter}"
+@page "/QualityParameterGroupItem"
+@page "/QualityParameterGroupItem/{qualityParameterGroupId}/{filter}"
 
 
 @using SunttelTradePointB.Shared.Quality;
@@ -57,7 +57,7 @@
 
 @code {
     [Parameter]
-    public string qualityReportTypeId { get; set; }
+    public string qualityParameterGroupId { get; set; }
     [Parameter]
     public string filter { get; set; }
 
@@ -96,9 +96,9 @@
         isLoading = true;
         StateHasChanged();
         LoadQualityEvaluation();
-        if (qualityReportTypeId != null)
+        if (qualityParameterGroupId != null)
         {
-            qualityParameterGroup = await QualityEvaluationServices.GetQualityParameterGroupById(qualityReportTypeId);
+            qualityParameterGroup = await QualityEvaluationServices.GetQualityParameterGroupById(qualityParameterGroupId);
           
         }      
 
@@ -155,8 +155,8 @@
     public void Home()
     {
         string paramFilter = filter != null ? filter : "";
-        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/QualityReportTypeGeneral/{paramFilter}");
-        Navigation.NavigateTo($"/QualityReportTypeGeneral");
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/QualityParameterGroupGeneral/{paramFilter}");
+        Navigation.NavigateTo($"/QualityParameterGroupGeneral");
     }
 
   

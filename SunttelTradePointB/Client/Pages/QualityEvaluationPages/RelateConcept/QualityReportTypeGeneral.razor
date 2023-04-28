@@ -16,15 +16,13 @@
 </PageTitleComponent>
 
 
-
-
 <div class="panelMenuContainer">
     <QualityReportTypeGeneralMenu>
     </QualityReportTypeGeneralMenu>
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
-    <RangeDatesInput StartDate="@startingDate"
+   @* <RangeDatesInput StartDate="@startingDate"
                      StartDateName="Date"
-                     EventSearchAll="EventSearchAll"></RangeDatesInput>
+                     EventSearchAll="EventSearchAll"></RangeDatesInput>*@
 
 </div>
 
@@ -106,10 +104,10 @@
     public async void LoadData()
     {
         isLoading = true;
+       
+            qualityReportTypeList = await QualityEvaluationServices.GetQualityReportTypeList((_filterItems != null ? _filterItems : "all"), 1, 20);
         if (qualityReportType != null)
         {
-            qualityReportTypeList = await QualityEvaluationServices.GetQualityReportTypeList((_filterItems != null ? _filterItems : "all"), 1, 20);
-
         }
         isLoading = false;
         StateHasChanged();
