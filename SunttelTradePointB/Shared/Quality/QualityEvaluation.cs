@@ -11,7 +11,9 @@ namespace SunttelTradePointB.Shared.Quality
 
     public class QualityTrafficLight: BasicConcept
     {
-        
+        public int R { get; set; }
+        public int G { get; set; }
+        public int B { get; set; }
     }
 
     public class QualityAction : BasicConcept
