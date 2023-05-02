@@ -27,7 +27,7 @@ namespace SunttelTradePointB.Server.Controllers.InventoryBack
         }
 
         /// <summary>
-        /// Retrieves a Sales Documemt matching with its Id
+        /// Returns a list of inventories with a filter like the parameter
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -55,7 +55,7 @@ namespace SunttelTradePointB.Server.Controllers.InventoryBack
         }
 
         /// <summary>
-        /// Retrieves a Sales Documemt matching with its Id
+        /// Retrieves an inventory object by Id
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -78,7 +78,7 @@ namespace SunttelTradePointB.Server.Controllers.InventoryBack
         }
 
         /// <summary>
-        /// Insert / Update a Commercial Document
+        /// Saves an inventory. If it doesn't exists, it'll be created
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>

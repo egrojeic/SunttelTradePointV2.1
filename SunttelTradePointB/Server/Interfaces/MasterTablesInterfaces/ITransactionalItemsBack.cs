@@ -265,10 +265,6 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<(bool IsSuccess, ProductModel? productModel, string? ErrorDescription)> SaveTransactionalItemModels(string userId, string ipAddress, string transactionalItemId, ProductModel productModel);
 
-
-        /* NUEVOS ENDPOINTS */
-
-
         /// <summary>
         /// Retrieves an entity packing specs looked by id
         /// </summary>

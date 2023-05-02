@@ -33,7 +33,8 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
             var mongoDatabase = mongoClient.GetDatabase(DataBaseName);
             _QualityParameterCollection = mongoDatabase.GetCollection<QualityAssuranceParameter>("QualityParameters");
             _QualityGroupCollection = mongoDatabase.GetCollection<QualityParameterGroup>("QualityParameterGroups");
-            _QualityActionCollection = mongoDatabase.GetCollection<QualityAction>("QualityActions");
+            _QualityTrafficLightCollection = mongoDatabase.GetCollection<QualityTrafficLight>("QualityTrafficLightStatus");
+            _QualityActionCollection = mongoDatabase.GetCollection<QualityAction>("QualityActionToTake");
 
         }
 

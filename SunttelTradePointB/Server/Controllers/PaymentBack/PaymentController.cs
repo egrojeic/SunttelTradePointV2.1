@@ -25,7 +25,7 @@ namespace SunttelTradePointB.Server.Controllers.PaymentBack
 
         #region Payment
         /// <summary>
-        /// Retrieves a Sales Documemt matching with its Id
+        /// Returns a list of payments with a filter like the parameter and date
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -52,7 +52,7 @@ namespace SunttelTradePointB.Server.Controllers.PaymentBack
         }
 
         /// <summary>
-        /// Retrieves a Sales Documemt matching with its Id
+        /// Retrieves an payment object by Id
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -75,7 +75,7 @@ namespace SunttelTradePointB.Server.Controllers.PaymentBack
         }
 
         /// <summary>
-        /// Insert / Update a Payment
+        /// Saves an payment. If it doesn't exists, it'll be created
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -103,7 +103,7 @@ namespace SunttelTradePointB.Server.Controllers.PaymentBack
 
         #region PaymentModes
         /// <summary>
-        /// Retrieves a Sales Documemt matching with its Id
+        /// Returns a list of doc payment modes with a filter like the parameter
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -129,7 +129,7 @@ namespace SunttelTradePointB.Server.Controllers.PaymentBack
 
 
         /// <summary>
-        /// Retrieves a DocPayment Mode matching with its Id
+        /// Retrieves an doc payment mode object by Id
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -152,7 +152,7 @@ namespace SunttelTradePointB.Server.Controllers.PaymentBack
         }
 
         /// <summary>
-        /// Insert / Update a Payment Mode
+        /// Saves an doc payment mode. If it doesn't exists, it'll be created
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -182,7 +182,7 @@ namespace SunttelTradePointB.Server.Controllers.PaymentBack
 
         #region PaymentVia
         /// <summary>
-        /// Retrieves a PaymentVia matching with its Id
+        /// Returns a list of payment vias with a filter like the parameter
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -208,7 +208,7 @@ namespace SunttelTradePointB.Server.Controllers.PaymentBack
 
 
         /// <summary>
-        /// Retrieves a DocPayment Mode matching with its Id
+        /// Retrieves an payment via object by Id
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -231,7 +231,7 @@ namespace SunttelTradePointB.Server.Controllers.PaymentBack
         }
 
         /// <summary>
-        /// Insert / Update a Payment Mode
+        /// Saves an payment via. If it doesn't exists, it'll be created
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>

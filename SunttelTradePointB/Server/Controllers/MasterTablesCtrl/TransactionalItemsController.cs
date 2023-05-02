@@ -722,8 +722,6 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
             }
         }
 
-        /* Nuevos endpoints */
-
         /// <summary>
         /// Retrieves an Entity/Packing Specs object by Id
         /// </summary>

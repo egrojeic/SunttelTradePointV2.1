@@ -24,7 +24,7 @@ namespace SunttelTradePointB.Server.Controllers.StandingOrderBack
 
         #region StandingOrder
         /// <summary>
-        /// Retrieves a Quality Parameters matching with its Id
+        /// Returns a list of standing orders with a filter like the parameter
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -49,7 +49,7 @@ namespace SunttelTradePointB.Server.Controllers.StandingOrderBack
         }
 
         /// <summary>
-        /// Retrieves a Quality Paramete matching with its Id
+        /// Retrieves an standing orders object by Id
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -72,7 +72,7 @@ namespace SunttelTradePointB.Server.Controllers.StandingOrderBack
         }
 
         /// <summary>
-        /// Insert / Update a Quality Parameters
+        /// Saves an standing orders. If it doesn't exists, it'll be created
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -100,7 +100,7 @@ namespace SunttelTradePointB.Server.Controllers.StandingOrderBack
 
         #region Standing Order Detail
         /// <summary>
-        /// Retrieves a Quality Parameters matching with its Id
+        /// Returns a list of standing orders details with a filter like the parameter
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -125,11 +125,11 @@ namespace SunttelTradePointB.Server.Controllers.StandingOrderBack
         }
 
         /// <summary>
-        /// Retrieves a Quality Paramete matching with its Id
+        /// Retrieves an standing orders details object by Id
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
-        /// <param name="standingOrderId"></param>
+        /// <param name="standingOrderDetailId"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetStandingOrderDetailById")]
@@ -148,7 +148,7 @@ namespace SunttelTradePointB.Server.Controllers.StandingOrderBack
         }
 
         /// <summary>
-        /// Insert / Update a Quality Parameters
+        /// Saves an standing orders details. If it doesn't exists, it'll be created
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>

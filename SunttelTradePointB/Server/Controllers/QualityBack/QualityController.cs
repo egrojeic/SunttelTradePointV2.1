@@ -28,7 +28,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
 
         #region Quality Parameters
         /// <summary>
-        /// Retrieves a Quality Parameters matching with its Id
+        /// Returns a list of quality parameters with a filter like the parameter
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -53,7 +53,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         }
 
         /// <summary>
-        /// Retrieves a Quality Paramete matching with its Id
+        /// Retrieves an quality parameters object by Id
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -76,7 +76,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         }
 
         /// <summary>
-        /// Insert / Update a Quality Parameters
+        /// Saves an quality parameters. If it doesn't exists, it'll be created
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -104,7 +104,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
 
         #region Quality Groups
         /// <summary>
-        /// Retrieves a Quality Groups matching with its Id
+        /// Returns a list of quality parameters groups with a filter like the parameter
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -129,7 +129,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         }
 
         /// <summary>
-        /// Retrieves a Quality Groups matching with its Id
+        /// Retrieves an quality parameters groups object by Id
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -152,7 +152,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         }
 
         /// <summary>
-        /// Insert / Update a Quality Parameters
+        /// Saves an quality parameters groups. If it doesn't exists, it'll be created
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -181,7 +181,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
 
         #region Quality Traffic Light
         /// <summary>
-        /// Retrieves a Quality Action matching with its Id
+        /// Returns a list of quality traffic lights with a filter like the parameter
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -206,7 +206,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         }
 
         /// <summary>
-        /// Retrieves a Quality Paramete matching with its Id
+        /// Retrieves an quality traffic light object by Id
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -229,7 +229,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         }
 
         /// <summary>
-        /// Insert / Update a Quality Parameters
+        /// Saves an quality traffic light. If it doesn't exists, it'll be created
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -257,7 +257,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
 
         #region Quality Action
         /// <summary>
-        /// Retrieves a Quality Action matching with its Id
+        /// Returns a list of quality actions with a filter like the parameter
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -282,7 +282,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         }
 
         /// <summary>
-        /// Retrieves a Quality Paramete matching with its Id
+        /// Retrieves an quality action object by Id
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -305,7 +305,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         }
 
         /// <summary>
-        /// Insert / Update a Quality Parameters
+        /// Saves an quality action. If it doesn't exists, it'll be created
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
