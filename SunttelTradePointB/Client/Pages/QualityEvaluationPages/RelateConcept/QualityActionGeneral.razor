@@ -136,7 +136,7 @@
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         QualityAction argObj = (QualityAction)args.Value;
-        EventIdSelectionMenuItem($"QualityParameterGroupItem/{argObj.Id}/{docsFilter}");
+        EventIdSelectionMenuItem($"QualityActionItem/{argObj.Id}/{docsFilter}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();

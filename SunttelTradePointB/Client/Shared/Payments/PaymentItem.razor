@@ -199,6 +199,9 @@
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                 </svg>
                             </div>
+
+                             @if (ImportFileRecordList != null)
+                            {
                             <RadzenDataGrid AllowFiltering="true"
                                         AllowColumnResize="true"
                                         AllowAlternatingRows="true"
@@ -232,6 +235,7 @@
 
                                 </Columns>
                             </RadzenDataGrid>
+                            }
                         }
 
                     </div>
@@ -261,7 +265,11 @@
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                 </svg>
                             </div>
-                            <RadzenDataGrid AllowFiltering="true"
+
+                            @if (appliedPaymentList != null)
+                            {
+
+                                <RadzenDataGrid AllowFiltering="true"
                                         AllowColumnResize="true"
                                         AllowAlternatingRows="true"
                                         FilterMode="FilterMode.Advanced"
@@ -293,6 +301,7 @@
 
                                 </Columns>
                             </RadzenDataGrid>
+                            }
                         }
 
 
@@ -322,7 +331,7 @@
 
 
     [Parameter]
-    public string PaymentItemId { get; set; }
+    public string paymentItemId { get; set; }
     [Parameter]
     public string filter { get; set; }
     public Payment payment { get; set; }
@@ -363,11 +372,11 @@
         isLoading = true;
 
         Load();
-        if (PaymentItemId != null)
+        if (paymentItemId != null)
         {
-            payment = await PaymentServices.GetPaymentById(PaymentItemId);
+            payment = await PaymentServices.GetPaymentById(paymentItemId);
         }
-
+        Load();
         documentTypeList = await PaymentServices.GetPaymentTypeList(0, 1, (filter != null ? filter : "all"));
         docPaymentModeList = await PaymentServices.GetPaymentModesList(0, 1, (filter != null ? filter : "all"));
         docPaymentViaList = await PaymentServices.GetPaymentViasList(0, 1, (filter != null ? filter : "all"));

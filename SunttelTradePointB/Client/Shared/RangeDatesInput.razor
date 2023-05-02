@@ -7,14 +7,14 @@
     @if (StartDate != DateTime.MinValue)
     {
         <div >
-            <input @bind-value="StartDate" type="date" class="form-control" />
+            <input @onchange="SetDateStart" type="date" class="form-control" />
     </div>
     }
     @if (EndDate != DateTime.MinValue)
     {
         <label class="col-sm-2 col-form-label text-right lblControl"> @(EndDateName != null ? EndDateName : "Until")</label>
         <div class="col-sm-4">
-        <input @bind-value="EndDate" type="date" class="form-control" />
+            <input @onchange="@SetDateEnd" type="date" class="form-control" />
     </div>
     }
     @if (!disableBtn)
@@ -38,17 +38,28 @@
     public string EndDateName { get; set; }
     [Parameter]
     public EventCallback<string> EventSearchAll { get; set; }
+    [Parameter]
+    public EventCallback<DateTime> EndDateChanged { get; set; }
+    [Parameter]
+    public EventCallback<DateTime> StartDateChanged { get; set; }
 
     [Parameter]
     public bool disableBtn { get; set; }
 
     protected override Task OnInitializedAsync()
     {
-
-
         return base.OnInitializedAsync();
+    }
 
 
+    public void SetDateStart(ChangeEventArgs arg){
+        StartDate = DateTime.Parse(arg.Value.ToString());
+        StartDateChanged.InvokeAsync(StartDate);
+    }
+    
+    public void SetDateEnd(ChangeEventArgs arg){
+        EndDate = DateTime.Parse(arg.Value.ToString());
+        EndDateChanged.InvokeAsync(EndDate);
     }
 
     public void SearchAll(){

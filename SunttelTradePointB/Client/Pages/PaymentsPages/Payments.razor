@@ -108,6 +108,7 @@
         isLoading = true;
         if (documentType != null || true)
         {
+            startingDate = new DateTime(2019, 1, 1);
             paymentList = await PaymentServices.GetPaymentList((filter != null ? filter : "all"), (documentType != null ? documentType?.Id : ""), startingDate.ToString(), 1, 10);
         }
         isLoading = false;
