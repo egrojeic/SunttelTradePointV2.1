@@ -2,14 +2,13 @@
 
 
 <div class="container-traffic-light">
-
-   <p> @GetName("TrafficLightStatus",new QualityEvaluation())</p>
+      
     @if (trafficLightList != null)
     {
         @foreach (var item in trafficLightList)
         {
             <div class="item">
-                <p class="text"> @item.Name </p> <div  class="circle-color"></div>
+                <p class="text"> @item.Name </p> <div  class="circle-color"  style="@(NameStatus==item.Name?"green":"")"  ></div>
             </div>
         }
     }
@@ -18,7 +17,7 @@
         @if (trafficLight != null)
         {
             <div class="item">
-                <p class="text"> @trafficLight.Name </p> <div class="circle-color"></div>
+                <p class="text"> @trafficLight.Name </p> <div class="circle-color" style="@(NameStatus==trafficLight.Name?"green":"")"></div>
             </div>
         }
     }
@@ -29,22 +28,14 @@
     public List<QualityTrafficLight> trafficLightList { get; set; }
     [Parameter]
     public QualityTrafficLight trafficLight { get; set; }
+    [Parameter]
+    public string NameStatus { get; set; }
 
 
 
     protected override void OnInitialized()
     {
-        trafficLight = new QualityTrafficLight
-            {
-                Name = "Prueba 1"
-            };
-
-
-        trafficLightList = new List<QualityTrafficLight>();
-        trafficLightList.Add(trafficLight);
-        trafficLightList.Add(trafficLight);
-        trafficLightList.Add(trafficLight);
-
+      
     base.OnInitialized();
     }
 

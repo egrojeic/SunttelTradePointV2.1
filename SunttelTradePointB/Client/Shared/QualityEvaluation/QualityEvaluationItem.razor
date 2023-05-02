@@ -25,163 +25,155 @@
 
 
 <form>
-    <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
-        <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+    @if (page == "new")
+    {
 
-        <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
-            <SplitButtonEvents ItemSelected="ItemSelected">
-            </SplitButtonEvents>
-            <DropDownMenuItems>
-                <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
-                <DropDownMenuItem Separator="true"></DropDownMenuItem>
-                <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
-                <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
-                <DropDownMenuItem Separator="true"></DropDownMenuItem>
-                <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
-            </DropDownMenuItems>
-        </SfSplitButton>
-    </div>
+        <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
+            <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
-    <div class="grid-columns-header grid-columns-6 style-color">
-
-        <div><label class="sub-tile">@GetName("Buyer",new CommercialDocument())</label></div>
-        <InputTextDisable Enable="false" TypeInt="true" @bind-ValueString="commercialDocument.Buyer.Name"></InputTextDisable>
-       
-        <div><label class="sub-tile">@GetName("Vendor",new CommercialDocument())</label></div>
-        <InputTextDisable Enable="false" TypeInt="true" @bind-ValueString="commercialDocument.Vendor.Name"></InputTextDisable>
-       
-        <div><label class="sub-tile">@GetName("TrackingNumber",new CommercialDocument())</label></div>
-        <InputTextDisable Enable="false" TypeInt="true" @bind-ValueString="commercialDocument.TrackingNumber"></InputTextDisable>
-
-        <div><label class="sub-tile">@GetName("ShipDate",new CommercialDocument())</label></div>
-        <div><input type="date" value="@commercialDocument.ShipDate" class="form-control" disabled /></div>
-        
-        <div><label class="sub-tile">@GetName("ArrivalDate",new CommercialDocument())</label></div>
-        <div><input type="date" value="@commercialDocument.ArrivalDate" class="form-control" disabled /></div>
-
-        <div><label class="sub-tile">@GetName("Notes",new CommercialDocument())</label></div>
-        <InputTextDisable Enable="false" TypeInt="true" @bind-ValueString="commercialDocument.Notes"></InputTextDisable>
-        
-        <div><label class="sub-tile">@GetName("Notes",new CommercialDocument())</label></div>
-        <InputTextDisable Enable="false" TypeInt="true" @bind-ValueString="commercialDocument.SpecsNotes"></InputTextDisable>  
-    </div>
-
-    <div class="div-container-flex">
-    <div class="grid-columns-header grid-columns-6">
-
-
-        <div><label class="sub-tile">@GetName("QualityReportType",new QualityEvaluation())</label></div>
-        <div>
-            <select @onchange="SelectItemDocumentType" class="select-style">
-
-                @if (typeList != null && typeList.Count() > 0)
-                {
-                    <option value="0" selected>Select</option>
-                }
-                @if (typeList != null)
-                {
-                    @foreach (var item in typeList)
-                    {
-                        <option value="@item.Id">@item.Name</option>
-                    }
-                }
-                @if (QualityEvaluation != null && QualityEvaluation.QualityReportType != null)
-                {
-                    <option value="@QualityEvaluation.QualityReportType.Id" selected>@QualityEvaluation.QualityReportType.Name</option>
-                }
-            </select>
+            <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+                <SplitButtonEvents ItemSelected="ItemSelected">
+                </SplitButtonEvents>
+                <DropDownMenuItems>
+                    <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                    <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                    <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+                </DropDownMenuItems>
+            </SfSplitButton>
         </div>
 
-        <div><label class="sub-tile">@GetName("InspectionDate",new QualityEvaluation())</label></div>
-        <div><input type="date" @bind-value="QualityEvaluation.InspectionDate" class="form-control" /></div>
+        <div class="grid-columns-header grid-columns-6 style-color">
 
-        <div><label class="sub-tile">@GetName("QuantityToInspect",new QualityEvaluation())</label></div>
-        <InputTextDisable Enable="true" TypeInt="true" @bind-ValueDouble="QualityEvaluation.QuantityToInspect"></InputTextDisable>
+            <div><label class="sub-tile">@GetName("Buyer",new CommercialDocument())</label></div>
+            <InputTextDisable Enable="false" TypeInt="true" @bind-ValueString="commercialDocument.Buyer.Name"></InputTextDisable>
 
-        <div><label class="sub-tile">@GetName("QuantityInspected",new QualityEvaluation())</label></div>
-        <InputTextDisable Enable="true" TypeInt="true" @bind-ValueDouble="QualityEvaluation.QuantityInspected"></InputTextDisable>
+            <div><label class="sub-tile">@GetName("Vendor",new CommercialDocument())</label></div>
+            <InputTextDisable Enable="false" TypeInt="true" @bind-ValueString="commercialDocument.Vendor.Name"></InputTextDisable>
 
-        <div><label class="sub-tile">@GetName("QuantityWithIssues",new QualityEvaluation())</label></div>
-        <InputTextDisable Enable="true" TypeInt="true" @bind-ValueDouble="QualityEvaluation.QuantityWithIssues"></InputTextDisable>
+            <div><label class="sub-tile">@GetName("TrackingNumber",new CommercialDocument())</label></div>
+            <InputTextDisable Enable="false" TypeInt="true" @bind-ValueString="commercialDocument.TrackingNumber"></InputTextDisable>
 
-        <div><label class="sub-tile">@GetName("Pack",new QualityEvaluation())</label></div>
-        <InputTextDisable Enable="true" TypeInt="true" @bind-ValueDouble="QualityEvaluation.Pack"></InputTextDisable>
+            <div><label class="sub-tile">@GetName("ShipDate",new CommercialDocument())</label></div>
+            <div><input type="date" value="@commercialDocument.ShipDate" class="form-control" disabled /></div>
 
-       
+            <div><label class="sub-tile">@GetName("ArrivalDate",new CommercialDocument())</label></div>
+            <div><input type="date" value="@commercialDocument.ArrivalDate" class="form-control" disabled /></div>
 
 
-        <div><label class="sub-tile">@GetName("ActionToTake",new QualityEvaluation())</label></div>
-        <div>
-            <select @onchange="SelectItemTrafficLightStatus" class="select-style">
-
-                @if (trafficLightStatusList != null && trafficLightStatusList.Count() > 0)
-                {
-                    <option value="0" selected>Select</option>
-                }
-                @if (trafficLightStatusList != null)
-                {
-                    @foreach (var item in trafficLightStatusList)
-                    {
-                        <option value="@item.Id">@item.Name</option>
-                    }
-                }
-                @if (trafficLightStatusList != null && QualityEvaluation.TrafficLightStatus != null)
-                {
-                    <option value="@QualityEvaluation.TrafficLightStatus.Id" selected>@QualityEvaluation.TrafficLightStatus.Name</option>
-                }
-            </select>
         </div>
+        <br />
+        <div class="div-container-flex">
+            <div class="grid-columns-header grid-columns-6">
 
-        <div><label class="sub-tile">@GetName("OverKill",new QualityEvaluation())</label></div>
-        <div>
-            <SfSwitch @bind-Checked="@QualityEvaluation.OverKill"></SfSwitch>
-        </div>
+                <div><label class="sub-tile">@GetName("QualityReportType",new QualityEvaluation())</label></div>
+                <div>
+                    <select @onchange="SelectItemDocumentType" class="select-style">
 
-    </div>
-
-    <TrafficLight trafficLight="QualityEvaluation.TrafficLightStatus"   >
-    </TrafficLight>
-
-   </div>
-    <hr />
-
-    <SfTab Height="250px" CssClass="tab-adaptive" HeaderPlacement="HeaderPosition.Left">
-        <TabAnimationSettings>
-            <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
-            <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
-        </TabAnimationSettings>
-        <TabItems>
-            <TabItem>
-                <ChildContent>
-                    <TabHeader Text="@GetName("QualityEvaluationImages",new QualityEvaluation())"></TabHeader>
-                </ChildContent>
-                <ContentTemplate>
-                    <div class="container-item">
-                        @if (true)
+                        @if (typeList != null && typeList.Count() > 0)
                         {
-
-                            @if (isLoading)
+                            <option value="0" selected>Select</option>
+                        }
+                        @if (typeList != null)
+                        {
+                            @foreach (var item in typeList)
                             {
-
-                                <WaitingProcessIndicator loadingTopic="Quality Evaluation Detail"></WaitingProcessIndicator>
-
+                                <option value="@item.Id">@item.Name</option>
                             }
-                            else
-                            {
-                                if (QualityEvaluation.Id != null || true)
-                                {
-                                    <div class="detailsTitleContainer" style="width:100%;">
-                                        <h3 class="subTitleDetailForm">@GetName("QualityEvaluationImages",new QualityEvaluation())</h3>
-                                        <svg @onclick='()=>Add("QualityEvaluationPhotoItem")' style="margin-left:20px;" title="Add new Recipe Item" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style " viewBox="0 0 16 16">
-                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                                        </svg>
-                                    </div>
-                                }
+                        }
+                        @if (QualityEvaluation != null && QualityEvaluation.QualityReportType != null)
+                        {
+                            <option value="@QualityEvaluation.QualityReportType.Id" selected>@QualityEvaluation.QualityReportType.Name</option>
+                        }
+                    </select>
+                </div>
 
-                                if (QualityEvaluation.EvaluationParameters != null)
+                <div><label class="sub-tile">@GetName("ActionToTake",new QualityEvaluation())</label></div>
+                <div>
+                    <select @onchange="SelectItemTrafficLightStatus" class="select-style">
+
+                        @if (trafficLightStatusList != null && trafficLightStatusList.Count() > 0)
+                        {
+                            <option value="0" selected>Select</option>
+                        }
+                        @if (trafficLightStatusList != null)
+                        {
+                            @foreach (var item in trafficLightStatusList)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        }
+                        @if (trafficLightStatusList != null && QualityEvaluation.TrafficLightStatus != null)
+                        {
+                            <option value="@QualityEvaluation.TrafficLightStatus.Id" selected>@QualityEvaluation.TrafficLightStatus.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div><label class="sub-tile">@GetName("InspectionDate",new QualityEvaluation())</label></div>
+                <div><input type="date" @bind-value="QualityEvaluation.InspectionDate" class="form-control" /></div>
+
+                <div><label class="sub-tile">@GetName("QuantityToInspect",new QualityEvaluation())</label></div>
+                <InputTextDisable Enable="true" TypeInt="true" @bind-ValueDouble="QualityEvaluation.QuantityToInspect"></InputTextDisable>
+
+                <div><label class="sub-tile">@GetName("QuantityInspected",new QualityEvaluation())</label></div>
+                <InputTextDisable Enable="true" TypeInt="true" @bind-ValueDouble="QualityEvaluation.QuantityInspected"></InputTextDisable>
+
+                <div><label class="sub-tile">@GetName("QuantityWithIssues",new QualityEvaluation())</label></div>
+                <InputTextDisable Enable="true" TypeInt="true" @bind-ValueDouble="QualityEvaluation.QuantityWithIssues"></InputTextDisable>
+
+                <div><label class="sub-tile">@GetName("Pack",new QualityEvaluation()): @QualityEvaluation.Pack</label></div>
+                <div><label class="sub-tile">@GetName("OverKill",new QualityEvaluation())</label> :  <SfSwitch @bind-Checked="@QualityEvaluation.OverKill"></SfSwitch> </div>
+
+
+            </div>
+
+            <TrafficLight trafficLight="QualityEvaluation.TrafficLightStatus">
+            </TrafficLight>
+
+        </div>
+        <div class="quality-parameter-group">
+            @if (qualityParameterGroupList != null)
+            {
+                @foreach (var item in qualityParameterGroupList)
+                {
+                    <button type="button" class="btn" @onclick="()=>GroupList(item.Id)">
+                        @item.Name
+                    </button>
+                }
+            }
+        </div>
+
+
+        <hr />
+
+        <SfTab Height="250px" CssClass="tab-adaptive" HeaderPlacement="HeaderPosition.Left">
+            <TabAnimationSettings>
+                <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
+                <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
+            </TabAnimationSettings>
+            <TabItems>
+                <TabItem>
+                    <ChildContent>
+                        <TabHeader Text="@GetName("EvaluationParameters",new QualityEvaluation())"></TabHeader>
+                    </ChildContent>
+                    <ContentTemplate>
+                        <div class="container-item">
+
+                                @if (isLoading)
                                 {
-                                    <RadzenDataGrid AllowFiltering="true"
+
+                                    <WaitingProcessIndicator loadingTopic="Quality Evaluation Detail"></WaitingProcessIndicator>
+
+                                }
+                                else
+                                {
+                                   
+                                    if (QualityEvaluation.EvaluationParameters != null )
+                                    {
+                                        <RadzenDataGrid AllowFiltering="true"
                                         AllowColumnResize="true"
                                         AllowAlternatingRows="true"
                                         FilterMode="FilterMode.Advanced"
@@ -197,57 +189,49 @@
                                         SelectionMode="DataGridSelectionMode.Single"
                                         LogicalFilterOperator="LogicalFilterOperator.Or"
                                         CellContextMenu="@ShowContextMenuTransactionalItem">
-                                        <Columns>
+                                            <Columns>
 
-                                            <RadzenDataGridColumn TItem="QualityEvaluation" Property="QualityReportType.Name" Title="@GetName("Parameter", new QualityEvaluationDetail() )" Width="158px" />
-                                            <RadzenDataGridColumn TItem="QualityEvaluation" Property="IsPresent" Title="@GetName("IsPresent", new QualityEvaluationDetail() )" Filterable="false" Sortable="false" Width="158px">
-                                                <Template>
-                                                    @{
-                                                        var item = (bool)context.GetType().GetProperty(nameof(QualityEvaluationDetail.IsPresent)).GetValue(context);
-                                                        <input type="checkbox" checked="@item" />
-                                                    }
-                                                </Template>
-                                            </RadzenDataGridColumn>
-
-                                        </Columns>
-                                    </RadzenDataGrid>
+                                            <RadzenDataGridColumn TItem="QualityEvaluationDetail" Property="Parameter.Name" Title="@GetName("Parameter", new QualityEvaluationDetail() )" Width="158px" />
+                                             
+                                            </Columns>
+                                        </RadzenDataGrid>
+                                    }
                                 }
-                            }
 
-                        }
-                    </div>
-                </ContentTemplate>
-            </TabItem>
-
-            <TabItem>
-                <ChildContent>
-                    <TabHeader Text="@GetName("EvaluationParameters",new QualityEvaluation())"></TabHeader>
-                </ChildContent>
-                <ContentTemplate>
-                    <div class="container-item">
-
-                        @if (isLoading)
-                        {
-
-                            <WaitingProcessIndicator loadingTopic="Quality Evaluation Images"></WaitingProcessIndicator>
-
-                        }
-                        else
-                        {
-                            if (QualityEvaluation.Id != null || true)
+                          
+                        </div>
+                    </ContentTemplate>
+                </TabItem>
+                <TabItem>
+                    <ChildContent>
+                        <TabHeader Text="@GetName("QualityEvaluationImages",new QualityEvaluation())"></TabHeader>
+                    </ChildContent>
+                    <ContentTemplate>
+                        <div class="container-item">
+                            @if (isLoading)
                             {
-                                <div class="detailsTitleContainer" style="width:100%;">
-                                    <h3 class="subTitleDetailForm">@GetName("EvaluationParameters",new QualityEvaluation())</h3>
-                                    <svg @onclick='()=>Add("QualityEvaluationDetailItem")' style="margin-left:20px;" title="Add new Recipe Item" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style " viewBox="0 0 16 16">
-                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                                    </svg>
-                                </div>
-                            }
 
-                            if (QualityEvaluation.QualityEvaluationImages != null)
+                                <WaitingProcessIndicator loadingTopic="Quality Evaluation Images"></WaitingProcessIndicator>
+
+                            }
+                            else
                             {
-                                <RadzenDataGrid AllowFiltering="true"
+                                if (QualityEvaluation.Id != null || true)
+                                {
+                                    <div class="detailsTitleContainer" style="width:100%;">
+                                        <h3 class="subTitleDetailForm">@GetName("QualityEvaluationImages",new QualityEvaluation())</h3>
+                                        <svg @onclick='()=>Add("QualityEvaluationPhotoItem")' style="margin-left:20px;" title="Add new Recipe Item" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style " viewBox="0 0 16 16">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                        </svg>
+                                    </div>
+                                }
+
+
+
+                                if (QualityEvaluation.QualityEvaluationImages != null)
+                                {
+                                    <RadzenDataGrid AllowFiltering="true"
                                         AllowColumnResize="true"
                                         AllowAlternatingRows="true"
                                         FilterMode="FilterMode.Advanced"
@@ -263,23 +247,78 @@
                                         SelectionMode="DataGridSelectionMode.Single"
                                         LogicalFilterOperator="LogicalFilterOperator.Or"
                                         CellContextMenu="@ShowContextMenuTransactionalItem">
-                                    <Columns>
+                                        <Columns>
 
-                                        <RadzenDataGridColumn TItem="QualityEvaluationPhoto" Property="@nameof(QualityEvaluationPhoto.ImageName)" Title="@GetName("ImageName", new QualityEvaluationPhoto() )" Width="158px" />
-                                        <RadzenDataGridColumn TItem="QualityEvaluationPhoto" Property="ParameterGroup.Name" Title="@GetName("ParameterGroup", new QualityEvaluationPhoto() )" Width="158px" />
+                                            <RadzenDataGridColumn TItem="QualityEvaluationPhoto" Property="@nameof(QualityEvaluationPhoto.ImageName)" Title="@GetName("ImageName", new QualityEvaluationPhoto() )" Width="158px" />
+                                            <RadzenDataGridColumn TItem="QualityEvaluationPhoto" Property="ParameterGroup.Name" Title="@GetName("ParameterGroup", new QualityEvaluationPhoto() )" Width="158px" />
 
-                                    </Columns>
-                                </RadzenDataGrid>
+                                        </Columns>
+                                    </RadzenDataGrid>
 
+                                }
                             }
-                        }
-                    </div>
-                </ContentTemplate>
-            </TabItem>
+                        </div>
+                    </ContentTemplate>
+                </TabItem>
 
-        </TabItems>
-    </SfTab>
+                <TabItem>
+                    <ChildContent>
+                        <TabHeader Text="@GetName("Notes",new CommercialDocument())"></TabHeader>
+                    </ChildContent>
+                    <ContentTemplate>
+                        <div class="container-item">
+                            <div><label class="sub-tile">@GetName("Notes",new CommercialDocument())</label></div>
+                            <textarea @bind="commercialDocument.Notes" disabled></textarea>
+                        </div>
+                    </ContentTemplate>
+                </TabItem>
 
+                <TabItem>
+                    <ChildContent>
+                        <TabHeader Text="@GetName("SpecsNotes",new CommercialDocument())"></TabHeader>
+                    </ChildContent>
+                    <ContentTemplate>
+                        <div class="container-item">
+                            <div><label class="sub-tile">@GetName("SpecsNotes",new CommercialDocument())</label></div>
+                            <textarea @bind="commercialDocument.SpecsNotes" disabled></textarea>
+                        </div>
+                    </ContentTemplate>
+                </TabItem>
+
+            </TabItems>
+        </SfTab>
+
+    }
+
+
+    @if (page == "group")
+    {
+
+        <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
+            <button @onclick='()=>Page("new")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+        </div>
+
+        <div class="container-parameter-list">
+            <div class="list">
+                @if (qualityAssuranceParameterList != null && qualityAssuranceParameterList.Count()>0)
+                {
+                    @foreach (var item in qualityAssuranceParameterList)
+                    {
+                        <div class="item">
+                            <input type="checkbox" @onclick="()=>checkboxList(item.Id)"  checked='@(checkboxValidation(@item.Id))' ><label>@item.Name</label>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <label>
+                        there are no parameters
+                    </label>
+                }
+
+            </div>
+        </div>
+    }
 
 </form>
 
@@ -297,8 +336,10 @@
     string alertMsg = "";
     string SearcherValue = "";
     string msg = "";
+    string page = "new";
     bool isLoading = false;
     bool isVisible = false;
+    bool checkboxUpdate = true;
     MessageSaveComponent? referAlert;
     TextToSpeech textToSpeech;
     public QualityEvaluation QualityEvaluation = new();
@@ -311,7 +352,8 @@
     List<QualityReportType> typeList { get; set; }
     List<QualityTrafficLight> trafficLightStatusList { get; set; }
     public CommercialDocument commercialDocument = new();
-
+    List<QualityParameterGroup>? qualityParameterGroupList { get; set; }
+    List<QualityAssuranceParameter>? qualityAssuranceParameterList { get; set; }
     public string itemName { get; set; }
 
     #endregion Input3
@@ -320,6 +362,7 @@
 
     protected override void OnParametersSet()
     {
+
         StateHasChanged();
     }
 
@@ -339,11 +382,17 @@
                 if (transactionalItem != null) itemName = transactionalItem.Name;
             }
         }
-
-        typeList = await QualityEvaluationServices.GetQualityReportTypeList("all", 1, 20);
-
         LoadQualityEvaluation();
+        LoadParameter();
+        typeList = await QualityEvaluationServices.GetQualityReportTypeList("all", 1, 20);
+        qualityParameterGroupList = await QualityEvaluationServices.GetQualityParameterGrouplList("all", 1, 20);
         isLoading = false;
+        StateHasChanged();
+    }
+
+    public async Task LoadParameter()
+    {
+        qualityAssuranceParameterList = await QualityEvaluationServices.GetQualityAssuranceParameterlList("all", 1, 20);
         StateHasChanged();
     }
 
@@ -379,6 +428,61 @@
 
     }
 
+    public async void checkboxList(string Id)
+    {
+        if (checkboxUpdate)
+        {
+            checkboxUpdate = false;
+            var item = qualityAssuranceParameterList.Where(s => s.Id == Id).FirstOrDefault();
+            if (QualityEvaluation == null) QualityEvaluation = new();
+            if (QualityEvaluation.EvaluationParameters == null) QualityEvaluation.EvaluationParameters = new();
+
+            if (item != null)
+            {
+                var itemTemp = QualityEvaluation.EvaluationParameters.Where(s => s.Id == item.Id).FirstOrDefault();
+
+                if (itemTemp != null)
+                {
+                    QualityEvaluation.EvaluationParameters.Remove(itemTemp);
+                }
+                else
+                {
+                    QualityEvaluation.EvaluationParameters.Add(new QualityEvaluationDetail
+                        {
+                            Parameter = item
+
+                        });
+                }
+            }
+
+            checkboxUpdate = true;
+
+            StateHasChanged();
+        }
+    }
+
+
+    public  bool checkboxValidation(string Id){
+
+        if (QualityEvaluation.EvaluationParameters!=null) {
+            var itemTemp = QualityEvaluation.EvaluationParameters.Where(s => s.Parameter.Id == Id).FirstOrDefault();
+
+            if (itemTemp != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+
+            }
+        }
+        else
+        {
+            return false;
+        }
+
+     }
 
 
     public void SelectItemDocumentType(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
@@ -395,6 +499,7 @@
     public async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
         SearcherValue = arg.IdControl.ToString();
+
         StateHasChanged();
     }
 
@@ -403,6 +508,21 @@
 
     }
 
+    public async void GroupList(string Id)
+    {
+        await LoadParameter();
+        qualityAssuranceParameterList = qualityAssuranceParameterList.Where(s => s.ParameterGroup.Id == Id).ToList();
+        Page("group");
+
+    }
+
+    public void Page(string value)
+    {
+        page = value;
+        StateHasChanged();
+    }
+
+
     #region grid
 
 
@@ -410,7 +530,7 @@
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
-        );
+    );
 
 
     void OnMenuItemClick(MenuItemEventArgs args)
@@ -426,7 +546,7 @@
     void ShowContextMenuTransactionalItem(DataGridCellMouseEventArgs<QualityEvaluationDetail> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick1">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-        </RadzenMenu>
+    </RadzenMenu>
     );
 
 
@@ -507,7 +627,7 @@
         if (commercialDocument.Buyer == null) commercialDocument.Buyer = new();
         if (commercialDocument.Buyer.Name == null) commercialDocument.Buyer.Name = "";
 
-         if (commercialDocument.Vendor == null) commercialDocument.Vendor = new();
+        if (commercialDocument.Vendor == null) commercialDocument.Vendor = new();
         if (commercialDocument.Vendor.Name == null) commercialDocument.Vendor.Name = "";
 
 

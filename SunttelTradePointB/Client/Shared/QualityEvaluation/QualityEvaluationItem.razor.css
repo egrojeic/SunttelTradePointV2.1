@@ -24,6 +24,10 @@
 }
 
 .grid-columns-6 {
+    column-gap: 5px;
+    row-gap: 5px;
+    margin-top: -8px;
+    align-items: center;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
 }
 
@@ -118,6 +122,7 @@
 }
 
 .container-item {
+   
 }
 
 
@@ -129,8 +134,55 @@
 }
 
 
-.div-container-flex{   
-    display:flex;
-    flex-direction:row;
-
+.div-container-flex {
+    display: flex;
+    flex-direction: row;
 }
+
+.quality-parameter-group {
+    background-color: #eeeff0;
+    width: 100%;
+    padding: 5px;
+    display: flex;
+    column-gap: 10px;
+    overflow:auto;
+}
+
+    .quality-parameter-group .btn {
+        background-color: #00ccff;
+        box-shadow: 0px 0px 2px;
+        max-width: 250px;
+        text-align: start;
+    }
+
+.container-parameter-list {
+    display: flex;
+    justify-content: center;   
+    height: 100%;
+}
+
+    .container-parameter-list .list {
+        display: flex;
+        flex-direction:column;
+        justify-content: center;
+        row-gap:10px;
+        background-color: #e8e9ec;
+        padding: 10px;
+        max-width: 400px;
+        overflow: auto;
+    }
+
+        .container-parameter-list .list .item {
+            display: flex;
+            flex-direction: row;
+            column-gap: 10px;
+            align-items: center;
+            align-items: center;
+            box-shadow: 0px 0px 5px;
+            padding: 5px;
+            border-radius: 3px;
+        }
+
+            .container-parameter-list .list .item label {
+                margin: 0px;
+            }
