@@ -90,7 +90,8 @@
                             Id="Vendor"
                             caption="@(creditDocument.Vendor !=null ? creditDocument.Vendor.Name:"")"
                             EventIdSelectionAndId="EventIdSelectionAndId"
-                            EventSearcherValueAndId="EventSearcherValueAndId"                           
+                            EventSearcherValueAndId="EventSearcherValueAndId"        
+                            Items="@vendorList"
                             style="left:-150px;">
         </InputTextSelector3>
 
@@ -100,9 +101,10 @@
 
         <InputTextSelector3 TItem="Concept"
                             Id="Buyer"
-                            caption="@(creditDocument.Vendor !=null ? creditDocument.Vendor.Name:"")"
+                            caption="@(creditDocument.Buyer !=null ? creditDocument.Buyer.Name:"")"
                             EventIdSelectionAndId="EventIdSelectionAndId"
                             EventSearcherValueAndId="EventSearcherValueAndId"
+                            Items="@buyerList"
                             style="left:-150px;">
         </InputTextSelector3>
 
