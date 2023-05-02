@@ -12,7 +12,7 @@
 @using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents
 @inject NavigationManager Navigation
 @inject SunttelTradePointB.Client.Services.QualityEvaluationServices.QualityEvaluationServices QualityEvaluationServices
-@inject ContextMenuService ContextMenuService
+@inject ContextMenuService ContextMenuServsi
 @inject TransactionalItemsService transactionalService;
 @inject IJSRuntime Js
 
@@ -42,10 +42,8 @@
     </div>
 
     <div class="grid-columns-header grid-columns-6">
-
         <div><label class="sub-tile">@GetName("Name",new QualityAction())</label></div>
         <InputTextDisable Enable="true" TypeInt="false" @bind-ValueString="qualityAction.Name"></InputTextDisable>
-
     </div>
 
     <hr />

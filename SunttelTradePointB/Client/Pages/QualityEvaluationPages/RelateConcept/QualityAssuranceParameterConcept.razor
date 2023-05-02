@@ -74,7 +74,7 @@
 
         <div>
             <label class="lblControl col-form-label">
-                @GetName("ParameterGroup",new QualityAssuranceParameter())
+                @GetName("ReportType",new QualityAssuranceParameter())
             </label>
         </div>
         <div>
@@ -89,7 +89,7 @@
 
                     <option value="0" selected>Select</option>
                 }
-                @if (qualityAssuranceParameter != null && qualityAssuranceParameter.ParameterGroup != null)
+                @if (qualityAssuranceParameter != null && qualityAssuranceParameter.ReportType != null)
                 {
                     <option value="@qualityAssuranceParameter.ReportType.Id" selected>@qualityAssuranceParameter.ReportType.Name</option>
                 }

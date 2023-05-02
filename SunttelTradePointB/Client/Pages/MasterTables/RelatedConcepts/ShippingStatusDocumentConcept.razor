@@ -21,7 +21,7 @@
 <div class="flex-horizontal-center">
     <div class="grid-columns-2 box-shadow-mode">
         <div><label>@GetName( "Name", new AtomConcept())</label></div>
-        <div><input type="text" @bind-value="shippingStatus.Name" class="form-control" placeholder="Edit value" /></div>
+        <div><input type="text" @bind-value="@shippingStatus.Name" class="form-control" placeholder="Edit value" /></div>
 
         <div><label>@GetName( "AffectInventory", new ShippingStatus())</label></div>
         <div>
@@ -30,7 +30,7 @@
         <div><label>@GetName( "EditingAllowed", new ShippingStatus())</label></div>
         <div>
             <SfSwitch @bind-Checked="@shippingStatus.EditingAllowed"></SfSwitch>
-        </div>       
+        </div>
         <div></div>
         <div>
             <div class="flex-horizontal-end">
@@ -52,11 +52,12 @@
     public string msg = "", pageView = "";
 
 
-    protected override async Task OnParametersSetAsync()
+    protected async override void OnInitialized()
     {
-        if (ShippingStatusId is null) return;
-        shippingStatus = await SaleDocumentService.GetShippingStatusById(ShippingStatusId);
-        base.OnInitialized();
+       
+        if (ShippingStatusId != null) shippingStatus = await SaleDocumentService.GetShippingStatusById(ShippingStatusId);
+        LoadData();
+        StateHasChanged();
     }
 
 
@@ -68,9 +69,19 @@
     public async void Save()
     {
         var resul = await SaleDocumentService.SaveShippingStatus(shippingStatus);
-        if (resul !=null) shippingStatus = new();
-        Msg(resul!=null);
+        if (resul != null) shippingStatus = new();
+        Msg(resul != null);
     }
+
+
+    public void LoadData()
+    {
+        if (shippingStatus == null) shippingStatus = new();
+        if (shippingStatus.Name == null) shippingStatus.Name = "";
+
+
+    }
+
 
     private void Msg(bool mode)
     {
@@ -89,4 +100,6 @@
         Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
     }
+
+
 }
