@@ -15,18 +15,15 @@
                     Description="With this tool you can add and edit quality control panel">
 </PageTitleComponent>
 
-
-
-
 <div class="panelMenuContainer">
     <QualityEvaluationMenu>
-        </QualityEvaluationMenu>
-            <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
-          
+    </QualityEvaluationMenu>
+    <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
+
 
 </div>
 
-<div class="panelMenuContainer">  
+<div class="panelMenuContainer">
 
     <QualityEvaluationMenu2 SetType="SetType"></QualityEvaluationMenu2>
 
@@ -70,23 +67,24 @@
                     CellContextMenu="@ShowContextMenuCommercialDocument">
             <Columns>
 
-                <RadzenDataGridColumn TItem="QualityEvaluation" Property="QualityReportType.Name" Title="@GetName("QualityReportType", new QualityEvaluation() )" Width="208px" />               
-                <RadzenDataGridColumn TItem="QualityEvaluation" Property="InspectionDate" Title="@GetName("InspectionDate", new QualityEvaluation() )" Filterable="false" Sortable="false" Width="158px">
-                    <Template>
-                        @{
-                            var item = (DateTime)context.GetType().GetProperty(nameof(QualityEvaluation.InspectionDate)).GetValue(context);
-                            <p>@item.ToString("MM/dd/yyyy")</p>
-                        }
-                    </Template>
-                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="QualityReportType.Name" Title="@GetName("QualityReportType", new QualityEvaluation() )" Width="208px" />
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="InspectionDate" Title="@GetName("InspectionDate", new QualityEvaluation() )" Filterable="false" Sortable="false" FormatString="{0:MM/dd/yyyy}" Width="158px" />
                 <RadzenDataGridColumn TItem="QualityEvaluation" Property="QuantityToInspect" Title="@GetName("QuantityToInspect", new QualityEvaluation() )" Filterable="false" Width="158px" />
                 <RadzenDataGridColumn TItem="QualityEvaluation" Property="QuantityInspected" Title="@GetName("QuantityInspected", new QualityEvaluation() )" Filterable="false" Width="158px" />
                 <RadzenDataGridColumn TItem="QualityEvaluation" Property="QuantityWithIssues" Title="@GetName("QuantityWithIssues", new QualityEvaluation() )" Filterable="false" Width="158px" />
-                <RadzenDataGridColumn TItem="QualityEvaluation" Property="Pack" Title="@GetName("Pack", new QualityEvaluation() )" Filterable="false" Width="158px" />
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="Pack" Title="@GetName("Pack", new QualityEvaluation() )" Filterable="false" Width="88px" />
                 <RadzenDataGridColumn TItem="QualityEvaluation" Property="TrafficLightStatus.Name" Title="@GetName("TrafficLightStatus", new QualityEvaluation() )" Filterable="false" Width="158px" />
-                <RadzenDataGridColumn TItem="QualityEvaluation" Property="QualityAction.Name" Title="@GetName("QualityAction", new QualityEvaluation() )" Filterable="false" Width="158px" />
-                <RadzenDataGridColumn TItem="QualityEvaluation" Property="OverKill" Title="@GetName("OverKill", new QualityEvaluation() )" Filterable="false" Sortable="false" Width="158px" />
-
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="ActionToTake.Name" Title="@GetName("ActionToTake", new QualityEvaluation() )" Filterable="false" Width="158px" />
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="OverKill" Title="@GetName("OverKill", new QualityEvaluation() )" Filterable="false" Sortable="false" Width="158px">
+                    <Template>
+                        @{
+                            var OverKill = (bool)context.GetType().GetProperty(nameof(QualityEvaluation.OverKill)).GetValue(context);
+                           
+                            <input type="checkbox" checked="@OverKill" disabled />
+                          
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
 
             </Columns>
         </RadzenDataGrid>
@@ -129,8 +127,8 @@
     public async void LoadData()
     {
         isLoading = true;
-       
-            qualityEvaluationList = await QualityEvaluationServices.GetQualityEvaluationServicesList((_filterItems != null ? _filterItems : "all"), 1, 20);
+
+        qualityEvaluationList = await QualityEvaluationServices.GetQualityEvaluationServicesList((_filterItems != null ? _filterItems : "all"), 1, 20);
 
         if (qualityReportType != null)
         { }

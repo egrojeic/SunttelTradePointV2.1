@@ -93,8 +93,6 @@
 
     protected async override void OnInitialized()
     {
-
-
         if (_filterItems != null) LoadData();
         base.OnInitialized();
 
@@ -103,11 +101,11 @@
     public async void LoadData()
     {
         isLoading = true;
-        if (qualityAction != null)
-        {
+      
             qualityActionList = await QualityEvaluationServices.GetQualityActionList((_filterItems != null ? _filterItems : "all"), 1, 20);
 
-        }
+        if (qualityAction != null)
+        { }
         isLoading = false;
         StateHasChanged();
     }

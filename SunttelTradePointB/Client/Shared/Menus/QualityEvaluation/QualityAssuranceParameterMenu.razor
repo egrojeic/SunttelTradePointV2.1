@@ -9,6 +9,8 @@
 
 <div id="container-menu-general">
     <nav>
+        <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+
         <button class="general-menu-button btn-new" @onclick="CreateNew"><i class="fa-solid fa-file"></i></button>
         <SfSplitButton Content="Import..." IconCss="fa-solid fa-file-import" CssClass="splitButtonsStyle">
             <DropDownMenuItems>
@@ -49,6 +51,11 @@
     private void CreateNew()
     {
         Navigation.NavigateTo("/QualityAssuranceParameterItem");
+    }
+
+    private void Home()
+    {
+        Navigation.NavigateTo("/QualityControlPanel");
     }
 
 }

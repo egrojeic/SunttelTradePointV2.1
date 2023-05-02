@@ -158,8 +158,8 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-                string path = basepath.Replace("Name", "GetShippingStatusDocById");
-                var responseMessage = await Gethttp($"/api/Sales/Name?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&ShippingStatusId={ShippingStatusId}");
+               
+                var responseMessage = await Gethttp($"/api/Sales/GetShippingStatusDocById?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}&shippingStatusId={ShippingStatusId}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<ShippingStatus>();
                 return list != null ? list : new ShippingStatus();
             }
