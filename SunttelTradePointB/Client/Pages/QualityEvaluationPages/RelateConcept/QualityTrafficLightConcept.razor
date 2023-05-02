@@ -1,7 +1,7 @@
 @page "/QualityTrafficLightItem"
 @page "/QualityTrafficLightItem/{qualityTrafficLightId}/{filter}"
 
-
+@using System;
 @using SunttelTradePointB.Shared.Quality;
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
@@ -10,6 +10,7 @@
 @using System.Reflection
 @using Syncfusion.Blazor.Navigations
 @using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents
+@using Syncfusion.Blazor.Inputs
 @inject NavigationManager Navigation
 @inject SunttelTradePointB.Client.Services.QualityEvaluationServices.QualityEvaluationServices QualityEvaluationServices
 @inject ContextMenuService ContextMenuService
@@ -45,12 +46,13 @@
 
         <div><label class="sub-tile">@GetName("Name",new QualityTrafficLight())</label></div>
         <InputTextDisable Enable="true" TypeInt="false" @bind-ValueString="qualityTrafficLight.Name"></InputTextDisable>
-
+        <div><label class="sub-tile">Color</label></div>       
+        <SfColorPicker Selected="EventColor"></SfColorPicker>
     </div>
 
     <hr />
 
- 
+
 
 </form>
 
@@ -79,9 +81,9 @@
     #endregion Status
 
     #region Input3
-  
 
- 
+
+
 
     #endregion Input3
 
@@ -101,7 +103,7 @@
         if (qualityTrafficLightId != null)
         {
             qualityTrafficLight = await QualityEvaluationServices.GetQualityTrafficLightById(qualityTrafficLightId);
-        }      
+        }
         LoadQualityEvaluation();
         isLoading = false;
         StateHasChanged();
@@ -137,10 +139,23 @@
 
         StateHasChanged();
 
-  }
+    }
 
 
-   
+
+    public void EventColor(ColorPickerEventArgs arg)
+    {
+        string value = arg.CurrentValue.Rgba.Replace("rgba(", "").Replace(")", "");
+        var R = value.Split(",")[0];
+        var G = value.Split(",")[1];
+        var B = value.Split(",")[2];
+
+        qualityTrafficLight.R = Convert.ToInt32(R);
+        qualityTrafficLight.G = Convert.ToInt32(G);
+        qualityTrafficLight.B = Convert.ToInt32(B);
+    }
+
+
     public void alert(string _msg, int? status = 0)
     {
         isVisible = true;
@@ -157,7 +172,7 @@
         Navigation.NavigateTo($"/QualityTrafficLightGeneral");
     }
 
-  
+
 
     public string Validate()
     {
@@ -171,7 +186,7 @@
 
     public void LoadQualityEvaluation()
     {
-        if (qualityTrafficLight == null) qualityTrafficLight = new();    
+        if (qualityTrafficLight == null) qualityTrafficLight = new();
 
     }
 

@@ -376,7 +376,7 @@
         {
             QualityEvaluation = await QualityEvaluationServices.GetItemQualityEvaluationById(qualityEvaluationId);
 
-            if (QualityEvaluation.SalesDocumentItemsDetailsId != null)
+            if (QualityEvaluation !=null && QualityEvaluation.SalesDocumentItemsDetailsId != null)
             {
                 var transactionalItem = await transactionalService.GetTransactionalItemById(QualityEvaluation.SalesDocumentItemsDetailsId);
                 if (transactionalItem != null) itemName = transactionalItem.Name;
@@ -384,6 +384,7 @@
         }
         LoadQualityEvaluation();
         LoadParameter();
+        trafficLightStatusList = await QualityEvaluationServices.GetQualityTrafficLightList("all", 1, 20);
         typeList = await QualityEvaluationServices.GetQualityReportTypeList("all", 1, 20);
         qualityParameterGroupList = await QualityEvaluationServices.GetQualityParameterGrouplList("all", 1, 20);
         isLoading = false;

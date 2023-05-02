@@ -162,7 +162,7 @@
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         QualityEvaluation argObj = (QualityEvaluation)args.Value;
-        Navigation.NavigateTo($"AccountsReceivableippingItem/{argObj.Id}/{docsFilter}");
+        Navigation.NavigateTo($"QualityEvaluationItem/{argObj.Id}/{docsFilter}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
