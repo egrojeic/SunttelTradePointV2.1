@@ -240,7 +240,8 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         public async Task<IActionResult> SaveQualityTrafficLight(string userId, string ipAddress, [FromBody] QualityTrafficLight quality)
         {
             var customHeaderValue = Request.Headers["SquadId"];
-            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            //var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var squadId = quality.SquadId;
 
             var response = await _quality.SaveQualityTrafficLight(userId, ipAddress, squadId, quality);
 
