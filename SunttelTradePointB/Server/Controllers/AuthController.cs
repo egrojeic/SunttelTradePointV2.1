@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -283,35 +282,6 @@ namespace SunttelTradePointB.Server.Controllers
             {
                 return BadRequest(ex.Message);
             }
-        }
-
-        /// <summary>
-        /// Delete user
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [ActionName("GetRoles")]
-        public async Task<IActionResult> DeleteUser()
-        {
-            try
-            {
-                List<IdentityRole> list = await _roleManager.Roles.ToListAsync();
-                return Ok(list);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        public async Task<IdentityResult> DeleteUser(User user)
-        {
-            return await _userManager.DeleteAsync(user);
-        }
-
-        public async Task<IList<User>> GetUsers()
-        {
-            return await _userManager.Users.ToListAsync();
         }
 
     }
