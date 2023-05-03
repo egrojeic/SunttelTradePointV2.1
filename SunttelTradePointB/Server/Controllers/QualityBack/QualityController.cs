@@ -391,8 +391,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         [ActionName("SaveQualityReportType")]
         public async Task<IActionResult> SaveQualityReportType(string userId, string ipAddress, [FromBody] QualityReportType quality)
         {
-            var customHeaderValue = Request.Headers["SquadId"];
-            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var squadId = quality.SquadId;
 
             var response = await _quality.SaveQualityReportType(userId, ipAddress, squadId, quality);
 
@@ -465,7 +464,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveQCDocument")]
-        public async Task<IActionResult> SaveQCDocument(string userId, string ipAddress, [FromBody] QCDocumentsImport quality)
+        public async Task<IActionResult> SaveQCDocument(string userId, string ipAddress, [FromBody] QualityEvaluation quality)
         {
             var squadId = quality.SquadId;
 
