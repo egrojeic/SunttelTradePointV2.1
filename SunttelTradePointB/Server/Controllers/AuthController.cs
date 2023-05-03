@@ -176,7 +176,7 @@ namespace SunttelTradePointB.Server.Controllers
                 var result = await _userManager.CreateAsync(user, parameters.Password);
                 if (!result.Succeeded) return BadRequest(result.Errors.FirstOrDefault()?.Description);
                 var result2 = await _userManager.AddToRoleAsync(user, parameters.UserType.ToString());
-                if (!result.Succeeded) return BadRequest(result.Errors.FirstOrDefault()?.Description);
+                if (!result2.Succeeded) return BadRequest(result.Errors.FirstOrDefault()?.Description);
                 return Ok();
             }
             catch (Exception ex)
