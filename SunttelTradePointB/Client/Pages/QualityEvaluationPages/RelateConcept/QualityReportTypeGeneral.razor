@@ -96,13 +96,11 @@
     {
         if (_filterItems != null) LoadData();
         base.OnInitialized();
-
     }
 
     public async void LoadData()
     {
-        isLoading = true;
-       
+        isLoading = true;       
             qualityReportTypeList = await QualityEvaluationServices.GetQualityReportTypeList((_filterItems != null ? _filterItems : "all"), 1, 20);
         if (qualityReportType != null)
         {
