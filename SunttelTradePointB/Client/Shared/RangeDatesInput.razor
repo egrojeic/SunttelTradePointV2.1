@@ -15,7 +15,7 @@
         <label class="col-sm-2 col-form-label text-right lblControl"> @(EndDateName != null ? EndDateName : "Until")</label>
         <div class="col-sm-4">
             <input @onchange="@SetDateEnd" value="@EndDate.ToString("yyyy-MM-dd")" type="date" class="form-control" />
-    </div>
+        </div>
     }
     @if (!disableBtn)
     {
@@ -29,11 +29,11 @@
 
 @code {
     [Parameter]
-    public DateTime StartDate { get; set; } = DateTime.Now;
+    public DateTime StartDate { get; set; }
     [Parameter]
     public string StartDateName { get; set; }
     [Parameter]
-    public DateTime EndDate { get; set; } = DateTime.Now.AddMonths(1);
+    public DateTime EndDate { get; set; }
     [Parameter]
     public string EndDateName { get; set; }
     [Parameter]
