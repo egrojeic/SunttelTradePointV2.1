@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SunttelTradePointB.Server.Controllers.InventoryBack;
 using SunttelTradePointB.Server.Interfaces.QualityBkServices;
+using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.InvetoryModels;
 using SunttelTradePointB.Shared.Quality;
 
@@ -316,9 +317,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         [ActionName("SaveQualityAction")]
         public async Task<IActionResult> SaveQualityAction(string userId, string ipAddress, [FromBody] QualityAction quality)
         {
-            var customHeaderValue = Request.Headers["SquadId"];
-            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
-
+            var squadId = quality.SquadId;
             var response = await _quality.SaveQualityAction(userId, ipAddress, squadId, quality);
 
             if (response.IsSuccess)
@@ -332,7 +331,156 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         }
         #endregion
 
+        #region Quality Type
+        /// <summary>
+        /// Returns a list of quality report types with a filter like the parameter
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetQualityReportTypes")]
+        public async Task<IActionResult> GetQualityReportTypes(string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filter = null)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _quality.GetQualityReportTypes(userId, ipAddress, squadId, page, perPage, filter);
 
+            if (response.IsSuccess)
+            {
+                return Ok(response.GetQualityReportTypesList);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Retrieves an quality report type object by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="qualityId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetQualityReportTypeById")]
+        public async Task<IActionResult> GetQualityReportTypeById(string userId, string ipAddress, string qualityId)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _quality.GetQualityReportTypeById(userId, ipAddress, squadId, qualityId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.QualityReportType);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Saves an quality report type. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="quality"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveQualityReportType")]
+        public async Task<IActionResult> SaveQualityReportType(string userId, string ipAddress, [FromBody] QualityReportType quality)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+
+            var response = await _quality.SaveQualityReportType(userId, ipAddress, squadId, quality);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.QualityReportType);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+        #endregion
+
+        #region QCDocuments
+        /// <summary>
+        /// Returns a list of quality documents with a filter like the parameter
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetQCDocuments")]
+        public async Task<IActionResult> GetQCDocuments(string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filter = null)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _quality.GetQCDocuments(userId, ipAddress, squadId, page, perPage, filter);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.GetQCDocumentsList);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Retrieves an quality report type object by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="qualityId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetQCDocumentById")]
+        public async Task<IActionResult> GetQCDocumentById(string userId, string ipAddress, string qualityId)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _quality.GetQCDocumentById(userId, ipAddress, squadId, qualityId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.QCDocument);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Saves an quality report type. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="quality"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveQCDocument")]
+        public async Task<IActionResult> SaveQCDocument(string userId, string ipAddress, [FromBody] QCDocumentsImport quality)
+        {
+            var squadId = quality.SquadId;
+
+            var response = await _quality.SaveQCDocument(userId, ipAddress, squadId, quality);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.QCDocument);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+        #endregion
     }
 
 }

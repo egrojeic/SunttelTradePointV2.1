@@ -2,6 +2,7 @@
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using SunttelTradePointB.Server.Interfaces.QualityBkServices;
+using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.InvetoryModels;
 using SunttelTradePointB.Shared.Quality;
 
@@ -21,6 +22,8 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
         IMongoCollection<QualityParameterGroup> _QualityGroupCollection;
         IMongoCollection<QualityTrafficLight> _QualityTrafficLightCollection;
         IMongoCollection<QualityAction> _QualityActionCollection;
+        IMongoCollection<QualityReportType> _QualityReportTypeCollection;
+        IMongoCollection<QCDocumentsImport> _QCDocumentCollection;
 
         /// <summary>
         /// Constructor
@@ -35,6 +38,8 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
             _QualityGroupCollection = mongoDatabase.GetCollection<QualityParameterGroup>("QualityParameterGroups");
             _QualityTrafficLightCollection = mongoDatabase.GetCollection<QualityTrafficLight>("QualityTrafficLightStatus");
             _QualityActionCollection = mongoDatabase.GetCollection<QualityAction>("QualityActionToTake");
+            _QualityReportTypeCollection = mongoDatabase.GetCollection<QualityReportType>("QualityReportTypes");
+            _QCDocumentCollection = mongoDatabase.GetCollection<QCDocumentsImport>("QCEvaluations");
 
         }
 
@@ -594,5 +599,284 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
         }
         #endregion
 
+        #region Quality Type
+        /// <summary>
+        /// Returns a list of quality report types with a filter like the parameter
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<QualityReportType>? GetQualityReportTypesList, string? ErrorDescription)> GetQualityReportTypes(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filter = null)
+        {
+            try
+            {
+                string filterString = filter == null ? "" : filter;
+                var skip = (page - 1) * perPage;
+
+                if (filterString.Length > 0)
+                {
+                    var pipeline = new List<BsonDocument>();
+
+                    if (filterString.ToLower() != "all")
+                    {
+                        pipeline.Add(
+                            new BsonDocument {
+                                { "$match",
+                                    new BsonDocument{
+                                        { "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filterString}/i")) }
+                                    }
+                                }
+                            }
+                        );
+                    }
+
+                    // Filtro por SquadId
+                    pipeline.Add(
+                        new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                    );
+
+                    pipeline.Add(
+                    new BsonDocument{
+                        {"$skip",  skip}
+                    }
+                    );
+
+                    pipeline.Add(
+                        new BsonDocument{
+                        {"$limit",  perPage}
+                        }
+                    );
+
+                    List<QualityReportType> results = await _QualityReportTypeCollection.Aggregate<QualityReportType>(pipeline).ToListAsync();
+                    return (true, results, null);
+                }
+                else
+                {
+                    var quality = await _QualityReportTypeCollection.Find<QualityReportType>(new BsonDocument()).ToListAsync();
+
+                    if (quality == null || quality.Count == 0)
+                    {
+                        return (false, null, "Unpopulated Quality report type");
+                    }
+                    else
+                    {
+                        return (true, quality, null);
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves a particular Transactional Item Type by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="qualityId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, QualityReportType? QualityReportType, string? ErrorDescription)> GetQualityReportTypeById(string userId, string ipAddress, string squadId, string qualityId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(qualityId)))
+                );
+                // Filtro por SquadId
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                );
+
+                var resultPrev = await _QualityReportTypeCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                QualityReportType result = resultPrev.Select(d => BsonSerializer.Deserialize<QualityReportType>(d)).ToList()[0];
+
+                return (true, result, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, null, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Inserts / Updates an Quanlity Item Type object
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="quality"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, QualityReportType? QualityReportType, string? ErrorDescription)> SaveQualityReportType(string userId, string ipAddress, string squadId, QualityReportType quality)
+        {
+            try
+            {
+                if (quality.Id == null)
+                {
+                    quality.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterQuantity = Builders<QualityReportType>.Filter.Eq("_id", new ObjectId(quality.Id));
+                var updateQuantity = new ReplaceOptions { IsUpsert = true };
+                var resultQuantity = await _QualityReportTypeCollection.ReplaceOneAsync(filterQuantity, quality, updateQuantity);
+
+                return (true, quality, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+        #endregion
+
+        #region QC Document
+        /// <summary>
+        /// Returns a list of quality documents with a filter like the parameter
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<QCDocumentsImport>? GetQCDocumentsList, string? ErrorDescription)> GetQCDocuments(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filter = null)
+        {
+            try
+            {
+                string filterString = filter == null ? "" : filter;
+                var skip = (page - 1) * perPage;
+
+                if (filterString.Length > 0)
+                {
+                    var pipeline = new List<BsonDocument>();
+
+                    if (filterString.ToLower() != "all")
+                    {
+                        pipeline.Add(
+                            new BsonDocument {
+                                { "$match",
+                                    new BsonDocument{
+                                        { "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filterString}/i")) }
+                                    }
+                                }
+                            }
+                        );
+                    }
+
+                    // Filtro por SquadId
+                    pipeline.Add(
+                        new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                    );
+
+                    pipeline.Add(
+                    new BsonDocument{
+                        {"$skip",  skip}
+                    }
+                    );
+
+                    pipeline.Add(
+                        new BsonDocument{
+                        {"$limit",  perPage}
+                        }
+                    );
+
+                    List<QCDocumentsImport> results = await _QualityReportTypeCollection.Aggregate<QCDocumentsImport>(pipeline).ToListAsync();
+                    return (true, results, null);
+                }
+                else
+                {
+                    var quality = await _QCDocumentCollection.Find<QCDocumentsImport>(new BsonDocument()).ToListAsync();
+
+                    if (quality == null || quality.Count == 0)
+                    {
+                        return (false, null, "Unpopulated Quality Documents");
+                    }
+                    else
+                    {
+                        return (true, quality, null);
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves an quality document type object by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="qualityId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, QCDocumentsImport? QCDocument, string? ErrorDescription)> GetQCDocumentById(string userId, string ipAddress, string squadId, string qualityId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(qualityId)))
+                );
+                // Filtro por SquadId
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                );
+
+                var resultPrev = await _QualityReportTypeCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                QCDocumentsImport result = resultPrev.Select(d => BsonSerializer.Deserialize<QCDocumentsImport>(d)).ToList()[0];
+
+                return (true, result, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, null, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Saves an quality document type. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="quality"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, QCDocumentsImport? QCDocument, string? ErrorDescription)> SaveQCDocument(string userId, string ipAddress, string squadId, QCDocumentsImport quality)
+        {
+            try
+            {
+                /*
+                if (quality.Id == null)
+                {
+                    quality.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterQuantity = Builders<QCDocumentsImport>.Filter.Eq("_id", new ObjectId(quality.Id));
+                
+                var updateQuantity = new ReplaceOptions { IsUpsert = true };
+                var resultQuantity = await _QCDocumentCollection.ReplaceOneAsync(filterQuantity, quality, updateQuantity);
+                */
+                return (true, quality, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+        #endregion
     }
 }

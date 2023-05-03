@@ -1,4 +1,5 @@
-﻿using SunttelTradePointB.Shared.InvetoryModels;
+﻿using SunttelTradePointB.Shared.ImportingData;
+using SunttelTradePointB.Shared.InvetoryModels;
 using SunttelTradePointB.Shared.Quality;
 
 namespace SunttelTradePointB.Server.Interfaces.QualityBkServices
@@ -143,7 +144,74 @@ namespace SunttelTradePointB.Server.Interfaces.QualityBkServices
         /// <param name="quality"></param>
         /// <returns></returns>
         Task<(bool IsSuccess, QualityAction? QualityAction, string? ErrorDescription)> SaveQualityAction(string userId, string ipAddress, string squadId, QualityAction quality);
+        #endregion
 
+        #region Quality Type
+        /// <summary>
+        /// Returns a list of quality report types with a filter like the parameter
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<QualityReportType>? GetQualityReportTypesList, string? ErrorDescription)> GetQualityReportTypes(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filter = null);
+
+        /// <summary>
+        /// Retrieves an quality report type object by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="qualityId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, QualityReportType? QualityReportType, string? ErrorDescription)> GetQualityReportTypeById(string userId, string ipAddress, string squadId, string qualityId);
+
+        /// <summary>
+        /// Saves an quality report type. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="quality"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, QualityReportType? QualityReportType, string? ErrorDescription)> SaveQualityReportType(string userId, string ipAddress, string squadId, QualityReportType quality);
+        #endregion
+
+        #region QCDocument
+        /// <summary>
+        /// Returns a list of quality documents with a filter like the parameter
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<QCDocumentsImport>? GetQCDocumentsList, string? ErrorDescription)> GetQCDocuments(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filter = null);
+
+        /// <summary>
+        /// Retrieves an quality report type object by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="qualityId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, QCDocumentsImport? QCDocument, string? ErrorDescription)> GetQCDocumentById(string userId, string ipAddress, string squadId, string qualityId);
+
+        /// <summary>
+        /// Saves an quality report type. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="quality"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, QCDocumentsImport? QCDocument, string? ErrorDescription)> SaveQCDocument(string userId, string ipAddress, string squadId, QCDocumentsImport quality);
         #endregion
     }
 }
