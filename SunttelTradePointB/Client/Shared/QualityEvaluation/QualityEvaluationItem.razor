@@ -70,7 +70,7 @@
 
                 <div><label class="sub-tile">@GetName("QualityReportType",new QualityEvaluation())</label></div>
                 <div>
-                    <select @onchange="SelectItemDocumentType" class="select-style">
+                    <select @onchange="SelectItemDocumentType" class="select-style input-style">
 
                         @if (typeList != null && typeList.Count() > 0)
                         {
@@ -92,22 +92,24 @@
 
                 <div><label class="sub-tile">@GetName("ActionToTake",new QualityEvaluation())</label></div>
                 <div>
-                    <select @onchange="SelectItemTrafficLightStatus" class="select-style">
-
-                        @if (trafficLightStatusList != null && trafficLightStatusList.Count() > 0)
+                    <select @onchange="SelectItemActionToTake" class="select-style">
+                     
+                        @if (actionToTakeList != null)
                         {
-                            <option value="0" selected>Select</option>
-                        }
-                        @if (trafficLightStatusList != null)
-                        {
-                            @foreach (var item in trafficLightStatusList)
+                            @foreach (var item in actionToTakeList)
                             {
                                 <option value="@item.Id">@item.Name</option>
                             }
                         }
-                        @if (trafficLightStatusList != null && QualityEvaluation.TrafficLightStatus != null)
+
+                        @if (actionToTakeList != null && actionToTakeList.Count() > 0)
                         {
-                            <option value="@QualityEvaluation.TrafficLightStatus.Id" selected>@QualityEvaluation.TrafficLightStatus.Name</option>
+                            <option value="0" selected>Select</option>
+                        }
+
+                        @if (QualityEvaluation != null && QualityEvaluation.ActionToTake != null)
+                        {
+                            <option value="@QualityEvaluation.ActionToTake.Id" selected>@QualityEvaluation.ActionToTake.Name</option>
                         }
                     </select>
                 </div>
@@ -130,7 +132,11 @@
 
             </div>
 
-            <TrafficLight trafficLight="QualityEvaluation.TrafficLightStatus" NameStatus="@QualityEvaluation.TrafficLightStatus.Name">
+            <TrafficLight
+                trafficLight="QualityEvaluation.TrafficLightStatus" 
+                trafficLightList="trafficLightStatusList"
+                NameStatus="@QualityEvaluation.TrafficLightStatus.Name"
+                          SetTrafficLightStatus="SetTrafficLightStatus">
             </TrafficLight>
 
         </div>
@@ -351,6 +357,7 @@
     #region Input3
     List<QualityReportType> typeList { get; set; }
     List<QualityTrafficLight> trafficLightStatusList { get; set; }
+    List<QualityAction> actionToTakeList { get; set; }
     public CommercialDocument commercialDocument = new();
     List<QualityParameterGroup>? qualityParameterGroupList { get; set; }
     List<QualityAssuranceParameter>? qualityAssuranceParameterList { get; set; }
@@ -384,6 +391,7 @@
         }
         LoadQualityEvaluation();
         LoadParameter();
+        actionToTakeList = await QualityEvaluationServices.GetQualityActionList("all", 1, 80);
         trafficLightStatusList = await QualityEvaluationServices.GetQualityTrafficLightList("all", 1, 20);
         typeList = await QualityEvaluationServices.GetQualityReportTypeList("all", 1, 20);
         qualityParameterGroupList = await QualityEvaluationServices.GetQualityParameterGrouplList("all", 1, 20);
@@ -483,17 +491,25 @@
             return false;
         }
 
-     }
+    }
+
+    public void SetTrafficLightStatus(String Id){
+        QualityEvaluation.TrafficLightStatus = trafficLightStatusList.Where(s => s.Id == Id).FirstOrDefault();
+        LoadQualityEvaluation();
+        StateHasChanged();
+    }
 
 
     public void SelectItemDocumentType(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
         QualityEvaluation.QualityReportType = typeList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+        StateHasChanged();
     }
 
-    public void SelectItemTrafficLightStatus(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    public void SelectItemActionToTake(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
-        QualityEvaluation.TrafficLightStatus = trafficLightStatusList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+        QualityEvaluation.ActionToTake = actionToTakeList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+        StateHasChanged();
     }
 
 
