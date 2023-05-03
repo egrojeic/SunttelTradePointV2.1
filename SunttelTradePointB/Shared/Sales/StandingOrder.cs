@@ -79,7 +79,7 @@ namespace SunttelTradePointB.Shared.Sales
         public double TaxableUnitPrice { get; set; }
 
         [DisplayName("Expected Cost")]
-        public int ExpectedCost { get; set; }
+        public double ExpectedCost { get; set; }
 
         [BsonIgnoreIfNull]
         [DisplayName("Provider")]

@@ -20,8 +20,8 @@
 </div>
 <div class="panelMenuContainer">
     @* <CreditDocumentMenu2 SetDocumentTypeId="SetDocumentTypeId"></CreditDocumentMenu2>*@
-    <RangeDatesInput StartDate="@startingDate"
-        EndDate="endDate"
+    <RangeDatesInput @bind-StartDate="@startingDate"
+        @bind-EndDate="endDate"
                      StartDateName="From"
                      EndDateName="To"
                      EventSearchAll="EventSearchAll"></RangeDatesInput>

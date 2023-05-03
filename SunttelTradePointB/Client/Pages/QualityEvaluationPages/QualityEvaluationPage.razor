@@ -19,18 +19,14 @@
     <QualityEvaluationMenu>
     </QualityEvaluationMenu>
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
-
-
 </div>
 
 <div class="panelMenuContainer">
-
     <QualityEvaluationMenu2 SetType="SetType"></QualityEvaluationMenu2>
-
-    <RangeDatesInput StartDate="@startingDate"
+    <RangeDatesInput @bind-StartDate="@startingDate"                    
                      StartDateName="Form"
                      EndDateName="To"
-                     EndDate="endDate"
+                     @bind-EndDate="endDate"
                      EventSearchAll="EventSearchAll"></RangeDatesInput>
 </div>
 
