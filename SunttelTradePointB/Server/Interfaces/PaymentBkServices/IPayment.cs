@@ -116,5 +116,73 @@ namespace SunttelTradePointB.Server.Interfaces.PaymentBkServices
 
 
         #endregion
+
+        #region Payment Type
+        /// <summary>
+        /// Returns a list of payment type with a filter like the parameter
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<PaymentType>? PaymentTypesList, string? ErrorDescription)> GetPaymentDocumentTypes(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filter = null);
+
+        /// <summary>
+        /// Retrieves an payment type object by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="paymentId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, PaymentType? PaymentType, string? ErrorDescription)> GetPaymentTypeById(string userId, string ipAddress, string squadId, string paymentId);
+
+        /// <summary>
+        /// Saves an payment type. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="paymentType"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, PaymentType? PaymentType, string? ErrorDescription)> SavePaymentType(string userId, string ipAddress, string squadId, PaymentType paymentType);
+        #endregion
+
+        #region Payment Status
+        /// <summary>
+        /// Returns a list of payment status with a filter like the parameter
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<PaymentStatus>? PaymentStatusesList, string? ErrorDescription)> GetPaymentStatuses(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filter = null);
+
+        /// <summary>
+        /// Retrieves an payment status object by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="paymentId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, PaymentStatus? PaymentStatus, string? ErrorDescription)> GetPaymentStatusById(string userId, string ipAddress, string squadId, string paymentId);
+
+        /// <summary>
+        /// Saves an payment status. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="paymentStatus"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, PaymentStatus? PaymentStatus, string? ErrorDescription)> SavePaymentStatus(string userId, string ipAddress, string squadId, PaymentStatus paymentStatus);
+        #endregion
     }
 }

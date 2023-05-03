@@ -101,7 +101,7 @@ namespace SunttelTradePointB.Server.Controllers.PaymentBack
         }
         #endregion
 
-        #region PaymentModes
+        #region PaymentMode
         /// <summary>
         /// Returns a list of doc payment modes with a filter like the parameter
         /// </summary>
@@ -257,5 +257,156 @@ namespace SunttelTradePointB.Server.Controllers.PaymentBack
         }
         #endregion
 
+        #region Payment Type
+        /// <summary>
+        /// Returns a list of payment type with a filter like the parameter
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetPaymentTypes")]
+        public async Task<IActionResult> GetPaymentDocumentTypes(string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filter = null)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _payment.GetPaymentDocumentTypes(userId, ipAddress, squadId, page, perPage, filter);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.PaymentTypesList);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+
+        /// <summary>
+        /// Retrieves an payment type object by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="paymentId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetPaymentTypeById")]
+        public async Task<IActionResult> GetPaymentTypeById(string userId, string ipAddress, string paymentId)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _payment.GetPaymentTypeById(userId, ipAddress, squadId, paymentId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.PaymentType);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Saves an payment type. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="paymentType"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SavePaymentType")]
+        public async Task<IActionResult> SavePaymentDocumentType(string userId, string ipAddress, [FromBody] PaymentType paymentType)
+        {
+            var squadId = paymentType.SquadId;
+
+            var response = await _payment.SavePaymentType(userId, ipAddress, squadId, paymentType);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.PaymentType);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+        #endregion
+
+        #region Payment Status
+        /// <summary>
+        /// Returns a list of payment status with a filter like the parameter
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetPaymentStatuses")]
+        public async Task<IActionResult> GetPaymentStatuses(string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filter = null)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _payment.GetPaymentStatuses(userId, ipAddress, squadId, page, perPage, filter);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.PaymentStatusesList);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+
+        /// <summary>
+        /// Retrieves an payment status object by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="paymentId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetPaymentStatusById")]
+        public async Task<IActionResult> GetPaymentStatusById(string userId, string ipAddress, string paymentId)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _payment.GetPaymentStatusById(userId, ipAddress, squadId, paymentId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.PaymentStatus);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+        /// <summary>
+        /// Saves an payment status. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="paymentStatus"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SavePaymentStatus")]
+        public async Task<IActionResult> SavePaymentStatus(string userId, string ipAddress, [FromBody] PaymentStatus paymentStatus)
+        {
+            var squadId = paymentStatus.SquadId;
+
+            var response = await _payment.SavePaymentStatus(userId, ipAddress, squadId, paymentStatus);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.PaymentStatus);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+        #endregion
     }
 }
