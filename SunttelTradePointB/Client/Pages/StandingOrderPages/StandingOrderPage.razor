@@ -20,8 +20,8 @@
 </div>
 <div class="panelMenuContainer">
     <StandingOrderMenu2 SetDocumentTypeMode="SetDocumentType"></StandingOrderMenu2>
-    <RangeDatesInput StartDate="@startingDate"
-                     EndDate="endDate"
+    <RangeDatesInput @bind-StartDate="@startingDate"
+                     @bind-EndDate="endDate"
                      StartDateName="From"
                      EndDateName="To"
                      EventSearchAll="EventSearchAll"></RangeDatesInput>

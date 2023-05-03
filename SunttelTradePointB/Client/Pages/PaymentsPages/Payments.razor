@@ -19,7 +19,7 @@
 </div>
 <div class="panelMenuContainer">  
     <PaymentMenu2 SetDocumentTypeId="SetDocumentTypeId"></PaymentMenu2>
-    <RangeDatesInput StartDate="@startingDate"
+    <RangeDatesInput @bind-StartDate="@startingDate"
                      StartDateName="Date"
                      EventSearchAll="EventSearchAll"        
        ></RangeDatesInput>

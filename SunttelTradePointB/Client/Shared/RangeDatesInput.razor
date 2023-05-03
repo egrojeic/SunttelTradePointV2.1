@@ -7,14 +7,14 @@
     @if (StartDate != DateTime.MinValue)
     {
         <div >
-            <input @onchange="SetDateStart" type="date" class="form-control" />
+            <input @onchange="SetDateStart" value="@(StartDate.ToString("yyyy-MM-dd"))" type="date" class="form-control" />
     </div>
     }
     @if (EndDate != DateTime.MinValue)
     {
         <label class="col-sm-2 col-form-label text-right lblControl"> @(EndDateName != null ? EndDateName : "Until")</label>
         <div class="col-sm-4">
-            <input @onchange="@SetDateEnd" type="date" class="form-control" />
+            <input @onchange="@SetDateEnd" value="@EndDate.ToString("yyyy-MM-dd")" type="date" class="form-control" />
     </div>
     }
     @if (!disableBtn)
@@ -29,11 +29,11 @@
 
 @code {
     [Parameter]
-    public DateTime StartDate { get; set; }
+    public DateTime StartDate { get; set; } = DateTime.Now;
     [Parameter]
     public string StartDateName { get; set; }
     [Parameter]
-    public DateTime EndDate { get; set; }
+    public DateTime EndDate { get; set; } = DateTime.Now.AddMonths(1);
     [Parameter]
     public string EndDateName { get; set; }
     [Parameter]
@@ -47,7 +47,7 @@
     public bool disableBtn { get; set; }
 
     protected override Task OnInitializedAsync()
-    {
+    {      
         return base.OnInitializedAsync();
     }
 
