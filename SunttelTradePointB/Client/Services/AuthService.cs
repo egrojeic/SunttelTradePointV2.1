@@ -1,5 +1,4 @@
-﻿
-using SunttelTradePointB.Shared.Sales;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
 using SunttelTradePointB.Shared.Security;
 using System.Net.Http.Json;
 
@@ -57,6 +56,22 @@ namespace SunttelTradePointB.Client.Services
             var result = await _httpClient.PostAsJsonAsync("api/auth/registerUser", registerRequest);
             if (result.StatusCode == System.Net.HttpStatusCode.BadRequest) throw new Exception(await result.Content.ReadAsStringAsync());
             result.EnsureSuccessStatusCode();
+        }
+
+        public async Task<List<IdentityRole>?> GetRoles()
+        {
+            try
+            {
+                string path = basepath.Replace("Name", "GetRoles");
+                var responseMessage = await Gethttp($"{path}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<IdentityRole>>();
+                return list != null ? list : new List<IdentityRole>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
         }
 
         //public async Task<List<UserEntity>> GetUsersByRolname(string rolname)

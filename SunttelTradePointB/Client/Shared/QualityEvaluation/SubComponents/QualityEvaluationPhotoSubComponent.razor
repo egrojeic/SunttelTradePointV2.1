@@ -22,48 +22,64 @@
                     Description="Here you can add and edit quality evaluation detail" IconName="QualityParameters.png">
 </PageTitleComponent>
 
+@if (page == "new")
+{
+    <form>
+        <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
+            <button @onclick='()=>PageVisibleMode("new")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
-<form>
-    <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
-        <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+            <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+                <SplitButtonEvents ItemSelected="ItemSelected">
+                </SplitButtonEvents>
+                <DropDownMenuItems>
+                    <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                    <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Add" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                    <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+                </DropDownMenuItems>
+            </SfSplitButton>
+        </div>
 
-        <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
-            <SplitButtonEvents ItemSelected="ItemSelected">
-            </SplitButtonEvents>
-            <DropDownMenuItems>
-                <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
-                <DropDownMenuItem Separator="true"></DropDownMenuItem>
-                <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
-                <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
-                <DropDownMenuItem Separator="true"></DropDownMenuItem>
-                <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
-            </DropDownMenuItems>
-        </SfSplitButton>
-    </div>
+        <div class="grid-columns-header grid-columns-6">
 
-    <div class="grid-columns-header grid-columns-6">
-
-        <div><label class="sub-tile">@GetName("ImageName",new QualityEvaluationPhoto())</label></div>
-        <InputTextDisable Enable="true" TypeInt="false" @bind-ValueString="qualityEvaluationPhoto.ImageName"></InputTextDisable>
-        
-        <div><label class="sub-tile">@GetName("ImageName",new QualityEvaluationPhoto())</label></div>
-        <InputTextDisable Enable="true" TypeInt="false" @bind-ValueString="qualityEvaluationPhoto.Notes"></InputTextDisable>
-
-
-        <div><label class="sub-tile">@GetName("ParameterGroup",new QualityEvaluationPhoto())</label></div>
-        <InputTextSelector3 styleCaption="width:180px" style="right:-100px;" TItem="QualityParameterGroup"
-                            Id="Season"
+            <div><label class="sub-tile">@GetName("ParameterGroup",new QualityEvaluationPhoto())</label></div>
+            <InputTextSelector3 styleCaption="width:180px" style="right:-100px;" TItem="QualityParameterGroup"
+                            Id="ParameterGroup"
                             caption="@(qualityEvaluationPhoto.ParameterGroup !=null ? qualityEvaluationPhoto.ParameterGroup?.Name:"" )"
+                            EventIdSelectionAndId="EventIdSelectionAndId"
+                            EventSearcherValueAndId="EventSearcherValueAndId"
                             Items="qualityParameterGroupList">
-        </InputTextSelector3>
-             
+            </InputTextSelector3>
+
+            <div><label class="sub-tile">Add image</label></div>
+            <img @onclick='()=>Page("img")' class="btn-img" src="@(qualityEvaluationPhoto.ImageName !=null ?GetFullPathPhoto(qualityEvaluationPhoto.ImageName):"/images//add-image.png")">
+
+        </div>
+
+
+        <hr />
+
+
+
+    </form>
+}
+
+@if (page == "img")
+{
+    <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
+        <button @onclick='()=>Page("new")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
     </div>
+    <SunttelTradePointB.Client.Shared.EntityShareComponents.ActorImage Id="64085f220314820de346988b"
+                                                                   uploadingFileType="0"
+                                                                   BtnBackEnable="false"
+                                                                   EventCallbackNameImg="SetIcoGroup"
+                                                                   EventCallbackOpenClosedPage="OpentPage"
+                                                                   Page="addIco" Component="true">
+    </SunttelTradePointB.Client.Shared.EntityShareComponents.ActorImage>
 
-    <hr />
-
-
-
-</form>
+}
 
 
 
@@ -73,9 +89,12 @@
     public string qualityEvaluationPhotoId { get; set; }
     [Parameter]
     public string filter { get; set; }
+    [Parameter]
+    public EventCallback<QualityEvaluationPhoto> AddQualityEvaluationImages { get; set; }
+    [Parameter]
+    public EventCallback<string> PageVisible { get; set; }
 
-
-
+    string page = "new";
     string alertMsg = "";
     string SearcherValue = "";
     string msg = "";
@@ -111,8 +130,7 @@
         LoadQualityEvaluation();
         if (qualityEvaluationPhotoId != null)
         {
-            // qualityEvaluationDetail = await QualityEvaluationServices.GetQualityActionById(qualityEvaluationDetaild);
-
+            //qualityEvaluationDetail = await QualityEvaluationServices.GetQualityActionById(qualityEvaluationDetaild);
         }
 
         LoadQualityEvaluation();
@@ -127,25 +145,16 @@
         {
             StateHasChanged();
             string tile = e.Item != null ? e.Item.Text : "";
-            if (tile == "Save")
+            if (tile == "Add")
             {
                 LoadQualityEvaluation();
-                //var result = false; //await QualityEvaluationServices.SaveQualityPaction(qualityEvaluationDetail);
-                //if (result != null)
-                //{
-                //    alert("Saved", 0);
-                //    qualityEvaluationDetail = result;
-                //}
-                //else
-                //{
-                //    alert("No saved", 1);
-                //}
-
+                await AddQualityEvaluationImages.InvokeAsync(qualityEvaluationPhoto);
+                alert("Saved", 0);
             }
         }
         else
         {
-            alert("Saved", 1);
+            alert("No saved", 1);
         }
 
         StateHasChanged();
@@ -153,8 +162,56 @@
     }
 
 
+    public async void EventSearcherValueAndId((string value, string IdControl) arg)
+    {
+        SearcherValue = arg.IdControl.ToString();
+        if (SearcherValue == "ParameterGroup")
+        {
+            qualityParameterGroupList = await QualityEvaluationServices.GetQualityParameterGrouplList(arg.value.ToString(), 1, 40);
+        }
+
+        StateHasChanged();
+    }
+
+    public void EventIdSelectionAndId(QualityParameterGroup item)
+    {
+        qualityEvaluationPhoto.ParameterGroup = item;
+    }
 
 
+    public string GetFullPathPhoto(string imgName)
+    {
+        return UIClientGlobalVariables.PathTransactionalItemsImages + "/" + imgName;
+    }
+
+    protected void SetIcoGroup(string value)
+    {
+        qualityEvaluationPhoto.ImageName = value;
+        StateHasChanged();
+    }
+    protected void OpentPage(string page)
+    {
+
+        StateHasChanged();
+    }
+    protected void ClosedPage(string page)
+    {
+
+        StateHasChanged();
+    }
+
+    private void Page(string name)
+    {
+        page = name;
+        StateHasChanged();
+    }
+    
+    
+    private void PageVisibleMode(string name)
+    {
+        PageVisible.InvokeAsync(name);
+        StateHasChanged();
+    }
 
     public void alert(string _msg, int? status = 0)
     {
@@ -177,7 +234,8 @@
     public string Validate()
     {
         string msg = "";
-
+        if (qualityEvaluationPhoto == null) msg = "You must fill in all the information";
+        if (qualityEvaluationPhoto.ImageName == null) msg = "You must fill in all the information, image";
         return msg;
     }
 

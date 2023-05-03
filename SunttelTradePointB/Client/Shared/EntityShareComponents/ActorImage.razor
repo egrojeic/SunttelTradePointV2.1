@@ -22,14 +22,14 @@
             <SfCard>
                 <CardHeader Title="Add a new skin image" />
                 <CardContent>
-                    <form onsubmit="event.preventDefault();">                       
+                    <form onsubmit="event.preventDefault();">
                         <div>
                             <img src="@imgUrl" style="height:120px; width:180px; border-radius:10px 10px 0px 0px; margin-left:5px;" @ref="previewImageElem" /><br />
                             <div class="btn color-btn width">
                                 <label class="btn-file" for="file-input">
                                     <div><p> Choose your img </p></div>
-                                </label>                              
-                                <InputFile id="file-input" @ref="referInputFile" lang="en" OnChange="@LoadFile" accept="image/*" style="color:transparent;width:180px; border-radius:0px 0px 10px 10px; display:none;" />                               
+                                </label>
+                                <InputFile id="file-input" @ref="referInputFile" lang="en" OnChange="@LoadFile" accept="image/*" style="color:transparent;width:180px; border-radius:0px 0px 10px 10px; display:none;" />
                             </div>
                         </div>
 
@@ -37,7 +37,10 @@
 
                         <div class="py-2">
                             <button type="submit" class="size-btn color-btn" style="float:right" @onclick="Save"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
-                            <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
+                            @if (BtnBackEnable)
+                            {
+                                <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
+                            }
                         </div>
 
                     </form>
@@ -60,7 +63,10 @@
     public string Id { get; set; }
     [Parameter]
     public string Page { get; set; }
-
+    [Parameter]
+    public bool BtnBackEnable { get; set; } = true;
+    [Parameter]
+    public string uploadingFileType { get; set; } = "1";
 
     public bool visible = false;
 
@@ -78,7 +84,7 @@
         var maxFiles = 1;
         var format = "img/png";
 
-        foreach(var imagefile in e.GetMultipleFiles())
+        foreach (var imagefile in e.GetMultipleFiles())
         {
             var resizeFile = await imagefile.RequestImageFileAsync(format, 400, 400);
             var bufer = new byte[resizeFile.Size];
@@ -99,7 +105,7 @@
                 var content = new MultipartFormDataContent();
                 content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
                 content.Add(new StreamContent(ms, Convert.ToInt32(resizedFile.Size)), "photo", file.Name);
-                content.Add(new StringContent("1"), "uploadingFileType");
+                content.Add(new StringContent(uploadingFileType), "uploadingFileType");
                 content.Add(new StringContent(entityImage), "photoName");
 
                 var resul = await actorsNodeService.UploadFiles(content);
@@ -115,16 +121,16 @@
     public async void Save()
     {
 
-        if(fileUpload != null)
+        if (fileUpload != null)
         {
             var resul = await actorsNodeService.UploadFiles(fileUpload);
-            if (resul !=null && resul !="")
+            if (resul != null && resul != "")
             {
                 await actorsNodeService.SaveEntitySkinImage(Id, entityImage);
                 if (Component == true) EventCallbackNameImg.InvokeAsync(entityImage);
                 entityImage = "";
-            }          
-         
+            }
+
         }
         imgUrl = "/images/defaultImage.png";
         StateHasChanged();

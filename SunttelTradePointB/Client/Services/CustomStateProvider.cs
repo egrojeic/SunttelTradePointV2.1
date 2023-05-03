@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNetCore.Components.Authorization;
 using SunttelTradePointB.Shared.Security;
 using SunttelTradePointB.Shared.SquadsMgr;
 using System.Security.Claims;
@@ -95,6 +96,11 @@ namespace SunttelTradePointB.Client.Services
         public async Task<List<UserEntity>> GetUsersByRolname(string rolname)
         {
             return await api.GetUsersByRolname(rolname);
+        }
+
+        public async Task<List<IdentityRole>?> GetRoles()
+        {
+            return await api.GetRoles();
         }
     }
 }

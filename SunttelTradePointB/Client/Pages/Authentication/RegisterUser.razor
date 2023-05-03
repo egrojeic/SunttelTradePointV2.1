@@ -1,5 +1,6 @@
 ﻿@page "/RegisterUser";
 @using System.ComponentModel.DataAnnotations;
+@using Microsoft.AspNet.Identity.EntityFramework;
 @using Microsoft.AspNetCore.Components.Forms;
 @using Microsoft.AspNetCore.Components
 @using SunttelTradePointB.Client.Services;
@@ -42,23 +43,20 @@
 
             </div>
             <div class="row">
-                @*<div class="col-6">
+                <div class="col-6">
                     <div class="mb-3">
                         <label>Rol:</label>
                         <div>
-                            <select class="form-select" @onchange="EnableSelector">
-                               
-                                @if (rolNames is not null)
+                            <select class="form-select" @bind="user.Rolname">
+                                <option value="0">-- Select your rol --</option>
+                                @foreach (var rol in rolenames)
                                 {
-                                    @foreach (var rol in rolNames)
-                                    {
-                                                <option value="@rol">@rol.ToString()</option>
-                                    }
+                                    <option value="@rol">@rol</option>
                                 }
                             </select>
                         </div>
                     </div>
-                </div>*@
+                </div>
                 <div class="col-6">
                     <div class="mb-3">
                         <label>Nombre de usuario:</label>
@@ -69,7 +67,7 @@
                 </div>
                 <div class="col-6">
                     <div class="mb-3">
-                        <label>Confirmación de contraseñaaa:</label>
+                        <label>Confirmación de contraseña:</label>
                         <div>
                             <InputText type="password" class="form-control" @bind-Value="@user.PasswordConfirm" />
                             <ValidationMessage For="@(() => user.PasswordConfirm)" />
@@ -84,12 +82,32 @@
 @code {
 
     public RegisterRequest? user = new RegisterRequest();
+    public List<string> rolenames = new List<string>();
 
-    public List<UserType> rolNames = new List<UserType>();
+    public IEnumerable<IdentityRole>? roles;
 
     protected override void OnInitialized()
     {
+        GetRoles();
         base.OnInitialized();
+        StateHasChanged();
+    }
+
+    private async void GetRoles()
+    {
+        try
+        {
+            roles = await authStateProvider.GetRoles();
+            if (roles is not null)
+            {
+                rolenames = roles.Select(x => x.Name).ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+
+        }
+
         StateHasChanged();
     }
 
@@ -99,7 +117,6 @@
         try
         {
             user.EntityId = "0";
-            user.UserType = UserType.User;
             await authStateProvider.RegisterUserByAdmin(user);
             _navigationManager.NavigateTo("/UserAdministrator");
         }

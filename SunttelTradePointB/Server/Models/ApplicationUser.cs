@@ -22,5 +22,10 @@ namespace SunttelTradePointB.Shared.Models
 
         public string? DefaultSquadId { get; set; } = "11111111-1111-1111-1111-111111111111";
 
+        /// <summary>
+        /// User status
+        /// </summary>
+        public bool active { get; set; } = true;
+
     }
 }

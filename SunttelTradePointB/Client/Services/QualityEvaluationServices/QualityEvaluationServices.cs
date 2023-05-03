@@ -27,7 +27,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
             {
                 string path = $"{basepath}";
                 path = GetGlobalVariables(path);
-                path = path.Replace("*Name", "Pendiente");
+                path = path.Replace("*Name", "SaveQCDocument");
                 qualityEvaluation.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<QualityEvaluation>($"{path}", qualityEvaluation);
                 return await responseMessage.Content.ReadFromJsonAsync<QualityEvaluation>();
@@ -163,7 +163,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
             try
             {
                 //
-                string path = basepath.Replace("*Name", "GetQualityParametersGroups");
+                string path = basepath.Replace("*Name", "GetQCDocuments");
                 var responseMessage = await Gethttp($"{path}&filter={filter}&page={page}&perPage={perPage}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<QualityEvaluation>>();
                 return list != null ? list : new List<QualityEvaluation>();
@@ -220,7 +220,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
             try
             {
                 string path = basepath.Replace("Name", "GetQualityReportTypeById");
-                var responseMessage = await Gethttp($"{path}&qualityReportTypeId={qualityReportTypeId}");
+                var responseMessage = await Gethttp($"{path}&qualityId={qualityReportTypeId}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<QualityReportType>();
                 return list;
             }
@@ -272,8 +272,8 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
             CultureInfo culture = new CultureInfo("en-US");
             try
             {
-                string path = basepath.Replace("*Name", "Pendiente");
-                var responseMessage = await Gethttp($"{path}&qualityReportTypeId={qualityReportTypeId}");
+                string path = basepath.Replace("*Name", "GetQCDocumentById");
+                var responseMessage = await Gethttp($"{path}&qualityId={qualityReportTypeId}");
                 var item = await responseMessage.Content.ReadFromJsonAsync<QualityEvaluation>();
                 return item;
             }

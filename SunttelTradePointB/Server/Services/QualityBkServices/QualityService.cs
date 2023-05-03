@@ -23,7 +23,7 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
         IMongoCollection<QualityTrafficLight> _QualityTrafficLightCollection;
         IMongoCollection<QualityAction> _QualityActionCollection;
         IMongoCollection<QualityReportType> _QualityReportTypeCollection;
-        IMongoCollection<QCDocumentsImport> _QCDocumentCollection;
+        IMongoCollection<QualityEvaluation> _QCDocumentCollection;
 
         /// <summary>
         /// Constructor
@@ -39,7 +39,7 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
             _QualityTrafficLightCollection = mongoDatabase.GetCollection<QualityTrafficLight>("QualityTrafficLightStatus");
             _QualityActionCollection = mongoDatabase.GetCollection<QualityAction>("QualityActionToTake");
             _QualityReportTypeCollection = mongoDatabase.GetCollection<QualityReportType>("QualityReportTypes");
-            _QCDocumentCollection = mongoDatabase.GetCollection<QCDocumentsImport>("QCEvaluations");
+            _QCDocumentCollection = mongoDatabase.GetCollection<QualityEvaluation>("QCEvaluations");
 
         }
 
@@ -749,7 +749,7 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
         /// <param name="perPage"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<QCDocumentsImport>? GetQCDocumentsList, string? ErrorDescription)> GetQCDocuments(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filter = null)
+        public async Task<(bool IsSuccess, List<QualityEvaluation>? GetQCDocumentsList, string? ErrorDescription)> GetQCDocuments(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filter = null)
         {
             try
             {
@@ -790,12 +790,12 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                         }
                     );
 
-                    List<QCDocumentsImport> results = await _QualityReportTypeCollection.Aggregate<QCDocumentsImport>(pipeline).ToListAsync();
+                    List<QualityEvaluation> results = await _QCDocumentCollection.Aggregate<QualityEvaluation>(pipeline).ToListAsync();
                     return (true, results, null);
                 }
                 else
                 {
-                    var quality = await _QCDocumentCollection.Find<QCDocumentsImport>(new BsonDocument()).ToListAsync();
+                    var quality = await _QCDocumentCollection.Find<QualityEvaluation>(new BsonDocument()).ToListAsync();
 
                     if (quality == null || quality.Count == 0)
                     {
@@ -822,7 +822,7 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
         /// <param name="squadId"></param>
         /// <param name="qualityId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, QCDocumentsImport? QCDocument, string? ErrorDescription)> GetQCDocumentById(string userId, string ipAddress, string squadId, string qualityId)
+        public async Task<(bool IsSuccess, QualityEvaluation? QCDocument, string? ErrorDescription)> GetQCDocumentById(string userId, string ipAddress, string squadId, string qualityId)
         {
             try
             {
@@ -836,8 +836,8 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                     new BsonDocument("$match", new BsonDocument("SquadId", squadId))
                 );
 
-                var resultPrev = await _QualityReportTypeCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
-                QCDocumentsImport result = resultPrev.Select(d => BsonSerializer.Deserialize<QCDocumentsImport>(d)).ToList()[0];
+                var resultPrev = await _QCDocumentCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                QualityEvaluation result = resultPrev.Select(d => BsonSerializer.Deserialize<QualityEvaluation>(d)).ToList()[0];
 
                 return (true, result, null);
             }
@@ -855,21 +855,20 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
         /// <param name="squadId"></param>
         /// <param name="quality"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, QCDocumentsImport? QCDocument, string? ErrorDescription)> SaveQCDocument(string userId, string ipAddress, string squadId, QCDocumentsImport quality)
+        public async Task<(bool IsSuccess, QualityEvaluation? QCDocument, string? ErrorDescription)> SaveQCDocument(string userId, string ipAddress, string squadId, QualityEvaluation quality)
         {
             try
             {
-                /*
                 if (quality.Id == null)
                 {
                     quality.Id = ObjectId.GenerateNewId().ToString();
                 }
 
-                var filterQuantity = Builders<QCDocumentsImport>.Filter.Eq("_id", new ObjectId(quality.Id));
+                var filterQuantity = Builders<QualityEvaluation>.Filter.Eq("_id", new ObjectId(quality.Id));
                 
                 var updateQuantity = new ReplaceOptions { IsUpsert = true };
                 var resultQuantity = await _QCDocumentCollection.ReplaceOneAsync(filterQuantity, quality, updateQuantity);
-                */
+                
                 return (true, quality, null);
             }
             catch (Exception e)

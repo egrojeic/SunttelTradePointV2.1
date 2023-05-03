@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SunttelTradePointB.Client.Interfaces.SquadInterfaces;
 using SunttelTradePointB.Server.Interfaces;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
@@ -175,7 +176,7 @@ namespace SunttelTradePointB.Server.Controllers
 
                 var result = await _userManager.CreateAsync(user, parameters.Password);
                 if (!result.Succeeded) return BadRequest(result.Errors.FirstOrDefault()?.Description);
-                var result2 = await _userManager.AddToRoleAsync(user, parameters.UserType.ToString());
+                var result2 = await _userManager.AddToRoleAsync(user, parameters.Rolname);
                 if (!result2.Succeeded) return BadRequest(result.Errors.FirstOrDefault()?.Description);
                 return Ok();
             }
@@ -204,7 +205,8 @@ namespace SunttelTradePointB.Server.Controllers
                     users.Add(new UserEntity()
                     {
                         Id = list[i].Id,
-                        Name = list[i].UserName
+                        Name = list[i].UserName,
+                        Email = list[i].Email
                     });
                 }
 
@@ -262,6 +264,25 @@ namespace SunttelTradePointB.Server.Controllers
             });
         }
 
+
+        /// <summary>
+        /// Get a list of roles
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetRoles")]
+        public async Task<IActionResult> GetRoles()
+        {
+            try
+            {
+                List<IdentityRole> list = await _roleManager.Roles.ToListAsync();
+                return Ok(list);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
     }
 
