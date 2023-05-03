@@ -69,6 +69,7 @@ namespace SunttelTradePointB.Shared.Quality
         public List<QualityEvaluationDetail> EvaluationParameters { get; set; }
 
         public List<QualityEvaluationPhoto> QualityEvaluationImages { get; set; }
+
     }
 
 

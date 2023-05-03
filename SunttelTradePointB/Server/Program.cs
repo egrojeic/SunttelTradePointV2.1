@@ -75,6 +75,8 @@ builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 builder.Services.AddTransient<ISquadBack, SquadService>();
 builder.Services.AddTransient<ISerDasFileEDI, SerDasFileEDI>();
 
