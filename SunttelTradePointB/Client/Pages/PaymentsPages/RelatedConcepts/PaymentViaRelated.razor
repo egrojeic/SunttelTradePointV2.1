@@ -1,6 +1,6 @@
 @page "/PaymentVia"
 @page "/PaymentVia/{paymentViaId}"
-@page "/PaymentVia/{filter}/{paymentViaId}"
+@page "/PaymentVia/{paymentViaId}/{filter}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
@@ -89,7 +89,7 @@
         Load();
         if (paymentViaId != null)
         {
-            var result = await PaymentServices.GetPaymentViaById(paymentViaId);
+            paymentVia = await PaymentServices.GetPaymentViaById(paymentViaId);
         }
         isLoading = false;
         StateHasChanged();

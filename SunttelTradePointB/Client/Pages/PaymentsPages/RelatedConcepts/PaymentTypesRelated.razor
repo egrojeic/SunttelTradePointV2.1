@@ -1,6 +1,6 @@
 @page "/PaymentType"
 @page "/PaymentType/{paymentTypeId}"
-@page "/PaymentType/{filter}/{paymentTypeId}"
+@page "/PaymentType/{paymentTypeId}/{filter}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
@@ -48,7 +48,7 @@
         <div class="grid-mode-row grid-colum">
 
             <div><label>@GetName("Name",new BasicConcept())</label></div>
-            <InputTextDisable Enable="true" style="font-size:15px; font-weight:none; " @bind-ValueString="@documentaPaymentType.Name"></InputTextDisable>
+            <InputTextDisable Enable="true" TypeInt="false" style="font-size:15px; font-weight:none; " @bind-ValueString="@documentaPaymentType.Name"></InputTextDisable>
         </div>
     </div>
 </form>
@@ -91,8 +91,9 @@
         Load();
         if (paymentTypeId != null)
         {
-            var result = await PaymentServices.GetPaymentById(paymentTypeId);
+            documentaPaymentType = await PaymentServices.GetPaymentTypeById(paymentTypeId);
         }
+        Load();
         isLoading = false;
         StateHasChanged();
     }
@@ -111,7 +112,7 @@
                 Load();
 
                 var result = await PaymentServices.SavePaymentType(documentaPaymentType);
-                if (true)
+                if (result !=null)
                 {
                     documentaPaymentType = result;
                     alert("Saved", 0);
@@ -126,7 +127,7 @@
         }
         else
         {
-            alert("Saved", 1);
+            alert("No saved", 1);
         }
 
         StateHasChanged();
@@ -209,7 +210,7 @@
     {
         string msg = "";
         if (documentaPaymentType == null) msg = "required fields";
-        if (documentaPaymentType == null || documentaPaymentType.Name != null) msg = "required fields Name";
+        if (documentaPaymentType == null || documentaPaymentType.Name == null) msg = "required fields Name";
         return msg;
     }
 

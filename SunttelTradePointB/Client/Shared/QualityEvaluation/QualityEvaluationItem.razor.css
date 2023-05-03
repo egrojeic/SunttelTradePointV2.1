@@ -186,3 +186,11 @@
             .container-parameter-list .list .item label {
                 margin: 0px;
             }
+
+
+.div-color {
+height:40px;
+width:40px;
+border-radius:5px;
+background-color:red;
+}

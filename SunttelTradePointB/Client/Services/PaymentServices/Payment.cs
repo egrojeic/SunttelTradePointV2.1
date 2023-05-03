@@ -24,6 +24,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
             {
                 string path = $"{pathApi}";
                 payment.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                path = GetGlobalVariables(path);
                 var responseMessage = await _httpClient.PostAsJsonAsync<Payment>($"{path}", payment);
                 return await responseMessage.Content.ReadFromJsonAsync<Payment>();
 
@@ -39,7 +40,8 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
         {
             try
             {
-                string path = $"/api/Inventory/GetInventory?&";
+                string path = pathApi.Replace("*Name","SavePaymentType");
+                path = GetGlobalVariables(path);
                 paymentType.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<PaymentType>($"{path}", paymentType);
                 return await responseMessage.Content.ReadFromJsonAsync<PaymentType>();
@@ -56,7 +58,9 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
         {
             try
             {
-                string path = $"/api/Inventory/GetInventory?";
+               
+                string path = pathApi.Replace("*Name", "SavePaymentStatus");
+                path = GetGlobalVariables(path);
                 paymentStatus.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<PaymentStatus>($"{path}", paymentStatus);
                 return await responseMessage.Content.ReadFromJsonAsync<PaymentStatus>();
@@ -182,15 +186,15 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
             }
         }
 
-        public async Task<List<PaymentMode>> GetPaymentViaById(string paymentViaId)
+        public async Task<PaymentVia> GetPaymentViaById(string paymentViaId)
         {
             try
             {             
                 string path = $"{pathApi}";
-                path = path.Replace("*Name", "GetDocPaymentVias");
-                var responseMessage = await Gethttp(path);
-                var list = await responseMessage.Content.ReadFromJsonAsync<List<PaymentMode>>();
-                return list != null ? list : new List<PaymentMode>();
+                path = path.Replace("*Name", "GetDocPaymentViaById");
+                var responseMessage = await Gethttp($"{path}&paymentViaId={paymentViaId}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<PaymentVia> ();
+                return list != null ? list : new PaymentVia();
             }
             catch (Exception ex)
             {
@@ -217,7 +221,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
             }
         }
 
-
+       
         public async Task<List<Concept>> GetPayerList(string filter, bool isASale, int? page = 1, int? perPage = 10)
         {
             try
@@ -253,14 +257,14 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
 
 
 
-        public async Task<List<Payment>> GetPaymentList(string filterName, string documentTypeId,string date, int? page = 1, int? perPage = 10)
+        public async Task<List<Payment>> GetPaymentList(string filterName, string documentTypeId,DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10)
         {
             try
             {
                 string path = $"{pathApi}";
                 path = path.Replace("*Name", "GetPaymentsByDateSpan");
                 path = GetGlobalVariables(path);
-                var responseMessage = await Gethttp($"{path}&PaymentDate={date}&filter={filterName}");
+                var responseMessage = await Gethttp($"{path}&PaymentDate={startDate}&filter={filterName}page={page}&perPage{perPage}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Payment>>();
                 
                 return list != null ? list : new List<Payment>();
@@ -289,7 +293,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
             }
         }
 
-        public async Task<List<PaymentType>> GetPaymentModeById(string paymentModeById)
+        public async Task<List<PaymentType>> GetPaymentModeByIdList(string paymentModeById)
         {
             try
             {
@@ -304,12 +308,45 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
                 return null;
             }
         }
+         public async Task<PaymentType> GetPaymentTypeById(string paymentId)
+        {
+            try {
+
+                string Url = pathApi.Replace("*Name", "GetPaymentTypeById");
+                Url = GetGlobalVariables(Url);              
+                var responseMessage = await Gethttp($"{Url}&paymentId={paymentId}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<PaymentType>();              
+                return list != null ? list : new PaymentType();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+           public async Task<PaymentMode> GetPaymentModeById(string paymentModeId)
+        {
+            try {
+
+                string Url = pathApi.Replace("*Name", "GetDocPaymentModeById");
+                Url = GetGlobalVariables(Url);              
+                var responseMessage = await Gethttp($"{Url}&paymentModeId={paymentModeId}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<PaymentMode>();              
+                return list != null ? list : new PaymentMode();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
 
         public async Task<List<PaymentStatus>> GetPaymentStatusById(string paymentTypeId)
         {
             try
             {
-                string Url = GetGlobalVariables($"");
+                string Url = pathApi.Replace("*Name", "GetPaymentStatusById");
+                Url = GetGlobalVariables(Url);
                 var responseMessage = await Gethttp(Url);
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<PaymentStatus>>();
               
@@ -362,8 +399,8 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
         {
             try
             {
-                string Url = pathApi.Replace("*Name", "pendientes");
-                Url = GetGlobalVariables($"{Url}&filter={filter}");
+                string Url = pathApi.Replace("*Name", "GetPaymentStatuses");
+                Url = GetGlobalVariables($"{Url}&filter={filter}&page={page}&perPage={perPage}");
                 var responseMessage = await Gethttp(Url);
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<PaymentStatus>>();
                 return list != null ? list : new List<PaymentStatus>();
@@ -382,7 +419,8 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
             var SquadId = UIClientGlobalVariables.ActiveSquad;
             var ReplaceIdUser = UIClientGlobalVariables.UserId;
             var ReplacePublicIpAddress = UIClientGlobalVariables.PublicIpAddress;
-
+            if (ReplaceIdUser == "") ReplaceIdUser = "000";
+            if (ReplacePublicIpAddress == "") ReplacePublicIpAddress = "000";
             Url = Url.Replace("*IP", ReplacePublicIpAddress??"000");
             Url = Url.Replace("*Id", ReplaceIdUser ?? "000");
 
@@ -397,6 +435,9 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
                 var SquadId = UIClientGlobalVariables.ActiveSquad;
                 var ReplaceIdUser = UIClientGlobalVariables.UserId;
                 var ReplacePublicIpAddress = UIClientGlobalVariables.PublicIpAddress;
+
+                if (ReplaceIdUser == "") ReplaceIdUser = "000";
+                if (ReplacePublicIpAddress == "") ReplacePublicIpAddress = "000";
 
                 Url = Url.Replace("*Id", ReplaceIdUser ?? "000");
                 Url  = Url.Replace("*Ip", ReplacePublicIpAddress ?? "000");
@@ -420,12 +461,17 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
                 return null;
 
             }
-
-
         }
 
+        Task<List<PaymentType>> IPayment.GetPaymentModeById(string paymentModeById)
+        {
+            throw new NotImplementedException();
+        }
 
-
+        Task<List<PaymentMode>> IPayment.GetPaymentViaById(string paymentViaId)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

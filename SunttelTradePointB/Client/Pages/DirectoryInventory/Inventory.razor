@@ -184,7 +184,7 @@
         CultureInfo format = new CultureInfo("en-US", false);
         double value = 0;
         if (InventoryDetaiList != null) value = InventoryDetaiList.Sum(i => i.Qty);
-        return value.ToString("C2", format);
+        return value.ToString();
     }
 
 
@@ -193,7 +193,7 @@
         CultureInfo format = new CultureInfo("en-US", false);
         double value = 0;
         if (InventoryDetaiList != null) value = InventoryDetaiList.Sum(i => i.QtyOnHand);
-        return value.ToString("C2", format);
+        return value.ToString();
     }
 
 

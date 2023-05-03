@@ -23,8 +23,8 @@
     </QualityTrafficLightGeneralMenu>
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
     @*<RangeDatesInput StartDate="@startingDate"
-                     StartDateName="Date"
-                     EventSearchAll="EventSearchAll"></RangeDatesInput>*@
+    StartDateName="Date"
+    EventSearchAll="EventSearchAll"></RangeDatesInput>*@
 
 </div>
 
@@ -64,6 +64,15 @@
             <Columns>
 
                 <RadzenDataGridColumn TItem="QualityTrafficLight" Property="@nameof(QualityTrafficLight.Name)" Title="@GetName("Name", new QualityTrafficLight() )" Width="208px" />
+                <RadzenDataGridColumn TItem="QualityTrafficLight" Property="@nameof(QualityTrafficLight)" Title="Color" Width="208px">
+
+                    <Template Context="data">
+                        <div class="div-color">
+                            <button  style="background-color:rgb(@($"{data.R},{data.G},{data.B}"))" ></button>
+                        </div>                      
+                    </Template>
+
+                </RadzenDataGridColumn>
 
             </Columns>
         </RadzenDataGrid>
@@ -106,8 +115,8 @@
     public async void LoadData()
     {
         isLoading = true;
-       
-            qualityTrafficLightList = await QualityEvaluationServices.GetQualityTrafficLightList((_filterItems != null ? _filterItems : "all"), 1, 20);
+
+        qualityTrafficLightList = await QualityEvaluationServices.GetQualityTrafficLightList((_filterItems != null ? _filterItems : "all"), 1, 20);
 
         if (qualityTrafficLight != null)
         { }

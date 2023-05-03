@@ -1,6 +1,6 @@
 @page "/PaymentMode"
 @page "/PaymentMode/{paymentModesId}"
-@page "/PaymentMode/{filter}/{paymentModesId}"
+@page "/PaymentMode/{paymentModesId}/{filter}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
@@ -92,7 +92,7 @@
         Load();
         if (paymentModesId != null)
         {
-            var result = await PaymentServices.GetPaymentModeById(paymentModesId);
+            paymentMode = await PaymentServices.GetPaymentModeById(paymentModesId);
         }
         isLoading = false;
         StateHasChanged();
@@ -112,7 +112,7 @@
                 Load();
 
                 var result = await PaymentServices.SavePaymentMode(paymentMode);
-                if (true)
+                if (result !=null)
                 {
                     paymentMode = result;
                     alert("Saved", 0);

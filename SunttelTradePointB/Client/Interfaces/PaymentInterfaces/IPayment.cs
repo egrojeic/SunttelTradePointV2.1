@@ -120,7 +120,7 @@ namespace SunttelTradePointB.Client.Interfaces.IPaymentInterfaces
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <returns></returns>
-        Task<List<Payment>> GetPaymentList(string filterName, string documentTypeId, string date, int? page = 1, int? perPage = 10);
+        Task<List<Payment>> GetPaymentList(string filterName, string documentTypeId, DateTime startDate,DateTime endDate, int? page = 1, int? perPage = 10);
 
 
         /// <summary>
