@@ -191,7 +191,7 @@ namespace SunttelTradePointB.Server.Interfaces.QualityBkServices
         /// <param name="perPage"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<QCDocumentsImport>? GetQCDocumentsList, string? ErrorDescription)> GetQCDocuments(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filter = null);
+        Task<(bool IsSuccess, List<QualityEvaluation>? GetQCDocumentsList, string? ErrorDescription)> GetQCDocuments(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filter = null);
 
         /// <summary>
         /// Retrieves an quality report type object by Id
@@ -201,7 +201,7 @@ namespace SunttelTradePointB.Server.Interfaces.QualityBkServices
         /// <param name="squadId"></param>
         /// <param name="qualityId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, QCDocumentsImport? QCDocument, string? ErrorDescription)> GetQCDocumentById(string userId, string ipAddress, string squadId, string qualityId);
+        Task<(bool IsSuccess, QualityEvaluation? QCDocument, string? ErrorDescription)> GetQCDocumentById(string userId, string ipAddress, string squadId, string qualityId);
 
         /// <summary>
         /// Saves an quality report type. If it doesn't exists, it'll be created
@@ -211,7 +211,7 @@ namespace SunttelTradePointB.Server.Interfaces.QualityBkServices
         /// <param name="squadId"></param>
         /// <param name="quality"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, QCDocumentsImport? QCDocument, string? ErrorDescription)> SaveQCDocument(string userId, string ipAddress, string squadId, QCDocumentsImport quality);
+        Task<(bool IsSuccess, QualityEvaluation? QCDocument, string? ErrorDescription)> SaveQCDocument(string userId, string ipAddress, string squadId, QualityEvaluation quality);
         #endregion
     }
 }

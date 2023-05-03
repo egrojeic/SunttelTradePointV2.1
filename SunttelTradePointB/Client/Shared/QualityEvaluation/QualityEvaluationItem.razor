@@ -19,12 +19,22 @@
 
 <MessageSaveComponent isVisible="isVisible" message="@alertMsg">
 </MessageSaveComponent>
-<PageTitleComponent Title="Quality Evaluation"
-                    Description="Here you can add and edit quality evaluation" IconName="QualityParameters.png">
-</PageTitleComponent>
 
 
+   @if(page == "addImage")
+    {
+        <QualityEvaluationPhotoSubComponent 
+            AddQualityEvaluationImages="AddQualityEvaluationImages"
+        PageVisible="Page"
+        >
+
+        </QualityEvaluationPhotoSubComponent>
+    }else{
 <form>
+        <PageTitleComponent Title="Quality Evaluation"
+                        Description="Here you can add and edit quality evaluation" IconName="QualityParameters.png">
+        </PageTitleComponent>
+
     @if (page == "new")
     {
 
@@ -93,7 +103,7 @@
                 <div><label class="sub-tile">@GetName("ActionToTake",new QualityEvaluation())</label></div>
                 <div>
                     <select @onchange="SelectItemActionToTake" class="select-style">
-                     
+
                         @if (actionToTakeList != null)
                         {
                             @foreach (var item in actionToTakeList)
@@ -132,11 +142,10 @@
 
             </div>
 
-            <TrafficLight
-                trafficLight="QualityEvaluation.TrafficLightStatus" 
-                trafficLightList="trafficLightStatusList"
-                NameStatus="@QualityEvaluation.TrafficLightStatus.Name"
-                          SetTrafficLightStatus="SetTrafficLightStatus">
+            <TrafficLight trafficLight="QualityEvaluation.TrafficLightStatus"
+                      trafficLightList="trafficLightStatusList"
+                      NameStatus="@QualityEvaluation.TrafficLightStatus.Name"
+                      SetTrafficLightStatus="SetTrafficLightStatus">
             </TrafficLight>
 
         </div>
@@ -168,18 +177,18 @@
                     <ContentTemplate>
                         <div class="container-item">
 
-                                @if (isLoading)
-                                {
+                            @if (isLoading)
+                            {
 
-                                    <WaitingProcessIndicator loadingTopic="Quality Evaluation Detail"></WaitingProcessIndicator>
+                                <WaitingProcessIndicator loadingTopic="Quality Evaluation Detail"></WaitingProcessIndicator>
 
-                                }
-                                else
+                            }
+                            else
+                            {
+
+                                if (QualityEvaluation.EvaluationParameters != null)
                                 {
-                                   
-                                    if (QualityEvaluation.EvaluationParameters != null )
-                                    {
-                                        <RadzenDataGrid AllowFiltering="true"
+                                    <RadzenDataGrid AllowFiltering="true"
                                         AllowColumnResize="true"
                                         AllowAlternatingRows="true"
                                         FilterMode="FilterMode.Advanced"
@@ -195,16 +204,16 @@
                                         SelectionMode="DataGridSelectionMode.Single"
                                         LogicalFilterOperator="LogicalFilterOperator.Or"
                                         CellContextMenu="@ShowContextMenuTransactionalItem">
-                                            <Columns>
+                                        <Columns>
 
                                             <RadzenDataGridColumn TItem="QualityEvaluationDetail" Property="Parameter.Name" Title="@GetName("Parameter", new QualityEvaluationDetail() )" Width="158px" />
-                                             
-                                            </Columns>
-                                        </RadzenDataGrid>
-                                    }
-                                }
 
-                          
+                                        </Columns>
+                                    </RadzenDataGrid>
+                                }
+                            }
+
+
                         </div>
                     </ContentTemplate>
                 </TabItem>
@@ -226,7 +235,7 @@
                                 {
                                     <div class="detailsTitleContainer" style="width:100%;">
                                         <h3 class="subTitleDetailForm">@GetName("QualityEvaluationImages",new QualityEvaluation())</h3>
-                                        <svg @onclick='()=>Add("QualityEvaluationPhotoItem")' style="margin-left:20px;" title="Add new Recipe Item" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style " viewBox="0 0 16 16">
+                                        <svg @onclick='()=>Page("addImage")' style="margin-left:20px;" title="Add new Recipe Item" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style " viewBox="0 0 16 16">
                                             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                                             <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                         </svg>
@@ -253,11 +262,13 @@
                                         SelectionMode="DataGridSelectionMode.Single"
                                         LogicalFilterOperator="LogicalFilterOperator.Or"
                                         CellContextMenu="@ShowContextMenuTransactionalItem">
-                                        <Columns>
-
-                                            <RadzenDataGridColumn TItem="QualityEvaluationPhoto" Property="@nameof(QualityEvaluationPhoto.ImageName)" Title="@GetName("ImageName", new QualityEvaluationPhoto() )" Width="158px" />
+                                        <Columns>                                          
                                             <RadzenDataGridColumn TItem="QualityEvaluationPhoto" Property="ParameterGroup.Name" Title="@GetName("ParameterGroup", new QualityEvaluationPhoto() )" Width="158px" />
-
+                                            <RadzenDataGridColumn TItem="QualityEvaluationPhoto" Title="Photo" Frozen="true" Sortable="false" Filterable="false" Width="60px">
+                                                <Template Context="data">
+                                                    <RadzenImage Path="@(GetFullPathPhoto(data.ImageName))" style="width: 40px; height: 40px; border-radius: 8px;" />
+                                                </Template>
+                                            </RadzenDataGridColumn>
                                         </Columns>
                                     </RadzenDataGrid>
 
@@ -306,12 +317,12 @@
 
         <div class="container-parameter-list">
             <div class="list">
-                @if (qualityAssuranceParameterList != null && qualityAssuranceParameterList.Count()>0)
+                @if (qualityAssuranceParameterList != null && qualityAssuranceParameterList.Count() > 0)
                 {
                     @foreach (var item in qualityAssuranceParameterList)
                     {
                         <div class="item">
-                            <input type="checkbox" @onclick="()=>checkboxList(item.Id)"  checked='@(checkboxValidation(@item.Id))' ><label>@item.Name</label>
+                            <input type="checkbox" @onclick="()=>checkboxList(item.Id)" checked='@(checkboxValidation(@item.Id))'><label>@item.Name</label>
                         </div>
                     }
                 }
@@ -326,8 +337,10 @@
         </div>
     }
 
-</form>
+ 
 
+</form>
+}
 
 
 
@@ -383,7 +396,7 @@
         {
             QualityEvaluation = await QualityEvaluationServices.GetItemQualityEvaluationById(qualityEvaluationId);
 
-            if (QualityEvaluation !=null && QualityEvaluation.SalesDocumentItemsDetailsId != null)
+            if (QualityEvaluation != null && QualityEvaluation.SalesDocumentItemsDetailsId != null)
             {
                 var transactionalItem = await transactionalService.GetTransactionalItemById(QualityEvaluation.SalesDocumentItemsDetailsId);
                 if (transactionalItem != null) itemName = transactionalItem.Name;
@@ -437,6 +450,15 @@
 
     }
 
+    public void AddQualityEvaluationImages(QualityEvaluationPhoto qualityEvaluationPhoto)
+    {
+        if (QualityEvaluation.QualityEvaluationImages == null) QualityEvaluation.QualityEvaluationImages = new();
+
+        QualityEvaluation.QualityEvaluationImages.Add(qualityEvaluationPhoto);
+        StateHasChanged();
+    }
+
+
     public async void checkboxList(string Id)
     {
         if (checkboxUpdate)
@@ -448,7 +470,7 @@
 
             if (item != null)
             {
-                var itemTemp = QualityEvaluation.EvaluationParameters.Where(s => s.Id == item.Id).FirstOrDefault();
+                var itemTemp = QualityEvaluation.EvaluationParameters.Where(s => s.Parameter.Id == item.Id).FirstOrDefault();
 
                 if (itemTemp != null)
                 {
@@ -457,10 +479,10 @@
                 else
                 {
                     QualityEvaluation.EvaluationParameters.Add(new QualityEvaluationDetail
-                        {
-                            Parameter = item
+                            {
+                                Parameter = item
 
-                        });
+                            });
                 }
             }
 
@@ -471,9 +493,11 @@
     }
 
 
-    public  bool checkboxValidation(string Id){
+    public bool checkboxValidation(string Id)
+    {
 
-        if (QualityEvaluation.EvaluationParameters!=null) {
+        if (QualityEvaluation.EvaluationParameters != null)
+        {
             var itemTemp = QualityEvaluation.EvaluationParameters.Where(s => s.Parameter.Id == Id).FirstOrDefault();
 
             if (itemTemp != null)
@@ -493,7 +517,8 @@
 
     }
 
-    public void SetTrafficLightStatus(String Id){
+    public void SetTrafficLightStatus(String Id)
+    {
         QualityEvaluation.TrafficLightStatus = trafficLightStatusList.Where(s => s.Id == Id).FirstOrDefault();
         LoadQualityEvaluation();
         StateHasChanged();
@@ -533,6 +558,11 @@
 
     }
 
+    public string GetFullPathPhoto(string imgName)
+    {
+        return UIClientGlobalVariables.PathTransactionalItemsImages + "/" + imgName;
+    }
+
     public void Page(string value)
     {
         page = value;
@@ -547,7 +577,7 @@
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
-    );
+        );
 
 
     void OnMenuItemClick(MenuItemEventArgs args)

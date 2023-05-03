@@ -173,6 +173,9 @@ namespace SunttelTradePointB.Shared.Sales
         [DisplayName("Total Discounts")]
         public double TotalDiscounts { get; set; }
 
+        [DisplayName("Total Paid")]
+        public double TotalPaid { get; set; }
+
 
     }
 
