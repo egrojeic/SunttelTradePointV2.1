@@ -461,6 +461,20 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
                     new BsonDocument("$match", new BsonDocument("SquadId", squadId))
                 );
 
+                // Filtro por SquadId
+                //pipeline.Add(
+                //    new BsonDocument(
+                //        "$match",
+                //        new BsonDocument(
+                //                 "Id",
+                //                    new BsonDocument(
+                //                        "$regex", new BsonRegularExpression($"/{squadId}/i"))
+                //            )
+
+                //    )
+                //);
+
+
                 pipeline.Add(
                     new BsonDocument{
                         {"$skip",  skip}

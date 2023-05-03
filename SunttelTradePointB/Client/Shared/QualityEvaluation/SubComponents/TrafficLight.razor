@@ -7,20 +7,12 @@
     {
         @foreach (var item in trafficLightList)
         {
-            <div class="item">
-                <p class="text"> @item.Name </p> <div  class="circle-color"  style="@(NameStatus==item.Name?"green":"")"  ></div>
+            <div class="item" @onclick='()=>SetTrafficLight(item.Id)'>
+                <p class="text"> @item.Name </p> <div class="circle-color" style=" background-color:rgb(@(item.Id== trafficLight.Id? $"{item.R},{item.G},{item.B}":""))"></div>
             </div>
         }
     }
-    else
-    {
-        @if (trafficLight != null)
-        {
-            <div class="item">
-                <p class="text"> @trafficLight.Name </p> <div class="circle-color" style="@(NameStatus==trafficLight.Name?"green":"")"></div>
-            </div>
-        }
-    }
+  
 </div>
 
 @code {
@@ -30,15 +22,22 @@
     public QualityTrafficLight trafficLight { get; set; }
     [Parameter]
     public string NameStatus { get; set; }
-
+    [Parameter]
+    public EventCallback<string> SetTrafficLightStatus { get; set; }
 
 
     protected override void OnInitialized()
     {
-      
-    base.OnInitialized();
+        //trafficLightList = new List<QualityTrafficLight>();
+        //trafficLightList.Add(new QualityTrafficLight { Name = "prueba", R = 255, G = 99, B = 12 });
+        base.OnInitialized();
     }
 
+
+    public void SetTrafficLight(string trafficLightId)
+    {
+        SetTrafficLightStatus.InvokeAsync(trafficLightId);
+    }
 
     public string GetName(string Name, Object Obj)
     {

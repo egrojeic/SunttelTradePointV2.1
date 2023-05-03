@@ -255,7 +255,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
             try
             {
                 string path = basepath.Replace("*Name", "GetQualityActionById");
-                var responseMessage = await Gethttp($"{path}&qualityParameterGroupId={qualityId}");
+                var responseMessage = await Gethttp($"{path}&qualityId={qualityId}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<QualityAction>();
                 return list;
             }
@@ -324,7 +324,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
 
             try
             {
-                string path = basepath.Replace("*Name", "GetQualityTrafficLightById");
+                string path = basepath.Replace("*Name", "GetQualityParameteById");
                 var responseMessage = await Gethttp($"{path}&qualityId={qualityId}");
                 var item = await responseMessage.Content.ReadFromJsonAsync<QualityAssuranceParameter>();
                 return item;
@@ -431,9 +431,10 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
                 var SquadId = UIClientGlobalVariables.ActiveSquad;
                 var ReplaceIdUser = UIClientGlobalVariables.UserId;
                 var ReplacePublicIpAddress = UIClientGlobalVariables.PublicIpAddress;
-
-                Url = Url.Replace("*Id", ReplaceIdUser ?? "000").Replace("*Ip", ReplacePublicIpAddress ?? "000");
-
+                if (ReplaceIdUser == "") ReplaceIdUser = "000";
+                if (ReplacePublicIpAddress == "") ReplacePublicIpAddress = "000";
+                Url = Url.Replace("*Id", ReplaceIdUser ?? "000");
+                Url = Url.Replace("*Ip", ReplacePublicIpAddress ?? "000");
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
 
                 if (SquadId != null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString().ToLower());

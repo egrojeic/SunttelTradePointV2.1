@@ -21,7 +21,7 @@
 <div class="panelMenuContainer">
     <AccountsReceivableMenu></AccountsReceivableMenu>
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
-    <RangeDatesInput StartDate="@date"
+    <RangeDatesInput @bind-StartDate="@date"
                      StartDateName="Date"
                      EventSearchAll="EventSearchAll"></RangeDatesInput>
 

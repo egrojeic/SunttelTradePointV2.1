@@ -1256,10 +1256,6 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
         }
 
-
-
-        /*NUEVOS ENDPOINTS */
-
         /// <summary>
         /// Retrieves the whole object of an Entity/Packing Specs
         /// </summary>

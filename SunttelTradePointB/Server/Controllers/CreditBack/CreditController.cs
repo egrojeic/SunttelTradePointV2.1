@@ -23,7 +23,7 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
         }
         #region Credit Documents
         /// <summary>
-        /// Returns a list of entities with a name like the parameter
+        /// Returns a list of credit documents with a filter like the parameter
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -50,7 +50,7 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
         }
 
         /// <summary>
-        /// Retrieves an Credit object by Id
+        /// Retrieves an credit document object by Id
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -73,7 +73,7 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
         }
 
         /// <summary>
-        /// Insert / Update a Credit Document
+        /// Saves an credit document. If it doesn't exists, it'll be created
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -102,7 +102,7 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
 
         #region Credit Types
         /// <summary>
-        /// Returns a list of entities with a name like the parameter
+        /// Returns a list of credit types with a filter like the parameter
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -127,7 +127,7 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
         }
 
         /// <summary>
-        /// Retrieves an Credit Type object by Id
+        /// Retrieves an credit type object by Id
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -150,7 +150,7 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
         }
 
         /// <summary>
-        /// Insert / Update a Credit Type
+        /// Saves an credit type. If it doesn't exists, it'll be created
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>

@@ -1,5 +1,5 @@
 @page "/AccountsReceivableippingItem"
-@page "/AccountsReceivableippingItem/{AccountsReceivableippingId}/{filter}"
+@page "/AccountsReceivableippingItem/{accountsReceivableippingId}/{filter}"
 
 
 @using SunttelTradePointB.Shared.Sales;
@@ -298,7 +298,7 @@
 
 @code {
     [Parameter]
-    public string shippingId { get; set; }
+    public string accountsReceivableippingId { get; set; }
     [Parameter]
     public string filter { get; set; }
 
@@ -349,11 +349,11 @@
 
         isLoading = true;
         StateHasChanged();
-        if (shippingId != null)
+        if (accountsReceivableippingId != null)
         {
-            commercialDocument = await DocumentServices.GetItemCommercialDocumentById(shippingId);
-            commercialDocument.Items = await DocumentServices.GetCommercialDocumentDetails(shippingId);
-
+            commercialDocument = await DocumentServices.GetItemCommercialDocumentById(accountsReceivableippingId);
+            if( commercialDocument.Items==null) commercialDocument.Items = new();
+            commercialDocument.Items = await DocumentServices.GetCommercialDocumentDetails(accountsReceivableippingId);
         }
 
 

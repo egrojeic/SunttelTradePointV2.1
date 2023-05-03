@@ -262,8 +262,8 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
                 path = GetGlobalVariables(path);
                 var responseMessage = await Gethttp($"{path}&PaymentDate={date}&filter={filterName}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Payment>>();
-                List<Payment> conceptLis = new();
-                return conceptLis != null ? conceptLis : new List<Payment>();
+                
+                return list != null ? list : new List<Payment>();
             }
             catch (Exception ex)
             {
@@ -403,7 +403,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
 
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
 
-                if (SquadId != null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString());
+                if (SquadId != null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString().ToUpper());
                 if (SquadId == null) request.Headers.Add("SquadId", "0000000000");
                 var response = await _httpClient.SendAsync(request);
 

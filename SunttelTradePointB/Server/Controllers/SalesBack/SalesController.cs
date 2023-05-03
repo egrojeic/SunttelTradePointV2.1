@@ -31,8 +31,9 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
             _commercialDocument = commercialDocument;
         }
 
+        #region Commercial Document
         /// <summary>
-        /// Retrieves a Sales Documemt matching with its Id
+        /// Retrieves a Sales Document matching with its Id
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAdress"></param>
@@ -107,9 +108,11 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
                 return NotFound(response.ErrorDescription);
         }
 
+        #endregion
+
         #region Commercial Document Type
         /// <summary>
-        /// Retrieves a list of Transactional Item Types with the posibility to receive an optional paremeter
+        /// Retrieves a list of commercial document types with the posibility to receive an optional paremeter
         /// </summary>
         /// <param name="filterCondition"></param>
         /// <param name="userId"></param>
@@ -132,7 +135,7 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         }
 
         /// <summary>
-        /// Retrieves a Transactional Item Type object by Id
+        /// Retrieves a commercial document types object by Id
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -158,7 +161,7 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         }
 
         /// <summary>
-        /// Insert / Update a Transactional Item Type
+        /// Insert / Update a commercial document types
         /// </summary>
         /// <param name="commercialDocumentType"></param>
         /// <param name="userId"></param>
@@ -407,7 +410,7 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         }
 
         /// <summary>
-        /// Retrieves a list of Commercial documents of the Squad for the date span and Document type
+        /// Retrieves a list of Commercial documents of the Squad for the date span and warehouseId
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -521,7 +524,7 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
 
         #region Account Receivable
         /// <summary>
-        /// Retrieves a list of Commercial documents of the Squad for the date span and Document type
+        /// Retrieves a list of Commercial documents of the Squad for the date 
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>

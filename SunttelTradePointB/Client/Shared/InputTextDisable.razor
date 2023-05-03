@@ -1,12 +1,12 @@
 @if (Enable)
 {
     <div style="@style">
-        <input type="@(TypeInt?"number":"")" value="@Value" class="form-control" @onchange="Onchange">
+        <input type="@(TypeInt?"number":"")" value="@Value" class="form-control input-style" @onchange="Onchange">
     </div>
 }
 else
 {
-    <div class="p-mode-text" style="@style">
+    <div class="p-mode-text input-style" style="@style">
         <p>@Value</p>
     </div>
 }
