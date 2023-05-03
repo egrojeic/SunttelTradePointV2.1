@@ -30,6 +30,7 @@ namespace SunttelTradePointB.Shared.Security
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public string Email { get; set; }
         public string SkinImageName { get; set; }
 
 
