@@ -93,14 +93,24 @@ namespace SunttelTradePointB.Client.Services
             await api.RegisterUserByAdmin(registerParameters);
         }
 
+        public async Task RegisterRole(UserRole role)
+        {
+            await api.RegisterRole(role);
+        }
+
         public async Task<List<UserEntity>> GetUsersByRolname(string rolname)
         {
             return await api.GetUsersByRolname(rolname);
         }
 
-        public async Task<List<IdentityRole>?> GetRoles()
+        public async Task<List<UserRole>?> GetRoles()
         {
             return await api.GetRoles();
+        }
+
+        public async Task<List<SystemTool>?> GetSystemTools()
+        {
+            return await api.GetSystemsTools();
         }
 
         public async Task DeleteUser(string id)

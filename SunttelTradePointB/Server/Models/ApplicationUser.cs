@@ -27,7 +27,7 @@ namespace SunttelTradePointB.Shared.Models
         /// </summary>
         public bool Active { get; set; } = true;
 
-        [ForeignKey("UserId")]
-        public virtual ICollection<IdentityUserRole<string>> UserRoles { get; } = new List<IdentityUserRole<string>>();
+        //[ForeignKey("UserId")]
+        //public virtual ICollection<IdentityUserRole<string>> UserRoles { get; } = new List<IdentityUserRole<string>>();
     }
 }

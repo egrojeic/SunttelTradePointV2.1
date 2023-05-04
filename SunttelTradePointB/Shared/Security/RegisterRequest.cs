@@ -18,7 +18,7 @@ namespace SunttelTradePointB.Shared.Security
         [Required]
         public string EntityId { get; set; }
 
-        public string Rolname { get; set; }
+        public List<UserRole> Roles { get; set; }
 
         public string Email { get; set; }
 

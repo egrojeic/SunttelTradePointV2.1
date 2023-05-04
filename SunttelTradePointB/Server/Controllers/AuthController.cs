@@ -2,16 +2,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SunttelTradePointB.Client.Interfaces.SquadInterfaces;
 using SunttelTradePointB.Server.Interfaces;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Server.Interfaces.UserTracking;
 using SunttelTradePointB.Shared.Common;
-using SunttelTradePointB.Shared.Enums;
 using SunttelTradePointB.Shared.Models;
 using SunttelTradePointB.Shared.Security;
 using SunttelTradePointB.Shared.SquadsMgr;
-using Syncfusion.Blazor.RichTextEditor;
 
 namespace SunttelTradePointB.Server.Controllers
 {
@@ -159,6 +156,24 @@ namespace SunttelTradePointB.Server.Controllers
         }
 
         /// <summary>
+        /// Get permissions for the roles
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> GetSystemTools()
+        {
+            try
+            {
+                List<SystemTool> tools = await _squad.GetSystemTools();
+                return Ok(tools);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Register user with rol
         /// </summary>
         /// <param name="parameters"></param>
@@ -177,8 +192,14 @@ namespace SunttelTradePointB.Server.Controllers
 
                 var result = await _userManager.CreateAsync(user, parameters.Password);
                 if (!result.Succeeded) return BadRequest(result.Errors.FirstOrDefault()?.Description);
-                var result2 = await _userManager.AddToRoleAsync(user, parameters.Rolname);
-                if (!result2.Succeeded) return BadRequest(result.Errors.FirstOrDefault()?.Description);
+                if (parameters.Roles != null && parameters.Roles.Count > 0)
+                {
+                    foreach (var role in parameters.Roles)
+                    {
+                        var result2 = await _userManager.AddToRoleAsync(user, role.Name);
+                        if (!result2.Succeeded) return BadRequest(result.Errors.FirstOrDefault()?.Description);
+                    }
+                }
                 return Ok();
             }
             catch (Exception ex)
@@ -213,10 +234,10 @@ namespace SunttelTradePointB.Server.Controllers
                         await ResetPassword(user, parameters.Password);
                     }
 
-                    if (parameters.Rolname is not null)
-                    {
-                        await UpdateRol(user, parameters.Rolname);
-                    }
+                    //if (parameters.Rolname is not null)
+                    //{
+                    //    await UpdateRol(user, parameters.Rolname);
+                    //}
                 }
                 else
                 {
@@ -371,7 +392,7 @@ namespace SunttelTradePointB.Server.Controllers
 
 
         /// <summary>
-        /// Get a list of roles
+        /// Get the list of roles
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -381,13 +402,20 @@ namespace SunttelTradePointB.Server.Controllers
             try
             {
                 List<IdentityRole> list = await _roleManager.Roles.ToListAsync();
-                return Ok(list);
+                List<UserRole> roles = list.Select(x => new UserRole
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                }).ToList();
+
+                return Ok(roles);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
+
 
 
         /// <summary>

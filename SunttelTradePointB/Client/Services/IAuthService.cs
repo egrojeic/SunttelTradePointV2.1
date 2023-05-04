@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
 using SunttelTradePointB.Shared.Security;
+using SunttelTradePointB.Shared.SquadsMgr;
 
 namespace SunttelTradePointB.Client.Services
 {
@@ -14,13 +15,17 @@ namespace SunttelTradePointB.Client.Services
 
         Task<List<UserEntity>> GetUsersByRolname(string rolname);
 
-        Task<List<IdentityRole>?> GetRoles();
+        Task<List<UserRole>?> GetRoles();
 
         Task DeleteUser(string id);
 
         Task<UserEntity> GetUserById(string id);
 
         Task EditUserByAdmin(RegisterRequest registerRequest);
+
+        Task<List<SystemTool>?> GetSystemsTools();
+
+        Task RegisterRole(UserRole role);
     }
 
 }

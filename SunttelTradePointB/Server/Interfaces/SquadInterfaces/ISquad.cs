@@ -48,7 +48,11 @@ namespace SunttelTradePointB.Server.Interfaces
         /// <returns></returns>
         Task<(bool IsSuccess, Squad? squad, string? error)> SaveSquad(string userId, string ipAdress, Squad squad);
 
-
+        /// <summary>
+        /// Retrieves all system tools 
+        /// </summary>
+        /// <returns></returns>
+        Task<List<SystemTool>> GetSystemTools();
 
     }
 }

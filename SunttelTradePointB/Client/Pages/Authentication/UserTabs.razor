@@ -1,0 +1,154 @@
+﻿@page "/UserTabs"
+@using SunttelTradePointB.Client.Services;
+@using SunttelTradePointB.Shared.Enums;
+@using SunttelTradePointB.Shared.Security;
+@inject NavigationManager _NavigationManager;
+@inject CustomStateProvider authStateProvider
+
+<PageTitleComponent Title="Security Managment" IconName="ActorIco.png"
+                    Description="This is a control for Users and Roles of the application">
+</PageTitleComponent>
+
+<!-- NavMenu.razor -->
+<div class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <button class="btn btn-primary me-3" @onclick="() => ChangeTab(1)">
+                    Users
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="btn btn-primary" @onclick="() => ChangeTab(2)">
+                    Roles
+                </button>
+            </li>
+        </ul>
+    </div>
+</div>
+
+@if (tab == 1)
+{
+    <div class="row mb-3">
+        <div class="col-md-12" style="text-align: right">
+            <button class="btn btn-success" @onclick="@(() => AddNewUser())">
+                <span class="oi oi-plus me-1" aria-hidden="true"></span>
+                Add new User
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <RadzenDataGrid TItem="UserEntity" Data="@users" PageSize="10" ColumnWidth="150px">
+                <Columns>
+                    <RadzenDataGridColumn TItem="UserEntity" Property="Name" Title="Username" />
+                    <RadzenDataGridColumn TItem="UserEntity" Property="Email" Title="Email" />
+                    <RadzenDataGridColumn TItem="UserEntity" Title="Options">
+                        <Template Context="user">
+                            <div class="btn-group" role="group">
+                                @*<button class="btn btn-warning me-2" title="Editar" @onclick="@(() => EditUser(user))">
+                            <span class="oi oi-pencil" aria-hidden="true"></span>
+                            </button>*@
+                                <button class="btn btn-danger" title="Delete" @onclick="@(() => DeleteUser(user))">
+                                    <span class="oi oi-trash" aria-hidden="true"></span>
+
+                                </button>
+                            </div>
+                        </Template>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+        </div>
+    </div>
+} else if(tab == 2)
+{
+    <div class="row mb-3">
+        <div class="col-md-12" style="text-align: right">
+            <button class="btn btn-success" @onclick="@(() => AddNewRole())">
+                <span class="oi oi-plus me-1" aria-hidden="true"></span>
+                Add new Role
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <RadzenDataGrid TItem="UserRole" Data="@roles" PageSize="10" ColumnWidth="150px">
+                <Columns>
+                    <RadzenDataGridColumn TItem="UserRole" Property="Name" Title="Username" />
+                    <RadzenDataGridColumn TItem="UserRole" Title="Options">
+                        <Template Context="roles">
+                            <div class="btn-group" role="group">
+                                @*<button class="btn btn-warning me-2" title="Editar" @onclick="@(() => EditUser(user))">
+                            <span class="oi oi-pencil" aria-hidden="true"></span>
+                            </button>*@
+                                <button class="btn btn-danger" title="Delete" @onclick="@(() => DeleteRole(roles))">
+                                    <span class="oi oi-trash" aria-hidden="true"></span>
+
+                                </button>
+                            </div>
+                        </Template>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+        </div>
+    </div>
+}
+
+@code {
+    public int tab = 1;
+
+    public void ChangeTab(int _tab)
+    {
+        tab = _tab;
+    }
+
+    public List<UserEntity>? users;
+    public List<UserRole>? roles;
+
+    protected override async Task OnInitializedAsync()
+    {
+        GetUsers();
+        GetRoles();
+    }
+
+    private async Task GetRoles()
+    {
+        roles = await authStateProvider.GetRoles();
+        StateHasChanged();
+    }
+
+    private async Task GetUsers()
+    {
+        users = await authStateProvider.GetUsersByRolname(UserType.User.ToString());
+        StateHasChanged();
+    }
+
+    public void AddNewUser()
+    {
+        _NavigationManager.NavigateTo("/RegisterUser");
+    }
+
+    public void AddNewRole()
+    {
+        _NavigationManager.NavigateTo("/RegisterRole");
+    }
+
+    public void EditUser(UserEntity user)
+    {
+        _NavigationManager.NavigateTo($"/RegisterUser/{user.Id}");
+    }
+
+    public async void DeleteUser(UserEntity user)
+    {
+        await authStateProvider.DeleteUser(user.Id);
+        GetUsers();
+    }
+
+    public async void DeleteRole(UserRole rol)
+    {
+        await authStateProvider.DeleteUser(rol.Id);
+        GetUsers();
+    }
+}
