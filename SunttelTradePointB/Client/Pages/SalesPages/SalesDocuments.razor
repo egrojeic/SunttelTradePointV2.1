@@ -85,10 +85,10 @@
                         <RadzenCheckBox @bind-Value="commercialdocumentItem.MarkedForQCInspection" />
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalTaxes" TextAlign="TextAlign.Right" FormatString="{0:N2}" Title="@GetName("TotalTaxes", new FinanceSalesDocumentSummary())" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalCosts" TextAlign="TextAlign.Right" FormatString="{0:N2}" Title="@GetName("TotalCosts", new FinanceSalesDocumentSummary())" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalPaid" TextAlign="TextAlign.Right" FormatString="{0:N2}" Title="@GetName("TotalPaid", new FinanceSalesDocumentSummary())" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalAmount" TextAlign="TextAlign.Right" FormatString="{0:N2}" Title="@GetName("TotalAmount", new FinanceSalesDocumentSummary())" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalTaxes" TextAlign="TextAlign.Right" FormatString="${0:N2}" Title="@GetName("TotalTaxes", new FinanceSalesDocumentSummary())" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalCosts" TextAlign="TextAlign.Right" FormatString="${0:N2}" Title="@GetName("TotalCosts", new FinanceSalesDocumentSummary())" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalPaid" TextAlign="TextAlign.Right" FormatString="${0:N2}" Title="@GetName("TotalPaid", new FinanceSalesDocumentSummary())" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalAmount" TextAlign="TextAlign.Right" FormatString="${0:N2}" Title="@GetName("TotalAmount", new FinanceSalesDocumentSummary())" Width="200px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="Items.Name" Title="Items" Width="200px" />
              
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="ToInvoice" Title="To Invoice" Filterable="false" Sortable="false" Width="200px">

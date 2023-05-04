@@ -59,18 +59,18 @@
                     CellContextMenu="@ShowContextMenuCommercialDocument">
             <Columns>
 
-                 <RadzenDataGridColumn CssClass="info-text-size" TItem="CommercialDocument" Property="@nameof(CommercialDocument.DocumentNumber)" Title="@GetName("DocumentNumber", new CommercialDocument() )" Width="208px" />
-                 <RadzenDataGridColumn CssClass="info-text-size" TItem="CommercialDocument" Property="@nameof(CommercialDocument.DeliveryDate)" FormatString="{0:MM/dd/yyyy}" Title="@GetName("DeliveryDate", new CommercialDocument() )" Filterable="false" Width="200px"/>
-                  
-                 <RadzenDataGridColumn CssClass="info-text-size" TItem="CommercialDocument" Property="Vendor.Name" Title="@GetName("Vendor", new CommercialDocument() )" Width="200px" />
-                 <RadzenDataGridColumn CssClass="info-text-size" TItem="CommercialDocument" Property="Buyer.Name" Title="@GetName("Buyer", new CommercialDocument() )" Width="200px" />
-                 <RadzenDataGridColumn CssClass="info-text-size" TItem="CommercialDocument" Property="ShippingStatusDocument.Name" Title="@GetName("ShippingStatusDocument", new CommercialDocument() )" Width="200px" />
-                 <RadzenDataGridColumn CssClass="info-text-size" TItem="CommercialDocument" Property="Season.Name" Title="@GetName("Season", new CommercialDocument() )" Width="200px" />
-                 <RadzenDataGridColumn CssClass="info-text-size" TItem="CommercialDocument" Property="FinanceSummary.TotalTaxes" Title="@GetName("TotalTaxes", new FinanceSalesDocumentSummary() )" FormatString="${0:N2}" Filterable="false" Width="150px" />
-                 <RadzenDataGridColumn CssClass="info-text-size" TItem="CommercialDocument" Property="FinanceSummary.TotalDiscounts"  Title="@GetName("TotalDiscounts", new FinanceSalesDocumentSummary() )" FormatString="${0:N2}" Filterable="false" Width="150px" />
-                 <RadzenDataGridColumn CssClass="info-text-size" TItem="CommercialDocument" Property="FinanceSummary.TotalCosts"  Title="@GetName("TotalCosts", new FinanceSalesDocumentSummary() )" FormatString="${0:N2}" Filterable="false" Width="150px" />
-                 <RadzenDataGridColumn CssClass="info-text-size" TItem="CommercialDocument" Property="FinanceSummary.TotalAmount" Title="@GetName("TotalAmount", new FinanceSalesDocumentSummary() )" FormatString="${0:N2}" Filterable="false" Width="150px" />
-                
+                <RadzenDataGridColumn CssClass="info-text-size" TItem="CommercialDocument" Property="@nameof(CommercialDocument.DocumentNumber)" Title="@GetName("DocumentNumber", new CommercialDocument() )" Width="208px" />
+                <RadzenDataGridColumn CssClass="info-text-size" TItem="CommercialDocument" Property="@nameof(CommercialDocument.DeliveryDate)" FormatString="{0:MM/dd/yyyy}" Title="@GetName("DeliveryDate", new CommercialDocument() )" Filterable="false" Width="200px" />
+
+                <RadzenDataGridColumn CssClass="info-text-size" TItem="CommercialDocument" Property="Vendor.Name" Title="@GetName("Vendor", new CommercialDocument() )" Width="200px" />
+                <RadzenDataGridColumn CssClass="info-text-size" TItem="CommercialDocument" Property="Buyer.Name" Title="@GetName("Buyer", new CommercialDocument() )" Width="200px" />
+                <RadzenDataGridColumn CssClass="info-text-size" TItem="CommercialDocument" Property="ShippingStatusDocument.Name" Title="@GetName("ShippingStatusDocument", new CommercialDocument() )" Width="200px" />
+                <RadzenDataGridColumn CssClass="info-text-size" TItem="CommercialDocument" Property="Season.Name" Title="@GetName("Season", new CommercialDocument() )" Width="200px" />
+                <RadzenDataGridColumn CssClass="info-text-size" TItem="CommercialDocument" Property="FinanceSummary.TotalTaxes" Title="@GetName("TotalTaxes", new FinanceSalesDocumentSummary() )" TextAlign="TextAlign.Right" FormatString="${0:N2}" Filterable="false" Width="150px" />
+                <RadzenDataGridColumn CssClass="info-text-size" TItem="CommercialDocument" Property="FinanceSummary.TotalDiscounts" Title="@GetName("TotalDiscounts", new FinanceSalesDocumentSummary() )" TextAlign="TextAlign.Right" FormatString="${0:N2}" Filterable="false" Width="150px" />
+                <RadzenDataGridColumn CssClass="info-text-size" TItem="CommercialDocument" Property="FinanceSummary.TotalCosts" Title="@GetName("TotalCosts", new FinanceSalesDocumentSummary() )" TextAlign="TextAlign.Right" FormatString="${0:N2}" Filterable="false" Width="150px" />
+                <RadzenDataGridColumn CssClass="info-text-size" TItem="CommercialDocument" Property="FinanceSummary.TotalAmount" Title="@GetName("TotalAmount", new FinanceSalesDocumentSummary() )" TextAlign="TextAlign.Right" FormatString="${0:N2}" Filterable="false" Width="150px" />
+
             </Columns>
         </RadzenDataGrid>
     }
