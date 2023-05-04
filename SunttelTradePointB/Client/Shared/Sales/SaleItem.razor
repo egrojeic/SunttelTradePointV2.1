@@ -81,7 +81,7 @@
             <div><label class="info-text-size">@GetName("DocumentType",new CommercialDocument())</label></div>
 
             <div>
-                <select @onchange="SelectItemDocumentType" class="select-style">
+                <select @onchange="SelectItemDocumentType" class="select-style info-text-size">
                   
                     @if (documentTypeList != null && documentTypeList.Count() > 0)
                     {
@@ -185,7 +185,7 @@
 
             <div><label class="info-text-size">@GetName("Carrier",new CommercialDocument())</label></div>
             <div>
-                <select @onchange="SelectItemVendorWarehous" class="select-style">
+                <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size">
                   
                     @if (carrierList != null && carrierList.Count() > 0)
                     {
@@ -207,7 +207,7 @@
 
             <div><label class="info-text-size">@GetName("VendorWarehouse",new CommercialDocument())</label></div>
             <div>
-                <select @onchange="SelectItemVendorWarehous" class="select-style">
+                <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size">
                    
                     @if (vendorWarehouseList != null && vendorWarehouseList.Count() > 0)
                     {
@@ -226,7 +226,7 @@
 
             <div><label class="info-text-size">@GetName("BuyerWarehouse",new CommercialDocument())</label></div>
             <div>
-                <select @onchange="SelectItemVendorWarehous" class="select-style">
+                <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size ">
                  
                     @if (buyerWarehouseList != null && buyerWarehouseList.Count() > 0)
                     {
@@ -245,7 +245,7 @@
 
             <div><label class="info-text-size">@GetName("BusinessLineDoc",new CommercialDocument())</label></div>
             <div>
-                <select @onchange="SelectItemBusinessLineDoc" class="select-style">
+                <select @onchange="SelectItemBusinessLineDoc" class="select-style info-text-size">
                   
                     @if (businessLineDocList != null && businessLineDocList.Count() > 0)
                     {
