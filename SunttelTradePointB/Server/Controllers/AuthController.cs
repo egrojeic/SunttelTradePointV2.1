@@ -63,16 +63,16 @@ namespace SunttelTradePointB.Server.Controllers
             user.EntityID = responseCheck.entityId;
             var defaultSquad = await _squad.GetSquadIdByName(Guid.Parse(user.Id), request.SquadName);
 
-            if(user.DefaultSquadId != defaultSquad)
+            if (user.DefaultSquadId != defaultSquad)
             {
                 user.DefaultSquadId = defaultSquad;
                 await _userManager.UpdateAsync(user);
             }
-            
+
 
             await _signInManager.SignInAsync(user, request.RememberMe);
 
-           
+
 
 
             return Ok();
@@ -81,10 +81,10 @@ namespace SunttelTradePointB.Server.Controllers
         private async Task<(string entityId, string skinImage)> CheckUserEntity(string userId, string userName)
         {
             var response = await _entityNodes.GetEntityActorByUserId(userId, "127.0.0.1", userName);
-            
-            if(response.IsSuccess)
+
+            if (response.IsSuccess)
             {
-                return(response.Item2.entityId, response.Item2.skinImage);
+                return (response.Item2.entityId, response.Item2.skinImage);
             }
             else
             {
@@ -95,8 +95,8 @@ namespace SunttelTradePointB.Server.Controllers
                     SkinImageName = ""
                 };
                 var responseCreation = await _entityNodes.SaveEntity(userId, "127.0.0.1", entityActor);
-                
-                if(responseCreation.IsSuccess && responseCreation.entityActorResponse != null)
+
+                if (responseCreation.IsSuccess && responseCreation.entityActorResponse != null)
                 {
                     return (responseCreation.entityActorResponse.Id, "");
                 }
@@ -104,7 +104,7 @@ namespace SunttelTradePointB.Server.Controllers
                 {
                     return ("", "");
                 }
-                
+
             }
         }
 
@@ -119,12 +119,12 @@ namespace SunttelTradePointB.Server.Controllers
             var result = await _userManager.CreateAsync(user, parameters.Password);
             if (!result.Succeeded) return BadRequest(result.Errors.FirstOrDefault()?.Description);
 
-            
+
             return await Login(new LoginRequest
             {
                 UserName = parameters.UserName,
                 Password = parameters.Password
-                 
+
             });
         }
 
@@ -146,7 +146,8 @@ namespace SunttelTradePointB.Server.Controllers
                 if (result.Succeeded)
                 {
                     return Ok();
-                } else
+                }
+                else
                 {
                     return BadRequest(result.Errors.FirstOrDefault()?.Description);
                 }
@@ -187,6 +188,83 @@ namespace SunttelTradePointB.Server.Controllers
         }
 
         /// <summary>
+        /// Edit user
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("EditUser")]
+        public async Task<IActionResult> EditUser(RegisterRequest parameters)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(parameters.Id);
+                if (user is null) return BadRequest("User not found");
+                user.UserName = parameters.UserName;
+                //user.UserType = parameters.UserType;
+                user.Email = parameters.Email;
+                //user.EntityID = parameters.EntityId;
+
+                IdentityResult resp = await _userManager.UpdateAsync(user);
+                if (resp.Succeeded)
+                {
+                    if (parameters.Password != "NOTCHANGE")
+                    {
+                        await ResetPassword(user, parameters.Password);
+                    }
+
+                    if (parameters.Rolname is not null)
+                    {
+                        await UpdateRol(user, parameters.Rolname);
+                    }
+                }
+                else
+                {
+                    return BadRequest("Error trying to update user");
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task ResetPassword(ApplicationUser user, string password)
+        {
+            // Generar una nueva contraseña
+            var nuevaContraseña = _userManager.PasswordHasher.HashPassword(user!, password);
+
+            // Restablecer la contraseña
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var resultadoRestablecimientoContraseña = await _userManager.ResetPasswordAsync(user, token, nuevaContraseña);
+            if (!resultadoRestablecimientoContraseña.Succeeded)
+            {
+                throw new Exception("No se pudo restablecer la contraseña");
+            }
+
+            // Guardar los cambios en la base de datos
+            await _userManager.UpdateAsync(user);
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task UpdateRol(ApplicationUser user, string newRol)
+        {
+            // Eliminar el rol anterior
+            var rolesAnteriores = await _userManager.GetRolesAsync(user);
+            await _userManager.RemoveFromRolesAsync(user, rolesAnteriores);
+
+            // Agregar el nuevo rol
+            await _userManager.AddToRoleAsync(user, newRol);
+
+            // Guardar los cambios en la base de datos
+            await _userManager.UpdateAsync(user);
+        }
+
+
+        /// <summary>
         /// Get a list of users by rolname
         /// </summary>
         /// <returns></returns>
@@ -195,22 +273,49 @@ namespace SunttelTradePointB.Server.Controllers
         {
             try
             {
-                string rolname = "User";
-                var list = await _userManager.GetUsersInRoleAsync(rolname);
+                string roleName = "User";
+                var usersInRole = await _userManager.GetUsersInRoleAsync(roleName);
 
-                List<UserEntity> users = new List<UserEntity>();
-
-                for (int i = 0; i < list.Count; i++)
-                {
-                    users.Add(new UserEntity()
+                var activeUsers = usersInRole
+                    .Where(user => user.Active)
+                    .Select(user => new UserEntity
                     {
-                        Id = list[i].Id,
-                        Name = list[i].UserName,
-                        Email = list[i].Email
-                    });
-                }
+                        Id = user.Id,
+                        Name = user.UserName,
+                        Email = user.Email
+                    })
+                    .ToList();
 
-                return Ok(users);
+                return Ok(activeUsers);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Get User By Id
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetUserById")]
+        public async Task<IActionResult> GetUserById([FromQuery] string id)
+        {
+            try
+            {
+                var UserDB = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
+
+                if (UserDB is null) return BadRequest("User not found");
+
+                UserEntity user = new UserEntity()
+                {
+                    Id = UserDB.Id,
+                    Name = UserDB.UserName,
+                    Email = UserDB.Email
+                };
+
+                return Ok(user);
             }
             catch (Exception ex)
             {
@@ -236,12 +341,12 @@ namespace SunttelTradePointB.Server.Controllers
             string LastSquadId = "";
             string EntityIdUser = "";
 
-            if (User != null && User.Identity !=null && User.Identity.Name != null)
+            if (User != null && User.Identity != null && User.Identity.Name != null)
             {
                 squads = await _squad.SquadInfo(User.Identity.Name);
                 var userInfo = await _userManager.FindByNameAsync(User.Identity.Name);
 
-                LastSquadId = (userInfo != null && userInfo.DefaultSquadId != null) ? userInfo.DefaultSquadId:"";
+                LastSquadId = (userInfo != null && userInfo.DefaultSquadId != null) ? userInfo.DefaultSquadId : "";
                 EntityIdUser = (userInfo != null && userInfo.EntityID != null) ? userInfo.EntityID : "";
             }
 
@@ -259,7 +364,7 @@ namespace SunttelTradePointB.Server.Controllers
                 EntityId = EntityIdUser,
                 SkinImageName = skinImage,
                 Claims = User.Claims.ToDictionary(c => c.Type, c => c.Value)
-                
+
 
             });
         }
@@ -284,6 +389,35 @@ namespace SunttelTradePointB.Server.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Delete User
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteUser")]
+        public async Task<IActionResult> DeleteUser([FromQuery] string id)
+        {
+            try
+            {
+                ApplicationUser? user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
+                if (user is null) return BadRequest("User not found");
+                user.Active = false;
+                IdentityResult response = await _userManager.UpdateAsync(user);
+                if (response.Succeeded)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest(response.Errors);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 
 }

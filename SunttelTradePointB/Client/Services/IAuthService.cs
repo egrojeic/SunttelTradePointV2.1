@@ -15,6 +15,12 @@ namespace SunttelTradePointB.Client.Services
         Task<List<UserEntity>> GetUsersByRolname(string rolname);
 
         Task<List<IdentityRole>?> GetRoles();
+
+        Task DeleteUser(string id);
+
+        Task<UserEntity> GetUserById(string id);
+
+        Task EditUserByAdmin(RegisterRequest registerRequest);
     }
 
 }

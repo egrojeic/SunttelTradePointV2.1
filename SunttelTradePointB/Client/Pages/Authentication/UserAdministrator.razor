@@ -43,7 +43,13 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await GetUsers();
+    }
+
+    private async Task GetUsers()
+    {
         users = await authStateProvider.GetUsersByRolname(UserType.User.ToString());
+        StateHasChanged();
     }
 
     public void AddNewUser()
@@ -53,11 +59,12 @@
 
     public void EditUser(UserEntity user)
     {
-        //NavigationManager.NavigateTo($"/EditarUsuario/{user.Id}");
+        _NavigationManager.NavigateTo($"/RegisterUser/{user.Id}");
     }
 
     public async void DeleteUser(UserEntity user)
     {
-        
+        await authStateProvider.DeleteUser(user.Id);
+        GetUsers();
     }
 }

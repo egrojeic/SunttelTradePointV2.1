@@ -33,6 +33,8 @@ namespace SunttelTradePointB.Shared.Security
         public string Email { get; set; }
         public string SkinImageName { get; set; }
 
+        public string RolName { get; set; }
+
 
     }
 }

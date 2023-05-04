@@ -11,7 +11,7 @@ namespace SunttelTradePointB.Client.Services
     {
         private readonly IAuthService api;
         private CurrentUser _currentUser;
-        
+
         public CustomStateProvider(IAuthService api)
         {
             this.api = api;
@@ -23,21 +23,21 @@ namespace SunttelTradePointB.Client.Services
             {
                 var userInfo = await GetCurrentUser();
 
-                
+
                 if (userInfo.IsAuthenticated)
                 {
-                    var claims = new[] 
-                    { 
+                    var claims = new[]
+                    {
                         new Claim(ClaimTypes.Name, _currentUser.UserName),
                         new Claim("SkingImage", "test"),
-                
+
 
                     }.Concat(_currentUser.Claims.Select(c => new Claim(c.Key, c.Value)));
-                    
-                     
+
+
                     identity = new ClaimsIdentity(claims, "Server authentication");
 
-                
+
 
                 }
             }
@@ -58,12 +58,12 @@ namespace SunttelTradePointB.Client.Services
             UIClientGlobalVariables.CurrentUserSquads = _currentUser.MySquads;
 
             var defaultSquadUserId = _currentUser.LastSquadId;
-            
+
             var EntityUserId = _currentUser.EntityId;
 
             UIClientGlobalVariables.ActiveSquad = _currentUser.MySquads.Where(s => s.IDSquads == Guid.Parse(defaultSquadUserId)).FirstOrDefault();
 
-            UIClientGlobalVariables.EntityUserId = EntityUserId??"";
+            UIClientGlobalVariables.EntityUserId = EntityUserId ?? "";
 
             UIClientGlobalVariables.UserSkinImage = _currentUser.SkinImageName;
 
@@ -101,6 +101,21 @@ namespace SunttelTradePointB.Client.Services
         public async Task<List<IdentityRole>?> GetRoles()
         {
             return await api.GetRoles();
+        }
+
+        public async Task DeleteUser(string id)
+        {
+            await api.DeleteUser(id);
+        }
+
+        public async Task<UserEntity> GetUserById(string id)
+        {
+            return await api.GetUserById(id);
+        }
+
+        public async Task EditUserByAdmin(RegisterRequest registerParameters)
+        {
+            await api.EditUserByAdmin(registerParameters);
         }
     }
 }

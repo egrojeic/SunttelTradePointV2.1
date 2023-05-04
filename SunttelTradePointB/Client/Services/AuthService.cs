@@ -31,6 +31,21 @@ namespace SunttelTradePointB.Client.Services
 
         }
 
+        public async Task<UserEntity?> GetUserById(string id)
+        {
+            try
+            {
+                var result = await _httpClient.GetFromJsonAsync<UserEntity>($"api/Auth/GetUserById?id={id}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                var errDesc = ex.Message;
+                return null;
+            }
+
+        }
+
         public async Task Login(LoginRequest loginRequest)
         {
             var result = await _httpClient.PostAsJsonAsync("api/auth/login", loginRequest);
@@ -54,6 +69,20 @@ namespace SunttelTradePointB.Client.Services
         public async Task RegisterUserByAdmin(RegisterRequest registerRequest)
         {
             var result = await _httpClient.PostAsJsonAsync("api/auth/registerUser", registerRequest);
+            if (result.StatusCode == System.Net.HttpStatusCode.BadRequest) throw new Exception(await result.Content.ReadAsStringAsync());
+            result.EnsureSuccessStatusCode();
+        }
+
+        public async Task EditUserByAdmin(RegisterRequest registerRequest)
+        {
+            var result = await _httpClient.PostAsJsonAsync("api/auth/EditUser", registerRequest);
+            if (result.StatusCode == System.Net.HttpStatusCode.BadRequest) throw new Exception(await result.Content.ReadAsStringAsync());
+            result.EnsureSuccessStatusCode();
+        }
+
+        public async Task DeleteUser(string id)
+        {
+            var result = await _httpClient.DeleteAsync($"api/auth/DeleteUser?id={id}");
             if (result.StatusCode == System.Net.HttpStatusCode.BadRequest) throw new Exception(await result.Content.ReadAsStringAsync());
             result.EnsureSuccessStatusCode();
         }

@@ -5,6 +5,8 @@ namespace SunttelTradePointB.Shared.Security
 {
     public class RegisterRequest
     {
+        public string Id { get; set; }
+
         [Required]
         public string UserName { get; set; }
         [Required]

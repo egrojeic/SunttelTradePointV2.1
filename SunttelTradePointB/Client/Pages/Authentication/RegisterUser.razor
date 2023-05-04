@@ -1,4 +1,5 @@
-﻿@page "/RegisterUser";
+﻿@page "/RegisterUser/{userId}";
+@page "/RegisterUser";
 @using System.ComponentModel.DataAnnotations;
 @using Microsoft.AspNet.Identity.EntityFramework;
 @using Microsoft.AspNetCore.Components.Forms;
@@ -33,6 +34,16 @@
                 </div>
                 <div class="col-6">
                     <div class="mb-3">
+                        <label>Nombre de usuario:</label>
+                        <div>
+                            <InputText type="text" class="form-control" @bind-Value="@user.UserName" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="mb-3">
                         <label>Contraseña:</label>
                         <div>
                             <InputText type="password" class="form-control" @bind-Value="@user.Password" />
@@ -40,7 +51,15 @@
                         </div>
                     </div>
                 </div>
-
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label>Confirmación de contraseña:</label>
+                        <div>
+                            <InputText type="password" class="form-control" @bind-Value="@user.PasswordConfirm" />
+                            <ValidationMessage For="@(() => user.PasswordConfirm)" />
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-6">
@@ -57,39 +76,39 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="mb-3">
-                        <label>Nombre de usuario:</label>
-                        <div>
-                            <InputText type="text" class="form-control" @bind-Value="@user.UserName" />
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="mb-3">
-                        <label>Confirmación de contraseña:</label>
-                        <div>
-                            <InputText type="password" class="form-control" @bind-Value="@user.PasswordConfirm" />
-                            <ValidationMessage For="@(() => user.PasswordConfirm)" />
-                        </div>
-                    </div>
-                </div>
+               
             </div>
         </div>
     </div>
 </EditForm>
 
 @code {
-
+    [Parameter]
+    public string? userId { get; set; }
     public RegisterRequest? user = new RegisterRequest();
-    public List<string> rolenames = new List<string>();
-
+    public List<string> rolenames = new List<string>();    
     public IEnumerable<IdentityRole>? roles;
 
     protected override void OnInitialized()
     {
         GetRoles();
         base.OnInitialized();
+        StateHasChanged();
+    }
+
+    protected override async void OnParametersSet()
+    {
+        GetUserById();
+        base.OnParametersSet();
+    }
+
+    private async void GetUserById()
+    {
+        if (userId is null) return;
+        UserEntity u = await authStateProvider.GetUserById(userId);
+        user.Email = u.Email;
+        user.UserName = u.Name;
+        user.Id = u.Id;
         StateHasChanged();
     }
 
@@ -117,7 +136,18 @@
         try
         {
             user.EntityId = "0";
-            await authStateProvider.RegisterUserByAdmin(user);
+            if(user.Id is null)
+            {
+                await authStateProvider.RegisterUserByAdmin(user);
+            } else
+            {
+                if(user.Password is null)
+                {
+                    user.Password = "NOTCHANGE";
+                    user.PasswordConfirm = "NOTCHANGE";
+                }
+                await authStateProvider.EditUserByAdmin(user);
+            }
             _navigationManager.NavigateTo("/UserAdministrator");
         }
         catch (Exception ex)
