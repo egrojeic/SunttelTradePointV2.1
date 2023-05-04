@@ -1,6 +1,6 @@
-@page "/PaymentStatuse"
-@page "/PaymentStatuse/{PaymentStatusesId}"
-@page "/PaymentStatuse/{filter}/{PaymentStatusesId}"
+@page "/PaymentStatus"
+@page "/PaymentStatus/{PaymentStatusesId}"
+@page "/PaymentStatus/{filter}/{PaymentStatusesId}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
@@ -48,17 +48,12 @@
         <div class="grid-mode-row grid-colum">
 
             <div><label>@GetName("Name",new BasicConcept())</label></div>
-            <InputTextDisable Enable="true" style="font-size:15px; font-weight:none; " @bind-ValueString="@paymentStatus.Name"></InputTextDisable>
+            <InputTextDisable Enable="true" TypeInt="false" style="font-size:15px; font-weight:none; " @bind-ValueString="@paymentStatus.Name"></InputTextDisable>
 
             <div><label>@GetName("EditingAllowed",new PaymentStatus())</label></div>
             <div>
                 <SfSwitch @bind-Checked="@paymentStatus.EditingAllowed"></SfSwitch>
-            </div>
-
-            <div><label>@GetName("EditingAllowed",new PaymentStatus())</label></div>
-            <div>
-                <SfSwitch @bind-Checked="@paymentStatus.EditingAllowed"></SfSwitch>
-            </div>
+            </div>          
 
             <div><label>@GetName("Enabled",new PaymentStatus())</label></div>
             <div>
@@ -127,7 +122,7 @@
                 Load();
 
                 var result = await PaymentServices.SavePaymentStatus(paymentStatus);
-                if (true)
+                if (result !=null)
                 {
                     paymentStatus = result;
                     alert("Saved", 0);
@@ -142,7 +137,7 @@
         }
         else
         {
-            alert("Saved", 1);
+            alert("No saved", 1);
         }
 
         StateHasChanged();
@@ -225,7 +220,7 @@
     {
         string msg = "";
         if (paymentStatus == null) msg = "required fields";
-        if (paymentStatus == null || paymentStatus.Name != null) msg = "required fields Name";
+        if (paymentStatus == null || paymentStatus.Name == null) msg = "required fields Name";
         return msg;
     }
 

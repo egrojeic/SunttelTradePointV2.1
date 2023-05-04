@@ -2,6 +2,7 @@
 @page "/Inventory/{_filterItems}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.InvetoryModels;
+@using System.Globalization;
 @inject SunttelTradePointB.Client.Services.InventoryServices.Inventory _Inventory
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
@@ -15,13 +16,13 @@
 
 <div class="panelMenuContainer">
     <InventoryMenu></InventoryMenu>
-    <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>   
+    <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
 </div>
 
 <div class="panelMenuContainer">
     <InventoryMenu2 Setwarehouse="Setwarehouse"></InventoryMenu2>
-         <RangeDatesInput @bind-StartDate="@startingDate"
-                     StartDateName="Date"                   
+    <RangeDatesInput @bind-StartDate="@startingDate"
+                     StartDateName="Date"
                      EventSearchAll="EventSearchAll"></RangeDatesInput>
 </div>
 
@@ -34,7 +35,7 @@
     @if (isLoading)
     {
 
-        <WaitingProcessIndicator loadingTopic="Characteristic Items"></WaitingProcessIndicator>
+        <WaitingProcessIndicator loadingTopic="InventoryDetail Items"></WaitingProcessIndicator>
 
     }
     else
@@ -83,6 +84,11 @@
 
             </Columns>
         </RadzenDataGrid>
+
+        <div class="container-total">
+            <div class="item">@GetName("Qty", new InventoryDetail()):<b>@SumQty()</b></div>
+            <div class="item">@GetName("QtyOnHand", new InventoryDetail()):<b>@SumQtyOnHand()</b></div>
+        </div>
     }
 </div>
 
@@ -172,6 +178,23 @@
         StateHasChanged();
     }
 
+
+    public string SumQty()
+    {
+        CultureInfo format = new CultureInfo("en-US", false);
+        double value = 0;
+        if (InventoryDetaiList != null) value = InventoryDetaiList.Sum(i => i.Qty);
+        return value.ToString();
+    }
+
+
+    public string SumQtyOnHand()
+    {
+        CultureInfo format = new CultureInfo("en-US", false);
+        double value = 0;
+        if (InventoryDetaiList != null) value = InventoryDetaiList.Sum(i => i.QtyOnHand);
+        return value.ToString();
+    }
 
 
     public string GetName(string Name, Object Obj)

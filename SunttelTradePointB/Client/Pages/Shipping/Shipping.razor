@@ -2,7 +2,7 @@
 @page "/Shipping/{_filterItems}"
 
 
-
+@using System.Globalization;
 @using SunttelTradePointB.Shared.Sales;
 @inject SunttelTradePointB.Client.Services.ShippingServices.ShippingServices ShippingServices
 @inject ContextMenuService ContextMenuService
@@ -12,9 +12,6 @@
 <PageTitleComponent Title="Shipping" IconName="commercialActivities.png"
                     Description="With this tool you can create and edit Sales operations such as Orders and Invoices">
 </PageTitleComponent>
-
-
-
 
 <div class="panelMenuContainer">
     <ShippingMenu></ShippingMenu>
@@ -40,39 +37,47 @@
     }
     else
     {
+      
+            <RadzenDataGrid AllowFiltering="true"
+                        AllowColumnResize="true"
+                        AllowAlternatingRows="true"
+                        FilterMode="FilterMode.Advanced"
+                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        AllowSorting="true"
+                        PageSize="50"
+                        AllowPaging="true"
+                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                        ShowPagingSummary="true"
+                        Data="@commercialdocumentList"
+                        TItem="CommercialDocument"
+                        ColumnWidth="300px"
+                        SelectionMode="DataGridSelectionMode.Single"
+                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                        @bind-Value="@selectedcommercialdocuments"
+                        CellContextMenu="@ShowContextMenuCommercialDocument">
+                <Columns>
 
-        <RadzenDataGrid AllowFiltering="true"
-                    AllowColumnResize="true"
-                    AllowAlternatingRows="true"
-                    FilterMode="FilterMode.Advanced"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    AllowSorting="true"
-                    PageSize="50"
-                    AllowPaging="true"
-                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    Data="@commercialdocumentList"
-                    TItem="CommercialDocument"
-                    ColumnWidth="300px"
-                    SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"
-                    @bind-Value="@selectedcommercialdocuments"
-                    CellContextMenu="@ShowContextMenuCommercialDocument">
-            <Columns>
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentNumber" Title="@GetName("DocumentNumber", new CommercialDocument() )" Width="108px" />
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="ShipDate" Title="Ship Date" FormatString="{0:MM/dd/yyyy}" Filterable="false" Width="150px" />
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="DeliveryDate" FormatString="{0:MM/dd/yyyy}" Title="Delivery Date" Filterable="false" Width="150px" />
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="Buyer.Name" Title="Customer" Width="200px" />
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentPrinted" Title="@GetName("DocumentPrinted", new CommercialDocument() )" Sortable="false" Width="180px" />
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="PrintingSatus.PickingTicketPrinted" Title="@GetName("PickingTicketPrinted", new SalesDocumentPrintingSatus() )" Sortable="false" Width="180px" />
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="PrintingSatus.LabelsPrinted" Title="@GetName("LabelsPrinted", new SalesDocumentPrintingSatus() )" Sortable="false" Width="180px" />
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="PrintingSatus.BillOfLandingPrinted" Title="@GetName("BillOfLandingPrinted", new SalesDocumentPrintingSatus() )" Sortable="false" Width="180px" />
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="ShippingStatusDocument.Name" Title="@GetName("ShippingStatusDocument", new CommercialDocument() )" Width="180px" Sortable="false" />
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="@nameof(CommercialDocument.FinanceStatusDocument)" Title="@GetName("FinanceStatusDocument", new CommercialDocument() )" Sortable="false" Width="180px" />
 
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentNumber" Title="@GetName("DocumentNumber", new CommercialDocument() )" Width="108px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="ShipDate" Title="Ship Date" FormatString="{0:MM/dd/yyyy}" Filterable="false" Width="150px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="DeliveryDate" FormatString="{0:MM/dd/yyyy}" Title="Delivery Date" Filterable="false" Width="150px" />   
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="Buyer.Name" Title="Customer" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentPrinted" Title="@GetName("DocumentPrinted", new CommercialDocument() )" Sortable="false" Width="180px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="PrintingSatus.PickingTicketPrinted" Title="@GetName("PickingTicketPrinted", new SalesDocumentPrintingSatus() )" Sortable="false" Width="180px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="PrintingSatus.LabelsPrinted" Title="@GetName("LabelsPrinted", new SalesDocumentPrintingSatus() )" Sortable="false" Width="180px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="PrintingSatus.BillOfLandingPrinted" Title="@GetName("BillOfLandingPrinted", new SalesDocumentPrintingSatus() )" Sortable="false" Width="180px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="ShippingStatusDocument.Name" Title="@GetName("ShippingStatusDocument", new CommercialDocument() )" Width="180px" Sortable="false" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="@nameof(CommercialDocument.FinanceStatusDocument)" Title="@GetName("FinanceStatusDocument", new CommercialDocument() )" Sortable="false" Width="180px" />
-
-            </Columns>
-        </RadzenDataGrid>
+                </Columns>
+            </RadzenDataGrid>
+            <div class="container-total">
+                <div class="item"><b>@GetName(nameof(CommercialDocument.FinanceSummary.TotalTaxes), new CommercialDocument()):@SumTotal("TotalTaxes")</b> </div>
+            <div class="item"><b>@GetName(nameof(CommercialDocument.FinanceSummary.TotalAmount), new CommercialDocument()):@SumTotal("TotalAmount")</b> </div>
+            <div class="item"><b>@GetName(nameof(CommercialDocument.FinanceSummary.TotalDiscounts), new CommercialDocument()):@SumTotal("TotalDiscounts")</b> </div>
+            <div class="item"><b>@GetName(nameof(CommercialDocument.FinanceSummary.TotalCosts), new CommercialDocument()):@SumTotal("TotalCosts")</b> </div>
+           
+            </div>
+       
     }
 </div>
 
@@ -169,5 +174,21 @@
         return Name;
     }
 
+   
+
+    public string SumTotal(string name)
+    {
+        CultureInfo format = new CultureInfo("en-US", false);
+        double value = 0;
+        if (commercialdocumentList != null)
+        {
+            if (name == nameof(CommercialDocument.FinanceSummary.TotalTaxes)) value = commercialdocumentList.Sum(i => i.FinanceSummary.TotalTaxes);
+            if (name == nameof(CommercialDocument.FinanceSummary.TotalDiscounts)) value = commercialdocumentList.Sum(i => i.FinanceSummary.TotalDiscounts);
+            if (name == nameof(CommercialDocument.FinanceSummary.TotalAmount)) value = commercialdocumentList.Sum(i => i.FinanceSummary.TotalAmount);
+            if (name == nameof(CommercialDocument.FinanceSummary.TotalCosts)) value = commercialdocumentList.Sum(i => i.FinanceSummary.TotalCosts);
+        }
+
+        return value.ToString("C2", format);
+    }
 
 }

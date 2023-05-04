@@ -19,6 +19,8 @@ namespace SunttelTradePointB.Server.Services.PaymentBkServices
         IMongoCollection<Payment> _PaymentCollection;
         IMongoCollection<PaymentMode> _PaymentModeCollection;
         IMongoCollection<PaymentVia> _PaymentViaCollection;
+        IMongoCollection<PaymentType> _PaymentTypeCollection;
+        IMongoCollection<PaymentStatus> _PaymentStatusCollection;
 
         /// <summary>
         /// Constructor
@@ -32,6 +34,8 @@ namespace SunttelTradePointB.Server.Services.PaymentBkServices
             _PaymentCollection = mongoDatabase.GetCollection<Payment>("Payments");
             _PaymentModeCollection = mongoDatabase.GetCollection<PaymentMode>("PaymentModes");
             _PaymentViaCollection = mongoDatabase.GetCollection<PaymentVia>("PaymentVias");
+            _PaymentTypeCollection = mongoDatabase.GetCollection<PaymentType>("PaymentTypes");
+            _PaymentStatusCollection = mongoDatabase.GetCollection<PaymentStatus>("PaymentStatuses");
 
         }
 
@@ -415,6 +419,262 @@ namespace SunttelTradePointB.Server.Services.PaymentBkServices
         }
         #endregion
 
+        #region Payment Type
+        /// <summary>
+        /// Returns a list of payment type with a filter like the parameter
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<PaymentType>? PaymentTypesList, string? ErrorDescription)> GetPaymentDocumentTypes(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filter = null)
+        {
+            try
+            {
+                string strFilter = filter == null ? "" : filter;
+                var skip = (page - 1) * perPage;
+
+                if (strFilter.Length > 0)
+                {
+                    var pipeline = new List<BsonDocument>();
+
+                    if (strFilter.ToLower() != "all")
+                    {
+                        pipeline.Add(
+                       new BsonDocument(
+                           "$match", new BsonDocument(
+                               "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{strFilter}/i"))
+                           )
+                       )
+                    );
+                    }
+
+                    pipeline.Add(
+                    new BsonDocument{
+                        {"$skip",  skip}
+                    }
+                    );
+
+                    pipeline.Add(
+                        new BsonDocument{
+                        {"$limit",  perPage}
+                        }
+                    );
+
+                    List<PaymentType> results = await _PaymentTypeCollection.Aggregate<PaymentType>(pipeline).ToListAsync();
+                    return (true, results, null);
+                }
+                else
+                {
+                    var paymentType = await _PaymentTypeCollection.Find<PaymentType>(new BsonDocument()).ToListAsync();
+
+                    if (paymentType == null || paymentType.Count == 0)
+                    {
+                        return (false, null, "Unpopulated Payment type");
+                    }
+                    else
+                    {
+                        return (true, paymentType, null);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves a particular payment type by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="paymentId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, PaymentType? PaymentType, string? ErrorDescription)> GetPaymentTypeById(string userId, string ipAddress, string squadId, string paymentId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(paymentId)))
+                );
+
+                var resultPrev = await _PaymentTypeCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                PaymentType result = resultPrev.Select(d => BsonSerializer.Deserialize<PaymentType>(d)).ToList()[0];
+
+                return (true, result, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, null, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Inserts / Updates an Payment type Item Type object
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="paymentType"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, PaymentType? PaymentType, string? ErrorDescription)> SavePaymentType(string userId, string ipAddress, string squadId, PaymentType paymentType)
+        {
+            try
+            {
+                if (paymentType.Id == null)
+                {
+                    paymentType.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterPaymentType = Builders<PaymentType>.Filter.Eq("_id", new ObjectId(paymentType.Id));
+                var updatePaymentType = new ReplaceOptions { IsUpsert = true };
+                var resultPaymentType = await _PaymentTypeCollection.ReplaceOneAsync(filterPaymentType, paymentType, updatePaymentType);
+
+                return (true, paymentType, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+        #endregion
+
+        #region Payment Status
+        /// <summary>
+        /// Returns a list of payment status with a filter like the parameter
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<PaymentStatus>? PaymentStatusesList, string? ErrorDescription)> GetPaymentStatuses(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filter = null)
+        {
+            try
+            {
+                string strFilter = filter == null ? "" : filter;
+                var skip = (page - 1) * perPage;
+
+                if (strFilter.Length > 0)
+                {
+                    var pipeline = new List<BsonDocument>();
+
+                    if (strFilter.ToLower() != "all")
+                    {
+                        pipeline.Add(
+                       new BsonDocument(
+                           "$match", new BsonDocument(
+                               "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{strFilter}/i"))
+                           )
+                       )
+                    );
+                    }
+
+                    pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                    );
+
+                    pipeline.Add(
+                    new BsonDocument{
+                        {"$skip",  skip}
+                    }
+                    );
+
+                    pipeline.Add(
+                        new BsonDocument{
+                        {"$limit",  perPage}
+                        }
+                    );
+
+                    List<PaymentStatus> results = await _PaymentStatusCollection.Aggregate<PaymentStatus>(pipeline).ToListAsync();
+                    return (true, results, null);
+                }
+                else
+                {
+                    var paymentStatus = await _PaymentStatusCollection.Find<PaymentStatus>(new BsonDocument()).ToListAsync();
+
+                    if (paymentStatus == null || paymentStatus.Count == 0)
+                    {
+                        return (false, null, "Unpopulated PaymentVias");
+                    }
+                    else
+                    {
+                        return (true, paymentStatus, null);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves a particular payment status by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="paymentId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, PaymentStatus? PaymentStatus, string? ErrorDescription)> GetPaymentStatusById(string userId, string ipAddress, string squadId, string paymentId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(paymentId)))
+                );
+
+                var resultPrev = await _PaymentStatusCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                PaymentStatus result = resultPrev.Select(d => BsonSerializer.Deserialize<PaymentStatus>(d)).ToList()[0];
+
+                return (true, result, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, null, ex.Message);
+            }
+        }
+        /// <summary>
+        /// Inserts / Updates an Payment status Item Type object
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="paymentStatus"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, PaymentStatus? PaymentStatus, string? ErrorDescription)> SavePaymentStatus(string userId, string ipAddress, string squadId, PaymentStatus paymentStatus)
+        {
+            try
+            {
+                if (paymentStatus.Id == null)
+                {
+                    paymentStatus.Id = ObjectId.GenerateNewId().ToString();
+                }
+
+                var filterPaymentStatus = Builders<PaymentStatus>.Filter.Eq("_id", new ObjectId(paymentStatus.Id));
+                var updatePaymentStatus = new ReplaceOptions { IsUpsert = true };
+                var resultPaymentStatus = await _PaymentStatusCollection.ReplaceOneAsync(filterPaymentStatus, paymentStatus, updatePaymentStatus);
+
+                return (true, paymentStatus, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+        #endregion
 
     }
 }

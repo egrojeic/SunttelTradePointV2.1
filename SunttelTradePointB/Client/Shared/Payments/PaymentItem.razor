@@ -1,6 +1,6 @@
 @page "/PaymentItem"
 @page "/PaymentItem/{PaymentItemId}"
-@page "/PaymentItem/{filter}/{PaymentItemId}"
+@page "/PaymentItem/{PaymentItemId}/{filter}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
@@ -15,7 +15,7 @@
 
 @inject ContextMenuService ContextMenuService
 
-@inject IJSRuntime Js
+@*@inject IJSRuntime Js*@
 
 <MessageSaveComponent isVisible="isVisible" message="@msg">
 </MessageSaveComponent>
@@ -361,28 +361,26 @@
     string SearcherValue = "";
     bool isVisible = false;
 
-    protected override void OnParametersSet()
-    {
-        StateHasChanged();
-    }
+   
 
     protected override async void OnInitialized()
     {
 
-        isLoading = true;
+        //isLoading = true;
 
         Load();
-        if (paymentItemId != null)
-        {
-            payment = await PaymentServices.GetPaymentById(paymentItemId);
-        }
-        Load();
-        documentTypeList = await PaymentServices.GetPaymentTypeList(0, 1, (filter != null ? filter : "all"));
-        docPaymentModeList = await PaymentServices.GetPaymentModesList(0, 1, (filter != null ? filter : "all"));
-        docPaymentViaList = await PaymentServices.GetPaymentViasList(0, 1, (filter != null ? filter : "all"));
-        //  PaymentStatustViatList =   await PaymentServices.GetPaymentStatusList(0,1,(filter != null ? filter : "all"));
-        isLoading = false;
-        StateHasChanged();
+        //if (paymentItemId != null)
+        //{
+        //    payment = await PaymentServices.GetPaymentById(paymentItemId);
+        //}
+        //Load();
+        //documentTypeList = await PaymentServices.GetPaymentTypeList(0, 1, (filter != null ? filter : "all"));
+        //docPaymentModeList = await PaymentServices.GetPaymentModesList(0, 1, (filter != null ? filter : "all"));
+        //docPaymentViaList = await PaymentServices.GetPaymentViasList(0, 1, (filter != null ? filter : "all"));
+        ////  PaymentStatustViatList =   await PaymentServices.GetPaymentStatusList(0,1,(filter != null ? filter : "all"));
+        //isLoading = false;
+        //Load();
+        //StateHasChanged();
     }
 
 
@@ -429,8 +427,6 @@
 
 
 
-
-
     public async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
         SearcherValue = arg.IdControl.ToString();
@@ -439,7 +435,7 @@
 
             if (SearcherValue == "Payer" && payment.DocumentType !=null)
             {
-                
+
                 PayerList = await PaymentServices.GetPayerList(arg.value, payment.DocumentType.IsASale);
             }
             if (SearcherValue == "Receiver" && payment.DocumentType != null)
@@ -470,8 +466,13 @@
 
     public void EventIdSelectionMenuItem(string name)
     {
-        Js.InvokeAsync<object>("open", name, "_blank");
-
+        try{
+            //Js.InvokeAsync<object>("open", name, "_blank");
+        }
+        catch
+        {
+            
+        }
     }
 
 

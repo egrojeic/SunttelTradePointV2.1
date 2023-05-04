@@ -1,6 +1,7 @@
 ﻿@page "/SalesDocuments"
 @page "/SalesDocuments/{_filterItems}"
 @using SunttelTradePointB.Shared.Sales;
+@using System.Globalization;
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
@@ -102,6 +103,21 @@
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="Notes" Title="Notes" Filterable="false" Sortable="false" Width="200px" />
             </Columns>
         </RadzenDataGrid>
+        <div class="container-total">
+            <div class="item">
+                @GetName(nameof(CommercialDocument.FinanceSummary.TotalTaxes), new CommercialDocument()):<b>@SumTotal("TotalTaxes")</b>
+            </div>
+            <div class="item">
+                @GetName(nameof(CommercialDocument.FinanceSummary.TotalAmount), new CommercialDocument()):<b>@SumTotal("TotalAmount")</b>
+            </div>
+            <div class="item">
+                @GetName(nameof(CommercialDocument.FinanceSummary.TotalDiscounts), new CommercialDocument()):<b>@SumTotal("TotalDiscounts")</b>
+            </div>
+            <div class="item">
+                @GetName(nameof(CommercialDocument.FinanceSummary.TotalCosts), new CommercialDocument()):<b>@SumTotal("TotalCosts")</b>
+            </div>
+
+        </div>
     }
 </div>
 
@@ -146,8 +162,8 @@
         isLoading = true;
         if (commercialDocumentType != null)
         {
-           // startingDate = new  DateTime(2019, 1, 1);
-            commercialdocumentList = await DocumentServices.GetCommercialDocumentList( startingDate, endDate, commercialDocumentType.Id, (_filterItems != null ? _filterItems : "all"));
+            // startingDate = new  DateTime(2019, 1, 1);
+            commercialdocumentList = await DocumentServices.GetCommercialDocumentList(startingDate, endDate, commercialDocumentType.Id, (_filterItems != null ? _filterItems : "all"));
 
         }
         isLoading = false;
@@ -156,7 +172,8 @@
         StateHasChanged();
     }
 
-    public void EventSearchAll(string value ){
+    public void EventSearchAll(string value)
+    {
         docsFilter = value;
     }
 
@@ -195,7 +212,25 @@
         StateHasChanged();
     }
 
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
 
+    public string SumTotal(string name)
+    {
+        CultureInfo format = new CultureInfo("en-US", false);
+        double value = 0;
+        if (commercialdocumentList != null)
+        {
+            if (name == nameof(CommercialDocument.FinanceSummary.TotalTaxes)) value = commercialdocumentList.Sum(i => i.FinanceSummary.TotalTaxes);
+            if (name == nameof(CommercialDocument.FinanceSummary.TotalDiscounts)) value = commercialdocumentList.Sum(i => i.FinanceSummary.TotalDiscounts);
+            if (name == nameof(CommercialDocument.FinanceSummary.TotalAmount)) value = commercialdocumentList.Sum(i => i.FinanceSummary.TotalAmount);
+            if (name == nameof(CommercialDocument.FinanceSummary.TotalCosts)) value = commercialdocumentList.Sum(i => i.FinanceSummary.TotalCosts);
 
+        }
 
+        return value.ToString("C2", format);
+    }
 }
