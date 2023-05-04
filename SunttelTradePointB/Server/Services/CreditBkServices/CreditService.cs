@@ -175,7 +175,7 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
 
         #region Credit Types
         /// <summary>
-        /// Saves an Credit document. If it doesn't exists, it'll be created
+        /// Returns a list of credit type with a filter like the parameter
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -207,10 +207,6 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
                     )
                     );
                 }
-                // Filtro por SquadId
-                pipeline.Add(
-                    new BsonDocument("$match", new BsonDocument("SquadId", squadId))
-                );
 
                 pipeline.Add(
                     new BsonDocument{
@@ -269,7 +265,7 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
         /// <param name="squadId"></param>
-        /// <param name="creditTypeId"></param>
+        /// <param name="creditType"></param>
         /// <returns></returns>
         public async Task<(bool IsSuccess, CreditType? CreditType, string? ErrorDescription)> SaveCreditType(string userId, string ipAddress, string squadId, CreditType creditType)
         {

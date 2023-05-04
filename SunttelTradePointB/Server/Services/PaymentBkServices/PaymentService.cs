@@ -46,12 +46,13 @@ namespace SunttelTradePointB.Server.Services.PaymentBkServices
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
         /// <param name="squadId"></param>
-        /// <param name="PaymentDate"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<Payment>? PaymentList, string? ErrorDescription)> GetPaymentsByDateSpan(string userId, string ipAddress, string squadId, DateTime PaymentDate, int? page = 1, int? perPage = 10, string? filter = null)
+        public async Task<(bool IsSuccess, List<Payment>? PaymentList, string? ErrorDescription)> GetPaymentsByDateSpan(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null)
         {
             try
             {
@@ -66,7 +67,8 @@ namespace SunttelTradePointB.Server.Services.PaymentBkServices
                             new BsonDocument{
                                 { "SquadId", squadId},
                                 { "PaymentDate", new BsonDocument{
-                                    { "$gte", PaymentDate }
+                                    { "$gte", startDate },
+                                    { "$lte", endDate }
                                 } }
                             }
                         }

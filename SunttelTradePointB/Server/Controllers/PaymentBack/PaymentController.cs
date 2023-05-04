@@ -29,19 +29,20 @@ namespace SunttelTradePointB.Server.Controllers.PaymentBack
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
-        /// <param name="PaymentDate"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetPaymentsByDateSpan")]
-        public async Task<IActionResult> GetPaymentsByDateSpan(string userId, string ipAddress, DateTime PaymentDate, int? page = 1, int? perPage = 10, string? filter = null)
+        public async Task<IActionResult> GetPaymentsByDateSpan(string userId, string ipAddress, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null)
         {
             var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
 
-            var response = await _payment.GetPaymentsByDateSpan(userId, ipAddress, squadId, PaymentDate, page, perPage, filter);
+            var response = await _payment.GetPaymentsByDateSpan(userId, ipAddress, squadId, startDate, endDate, page, perPage, filter);
 
             if (response.IsSuccess)
             {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
@@ -6,6 +7,8 @@ using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Client.Pages.SalesPages;
 using SunttelTradePointB.Server.Interfaces.SalesBkServices;
 using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.DataViews.BI;
+using SunttelTradePointB.Shared.DataViews.Profiles;
 using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.Sales;
 
@@ -16,6 +19,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
     /// </summary>
     public class CommercialDocumentsService : ICommercialDocument
     {
+        private readonly IMapper _mapper;
         IMongoCollection<SalesDocuments> _SalesDocumentsCollection;
         IMongoCollection<BusinessLine> _BusinessLineCollection;
         IMongoCollection<ShippingStatus> _ShippingStatusCollection;
@@ -28,12 +32,13 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         /// <summary>
         /// Constructor
         /// </summary>
-        public CommercialDocumentsService(IConfiguration config)
+        public CommercialDocumentsService(IConfiguration config, IMapper mapper)
         {
             var mongoClient = new MongoClient(config.GetConnectionString("MongoConectionString"));
             string DataBaseName = config["DatabaseMongo"];
 
             var mongoDatabase = mongoClient.GetDatabase(DataBaseName);
+            _mapper = mapper;
             _SalesDocumentsCollection = mongoDatabase.GetCollection<SalesDocuments>("CommercialDocuments");
             _BusinessLineCollection = mongoDatabase.GetCollection<BusinessLine>("BusinessLineDocuments");
             _ShippingStatusCollection = mongoDatabase.GetCollection<ShippingStatus>("ShippingStatusDocuments");
@@ -831,7 +836,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
         #endregion
 
-        #region Account Re
+        #region Account Receivable
         /// <summary>
         /// Retrieves a list of Commercial documents of the Squad for the date span and 
         /// Document type
@@ -907,6 +912,91 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
             }
         }
         #endregion
+
+        #region Sales BI
+        /// <summary>
+        /// Retrieves a list of Commercial documents of the Squad for the date span and 
+        /// Document type
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <param name="documentTypeId"></param>
+        /// <param name="filter"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<(bool IsSuccess, List<BISalesConsolidated>? CommercialDocuments, string? ErrorDescription)> GetSalesBI(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, string documentTypeId, string? filter = null, int? page = 1, int? perPage = 10)
+        {
+            try
+            {
+                string strNameFiler = filter == null ? "" : filter;
+                var skip = (page - 1) * perPage;
+
+                var pipeline = new List<BsonDocument>();
+
+                if (!(strNameFiler.ToLower() == "all" || strNameFiler.ToLower() == "todos" || strNameFiler.ToLower() == ""))
+                {
+                    pipeline.Add(
+                    new BsonDocument{
+                        { "$match",  new BsonDocument {
+                            { "$text",
+                                new BsonDocument {
+                                    { "$search",strNameFiler },
+                                    { "$language","english" },
+                                    { "$caseSensitive",false },
+                                    { "$diacriticSensitive",false }
+                                }
+                            }
+                        }}
+                    }
+                );
+                }
+
+                pipeline.Add(
+                    new BsonDocument{
+                        { "$match",
+                            new BsonDocument{
+                                { "DocumentType._id", new ObjectId(documentTypeId)},
+                                { "ShipDate", new BsonDocument{
+                                    { "$gte", startDate },
+                                    { "$lte", endDate }
+                                } }
+                            }
+                        }
+                    }
+                );
+
+                pipeline.Add(
+                    new BsonDocument{
+                        {"$skip",  skip}
+                    }
+                );
+
+                pipeline.Add(
+                    new BsonDocument{
+                        {"$limit",  perPage}
+                    }
+                );
+
+                List<CommercialDocument> resultsCommercialDocuments = await _SalesDocumentsCollection.Aggregate<CommercialDocument>(pipeline).ToListAsync();
+
+                //automapper
+                List<BISalesConsolidated> results = _mapper.Map<List<BISalesConsolidated>>(resultsCommercialDocuments);
+
+
+                return (true, results, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+        #endregion
+
 
     }
 }

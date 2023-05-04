@@ -1,4 +1,5 @@
 ﻿using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.DataViews.BI;
 using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.Sales;
 
@@ -221,6 +222,20 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <returns></returns>
         Task<(bool IsSuccess, List<CommercialDocument>? CommercialDocuments, string? ErrorDescription)> GetAccountReceivable(string userId, string ipAddress, string squadId, DateTime shippingDate, string? filter = null, int? page = 1, int? perPage = 10);
 
+        /// <summary>
+        /// Retrieves a list of the documents having the specified type and date span
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <param name="documentTypeId"></param>
+        /// <param name="filter"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<BISalesConsolidated>? CommercialDocuments, string? ErrorDescription)> GetSalesBI(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, string documentTypeId, string? filter = null, int? page = 1, int? perPage = 10);
 
 
 

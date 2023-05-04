@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SunttelTradePointB.Shared.DataViews.BI;
 using SunttelTradePointB.Shared.Sales;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace SunttelTradePointB.Shared.DataViews.Profiles
     {
         public BISalesProfile()
         {
-            CreateMap<CommercialDocument, BISalesProfile>();
+            CreateMap<CommercialDocument, BISalesConsolidated>();
         }
     }
 }
