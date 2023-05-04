@@ -16,6 +16,13 @@
 @inject TransactionalItemsService transactionalService;
 @inject ContextMenuService ContextMenuService
 
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+</style>
+
+
 @if (@AlertOpen)
 {
     <MessageSaveComponent isVisible="AlertOpen" message="@msg">
