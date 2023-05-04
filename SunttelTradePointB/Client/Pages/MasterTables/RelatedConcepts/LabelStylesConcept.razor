@@ -50,7 +50,7 @@
                     </label>
                 </div>
                 <div style="position:relative;">
-                    <select class="form-control" @bind="dataMaxUsedFor" placeholder="Edit value">
+                    <select class="form-control info-text-size" @bind="dataMaxUsedFor" placeholder="Edit value">
                         <option value="@LabelPurpose.Provider">@LabelPurpose.Provider.ToString()</option>
                         <option value="@LabelPurpose.Customer">@LabelPurpose.Customer.ToString()</option>
                         <option value="@LabelPurpose.Inventory">@LabelPurpose.Inventory.ToString()</option>
@@ -60,7 +60,7 @@
             </div>
 
             <div class="detailsTitleContainer">
-                <h3 class="subTitleDetailForm">@GetName( "UsedFor", new LabelField())</h3>
+                <h3 class="subTitleDetailForm ">@GetName( "UsedFor", new LabelField())</h3>
             </div>
             <div class="flex-horizontal-center ">
                 <DataGrid TParameter="LabelPurposeView"
@@ -80,31 +80,31 @@
         <div class="flex-horizontal-center">
             <div class="grid-columns-2 box-shadow-mode width-page1">
 
-                <div><label><strong class="c-red">*</strong> @GetName( "Rotation", new DataMaxLabelLineSpec())</label> </div>
-                <div><input @bind-value="dataMaxLabelLineSpec.Rotation" class="form-control" placeholder="Edit value" /></div>
-                <div><label><strong class="c-red">*</strong> @GetName( "Font", new DataMaxLabelLineSpec())</label> </div>
-                <div><input @bind-value="dataMaxLabelLineSpec.Font" class="form-control" placeholder="Edit value" /></div>
-                <div><label><strong class="c-red">*</strong> @GetName( "Width", new DataMaxLabelLineSpec())</label> </div>
-                <div><input @bind-value="dataMaxLabelLineSpec.Width" class="form-control" placeholder="Edit value" /></div>
-                <div><label><strong class="c-red">*</strong> @GetName( "Height", new DataMaxLabelLineSpec())</label> </div>
-                <div><input @bind-value="dataMaxLabelLineSpec.Height" class="form-control" placeholder="Edit value" /></div>
-                <div><label><strong class="c-red">*</strong> @GetName( "FontSize", new DataMaxLabelLineSpec())</label> </div>
-                <div><input @bind-value="dataMaxLabelLineSpec.FontSize" class="form-control" placeholder="Edit value" /></div>
-                <div><label><strong class="c-red">*</strong> @GetName( "Row", new DataMaxLabelLineSpec())</label> </div>
-                <div><input @bind-value="dataMaxLabelLineSpec.Row" class="form-control" placeholder="Edit value" /></div>
-                <div><label><strong class="c-red">*</strong> @GetName( "GGColumn", new DataMaxLabelLineSpec())</label> </div>
-                <div><input @bind-value="dataMaxLabelLineSpec.GGColumn" class="form-control" placeholder="Edit value" /></div>
-                <div><label><strong class="c-red">*</strong> @GetName( "IIIColumn", new DataMaxLabelLineSpec())</label> </div>
-                <div><input @bind-value="dataMaxLabelLineSpec.IIIColumn" class="form-control" placeholder="Edit value" /></div>
-                <div><label><strong class="c-red">*</strong> @GetName( "JColumn", new DataMaxLabelLineSpec())</label> </div>
-                <div><input @bind-value="dataMaxLabelLineSpec.JColumn" class="form-control" placeholder="Edit value" /></div>
+                <div><label class="info-text-size"><strong class="c-red">*</strong> @GetName( "Rotation", new DataMaxLabelLineSpec())</label> </div>
+                <div><input @bind-value="dataMaxLabelLineSpec.Rotation" class="form-control info-text-size" placeholder="Edit value" /></div>
+                <div><label class="info-text-size" ><strong class="c-red">*</strong> @GetName( "Font", new DataMaxLabelLineSpec())</label> </div>
+                <div><input @bind-value="dataMaxLabelLineSpec.Font" class="form-control info-text-size" placeholder="Edit value" /></div>
+                <div><label class="info-text-size" ><strong class="c-red">*</strong> @GetName( "Width", new DataMaxLabelLineSpec())</label> </div>
+                <div><input @bind-value="dataMaxLabelLineSpec.Width" class="form-control info-text-size" placeholder="Edit value" /></div>
+                <div><label class="info-text-size" ><strong class="c-red">*</strong> @GetName( "Height", new DataMaxLabelLineSpec())</label> </div>
+                <div><input @bind-value="dataMaxLabelLineSpec.Height" class="form-control info-text-size" placeholder="Edit value" /></div>
+                <div><label class="info-text-size" ><strong class="c-red">*</strong> @GetName( "FontSize", new DataMaxLabelLineSpec())</label> </div>
+                <div><input @bind-value="dataMaxLabelLineSpec.FontSize" class="form-control info-text-size" placeholder="Edit value" /></div>
+                <div><label class="info-text-size" ><strong class="c-red">*</strong> @GetName( "Row", new DataMaxLabelLineSpec())</label> </div>
+                <div><input @bind-value="dataMaxLabelLineSpec.Row" class="form-control info-text-size" placeholder="Edit value" /></div>
+                <div><label class="info-text-size"><strong class="c-red">*</strong> @GetName( "GGColumn", new DataMaxLabelLineSpec())</label> </div>
+                <div><input @bind-value="dataMaxLabelLineSpec.GGColumn" class="form-control info-text-size" placeholder="Edit value" /></div>
+                <div><label class="info-text-size" ><strong class="c-red">*</strong> @GetName( "IIIColumn", new DataMaxLabelLineSpec())</label> </div>
+                <div><input @bind-value="dataMaxLabelLineSpec.IIIColumn" class="form-control info-text-size" placeholder="Edit value" /></div>
+                <div><label class="info-text-size"><strong class="c-red">*</strong> @GetName( "JColumn", new DataMaxLabelLineSpec())</label> </div>
+                <div><input @bind-value="dataMaxLabelLineSpec.JColumn" class="form-control info-text-size" placeholder="Edit value" /></div>
 
             </div>
             <div class="grid-columns-2 box-shadow-mode width-page1">
-                <div><label><strong class="c-red">*</strong> @GetName( "Name", new LabelField())</label> </div>
-                <div><input @bind-value="dataMaxFieldInLabel.Name" class="form-control" placeholder="Edit value" /></div>
+                <div><label class="info-text-size"><strong class="c-red">*</strong> @GetName( "Name", new LabelField())</label> </div>
+                <div><input @bind-value="dataMaxFieldInLabel.Name" class="form-control info-text-size" placeholder="Edit value" /></div>
                 <div>
-                    <label>
+                    <label class="info-text-size">
                         @GetName( "UsedFor", new LabelField())
                     </label>
                 </div>

@@ -17,11 +17,11 @@
 }
 
 <form>
-    <div class="content-new-packing-recipe" style=' display:@(!modeEdit?"block":"none"); };'>
+    <div class="content-new-packing-recipe info-text-size" style=' display:@(!modeEdit?"block":"none"); };'>
 
         @if (@pageView == "AssemblyRecipeItems")
         {
-           
+
 
         }
 
@@ -33,7 +33,7 @@
 
             <div class="flex-horizontal-center">
                 <div class="grid-columns-2 box-shadow-mode">
-                    <div><label>@GetName( "ListOfMaterials", new PackRecipeItem())</label></div>
+                    <div><label class="info-text-size">@GetName( "ListOfMaterials", new PackRecipeItem())</label></div>
 
                     <InputTextSelector3 TItem="Concept"
                                     Id="ListOfMaterials"
@@ -45,11 +45,11 @@
                     </InputTextSelector3>
 
                     <div>
-                        <label>
+                        <label class="info-text-size">
                             @GetName( "Quantity", new MaterialRecipeItem())
                         </label>
                     </div>
-                    <div><input type="number" @bind="materialRecipeItemsAssembly.Quantity" class="form-control" style="border-color:gray;" maxlength="4" min="1" /></div>
+                    <div><input type="number" @bind="materialRecipeItemsAssembly.Quantity" class="form-control info-text-size" style="border-color:gray;" maxlength="4" min="1" /></div>
 
                     <div></div>
                     <div class="flex-horizontal-end">
@@ -90,161 +90,161 @@
                 <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
                 <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
             </TabAnimationSettings>
-            <TabItems>                              
+            <TabItems>
 
-                        <div class="container-menu-g">
-                            <nav>
+                <div class="container-menu-g">
+                    <nav>
                         <button type="button" @onclick='()=>HomePage("AssemblyRecipeItems")' class="general-menu-button" style="text-align:center;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
-                                <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+                        <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
                             <SplitButtonEvents ItemSelected="ItemSelected">
-                                    </SplitButtonEvents>
-                                    <DropDownMenuItems>
-                                        <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
-                                        <DropDownMenuItem Separator="true"></DropDownMenuItem>
-                                        <DropDownMenuItem Text="Add" IconCss="fa-sharp fa-solid fa-circle-plus"></DropDownMenuItem>
-                                        <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
-                                        <DropDownMenuItem Separator="true"></DropDownMenuItem>
-                                        <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
-                                    </DropDownMenuItems>
-                                </SfSplitButton>
-                            </nav>
-                        </div>
+                            </SplitButtonEvents>
+                            <DropDownMenuItems>
+                                <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+                                <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                                <DropDownMenuItem Text="Add" IconCss="fa-sharp fa-solid fa-circle-plus"></DropDownMenuItem>
+                                <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                                <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                                <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+                            </DropDownMenuItems>
+                        </SfSplitButton>
+                    </nav>
+                </div>
 
-                        <div class="grid-columns-header ">
-                            <div>
-                                <label>
-                                    @GetName( "ItemComponent", new PackRecipeItem())
-                                </label>
-                            </div>
-
-
-                            <InputTextSelector3 TItem="Concept"
-                                                Id="ItemComponent"
-                                                caption="@(itemComponent != null ? itemComponent.Name : "")"
-                                                EventSearcherValueAndId="EventSearcherValueAndId"
-                                                EventIdSelectionAndId="SelectionMade"
-                                                EventClosed="ClosedInputText"
-                                                Items="itemComponents">
-
-                            </InputTextSelector3>
-
-                            <div>
-                                <label>
-                                    @GetName( "RecipeQualityModifier", new PackRecipeItem())
-                                </label>
-                            </div>
-
-                            <InputTextSelector3 TItem="ProductRecipeQualityModifier"
-                                                Id="RecipeQualityModifier"
-                                                caption="@(recipeQualityModifier != null ? recipeQualityModifier.Name : "")"
-                                                EventSearcherValueAndId="EventSearcherValueAndId"
-                                                EventIdSelectionAndId="SelectionMade"
-                                                EventClosed="ClosedInputText"
-                                                Items="recipeQualityModifiers">
-
-                            </InputTextSelector3>
-
-                            <div><label>@GetName( "Quantity",new MaterialRecipeItem())</label></div>
-                            <div><input type="number" @bind="assemblyRecipeItem.Quantity" class="form-control" style="border-color:gray;" required /></div>
-                        </div>
-
-                        <SfTab Height="400px" HeaderPlacement="HeaderPosition.Left">
-                            <TabAnimationSettings>
-                                <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
-                                <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
-                            </TabAnimationSettings>
-                            <TabItems>
-                                <TabItem>
-                                    <ChildContent>
-                                        <TabHeader Text="@GetName( "ListOfMaterials", new PackRecipeItem())"></TabHeader>
-                                    </ChildContent>
-                                    <ContentTemplate>
-                                        <div class="flex-horizontal-center">
-                                            <div class="detailsTitleContainer">
-                                                <h3 class="subTitleDetailForm">@GetName( "ListOfMaterials", new PackRecipeItem())</h3>
-                                                <svg @onclick='()=>ClosedAdd("ListOfMaterialsAssembly")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
-                                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                                                </svg>
-                                            </div>
+                <div class="grid-columns-header ">
+                    <div>
+                        <label class="info-text-size">
+                            @GetName( "ItemComponent", new PackRecipeItem())
+                        </label>
+                    </div>
 
 
-                                            @if (isLoading)
-                                            {
+                    <InputTextSelector3 TItem="Concept"
+                                        Id="ItemComponent"
+                                        caption="@(itemComponent != null ? itemComponent.Name : "")"
+                                        EventSearcherValueAndId="EventSearcherValueAndId"
+                                        EventIdSelectionAndId="SelectionMade"
+                                        EventClosed="ClosedInputText"
+                                        Items="itemComponents">
 
-                                                <WaitingProcessIndicator loadingTopic="Transactional Items"></WaitingProcessIndicator>
+                    </InputTextSelector3>
 
-                                            }
-                                            else
-                                            {
-                                                if (materialsRecipeItemsAssembly == null) materialsRecipeItemsAssembly = new();
+                    <div>
+                        <label class="info-text-size">
+                            @GetName( "RecipeQualityModifier", new PackRecipeItem())
+                        </label>
+                    </div>
 
-                                                <RadzenDataGrid Data="@materialsRecipeItemsAssembly"
-                                                            TItem="MaterialRecipeItem"
-                                                            CellContextMenu="@ShowContextMenuWithContent"
-                                                            AllowFiltering="true"
-                                                            AllowColumnResize="true"
-                                                            AllowAlternatingRows="true"
-                                                            FilterMode="FilterMode.Advanced"
-                                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                                            AllowSorting="true"
-                                                            PageSize="20"
-                                                            AllowPaging="true"
-                                                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                                                            ShowPagingSummary="true"
-                                                            SelectionMode="DataGridSelectionMode.Single"
-                                                            LogicalFilterOperator="LogicalFilterOperator.Or"
-                                                            PageNumbersCount="100">
+                    <InputTextSelector3 TItem="ProductRecipeQualityModifier"
+                                        Id="RecipeQualityModifier"
+                                        caption="@(recipeQualityModifier != null ? recipeQualityModifier.Name : "")"
+                                        EventSearcherValueAndId="EventSearcherValueAndId"
+                                        EventIdSelectionAndId="SelectionMade"
+                                        EventClosed="ClosedInputText"
+                                        Items="recipeQualityModifiers">
 
-                                                    <Columns>
+                    </InputTextSelector3>
+
+                    <div><label class="info-text-size">@GetName( "Quantity",new MaterialRecipeItem())</label></div>
+                    <div><input type="number" @bind="assemblyRecipeItem.Quantity" class="form-control info-text-size" style="border-color:gray;" required /></div>
+                </div>
+
+                <SfTab Height="400px" HeaderPlacement="HeaderPosition.Left">
+                    <TabAnimationSettings>
+                        <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
+                        <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
+                    </TabAnimationSettings>
+                    <TabItems>
+                        <TabItem>
+                            <ChildContent>
+                                <TabHeader Text="@GetName( "ListOfMaterials", new PackRecipeItem())"></TabHeader>
+                            </ChildContent>
+                            <ContentTemplate>
+                                <div class="flex-horizontal-center">
+                                    <div class="detailsTitleContainer">
+                                        <h3 class="subTitleDetailForm">@GetName( "ListOfMaterials", new PackRecipeItem())</h3>
+                                        <svg @onclick='()=>ClosedAdd("ListOfMaterialsAssembly")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                        </svg>
+                                    </div>
+
+
+                                    @if (isLoading)
+                                    {
+
+                                        <WaitingProcessIndicator loadingTopic="Transactional Items"></WaitingProcessIndicator>
+
+                                    }
+                                    else
+                                    {
+                                        if (materialsRecipeItemsAssembly == null) materialsRecipeItemsAssembly = new();
+
+                                        <RadzenDataGrid Data="@materialsRecipeItemsAssembly"
+                                                    TItem="MaterialRecipeItem"
+                                                    CellContextMenu="@ShowContextMenuWithContent"
+                                                    AllowFiltering="true"
+                                                    AllowColumnResize="true"
+                                                    AllowAlternatingRows="true"
+                                                    FilterMode="FilterMode.Advanced"
+                                                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                                    AllowSorting="true"
+                                                    PageSize="20"
+                                                    AllowPaging="true"
+                                                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                                    ShowPagingSummary="true"
+                                                    SelectionMode="DataGridSelectionMode.Single"
+                                                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                                                    PageNumbersCount="100">
+
+                                            <Columns>
                                                 <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="Material.Name" Title="@GetName( "Material", new MaterialRecipeItem())" Frozen="false" Width="80px" />
                                                 <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="Quantity" Filterable="true" Title="@GetName( "Quantity", new MaterialRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
 
 
-                                                    </Columns>
-                                                </RadzenDataGrid>
+                                            </Columns>
+                                        </RadzenDataGrid>
 
 
 
-                                            }
+                                    }
 
 
-                                        </div>
-
-                                    </ContentTemplate>
-                                </TabItem>
-                                @*      <TabItem>
-                                <ChildContent>
-                                <TabHeader Text="@GetName( "ComponentItemRecipe", new PackRecipeItem())"></TabHeader>
-                                </ChildContent>
-                                <ContentTemplate>
-
-                                <div class="flex-horizontal-center">
-                                <div class="detailsTitleContainer">
-                                <h3 class="subTitleDetailForm">@GetName( "ComponentItemRecipe", new PackRecipeItem())</h3>
-                                <svg @onclick='()=>ClosedAdd("ComponentItemRecipeAssembly")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
-                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                                </svg>
                                 </div>
 
-                                @if (materialRecipeItemsAssembly == null) { materialRecipeItemsAssembly = new List<MaterialRecipeItem>(); }
+                            </ContentTemplate>
+                        </TabItem>
+                        @*      <TabItem>
+                        <ChildContent>
+                        <TabHeader Text="@GetName( "ComponentItemRecipe", new PackRecipeItem())"></TabHeader>
+                        </ChildContent>
+                        <ContentTemplate>
+
+                        <div class="flex-horizontal-center">
+                        <div class="detailsTitleContainer">
+                        <h3 class="subTitleDetailForm">@GetName( "ComponentItemRecipe", new PackRecipeItem())</h3>
+                        <svg @onclick='()=>ClosedAdd("ComponentItemRecipeAssembly")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                        </svg>
+                        </div>
+
+                        @if (materialRecipeItemsAssembly == null) { materialRecipeItemsAssembly = new List<MaterialRecipeItem>(); }
 
 
-                                <DataGrid TParameter="MaterialRecipeItem"
-                                EventCallbackMenu="OnContextMenuClick"
-                                parameterList="materialRecipeItemsAssembly"
-                                GridColumnsList="gridColumnListListOfMaterials"
-                                Width="100%">
-                                </DataGrid>
-                                </div>
-                                </ContentTemplate>
-                                </TabItem>*@
-                            </TabItems>
-                        </SfTab>
+                        <DataGrid TParameter="MaterialRecipeItem"
+                        EventCallbackMenu="OnContextMenuClick"
+                        parameterList="materialRecipeItemsAssembly"
+                        GridColumnsList="gridColumnListListOfMaterials"
+                        Width="100%">
+                        </DataGrid>
+                        </div>
+                        </ContentTemplate>
+                        </TabItem>*@
+                    </TabItems>
+                </SfTab>
 
-                   
+
             </TabItems>
         </SfTab>
 
@@ -300,7 +300,7 @@
 
     InputTextSelector? ReferInputTextSelector;
 
-   
+
 
     protected override void OnInitialized()
     {
@@ -338,7 +338,7 @@
                 StateHasChanged();
                 Msg("Added", 0);
             }
-           
+
 
         }
         if (tile == "Save as...")
@@ -381,7 +381,7 @@
 
 
         }
-        
+
 
         StateHasChanged();
 
@@ -418,7 +418,7 @@
 
                 Msg("Added", 0);
             }
-            
+
 
         }
         StateHasChanged();
@@ -498,8 +498,8 @@
                 }
             }
 
-        }      
-       
+        }
+
         if (arg.selectionId == "ItemComponent")
         {
             var data = await transactionalService.GetTransactionalItemsList(1, 50, arg.value);
@@ -541,7 +541,7 @@
 
 
     public void SelectionMade(Concept arg)
-    {      
+    {
         if (SearcherValueMode == "ListOfMaterials")
         {
             conceptMaterialAssembly = arg;

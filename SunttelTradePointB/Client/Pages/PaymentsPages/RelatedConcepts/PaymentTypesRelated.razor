@@ -46,9 +46,8 @@
 
     <div class="flex-horizontal-center">
         <div class="grid-mode-row grid-colum">
-
-            <div><label>@GetName("Name",new BasicConcept())</label></div>
-            <InputTextDisable Enable="true" TypeInt="false" style="font-size:15px; font-weight:none; " @bind-ValueString="@documentaPaymentType.Name"></InputTextDisable>
+            <div><label class="info-text-size">@GetName("Name",new BasicConcept())</label></div>
+            <InputTextDisable Enable="true" TypeInt="false" style=" font-weight:none; " @bind-ValueString="@documentaPaymentType.Name"></InputTextDisable>
         </div>
     </div>
 </form>

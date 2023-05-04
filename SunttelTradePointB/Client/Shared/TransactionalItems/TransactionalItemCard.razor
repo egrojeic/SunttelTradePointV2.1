@@ -66,31 +66,31 @@
     <div class="grid-columns-2-img">
         <div class="grid-columns-header">
             <div>
-                <label for="name">Name</label>
+                <label class="info-text-size" for="name">Name</label>
             </div>
             <div>
-                <input type="text" class="form-control" id="name" @bind-value="@currentItem.Name" autocomplete="off" />
+                <input type="text" class="form-control info-text-size" id="name" @bind-value="@currentItem.Name" autocomplete="off" />
             </div>
 
             <div id="shortCutCodeGroup">
-                <label for="shortcutCode">Identifier Code</label>
+                <label class="info-text-size" for="shortcutCode">Identifier Code</label>
             </div>
             <div>
-                <input type="text" class="form-control" @bind="currentItem.Code" autocomplete="off" />
+                <input type="text" class="form-control info-text-size" @bind="currentItem.Code" autocomplete="off" />
             </div>
-            <div><label for="shortcutCode">@GetName("Status", new Concept())</label></div>
+            <div><label class="info-text-size" for="shortcutCode">@GetName("Status", new Concept())</label></div>
             <div @onclick="SetStatus">
-                <label id="statusConcept" class="style-status" style="background-color:@colorStatus;">
+                <label id="statusConcept" class="style-status info-text-size" style="background-color:@colorStatus;">
                     @(currentItem.Status != null ? currentItem.Status?.Name : "")
                 </label>
             </div>
             <div id="shortCutCodeGroup">
-                <label for="shortcutCode">@GetName("ReferenceCost", new TransactionalItem())</label>
+                <label for="shortcutCode" class="info-text-size">@GetName("ReferenceCost", new TransactionalItem())</label>
             </div>
             <div>
-                <input type="number" class="form-control" @bind="currentItem.ReferenceCost" autocomplete="off" />
+                <input type="number" class="form-control info-text-size" @bind="currentItem.ReferenceCost" autocomplete="off" />
             </div>
-            <div><label>@GetName("TypeOfConcept", new Concept())</label></div>
+            <div><label class="info-text-size">@GetName("TypeOfConcept", new Concept())</label></div>
             <div>
                 <InputTextSelector3 TItem="ConceptType"
                                     caption="@(currentItem.TypeOfConcept != null ? currentItem.TypeOfConcept.Name : "")"

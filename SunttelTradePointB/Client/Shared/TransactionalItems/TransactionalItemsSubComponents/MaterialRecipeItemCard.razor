@@ -7,12 +7,12 @@
 
     <div style="display:@(Page2?"block":"none");">
         <br />
-        <h4>  @GetName( "ListOfMaterials", new PackingSpecs())</h4>
+        <h4 class="info-text-size">  @GetName( "ListOfMaterials", new PackingSpecs())</h4>
         <br />
         <div id="add-recipe">
             <div class="grid-columns-4">
                 <div>
-                    <label>
+                    <label class="info-text-size">
                         @GetName( "Material", new MaterialRecipeItem())
                     </label>
                 </div>
@@ -36,8 +36,8 @@
                     </InputTextSelector>
                 </div>
 
-                <div><label>@GetName( "Quantity",new MaterialRecipeItem())</label></div>
-                <div><input type="number" @bind="packRecipeItem.Quantity" class="form-control" style="border-color:gray;" required /></div>
+                <div><label class="info-text-size">@GetName( "Quantity",new MaterialRecipeItem())</label></div>
+                <div><input type="number" @bind="packRecipeItem.Quantity" class="form-control info-text-size" style="border-color:gray;" required /></div>
 
             </div>
             <div class="flex-horizontal-end item">

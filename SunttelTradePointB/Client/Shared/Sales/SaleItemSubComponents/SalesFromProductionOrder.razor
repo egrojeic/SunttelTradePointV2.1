@@ -7,8 +7,8 @@
 @inject TransactionalItemsService transactItemsService;
 @inject NavigationManager Navigation
 
-<PageTitleComponent Title="Sale item" IconName="commercialActivities.png"
-                    Description="With this tool you can create and edit item Sales">
+<PageTitleComponent Title="Sales From Production Order" IconName="commercialActivities.png"
+                    Description="With this tool you can create and edit item sales from production order">
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
@@ -22,7 +22,7 @@
     @if (isLoading)
     {
 
-        <WaitingProcessIndicator loadingTopic="Characteristic Items"></WaitingProcessIndicator>
+        <WaitingProcessIndicator loadingTopic="Sales From Production Order Items"></WaitingProcessIndicator>
 
     }
     else

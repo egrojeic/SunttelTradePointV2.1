@@ -15,12 +15,12 @@
 <div class="control-section">
     <div class="row">
         <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
-            <SfCard>
+            <SfCard CssClass="info-text-size" >
                 <CardHeader Title="Add a new shipping info" />
                 <CardContent>
                     <form onsubmit="event.preventDefault();">
                         <div class="form-group row">
-                            <label>@lblSender*:</label>
+                            <label class="info-text-size">@lblSender*:</label>
                             <div class="col">
 
                                 <InputTextSelector3 TItem="EntityActor"
@@ -37,7 +37,7 @@
 
 
                         <div class="form-group py-2">
-                            <label>@lblCarrier*:</label>
+                            <label class="info-text-size">@lblCarrier*:</label>
                             <div class="col">
                                 <InputTextSelector3 Id="Carrier"
                                                     TItem="EntityActor"
@@ -50,33 +50,33 @@
                         </div>
 
                         <div class="form-group py-2">
-                            <label>@lblDeliveryAddress*:</label>
+                            <label class="info-text-size">@lblDeliveryAddress*:</label>
                             <div class="col">
                                 <input type="text" class="form-control" placeholder="Address" @bind-value="@deliver.Name" required />
                             </div>
                         </div>
                         <div class="form-group py-2">
-                            <label>@lblCutOff24Hours*:</label>
+                            <label class="info-text-size">@lblCutOff24Hours*:</label>
                             <div class="col">
-                                <input type="number" class="form-control" placeholder="Cut of 24 hours" @bind-value="@shippingInfo.CutOff24Hour" required />
+                                <input type="number" class="form-control info-text-size" placeholder="Cut of 24 hours" @bind-value="@shippingInfo.CutOff24Hour" required />
                             </div>
                         </div>
                         <div class="form-group py-2">
-                            <label>@lblCutOffMinute*:</label>
+                            <label class="info-text-size">@lblCutOffMinute*:</label>
                             <div class="col">
-                                <input type="number" class="form-control" placeholder="Cut of minute" @bind-value="@shippingInfo.CutOffMinute" required />
+                                <input type="number" class="form-control info-text-size" placeholder="Cut of minute" @bind-value="@shippingInfo.CutOffMinute" required />
                             </div>
                         </div>
                         <div class="form-group py-2">
-                            <label>@lblDalayTimeDays*:</label>
+                            <label class="info-text-size">@lblDalayTimeDays*:</label>
                             <div class="col">
-                                <input type="number" class="form-control" placeholder="Time Days" @bind-value="@shippingInfo.DelayTimeDays" required />
+                                <input type="number" class="form-control info-text-size" placeholder="Time Days" @bind-value="@shippingInfo.DelayTimeDays" required />
                             </div>
                         </div>
 
 
                         <div class="form-group py-2">
-                            <label>@lblPalletTypeShipping*:</label>
+                            <label class="info-text-size">@lblPalletTypeShipping*:</label>
                             <div class="col">
 
                                 <InputTextSelector3 TItem="PalletType"
@@ -91,7 +91,7 @@
                             </div>
                         </div>
                         <div class="form-group py-2">
-                            <label>Days*:</label>
+                            <label class="info-text-size">Days*:</label>
                             <div class="col">
                                 <SfCheckBox Label="Monday" @bind-Checked="isCheckedMonday"></SfCheckBox>
                                 <SfCheckBox Label="Tuesday" @bind-Checked="isCheckedTuesday"></SfCheckBox>

@@ -22,10 +22,10 @@
                 <CardContent>
                     <form onsubmit="event.preventDefault();">
                         <div class="form-group row">
-                            <label class="control-label col-md-12">@lblName*: </label>
+                            <label class="control-label col-md-12 info-text-size">@lblName*: </label>
                             <div class="col">
                                 <SfTooltip ID="Tooltip" Target="#name" Content="@ContentName">
-                                    <input id="name" type="text" class="form-control" @bind-value="@address.Name" required />
+                                    <input id="name" type="text" class="form-control info-text-size" @bind-value="@address.Name" required />
                                 </SfTooltip>
                             </div>
                         </div>

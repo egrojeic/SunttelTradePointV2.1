@@ -141,7 +141,7 @@
 
             <div><label class="sub-tile">@GetName("DeliveryAddress",new CommercialDocument())</label></div>
             <div>
-                <select @onchange="SelectItemDeliveryAddress" class="select-style">
+                <select @onchange="SelectItemDeliveryAddress" class="select-style info-text-size">
 
 
                     @if (addressList != null && addressList.Count() > 0)
@@ -170,7 +170,7 @@
 
             <div><label class="sub-tile">@GetName("Carrier",new CommercialDocument())</label></div>
             <div>
-                <select @onchange="SelectItemVendorWarehous" class="select-style">
+                <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size">
 
                     @if (carrierList != null && carrierList.Count() > 0)
                     {
@@ -192,7 +192,7 @@
 
             <div><label class="sub-tile">@GetName("VendorWarehouse",new CommercialDocument())</label></div>
             <div>
-                <select @onchange="SelectItemVendorWarehous" class="select-style">
+                <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size">
 
                     @if (vendorWarehouseList != null && vendorWarehouseList.Count() > 0)
                     {
@@ -211,7 +211,7 @@
 
             <div><label class="sub-tile">@GetName("BuyerWarehouse",new CommercialDocument())</label></div>
             <div>
-                <select @onchange="SelectItemVendorWarehous" class="select-style">
+                <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size">
 
                     @if (buyerWarehouseList != null && buyerWarehouseList.Count() > 0)
                     {
@@ -230,7 +230,7 @@
 
             <div><label class="sub-tile">@GetName("BusinessLineDoc",new CommercialDocument())</label></div>
             <div>
-                <select @onchange="SelectItemBusinessLineDoc" class="select-style">
+                <select @onchange="SelectItemBusinessLineDoc" class="select-style info-text-size">
 
                     @if (businessLineDocList != null && businessLineDocList.Count() > 0)
                     {

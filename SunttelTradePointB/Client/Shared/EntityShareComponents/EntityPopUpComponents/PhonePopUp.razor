@@ -11,21 +11,21 @@
 <div class="control-section">
     <div class="row">
         <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
-            <SfCard>
+            <SfCard CssClass="info-text-size">
                 <CardHeader Title="Add a new number phone" />
                 <CardContent>
                     <form onsubmit="event.preventDefault();">
                         <label class="control-label col-md-12">@lblPhone*: </label>
                         <div class="form-group row">
-                            <div class="form-group col-4">
+                            <div class="form-group col-4 ">
                                 <SfTooltip Target="#zoneCode" Content="@ContentCode">
-                                    <input id="zoneCode" type="number" class="form-control" min="1" @bind-value="phoneNumber.ZoneCode" required/>
+                                    <input id="zoneCode" type="number" class="form-control info-text-size" min="1" @bind-value="phoneNumber.ZoneCode" required />
                                 </SfTooltip>
                             </div>
 
                             <div class="form-group col-8">
                                 <SfTooltip Target="#phoneNumber" Content="@ContentPhone">
-                                    <input id="phoneNumber" type="number" class="form-control" @bind-value="phoneNumber.Number" required/>
+                                    <input id="phoneNumber" type="number" class="form-control info-text-size" @bind-value="phoneNumber.Number" required />
                                 </SfTooltip>
                             </div>
                         </div>                        
@@ -34,7 +34,7 @@
                             <label class="control-label col-md-12">@lblDescription*: </label>
                             <div class="col">
                                 <SfTooltip Target="#description" Content="@ContentDescription">
-                                    <input id="description" type="text" class="form-control" @bind-value="phoneNumber.Description" required/>
+                                    <input id="description" type="text" class="form-control info-text-size" @bind-value="phoneNumber.Description" required />
                                 </SfTooltip>
                             </div>
                         </div>

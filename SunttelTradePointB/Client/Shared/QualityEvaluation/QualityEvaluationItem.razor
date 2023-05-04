@@ -57,19 +57,19 @@
 
         <div class="grid-columns-header grid-columns-6 style-color">
 
-            <div><label class="sub-tile">@GetName("Buyer",new CommercialDocument())</label></div>
+            <div><label class="info-text-size">@GetName("Buyer",new CommercialDocument())</label></div>
             <InputTextDisable Enable="false" TypeInt="true" @bind-ValueString="commercialDocument.Buyer.Name"></InputTextDisable>
 
-            <div><label class="sub-tile">@GetName("Vendor",new CommercialDocument())</label></div>
+            <div><label class="info-text-size">@GetName("Vendor",new CommercialDocument())</label></div>
             <InputTextDisable Enable="false" TypeInt="true" @bind-ValueString="commercialDocument.Vendor.Name"></InputTextDisable>
 
-            <div><label class="sub-tile">@GetName("TrackingNumber",new CommercialDocument())</label></div>
+            <div><label class="info-text-size">@GetName("TrackingNumber",new CommercialDocument())</label></div>
             <InputTextDisable Enable="false" TypeInt="true" @bind-ValueString="commercialDocument.TrackingNumber"></InputTextDisable>
 
-            <div><label class="sub-tile">@GetName("ShipDate",new CommercialDocument())</label></div>
+            <div><label class="info-text-size">@GetName("ShipDate",new CommercialDocument())</label></div>
             <div><input type="date" value="@commercialDocument.ShipDate" class="form-control" disabled /></div>
 
-            <div><label class="sub-tile">@GetName("ArrivalDate",new CommercialDocument())</label></div>
+            <div><label class="info-text-size">@GetName("ArrivalDate",new CommercialDocument())</label></div>
             <div><input type="date" value="@commercialDocument.ArrivalDate" class="form-control" disabled /></div>
 
 
@@ -78,9 +78,9 @@
         <div class="div-container-flex">
             <div class="grid-columns-header grid-columns-6">
 
-                <div><label class="sub-tile">@GetName("QualityReportType",new QualityEvaluation())</label></div>
+                <div><label class="info-text-size">@GetName("QualityReportType",new QualityEvaluation())</label></div>
                 <div>
-                    <select @onchange="SelectItemDocumentType" class="select-style input-style">
+                        <select @onchange="SelectItemDocumentType" class="select-style input-style info-text-size">
 
                         @if (typeList != null && typeList.Count() > 0)
                         {
@@ -100,9 +100,9 @@
                     </select>
                 </div>
 
-                <div><label class="sub-tile">@GetName("ActionToTake",new QualityEvaluation())</label></div>
+                <div><label class="info-text-size">@GetName("ActionToTake",new QualityEvaluation())</label></div>
                 <div>
-                    <select @onchange="SelectItemActionToTake" class="select-style">
+                        <select @onchange="SelectItemActionToTake" class="select-style info-text-size">
 
                         @if (actionToTakeList != null)
                         {
@@ -124,20 +124,20 @@
                     </select>
                 </div>
 
-                <div><label class="sub-tile">@GetName("InspectionDate",new QualityEvaluation())</label></div>
+                <div><label class="info-text-size">@GetName("InspectionDate",new QualityEvaluation())</label></div>
                 <div><input type="date" @bind-value="QualityEvaluation.InspectionDate" class="form-control" /></div>
 
-                <div><label class="sub-tile">@GetName("QuantityToInspect",new QualityEvaluation())</label></div>
+                <div><label class="info-text-size">@GetName("QuantityToInspect",new QualityEvaluation())</label></div>
                 <InputTextDisable Enable="true" TypeInt="true" @bind-ValueDouble="QualityEvaluation.QuantityToInspect"></InputTextDisable>
 
-                <div><label class="sub-tile">@GetName("QuantityInspected",new QualityEvaluation())</label></div>
+                <div><label class="info-text-size">@GetName("QuantityInspected",new QualityEvaluation())</label></div>
                 <InputTextDisable Enable="true" TypeInt="true" @bind-ValueDouble="QualityEvaluation.QuantityInspected"></InputTextDisable>
 
-                <div><label class="sub-tile">@GetName("QuantityWithIssues",new QualityEvaluation())</label></div>
+                <div><label class="info-text-size">@GetName("QuantityWithIssues",new QualityEvaluation())</label></div>
                 <InputTextDisable Enable="true" TypeInt="true" @bind-ValueDouble="QualityEvaluation.QuantityWithIssues"></InputTextDisable>
 
-                <div><label class="sub-tile">@GetName("Pack",new QualityEvaluation()): @QualityEvaluation.Pack</label></div>
-                <div><label class="sub-tile">@GetName("OverKill",new QualityEvaluation())</label> :  <SfSwitch @bind-Checked="@QualityEvaluation.OverKill"></SfSwitch> </div>
+                <div><label class="info-text-size">@GetName("Pack",new QualityEvaluation()): @QualityEvaluation.Pack</label></div>
+                <div><label class="info-text-size">@GetName("OverKill",new QualityEvaluation())</label> :  <SfSwitch @bind-Checked="@QualityEvaluation.OverKill"></SfSwitch> </div>
 
 
             </div>
@@ -164,7 +164,7 @@
 
         <hr />
 
-        <SfTab Height="250px" CssClass="tab-adaptive" HeaderPlacement="HeaderPosition.Left">
+            <SfTab Height="250px" CssClass="tab-adaptive info-text-size" HeaderPlacement="HeaderPosition.Left">
             <TabAnimationSettings>
                 <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
                 <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
@@ -284,7 +284,7 @@
                     </ChildContent>
                     <ContentTemplate>
                         <div class="container-item">
-                            <div><label class="sub-tile">@GetName("Notes",new CommercialDocument())</label></div>
+                            <div><label class="info-text-size">@GetName("Notes",new CommercialDocument())</label></div>
                             <textarea @bind="commercialDocument.Notes" disabled></textarea>
                         </div>
                     </ContentTemplate>
@@ -296,7 +296,7 @@
                     </ChildContent>
                     <ContentTemplate>
                         <div class="container-item">
-                            <div><label class="sub-tile">@GetName("SpecsNotes",new CommercialDocument())</label></div>
+                            <div><label class="info-text-size">@GetName("SpecsNotes",new CommercialDocument())</label></div>
                             <textarea @bind="commercialDocument.SpecsNotes" disabled></textarea>
                         </div>
                     </ContentTemplate>

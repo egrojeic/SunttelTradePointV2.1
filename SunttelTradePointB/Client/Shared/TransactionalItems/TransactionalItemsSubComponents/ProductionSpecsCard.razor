@@ -36,16 +36,16 @@
             <div class="grid-columns-2 box-shadow-mode width-page1">
 
                 <div>
-                    <label>@Key</label>
+                    <label class="info-text-size">@Key</label>
                 </div>
                 <div>
-                    <input @bind-value="TransactionalItemTag.Key" class="form-control" placeholder="Edit key" />
+                    <input @bind-value="TransactionalItemTag.Key" class="form-control info-text-size" placeholder="Edit key" />
                 </div>
-                <div c>
-                    <label>@Value</label>
+                <div >
+                    <label class="info-text-size">@Value</label>
                 </div>
                 <div>
-                    <input @bind-value="TransactionalItemTag.Value" class="form-control" placeholder="Edit value" />
+                    <input @bind-value="TransactionalItemTag.Value" class="form-controlinfo-text-size" placeholder="Edit value" />
                 </div>
 
                 <div></div>
@@ -88,7 +88,7 @@
     </div>
 
     <div id="add-recipe">
-        <SfTab @ref="referTag" Height="250px" CssClass="tab-adaptive">
+        <SfTab @ref="referTag" Height="250px" CssClass="tab-adaptive info-text-size">
             <TabAnimationSettings>
                 <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
                 <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
@@ -104,8 +104,8 @@
                         <div class="content-production">
 
                             <div class="item">
-                                <label>@Name</label>
-                                <input @bind-value="_TransactionalItemProcessStep.Name" class="form-control" placeholder="Edit name" />
+                                <label class="info-text-size">@Name</label>
+                                <input @bind-value="_TransactionalItemProcessStep.Name" class="form-control info-text-size" placeholder="Edit name" />
                             </div>
                             <div class="item"><label>@Cost</label><input type="number" @bind-value="_TransactionalItemProcessStep.Cost" class="form-control" /></div>
                             <div class="item"><label>@Order</label><input type="number" @bind-value="_TransactionalItemProcessStep.Order" class="form-control" /></div>
@@ -120,7 +120,7 @@
                     <ContentTemplate>
                         <div class="content-production">
                             <br />
-                            <textarea placeholder="Edit new instruction " @bind="_TransactionalItemProcessStep.GeneralInstructions" class="form-control" style="width:100%; height:180PX; resize:none; font-size:14px; ">
+                            <textarea placeholder="Edit new instruction " @bind="_TransactionalItemProcessStep.GeneralInstructions" class="form-control info-text-size" style="width:100%; height:180PX; resize:none; font-size:14px; ">
                             </textarea>
                         </div>
                     </ContentTemplate>

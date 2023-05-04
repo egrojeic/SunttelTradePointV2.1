@@ -17,7 +17,7 @@
 
 <div>
     <div class="detailsTitleContainer">
-        <h3 class="subTitleDetailForm">@GetName("Items",new CommercialDocument())</h3>
+        <h3 class="subTitleDetailForm info-text-size">@GetName("Items",new CommercialDocument())</h3>
         <img @onclick="()=>CloseMenu(true)" class="img-menu" src="/images/menu.png">
         <div class="menu-item" style="display:@(menuVisible?"flex":"none");">
             <button type="button" class="exit-btn" @onclick="()=>CloseMenu(false)">

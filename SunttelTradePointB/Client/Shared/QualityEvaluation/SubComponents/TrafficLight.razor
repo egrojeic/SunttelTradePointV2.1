@@ -8,7 +8,7 @@
         @foreach (var item in trafficLightList)
         {
             <div class="item" @onclick='()=>SetTrafficLight(item.Id)'>
-                <p class="text"> @item.Name </p> <div class="circle-color" style=" background-color:rgb(@(item.Id== trafficLight.Id? $"{item.R},{item.G},{item.B}":""))"></div>
+                <p class="text info-text-size"> @item.Name </p> <div class="circle-color" style=" background-color:rgb(@(item.Id== trafficLight.Id? $"{item.R},{item.G},{item.B}":""))"></div>
             </div>
         }
     }

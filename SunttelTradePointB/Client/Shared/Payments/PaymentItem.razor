@@ -53,9 +53,9 @@
 
     <div class="grid-columns-header grid-columns-6">
 
-        <div><label class="sub-tile">@GetName("DocumentType",new CommercialDocument())</label></div>
+        <div><label class="info-text-size">@GetName("DocumentType",new CommercialDocument())</label></div>
         <div>
-            <select @onchange="SelectItemDocumentType" class="select-style">
+            <select @onchange="SelectItemDocumentType" class="select-style info-text-size">
 
                 @if (documentTypeList != null && documentTypeList.Count() > 0)
                 {
@@ -75,17 +75,17 @@
             </select>
         </div>
 
-        <div><label>@GetName("Code",new Payment())</label></div>
-        <InputTextDisable Enable="true" style="font-size:15px; font-weight:none; " @bind-ValueString="@payment.Code"></InputTextDisable>
+        <div><label class="info-text-size">@GetName("Code",new Payment())</label></div>
+        <InputTextDisable Enable="true" style=" font-weight:none; " @bind-ValueString="@payment.Code"></InputTextDisable>
 
 
-        <div><label>@GetName("PaymentRef",new Payment())</label></div>
-        <InputTextDisable Enable="true" style="font-size:15px; font-weight:none; " @bind-ValueString="@payment.PaymentRef"></InputTextDisable>
+        <div><label class="info-text-size">@GetName("PaymentRef",new Payment())</label></div>
+        <InputTextDisable Enable="true" style=" font-weight:none; " @bind-ValueString="@payment.PaymentRef"></InputTextDisable>
 
-        <div><label>@GetName("Payer",new Payment())</label></div>
+        <div><label class="info-text-size">@GetName("Payer",new Payment())</label></div>
         <input type="data" @bind-value="@payment.PaymentDate" class="form-control" />
 
-        <div><label class="sub-tile">@GetName("Payer",new Payment())</label></div>
+        <div><label class="info-text-size">@GetName("Payer",new Payment())</label></div>
         <div>
             <InputTextSelector3 TItem="Concept"
                                 Id="Payer"
@@ -97,7 +97,7 @@
             </InputTextSelector3>
         </div>
 
-        <div><label class="sub-tile">@GetName("Receiver",new Payment())</label></div>
+        <div><label class="info-text-size">@GetName("Receiver",new Payment())</label></div>
         <div>
             <InputTextSelector3 TItem="Concept"
                                 Id="Receiver"
@@ -108,9 +108,9 @@
             </InputTextSelector3>
         </div>
 
-        <div><label class="sub-tile">@GetName("DocPaymentMode",new Payment())</label></div>
+        <div><label class="info-text-size">@GetName("DocPaymentMode",new Payment())</label></div>
         <div>
-            <select @onchange="SelectItemDocumentType" class="select-style">
+            <select @onchange="SelectItemDocumentType" class="select-style info-text-size">
 
                 @if (docPaymentModeList != null && docPaymentModeList.Count() > 0)
                 {
@@ -130,12 +130,12 @@
             </select>
         </div>
 
-        <div><label class="sub-tile">@GetName("Status",new Payment())</label></div>
+        <div><label class="info-text-size">@GetName("Status",new Payment())</label></div>
         <Status Name="@(payment.Status !=null ? payment.Status.Name:"")"></Status>
 
-        <div><label class="sub-tile">@GetName("DocPaymentVia",new Payment())</label></div>
+        <div><label class="info-text-size">@GetName("DocPaymentVia",new Payment())</label></div>
         <div>
-            <select @onchange="SelectItemDocumentType" class="select-style">
+            <select @onchange="SelectItemDocumentType" class="select-style info-text-size">
 
                 @if (docPaymentModeList != null && docPaymentModeList.Count() > 0)
                 {
@@ -155,14 +155,14 @@
             </select>
         </div>
 
-        <div><label>@GetName("Surplus",new Payment())</label></div>
-        <InputTextDisable Enable="true" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@payment.Surplus"></InputTextDisable>
+        <div><label class="info-text-size">@GetName("Surplus",new Payment())</label></div>
+        <InputTextDisable Enable="true" style=" font-weight:none;" @bind-ValueDouble="@payment.Surplus"></InputTextDisable>
 
-        <div><label>@GetName("PaymentValue",new Payment())</label></div>
-        <InputTextDisable Enable="true" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@payment.PaymentValue"></InputTextDisable>
+        <div><label class="info-text-size">@GetName("PaymentValue",new Payment())</label></div>
+        <InputTextDisable Enable="true" style=" font-weight:none;" @bind-ValueDouble="@payment.PaymentValue"></InputTextDisable>
           
-        <div><label>@GetName("DiscountReason",new Payment())</label></div>
-        <InputTextDisable Enable="true" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@payment.PaymentValue"></InputTextDisable>
+        <div><label class="info-text-size" >@GetName("DiscountReason",new Payment())</label></div>
+        <InputTextDisable Enable="true" style=" font-weight:none;" @bind-ValueDouble="@payment.PaymentValue"></InputTextDisable>
      
 
     </div>
@@ -369,18 +369,18 @@
         //isLoading = true;
 
         Load();
-        //if (paymentItemId != null)
-        //{
-        //    payment = await PaymentServices.GetPaymentById(paymentItemId);
-        //}
-        //Load();
-        //documentTypeList = await PaymentServices.GetPaymentTypeList(0, 1, (filter != null ? filter : "all"));
-        //docPaymentModeList = await PaymentServices.GetPaymentModesList(0, 1, (filter != null ? filter : "all"));
-        //docPaymentViaList = await PaymentServices.GetPaymentViasList(0, 1, (filter != null ? filter : "all"));
-        ////  PaymentStatustViatList =   await PaymentServices.GetPaymentStatusList(0,1,(filter != null ? filter : "all"));
-        //isLoading = false;
-        //Load();
-        //StateHasChanged();
+        if (paymentItemId != null)
+        {
+            payment = await PaymentServices.GetPaymentById(paymentItemId);
+        }
+        Load();
+        documentTypeList = await PaymentServices.GetPaymentTypeList(0, 1, (filter != null ? filter : "all"));
+        docPaymentModeList = await PaymentServices.GetPaymentModesList(0, 1, (filter != null ? filter : "all"));
+        docPaymentViaList = await PaymentServices.GetPaymentViasList(0, 1, (filter != null ? filter : "all"));
+        //  PaymentStatustViatList =   await PaymentServices.GetPaymentStatusList(0,1,(filter != null ? filter : "all"));
+        isLoading = false;
+        Load();
+        StateHasChanged();
     }
 
 

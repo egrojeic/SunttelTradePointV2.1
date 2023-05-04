@@ -6,7 +6,7 @@
     <div class="form-group">
 
         <div style="display:flex; flex-direction:row;">
-            <label for="ComercialGroup" id="ctrlTitle">Group</label>
+            <label class="info-text-size" for="ComercialGroup" id="ctrlTitle">Group</label>
             <div class="conten-chip">
                 <SfChip @ref="referChip" EnableDelete="true" CssClass="chip-style" EnableRtl="false">
                     <ChipEvents Deleted="@onDeleted"></ChipEvents>
@@ -18,7 +18,7 @@
                                 {
                                     if (Group != null && Group.Name != null)
                                     {
-                                        <ChipItem Text="@Group?.Name" Value="@Group?.Id" LeadingIconCss="anne"></ChipItem>
+                                        <ChipItem Text="@Group?.Name" Value="@Group?.Id" CssClass="info-text-size" LeadingIconCss="anne"></ChipItem>
                                     }
 
                                 }

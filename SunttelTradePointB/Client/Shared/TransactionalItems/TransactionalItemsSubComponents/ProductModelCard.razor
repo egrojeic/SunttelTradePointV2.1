@@ -23,20 +23,20 @@
 
 <div class="flex-horizontal-center">
     <div class="grid-columns-2  box-shadow-mode">
-        <div><label>@GetName("Name",new AtomConcept())</label></div>
-        <div><input @bind-value="productModel.Name" class="form-control" placeholder="Edit value" /></div>
+        <div><label class="info-text-size">@GetName("Name",new AtomConcept())</label></div>
+        <div><input @bind-value="productModel.Name" class="form-control info-text-size" placeholder="Edit value" /></div>
         <div>
-            <label>@GetName("Code",new AtomConcept())</label>
+            <label class="info-text-size">@GetName("Code",new AtomConcept())</label>
         </div>
-        <div><input @bind-value="productModel.Code" class="form-control" placeholder="Edit value" /></div>
+        <div><input @bind-value="productModel.Code" class="form-control info-text-size" placeholder="Edit value" /></div>
         <div>
             <label>@GetName("Description",new ProductModel())</label>
         </div>
-        <div><input @bind-value="productModel.Description" class="form-control" placeholder="Edit value" /></div>
+        <div><input @bind-value="productModel.Description" class="form-control info-text-size" placeholder="Edit value" /></div>
         <div>
-            <label>@GetName("Notes",new AtomConcept())</label>
+            <label class="info-text-size">@GetName("Notes",new AtomConcept())</label>
         </div>
-        <div><input @bind-value="productModel.Notes" class="form-control" placeholder="Edit value" /></div>
+        <div><input @bind-value="productModel.Notes" class="form-control info-text-size" placeholder="Edit value" /></div>
         <div></div>
         <div class="flex-horizontal-end">
             <button @onclick='()=>Closed("control")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>

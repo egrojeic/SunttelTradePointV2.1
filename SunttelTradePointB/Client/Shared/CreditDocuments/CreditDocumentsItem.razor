@@ -49,12 +49,12 @@
     <div class="grid-columns-header grid-columns-6">
 
         <div>
-            <label>
+            <label class="info-text-size">
                 @GetName("CreditDocumentType",new CreditDocument())
             </label>
         </div>
         <div>
-            <select @onchange="SelectItem" class="select-style">
+            <select @onchange="SelectItem" class="select-style info-text-size">
 
                 @if (creditTypeList != null && creditTypeList.Count() > 0)
                 {
@@ -75,15 +75,15 @@
         </div>
 
 
-        <div><label>@GetName("Code",new CreditDocument())</label></div>
-        <InputTextDisable TypeInt="false" Enable="true" style="font-size:15px; font-weight:none; " @bind-ValueString="@creditDocument.Code"></InputTextDisable>
+        <div><label class="info-text-size">@GetName("Code",new CreditDocument())</label></div>
+        <InputTextDisable TypeInt="false" Enable="true" style=" font-weight:none; " @bind-ValueString="@creditDocument.Code"></InputTextDisable>
 
 
-        <div><label>@GetName("CreditDate",new CreditDocument())</label></div>
-        <input type="date" @bind="@creditDocument.CreditDate" class="form-control" />
+        <div><label class="info-text-size">@GetName("CreditDate",new CreditDocument())</label></div>
+        <input type="date" @bind="@creditDocument.CreditDate" class="form-control info-text-size" />
 
 
-        <div><label>@GetName("Vendor",new CreditDocument())</label></div>
+        <div><label class="info-text-size">@GetName("Vendor",new CreditDocument())</label></div>
 
 
         <InputTextSelector3 TItem="Concept"
@@ -96,7 +96,7 @@
         </InputTextSelector3>
 
 
-        <div><label>@GetName("Buyer",new CreditDocument())</label></div>
+        <div><label class="info-text-size">@GetName("Buyer",new CreditDocument())</label></div>
 
 
         <InputTextSelector3 TItem="Concept"

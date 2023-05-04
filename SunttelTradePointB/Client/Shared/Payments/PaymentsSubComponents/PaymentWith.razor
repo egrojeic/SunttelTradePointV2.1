@@ -19,7 +19,7 @@
             <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
             <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
         </TabAnimationSettings>
-        <TabItems>
+        <TabItems >
 
             <TabItem>
                 <ChildContent>
@@ -53,7 +53,7 @@
                                         PageSize="50"
                                         AllowPaging="true"
                                         PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                                        ShowPagingSummary="true"
+                                        ShowPagingSummary="true"                                        
                                         Data="@paymentWithOverpaymentList"
                                         TItem="PaymentWithOverpayment"
                                         ColumnWidth="300px"
@@ -61,7 +61,6 @@
                                         LogicalFilterOperator="LogicalFilterOperator.Or"
                                         CellContextMenu="@ShowContextMenuCommercialDocument">
                                 <Columns>
-
 
                                     <RadzenDataGridColumn TItem="PaymentWithOverpayment" Property="OriginalCode" Title="@GetName("OriginalCode", new AppliedPayment())" Width="208px" />
                                     <RadzenDataGridColumn TItem="PaymentWithOverpayment" Property="OverpaymentValue" Title="@GetName("OverpaymentValue", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />

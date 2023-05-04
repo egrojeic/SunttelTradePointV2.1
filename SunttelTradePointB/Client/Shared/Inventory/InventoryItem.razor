@@ -39,12 +39,12 @@
 </div>
 <div class="grid-columns-header grid-columns-6">
     <div>
-        <label>
+        <label class="info-text-size">
             @GetName("CurrentWarehouse",new InventoryDetail())
         </label>
     </div>
     <div>    
-        <select @onchange="SelectItemVendorWarehous" class="select-style">
+        <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size ">
           
             @if (warehouseList != null && warehouseList.Count() > 0)
             {
@@ -81,14 +81,14 @@
     </div>
 
 
-    <div><label>@GetName("Qty",new InventoryDetail())</label></div>
-    <InputTextDisable Enable="true" style="font-size:15px; font-weight:none; " @bind-ValueDouble="@inventoryDetail.Qty"></InputTextDisable>   
+    <div><label class="info-text-size">@GetName("Qty",new InventoryDetail())</label></div>
+    <InputTextDisable Enable="true" style=" font-weight:none; " @bind-ValueDouble="@inventoryDetail.Qty"></InputTextDisable>   
 
 
-    <div><label>@GetName("EntryDate",new InventoryDetail())</label></div>
+    <div><label class="info-text-size">@GetName("EntryDate",new InventoryDetail())</label></div>
     <input @bind-value="@inventoryDetail.EntryDate" type="date" class="form-control" disabled />
 
-    <div><label>@GetName("ItemBox",new InventoryDetail())</label></div>
+    <div><label class="info-text-size">@GetName("ItemBox",new InventoryDetail())</label></div>
     <InputTextSelector3 TItem="Box"
                         Id="ItemBox"
                         caption="@(inventoryDetail.ItemBox !=null ? inventoryDetail.ItemBox.Name:"")"
@@ -98,15 +98,15 @@
                         style="left:-150px;">
     </InputTextSelector3>
 
-    <div><label>@GetName("Pack",new InventoryDetail())</label></div>
-    <InputTextDisable Min="1" Enable="true" ChangedUpdate="ChangedUpdate" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@inventoryDetail.Pack"></InputTextDisable>
+    <div><label class="info-text-size">@GetName("Pack",new InventoryDetail())</label></div>
+    <InputTextDisable Min="1" Enable="true" ChangedUpdate="ChangedUpdate" style=" font-weight:none;" @bind-ValueDouble="@inventoryDetail.Pack"></InputTextDisable>
 
 
-    <div><label>@GetName("BoxCode",new InventoryDetail())</label></div>
-    <InputTextDisable Enable="true" style="font-size:15px; font-weight:none;" @bind-ValueString="@inventoryDetail.BoxCode"></InputTextDisable>
+    <div><label class="info-text-size">@GetName("BoxCode",new InventoryDetail())</label></div>
+    <InputTextDisable Enable="true" style=" font-weight:none;" @bind-ValueString="@inventoryDetail.BoxCode"></InputTextDisable>
 
 
-    <div><label>@GetName("CustomerReservedFor",new InventoryDetail())</label></div>
+    <div><label class="info-text-size">@GetName("CustomerReservedFor",new InventoryDetail())</label></div>
 
 
     <InputTextSelector3 TItem="EntityActor"
@@ -119,16 +119,16 @@
     </InputTextSelector3>
       
 
-    <div><label>@GetName("UnitCost",new InventoryDetail())</label></div>
+    <div><label class="info-text-size">@GetName("UnitCost",new InventoryDetail())</label></div>
    <InputTextDisable Enable="false" @bind-ValueDouble="inventoryDetail.UnitCost"> </InputTextDisable>
-    <div><label>@GetName("BasicUnitsQty",new InventoryDetail())</label></div>
+    <div><label class="info-text-size">@GetName("BasicUnitsQty",new InventoryDetail())</label></div>
     <InputTextDisable Enable="false" @bind-ValueDouble="inventoryDetail.BasicUnitsQty"> </InputTextDisable>
     <div></div><div></div>
-    <div><label>@GetName("InventoryBusinessLine",new CommercialDocument())</label></div>
+    <div><label class="info-text-size">@GetName("InventoryBusinessLine",new CommercialDocument())</label></div>
 
 
     <div class="InventoryBusinessLine">
-        <select @onchange="SelectItemBusinessLineDoc" class="select-style">
+        <select @onchange="SelectItemBusinessLineDoc" class="select-style info-text-size">
             @if (inventoryDetail.InventoryBusinessLine != null)
             {
                 <option value="@inventoryDetail.InventoryBusinessLine.Id" selected>@inventoryDetail.InventoryBusinessLine.Name</option>

@@ -40,33 +40,33 @@
 
     <div class="flex-horizontal-center">
         <div class="grid-columns-2 box-shadow-mode">
-            <div><label>@GetName( "Name", new AtomConcept())</label></div>
-            <div><input @bind-value="box.Name" class="form-control" placeholder="Edit value" /></div>
-            <div><label>@GetName( "Code", new AtomConcept())</label></div>
-            <div><input @bind-value="box.Code" class="form-control" placeholder="Edit value" /></div>
-            <div><label>@GetName( "Notes", new AtomConcept())</label></div>
-            <div><input @bind-value="box.Notes" class="form-control" placeholder="Edit value" /></div>
-            <div><label>@GetName( "Length", new Box())</label></div>
-            <div><input @bind-value="box.Length" class="form-control" placeholder="Edit value" /></div>
-            <div><label>@GetName( "Width", new Box())</label></div>
-            <div><input @bind-value="box.Width" class="form-control" placeholder="Edit value" /></div>
-            <div><label>@GetName( "Height", new Box())</label></div>
-            <div><input @bind-value="box.Height" class="form-control" placeholder="Edit value" /></div>
-            <div><label>@GetName( "WeightVolumeRate", new Box())</label></div>
-            <div><input @bind-value="box.WeightVolumeRate" class="form-control" placeholder="Edit value" /></div>
-            <div><label>@GetName( "ContainersNumber", new Box())</label></div>
-            <div><input @bind-value="box.ContainersNumber" class="form-control" placeholder="Edit value" /></div>
-            <div><label>@GetName( "PalletsEquivalent", new Box())</label></div>
-            <div><input @bind-value="box.PalletsEquivalent" class="form-control" placeholder="Edit value" /></div>
-            <div><label>@GetName( "FlagWet", new Box())</label></div>
+            <div><label class="info-text-sizess">@GetName( "Name", new AtomConcept())</label></div>
+            <div><input @bind-value="box.Name" class="form-control info-text-size" placeholder="Edit value" /></div>
+            <div><label class="info-text-size" >@GetName( "Code", new AtomConcept())</label></div>
+            <div><input @bind-value="box.Code" class="form-control info-text-size" placeholder="Edit value" /></div>
+            <div><label class="info-text-size">@GetName( "Notes", new AtomConcept())</label></div>
+            <div><input @bind-value="box.Notes" class="form-control info-text-size" placeholder="Edit value" /></div>
+            <div><label  class="info-text-size" >@GetName( "Length", new Box())</label></div>
+            <div><input @bind-value="box.Length" class="form-control info-text-size" placeholder="Edit value" /></div>
+            <div><label  class="info-text-size">@GetName( "Width", new Box())</label></div>
+            <div><input @bind-value="box.Width" class="form-control info-text-size" placeholder="Edit value" /></div>
+            <div><label class="info-text-size">@GetName( "Height", new Box())</label></div>
+            <div><input @bind-value="box.Height" class="form-control info-text-size" placeholder="Edit value" /></div>
+            <div><label  class="info-text-size" >@GetName( "WeightVolumeRate", new Box())</label></div>
+            <div><input @bind-value="box.WeightVolumeRate" class="form-control info-text-size" placeholder="Edit value" /></div>
+            <div><label class="info-text-size">@GetName( "ContainersNumber", new Box())</label></div>
+            <div><input @bind-value="box.ContainersNumber" class="form-control info-text-size" placeholder="Edit value" /></div>
+            <div><label  class="info-text-size">@GetName( "PalletsEquivalent", new Box())</label></div>
+            <div><input @bind-value="box.PalletsEquivalent" class="form-control info-text-size" placeholder="Edit value" /></div>
+            <div><label  class="info-text-size" >@GetName( "FlagWet", new Box())</label></div>
             <div>
                 <SfSwitch @bind-Checked="@box.FlagWet"></SfSwitch>
             </div>
-            <div><label>@GetName( "Enable", new Box())</label></div>
+            <div><label class"info-text-size">@GetName( "Enable", new Box())</label></div>
             <div>
                 <SfSwitch @bind-Checked="@box.Enable"></SfSwitch>
             </div>
-            <div><label>@GetName( "LinkedTransactionalItem", new Box())</label></div>
+            <div><label class="info-text-size">@GetName( "LinkedTransactionalItem", new Box())</label></div>
             <div>
 
                 <InputTextSelector3 Id="LinkedTransactionalItem"
