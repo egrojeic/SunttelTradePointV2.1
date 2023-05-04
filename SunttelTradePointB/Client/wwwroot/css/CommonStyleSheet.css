@@ -164,7 +164,7 @@
     border-width: 0.1px;
 }
 
-    .item-edit button {
+    .item-edit img {
         background-color: #00ccff;
         border-radius: 4px;
         border-color: transparent;
@@ -172,10 +172,7 @@
         overflow:hidden;
     }
 
-        .item-edit i{
-            height:5px;
-            margin:0px;
-        }
+        
 
         .item-edit label {
             font-size: 12px;
@@ -489,10 +486,15 @@
 }
 
 .info-text-size {
-    font-size: 12px;     
+    font-size: 12px;
     line-height: 0px;
-    height:20px;
-    white-space:break-spaces;
+    height: 20px;
+    word-wrap: break-word;
+    font-weight: normal;
+}
+
+.info-title-size {
+    font-size: 12px;    
 }
 
 

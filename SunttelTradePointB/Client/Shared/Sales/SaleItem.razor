@@ -123,7 +123,7 @@
 
             <div><label class="info-text-size">@GetName("Vendor",new CommercialDocument())</label></div>
             <div class="Vendor">
-                <InputTextSelector3 styleCaption="min-width: 27vw;" TItem="Concept"
+                <InputTextSelector3 styleCaption="min-width: 25vw;" TItem="Concept"
                                 Id="Vendor"
                                 caption="@(commercialDocument.Vendor !=null ? commercialDocument.Vendor?.Name:"" )"
                                 Items="vendorList"
@@ -135,7 +135,7 @@
 
             <div><label class="info-text-size">@GetName("Buyer",new CommercialDocument())</label></div>
             <div class="Buyer">
-                <InputTextSelector3 styleCaption="min-width: 27vw;" TItem="Concept"
+                <InputTextSelector3 styleCaption="min-width: 25vw;" TItem="Concept"
                                 Id="Buyer"
                                 caption="@(commercialDocument.Buyer !=null ? commercialDocument.Buyer?.Name:"" )"
                                 Items="buyerList"
@@ -267,7 +267,7 @@
 
         <hr />
 
-        <SfTab Height="250px" CssClass="tab-adaptive info-text-size" HeaderPlacement="HeaderPosition.Left">
+        <SfTab Height="250px" CssClass="tab-adaptive " HeaderPlacement="HeaderPosition.Left">
             <TabAnimationSettings>
                 <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
                 <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
