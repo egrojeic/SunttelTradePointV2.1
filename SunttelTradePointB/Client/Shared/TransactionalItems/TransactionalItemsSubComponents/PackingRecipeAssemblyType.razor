@@ -7,6 +7,11 @@
 @inject NavigationManager Navigation
 @inject ContextMenuService ContextMenuService
 
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+</style>
 
 
 @if (@viewMsg)
@@ -23,12 +28,12 @@
 {
     <div class="flex-horizontal-center">
         <div class="grid-mode-row">
-            <div><label>@GetName("Name", new AtomConcept())</label></div>
-            <div> <input @bind-value="itemAssemblyType.Name" class="form-control" placeholder="Edit key" /></div>
-            <div> <label>@GetName("Code", new AtomConcept())</label></div>
-            <div> <input @bind-value="itemAssemblyType.Code" class="form-control" placeholder="Edit value" /></div>
-            <div> <label>@GetName("Notes", new AtomConcept())</label></div>
-            <div> <input @bind-value="itemAssemblyType.Notes" class="form-control" placeholder="Edit value" /></div>
+            <div><label class="info-text-size">@GetName("Name", new AtomConcept())</label></div>
+            <div> <input @bind-value="itemAssemblyType.Name" class="form-control info-text-size" placeholder="Edit key" /></div>
+            <div> <label class="info-text-size">@GetName("Code", new AtomConcept())</label></div>
+            <div> <input @bind-value="itemAssemblyType.Code" class="form-control info-text-size" placeholder="Edit value" /></div>
+            <div> <label class="info-text-size">@GetName("Notes", new AtomConcept())</label></div>
+            <div> <input @bind-value="itemAssemblyType.Notes" class="form-control info-text-size" placeholder="Edit value" /></div>
             <div></div>
             <div class="flex-horizontal-end">
                 <button @onclick='()=>Navigation.NavigateTo("/ItemAssemblyType/list")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>

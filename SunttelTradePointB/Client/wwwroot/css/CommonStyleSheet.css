@@ -158,23 +158,25 @@
     box-shadow: 0px 0px 0.1px 1px #ced4da;
     border-radius: 4px;
     border-color: #dee2e6;
-    min-width:100px;
+    min-width: 100px;
     width: auto;
-    height: 40px;
+    height: auto;
     border-width: 0.1px;
-    padding-right: 1px;
-    
 }
 
-    .item-edit button {
+    .item-edit img {
         background-color: #00ccff;
         border-radius: 4px;
         border-color: transparent;
+        height:20px;
+        overflow:hidden;
     }
 
-    .item-edit label {
-        font-size:12px;
-    }
+        
+
+        .item-edit label {
+            font-size: 12px;
+        }
 
 .grid-columns-4 {
     margin-top: 20px;
@@ -467,23 +469,37 @@
 }
 
 .p-mode-text{
-  min-height:30px;
-  padding:5px;
+  height:20px;
+  margin-top:2px;
+  padding-left:10px;
   border-radius:5px;
   box-shadow:0px 0px 2px gray;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:start;
 }
 
 .p-mode-text p{
     margin:0px;
-    text-align:start;
-    margin-top:auto;     
+    
 }
 
-.sub-title{
-font-size:12px;
+.info-text-size {
+    font-size: 12px;
+    line-height: 0px;
+    height: 20px;
+    word-wrap: break-word;
+    font-weight: normal;
 }
 
-.input-style{
-    height:40px;
+.info-title-size {
+    font-size: 12px;    
+}
+
+
+.input-style {   
+    font-size: 12px;
+    line-height: 0px;  
 }
 

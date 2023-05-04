@@ -28,7 +28,7 @@
                 @foreach (var c in countryList)
                 {
                     <li onclick="@(()=>LoadRegions(c))">
-                        <label>@c.Name</label>
+                        <label class="info-text-size">@c.Name</label>
                     </li>
                 }
             </ul>
@@ -59,7 +59,7 @@
                 @foreach (var c in regionsList)
                 {
                     <li onclick="@(()=>SetCurrentRegion(c))">
-                        <lable>@c.Name</lable>
+                        <lable class="info-text-size">@c.Name</lable>
                     </li>
                 }
             </ul>
@@ -80,7 +80,7 @@
              <div id="CitiesCard" class="CardList">
 
             <div class="searchBarContainer">
-                <span class="cardTitle"><i class="fa fa-globe" aria-hidden="true"></i> Cities of @(currentRegion.Name ?? string.Empty)</span>
+                <span class="cardTitle info-text-size "><i class="fa fa-globe" aria-hidden="true"></i> Cities of @(currentRegion.Name ?? string.Empty)</span>
 
                 <SearchComponent @bind-FilterText="@citiesFilter"></SearchComponent>
             </div>
@@ -89,7 +89,7 @@
                 @foreach (var c in citiesList)
                 {
                     <li>
-                        <lable>@c.Name</lable>
+                        <lable class="info-text-size">@c.Name</lable>
                     </li>
                 }
             </ul>

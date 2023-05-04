@@ -5,19 +5,19 @@
 -->
 <div>
     <div class="item-edit">
-        <label>@(objectBinded != null ? objectBinded.Name : "")</label>
+        <label class="info-text-size">@(objectBinded != null ? objectBinded.Name : "")</label>
         <button type="button" @onclick='()=>ShowList()' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
     </div>
 
 
     <div class="component-input" style="@style; display:@(showListControl?"block":"none");  position:relative; width:278px;">
         <div style=" flex-direction:row; display:@(!showListControl?"flex":"none"); ">
-            <input @bind="searchFilter" class="form-control" autocomplete="on" />
+            <input @bind="searchFilter" class="form-control info-text-size " autocomplete="on" />
             <img id="btn-img" src="images/search.svg" @onclick="Search" />
         </div>
         <div id="div-Popup">
 
-            <select @onchange="SelectedItemChanged" style="display:@(showListControl?"block":"none");  background-color:@backgroundSelection; color:@colorSelection;  border-color:gray; ">
+            <select @onchange="SelectedItemChanged" class="info-text-size" style="display:@(showListControl?"block":"none");  background-color:@backgroundSelection; color:@colorSelection;  border-color:gray; ">
                 <option value=""> select </option>
                 @if (ChildContent != null)
                 {
@@ -25,7 +25,7 @@
                 }
             </select>
             <div>
-                <p style="background-color:@(ParamCountResul>0?"#8affa8":"orange"); display:@(ShowPopupCount?"block":"none");">@(ParamCountResul > 0 ? ParamCountResul : "searching")</p>
+                <p class="info-text-size" style="background-color:@(ParamCountResul>0?"#8affa8":"orange"); display:@(ShowPopupCount?"block":"none");">@(ParamCountResul > 0 ? ParamCountResul : "searching")</p>
             </div>
 
         </div>

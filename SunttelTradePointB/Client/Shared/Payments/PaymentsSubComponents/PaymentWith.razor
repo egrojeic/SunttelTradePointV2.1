@@ -13,13 +13,20 @@
 
 @inject IJSRuntime Js
 
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+</style>
+
+
 <form>
     <SfTab Height="250px" CssClass="tab-adaptive" HeaderPlacement="HeaderPosition.Top">
         <TabAnimationSettings>
             <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
             <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
         </TabAnimationSettings>
-        <TabItems>
+        <TabItems >
 
             <TabItem>
                 <ChildContent>
@@ -53,7 +60,7 @@
                                         PageSize="50"
                                         AllowPaging="true"
                                         PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                                        ShowPagingSummary="true"
+                                        ShowPagingSummary="true"                                        
                                         Data="@paymentWithOverpaymentList"
                                         TItem="PaymentWithOverpayment"
                                         ColumnWidth="300px"
@@ -61,7 +68,6 @@
                                         LogicalFilterOperator="LogicalFilterOperator.Or"
                                         CellContextMenu="@ShowContextMenuCommercialDocument">
                                 <Columns>
-
 
                                     <RadzenDataGridColumn TItem="PaymentWithOverpayment" Property="OriginalCode" Title="@GetName("OriginalCode", new AppliedPayment())" Width="208px" />
                                     <RadzenDataGridColumn TItem="PaymentWithOverpayment" Property="OverpaymentValue" Title="@GetName("OverpaymentValue", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />

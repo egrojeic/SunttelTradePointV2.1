@@ -5,7 +5,8 @@
 <div class="@ClassContainer" style="position:relative;">
     <div class="item-edit" style="display:@(!captionOff?"flex":"none"); @styleCaption">
         <label>@(caption)</label>
-        <button type="button" @onclick='SetViewElemnt' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
+        <img @onclick='SetViewElemnt' class="color-btn" src="/images//ico-plus.png">
+       @* <button type="button" ><i class="fa-sharp fa-solid fa-circle-plus"></i></button>*@
     </div>
     <div class="position-input">
         <div class="component-input" style=" @style display:@(Visible?"block":"none");   ">

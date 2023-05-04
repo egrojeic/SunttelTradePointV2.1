@@ -15,12 +15,13 @@ namespace SunttelTradePointB.Server.Interfaces.PaymentBkServices
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
         /// <param name="squadId"></param>
-        /// <param name="PaymentDate"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<Payment>? PaymentList, string? ErrorDescription)> GetPaymentsByDateSpan(string userId, string ipAddress, string squadId, DateTime PaymentDate, int? page = 1, int? perPage = 10, string? filter = null);
+        Task<(bool IsSuccess, List<Payment>? PaymentList, string? ErrorDescription)> GetPaymentsByDateSpan(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null);
 
         /// <summary>
         /// Retrieves a inventory having the specified id

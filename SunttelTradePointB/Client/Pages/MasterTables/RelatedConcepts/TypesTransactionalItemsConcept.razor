@@ -36,19 +36,19 @@
         <div class="flex-horizontal-center">
             <div class="grid-columns-2 box-shadow-mode width-page1">
                 <div>
-                    <label>
+                    <label class="info-text-size">
                         @GetName( "ChildrenGroups", new ConceptGroup())
                     </label>
                 </div>
                 <div></div>
-                <div><label>@GetName( "Name", new AtomConcept())</label></div>
-                <div><input type="text" @bind-value="childrenGroup.Name" class="form-control" placeholder="Edit value" /></div>
-                <div><label>@GetName( "Code", new AtomConcept())</label></div>
-                <div><input type="text" @bind-value="childrenGroup.Code" class="form-control" placeholder="Edit value" /></div>
-                <div><label>@GetName( "Notes", new AtomConcept())</label></div>
-                <div><input type="text" @bind-value="childrenGroup.Notes" class="form-control" placeholder="Edit value" /></div>
-                <div><label>@GetName( "GroupClassificationCriteria", new ConceptGroup())</label></div>
-                <div><input type="text" @bind-value="childrenGroup.GroupClassificationCriteria" class="form-control" placeholder="Edit value" /></div>
+                <div><label class="info-text-size">@GetName( "Name", new AtomConcept())</label></div>
+                <div><input type="text" @bind-value="childrenGroup.Name" class="form-control info-text-size" placeholder="Edit value" /></div>
+                <div><label class="info-text-size" >@GetName( "Code", new AtomConcept())</label></div>
+                <div><input type="text" @bind-value="childrenGroup.Code" class="form-control info-text-size" placeholder="Edit value" /></div>
+                <div><label class="info-text-size" >@GetName( "Notes", new AtomConcept())</label></div>
+                <div><input type="text" @bind-value="childrenGroup.Notes" class="form-control info-text-size" placeholder="Edit value" /></div>
+                <div><label class="info-text-size" >@GetName( "GroupClassificationCriteria", new ConceptGroup())</label></div>
+                <div><input type="text" @bind-value="childrenGroup.GroupClassificationCriteria" class="form-control info-text-size" placeholder="Edit value" /></div>
                 <div></div>
                 <div class="flex-horizontal-end">
                     <button @onclick='()=>OpenAdd("ChildrenGroups")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>

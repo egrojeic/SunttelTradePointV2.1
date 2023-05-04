@@ -12,6 +12,12 @@
 @inject NavigationManager Navigation
 @inject ContextMenuService ContextMenuService
 
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+</style>
+
 
 @if (@viewMsg)
 {
@@ -39,7 +45,7 @@
                 <div class="flex-horizontal-center">
                     <div class="grid-columns-2 box-shadow-mode">
                         <div>
-                            <label>
+                            <label class="info-text-size">
                                 @GetName( "Material", new MaterialRecipeItem())
                             </label>
                         </div>
@@ -53,8 +59,8 @@
                                         Items="MaterialsConcept">
 
                         </InputTextSelector3>
-                        <div><label>@GetName( "Quantity",new MaterialRecipeItem())</label></div>
-                        <div><input type="number" @bind="materialRecipeItem.Quantity" class="form-control border-color" required /></div>
+                        <div><label class="info-text-size" >@GetName( "Quantity",new MaterialRecipeItem())</label></div>
+                        <div><input type="number" @bind="materialRecipeItem.Quantity" class="form-control border-color info-text-size" required /></div>
                         <div></div>
                         <div class="flex-horizontal-end">
                             <button type="button" @onclick='()=>OpenAdd("Material")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
@@ -76,22 +82,22 @@
 
             <div class="grid-columns-2-img">
                 <div class="grid-columns-header">
-                    <div>
-                        <label for="name">Name</label>
+                    <div >
+                        <label for="name" class="info-text-size""">Name</label>
                     </div>
                     <div>
-                        <input type="text" class="form-control" id="name" @bind-value="@MateriaoNew.Name" autocomplete="off" />
+                        <input type="text" class="form-control info-text-size" id="name" @bind-value="@MateriaoNew.Name" autocomplete="off" />
                     </div>
 
                     <div id="shortCutCodeGroup">
-                        <label for="shortcutCode">Identifier Code</label>
+                        <label for="shortcutCode" class="info-text-size">Identifier Code</label>
                     </div>
                     <div>
-                        <input type="text" class="form-control" @bind="MateriaoNew.Code" autocomplete="off" />
+                        <input type="text" class="form-control info-text-size" @bind="MateriaoNew.Code" autocomplete="off" />
                     </div>
-                    <div><label for="shortcutCode">@GetName("Status", new Concept())</label></div>
+                    <div><label for="shortcutCode" class="info-text-size">@GetName("Status", new Concept())</label></div>
                     <div @onclick="SetStatus">
-                        <label id="statusConcept" class="style-status" style="background-color:@colorStatus;">@(MateriaoNew.Status != null ? MateriaoNew.Status : "")</label>
+                        <label id="statusConcept" class="style-status info-text-size" style="background-color:@colorStatus;">@(MateriaoNew.Status != null ? MateriaoNew.Status : "")</label>
                     </div>
 
                     <div class="lineFormGroup">
@@ -135,11 +141,11 @@
                 <div class="flex-horizontal-center">
                     <div class="grid-columns-2 box-shadow-mode">
 
-                        <div><label>@GetName( "Quantity",new MaterialRecipeItem())</label></div>
-                        <div><input type="number" @bind="materialRecipeItem.Quantity" class="form-control border-color" required /></div>
+                        <div><label class="info-text-size" >@GetName( "Quantity",new MaterialRecipeItem())</label></div>
+                        <div><input type="number" @bind="materialRecipeItem.Quantity" class="form-control border-color info-text-size" required /></div>
                         <div></div>
                         <div class="flex-horizontal-end">
-                            <button type="button" @onclick='()=>ClosedAdd("ListOfMaterials")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+                            <button type="button" @onclick='()=>ClosedAdd("ListOfMaterials")' class="size-btn color-btn margin-left "><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
                             <button type="button" @onclick='AddMaterials' class="size-btn color-btn "><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
                         </div>
 
@@ -181,7 +187,7 @@
 
             <div class="grid-columns-header ">
                 <div>
-                    <label>
+                    <label class="info-text-size">
                         @GetName( "ItemComponent", new PackRecipeItem())
                     </label>
                 </div>
@@ -196,7 +202,7 @@
 
                 </InputTextSelector3>
                 <div>
-                    <label>
+                    <label class="info-text-size">
                         @GetName( "RecipeQualityModifier", new PackRecipeItem())
                     </label>
                 </div>
@@ -211,11 +217,11 @@
 
                 </InputTextSelector3>
 
-                <div><label>@GetName( "Quantity",new MaterialRecipeItem())</label></div>
-                <div><input type="number" @bind="assemblyRecipeItem.Quantity" class="form-control border-color" required /></div>
+                <div><label class="info-text-size">@GetName( "Quantity",new MaterialRecipeItem())</label></div>
+                <div><input type="number" @bind="assemblyRecipeItem.Quantity" class="form-control border-color info-text-size" required /></div>
             </div>
 
-            <SfTab Height="300px" HeaderPlacement="HeaderPosition.Left">
+            <SfTab Height="300px" HeaderPlacement="HeaderPosition.Left" CssClass="info-text-size">
                 <TabAnimationSettings>
                     <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
                     <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
@@ -333,7 +339,7 @@
 
             <div class="flex-horizontal-center">
                 <div class="grid-columns-2 box-shadow-mode">
-                    <div><label>@GetName( "ListOfMaterials", new PackRecipeItem())</label></div>
+                    <div><label class="info-text-size">@GetName( "ListOfMaterials", new PackRecipeItem())</label></div>
                     <div>
 
                         <InputTextSelector3 TItem="Concept"
@@ -348,12 +354,12 @@
 
                     </div>
                     <div>
-                        <label>
+                        <label class="info-text-size">
                             @GetName( "Quantity", new MaterialRecipeItem())
                         </label>
                     </div>
                     @if (materialRecipeItem == null) materialRecipeItem = new();
-                    <div><input type="number" @bind="materialRecipeItem.Quantity" class="form-control border-color" maxlength="4" min="1" /></div>
+                    <div><input type="number" @bind="materialRecipeItem.Quantity" class="form-control border-color info-text-size" maxlength="4" min="1" /></div>
 
                     <div></div>
                     <div class="flex-horizontal-end">
@@ -437,10 +443,10 @@
                                                     EventClosed="ClosedInputText"
                                                     Items="ListConcept">
                                 </InputTextSelector3>
-                                <div><label>@GetName( "Code", new AtomConcept())</label></div>
-                                <div> <b><h6>@(Customer != null ? Customer.Code : "")</h6></b></div>
+                                <div><label class="info-text-size"> @GetName( "Code", new AtomConcept())</label></div>
+                                <div> <b><h6 class="info-text-size">@(Customer != null ? Customer.Code : "")</h6></b></div>
                                 <div>
-                                    <label>
+                                    <label class="info-text-size">
                                         @GetName( "Season", new PackingSpecs())
                                     </label>
                                 </div>
@@ -454,7 +460,7 @@
                                 </InputTextSelector3>
 
                                 <div>
-                                    <label>
+                                    <label class="info-text-size">
                                         @GetName("ModelRecipe",new PackingSpecs())
                                     </label>
                                 </div>
@@ -467,15 +473,15 @@
                                 </InputTextSelector3>
 
                                 <div>
-                                    <label>
+                                    <label class="info-text-size">
                                         @GetName( "PackLayersToSale", new PackingSpecs())
                                     </label>
                                 </div>
-                                <div><input type="number" @bind="_PackingSpecs.PackLayersToSale" class="form-control border-color" autofocus required /></div>
+                                <div><input type="number" @bind="_PackingSpecs.PackLayersToSale" class="form-control border-color info-text-size" autofocus required /></div>
                                 <div><label>@GetName( "PackLayersToBuy",new PackingSpecs())</label></div>
-                                <div><input type="number" @bind="_PackingSpecs.PackLayersToBuy" class="form-control border-color" required /></div>
+                                <div><input type="number" @bind="_PackingSpecs.PackLayersToBuy" class="form-control border-color info-text-size" required /></div>
                                 <div>
-                                    <label>
+                                    <label class="info-text-size">
                                         @GetName( "PackingBoxToSale", new PackingSpecs())
                                     </label>
                                 </div>
@@ -489,7 +495,7 @@
 
                                 </InputTextSelector3>
 
-                                <div><label>@GetName( "PackingBoxToBuy", new PackingSpecs())</label></div>
+                                <div><label class="info-text-size">@GetName( "PackingBoxToBuy", new PackingSpecs())</label></div>
 
                                 <InputTextSelector3 TItem="Box"
                                                     caption="@(BoxToBuy != null ? BoxToBuy?.Name : "")"
@@ -502,21 +508,21 @@
                                 </InputTextSelector3>
 
                                 <div>
-                                    <label>
+                                    <label class="info-text-size">
                                         @GetName( "PackPerBoxLayer", new PackingSpecs())
                                     </label>
                                 </div>
-                                <div><input type="number" @bind="_PackingSpecs.PackPerBoxLayer" class="form-control border-color" maxlength="4" min="1" /></div>
-                                <div><label> @GetName("UnitPrice", new PriceInfo() )</label></div>
-                                <div><input @bind="PriceInfo.UnitPrice" type="number" class="form-control border-color" /></div>
-                                <div><label> @GetName("RetailPrice", new PriceInfo() )</label></div>
-                                <div><input @bind="PriceInfo.RetailPrice" type="number" class="form-control border-color" /></div>
-                                <div><label> @GetName("RetailBulkNumberOfItems", new PriceInfo() )</label></div>
-                                <div><input @bind="PriceInfo.RetailBulkNumberOfItems" type="number" class="form-control border-color" /></div>
-                                <div><label> @GetName("RetailBulkPrice", new PriceInfo() )</label></div>
-                                <div><input @bind="PriceInfo.RetailBulkPrice" type="number" class="form-control border-color" /></div>
-                                <div><label> @GetName("TotalPrice", new PriceInfo() )</label></div>
-                                <div><input @bind="PriceInfo.TotalPrice" type="number" class="form-control border-color" /></div>
+                                <div><input type="number" @bind="_PackingSpecs.PackPerBoxLayer" class="form-control border-color info-text-size" maxlength="4" min="1" /></div>
+                                <div><label class="info-text-size"> @GetName("UnitPrice", new PriceInfo() )</label></div>
+                                <div><input @bind="PriceInfo.UnitPrice" type="number" class="form-control border-color info-text-size" /></div>
+                                <div><label class="info-text-size"> @GetName("RetailPrice", new PriceInfo() )</label></div>
+                                <div><input @bind="PriceInfo.RetailPrice" type="number" class="form-control border-color info-text-size" /></div>
+                                <div><label class="info-text-size"> @GetName("RetailBulkNumberOfItems", new PriceInfo() )</label></div>
+                                <div><input @bind="PriceInfo.RetailBulkNumberOfItems" type="number" class="form-control border-color info-text-size" /></div>
+                                <div><label class="info-text-size"> @GetName("RetailBulkPrice", new PriceInfo() )</label></div>
+                                <div><input @bind="PriceInfo.RetailBulkPrice" type="number" class="form-control border-color info-text-size" /></div>
+                                <div><label class="info-text-size" > @GetName("TotalPrice", new PriceInfo() )</label></div>
+                                <div><input @bind="PriceInfo.TotalPrice" type="number" class="form-control border-color info-text-size" /></div>
 
                                 <div><label>@GetName( "TotalPriceItemTypeBasedOn", new PriceInfo())</label></div>
 
@@ -531,7 +537,7 @@
                                 </InputTextSelector3>
 
                                 <div>
-                                    <label>
+                                    <label class="info-text-size">
                                         @GetName("ItemAssemblyType",new PackingSpecs())
                                     </label>
                                 </div>
@@ -559,7 +565,7 @@
                         <div id="add-recipe">
                             <div class="grid-columns-4">
                                 <div>
-                                    <label>
+                                    <label class="info-text-size">
                                         @GetName( "PalletLabelStyle", new LabelInstruction())
                                     </label>
                                 </div>
@@ -575,7 +581,7 @@
                                 </InputTextSelector3>
 
                                 <div>
-                                    <label>
+                                    <label class="info-text-size">
                                         @GetName( "BoxLabelStyle", new LabelInstruction())
                                     </label>
                                 </div>
@@ -590,11 +596,11 @@
 
                                 </InputTextSelector3>
                                 @* string UPCName*@
-                                <div><label> @GetName("UPCName", new LabelInstruction()) </label></div>
+                                <div><label class="info-text-size"> @GetName("UPCName", new LabelInstruction()) </label></div>
                                 <div><input @bind="labelInstruction.UPCName" class="form-control border-color" required /></div>
 
                                 <div>
-                                    <label>
+                                    <label class="info-text-size">
                                         @GetName( "InnerProductLabelStyleByDeafult", new LabelInstruction())
                                     </label>
                                 </div>
@@ -609,21 +615,21 @@
 
                                 </InputTextSelector3>
 
-                                <div><label> @GetName("UPCComments", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.UPCComments" class="form-control border-color border-color" required /></div>
-                                <div><label> @GetName("BoxUPCCode", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.BoxUPCCode" class="form-control border-color" required /></div>
-                                <div><label> @GetName("InnerProductUPCCode", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.InnerProductUPCCode" class="form-control border-color" required /></div>
-                                <div><label> @GetName("UPCDateCodeFormat", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.UPCDateCodeFormat" type="number" class="form-control border-color" required /></div>
+                                <div><label class="info-text-size"> @GetName("UPCComments", new LabelInstruction()) </label></div>
+                                <div><input @bind="labelInstruction.UPCComments" class="form-control border-color border-color info-text-size" required /></div>
+                                <div><label class="info-text-size" > @GetName("BoxUPCCode", new LabelInstruction()) </label></div>
+                                <div><input @bind="labelInstruction.BoxUPCCode" class="form-control border-color info-text-size" required /></div>
+                                <div><label class="info-text-size" > @GetName("InnerProductUPCCode", new LabelInstruction()) </label></div>
+                                <div><input @bind="labelInstruction.InnerProductUPCCode" class="form-control border-color info-text-size" required /></div>
+                                <div><label class="info-text-size"> @GetName("UPCDateCodeFormat", new LabelInstruction()) </label></div>
+                                <div><input @bind="labelInstruction.UPCDateCodeFormat" type="number" class="form-control border-color info-text-size" required /></div>
                                 <div>
-                                    <label>
+                                    <label class="info-text-size">
                                         @GetName( "UPCDateCodeBasedOn", new LabelInstruction())
                                     </label>
                                 </div>
                                 <div style="position:relative;">
-                                    <select class="form-control" @bind="labelInstruction.UPCDateCodeBasedOn" placeholder="Edit value">
+                                    <select class="form-control info-text-size" @bind="labelInstruction.UPCDateCodeBasedOn" placeholder="Edit value">
                                         <option value="@DatesReferenceType.ProductionDate">@DatesReferenceType.ProductionDate.ToString()</option>
                                         <option value="@DatesReferenceType.BuyDate">@DatesReferenceType.BuyDate.ToString()</option>
                                         <option value="@DatesReferenceType.NotDefined">@DatesReferenceType.NotDefined.ToString()</option>
@@ -631,13 +637,13 @@
                                         <option value="@DatesReferenceType.ShipDate">@DatesReferenceType.ShipDate.ToString()</option>
                                     </select>
                                 </div>
-                                <div><label> @GetName("UPCDateCodeDaysAfterReferenceDate", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.UPCDateCodeFormat" type="number" class="form-control border-color" required /></div>
-                                <div><label> @GetName("OriginCountryLegend", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.OriginCountryLegend" class="form-control border-color" required /></div>
-                                <div><label> @GetName("SKU", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.SKU" class="form-control border-color" required /></div>
-                                <div><label> @GetName("ShowRetailPriceUPCInfo", new LabelInstruction()) </label></div>
+                                <div><label class="info-text-size"> @GetName("UPCDateCodeDaysAfterReferenceDate", new LabelInstruction()) </label></div>
+                                <div><input @bind="labelInstruction.UPCDateCodeFormat" type="number" class="form-control border-color info-text-size" required /></div>
+                                <div><label class="info-text-size"> @GetName("OriginCountryLegend", new LabelInstruction()) </label></div>
+                                <div><input @bind="labelInstruction.OriginCountryLegend" class="form-control border-color info-text-size" required /></div>
+                                <div><label class="info-text-size"> @GetName("SKU", new LabelInstruction()) </label></div>
+                                <div><input @bind="labelInstruction.SKU" class="form-control border-color info-text-size" required /></div>
+                                <div><label class="info-text-size"> @GetName("ShowRetailPriceUPCInfo", new LabelInstruction()) </label></div>
                                 <div>
                                     <SfSwitch @bind-Checked="@labelInstruction.ShowRetailPriceUPCInfo"></SfSwitch>
                                 </div>
@@ -735,7 +741,7 @@
                                             PageNumbersCount="100">
 
                                     <Columns>
-                                        <RadzenDataGridColumn TItem="PackRecipeItem" Property="ItemComponent.Name" Title="@GetName( "ComponentItemRecipe",new PackRecipeItem())" Frozen="false" Width="80px" />
+                                        <RadzenDataGridColumn  TItem="PackRecipeItem" Property="ItemComponent.Name" Title="@GetName( "ComponentItemRecipe",new PackRecipeItem())" Frozen="false" Width="80px" />
                                         <RadzenDataGridColumn TItem="PackRecipeItem" Property="RecipeQualityModifier.Name" Filterable="true" Title="@GetName( "Quantity",new PackRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
                                         <RadzenDataGridColumn TItem="PackRecipeItem" Property="Quantity" Filterable="true" Title="@GetName( "RecipeQualityModifier",new PackRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
                                         <RadzenDataGridColumn TItem="PackRecipeItem" Property="Id" Filterable="true" Title="@GetName( "Id",new PackRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />

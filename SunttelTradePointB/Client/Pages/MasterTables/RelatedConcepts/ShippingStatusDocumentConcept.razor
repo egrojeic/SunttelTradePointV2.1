@@ -20,14 +20,14 @@
 
 <div class="flex-horizontal-center">
     <div class="grid-columns-2 box-shadow-mode">
-        <div><label>@GetName( "Name", new AtomConcept())</label></div>
-        <div><input type="text" @bind-value="@shippingStatus.Name" class="form-control" placeholder="Edit value" /></div>
+        <div><label class="info-text-size">@GetName( "Name", new AtomConcept())</label></div>
+        <div><input type="text" @bind-value="@shippingStatus.Name" class="form-control info-text-size " placeholder="Edit value" /></div>
 
-        <div><label>@GetName( "AffectInventory", new ShippingStatus())</label></div>
+        <div><label class="info-text-size">@GetName( "AffectInventory", new ShippingStatus())</label></div>
         <div>
             <SfSwitch @bind-Checked="@shippingStatus.AffectInventory"></SfSwitch>
         </div>
-        <div><label>@GetName( "EditingAllowed", new ShippingStatus())</label></div>
+        <div><label class="info-text-size">@GetName( "EditingAllowed", new ShippingStatus())</label></div>
         <div>
             <SfSwitch @bind-Checked="@shippingStatus.EditingAllowed"></SfSwitch>
         </div>

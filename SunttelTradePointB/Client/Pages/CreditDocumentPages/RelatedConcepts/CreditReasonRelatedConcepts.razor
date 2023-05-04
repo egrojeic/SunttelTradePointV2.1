@@ -26,7 +26,7 @@
 <form>
 
     <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
-        <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+        <button @onclick="Home" class="size-btn color-btn "><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
         <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
             <SplitButtonEvents ItemSelected="ItemSelected">
@@ -47,8 +47,8 @@
 
     <div class="flex-horizontal-center">
         <div class="grid-mode-row grid-colum">
-            <div><label>@GetName("Name",new CreditReason())</label></div>
-            <InputTextDisable TypeInt="false" Enable="true" style="font-size:15px; font-weight:none;"  @bind-ValueString="@creditReason.Name"></InputTextDisable>
+            <div><label class="info-text-size">@GetName("Name",new CreditReason())</label></div>
+            <InputTextDisable TypeInt="false" Enable="true" style=" font-weight:none;"  @bind-ValueString="@creditReason.Name"></InputTextDisable>
 
         </div>
     </div>

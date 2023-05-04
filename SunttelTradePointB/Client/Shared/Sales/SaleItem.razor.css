@@ -25,6 +25,12 @@
 
 .grid-columns-6 {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    column-gap: 5px;
+    row-gap: 0px;
+    margin-top: 2px;
+    justify-content:center;
+    align-items:center;   
+    
 }
 
 /*grid-template-columns: 140px 180px 176px 180px 150px 180px;*/

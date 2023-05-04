@@ -6,6 +6,11 @@
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
 
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+</style>
 
 <PageTitleComponent Title="Sales" IconName="commercialActivities.png"
                     Description="With this tool you can create and edit Sales operations such as Orders and Invoices">
@@ -56,33 +61,36 @@
                     CellContextMenu="@ShowContextMenuCommercialDocument">
             <Columns>
 
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentType.Name" Title="Document Type" Width="308px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentType.Name" Title="Document Type" Width="158px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="BusinessLineDoc.Name" Title="Business Line" Filterable="false" Sortable="false" Width="208px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="PO" Title="PO" Width="64px" Filterable="false" Sortable="false" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="PO" Title="PO" Width="154px" Filterable="false" Sortable="false" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="ShipDate" Title="Ship Date" FormatString="{0:d}" Width="200px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="DeliveryDate" Title="Delivery Date" FormatString="{0:d}" Width="200px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="ArrivalDate" Title="Provider Arrival Date" FormatString="{0:d}" Width="200px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="Vendor.Name" Title="Vendor" Width="200px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="Buyer.Name" Title="Buyer" Width="200px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="SalesPerson.Name" Title="Sales Person" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="Carrier.Name" Title="Carrier" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="Carrier.Name" Title="Carrier" Width="150px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="DeliveryAddress.Name" Title="Delivery Address" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="ShippingStatusDocument.Name" Title="Shipping Status" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="ShippingStatusDocument.Name" Title="Shipping Status" Width="120px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="TrackingNumber" Title="Tracking Number" Width="200px" Filterable="false" Sortable="false" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceStatusDocument.Name" Title="Finance Status" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceStatusDocument.Name" Title="Finance Status" Width="150px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="OriginDocument.Name" Title="Origin Document" Width="200px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="VendorWarehouse.Name" Title="Vendor Warehouse" Width="200px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="BuyerWarehouse.Name" Title="Buyer Warehouse" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="Season.Name" Title="Season" Width="96px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="PrintingSatus.Name" Title="Printing Satus" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="Season.Name" Title="Season" Width="156px" />               
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="SpecsNotes" Title="Specs Notes" Filterable="false" Sortable="false" Width="200px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="MarkedForQCInspection" Title="Marked for QCInspection" Filterable="false" Sortable="false" Width="200px">
                     <Template Context="commercialdocumentItem">
                         <RadzenCheckBox @bind-Value="commercialdocumentItem.MarkedForQCInspection" />
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.Name" Title="FinanceSummary" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalTaxes" TextAlign="TextAlign.Right" FormatString="{0:N2}" Title="@GetName("TotalTaxes", new FinanceSalesDocumentSummary())" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalCosts" TextAlign="TextAlign.Right" FormatString="{0:N2}" Title="@GetName("TotalCosts", new FinanceSalesDocumentSummary())" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalPaid" TextAlign="TextAlign.Right" FormatString="{0:N2}" Title="@GetName("TotalPaid", new FinanceSalesDocumentSummary())" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalAmount" TextAlign="TextAlign.Right" FormatString="{0:N2}" Title="@GetName("TotalAmount", new FinanceSalesDocumentSummary())" Width="200px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="Items.Name" Title="Items" Width="200px" />
+             
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="ToInvoice" Title="To Invoice" Filterable="false" Sortable="false" Width="200px">
                     <Template Context="commercialdocumentItem">
                         <RadzenCheckBox @bind-Value="commercialdocumentItem.ToInvoice" />

@@ -11,8 +11,8 @@
 <MessageSaveComponent isVisible="isVisible" message="@msg">
 </MessageSaveComponent>
 
-<PageTitleComponent Title="Payment Vias" IconName="Payments.png"
-                    Description="With this tool you can create and edit payment vias ">
+<PageTitleComponent Title="Payment With Overpayment " IconName="Payments.png"
+                    Description="With this tool you can create and edit payment with overpayment  ">
 </PageTitleComponent>
 
 
@@ -41,17 +41,17 @@
 <div class="flex-horizontal-center">
 
     <div class="grid-mode-row grid-colum">
-        <div><label>@GetName("InvoiceCode",new PaymentWithOverpayment())</label></div>
-        <InputTextDisable TypeInt="false" Enable="true" style="font-size:15px; font-weight:none;" @bind-ValueString="@paymentWithOverpayment.OriginalCode"></InputTextDisable>
+        <div><label class="info-text-size">@GetName("InvoiceCode",new PaymentWithOverpayment())</label></div>
+        <InputTextDisable TypeInt="false" Enable="true" style=" font-weight:none;" @bind-ValueString="@paymentWithOverpayment.OriginalCode"></InputTextDisable>
 
-        <div><label>@GetName("OverpaymentValue",new PaymentWithOverpayment())</label></div>
-        <InputTextDisable TypeInt="true" Enable="true" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@paymentWithOverpayment.OverpaymentValue"></InputTextDisable>
+        <div><label class="info-text-size">@GetName("OverpaymentValue",new PaymentWithOverpayment())</label></div>
+        <InputTextDisable TypeInt="true" Enable="true" style=" font-weight:none;" @bind-ValueDouble="@paymentWithOverpayment.OverpaymentValue"></InputTextDisable>
 
-        <div><label>@GetName("OverpaymentApplied",new PaymentWithOverpayment())</label></div>
-        <InputTextDisable TypeInt="true" Enable="true" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@paymentWithOverpayment.OverpaymentApplied"></InputTextDisable>
+        <div><label class="info-text-size">@GetName("OverpaymentApplied",new PaymentWithOverpayment())</label></div>
+        <InputTextDisable TypeInt="true" Enable="true" style=" font-weight:none;" @bind-ValueDouble="@paymentWithOverpayment.OverpaymentApplied"></InputTextDisable>
 
-        <div><label>@GetName("Notes",new PaymentWithOverpayment())</label></div>
-        <InputTextDisable TypeInt="true" Enable="true" style="font-size:15px; font-weight:none;" @bind-ValueString="@paymentWithOverpayment.Notes"></InputTextDisable>
+        <div><label class="info-text-size">@GetName("Notes",new PaymentWithOverpayment())</label></div>
+        <InputTextDisable TypeInt="true" Enable="true" style=" font-weight:none;" @bind-ValueString="@paymentWithOverpayment.Notes"></InputTextDisable>
 
 
     </div>

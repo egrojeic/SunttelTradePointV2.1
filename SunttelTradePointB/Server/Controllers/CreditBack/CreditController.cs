@@ -115,7 +115,7 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
         public async Task<IActionResult> GetCreditTypes(string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filter = null)
         {
             var customHeaderValue = Request.Headers["SquadId"];
-            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString().ToUpper() ?? ""; // Request.Headers["SquadId"];
             var response = await _credit.GetCreditTypes(userId, ipAddress, squadId, page, perPage, filter);
 
             if (response.IsSuccess)
@@ -138,7 +138,7 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
         public async Task<IActionResult> GetCreditTypeById(string userId, string ipAddress, string creditTypeId)
         {
             var customHeaderValue = Request.Headers["SquadId"];
-            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString().ToUpper() ?? ""; // Request.Headers["SquadId"];
             var response = await _credit.GetCreditTypeById(userId, ipAddress, squadId, creditTypeId);
 
             if (response.IsSuccess)
@@ -160,8 +160,9 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
         [ActionName("SaveCreditType")]
         public async Task<IActionResult> SaveCreditType(string userId, string ipAddress, [FromBody] CreditType creditType)
         {
-            var customHeaderValue = Request.Headers["SquadId"];
-            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            // Setear Squad Id
+            creditType.SquadId = creditType.SquadId.ToUpper();
+            var squadId = creditType.SquadId;
 
             var response = await _credit.SaveCreditType(userId, ipAddress, squadId, creditType);
 

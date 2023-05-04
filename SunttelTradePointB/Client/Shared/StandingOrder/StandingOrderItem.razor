@@ -15,6 +15,13 @@
 @inject ActorsNodeService actorsNodeServive
 @inject IJSRuntime Js
 
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+</style>
+
+
 <MessageSaveComponent isVisible="isVisible" message="@alertMsg">
 </MessageSaveComponent>
 <PageTitleComponent Title=" standing orders sale item"
@@ -47,12 +54,12 @@
     <div class="grid-columns-header grid-columns-6">
 
         <div>
-            <label>
+            <label class="info-text-size">
                 @GetName("DocumentType",new StandingOrder())
             </label>
         </div>
         <div>
-            <select @onchange="SelectItem" class="select-style">
+            <select @onchange="SelectItem" class="select-style info-text-size">
 
                 @if (documentType != null && documentType.Count() > 0)
                 {
@@ -73,13 +80,13 @@
             </select>
         </div>
 
-        <div><label>@GetName("DocumentNumber",new StandingOrder())</label></div>
-        <InputTextDisable Enable="true" style="size:15px; font-weight:none;" @bind-ValueInt="@standingOrderDetails.DocumentNumber"></InputTextDisable>
+        <div><label class="info-text-size">@GetName("DocumentNumber",new StandingOrder())</label></div>
+        <InputTextDisable Enable="true" style=" font-weight:none;" @bind-ValueInt="@standingOrderDetails.DocumentNumber"></InputTextDisable>
 
 
-        <div><label class="sub-tile">@GetName("BusinessLineDoc",new StandingOrder())</label></div>
+        <div><label class="info-text-size">@GetName("BusinessLineDoc",new StandingOrder())</label></div>
         <div>
-            <select @onchange="SelectItemBusinessLineDoc" class="select-style">
+            <select @onchange="SelectItemBusinessLineDoc" class="select-style info-text-size">
 
                 @if (businessLineDocList != null && businessLineDocList.Count() > 0)
                 {
@@ -96,18 +103,18 @@
             </select>
         </div>
 
-        <div><label>@GetName("PO",new StandingOrder())</label></div>
-        <InputTextDisable Enable="true" TypeInt="false" style="size:15px; font-weight:none;" @bind-ValueString="@standingOrderDetails.PO"></InputTextDisable>
+        <div><label class="info-text-size">@GetName("PO",new StandingOrder())</label></div>
+        <InputTextDisable Enable="true" TypeInt="false" style=" font-weight:none;" @bind-ValueString="@standingOrderDetails.PO"></InputTextDisable>
 
 
-        <div><label>@GetName("StartingShipDate",new StandingOrder())</label></div>
+        <div><label class="info-text-size">@GetName("StartingShipDate",new StandingOrder())</label></div>
         <input type="date" @bind="@standingOrderDetails.StartingShipDate" class="form-control" />
 
-        <div><label>@GetName("FinalShipDate",new StandingOrder())</label></div>
-        <input type="date" @bind="@standingOrderDetails.FinalShipDate" class="form-control" />
+        <div><label class="info-text-size">@GetName("FinalShipDate",new StandingOrder())</label></div>
+        <input type="date" @bind="@standingOrderDetails.FinalShipDate" class="form-control info-text-size" />
 
 
-        <div><label class="sub-tile">@GetName("Season",new CommercialDocument())</label></div>
+        <div><label class="info-text-size ">@GetName("Season",new CommercialDocument())</label></div>
         <InputTextSelector3 style="right:-100px;" TItem="SeasonBusiness"
                             Id="Season"
                             caption="@(standingOrderDetails.Season !=null ? standingOrderDetails.Season?.Name:"" )"
@@ -116,7 +123,7 @@
                             EventSearcherValueAndId="EventSearcherValueAndId">
         </InputTextSelector3>
 
-        <div><label>@GetName("Vendor",new StandingOrder())</label></div>
+        <div><label class="info-text-size">@GetName("Vendor",new StandingOrder())</label></div>
 
         <InputTextSelector3 TItem="Concept"
                             Id="Vendor"
@@ -128,7 +135,7 @@
         </InputTextSelector3>
 
 
-        <div><label>@GetName("Buyer",new StandingOrder())</label></div>
+        <div><label class="info-text-size">@GetName("Buyer",new StandingOrder())</label></div>
         <InputTextSelector3 TItem="Concept"
                             Id="Buyer"
                             caption="@(standingOrderDetails.Buyer !=null ? standingOrderDetails.Buyer.Name:"")"
@@ -139,7 +146,7 @@
         </InputTextSelector3>
 
 
-        <div><label class="sub-tile">@GetName("SalesPerson",new StandingOrder())</label></div>
+        <div><label class="info-text-size">@GetName("SalesPerson",new StandingOrder())</label></div>
         <InputTextSelector3 style="right:-110px;" TItem="Concept"
                             Id="SalesPerson"
                             caption="@(standingOrderDetails.SalesPerson !=null ? standingOrderDetails.SalesPerson?.Name:"" )"
@@ -148,11 +155,11 @@
                             EventSearcherValueAndId="EventSearcherValueAndId">
         </InputTextSelector3>
 
-        <div><label>@GetName("FrequencyInDays",new StandingOrder())</label></div>
-        <InputTextDisable Enable="true" style="size:15px; font-weight:none;" @bind-ValueInt="@standingOrderDetails.FrequencyInDays"></InputTextDisable>
+        <div><label class="info-text-size">@GetName("FrequencyInDays",new StandingOrder())</label></div>
+        <InputTextDisable Enable="true" style=" font-weight:none;" @bind-ValueInt="@standingOrderDetails.FrequencyInDays"></InputTextDisable>
 
 
-        <div><label class="sub-tile">@GetName("DeliveryAddress",new StandingOrder())</label></div>
+        <div><label class="info-text-size">@GetName("DeliveryAddress",new StandingOrder())</label></div>
         <div>
             <select @onchange="SelectItemDeliveryAddress" class="select-style">
 
@@ -172,9 +179,9 @@
         </div>
 
 
-        <div><label class="sub-tile">@GetName("TransportationMode",new StandingOrder())</label></div>
+        <div><label class="info-text-size">@GetName("TransportationMode",new StandingOrder())</label></div>
         <div>
-            <select @onchange="SelectItemTransportationMode" class="select-style">
+            <select @onchange="SelectItemTransportationMode" class="select-style info-text-size ">
 
                 <option value="">Select</option>
                 <option value="@(TransportationMode.Airplane)">Airplane</option>
@@ -189,8 +196,8 @@
         </div>
 
 
-        <div><label>@GetName("IsASale",new StandingOrder())</label></div>
-        <div>
+        <div><label  >@GetName("IsASale",new StandingOrder())</label></div>
+        <div class="info-text-size">
             <SfSwitch @bind-Checked="@standingOrderDetails.IsEndUndefined"></SfSwitch>
         </div>
 

@@ -18,18 +18,18 @@
 
 <div class="flex-horizontal-center">
     <div class="grid-columns-2 box-shadow-mode">
-        <div><label>@GetName( "Name", new AtomConcept())</label></div>
-        <div><input type="text" @bind-value="seasonBusiness.Name" class="form-control" placeholder="Edit value" /></div>
-        <div><label>@GetName( "Code", new AtomConcept())</label></div>
-        <div><input type="text" @bind-value="seasonBusiness.Code" class="form-control" placeholder="Edit value" /></div>
-        <div><label>@GetName( "Code", new AtomConcept())</label></div>
+        <div><label class="info-text-size">@GetName( "Name", new AtomConcept())</label></div>
+        <div><input type="text" @bind-value="seasonBusiness.Name" class="form-control info-text-size" placeholder="Edit value" /></div>
+        <div><label class="info-text-size" >@GetName( "Code", new AtomConcept())</label></div>
+        <div><input type="text" @bind-value="seasonBusiness.Code" class="form-control info-text-size" placeholder="Edit value" /></div>
+        <div><label class="info-text-size" >@GetName( "Code", new AtomConcept())</label></div>
         <div>
             <SfSwitch @bind-Checked="seasonBusiness.FlagSundayShipping"></SfSwitch>
         </div>
-        <div><label>@GetName( "StartDate", new SeasonBusiness())</label></div>
-        <div><input type="date" @bind-value="seasonBusiness.StartDate" class="form-control" placeholder="Edit value" /></div>
-        <div><label>@GetName( "EndDate", new SeasonBusiness())</label></div>
-        <div><input type="date" @bind-value="seasonBusiness.EndDate" class="form-control" placeholder="Edit value" /></div>
+        <div><label class="info-text-size" >@GetName( "StartDate", new SeasonBusiness())</label></div>
+        <div><input type="date" @bind-value="seasonBusiness.StartDate" class="form-control info-text-size" placeholder="Edit value" /></div>
+        <div><label class="info-text-size" >@GetName( "EndDate", new SeasonBusiness())</label></div>
+        <div><input type="date" @bind-value="seasonBusiness.EndDate" class="form-control info-text-size" placeholder="Edit value" /></div>
 
         <div></div>
         <div class="flex-horizontal-end">

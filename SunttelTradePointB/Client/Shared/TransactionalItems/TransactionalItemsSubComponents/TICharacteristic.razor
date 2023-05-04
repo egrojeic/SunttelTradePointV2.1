@@ -8,6 +8,12 @@
 @inject TransactionalItemsService transactionalService;
 @inject ContextMenuService ContextMenuService
 
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+</style>
+
 <div class="detailsTitleContainer">
     <h3 class="subTitleDetailForm">Characteristic</h3>
     <svg @onclick='()=>OpenAdd($"/CharacteristicCard/TransactionalItemCard/{IdTransactionalItem}")' title="Add new tag" style="margin-left:20px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style" viewBox="0 0 16 16">

@@ -12,12 +12,17 @@
 @inject ContextMenuService ContextMenuService
 @inject IJSRuntime Js
 
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+</style>
 
 
 
 <div>
     <div class="detailsTitleContainer">
-        <h3 class="subTitleDetailForm">@GetName("Items",new CommercialDocument())</h3>
+        <h3 class="subTitleDetailForm ">@GetName("Items",new CommercialDocument())</h3>
         <img @onclick="()=>CloseMenu(true)" class="img-menu" src="/images/menu.png">
         <div class="menu-item" style="display:@(menuVisible?"flex":"none");">
             <button type="button" class="exit-btn" @onclick="()=>CloseMenu(false)">

@@ -20,22 +20,22 @@
 
 <div class="flex-horizontal-center">
     <div class="grid-columns-2 box-shadow-mode">
-        <div><label>@GetName( "Name", new BasicConcept())</label></div>
-        <div><input type="text" @bind-value="commercialDocumentType.Name" class="form-control" placeholder="Edit value" /></div>
+        <div><label class="info-text-size">@GetName( "Name", new BasicConcept())</label></div>
+        <div><input type="text" @bind-value="commercialDocumentType.Name" class="form-control info-text-size" placeholder="Edit value" /></div>
 
-        <div><label>@GetName( "AffectInventory", new CommercialDocumentType())</label></div>
+        <div><label class="info-text-size">@GetName( "AffectInventory", new CommercialDocumentType())</label></div>
         <div>
             <SfSwitch @bind-Checked="@commercialDocumentType.AffectInventory"></SfSwitch>
         </div>
-        <div><label>@GetName( "AffectFinance", new CommercialDocumentType())</label></div>
+        <div><label class="info-text-size">@GetName( "AffectFinance", new CommercialDocumentType())</label></div>
         <div>
             <SfSwitch @bind-Checked="@commercialDocumentType.AffectFinance"></SfSwitch>
         </div>
-        <div><label>@GetName( "NeedsCheckPrices", new CommercialDocumentType())</label></div>
+        <div><label class="info-text-size">@GetName( "NeedsCheckPrices", new CommercialDocumentType())</label></div>
         <div>
             <SfSwitch @bind-Checked="@commercialDocumentType.NeedsCheckPrices"></SfSwitch>
         </div>
-        <div><label>@GetName( "IsASale", new CommercialDocumentType())</label></div>
+        <div><label class="info-text-size">@GetName( "IsASale", new CommercialDocumentType())</label></div>
         <div>
             <SfSwitch @bind-Checked="@commercialDocumentType.IsASale"></SfSwitch>
         </div>

@@ -19,21 +19,21 @@
 
 <div class="flex-horizontal-center">
     <div class="grid-columns-2 box-shadow-mode">
-        <div><label>@GetName( "Name", new AtomConcept())</label></div>
-        <div><input type="text" @bind-value="transactionalItemStatus.Name" class="form-control" placeholder="Edit value" /></div>
-        <div><label>@GetName( "Code", new AtomConcept())</label></div>
-        <div><input type="text" @bind-value="transactionalItemStatus.Code" class="form-control" placeholder="Edit value" /></div>
-        <div><label>@GetName( "Notes", new AtomConcept())</label></div>
-        <div><input type="text" @bind-value="transactionalItemStatus.Notes" class="form-control" placeholder="Edit value" /></div>
-        <div><label>@GetName( "IsAvailableForSale", new TransactionalItemStatus())</label></div>
+        <div><label class="info-text-size">@GetName( "Name", new AtomConcept())</label></div>
+        <div><input type="text" @bind-value="transactionalItemStatus.Name" class="form-control info-text-size" placeholder="Edit value" /></div>
+        <div><label class="info-text-size" >@GetName( "Code", new AtomConcept())</label></div>
+        <div><input type="text" @bind-value="transactionalItemStatus.Code" class="form-control info-text-size" placeholder="Edit value" /></div>
+        <div><label class="info-text-size" >@GetName( "Notes", new AtomConcept())</label></div>
+        <div><input type="text" @bind-value="transactionalItemStatus.Notes" class="form-control info-text-size" placeholder="Edit value" /></div>
+        <div><label class="info-text-size" >@GetName( "IsAvailableForSale", new TransactionalItemStatus())</label></div>
         <div>
             <SfSwitch @bind-Checked="@transactionalItemStatus.IsAvailableForSale"></SfSwitch>
         </div>
-        <div><label>@GetName( "IsAvailableToProduce", new TransactionalItemStatus())</label></div>
+        <div><label class="info-text-size">@GetName( "IsAvailableToProduce", new TransactionalItemStatus())</label></div>
         <div>
             <SfSwitch @bind-Checked="@transactionalItemStatus.IsAvailableToProduce"></SfSwitch>
         </div>
-        <div><label>@GetName( "IsAvailableToBuy", new TransactionalItemStatus())</label></div>
+        <div><label class="info-text-size">@GetName( "IsAvailableToBuy", new TransactionalItemStatus())</label></div>
         <div>
             <SfSwitch @bind-Checked="@transactionalItemStatus.IsAvailableToBuy"></SfSwitch>
         </div>

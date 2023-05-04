@@ -46,11 +46,11 @@
 
     <div class="flex-horizontal-center">
         <div class="grid-mode-row grid-colum">
-            <div><label>@GetName("Name",new CreditType())</label></div>
-            <InputTextDisable TypeInt="false" Enable="true" style="font-size:15px; font-weight:none;"  @bind-ValueString="@creditType.Name"></InputTextDisable>
+            <div><label class="info-text-size">@GetName("Name",new CreditType())</label></div>
+            <InputTextDisable TypeInt="false" Enable="true" style=" font-weight:none;"  @bind-ValueString="@creditType.Name"></InputTextDisable>
         </div>
 
-        <div><label>@GetName("IsASale",new CreditType())</label></div>
+        <div><label class="info-text-size">@GetName("IsASale",new CreditType())</label></div>
         <div>
             <SfSwitch @bind-Checked="@creditType.IsASale"></SfSwitch>
         </div>
