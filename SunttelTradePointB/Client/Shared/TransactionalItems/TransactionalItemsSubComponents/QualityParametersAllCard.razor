@@ -23,20 +23,20 @@
             <div class="grid-columns-2 box-shadow-mode width-grid-2">
 
                 <div>
-                    <label>
+                    <label class="info-text-size">
                         @GetName( "TransactionalItemQuality", new TransactionalItemQualityPair())
                     </label>
                 </div>
                 <div>
                     <div style="position:relative;">
-                        <div class="item-edit form-control">
-                            <label>@(qualityPair.TransactionalItemQuality != null ? qualityPair.TransactionalItemQuality?.Name : "")</label>
+                        <div class="item-edit form-control ">
+                            <label class="info-text-size">@(qualityPair.TransactionalItemQuality != null ? qualityPair.TransactionalItemQuality?.Name : "")</label>
                             @*  <button @onclick='()=>SetViewElemnt("QualityParameters")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>*@
                         </div>
                     </div>
                 </div>
-                <div><label>@GetName( "Value", new TransactionalItemQualityPair())</label></div>
-                <div><input @bind-value="qualityPair.Value" class="form-control" placeholder="Edit value" /></div>
+                <div><label class="info-text-size">@GetName( "Value", new TransactionalItemQualityPair())</label></div>
+                <div><input @bind-value="qualityPair.Value" class="form-control info-text-size" placeholder="Edit value" /></div>
             </div>
 
         }

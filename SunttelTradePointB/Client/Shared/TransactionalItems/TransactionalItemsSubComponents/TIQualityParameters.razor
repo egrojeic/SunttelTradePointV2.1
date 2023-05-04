@@ -7,6 +7,13 @@
 @inject NavigationManager Navigation
 @inject TransactionalItemsService transactionalService;
 
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+</style>
+
+
 <div class="detailsTitleContainer">
     <h3 class="subTitleDetailForm">Quality Requirements</h3>
     <svg @onclick='()=>ViewNewQualityPair($"/QualityParametersCard/TransactionalItemCard/{IdTransactionalItem}")' xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style img-ico-list" viewBox="0 0 16 16">

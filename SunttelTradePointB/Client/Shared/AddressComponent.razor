@@ -6,15 +6,15 @@
 @inject ActorsNodeService actorsNodeService
 
 <div class="form-group row py-2">
-    <label class="control-label col-md-12">@lblAddresLine1*: </label>
+    <label class="control-label col-md-12 info-text-size">@lblAddresLine1*: </label>
     <div class="col">
         @if (address == null) address = new();
-        <input id="addres1" type="text" class="form-control" @bind-value="@address.AddressLine1" required />
+        <input id="addres1" type="text" class="form-control info-text-size" @bind-value="@address.AddressLine1" required />
     </div>
 </div>
 
 <div class="form-group row py-2">
-    <label class="control-label col-md-12">@lblCountry* :  </label>
+    <label class="control-label col-md-12 info-text-size">@lblCountry* :  </label>
     <div class="col">
         @if (countryList == null) countryList = new();
         <div>
@@ -34,7 +34,7 @@
 
 
 <div class="form-group row py-2">
-    <label class="control-label col-md-12">@lblRegion* :  </label>
+    <label class="control-label col-md-12 info-text-size">@lblRegion* :  </label>
     <div class="col">
         @if (regionsList == null) regionsList = new();
         <div>
@@ -52,7 +52,7 @@
 </div>
 
 <div class="form-group row py-2">
-    <label class="control-label col-md-12">@lblCity* :</label>
+    <label class="control-label col-md-12 info-text-size">@lblCity* :</label>
     <div class="col">
         @if (citiesList == null) citiesList = new();
         <div>
@@ -86,9 +86,9 @@
 }
 
 <div class="form-group row py-2">
-    <label class="control-label col-md-12">@lblZipCode*: </label>
+    <label class="control-label col-md-12 info-text-size">@lblZipCode*: </label>
     <div class="col">
-        <input id="zipCode" type="text" class="form-control" @bind-value="@address.ZipCode" required />
+        <input id="zipCode" type="text" class="form-control info-text-size" @bind-value="@address.ZipCode" required />
     </div>
 </div>
 

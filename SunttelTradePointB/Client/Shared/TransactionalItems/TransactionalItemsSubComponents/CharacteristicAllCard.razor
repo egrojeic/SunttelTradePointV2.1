@@ -4,6 +4,13 @@
 @inject NavigationManager Navigation
 @inject TransactionalItemsService transactionalService;
 
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+</style>
+
+
 
 @if (@viewMsg)
 {
@@ -21,7 +28,7 @@
         {
             <div class="grid-columns-2 box-shadow-mode">
                 <div>
-                    <label>
+                    <label class="info-text-size">
                         @GetName( "ItemCharacteristics", new TransactionalItem())
                     </label>
                 </div>
@@ -47,9 +54,9 @@
                         </InputTextSelector>
                     </div>
                 </div>
-                <div><label> @GetName("Value", new TransactionalItemCharacteristicPair()) </label></div>
+                <div>  <label class="info-text-size"> @GetName("Value", new TransactionalItemCharacteristicPair()) </label></div>
                 <div>
-                    <select @bind="characteristic.Value" class="form-control">
+                    <select @bind="characteristic.Value" class="form-control info-text-size">
                         @foreach (var item in GetPosibleValues(characteristic.TransactionalItemCharacteristic.Id))
                         {
                             <option value="@item.Name">@item.Name</option>

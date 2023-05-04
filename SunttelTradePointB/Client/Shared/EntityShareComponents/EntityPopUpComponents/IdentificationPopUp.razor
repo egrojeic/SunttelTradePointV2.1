@@ -13,22 +13,22 @@
 <div class="control-section">
     <div class="row">
         <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
-            <SfCard>
+            <SfCard CssClass="info-text-size">
                 <CardHeader Title="Add a new identification" />
                 <CardContent>
                     <form onsubmit="event.preventDefault();">
                         <div class="form-group row">
                             <div class="form-group row">
-                                <label class="control-label col-md-12">@lblCode*: </label>
+                                <label class="control-label col-md-12 info-text-size">@lblCode*: </label>
                                 <div class="col">
-                                    <input type="number" class="form-control" @bind-value="identificationEntity.Code" required />
+                                    <input type="number" class="form-control info-text-size" @bind-value="identificationEntity.Code" required />
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group row py-2">
                             <div class="form-group row">
-                                <label class="control-label col-md-12">@lblEntityIssuer*: </label>
+                                <label class="control-label col-md-12 info-text-size">@lblEntityIssuer*: </label>
                                 <div class="col">                                   
                                     <InputTextSelector3 TItem="IdentificationType"
                                                         Id="Identification"

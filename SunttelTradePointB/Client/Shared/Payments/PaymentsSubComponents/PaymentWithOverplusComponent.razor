@@ -41,17 +41,17 @@
 <div class="flex-horizontal-center">
 
     <div class="grid-mode-row grid-colum">
-        <div><label>@GetName("InvoiceCode",new PaymentWithOverplus())</label></div>
-        <InputTextDisable TypeInt="false" Enable="true" style="font-size:15px; font-weight:none;" @bind-ValueString="@paymentWithOverplus.OriginalCode"></InputTextDisable>
+        <div><label class="info-text-size">@GetName("InvoiceCode",new PaymentWithOverplus())</label></div>
+        <InputTextDisable TypeInt="false" Enable="true" style=" font-weight:none;" @bind-ValueString="@paymentWithOverplus.OriginalCode"></InputTextDisable>
 
-        <div><label>@GetName("OverplusValue",new PaymentWithOverplus())</label></div>
-        <InputTextDisable TypeInt="true" Enable="true" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@paymentWithOverplus.OverplusValue"></InputTextDisable>
+        <div><label class="info-text-size">@GetName("OverplusValue",new PaymentWithOverplus())</label></div>
+        <InputTextDisable TypeInt="true" Enable="true" style=" font-weight:none;" @bind-ValueDouble="@paymentWithOverplus.OverplusValue"></InputTextDisable>
 
-        <div><label>@GetName("OverplusApplied",new PaymentWithOverplus())</label></div>
-        <InputTextDisable TypeInt="true" Enable="true" style="font-size:15px; font-weight:none;" @bind-ValueDouble="@paymentWithOverplus.OverplusApplied"></InputTextDisable>
+        <div><label class="info-text-size">@GetName("OverplusApplied",new PaymentWithOverplus())</label></div>
+        <InputTextDisable TypeInt="true" Enable="true" style=" font-weight:none;" @bind-ValueDouble="@paymentWithOverplus.OverplusApplied"></InputTextDisable>
 
-        <div><label>@GetName("Notes",new PaymentWithOverplus())</label></div>
-        <InputTextDisable TypeInt="true" Enable="true" style="font-size:15px; font-weight:none;" @bind-ValueString="@paymentWithOverplus.Notes"></InputTextDisable>
+        <div><label class="info-text-size">@GetName("Notes",new PaymentWithOverplus())</label></div>
+        <InputTextDisable TypeInt="true" Enable="true" style=" font-weight:none;" @bind-ValueString="@paymentWithOverplus.Notes"></InputTextDisable>
     </div>
 </div>
 

@@ -479,11 +479,12 @@
     margin-top:auto;     
 }
 
-.sub-title{
-font-size:12px;
+.info-text-size{
+    font-size: 12px;
 }
 
-.input-style{
-    height:40px;
-}
+
+        .input-style {
+            height: 40px;
+        }
 

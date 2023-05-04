@@ -39,8 +39,8 @@
         <div id="headerData" class="col-8">
             <div class="row rowForm">
                 <div class="form-group col-8">
-                    <label for="Nombre" class="LabelFieldStyle">Name</label>
-                    <input type="text" id="Nombre" name="Nombre" class="form-control InputFieldStyle" @bind="currentSquad.Nombre">
+                    <label for="Nombre" class="LabelFieldStyle info-text-size">Name</label>
+                    <input type="text" id="Nombre" name="Nombre" class="form-control InputFieldStyle info-text-size" @bind="currentSquad.Nombre">
                 </div>
 
                 <div class="row col-4">
@@ -49,9 +49,10 @@
                         <input type="checkbox"
                                id="FlagEnabled"
                                name="FlagEnabled"
+                               class="info-text-size"
                                @bind="currentSquad.FlagEnabled" />
-                        <span class="checkmark"></span>
-                        <span class="label-text">Enable</span>
+                        <span class="checkmark info-text-size"></span>
+                        <span class="label-text info-text-size">Enable</span>
                     </label>
                        
                    
@@ -60,8 +61,8 @@
 
             <div class="row rowForm">
                 <div class="form-group col-8">
-                    <label for="DomainName" class="LabelFieldStyle">Domain Name</label>
-                    <input type="text" id="DomainName" name="DomainName" class="form-control InputFieldStyle" @bind="currentSquad.DomainName">
+                    <label for="DomainName" class="LabelFieldStyle info-text-size">Domain Name</label>
+                    <input type="text" id="DomainName" name="DomainName" class="form-control InputFieldStyle info-text-size" @bind="currentSquad.DomainName">
                 </div>
             </div>
            

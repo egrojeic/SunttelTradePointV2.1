@@ -6,9 +6,14 @@
 @inject SunttelTradePointB.Client.Services.CreditDocumentServices.CreditDocumentServices CreditDocumentServices
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
-
-
 @inject IJSRuntime Js
+
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+</style>
+
 
 <PageTitleComponent Title="Credit Document" IconName="Payments.png"
                     Description="With this tool you can create and edit creditDocument ">
@@ -21,7 +26,7 @@
 <div class="panelMenuContainer">
     @* <CreditDocumentMenu2 SetDocumentTypeId="SetDocumentTypeId"></CreditDocumentMenu2>*@
     <RangeDatesInput @bind-StartDate="@startingDate"
-        @bind-EndDate="endDate"
+                     @bind-EndDate="endDate"
                      StartDateName="From"
                      EndDateName="To"
                      EventSearchAll="EventSearchAll"></RangeDatesInput>
@@ -59,14 +64,14 @@
                     CellContextMenu="@ShowContextMenuCommercialDocument">
                 <Columns>
 
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="CreditDocumentType.Name" Title="@GetName("CreditDocumentType",new CreditDocument())" Filterable="false" Width="18px" />
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="Code" Title="@GetName("Code",new CreditDocument())" Filterable="false"  Sortable="false"  Width="208px" />
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="Vendor.Name" Title="@GetName("Vendor",new CreditDocument())"  Width="208px" />
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="Vendor.Buyer" Title="@GetName("Buyer",new CreditDocument())" Width="208px" />
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="CreditDocumentStatus.Name" Title="@GetName("CreditDocumentStatus",new CreditDocument())" Sortable="false" Width="108px" />
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="CreditDocumentReason.Name" Title="@GetName("CreditDocumentReason",new CreditDocument())"  Width="208px" />                   
-                   <RadzenDataGridColumn TItem="CreditDocument" Property="CreditValue" Title="@GetName("CreditValue",new CreditDocument())" Filterable="false" Width="108px" />
-                    <RadzenDataGridColumn TItem="CreditDocument" Property="IsDirect" Title="@GetName("IsDirect",new CreditDocument())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
+                    <RadzenDataGridColumn  CssClass="info-text-size" TItem="CreditDocument" Property="CreditDocumentType.Name" Title="@GetName("CreditDocumentType",new CreditDocument())" Filterable="false" Width="18px" />
+                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="Code" Title="@GetName("Code",new CreditDocument())" Filterable="false" Sortable="false" Width="208px" />
+                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="Vendor.Name" Title="@GetName("Vendor",new CreditDocument())" Width="208px" />
+                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="Vendor.Buyer" Title="@GetName("Buyer",new CreditDocument())" Width="208px" />
+                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CreditDocumentStatus.Name" Title="@GetName("CreditDocumentStatus",new CreditDocument())" Sortable="false" Width="108px" />
+                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CreditDocumentReason.Name" Title="@GetName("CreditDocumentReason",new CreditDocument())" Width="208px" />
+                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CreditValue" Title="@GetName("CreditValue",new CreditDocument())" Filterable="false" Width="108px" />
+                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="IsDirect" Title="@GetName("IsDirect",new CreditDocument())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
                         <Template>
                             @{
                                 var IsDirect = (bool)context.GetType().GetProperty(nameof(CreditDocument.IsDirect)).GetValue(context);
@@ -142,7 +147,7 @@
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
-            CreditDocument argObj = (CreditDocument)args.Value;
+        CreditDocument argObj = (CreditDocument)args.Value;
         Navigation.NavigateTo($"CreditDocumentsItem/{argObj.Id}/{_filterItems}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {

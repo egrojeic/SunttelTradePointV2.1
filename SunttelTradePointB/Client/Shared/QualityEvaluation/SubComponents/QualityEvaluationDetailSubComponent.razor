@@ -43,18 +43,18 @@
 
     <div class="grid-columns-header grid-columns-6">
 
-        <div><label class="sub-tile">@GetName("Notes",new QualityEvaluationDetail())</label></div>
+        <div><label class="info-text-size">@GetName("Notes",new QualityEvaluationDetail())</label></div>
         <InputTextDisable Enable="true" TypeInt="false" @bind-ValueString="qualityEvaluationDetail.Notes"></InputTextDisable>
 
 
-        <div><label class="sub-tile">@GetName("Parameter",new QualityEvaluationDetail())</label></div>
+        <div><label class="info-text-size">@GetName("Parameter",new QualityEvaluationDetail())</label></div>
         <InputTextSelector3 styleCaption="width:180px" style="right:-100px;" TItem="QualityAssuranceParameter"
                             Id="Season"
                             caption="@(qualityEvaluationDetail.Parameter !=null ? qualityEvaluationDetail.Parameter?.Name:"" )"
                             Items="qualityAssuranceParameterList">
         </InputTextSelector3>
 
-        <div><label class="sub-tile">@GetName("IsPresent",new QualityEvaluationDetail())</label></div>
+        <div><label class="info-text-size">@GetName("IsPresent",new QualityEvaluationDetail())</label></div>
         <div>
             <SfSwitch @bind-Checked="@qualityEvaluationDetail.IsPresent"></SfSwitch>
         </div>

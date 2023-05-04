@@ -21,7 +21,7 @@
         <div class="grid-columns-2 box-shadow-mode">
 
             <div>
-                <label>
+                <label class="info-text-size">
                     @GetName( "ItemCharacteristics", new TransactionalItem())
                 </label>
             </div>
@@ -36,9 +36,9 @@
 
                 </InputTextSelector3>
             </div>
-            <div><label> @GetName("Value", new TransactionalItemCharacteristicPair()) </label></div>
+            <div><label class="info-text-size"> @GetName("Value", new TransactionalItemCharacteristicPair()) </label></div>
             <div>
-                <select @bind="transactionalItemCharacteristicPair.Value" class="form-control">
+                <select @bind="transactionalItemCharacteristicPair.Value" class="form-control info-text-size">
 
                     <option value="0" selected>Select</option>
                     @foreach (var item in possibleValues)

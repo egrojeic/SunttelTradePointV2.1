@@ -12,6 +12,14 @@
 @inject ActorsNodeService actorsNodeServive
 @inject TransactionalItemsService transactionalItemsService
 
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+</style>
+
+
+
 @if (@viewMsg)
 {
     <MessageSaveComponent isVisible="viewMsg" message="@msg">
@@ -28,28 +36,26 @@
                     <form onsubmit="event.preventDefault();">
                         <div class="form-group row">
                             <div class="form-group row">
-                                <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "Name")</label>
+                                <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "Name")</label>
                                 <div class="col">
-                                    <input type="text" class="form-control" @bind-value="warehouse.Name" required />
+                                    <input type="text" class="form-control info-text-size" @bind-value="warehouse.Name" required />
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group row py-2">
-                            <div class="form-group row">                               
+                            <div class="form-group row">
                                 <div class="col">
                                     <div class="position:relative;">
-                                        <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "WareHouseParent"): </label>
-                                       
-                                        <InputTextSelector3
-                                            TItem="Warehouse"
-                                            Id="WareHouseParent"
-                                            caption="@(warehouse.InventoryTransactionalItemType != null ? warehouse.InventoryTransactionalItemType?.Name : "")"
-                                            Items="warehouseList"
-                                             EventSearcherValueAndId="EventSearcherValueAndId"
-                                             EventIdSelectionAndId="SelectionMade"
-                                        >
-                                          
+                                        <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "WareHouseParent"): </label>
+
+                                        <InputTextSelector3 TItem="Warehouse"
+                                                            Id="WareHouseParent"
+                                                            caption="@(warehouse.InventoryTransactionalItemType != null ? warehouse.InventoryTransactionalItemType?.Name : "")"
+                                                            Items="warehouseList"
+                                                            EventSearcherValueAndId="EventSearcherValueAndId"
+                                                            EventIdSelectionAndId="SelectionMade">
+
                                         </InputTextSelector3>
                                     </div>
 
@@ -60,24 +66,22 @@
                         <div class="PRUEBA">
                             <div class="form-group row py-2">
                                 <div class="form-group row">
-                                    <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "AssociatedEntity"): </label>
-                                                                        
-                                        <InputTextSelector3
-                                            TItem="EntityActor"
-                                            Id="AssociatedEntity"
-                                        caption="@(warehouse.AssociatedEntity != null ? warehouse.AssociatedEntity?.Name : "")"
-                                        Items="wareHouseParentListApi"
-                                         EventSearcherValueAndId="EventSearcherValueAndId"
-                                         EventIdSelectionAndId="SelectionMade"
-                                        >                                           
-                                        </InputTextSelector3>
-                                  
+                                    <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "AssociatedEntity"): </label>
+
+                                    <InputTextSelector3 TItem="EntityActor"
+                                                        Id="AssociatedEntity"
+                                                        caption="@(warehouse.AssociatedEntity != null ? warehouse.AssociatedEntity?.Name : "")"
+                                                        Items="wareHouseParentListApi"
+                                                        EventSearcherValueAndId="EventSearcherValueAndId"
+                                                        EventIdSelectionAndId="SelectionMade">
+                                    </InputTextSelector3>
+
                                 </div>
                             </div>
                             <div class="grid-columns-2">
                                 <div class="form-group row py-2">
                                     <div class="form-group row">
-                                        <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsExternal"): </label>
+                                        <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsExternal"): </label>
                                         <div class="col">
                                             <SfSwitch @bind-Checked="warehouse.IsExternal"></SfSwitch>
                                         </div>
@@ -85,7 +89,7 @@
                                 </div>
                                 <div class="form-group row py-2">
                                     <div class="form-group row">
-                                        <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsTransformationFacility"): </label>
+                                        <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsTransformationFacility"): </label>
                                         <div class="col">
                                             <SfSwitch @bind-Checked="warehouse.IsTransformationFacility"></SfSwitch>
                                         </div>
@@ -94,7 +98,7 @@
 
                                 <div class="form-group row py-2">
                                     <div class="form-group row">
-                                        <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "ScanSimulated"): </label>
+                                        <label class="control-label col-md-12 info-text-sizeUICommonFunctions.GetDisplayName(new Warehouse(), "ScanSimulated"): </label>
                                         <div class="col">
                                             <SfSwitch @bind-Checked="warehouse.ScanSimulated"></SfSwitch>
                                         </div>
@@ -103,7 +107,7 @@
 
                                 <div class="form-group row py-2">
                                     <div class="form-group row">
-                                        <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsInventoryControlled"): </label>
+                                        <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsInventoryControlled"): </label>
                                         <div class="col">
                                             <SfSwitch @bind-Checked="warehouse.IsInventoryControlled"></SfSwitch>
                                         </div>
@@ -112,7 +116,7 @@
 
                                 <div class="form-group row py-2">
                                     <div class="form-group row">
-                                        <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsActive"): </label>
+                                        <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsActive"): </label>
                                         <div class="col">
                                             <SfSwitch @bind-Checked="warehouse.IsActive"></SfSwitch>
                                         </div>
@@ -120,27 +124,25 @@
                                 </div>
 
                             </div>
-                           
 
-                          
 
-                           
+
+
+
 
                             <div class="form-group row">
                                 <div class="form-group row">
-                                   
+
                                     <div class="col">
                                         <div class="position:relative;">
-                                            <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "InventoryTransactionalItemType"): </label>
-                                           
-                                            <InputTextSelector3
-                                                TItem="TransactionalItemType"
-                                                Id="InventoryTransactionalItemType"
-                                                caption="@(warehouse.InventoryTransactionalItemType != null ? warehouse.InventoryTransactionalItemType?.Name : "")"
-                                                Items="itemType" 
-                                                 EventSearcherValueAndId="EventSearcherValueAndId"
-                                    EventIdSelectionAndId="SelectionMade"
-                                            >                                              
+                                            <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "InventoryTransactionalItemType"): </label>
+
+                                            <InputTextSelector3 TItem="TransactionalItemType"
+                                                                Id="InventoryTransactionalItemType"
+                                                                caption="@(warehouse.InventoryTransactionalItemType != null ? warehouse.InventoryTransactionalItemType?.Name : "")"
+                                                                Items="itemType"
+                                                                EventSearcherValueAndId="EventSearcherValueAndId"
+                                                                EventIdSelectionAndId="SelectionMade">
                                             </InputTextSelector3>
                                         </div>
 
@@ -150,9 +152,9 @@
 
                             <div class="form-group row py-2">
                                 <div class="form-group row">
-                                    <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "WarehouseAddress") </label>
+                                    <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "WarehouseAddress") </label>
                                     <div class="col">
-                                        <AddressComponent  oldAddress="warehouse.WarehouseAddress"></AddressComponent>
+                                        <AddressComponent oldAddress="warehouse.WarehouseAddress"></AddressComponent>
                                     </div>
                                 </div>
                             </div>
@@ -160,23 +162,21 @@
                             <div class="form-group row">
                                 <div class="form-group row">
                                     <div class="position:relative;">
-                                        <label class="control-label col-md-12">@UICommonFunctions.GetDisplayName(new Warehouse(), "ContactPerson"): </label>
-                                        
-                                        <InputTextSelector3
-                                        TItem="EntityActor"  
-                                        Id="Contact"
-                                        caption="@(warehouse.ContactPerson != null ? warehouse.ContactPerson?.Name : "")"
-                                        Items="ContactList"
-                                         EventSearcherValueAndId="EventSearcherValueAndId"
-                                    EventIdSelectionAndId="SelectionMade"
-                                        >
-                                          
+                                        <label class="control-label col-md-12 info-text-size ">@UICommonFunctions.GetDisplayName(new Warehouse(), "ContactPerson"): </label>
+
+                                        <InputTextSelector3 TItem="EntityActor"
+                                                            Id="Contact"
+                                                            caption="@(warehouse.ContactPerson != null ? warehouse.ContactPerson?.Name : "")"
+                                                            Items="ContactList"
+                                                            EventSearcherValueAndId="EventSearcherValueAndId"
+                                                            EventIdSelectionAndId="SelectionMade">
+
                                         </InputTextSelector3>
                                     </div>
                                 </div>
                             </div>
 
-                           
+
                         </div>
 
                     </form>
@@ -246,7 +246,7 @@
     {
         Address adress = warehouse.WarehouseAddress != null ? warehouse.WarehouseAddress : new();
         if (warehouse.WarehouseAddress == null) warehouse.WarehouseAddress = new();
-        warehouse.WarehouseAddress.CityAddress = adress.CityAddress != null ? adress.CityAddress : new() ;
+        warehouse.WarehouseAddress.CityAddress = adress.CityAddress != null ? adress.CityAddress : new();
         var resul = await warehouseService.SaveWarehuse(warehouse);
         if (resul)
         {
@@ -304,40 +304,43 @@
             ParamCountResul = itemType != null ? itemType.Count() : 0;
         }
 
-      
+
         StateHasChanged();
     }
 
 
-     public void SelectionMade(Warehouse arg)
+    public void SelectionMade(Warehouse arg)
     {
         warehouse.InventoryTransactionalItemType = arg;
         StateHasChanged();
     }
 
-     public void SelectionMade(EntityActor arg)
+    public void SelectionMade(EntityActor arg)
     {
-        if(SearcherValueMode=="Contact"){
-           warehouse.AssociatedEntity = arg;
-        }else{
-             warehouse.ContactPerson = arg;
+        if (SearcherValueMode == "Contact")
+        {
+            warehouse.AssociatedEntity = arg;
+        }
+        else
+        {
+            warehouse.ContactPerson = arg;
         }
         StateHasChanged();
     }
 
-      public void SelectionMade(TransactionalItemType arg)
+    public void SelectionMade(TransactionalItemType arg)
     {
-      warehouse.InventoryTransactionalItemType = arg;
+        warehouse.InventoryTransactionalItemType = arg;
         StateHasChanged();
     }
 
-    
 
 
-    
 
 
-  
+
+
+
 
     public void ClosedControlInput()
     {
@@ -349,7 +352,7 @@
         ParamCountResul = 0;
         StateHasChanged();
     }
- 
+
 
 
 
