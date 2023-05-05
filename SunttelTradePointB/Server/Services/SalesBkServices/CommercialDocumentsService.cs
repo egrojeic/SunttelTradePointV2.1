@@ -1052,7 +1052,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
                 List<CommercialDocument> resultsCommercialDocuments = await _SalesDocumentsCollection.Aggregate<CommercialDocument>(pipeline).ToListAsync();
 
-                //automapper
+                //automapper revisión
                 List<BISalesConsolidated> results = _mapper.Map<List<BISalesConsolidated>>(resultsCommercialDocuments);
 
                 return (true, results, null);
