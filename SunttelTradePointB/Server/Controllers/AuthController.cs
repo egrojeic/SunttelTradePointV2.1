@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SunttelTradePointB.Server.Data;
 using SunttelTradePointB.Server.Interfaces;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Server.Interfaces.UserTracking;
@@ -371,6 +372,79 @@ namespace SunttelTradePointB.Server.Controllers
         }
 
         /// <summary>
+        /// Update existing User rol
+        /// </summary>
+        /// <param name="userRole"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("EditRoleSystemTools")]
+        public async Task<IActionResult> EditRoleSystemTools([FromBody] UserRole userRole)
+        {
+            try
+            {
+                // Buscamos el rol existente
+                var existingRole = await _roleManager.FindByIdAsync(userRole.Id);
+                if (existingRole == null)
+                {
+                    return BadRequest("Rol not found");
+                }
+
+                // Actualizamos el nombre del rol
+                existingRole.Name = userRole.Name;
+                var updateResult = await _roleManager.UpdateAsync(existingRole);
+                if (!updateResult.Succeeded)
+                {
+                    return BadRequest(updateResult.Errors.FirstOrDefault()?.Description);
+                }
+
+                bool SystemToolsUpdated = await _squad.UpdateRoleSystemTools(userRole);
+
+                if (!SystemToolsUpdated) return BadRequest("Error Updating System tools relation");
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Delete existing User rol
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteRole")]
+        public async Task<IActionResult> DeleteRole([FromQuery] string id)
+        {
+            try
+            {
+                // Buscamos el rol existente
+                var existingRole = await _roleManager.FindByIdAsync(id);
+                if (existingRole == null)
+                {
+                    return BadRequest("Rol not found");
+                }
+
+                // Borramos el rol
+                var deleteResult = await _roleManager.DeleteAsync(existingRole);
+                if (!deleteResult.Succeeded)
+                {
+                    return BadRequest(deleteResult.Errors.FirstOrDefault()?.Description);
+                }
+
+                
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
+        /// <summary>
         /// Get Role By Id
         /// </summary>
         /// <returns></returns>
@@ -446,7 +520,6 @@ namespace SunttelTradePointB.Server.Controllers
         }
 
 
-
         /// <summary>
         /// Get the list of roles
         /// </summary>
@@ -477,6 +550,7 @@ namespace SunttelTradePointB.Server.Controllers
         /// <summary>
         /// Delete User
         /// </summary>
+        /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete]
         [ActionName("DeleteUser")]

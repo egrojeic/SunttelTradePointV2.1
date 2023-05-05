@@ -97,6 +97,11 @@ namespace SunttelTradePointB.Client.Services
         {
             await api.RegisterRole(role);
         }
+        
+        public async Task EditRoleSystemTools(UserRole role)
+        {
+            await api.EditRoleSystemTools(role);
+        }
 
         public async Task<List<UserEntity>> GetUsersByRolname(string rolname)
         {
@@ -116,6 +121,11 @@ namespace SunttelTradePointB.Client.Services
         public async Task DeleteUser(string id)
         {
             await api.DeleteUser(id);
+        }
+
+        public async Task DeleteRole(string id)
+        {
+            await api.DeleteRole(id);
         }
 
         public async Task<UserEntity> GetUserById(string id)

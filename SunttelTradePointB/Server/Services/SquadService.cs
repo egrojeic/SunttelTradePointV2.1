@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
@@ -227,6 +228,48 @@ namespace SunttelTradePointB.Server.Services
                 return false;
             }
 
+        }
+
+        /// <summary>
+        /// Update a list of RolesSystemTools by RoleId
+        /// </summary>
+        /// <param name="userRole"></param>
+        /// <returns></returns>
+        public async Task<bool> UpdateRoleSystemTools(UserRole userRole)
+        {
+            try
+            {
+                // Actualizamos la tabla RolesSystemTools
+                var existingRoleSystemTools = await _sunttelDBContext.RolesSystemTools
+                    .Where(x => x.RoleId == userRole.Id)
+                    .ToListAsync();
+
+                // Borramos los registros existentes
+                _sunttelDBContext.RemoveRange(existingRoleSystemTools);
+
+                // Añadimos los nuevos registros
+                foreach (var systemTool in userRole.SystemTools)
+                {
+                    var sys = new RolesSystemTools
+                    {
+                        RoleId = userRole.Id,
+                        SystemToolId = systemTool.ID
+                    };
+                    await _sunttelDBContext.RolesSystemTools.AddAsync(sys);
+                }
+
+                int saveChangesResult = await _sunttelDBContext.SaveChangesAsync();
+                if (saveChangesResult == 0)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return true;
+            }
         }
 
     }

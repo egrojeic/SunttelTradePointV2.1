@@ -1,4 +1,5 @@
-﻿using SunttelTradePointB.Shared.Security;
+﻿using Microsoft.AspNetCore.Identity;
+using SunttelTradePointB.Shared.Security;
 using SunttelTradePointB.Shared.SquadsMgr;
 using SunttelTradePointB.Shared.SquadsMgr;
 
@@ -59,5 +60,14 @@ namespace SunttelTradePointB.Server.Interfaces
         /// </summary>
         /// <returns></returns>
         Task<bool> RegisterRoleSystemTools(UserRole userRole);
+
+        /// <summary>
+        /// Update a list of RolesSystemTools by RoleId
+        /// </summary>
+        /// <param name="userRole"></param>
+        /// <returns></returns>
+        Task<bool> UpdateRoleSystemTools(UserRole userRole);
+
+       
     }
 }

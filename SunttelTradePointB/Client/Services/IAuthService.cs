@@ -28,6 +28,10 @@ namespace SunttelTradePointB.Client.Services
         Task RegisterRole(UserRole role);
 
         Task<UserRole?> GetRoleById(string id);
+
+        Task EditRoleSystemTools(UserRole registerRequest);
+
+        Task DeleteRole(string id);
     }
 
 }

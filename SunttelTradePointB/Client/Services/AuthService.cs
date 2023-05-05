@@ -103,9 +103,23 @@ namespace SunttelTradePointB.Client.Services
             result.EnsureSuccessStatusCode();
         }
 
+        public async Task EditRoleSystemTools(UserRole registerRequest)
+        {
+            var result = await _httpClient.PostAsJsonAsync("api/auth/EditRoleSystemTools", registerRequest);
+            if (result.StatusCode == System.Net.HttpStatusCode.BadRequest) throw new Exception(await result.Content.ReadAsStringAsync());
+            result.EnsureSuccessStatusCode();
+        }
+
         public async Task DeleteUser(string id)
         {
             var result = await _httpClient.DeleteAsync($"api/auth/DeleteUser?id={id}");
+            if (result.StatusCode == System.Net.HttpStatusCode.BadRequest) throw new Exception(await result.Content.ReadAsStringAsync());
+            result.EnsureSuccessStatusCode();
+        }
+
+        public async Task DeleteRole(string id)
+        {
+            var result = await _httpClient.DeleteAsync($"api/auth/DeleteRole?id={id}");
             if (result.StatusCode == System.Net.HttpStatusCode.BadRequest) throw new Exception(await result.Content.ReadAsStringAsync());
             result.EnsureSuccessStatusCode();
         }
