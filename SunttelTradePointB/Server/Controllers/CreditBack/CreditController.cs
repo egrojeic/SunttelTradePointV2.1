@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SunttelTradePointB.Server.Interfaces.CreditBkServices;
+using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Shared.Accounting;
 using SunttelTradePointB.Shared.InvetoryModels;
 
@@ -335,5 +336,30 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
         }
 
         #endregion
+
+        /// <summary>
+        /// Upload file csv a products
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveProductsCSV")]
+        public async Task<IActionResult> SaveProductsCSV(IFormFile file)
+        {
+
+            var response = await _credit.SaveProductsCSV(file);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.ActorsNodesList);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
     }
 }

@@ -1,9 +1,13 @@
-﻿using MongoDB.Bson;
+﻿using CsvHelper.Configuration;
+using CsvHelper;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using SunttelTradePointB.Server.Interfaces.CreditBkServices;
 using SunttelTradePointB.Shared.Accounting;
+using SunttelTradePointB.Shared.Common;
 using Syncfusion.Blazor.Grids;
+using System.Globalization;
 
 namespace SunttelTradePointB.Server.Services.CreditBkServices
 {
@@ -277,7 +281,7 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
         {
             try
             {
-                if (creditType.Id == null)
+                if (creditType.Id == null || creditType.Id == "")
                 {
                     creditType.Id = ObjectId.GenerateNewId().ToString();
                 }
@@ -565,6 +569,47 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
             }
         }
         #endregion
+
+        /// <summary>
+        /// Upload file csv a products
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, string? ActorsNodesList, string? ErrorDescription)> SaveProductsCSV(IFormFile file)
+        {
+            try
+            {
+                List<CreditType>? lista = new List<CreditType>();
+                using (var reader = new StreamReader(file.OpenReadStream()))
+                {
+                    // Configuración de CsvHelper
+                    var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+                    {
+                        Delimiter = ",",
+                        HasHeaderRecord = true
+                    };
+                    var csv = new CsvReader(reader, config);
+
+                    // Lectura de los registros del archivo CSV
+                    var records = csv.GetRecords<CreditType>().ToList();
+                    foreach (var record in records)
+                    {
+                        var creditType = await SaveCreditType("123445", "56789", "7B66BBE8-C288-4BAD-8DB7-3DAA32108FED", record);
+                    }
+                    return (true, null, "Services created successfully");
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
 
     }
 }
