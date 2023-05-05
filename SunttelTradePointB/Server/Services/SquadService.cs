@@ -7,6 +7,7 @@ using SunttelTradePointB.Server.Data;
 using SunttelTradePointB.Server.Interfaces;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.Security;
 using SunttelTradePointB.Shared.SquadsMgr;
 using System.Data;
 using System.Data.SqlClient;
@@ -51,7 +52,7 @@ namespace SunttelTradePointB.Server.Services
                 string errDesc = ex.Message;
                 return null;
             }
-            
+
         }
 
 
@@ -68,11 +69,11 @@ namespace SunttelTradePointB.Server.Services
                 .Select(s => s.ID)
                 .FirstOrDefaultAsync();
 
-           
+
             return squadId.ToString();
         }
 
-        public async Task<(bool IsSuccess, Squad?  squad, string? error)> SaveSquad(string userId, string ipAdress, Squad squad)
+        public async Task<(bool IsSuccess, Squad? squad, string? error)> SaveSquad(string userId, string ipAdress, Squad squad)
         {
 
             var squadValid = _sunttelDBContext.Squads.Where(s => s.ID == squad.ID);
@@ -84,9 +85,10 @@ namespace SunttelTradePointB.Server.Services
             else
             {
 
-                EntityActor entityActor = new EntityActor { 
+                EntityActor entityActor = new EntityActor
+                {
                     Name = squad.Nombre,
-                    SkinImageName =squad.SkinImage,
+                    SkinImageName = squad.SkinImage,
                     TypeOfConcept = new ConceptType
                     {
                         Id = "000000000000000000000002",
@@ -104,7 +106,7 @@ namespace SunttelTradePointB.Server.Services
                     await _sunttelDBContext.Squads.AddAsync(squad);
                 }
 
-                
+
 
             }
 
@@ -117,19 +119,19 @@ namespace SunttelTradePointB.Server.Services
         public async Task<List<SquadsByUser>> SquadInfo(string? userId)
         {
             //var squadInfo = await _sunttelDBContext.Squads.FindAsync(Guid.Parse("7B66BBE8-C288-4BAD-8DB7-3DAA32108FED"));
-
-            string connectionString = _sunttelDBContext.Database.GetConnectionString();
-            string storedProcedureName = "GetSquadsByUser";
-
-            List<SquadsByUser> squadsByUserList = new List<SquadsByUser>();
-
-            if(userId == null)
-            {
-                return squadsByUserList;
-            }
-
+                List<SquadsByUser> squadsByUserList = new List<SquadsByUser>();
             try
             {
+                string connectionString = _sunttelDBContext.Database.GetConnectionString();
+                string storedProcedureName = "GetSquadsByUser";
+
+
+                if (userId == null)
+                {
+                    return squadsByUserList;
+                }
+
+
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     SqlCommand command = new SqlCommand(storedProcedureName, connection);
@@ -159,7 +161,7 @@ namespace SunttelTradePointB.Server.Services
             {
                 Console.WriteLine(ex.Message);
             }
-           
+
 
 
             return squadsByUserList;
@@ -194,6 +196,37 @@ namespace SunttelTradePointB.Server.Services
                 .ToListAsync();
 
             return systemTools;
+        }
+
+        /// <summary>
+        /// Retrieves all system tools 
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> RegisterRoleSystemTools(UserRole userRole)
+        {
+            try
+            {
+                if (!userRole.SystemTools.Any()) return false;
+
+                foreach (var systemTool in userRole.SystemTools)
+                {
+                    var sys = new RolesSystemTools
+                    {
+                        RoleId = userRole.Id,
+                        SystemToolId = systemTool.ID
+                    };
+                    await _sunttelDBContext.RolesSystemTools.AddAsync(sys);
+                    int rows = await _sunttelDBContext.SaveChangesAsync();
+                    if (rows == 0) return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
         }
 
     }

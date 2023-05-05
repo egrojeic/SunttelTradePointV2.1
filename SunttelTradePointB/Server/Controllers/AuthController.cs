@@ -128,20 +128,28 @@ namespace SunttelTradePointB.Server.Controllers
         /// <summary>
         /// Register new User rol
         /// </summary>
-        /// <param name="rolname"></param>
+        /// <param name="userRole"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> RegisterUserRol(string rolname)
+        public async Task<IActionResult> RegisterUserRole([FromBody] UserRole userRole)
         {
             try
             {
                 var result = await _roleManager.CreateAsync(new IdentityRole
                 {
-                    Name = rolname
+                    Name = userRole.Name
                 });
 
                 if (result.Succeeded)
                 {
+                    
+                    IdentityRole rol = await _roleManager.FindByNameAsync(userRole.Name);
+
+                    if (rol is null) return BadRequest("Rol not saved");
+                    // añadimos al Systemql
+                    userRole.Id = rol.Id;
+                    bool resp = await _squad.RegisterRoleSystemTools(userRole);
+                    if (!resp) return BadRequest("Error Saving System Tools for The Role");
                     return Ok();
                 }
                 else

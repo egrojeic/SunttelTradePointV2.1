@@ -14,5 +14,21 @@ namespace SunttelTradePointB.Server.Data
         public virtual DbSet<SystemTool> SystemTools { get; set; }
 
         public virtual DbSet<ToolSet> ToolSets { get; set; }
+
+        public virtual DbSet<RolesSystemTools> RolesSystemTools { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<RolesSystemTools>()
+                .HasKey(rt => new { rt.RoleId, rt.SystemToolId });
+
+            modelBuilder.Entity<RolesSystemTools>()
+                .HasOne(rt => rt.SystemTool)
+                .WithMany()
+                .HasForeignKey(rt => rt.SystemToolId);
+        }
+
     }
 }

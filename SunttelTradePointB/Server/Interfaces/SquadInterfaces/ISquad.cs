@@ -54,5 +54,10 @@ namespace SunttelTradePointB.Server.Interfaces
         /// <returns></returns>
         Task<List<SystemTool>> GetSystemTools();
 
+        /// <summary>
+        /// Save The System Tools for the Role
+        /// </summary>
+        /// <returns></returns>
+        Task<bool> RegisterRoleSystemTools(UserRole userRole);
     }
 }

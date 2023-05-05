@@ -30,6 +30,8 @@ namespace SunttelTradePointB.Shared.SquadsMgr
         [ForeignKey("IDToolSets")]
         public ToolSet? ToolSetsNavigation { get; set; }
 
+        public override string ToString() { return Name; }
+
     }
 
     public class ToolSet
