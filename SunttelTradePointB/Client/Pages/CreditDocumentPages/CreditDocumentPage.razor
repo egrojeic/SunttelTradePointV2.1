@@ -70,7 +70,10 @@
                     <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="Vendor.Buyer" Title="@GetName("Buyer",new CreditDocument())" Width="208px" />
                     <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CreditDocumentStatus.Name" Title="@GetName("CreditDocumentStatus",new CreditDocument())" Sortable="false" Width="108px" />
                     <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CreditDocumentReason.Name" Title="@GetName("CreditDocumentReason",new CreditDocument())" Width="208px" />
-                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CreditValue" Title="@GetName("CreditValue",new CreditDocument())" Filterable="false" Width="108px" />
+                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CreditValue" Title="@GetName("CreditValue",new CreditDocument())"  Filterable="false" Width="208px" />
+                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CommercialDocumentRef.DocumentCode" Title="@GetName("DocumentCode",new CommercialDocumentSummaryInfo())" Filterable="false" Width="108px" />
+                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CommercialDocumentRef.DocumentDate" Title="@GetName("DocumentDate",new CommercialDocumentSummaryInfo())" FormatString="{0:MM/dd/yyyy}" Filterable="false" Width="108px" />
+                                      
                     <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="IsDirect" Title="@GetName("IsDirect",new CreditDocument())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
                         <Template>
                             @{

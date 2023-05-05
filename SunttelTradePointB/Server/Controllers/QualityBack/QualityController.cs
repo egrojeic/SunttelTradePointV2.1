@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using SunttelTradePointB.Server.Controllers.InventoryBack;
 using SunttelTradePointB.Server.Interfaces.QualityBkServices;
+using SunttelTradePointB.Shared.Accounting;
 using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.InvetoryModels;
 using SunttelTradePointB.Shared.Quality;
+using Syncfusion.Blazor.Grids;
 
 namespace SunttelTradePointB.Server.Controllers.QualityBack
 {
@@ -42,7 +44,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         public async Task<IActionResult> GetQualityParameters(string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filterName = null)
         {
             var customHeaderValue = Request.Headers["SquadId"];
-            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString().ToUpper() ?? ""; // Request.Headers["SquadId"];
             var response = await _quality.GetQualityParameters(userId, ipAddress, squadId, page, perPage, filterName);
 
             if (response.IsSuccess)
@@ -65,7 +67,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         public async Task<IActionResult> GetQualityParameteById(string userId, string ipAddress, string qualityId)
         {
             var customHeaderValue = Request.Headers["SquadId"];
-            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString().ToUpper() ?? ""; // Request.Headers["SquadId"];
             var response = await _quality.GetQualityParameteById(userId, ipAddress, squadId, qualityId);
 
             if (response.IsSuccess)
@@ -87,8 +89,9 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         [ActionName("SaveQualityParameter")]
         public async Task<IActionResult> SaveQualityParameter(string userId, string ipAddress, [FromBody] QualityAssuranceParameter quality)
         {
-            var customHeaderValue = Request.Headers["SquadId"];
-            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            // Setear Squad Id
+            quality.SquadId = quality.SquadId.ToUpper();
+            var squadId = quality.SquadId;
 
             var response = await _quality.SaveQualityParameter(userId, ipAddress, squadId, quality);
 
@@ -118,7 +121,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         public async Task<IActionResult> GetQualityParametersGroups(string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filter = null)
         {
             var customHeaderValue = Request.Headers["SquadId"];
-            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString().ToUpper() ?? ""; // Request.Headers["SquadId"];
             var response = await _quality.GetQualityParametersGroups(userId, ipAddress, squadId, page, perPage, filter);
 
             if (response.IsSuccess)
@@ -141,7 +144,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         public async Task<IActionResult> GetQualityParameteGroupsById(string userId, string ipAddress, string qualityId)
         {
             var customHeaderValue = Request.Headers["SquadId"];
-            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString().ToUpper() ?? ""; // Request.Headers["SquadId"];
             var response = await _quality.GetQualityParameteGroupsById(userId, ipAddress, squadId, qualityId);
 
             if (response.IsSuccess)
@@ -163,8 +166,9 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         [ActionName("SaveQualityParameterGroups")]
         public async Task<IActionResult> SaveQualityParameterGroups(string userId, string ipAddress, [FromBody] QualityParameterGroup quality)
         {
-            var customHeaderValue = Request.Headers["SquadId"];
-            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            // Setear Squad Id
+            quality.SquadId = quality.SquadId.ToUpper();
+            var squadId = quality.SquadId;
 
             var response = await _quality.SaveQualityParameterGroups(userId, ipAddress, squadId, quality);
 
@@ -195,7 +199,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         public async Task<IActionResult> GetQualityTrafficLights(string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filter = null)
         {
             var customHeaderValue = Request.Headers["SquadId"];
-            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString().ToUpper() ?? ""; // Request.Headers["SquadId"];
             var response = await _quality.GetQualityTrafficLights(userId, ipAddress, squadId, page, perPage, filter);
 
             if (response.IsSuccess)
@@ -218,7 +222,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         public async Task<IActionResult> GetQualityTrafficLightById(string userId, string ipAddress, string qualityId)
         {
             var customHeaderValue = Request.Headers["SquadId"];
-            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString().ToUpper() ?? ""; // Request.Headers["SquadId"];
             var response = await _quality.GetQualityTrafficLightById(userId, ipAddress, squadId, qualityId);
 
             if (response.IsSuccess)
@@ -240,8 +244,8 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         [ActionName("SaveQualityTrafficLight")]
         public async Task<IActionResult> SaveQualityTrafficLight(string userId, string ipAddress, [FromBody] QualityTrafficLight quality)
         {
-            var customHeaderValue = Request.Headers["SquadId"];
-            //var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            // Setear Squad Id
+            quality.SquadId = quality.SquadId.ToUpper();
             var squadId = quality.SquadId;
 
             var response = await _quality.SaveQualityTrafficLight(userId, ipAddress, squadId, quality);
@@ -272,7 +276,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         public async Task<IActionResult> GetQualityActions(string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filter = null)
         {
             var customHeaderValue = Request.Headers["SquadId"];
-            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString().ToUpper() ?? ""; // Request.Headers["SquadId"];
             var response = await _quality.GetQualityActions(userId, ipAddress, squadId, page, perPage, filter);
 
             if (response.IsSuccess)
@@ -295,7 +299,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         public async Task<IActionResult> GetQualityActionById(string userId, string ipAddress, string qualityId)
         {
             var customHeaderValue = Request.Headers["SquadId"];
-            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString().ToUpper() ?? ""; // Request.Headers["SquadId"];
             var response = await _quality.GetQualityActionById(userId, ipAddress, squadId, qualityId);
 
             if (response.IsSuccess)
@@ -317,7 +321,10 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         [ActionName("SaveQualityAction")]
         public async Task<IActionResult> SaveQualityAction(string userId, string ipAddress, [FromBody] QualityAction quality)
         {
+            // Setear Squad Id
+            quality.SquadId = quality.SquadId.ToUpper();
             var squadId = quality.SquadId;
+
             var response = await _quality.SaveQualityAction(userId, ipAddress, squadId, quality);
 
             if (response.IsSuccess)
@@ -346,7 +353,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         public async Task<IActionResult> GetQualityReportTypes(string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filter = null)
         {
             var customHeaderValue = Request.Headers["SquadId"];
-            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString().ToUpper() ?? ""; // Request.Headers["SquadId"];
             var response = await _quality.GetQualityReportTypes(userId, ipAddress, squadId, page, perPage, filter);
 
             if (response.IsSuccess)
@@ -369,7 +376,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         public async Task<IActionResult> GetQualityReportTypeById(string userId, string ipAddress, string qualityId)
         {
             var customHeaderValue = Request.Headers["SquadId"];
-            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString().ToUpper() ?? ""; // Request.Headers["SquadId"];
             var response = await _quality.GetQualityReportTypeById(userId, ipAddress, squadId, qualityId);
 
             if (response.IsSuccess)
@@ -391,6 +398,8 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         [ActionName("SaveQualityReportType")]
         public async Task<IActionResult> SaveQualityReportType(string userId, string ipAddress, [FromBody] QualityReportType quality)
         {
+            // Setear Squad Id
+            quality.SquadId = quality.SquadId.ToUpper();
             var squadId = quality.SquadId;
 
             var response = await _quality.SaveQualityReportType(userId, ipAddress, squadId, quality);
@@ -421,7 +430,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         public async Task<IActionResult> GetQCDocuments(string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filter = null)
         {
             var customHeaderValue = Request.Headers["SquadId"];
-            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString().ToUpper() ?? ""; // Request.Headers["SquadId"];
             var response = await _quality.GetQCDocuments(userId, ipAddress, squadId, page, perPage, filter);
 
             if (response.IsSuccess)
@@ -444,7 +453,7 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         public async Task<IActionResult> GetQCDocumentById(string userId, string ipAddress, string qualityId)
         {
             var customHeaderValue = Request.Headers["SquadId"];
-            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString().ToUpper() ?? ""; // Request.Headers["SquadId"];
             var response = await _quality.GetQCDocumentById(userId, ipAddress, squadId, qualityId);
 
             if (response.IsSuccess)
@@ -466,6 +475,8 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         [ActionName("SaveQCDocument")]
         public async Task<IActionResult> SaveQCDocument(string userId, string ipAddress, [FromBody] QualityEvaluation quality)
         {
+            // Setear Squad Id
+            quality.SquadId = quality.SquadId.ToUpper();
             var squadId = quality.SquadId;
 
             var response = await _quality.SaveQCDocument(userId, ipAddress, squadId, quality);

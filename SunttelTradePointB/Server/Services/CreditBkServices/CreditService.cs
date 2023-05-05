@@ -207,13 +207,15 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
                     )
                     );
                 }
-
+                // Filtro por SquadId
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                );
                 pipeline.Add(
                     new BsonDocument{
                         {"$skip",  skip}
                     }
                     );
-
                 pipeline.Add(
                     new BsonDocument{
                         {"$limit",  perPage}
@@ -246,6 +248,10 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
                 var pipeline = new List<BsonDocument>();
                 pipeline.Add(
                     new BsonDocument("$match", new BsonDocument("_id", new ObjectId(creditTypeId)))
+                );
+                // Filtro por SquadId
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("SquadId", squadId))
                 );
 
                 var resultPrev = await _CreditTypeCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();

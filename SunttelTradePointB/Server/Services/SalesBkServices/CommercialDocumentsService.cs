@@ -166,6 +166,40 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 );
 
                 pipeline.Add(
+                    new BsonDocument
+                    {
+                        {
+                            "$lookup",
+                            new BsonDocument
+                            {
+                                { "from", "GeographicCities" },
+                                { "let", new BsonDocument { { "cityId", "$DeliveryAddress.CityAddressRef" } } },
+                                { "pipeline", new BsonArray
+                                {
+                                    new BsonDocument("$match", new BsonDocument("$expr",
+                                        new BsonDocument("$cond", new BsonArray
+                                        {
+                                            new BsonDocument("$eq", new BsonArray { "$$cityId", BsonNull.Value }),
+                                            new BsonDocument("$eq", new BsonArray { "$_id", BsonNull.Value }),
+                                            new BsonDocument("$eq", new BsonArray { "$_id", "$$cityId" })
+                                        })
+                                    ))
+                                }},
+                                { "as", "DeliveryAddress.CityAddress" }
+                            }
+                        }
+                    }
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$unwind", new BsonDocument
+                    {
+                        { "path", "$DeliveryAddress.CityAddress" },
+                        { "preserveNullAndEmptyArrays", true },
+                    })
+                );
+
+                pipeline.Add(
                     new BsonDocument{
                         {"$skip",  skip}
                     }
@@ -953,7 +987,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                             }
                         }}
                     }
-                );
+                    );
                 }
 
                 pipeline.Add(
@@ -968,6 +1002,40 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                             }
                         }
                     }
+                );
+
+                pipeline.Add(
+                    new BsonDocument
+                    {
+                        {
+                            "$lookup",
+                            new BsonDocument
+                            {
+                                { "from", "GeographicCities" },
+                                { "let", new BsonDocument { { "cityId", "$DeliveryAddress.CityAddressRef" } } },
+                                { "pipeline", new BsonArray
+                                {
+                                    new BsonDocument("$match", new BsonDocument("$expr",
+                                        new BsonDocument("$cond", new BsonArray
+                                        {
+                                            new BsonDocument("$eq", new BsonArray { "$$cityId", BsonNull.Value }),
+                                            new BsonDocument("$eq", new BsonArray { "$_id", BsonNull.Value }),
+                                            new BsonDocument("$eq", new BsonArray { "$_id", "$$cityId" })
+                                        })
+                                    ))
+                                }},
+                                { "as", "DeliveryAddress.CityAddress" }
+                            }
+                        }
+                    }
+                );
+
+                pipeline.Add(
+                    new BsonDocument("$unwind", new BsonDocument
+                    {
+                        { "path", "$DeliveryAddress.CityAddress" },
+                        { "preserveNullAndEmptyArrays", true },
+                    })
                 );
 
                 pipeline.Add(
@@ -986,7 +1054,6 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
                 //automapper
                 List<BISalesConsolidated> results = _mapper.Map<List<BISalesConsolidated>>(resultsCommercialDocuments);
-
 
                 return (true, results, null);
             }
