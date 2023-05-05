@@ -1,4 +1,5 @@
-﻿@page "/RegisterRole"
+﻿@page "/RegisterRole/{roleId}"
+@page "/RegisterRole"
 
 @using System.ComponentModel.DataAnnotations;
 @using Microsoft.AspNet.Identity.EntityFramework;
@@ -82,7 +83,7 @@
 
 @code {
     [Parameter]
-    public string? userId { get; set; }
+    public string? roleId { get; set; }
     public UserRole? Role = new UserRole();
     public List<string> rolenames = new List<string>();
     public IEnumerable<UserRole>? roles;
@@ -102,17 +103,18 @@
 
     protected override async void OnParametersSet()
     {
-        GetUserById();
+        GetRoleById();
         base.OnParametersSet();
     }
 
-    private async void GetUserById()
+    private async void GetRoleById()
     {
-        //if (userId is null) return;
-        //UserEntity u = await authStateProvider.GetUserById(userId);
-        //user.Name = u.Name;
-        //user.Id = u.Id;
-        //StateHasChanged();
+        if (roleId is null) return;
+        UserRole role = await authStateProvider.GetRoleById(roleId);
+        if (role is null) return;
+        Role.Id = role.Id;
+        Role.Name = role.Name;
+        StateHasChanged();
     }
 
     private async void GetRoles()

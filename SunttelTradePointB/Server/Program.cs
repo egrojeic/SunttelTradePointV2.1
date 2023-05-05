@@ -61,7 +61,9 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.HttpOnly = false;

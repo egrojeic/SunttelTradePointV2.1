@@ -142,7 +142,7 @@ namespace SunttelTradePointB.Server.Controllers
 
                 if (result.Succeeded)
                 {
-                    
+
                     IdentityRole rol = await _roleManager.FindByNameAsync(userRole.Name);
 
                     if (rol is null) return BadRequest("Rol not saved");
@@ -239,20 +239,26 @@ namespace SunttelTradePointB.Server.Controllers
                 {
                     if (parameters.Password != "NOTCHANGE")
                     {
-                        await ResetPassword(user, parameters.Password);
+                        bool passwordUpdated = await ResetPassword(user, parameters.Password);
+
+                        if (!passwordUpdated) return BadRequest("Error Updating password");
+
                     }
 
-                    //if (parameters.Rolname is not null)
-                    //{
-                    //    await UpdateRol(user, parameters.Rolname);
-                    //}
+                    if (parameters.Roles.Any())
+                    {
+                        bool rolesUpdated = await UpdateRoles(parameters);
+
+                        if (!rolesUpdated) return BadRequest("Error Updating roles");
+
+                    }
+
+                    return Ok();
                 }
                 else
                 {
                     return BadRequest("Error trying to update user");
                 }
-
-                return Ok();
             }
             catch (Exception ex)
             {
@@ -261,35 +267,50 @@ namespace SunttelTradePointB.Server.Controllers
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task ResetPassword(ApplicationUser user, string password)
+        public async Task<bool> ResetPassword(ApplicationUser user, string password)
         {
-            // Generar una nueva contraseña
-            var nuevaContraseña = _userManager.PasswordHasher.HashPassword(user!, password);
-
-            // Restablecer la contraseña
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var resultadoRestablecimientoContraseña = await _userManager.ResetPasswordAsync(user, token, nuevaContraseña);
-            if (!resultadoRestablecimientoContraseña.Succeeded)
+            try
             {
-                throw new Exception("No se pudo restablecer la contraseña");
+                var newPassword = _userManager.PasswordHasher.HashPassword(user!, password);
+                user.PasswordHash = newPassword;
+                IdentityResult resp = await _userManager.UpdateAsync(user);
+                if (!resp.Succeeded) return false;
+                return true;
             }
-
-            // Guardar los cambios en la base de datos
-            await _userManager.UpdateAsync(user);
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task UpdateRol(ApplicationUser user, string newRol)
+        public async Task<bool> UpdateRoles(RegisterRequest parameters)
         {
-            // Eliminar el rol anterior
-            var rolesAnteriores = await _userManager.GetRolesAsync(user);
-            await _userManager.RemoveFromRolesAsync(user, rolesAnteriores);
+            try
+            {
+                var user = await _userManager.FindByIdAsync(parameters.Id);
+                if(user is null) return false;
 
-            // Agregar el nuevo rol
-            await _userManager.AddToRoleAsync(user, newRol);
+                // Eliminar el rol anterior
+                var rolesAnteriores = await _userManager.GetRolesAsync(user);
+                await _userManager.RemoveFromRolesAsync(user, rolesAnteriores);
 
-            // Guardar los cambios en la base de datos
-            await _userManager.UpdateAsync(user);
+                foreach (UserRole rol in parameters.Roles)
+                {
+                    // Agregar el nuevo rol
+                    await _userManager.AddToRoleAsync(user, rol.Name);
+
+                }
+
+                // Guardar los cambios en la base de datos
+                IdentityResult resp = await _userManager.UpdateAsync(user);
+                if (!resp.Succeeded) return false;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
 
@@ -302,10 +323,7 @@ namespace SunttelTradePointB.Server.Controllers
         {
             try
             {
-                string roleName = "User";
-                var usersInRole = await _userManager.GetUsersInRoleAsync(roleName);
-
-                var activeUsers = usersInRole
+                var usersInRole = await _userManager.Users
                     .Where(user => user.Active)
                     .Select(user => new UserEntity
                     {
@@ -313,9 +331,9 @@ namespace SunttelTradePointB.Server.Controllers
                         Name = user.UserName,
                         Email = user.Email
                     })
-                    .ToList();
+                    .ToListAsync();
 
-                return Ok(activeUsers);
+                return Ok(usersInRole);
             }
             catch (Exception ex)
             {
@@ -345,6 +363,35 @@ namespace SunttelTradePointB.Server.Controllers
                 };
 
                 return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Get Role By Id
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetRoleById")]
+        public async Task<IActionResult> GetRoleById([FromQuery] string id)
+        {
+            try
+            {
+                IdentityRole rolDB = await _roleManager.Roles.FirstOrDefaultAsync(x => x.Id == id);
+
+                if (rolDB is null) return BadRequest(" not found");
+
+                UserRole rol = new UserRole
+                {
+                    Id = rolDB.Id,
+                    Name = rolDB.Name,
+                    SystemTools = null
+                }; 
+
+                return Ok(rol);
             }
             catch (Exception ex)
             {
@@ -397,6 +444,7 @@ namespace SunttelTradePointB.Server.Controllers
 
             });
         }
+
 
 
         /// <summary>

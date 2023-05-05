@@ -47,6 +47,21 @@ namespace SunttelTradePointB.Client.Services
 
         }
 
+        public async Task<UserRole?> GetRoleById(string id)
+        {
+            try
+            {
+                var result = await _httpClient.GetFromJsonAsync<UserRole>($"api/Auth/GetRoleById?id={id}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                var errDesc = ex.Message;
+                return null;
+            }
+
+        }
+
         public async Task Login(LoginRequest loginRequest)
         {
             var result = await _httpClient.PostAsJsonAsync("api/auth/login", loginRequest);

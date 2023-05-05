@@ -123,6 +123,11 @@ namespace SunttelTradePointB.Client.Services
             return await api.GetUserById(id);
         }
 
+        public async Task<UserRole?> GetRoleById(string id)
+        {
+            return await api.GetRoleById(id);
+        }
+
         public async Task EditUserByAdmin(RegisterRequest registerParameters)
         {
             await api.EditUserByAdmin(registerParameters);

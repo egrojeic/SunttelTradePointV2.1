@@ -47,9 +47,9 @@
                     <RadzenDataGridColumn TItem="UserEntity" Title="Options">
                         <Template Context="user">
                             <div class="btn-group" role="group">
-                                @*<button class="btn btn-warning me-2" title="Editar" @onclick="@(() => EditUser(user))">
+                                <button class="btn btn-warning me-2" title="editar" @onclick="@(() => EditUser(user))">
                             <span class="oi oi-pencil" aria-hidden="true"></span>
-                            </button>*@
+                            </button>
                                 <button class="btn btn-danger" title="Delete" @onclick="@(() => DeleteUser(user))">
                                     <span class="oi oi-trash" aria-hidden="true"></span>
 
@@ -80,9 +80,9 @@
                     <RadzenDataGridColumn TItem="UserRole" Title="Options">
                         <Template Context="roles">
                             <div class="btn-group" role="group">
-                                @*<button class="btn btn-warning me-2" title="Editar" @onclick="@(() => EditUser(user))">
+                                <button class="btn btn-warning me-2" title="Editar" @onclick="@(() => EditRole(roles))">
                             <span class="oi oi-pencil" aria-hidden="true"></span>
-                            </button>*@
+                            </button>
                                 <button class="btn btn-danger" title="Delete" @onclick="@(() => DeleteRole(roles))">
                                     <span class="oi oi-trash" aria-hidden="true"></span>
 
@@ -138,6 +138,11 @@
     public void EditUser(UserEntity user)
     {
         _NavigationManager.NavigateTo($"/RegisterUser/{user.Id}");
+    }
+
+    public void EditRole(UserRole role)
+    {
+        _NavigationManager.NavigateTo($"/RegisterRole/{role.Id}");
     }
 
     public async void DeleteUser(UserEntity user)

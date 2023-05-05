@@ -26,6 +26,8 @@ namespace SunttelTradePointB.Client.Services
         Task<List<SystemTool>?> GetSystemsTools();
 
         Task RegisterRole(UserRole role);
+
+        Task<UserRole?> GetRoleById(string id);
     }
 
 }
