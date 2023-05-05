@@ -148,5 +148,16 @@ namespace SunttelTradePointB.Server.Interfaces.CreditBkServices
         Task<(bool IsSuccess, CreditReason? CreditReason, string? ErrorDescription)> SaveCreditReason(string userId, string ipAddress, string squadId, CreditReason creditReason);
         #endregion
 
+        /// <summary>
+        /// Upload file csv a products
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, string? ActorsNodesList, string? ErrorDescription)> SaveProductsCSV(IFormFile file);
+
+
     }
 }
