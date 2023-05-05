@@ -24,31 +24,31 @@ namespace SunttelTradePointB.Shared.InvetoryModels
         [DisplayName("Qty")]
         public double Qty { get; set; }
 
-        [DisplayName("Qty Available")]
+        [DisplayName("Available")]
         public double QtyAvailable { get; set; }
 
-        [DisplayName("Qty Reserved")]
+        [DisplayName("Reserved")]
         public double QtyReserved { get; set; }
 
-        [DisplayName("Qty on Hand")]
+        [DisplayName("On Hand")]
         public double QtyOnHand { get; set; }
 
-        [DisplayName("Qty on Order")]
+        [DisplayName("On Order")]
         public double QtyOnOrder { get; set; }
 
-        [DisplayName("Qty on Purchase Order")]
+        [DisplayName("On Purchase Order")]
         public double QtyOnPurchaseOrder { get; set; }
 
-        [DisplayName("Qty on Sales Order")]
+        [DisplayName("On Sales Order")]
         public double QtyOnSalesOrder { get; set; }
 
-        [DisplayName("Qty on Transfer Order")]
+        [DisplayName("On Transfer Order")]
         public double QtyOnTransferOrder { get; set; }
 
-        [DisplayName("Qty on Production Order")]
+        [DisplayName("On Production Order")]
         public double QtyOnProductionOrder { get; set; }
 
-        [DisplayName("Scanned Qty")]
+        [DisplayName("Scanned")]
         public double EntryScannedQty { get; set; }
 
         [DisplayName("Entry Date time")]
