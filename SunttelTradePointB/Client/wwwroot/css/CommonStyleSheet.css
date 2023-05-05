@@ -1,4 +1,39 @@
 ﻿
+.label-style{
+    font-size:12px;
+}
+
+.color-black{
+
+}
+.color-white {
+    color: white;
+}
+
+.select-style {
+    width: 100%;
+    height: 30px;
+    border-radius: 5px;
+    border-color: #ced4da;
+    font-size: 12px;
+    text-align:start;
+    
+}
+
+.input-style {
+    width: 100%;
+    height: 30px;
+    border-radius: 5px;
+    border-color: #ced4da;
+    font-size: 12px;
+    line-height: 10px;
+    text-align: start;
+}
+
+
+.row-color{
+    background-color:red;
+}
 
 .CardList {
     width: 360px;
@@ -158,6 +193,7 @@
     box-shadow: 0px 0px 0.1px 1px #ced4da;
     border-radius: 4px;
     border-color: #dee2e6;
+    background-color:white;
     min-width: 100px;
     width: auto;
     height: auto;
@@ -168,11 +204,9 @@
         background-color: #00ccff;
         border-radius: 4px;
         border-color: transparent;
-        height:20px;
+        height:30px;
         overflow:hidden;
-    }
-
-        
+    }        
 
         .item-edit label {
             font-size: 12px;
@@ -460,13 +494,6 @@
    max-width:20px;  
 }
 
-.select-style {
-    width: 100%;
-    height: 40px;
-    border-radius: 5px;
-    border-color: #ced4da;
-    font-size: 14px;
-}
 
 .p-mode-text{
   height:20px;
@@ -497,9 +524,4 @@
     font-size: 12px;    
 }
 
-
-.input-style {   
-    font-size: 12px;
-    line-height: 0px;  
-}
 

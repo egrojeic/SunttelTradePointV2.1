@@ -8,14 +8,14 @@
 
 
 <div id="container-menu-general">
-    <nav>
+  
         <div>
-            <label class="lblControl col-form-label" style="color:white" >
-                @GetName("DocumentType",new CommercialDocument())
+            <label class="label-style color-white">
+                @(GetName("DocumentType",new CommercialDocument())+" ")
             </label>
         </div>
 
-        <div class="InventoryBusinessLine">
+        <div >
             <select @onchange="SetDocumentType" class="select-style">
                 @if (commercialDocumentTypeList != null)
                 {
@@ -27,7 +27,17 @@
             </select>
         </div>
 
-    </nav>
+    <div><label class="label-style color-white" >@GetName("Vendor",new CommercialDocument())</label></div>
+    <div class="Vendor">
+        <InputTextSelector3 styleCaption="width:200px;" TItem="Concept"
+                            Id="Vendor"
+                            caption="@(vendor !=null ? vendor?.Name:"" )"
+                            Items="vendorList"
+                            EventIdSelectionAndId="EventIdSelectionAndId"
+                            EventSearcherValueAndId="EventSearcherValueAndId">
+
+        </InputTextSelector3>
+    </div>
 
 </div>
 
@@ -37,24 +47,9 @@
     public List<CommercialDocumentType> commercialDocumentTypeList { get; set; }
     [Parameter]
     public EventCallback<CommercialDocumentType> SetDocumentTypeId { get; set; }
-
-    static bool ShowMenu { get; set; } = false;
-    public string commandStyle = "display: 'none';";
-
-    const string PASTE = "e-btn-icons e-paste";
-    const string PASTESPECIAL = "e-btn-icons e-paste-special";
-    const string PASTEASFORMULA = "e-btn-icons e-paste-formula";
-    const string PASTEASHYPERLINK = "e-btn-icons e-paste-hyperlink";
-
-    void ToggleMenu()
-    {
-        ShowMenu = !ShowMenu;
-        commandStyle = $"display: {(ShowMenu ? "block" : "none")}";
-        StateHasChanged();
-
-    }
-
-
+    public List<Concept> vendorList = new();
+    public Concept vendor = new();
+    string SearcherValue = "";
 
     protected async override void OnInitialized()
     {
@@ -74,6 +69,8 @@
         }
     }
 
+
+
     private void ItemSelected(MenuEventArgs args)
     {
         var Selected_item = args.Item.Id;
@@ -88,6 +85,37 @@
             SetDocumentTypeId.InvokeAsync(Selected_item);
         }
     }
+
+
+
+    public async void EventSearcherValueAndId((string value, string IdControl) arg)
+    {
+
+        if (SearcherValue == "Vendor")
+        {
+            vendorList = await DocumentServices.GetCommercialVendorList(arg.value,false);
+
+        }
+
+
+        StateHasChanged();
+    }
+
+
+
+    public async void EventIdSelectionAndId(Concept item)
+    {
+        if (SearcherValue == "Vendor")
+        {
+
+            vendor = item;
+
+        }
+     
+       
+        StateHasChanged();
+    }
+
 
 
     public string GetName(string Name, Object Obj)

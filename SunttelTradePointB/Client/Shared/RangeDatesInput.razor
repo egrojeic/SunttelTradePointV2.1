@@ -3,18 +3,22 @@
 
 
 <div class="controlContainer">
-    <label class="col-sm-2 col-form-label text-right lblControl">@(StartDateName != null ? StartDateName : "Start")</label>
+    <div>
+    <label class="col-sm-2 col-form-label label-style color-white">@(StartDateName != null ? StartDateName : " Start")</label>
+        </div>
     @if (StartDate != DateTime.MinValue)
     {
-        <div >
-            <input @onchange="SetDateStart" value="@(StartDate.ToString("yyyy-MM-dd"))" type="date" class="form-control" />
-    </div>
+        <div>
+            <input @onchange="SetDateStart" value="@(StartDate.ToString("yyyy-MM-dd"))" type="date" class="input-style" />
+        </div>
     }
     @if (EndDate != DateTime.MinValue)
     {
-        <label class="col-sm-2 col-form-label text-right lblControl"> @(EndDateName != null ? EndDateName : "Until")</label>
+        <div>
+            <label class="col-sm-2 col-form-label  label-style color-white"> @(EndDateName != null ? EndDateName : " Until")</label>
+        </div>
         <div class="col-sm-4">
-            <input @onchange="@SetDateEnd" value="@EndDate.ToString("yyyy-MM-dd")" type="date" class="form-control" />
+            <input @onchange="@SetDateEnd" value="@EndDate.ToString("yyyy-MM-dd")" type="date" class="input-style" />
         </div>
     }
     @if (!disableBtn)
@@ -47,22 +51,25 @@
     public bool disableBtn { get; set; }
 
     protected override Task OnInitializedAsync()
-    {      
+    {
         return base.OnInitializedAsync();
     }
 
 
-    public void SetDateStart(ChangeEventArgs arg){
+    public void SetDateStart(ChangeEventArgs arg)
+    {
         StartDate = DateTime.Parse(arg.Value.ToString());
         StartDateChanged.InvokeAsync(StartDate);
     }
-    
-    public void SetDateEnd(ChangeEventArgs arg){
+
+    public void SetDateEnd(ChangeEventArgs arg)
+    {
         EndDate = DateTime.Parse(arg.Value.ToString());
         EndDateChanged.InvokeAsync(EndDate);
     }
 
-    public void SearchAll(){
+    public void SearchAll()
+    {
         EventSearchAll.InvokeAsync("all");
         StateHasChanged();
     }

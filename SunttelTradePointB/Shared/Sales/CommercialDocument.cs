@@ -145,16 +145,16 @@ namespace SunttelTradePointB.Shared.Sales
         [DisplayName("Printed")]
         public bool DocumentPrinted { get; set; }
 
-        [DisplayName("BOL Printed")]
+        [DisplayName("BOL")]
         public bool BillOfLandingPrinted { get; set; }
 
-        [DisplayName("PT Printed")]
+        [DisplayName("PT")]
         public bool PickingTicketPrinted { get; set; }
 
-        [DisplayName("Labels Printed")]
+        [DisplayName("Lbl")]
         public bool LabelsPrinted { get; set; }
 
-        [DisplayName("Selected to Print")]
+        [DisplayName("Sel")]
         public bool SelectedToPrint { get; set; }
 
     }

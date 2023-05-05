@@ -5,6 +5,7 @@ html, body {
     background-color: #161616;
     color: dimgray;
     padding: 0;
+    margin: 0px;
 }
 
 
@@ -96,22 +97,21 @@ a, .btn-link {
 
 .sidebar {
     background-color: black;
-
-   
 }
-
 
 .panelMenuContainer {
     width: 100%;
-    margin-top: 0;
     background-color: #2d2926;
-    display: inline-flex;
-    z-index: 20;
-    margin-bottom: 15px;
     padding: 5px;
     border-radius: 8px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    column-gap: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    column-gap: 10px;
+    margin-top: -9px;
+    margin-bottom: 5px;
 }
 
 .menu-button {
@@ -195,9 +195,8 @@ a, .btn-link {
 
 
 #container-menu-general {
-    margin: auto;
-    display: inline-flex;
-    align-content: center;
+    display: flex;
+    column-gap: 5px;
 }
 
 .general-menu-button {
