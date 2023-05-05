@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
 using SunttelTradePointB.Shared.Security;
+using SunttelTradePointB.Shared.SquadsMgr;
 using System.Net.Http.Json;
 
 namespace SunttelTradePointB.Client.Services
@@ -73,6 +74,13 @@ namespace SunttelTradePointB.Client.Services
             result.EnsureSuccessStatusCode();
         }
 
+        public async Task RegisterRole(UserRole role)
+        {
+            var result = await _httpClient.PostAsJsonAsync("api/auth/registerRole", role);
+            if (result.StatusCode == System.Net.HttpStatusCode.BadRequest) throw new Exception(await result.Content.ReadAsStringAsync());
+            result.EnsureSuccessStatusCode();
+        }
+
         public async Task EditUserByAdmin(RegisterRequest registerRequest)
         {
             var result = await _httpClient.PostAsJsonAsync("api/auth/EditUser", registerRequest);
@@ -87,18 +95,36 @@ namespace SunttelTradePointB.Client.Services
             result.EnsureSuccessStatusCode();
         }
 
-        public async Task<List<IdentityRole>?> GetRoles()
+        public async Task<List<UserRole>?> GetRoles()
         {
             try
             {
                 string path = basepath.Replace("Name", "GetRoles");
                 var responseMessage = await Gethttp($"{path}");
-                var list = await responseMessage.Content.ReadFromJsonAsync<List<IdentityRole>>();
-                return list != null ? list : new List<IdentityRole>();
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<UserRole>>();
+                return list != null ? list : new List<UserRole>();
             }
             catch (Exception ex)
             {
                 string errMessage = ex.Message;
+
+                return null;
+            }
+        }
+
+        public async Task<List<SystemTool>?> GetSystemsTools()
+        {
+            try
+            {
+                string path = basepath.Replace("Name", "GetSystemTools");
+                var responseMessage = await Gethttp($"{path}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<SystemTool>>();
+                return list != null ? list : new List<SystemTool>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+
                 return null;
             }
         }

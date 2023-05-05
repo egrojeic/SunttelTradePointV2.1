@@ -183,5 +183,18 @@ namespace SunttelTradePointB.Server.Services
         }
 
 
+        /// <summary>
+        /// Retrieves all system tools 
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<SystemTool>> GetSystemTools()
+        {
+            var systemTools = await _sunttelDBContext.SystemTools
+                .Include(s => s.ToolSetsNavigation)
+                .ToListAsync();
+
+            return systemTools;
+        }
+
     }
 }

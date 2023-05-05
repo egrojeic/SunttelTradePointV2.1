@@ -81,7 +81,7 @@
             <div><label class="info-text-size">@GetName("DocumentType",new CommercialDocument())</label></div>
 
             <div>
-                <select @onchange="SelectItemDocumentType" class="select-style">
+                <select @onchange="SelectItemDocumentType" class="select-style info-text-size">
                   
                     @if (documentTypeList != null && documentTypeList.Count() > 0)
                     {
@@ -113,17 +113,17 @@
             <InputTextDisable Enable="true" TypeInt="false" @bind-ValueString="commercialDocument.PO"></InputTextDisable>
 
             <div><label class="info-text-size">@GetName("ShipDate",new CommercialDocument())</label></div>
-            <div><input type="date" @bind-value="commercialDocument.ShipDate" class="form-control" /></div>
+            <div><input type="date" @bind-value="commercialDocument.ShipDate" class="form-control info-text-size input-style" /></div>
 
             <div><label class="info-text-size">@GetName("DeliveryDate",new CommercialDocument())</label></div>
-            <div><input type="date" @bind-value="commercialDocument.DeliveryDate" class="form-control" /></div>
+            <div><input type="date" @bind-value="commercialDocument.DeliveryDate" class="form-control info-text-size input-style" /></div>
 
             <div><label class="info-text-size">@GetName("ArrivalDate",new CommercialDocument())</label></div>
-            <div><input type="date" @bind-value="commercialDocument.ArrivalDate" class="form-control" /></div>
+            <div><input type="date" @bind-value="commercialDocument.ArrivalDate" class="form-control info-text-size input-style" /></div>
 
             <div><label class="info-text-size">@GetName("Vendor",new CommercialDocument())</label></div>
             <div class="Vendor">
-                <InputTextSelector3 styleCaption="min-width: 27vw;" TItem="Concept"
+                <InputTextSelector3 styleCaption="min-width: 25vw;" TItem="Concept"
                                 Id="Vendor"
                                 caption="@(commercialDocument.Vendor !=null ? commercialDocument.Vendor?.Name:"" )"
                                 Items="vendorList"
@@ -135,7 +135,7 @@
 
             <div><label class="info-text-size">@GetName("Buyer",new CommercialDocument())</label></div>
             <div class="Buyer">
-                <InputTextSelector3 styleCaption="min-width: 27vw;" TItem="Concept"
+                <InputTextSelector3 styleCaption="min-width: 25vw;" TItem="Concept"
                                 Id="Buyer"
                                 caption="@(commercialDocument.Buyer !=null ? commercialDocument.Buyer?.Name:"" )"
                                 Items="buyerList"
@@ -185,7 +185,7 @@
 
             <div><label class="info-text-size">@GetName("Carrier",new CommercialDocument())</label></div>
             <div>
-                <select @onchange="SelectItemVendorWarehous" class="select-style">
+                <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size">
                   
                     @if (carrierList != null && carrierList.Count() > 0)
                     {
@@ -207,7 +207,7 @@
 
             <div><label class="info-text-size">@GetName("VendorWarehouse",new CommercialDocument())</label></div>
             <div>
-                <select @onchange="SelectItemVendorWarehous" class="select-style">
+                <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size">
                    
                     @if (vendorWarehouseList != null && vendorWarehouseList.Count() > 0)
                     {
@@ -226,7 +226,7 @@
 
             <div><label class="info-text-size">@GetName("BuyerWarehouse",new CommercialDocument())</label></div>
             <div>
-                <select @onchange="SelectItemVendorWarehous" class="select-style">
+                <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size ">
                  
                     @if (buyerWarehouseList != null && buyerWarehouseList.Count() > 0)
                     {
@@ -245,7 +245,7 @@
 
             <div><label class="info-text-size">@GetName("BusinessLineDoc",new CommercialDocument())</label></div>
             <div>
-                <select @onchange="SelectItemBusinessLineDoc" class="select-style">
+                <select @onchange="SelectItemBusinessLineDoc" class="select-style info-text-size">
                   
                     @if (businessLineDocList != null && businessLineDocList.Count() > 0)
                     {
@@ -267,7 +267,7 @@
 
         <hr />
 
-        <SfTab Height="250px" CssClass="tab-adaptive info-text-size" HeaderPlacement="HeaderPosition.Left">
+        <SfTab Height="250px" CssClass="tab-adaptive " HeaderPlacement="HeaderPosition.Left">
             <TabAnimationSettings>
                 <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
                 <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
