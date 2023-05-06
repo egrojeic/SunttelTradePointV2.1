@@ -3,6 +3,7 @@
 @using SunttelTradePointB.Shared.Sales
 @inject NavigationManager Navigation
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject ActorsNodeService actorsNodeServive;
 
 
 
@@ -90,10 +91,15 @@
 
     public async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
-
+        SearcherValue = arg.IdControl.ToString();
         if (SearcherValue == "Vendor")
         {
-            vendorList = await DocumentServices.GetCommercialVendorList(arg.value,false);
+            var list = await actorsNodeServive.GetEntityActorFaceList(arg.value.ToString());
+            vendorList = new();
+            foreach (var item in list)
+            {
+                vendorList.Add(item);
+            }
 
         }
 

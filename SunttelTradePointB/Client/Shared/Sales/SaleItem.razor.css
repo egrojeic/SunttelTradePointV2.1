@@ -27,10 +27,10 @@
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
     column-gap: 5px;
     row-gap: 0px;
-    margin-top: 2px;
+    margin-top: 0px;
     justify-content:center;
     align-items:center;   
-    
+    margin-bottom:-4px;
 }
 
 /*grid-template-columns: 140px 180px 176px 180px 150px 180px;*/
@@ -40,9 +40,12 @@
         width: 100%;
         display: flex;
         flex-direction: row;
+        row-gap:0px;
         justify-content: space-between;
         column-gap: 20px;
         align-items: center;
+        padding:0px;
+        height:58px;
         
     }
 
@@ -127,4 +130,10 @@
  
    
     
+}
+
+.height {
+    height: 310px;   
+   
+    padding-top: 5px;
 }

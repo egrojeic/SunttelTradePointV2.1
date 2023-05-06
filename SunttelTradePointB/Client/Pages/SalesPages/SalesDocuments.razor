@@ -6,6 +6,7 @@
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
 
+
 <style>
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
@@ -27,7 +28,8 @@
     }
 </style>
 
-<PageTitleComponent Title="Sales" IconName="commercialActivities.png"
+
+<PageTitleComponent Title="Sales" IconName="Sales.png"
                     Description="With this tool you can create and edit Sales operations such as Orders and Invoices">
 </PageTitleComponent>
 
@@ -35,7 +37,7 @@
 
 <div class="panelMenuContainer">
     <CommercialDocsGrlMenu></CommercialDocsGrlMenu>
- 
+
     <RangeDatesInput @bind-StartDate="@startingDate" @bind-EndDate="@endDate"
                      EventSearchAll="EventSearchAll"></RangeDatesInput>
 </div>
@@ -77,14 +79,14 @@
                     CellContextMenu="@ShowContextMenuCommercialDocument">
             <Columns>
 
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentType.Name" Title="@GetName(nameof(CommercialDocument.DocumentType), new CommercialDocument())" Width="158px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="BusinessLineDoc.Name" Title="@GetName(nameof(CommercialDocument.BusinessLineDoc), new CommercialDocument())" Filterable="false" Sortable="false" Width="128px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentType.Name" Title="@GetName(nameof(CommercialDocument.DocumentType), new CommercialDocument())" Width="148px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="BusinessLineDoc.Name" Title="@GetName(nameof(CommercialDocument.BusinessLineDoc), new CommercialDocument())" Filterable="false" Sortable="false" Width="120px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="PO" Title="@GetName(nameof(CommercialDocument.PO), new CommercialDocument())" Width="90px" Filterable="false" Sortable="false" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="Vendor.Name" Title="@GetName(nameof(CommercialDocument.Vendor), new CommercialDocument())" Width="200px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="Buyer.Name" Title="@GetName(nameof(CommercialDocument.Buyer), new CommercialDocument())" Width="200px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="SalesPerson.Name" Title="@GetName(nameof(CommercialDocument.SalesPerson), new CommercialDocument())" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocument" Property="Carrier.Name" Title="@GetName(nameof(CommercialDocument.Carrier), new CommercialDocument())" Width="110px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceStatusDocument.Name" Title="@GetName(nameof(CommercialDocument.DocumentType), new CommercialDocument())" Width="150px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="Carrier.Name" Title="@GetName(nameof(CommercialDocument.Carrier), new CommercialDocument())" Width="110px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="OriginDocument.DocumentType" Title="@GetName(nameof(CommercialDocument.OriginDocument), new CommercialDocument())" Width="150px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="VendorWarehouse.Name" Title="@GetName(nameof(CommercialDocument.VendorWarehouse), new CommercialDocument())" Width="200px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="BuyerWarehouse.Name" Title="@GetName(nameof(CommercialDocument.BuyerWarehouse), new CommercialDocument())" Width="200px" />
@@ -96,7 +98,7 @@
                     <Template Context="commercialdocumentItem">
                         <RadzenCheckBox @bind-Value="commercialdocumentItem.ToInvoice" />
                     </Template>
-                </RadzenDataGridColumn> 
+                </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="Notes" Title="Notes" Filterable="false" Sortable="false" Width="200px" />
             </Columns>
         </RadzenDataGrid>

@@ -15,9 +15,24 @@
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
     }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
 </style>
 
-<PageTitleComponent Title="Quality Traffic Light" IconName="commercialActivities.png"
+<PageTitleComponent Title="Quality Traffic Light" IconName="Traffic.png"
                     Description="With this tool you can add edit quality traffic light">
 </PageTitleComponent>
 
@@ -71,13 +86,11 @@
 
                 <RadzenDataGridColumn TItem="QualityTrafficLight" Property="@nameof(QualityTrafficLight.Name)" Title="@GetName("Name", new QualityTrafficLight() )" Width="208px" />
                 <RadzenDataGridColumn TItem="QualityTrafficLight" Property="@nameof(QualityTrafficLight)" Title="Color" Width="208px">
-
                     <Template Context="data">
-                        <div class="div-color">
-                            <button  style="background-color:rgb(@($"{data.R},{data.G},{data.B}"))" ></button>
+                        <div class="color-item" style="background-color:rgb(@(GetColor(data)));">
+                            
                         </div>                      
                     </Template>
-
                 </RadzenDataGridColumn>
 
             </Columns>
@@ -111,9 +124,7 @@
 
     protected async override void OnInitialized()
     {
-
-
-        if (_filterItems != null) LoadData();
+       _filterItems ="all"; LoadData();
         base.OnInitialized();
 
     }
@@ -149,7 +160,7 @@
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<QualityTrafficLight> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
 
@@ -167,6 +178,17 @@
     {
         docsFilter = value;
         StateHasChanged();
+    }
+
+
+    public string GetColor(QualityTrafficLight item)
+    {
+        string Color = "0,0,0";
+        if (item != null)
+        {
+            Color = $"{item.R},{item.G},{item.B}";
+        }
+        return Color;
     }
 
     public string GetName(string Name, Object Obj)

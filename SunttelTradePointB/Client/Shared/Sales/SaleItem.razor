@@ -14,12 +14,33 @@
 @inject ActorsNodeService actorsNodeServive
 @inject IJSRuntime Js
 
+
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
+</style>
+
 <MessageSaveComponent isVisible="isVisible" message="@alertMsg">
 </MessageSaveComponent>
 <PageTitleComponent Title=" Commercial Document"
                     Description="Here you can add commercial document" IconName="commercialDocument.png">
 </PageTitleComponent>
-
 
 <form>
 
@@ -54,7 +75,7 @@
         <SliderScrollAuto summary="@commercialDocument.FinanceSummary"></SliderScrollAuto>
         <TextToSpeech @ref="textToSpeech" Id="FinanceSummary" EventChange="EventChange" Class="speack">
         </TextToSpeech>
-        <div class="grid-columns-header grid-columns-6">
+        <div class="grid-columns-header grid-columns-6 height">
 
             <div class="item-1">
                 <div><label class="info-text-size">@GetName("ShippingStatusDocument",new CommercialDocument())</label></div>

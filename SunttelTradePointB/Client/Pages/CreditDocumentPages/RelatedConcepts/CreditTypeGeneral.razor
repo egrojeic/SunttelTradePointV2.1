@@ -12,13 +12,29 @@
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
     }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
 </style>
 
-<PageTitleComponent Title="Credit Type" IconName="Payments.png"
+<PageTitleComponent Title="Credit Type" IconName="credit.png"
                     Description="With this tool you can create and edit credit type ">
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
+    <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
     <CreditTypeMenu></CreditTypeMenu>
     <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>   
 </div>
@@ -98,7 +114,7 @@
     protected async override void OnInitialized()
     {
 
-        if (_filterItems != null) LoadData();
+        _filterItems ="all"; LoadData();
         base.OnInitialized();
 
     }
@@ -112,8 +128,6 @@
     }
 
    
-
-
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CreditType> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
@@ -147,6 +161,13 @@
     public void Add()
     {
         
+    }
+
+     public void Home()
+    {
+        string paramFilter = filter != null ? filter : "";
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/Credits/{paramFilter}");
+        Navigation.NavigateTo($"/Credits");
     }
 
 

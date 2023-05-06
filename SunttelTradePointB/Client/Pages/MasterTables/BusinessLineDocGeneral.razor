@@ -9,14 +9,28 @@
 @inject TransactionalItemsService transactItemsService
 @inject NavigationManager Navigation
 
-
 <style>
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
     }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
 </style>
 
-<PageTitleComponent Title="Business line documents" IconName="signal.png"
+<PageTitleComponent Title="Business line documents" IconName="Sales.png"
                     Description="Describe the Business line documents">
 </PageTitleComponent>
 
@@ -69,8 +83,8 @@ else
     protected override void OnInitialized()
     {
         transactItemsService.Page = "BusinessLineDoc";
-        if (_filterItems != "" && _filterItems != null){
-        LoadData();}
+        _filterItems = "all";
+        LoadData();
     }
 
     bool isLoading = false;
