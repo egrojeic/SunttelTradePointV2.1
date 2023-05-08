@@ -315,6 +315,7 @@
     string SearcherValue = "";
     bool menuVisible = false;
     bool isVisible = false;
+    bool isSale = true;
     public CommercialDocument commercialDocument = new();
     // public SalesDocumentItemsDetails items = new();
 
@@ -361,8 +362,7 @@
             commercialDocument.Items = await DocumentServices.GetCommercialDocumentDetails(accountsReceivableippingId);
         }
 
-
-        documentTypeList = await DocumentServices.GetCommercialDocumentTypes();
+        documentTypeList = await DocumentServices.GetCommercialDocumentTypes(isSale);
         businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
 
         carrierList = await DocumentServices.GetCarrierList();

@@ -22,7 +22,7 @@
                 {
                     @foreach (var item in commercialDocumentTypeList)
                     {
-                        <option value="@(item.Id)" selected>@(item.Name)</option>                      
+                        <option value="@(item.Id)" selected>@(item.Name)</option>
                     }
                 }
             </select>
@@ -35,19 +35,13 @@
     public List<CommercialDocumentType> commercialDocumentTypeList { get; set; }
     [Parameter]
     public EventCallback<CommercialDocumentType> SetDocumentTypeId { get; set; }
-   
-    static bool ShowMenu { get; set; } = false;
-    public string commandStyle = "display: 'none';";
+    [Parameter]
+    public bool isSales { get; set; }
 
-    const string PASTE = "e-btn-icons e-paste";
-    const string PASTESPECIAL = "e-btn-icons e-paste-special";
-    const string PASTEASFORMULA = "e-btn-icons e-paste-formula";
-    const string PASTEASHYPERLINK = "e-btn-icons e-paste-hyperlink";
 
     void ToggleMenu()
     {
-        ShowMenu = !ShowMenu;
-        commandStyle = $"display: {(ShowMenu ? "block" : "none")}";
+
         StateHasChanged();
 
     }
@@ -56,7 +50,7 @@
 
     protected async override void OnInitialized()
     {
-        commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes();
+        commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes(isSales);
         StateHasChanged();
     }
 
@@ -80,9 +74,10 @@
 
     private void SetDocumentType(ChangeEventArgs args)
     {
-        var Selected_item = commercialDocumentTypeList.Where(s=>s.Id == args.Value.ToString()).FirstOrDefault();
-        if (Selected_item!= null){
-       SetDocumentTypeId.InvokeAsync(Selected_item);
+        var Selected_item = commercialDocumentTypeList.Where(s => s.Id == args.Value.ToString()).FirstOrDefault();
+        if (Selected_item != null)
+        {
+            SetDocumentTypeId.InvokeAsync(Selected_item);
         }
     }
 
@@ -92,7 +87,7 @@
         if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
     }
-    
+
 
     private void CreateNew()
     {

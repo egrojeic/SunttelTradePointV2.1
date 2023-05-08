@@ -4,6 +4,8 @@
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Accounting
 @inject SunttelTradePointB.Client.Services.CreditDocumentServices.CreditDocumentServices CreditDocumentServices
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject ActorsNodeService actorsNodeServive;
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
 @inject IJSRuntime Js
@@ -12,11 +14,26 @@
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
     }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
 </style>
 
 
 <PageTitleComponent Title="Credit Document" IconName="Payments.png"
-                    Description="With this tool you can create and edit creditDocument ">
+                    Description="With this tool you can create and edit credit document ">
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
@@ -24,7 +41,19 @@
     <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
 </div>
 <div class="panelMenuContainer">
-    @* <CreditDocumentMenu2 SetDocumentTypeId="SetDocumentTypeId"></CreditDocumentMenu2>*@
+    <div><label class="label-style color-white">@GetName("Vendor",new CommercialDocument())</label></div>
+    <div class="Vendor">
+        <InputTextSelector3 styleCaption="width:200px;" TItem="Concept"
+                            Id="Vendor"
+                            caption="@(vendor !=null ? vendor?.Name:"" )"
+                            Items="vendorList"
+                            EventIdSelectionAndId="EventIdSelectionAndId"
+                            EventSearcherValueAndId="EventSearcherValueAndId">
+
+        </InputTextSelector3>
+    </div>
+
+
     <RangeDatesInput @bind-StartDate="@startingDate"
                      @bind-EndDate="endDate"
                      StartDateName="From"
@@ -47,33 +76,32 @@
         if (CreditDocumentList != null)
         {
             <RadzenDataGrid AllowFiltering="true"
+                 
                     AllowColumnResize="true"
-                    AllowAlternatingRows="true"
+                    AllowAlternatingRows="true"  
                     FilterMode="FilterMode.Advanced"
                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                     AllowSorting="true"
                     PageSize="50"
                     AllowPaging="true"
                     PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    Data="CreditDocumentList"
-                    TItem="CreditDocument"
-                    ColumnWidth="300px"
+                    ShowPagingSummary="true"                  
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"
-                    CellContextMenu="@ShowContextMenuCommercialDocument">
+                    @bind-Value="@selectedcommercialdocuments"
+                    CellContextMenu="@ShowContextMenuCommercialDocument"     
+                    Data="CreditDocumentList"
+                    TItem="CreditDocument">
                 <Columns>
-
-                    <RadzenDataGridColumn  CssClass="info-text-size" TItem="CreditDocument" Property="CreditDocumentType.Name" Title="@GetName("CreditDocumentType",new CreditDocument())" Filterable="false" Width="18px" />
-                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="Code" Title="@GetName("Code",new CreditDocument())" Filterable="false" Sortable="false" Width="208px" />
+                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CreditDocumentType.Name" Title="@GetName("CreditDocumentType",new CreditDocument())" Filterable="false" Width="150px" />
+                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="Code" Title="@GetName("Code",new CreditDocument())" Filterable="false" Sortable="false" Width="90px" />
                     <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="Vendor.Name" Title="@GetName("Vendor",new CreditDocument())" Width="208px" />
                     <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="Vendor.Buyer" Title="@GetName("Buyer",new CreditDocument())" Width="208px" />
-                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CreditDocumentStatus.Name" Title="@GetName("CreditDocumentStatus",new CreditDocument())" Sortable="false" Width="108px" />
-                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CreditDocumentReason.Name" Title="@GetName("CreditDocumentReason",new CreditDocument())" Width="208px" />
-                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CreditValue" Title="@GetName("CreditValue",new CreditDocument())"  Filterable="false" Width="208px" />
+                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CreditDocumentStatus.Name" Title="@GetName("CreditDocumentStatus",new CreditDocument())" Sortable="false" Width="80px" />
+                 
+                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CreditValue" Title="@GetName("CreditValue",new CreditDocument())" TextAlign="TextAlign.Right" FormatString="{0:N2}" Filterable="false" Width="90px" />
                     <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CommercialDocumentRef.DocumentCode" Title="@GetName("DocumentCode",new CommercialDocumentSummaryInfo())" Filterable="false" Width="108px" />
-                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CommercialDocumentRef.DocumentDate" Title="@GetName("DocumentDate",new CommercialDocumentSummaryInfo())" FormatString="{0:MM/dd/yyyy}" Filterable="false" Width="108px" />
-                                      
+                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CommercialDocumentRef.DocumentDate" Title="@GetName("DocumentDate",new CommercialDocumentSummaryInfo())" FormatString="{0:MM/dd/yyyy}" Filterable="false" Width="108px" />                                      
                     <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="IsDirect" Title="@GetName("IsDirect",new CreditDocument())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
                         <Template>
                             @{
@@ -85,6 +113,9 @@
 
                 </Columns>
             </RadzenDataGrid>
+            <div class="container-total">
+                <div class="item"><label>@SumTotal()</label> </div>
+            </div>
         }
     }
 </div>
@@ -96,6 +127,10 @@
     public string _filterItems { get; set; }
     public List<CreditDocument> CreditDocumentList { get; set; }
     public CommercialDocumentType documentType { get; set; }
+    IList<CreditDocument>? selectedcommercialdocuments;
+    public List<Concept> vendorList = new();
+    public Concept vendor = new();
+    string SearcherValue = "";
 
     bool isLoading = false;
 
@@ -144,7 +179,7 @@
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CreditDocument> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
 
@@ -159,7 +194,57 @@
     }
 
 
+    public async void EventSearcherValueAndId((string value, string IdControl) arg)
+    {
+        SearcherValue = arg.IdControl.ToString();
+        if (SearcherValue == "Vendor")
+        {
+            var list = await DocumentServices.GetCommercialVendorList(arg.value.ToString(), true, 1, 50);
+            vendorList = new();
+            foreach (var item in list)
+            {
+                vendorList.Add(item);
+            }
+        }
 
+        StateHasChanged();
+    }
+
+
+
+    public async void EventIdSelectionAndId(Concept item)
+    {
+        if (SearcherValue == "Vendor")
+        {
+            vendor = item;
+        }
+
+        StateHasChanged();
+    }
+
+
+    public string SumTotal()
+    {
+
+        double value = 0;
+        string result = "";
+        if (CreditDocumentList != null)
+        {
+            var statusList = CreditDocumentList.GroupBy(s => s.CreditDocumentStatus).ToList();          
+            var CreditValueTotal = CreditDocumentList.Sum(s => s.CreditValue);
+            result = GetName("CreditValue", new CreditDocument()) + " : " + CreditValueTotal+" ";
+            foreach (var item in statusList)
+            {
+                if (!result.ToLower().Contains(item.FirstOrDefault().CreditDocumentStatus.Name.ToLower()))
+                {
+                    int counStatus = CreditDocumentList.Where(s => s.CreditDocumentStatus.Id == item.FirstOrDefault().CreditDocumentStatus.Id).Count();
+                    result += item.FirstOrDefault().CreditDocumentStatus.Name + " : " + counStatus + "  ,  ";
+                };
+            }
+        }
+
+        return result; //value.ToString("N2", format);
+    }
 
 
     public void Setfilter(string value)

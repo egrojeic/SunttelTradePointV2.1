@@ -45,13 +45,28 @@
         <div class="grid-columns-header grid-columns-6">
 
             <div><label class="info-text-size">@GetName("ParameterGroup",new QualityEvaluationPhoto())</label></div>
-            <InputTextSelector3 styleCaption="width:180px" style="right:-100px;" TItem="QualityParameterGroup"
-                            Id="ParameterGroup"
-                            caption="@(qualityEvaluationPhoto.ParameterGroup !=null ? qualityEvaluationPhoto.ParameterGroup?.Name:"" )"
-                            EventIdSelectionAndId="EventIdSelectionAndId"
-                            EventSearcherValueAndId="EventSearcherValueAndId"
-                            Items="qualityParameterGroupList">
-            </InputTextSelector3>
+          
+            <div>
+                <select @onchange="SelectItemParameterGroup" class="select-style">
+
+                    @if (qualityParameterGroupList != null && qualityParameterGroupList.Count() > 0)
+                    {
+                        <option value="0" selected>Select</option>
+                    }
+                    @if (qualityParameterGroupList != null)
+                    {
+                        @foreach (var item in qualityParameterGroupList)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    }
+                    @if (qualityEvaluationPhoto != null && qualityEvaluationPhoto.ParameterGroup != null)
+                    {
+                        <option value="@qualityEvaluationPhoto.ParameterGroup.Id" selected>@qualityEvaluationPhoto.ParameterGroup.Name</option>
+                    }
+                </select>
+            </div>
+
 
             <div><label class="info-text-size">Add image</label></div>
             <img @onclick='()=>Page("img")' class="btn-img" src="@(qualityEvaluationPhoto.ImageName !=null ?GetFullPathPhoto(qualityEvaluationPhoto.ImageName):"/images//add-image.png")">
@@ -130,9 +145,9 @@
         LoadQualityEvaluation();
         if (qualityEvaluationPhotoId != null)
         {
-            //qualityEvaluationDetail = await QualityEvaluationServices.GetQualityActionById(qualityEvaluationDetaild);
+           // qualityEvaluationDetail = await QualityEvaluationServices.GetQualityActionById(qualityEvaluationDetaild);
         }
-
+        qualityParameterGroupList = await QualityEvaluationServices.GetQualityParameterGrouplList("all", 1, 40);
         LoadQualityEvaluation();
         isLoading = false;
         StateHasChanged();
@@ -161,23 +176,13 @@
 
     }
 
-
-    public async void EventSearcherValueAndId((string value, string IdControl) arg)
+    public void SelectItemParameterGroup(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
-        SearcherValue = arg.IdControl.ToString();
-        if (SearcherValue == "ParameterGroup")
-        {
-            qualityParameterGroupList = await QualityEvaluationServices.GetQualityParameterGrouplList(arg.value.ToString(), 1, 40);
-        }
-
+        qualityEvaluationPhoto.ParameterGroup = qualityParameterGroupList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
         StateHasChanged();
     }
 
-    public void EventIdSelectionAndId(QualityParameterGroup item)
-    {
-        qualityEvaluationPhoto.ParameterGroup = item;
-    }
-
+  
 
     public string GetFullPathPhoto(string imgName)
     {

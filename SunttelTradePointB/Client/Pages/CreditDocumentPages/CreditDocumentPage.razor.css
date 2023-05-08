@@ -1,1 +1,26 @@
-﻿
+﻿.container-total {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    column-gap: 20px;
+    background-color: #f1f1f1;
+    box-shadow: 0px 0px 5px;
+    justify-content: center;
+    align-content: end;
+    align-items: center;
+}
+
+    .container-total .item {
+        height: auto;
+        width: auto;
+        display: flex;
+        flex-direction: row;
+        column-gap: 20px;
+        align-content: center;
+        font-size:12px;
+    }
+
+        .container-total .item b {
+            margin: 0px;
+            margin-left: 5px;
+        }

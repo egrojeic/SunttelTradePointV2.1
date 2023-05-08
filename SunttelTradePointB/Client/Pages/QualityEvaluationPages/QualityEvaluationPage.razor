@@ -14,9 +14,23 @@
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
     }
-</style>
 
-<PageTitleComponent Title="Quality Control Panel" IconName="commercialActivities.png"
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
+</style>
+<PageTitleComponent Title="Quality Control Panel" IconName="QualityParameters.png"
                     Description="With this tool you can add and edit quality control panel">
 </PageTitleComponent>
 

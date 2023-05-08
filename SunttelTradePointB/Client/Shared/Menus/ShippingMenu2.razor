@@ -9,10 +9,10 @@
 
 
 
-<div class="aling-div ">
+<div class="aling-div">
 
     <div>
-        <label class="lblControl col-form-label">
+        <label class="label-style">
             Warehouse
         </label>
     </div>
@@ -43,11 +43,13 @@
 
 @code {
     [Parameter]
-    public List<CommercialDocumentType> commercialDocumentTypeList { get; set; }
-  
+    public List<CommercialDocumentType> commercialDocumentTypeList { get; set; }  
 
     [Parameter]
     public EventCallback<Warehouse> SetWarehouse { get; set; }
+
+     [Parameter]
+    public EventCallback Changed { get; set; }
 
     List<Warehouse> warehouseList = new();
     Warehouse warehouse = new();
@@ -68,12 +70,11 @@
 
     }
 
-
-
     protected async override void OnInitialized()
     {
        // commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes();
         warehouseList = await InventoryServices.GetWarehouseList("all");
+        Changed.InvokeAsync(null);
         StateHasChanged();
     }
 

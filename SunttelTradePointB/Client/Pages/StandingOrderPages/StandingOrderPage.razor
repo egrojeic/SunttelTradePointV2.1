@@ -12,10 +12,25 @@
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
     }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
 </style>
 
 <PageTitleComponent Title="Standing Orders Sales" IconName="Payments.png"
-                    Description="With this tool you can create and edit standing orders sales ">
+                    Description="With this tool you can view standing orders sales ">
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
@@ -63,11 +78,10 @@
                     CellContextMenu="@ShowContextMenuCommercialDocument"
                     PageNumbersCount="100">
                 <Columns>
-                    <RadzenDataGridColumn TItem="StandingOrder" Property="DocumentType.Name" Title="@GetName("DocumentType",new StandingOrder())" Width="208px" />
                     <RadzenDataGridColumn TItem="StandingOrder" Property="DocumentNumber" Title="@GetName("DocumentNumber",new StandingOrder())" Width="108px" />
-                    <RadzenDataGridColumn TItem="StandingOrder" Property="BusinessLineDoc.Name" Title="@GetName("BusinessLineDoc",new StandingOrder())" Width="188px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="BusinessLineDoc.Name" Title="@GetName("BusinessLineDoc",new StandingOrder())" Width="108px" />
                     <RadzenDataGridColumn TItem="StandingOrder" Property="PO" Title="@GetName("PO",new StandingOrder())" Width="98px" />
-                    <RadzenDataGridColumn TItem="StandingOrder" Property="StartingShipDate" Title="@GetName("StartingShipDate",new StandingOrder())" Width="158px">
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="StartingShipDate" Title="@GetName("StartingShipDate",new StandingOrder())" Width="108px">
                         <Template>
                             @{
                                 var FinalShipDate = (DateTime)context.GetType().GetProperty(nameof(StandingOrder.FinalShipDate)).GetValue(context);
@@ -75,32 +89,27 @@
                             }
                         </Template>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="StandingOrder" Property="FinalShipDate" FormatString="MM/dd/yyyy" Title="@GetName("FinalShipDate",new StandingOrder())" Width="150px">
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="FinalShipDate" FormatString="MM/dd/yyyy" Title="@GetName("FinalShipDate",new StandingOrder())" Width="100px">
                         <Template>
                             @{
                                 var FinalShipDate = (DateTime)context.GetType().GetProperty(nameof(StandingOrder.FinalShipDate)).GetValue(context);
                                 <p>@FinalShipDate.ToString("MM/dd/yyyy")</p>
-                            }
-                        </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="StandingOrder" Property="IsDirect" Title="@GetName("IsDirect",new StandingOrder())" Width="150px" TextAlign="Radzen.TextAlign.Center">
-                        <Template>
-                            @{
-                                var IsEndUndefined = (bool)context.GetType().GetProperty(nameof(StandingOrder.IsEndUndefined)).GetValue(context);
-                                <input type="checkbox" checked="@IsEndUndefined" />
                             }
                         </Template>
                     </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="StandingOrder" Property="Season.Name" Title="@GetName("Season",new StandingOrder())" Width="150px" />
                     <RadzenDataGridColumn TItem="StandingOrder" Property="Vendor.Name" Title="@GetName("Vendor",new StandingOrder())" Width="208px" />
                     <RadzenDataGridColumn TItem="StandingOrder" Property="Buyer.Name" Title="@GetName("Buyer",new StandingOrder())" Width="208px" />
-                    <RadzenDataGridColumn TItem="StandingOrder" Property="SalesPerson" Title="@GetName("SalesPerson",new StandingOrder())" Width="208px" />
-                    <RadzenDataGridColumn TItem="StandingOrder" Property="FrequencyInDays" Title="@GetName("FrequencyInDays",new StandingOrder())" Filterable="false" Width="108px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="SalesPerson" Title="@GetName("SalesPerson",new StandingOrder())" Width="158px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="@nameof(StandingOrder.FrequencyInDays)" Title="@GetName("FrequencyInDays",new StandingOrder())" Filterable="false" Width="58px" />
                     <RadzenDataGridColumn TItem="StandingOrder" Property="DeliveryAddress" Title="@GetName("DeliveryAddress",new StandingOrder())" Sortable="false" Filterable="false" Width="208px" />
                     <RadzenDataGridColumn TItem="StandingOrder" Property="TransportationMode" Title="@GetName("TransportationMode",new StandingOrder())" Sortable="false" Filterable="false" Width="150px" />
 
                 </Columns>
             </RadzenDataGrid>
+            <div class="container-total">
+                <div class="item"><label>@SumTotal()</label> </div>
+            </div>
         }
     }
 </div>
@@ -175,9 +184,30 @@
         }
     }
 
+    public string SumTotal()
+    {
+       
+        double value = 0;
+        string result = "";
+        if (standingOrderList != null)
+        {
+           var  list = standingOrderList.Where(s => s.Vendor.Name != null).ToList();
+           var listByVendor = list.GroupBy(s => s.Vendor).ToList();
+          
+            int counStatus = 0;
 
+            foreach (var item in listByVendor)
+            {
+                if (!result.ToLower().Contains(item.FirstOrDefault().Vendor.Name.ToLower()))
+                {
+                    counStatus = listByVendor.Where(s => s.FirstOrDefault().Vendor.Id == item.FirstOrDefault().Vendor.Id).Count();
+                    result += item.FirstOrDefault().Vendor.Name + " : " + counStatus + "  ,  ";
+                };
+            }
+        }
 
-
+        return result; //value.ToString("N2", format);
+    }
 
     public void Setfilter(string value)
     {

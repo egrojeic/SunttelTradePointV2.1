@@ -1,4 +1,8 @@
 @page "/SaleItem"
+@page "/PurchasesItem"
+@page "/ProviderCreditsItem"
+@page "/PurchasesItem/{commercialDocumentId}"
+@page "/ProviderCreditsItem/{commercialDocumentId}"
 @page "/SaleItem/{commercialDocumentId}"
 @page "/SaleItem/{commercialDocumentId}/{filter}"
 @using SunttelTradePointB.Shared.Sales;
@@ -14,12 +18,33 @@
 @inject ActorsNodeService actorsNodeServive
 @inject IJSRuntime Js
 
+
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
+</style>
+
 <MessageSaveComponent isVisible="isVisible" message="@alertMsg">
 </MessageSaveComponent>
 <PageTitleComponent Title=" Commercial Document"
-                    Description="Here you can add commercial document" IconName="commercialDocument.png">
+                    Description="Here you can add commercial document" IconName="@icoLogo">
 </PageTitleComponent>
-
 
 <form>
 
@@ -54,7 +79,7 @@
         <SliderScrollAuto summary="@commercialDocument.FinanceSummary"></SliderScrollAuto>
         <TextToSpeech @ref="textToSpeech" Id="FinanceSummary" EventChange="EventChange" Class="speack">
         </TextToSpeech>
-        <div class="grid-columns-header grid-columns-6">
+        <div class="grid-columns-header grid-columns-6 height">
 
             <div class="item-1">
                 <div><label class="info-text-size">@GetName("ShippingStatusDocument",new CommercialDocument())</label></div>
@@ -82,7 +107,7 @@
 
             <div>
                 <select @onchange="SelectItemDocumentType" class="select-style info-text-size">
-                  
+
                     @if (documentTypeList != null && documentTypeList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
@@ -158,7 +183,7 @@
             <div>
                 <select @onchange="SelectItemDeliveryAddress" class="select-style info-text-size">
 
-                   
+
                     @if (addressList != null && addressList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
@@ -186,7 +211,7 @@
             <div><label class="info-text-size">@GetName("Carrier",new CommercialDocument())</label></div>
             <div>
                 <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size">
-                  
+
                     @if (carrierList != null && carrierList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
@@ -208,7 +233,7 @@
             <div><label class="info-text-size">@GetName("VendorWarehouse",new CommercialDocument())</label></div>
             <div>
                 <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size">
-                   
+
                     @if (vendorWarehouseList != null && vendorWarehouseList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
@@ -227,7 +252,7 @@
             <div><label class="info-text-size">@GetName("BuyerWarehouse",new CommercialDocument())</label></div>
             <div>
                 <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size ">
-                 
+
                     @if (buyerWarehouseList != null && buyerWarehouseList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
@@ -246,7 +271,7 @@
             <div><label class="info-text-size">@GetName("BusinessLineDoc",new CommercialDocument())</label></div>
             <div>
                 <select @onchange="SelectItemBusinessLineDoc" class="select-style info-text-size">
-                  
+
                     @if (businessLineDocList != null && businessLineDocList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
@@ -323,8 +348,12 @@
     string page = "";
     string alertMsg = "";
     string SearcherValue = "";
+    string namePage = "";
+    string backPage = "";
+    string icoLogo = "";
     bool menuVisible = false;
     bool isVisible = false;
+    bool isSale = false;
     public CommercialDocument commercialDocument = new();
     // public SalesDocumentItemsDetails items = new();
 
@@ -334,7 +363,7 @@
     #endregion Status
 
     #region Input3
-    public List<CommercialDocumentType> documentTypeList  = new();
+    public List<CommercialDocumentType> documentTypeList = new();
     public List<BusinessLine> businessLineDocList = new();
     public List<Concept> salesPersonList = new();
     public List<Concept> vendorList = new();
@@ -361,7 +390,7 @@
 
     protected override async void OnInitialized()
     {
-
+        ValidateUri();
         isLoading = true;
         StateHasChanged();
         if (commercialDocumentId != null)
@@ -371,10 +400,8 @@
 
         }
 
-
-        documentTypeList = await DocumentServices.GetCommercialDocumentTypes();
+        documentTypeList = await DocumentServices.GetCommercialDocumentTypes(isSale);
         businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
-
         carrierList = await DocumentServices.GetCarrierList();
         LoadCommercialDocument();
         isLoading = false;
@@ -392,7 +419,7 @@
             string tile = e.Item != null ? e.Item.Text : "";
             if (tile == "Save")
             {
-                LoadCommercialDocument();              
+                LoadCommercialDocument();
                 var result = await DocumentServices.SaveCommercialDocument(commercialDocument);
                 if (result != null)
                 {
@@ -403,7 +430,6 @@
                 {
                     alert("required fields", 1);
                 }
-
             }
         }
         else
@@ -524,11 +550,11 @@
         CloseMenu(false);
     }
 
-    public void alert(string _msg, int? status =0)
+    public void alert(string _msg, int? status = 0)
     {
         isVisible = true;
         alertMsg = _msg;
-       
+
         StateHasChanged();
     }
 
@@ -589,8 +615,23 @@
         if (commercialDocument.SalesPerson == null) commercialDocument.SalesPerson = new();
         if (commercialDocument.Carrier == null) commercialDocument.Carrier = new();
         if (commercialDocument.DeliveryAddress == null) commercialDocument.DeliveryAddress = new();
-        if (commercialDocument.ShippingStatusDocument == null) commercialDocument.ShippingStatusDocument = new();
-        if (commercialDocument.FinanceStatusDocument == null) commercialDocument.FinanceStatusDocument = new();
+        if (commercialDocument.ShippingStatusDocument == null) commercialDocument.ShippingStatusDocument = new ShippingStatus
+
+            {
+                Name = "IN PROGRESS",
+                Id = "000000000000000000000F51",
+                AffectInventory = false,
+                EditingAllowed = true
+
+            };
+        if (commercialDocument.FinanceStatusDocument == null) commercialDocument.FinanceStatusDocument = new FinanceStatus
+            {
+                Name = "IN PROGRESS",
+                Id = "000000000000000000000F51",
+                AffectFinance = false,
+                EditingAllowed = true
+
+            };
         if (commercialDocument.OriginDocument == null) commercialDocument.OriginDocument = new();
         if (commercialDocument.VendorWarehouse == null) commercialDocument.VendorWarehouse = new();
         if (commercialDocument.BuyerWarehouse == null) commercialDocument.BuyerWarehouse = new();
@@ -600,9 +641,6 @@
         if (commercialDocument.Items == null) commercialDocument.Items = new();
         if (commercialDocument.ShipDate == DateTime.MinValue) commercialDocument.ShipDate = DateTime.Today;
         if (commercialDocument.ArrivalDate == DateTime.MinValue) commercialDocument.ArrivalDate = DateTime.Today;
-
-
-
 
         if (businessLineDocList == null) businessLineDocList = new();
         if (documentTypeList == null) documentTypeList = new();
@@ -650,4 +688,42 @@
         }
         StateHasChanged();
     }
+
+
+    public void ValidateUri()
+    {
+        string Name = Navigation.Uri;
+        if (Name.Contains("PurchasesItem") || Name.Contains("ProviderCreditsItem"))
+        {
+            isSale = false;
+            if (Name.Contains("PurchasesItem"))
+            {
+                namePage = "Purchase";
+                backPage = "Purchases";
+                icoLogo = "PurchasesIco.png";
+            };
+
+            if (Name.Contains("ProviderCreditsItem"))
+            {
+                namePage = "Provider Credit";
+                backPage = "ProviderCredits";
+                icoLogo = "ProviderCredits.png";
+            }
+        }
+
+        if (Name.Contains("SaleItem"))
+        {
+            isSale = true;
+            if (Name.Contains("SaleItem"))
+            {
+                backPage = "SalesDocuments";
+                namePage = "Sale";
+                icoLogo = "commercialDocument.png";
+            }
+
+        }
+        StateHasChanged();
+    }
+
+
 }

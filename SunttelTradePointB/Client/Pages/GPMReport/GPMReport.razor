@@ -69,7 +69,7 @@
         isLoading = true;
         if (commercialDocumentType != null)
         {
-            commercialdocumentList = await DocumentServices.GetCommercialDocumentList(startingDate, endDate, commercialDocumentType.Id, (_filterItems != null ? _filterItems : "all"));
+           // commercialdocumentList = await DocumentServices.GetCommercialDocumentList(startingDate, endDate, commercialDocumentType.Id, (_filterItems != null ? _filterItems : "all"), false);
 
         }
         isLoading = false;

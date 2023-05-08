@@ -13,11 +13,12 @@
     }
 </style>
 
-<PageTitleComponent Title="Credit Reason" IconName="Payments.png"
+<PageTitleComponent Title="Credit Reason" IconName="credit.png"
                     Description="With this tool you can create and edit Credit Reason ">
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
+    <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
     <CreditReasonMenu></CreditReasonMenu>
     <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>   
 </div>
@@ -65,7 +66,7 @@
     [Parameter]
     public string _filterItems { get; set; }
     public List<CreditReason> creditReasonList { get; set; }
-   
+
 
     bool isLoading = false;
 
@@ -84,7 +85,7 @@
     protected async override void OnInitialized()
     {
 
-        if (_filterItems != null) LoadData();
+        _filterItems = "all"; LoadData();
         base.OnInitialized();
 
     }
@@ -135,6 +136,12 @@
         
     }
 
+    public void Home()
+    {
+        string paramFilter = filter != null ? filter : "";
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/Credits/{paramFilter}");
+        Navigation.NavigateTo($"/Credits");
+    }
 
     public void EventIdSelectionMenuItem(string name)
     {

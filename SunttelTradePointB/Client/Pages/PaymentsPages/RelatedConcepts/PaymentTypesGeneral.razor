@@ -11,6 +11,21 @@
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
     }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
 </style>
 
 <PageTitleComponent Title="Payment Type" IconName="Payments.png"
@@ -18,20 +33,21 @@
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
+    <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
     <PaymentTypeMenu></PaymentTypeMenu>
-    <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>   
+    <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
 </div>
 
 
 <div class="tableContainer">
 
-  @*  <div class="detailsTitleContainer" style="width:100%;">
-        <h3 class="subTitleDetailForm">@GetName("ImportFileRecords",new Payment())</h3>
-        <svg @onclick='()=>EventIdSelectionMenuItem("PaymentType")' style="margin-left:20px;" title="Add new Recipe Item" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style " viewBox="0 0 16 16">
-            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-        </svg>
-    </div> *@  
+    @*  <div class="detailsTitleContainer" style="width:100%;">
+    <h3 class="subTitleDetailForm">@GetName("ImportFileRecords",new Payment())</h3>
+    <svg @onclick='()=>EventIdSelectionMenuItem("PaymentType")' style="margin-left:20px;" title="Add new Recipe Item" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style " viewBox="0 0 16 16">
+    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+    </svg>
+    </div> *@
     @if (isLoading)
     {
 
@@ -56,12 +72,12 @@
                     TItem="PaymentType"
                     ColumnWidth="300px"
                     SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"                   
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
             <Columns>
 
-                <RadzenDataGridColumn TItem="PaymentType" Property="Name" Title="@GetName("Name",new BasicConcept())" Width="308px" />              
-             
+                <RadzenDataGridColumn TItem="PaymentType" Property="Name" Title="@GetName("Name",new BasicConcept())" Width="308px" />
+
             </Columns>
         </RadzenDataGrid>
     }
@@ -73,7 +89,7 @@
     [Parameter]
     public string _filterItems { get; set; }
     public List<PaymentType> paymentTypettList { get; set; }
-   
+
 
     bool isLoading = false;
 
@@ -92,27 +108,28 @@
     protected async override void OnInitialized()
     {
 
-        if (_filterItems != null) LoadData();
+        _filterItems ="all";
+       LoadData();
         base.OnInitialized();
 
     }
 
     public async void LoadData()
     {
-        isLoading = true;       
-           paymentTypettList =  await PaymentServices.GetPaymentTypeList(0,1,(filter != null ? filter : "all"));      
+        isLoading = true;
+        paymentTypettList = await PaymentServices.GetPaymentTypeList(0, 1, (filter != null ? filter : "all"));
         isLoading = false;
         StateHasChanged();
     }
 
-   
+
 
 
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<PaymentType> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-      
-        </RadzenMenu>
+
+    </RadzenMenu>
     );
 
 
@@ -126,7 +143,7 @@
         }
     }
 
-    public void Setfilter( string value)
+    public void Setfilter(string value)
     {
         filter = value;
         StateHasChanged();
@@ -140,9 +157,13 @@
 
     public void Add()
     {
-        
+
     }
 
+    private void Home()
+    {
+        Navigation.NavigateTo("/Payments");
+    }
 
     public void EventIdSelectionMenuItem(string name)
     {
