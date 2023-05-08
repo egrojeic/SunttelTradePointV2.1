@@ -132,6 +132,9 @@ namespace SunttelTradePointB.Shared.Sales
         [DisplayName("Items")]
         public List<SalesDocumentItemsDetails> Items { get; set; }
 
+        [DisplayName("Shipping Summary")]
+        public ShippingSalesDocumentSummary ShippingSummary { get; set; }
+
         [DisplayName("To Invoice")]
         public bool ToInvoice { get; set; }
 
@@ -177,6 +180,22 @@ namespace SunttelTradePointB.Shared.Sales
         public double TotalPaid { get; set; }
 
 
+    }
+
+
+    public class  ShippingSalesDocumentSummary
+    {
+        [DisplayName("Total Boxes")]
+        public int TotalBoxes { get; set; }
+
+        [DisplayName("Boxes Scanned")]
+        public int TotalScanned { get; set; }
+
+        [DisplayName("Boxes in Inventory")]
+        public int TotalInInventory { get; set; }
+
+
+     
     }
 
     public enum ProductSources { 
