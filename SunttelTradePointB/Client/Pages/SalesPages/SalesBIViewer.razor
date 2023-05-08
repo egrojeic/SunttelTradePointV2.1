@@ -5,11 +5,24 @@
 @using System.Text.Json;
 @using System.Text.Json.Serialization;
 @using SunttelTradePointB.Shared.Sales;
+@using SunttelTradePointB.Shared.DataViews.BI
+@using SunttelTradePointB.Client.Shared.Menus.SalesBI
 
-@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesBIViewerServices _SalesBIViewerServices
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime;
 
+<style>
+    .e-pivotview .e-grouping-bar .e-pivot-button, .e-pivotview .e-group-rows .e-pivot-button {
+        background-color: #0d223f;
+    }
+
+        .e-pivotview .e-grouping-bar .e-pivot-button, .e-pivotview .e-group-rows .e-pivot-button:hover {
+            background-color: #0d223f;
+            box-shadow:0px 0px 5px gray;
+            color:black;
+        }
+</style>
 
 
 <PageTitleComponent Title="Sales Business Intelligence View" IconName="BIIcon.png"
@@ -17,58 +30,83 @@
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
-    <CommercialDocsGrlMenu></CommercialDocsGrlMenu>
+    <SalesBIlMenu></SalesBIlMenu>
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
 
 </div>
 <div class="panelMenuContainer aling">
-    <CommercialDocsGrlMenu2 SetDocumentTypeId="SetDocumentTypeId"></CommercialDocsGrlMenu2>
+    <SalesBIlMenu2 SetDocumentTypeId="SetDocumentTypeId"></SalesBIlMenu2>
     <RangeDatesInput StartDateName="From" @bind-StartDate="@startingDate" EndDateName="To" @bind-EndDate="@endDate"
                      EventSearchAll="EventSearchAll"></RangeDatesInput>
 </div>
 
+@if (isLoading)
+{
 
-<SfPivotView @ref="refSfPivotView" TValue="CommercialDocument" Width="550" Height="315px">
-    <PivotViewDataSourceSettings DataSource="@commercialdocumentList" ExpandAll=false EnableSorting=true>
-        <PivotViewColumns>
-            <PivotViewColumn Name="DocumentType"></PivotViewColumn>          
-        </PivotViewColumns>      
-        <PivotViewValues>
-            <PivotViewValue Name="DocumentType.Name" Caption="Units Sold"></PivotViewValue>
-            <PivotViewValue Name="DocumentNumber"  Caption="number"></PivotViewValue>
-        </PivotViewValues>      
-    </PivotViewDataSourceSettings>
-    <PivotViewGridSettings ColumnWidth="120"></PivotViewGridSettings>
-</SfPivotView>
+    <WaitingProcessIndicator loadingTopic="Sales item"></WaitingProcessIndicator>
+
+}
+else
+{
+
+    @if (commercialdocumentList != null)
+    {
+        <SfPivotView TValue="BISalesConsolidated" ShowGroupingBar="true" AllowNumberFormatting="true">
+            <PivotViewDataSourceSettings DataSource="@commercialdocumentList">
+                <PivotViewColumns>
+                    <PivotViewColumn Name="DocumentTypeName" Caption="@GetName("DocumentTypeName",new BISalesConsolidated())"></PivotViewColumn>
+                    <PivotViewColumn Name="VendorName" Caption="@GetName("VendorName",new BISalesConsolidated())"></PivotViewColumn>
+                    <PivotViewColumn Name="BuyerName" Caption="@GetName("BuyerName",new BISalesConsolidated())"></PivotViewColumn>
+                    <PivotViewColumn Name="BuyerCommercialGroup" Caption="@GetName("BuyerCommercialGroup",new BISalesConsolidated())"></PivotViewColumn>
+                    <PivotViewColumn Name="SalesPersonName" Caption="@GetName("SalesPersonName",new BISalesConsolidated())"></PivotViewColumn>
+                    <PivotViewColumn Name="CarrierName" Caption="@GetName("CarrierName",new BISalesConsolidated())"></PivotViewColumn>
+                    <PivotViewColumn Name="SeasonName" Caption="@GetName("SeasonName",new BISalesConsolidated())"></PivotViewColumn>
+                    <PivotViewColumn Name="SeasoStandingOrderIdnName" Caption="@GetName("StandingOrderId",new BISalesConsolidated())"></PivotViewColumn>
+                    <PivotViewColumn Name="PO" Caption="@GetName("PO",new BISalesConsolidated())"></PivotViewColumn>
+                    <PivotViewColumn Name="ShipDate" Caption="@GetName("ShipDate",new BISalesConsolidated())"></PivotViewColumn>
+                    <PivotViewColumn Name="DeliveryDate" Caption="@GetName("DeliveryDate",new BISalesConsolidated())"></PivotViewColumn>
+                    <PivotViewColumn Name="ArrivalDate" Caption="@GetName("ArrivalDate",new BISalesConsolidated())"></PivotViewColumn>
+                </PivotViewColumns>
+                <PivotViewRows>
+
+                </PivotViewRows>
+                <PivotViewValues>
+                    <PivotViewValue Name="FinanceSummaryTotalAmount" Caption="@GetName("FinanceSummaryTotalAmount",new BISalesConsolidated())"></PivotViewValue>
+                    <PivotViewValue Name="FinanceSummaryTotalCosts" Caption="@GetName("FinanceSummaryTotalCosts",new BISalesConsolidated())"></PivotViewValue>
+                    <PivotViewValue Name="FinanceSummaryTotalTaxes" Caption="@GetName("FinanceSummaryTotalTaxes",new BISalesConsolidated())"></PivotViewValue>
+                    <PivotViewValue Name="FinanceSummaryTotalDiscounts" Caption="@GetName("FinanceSummaryTotalDiscounts",new BISalesConsolidated())"></PivotViewValue>
+                    <PivotViewValue Name="FinanceSummaryTotalPaid" Caption="@GetName("FinanceSummaryTotalPaid",new BISalesConsolidated())"></PivotViewValue>
+                </PivotViewValues>
+
+                <PivotViewFormatSettings>
+                    <PivotViewFormatSetting Name="FinanceSummaryTotalAmount" Format="N2" UseGrouping=true></PivotViewFormatSetting>
+                    <PivotViewFormatSetting Name="FinanceSummaryTotalCosts" Format="N2" UseGrouping=true></PivotViewFormatSetting>
+                    <PivotViewFormatSetting Name="FinanceSummaryTotalTaxes" Format="N2" UseGrouping=true></PivotViewFormatSetting>
+                    <PivotViewFormatSetting Name="FinanceSummaryTotalDiscounts" Format="N2" UseGrouping=true></PivotViewFormatSetting>
+                    <PivotViewFormatSetting Name="FinanceSummaryTotalPaid" Format="N2" UseGrouping=true></PivotViewFormatSetting>
+                </PivotViewFormatSettings>
+            </PivotViewDataSourceSettings>
+        </SfPivotView>
+    }
 
 
+}
 
 
 @code {
     [Parameter]
     public string _filterItems { get; set; }
 
-    SfPivotView<CommercialDocument> refSfPivotView { get; set; }
+    SfPivotView<BISalesConsolidated> refSfPivotView { get; set; }
 
     public CommercialDocumentType commercialDocumentType { get; set; }
-    public List<CommercialDocument> commercialdocumentList { get; set; }
+    public List<BISalesConsolidated> commercialdocumentList { get; set; }
 
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
     bool isLoading = false;
 
     protected async override void OnInitialized()
     {
-        commercialdocumentList = new();
-        for (int i = 0; i < 20; i++)
-        {
-            commercialdocumentList.Add(new CommercialDocument
-                {
-                    DocumentType = new CommercialDocumentType { Name = "prueba" },
-                    DocumentNumber = 1,
-                    DeliveryDate = DateTime.Today
-                });
-        }
-        if (refSfPivotView != null) await refSfPivotView.LayoutRefreshAsync();
         base.OnInitialized();
     }
 
@@ -76,10 +114,9 @@
     {
         if (firstRender)
         {
-           
+            if (refSfPivotView != null) await refSfPivotView.LayoutRefreshAsync();
             StateHasChanged();
         }
-
 
     }
 
@@ -96,9 +133,6 @@
 
     public void EventSearchAll(string value)
     {
-
-
-
         docsFilter = value;
 
 
@@ -107,14 +141,13 @@
     public async void LoadData()
     {
         isLoading = true;
+        commercialdocumentList = new();
         if (commercialDocumentType != null)
         {
-           // commercialdocumentList = await DocumentServices.GetCommercialDocumentList(startingDate, endDate, commercialDocumentType.Id, (_filterItems != null ? _filterItems : "all"), false);
-
+            commercialdocumentList = await _SalesBIViewerServices.GetSalesBIList(startingDate, endDate, commercialDocumentType.Id, (_filterItems != null ? _filterItems : "all"), 1, 500);
         }
 
-
-
+        if (refSfPivotView != null) await refSfPivotView.LayoutRefreshAsync();
         isLoading = false;
 
         StateHasChanged();
@@ -137,7 +170,7 @@
     }
 
 
-   
+
 
 
 

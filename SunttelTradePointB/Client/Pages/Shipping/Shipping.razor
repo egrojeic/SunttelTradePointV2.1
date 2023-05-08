@@ -222,9 +222,9 @@
             string totalBoxes = commercialdocumentList.Sum(s => s.ShippingSummary.TotalBoxes).ToString("N2");
             string totalScanned = commercialdocumentList.Sum(s => s.ShippingSummary.TotalScanned).ToString("N2");
             string totalInInventory = commercialdocumentList.Sum(s => s.ShippingSummary.TotalInInventory).ToString("N2");
-            result =  $"{GetName("TotalBoxes", new ShippingSalesDocumentSummary())}: {totalBoxes}  ";
-            result += $"{GetName("TotalScanned", new ShippingSalesDocumentSummary())}: {totalBoxes}  ";
-            result += $"{GetName("TotalInInventory", new ShippingSalesDocumentSummary())}: {totalBoxes}  ";
+            result =  $"{GetName("TotalBoxes", new ShippingSalesDocumentSummary())}: {totalBoxes}       ";
+            result += $"{GetName("TotalScanned", new ShippingSalesDocumentSummary())}: {totalBoxes}      ";
+            result += $"{GetName("TotalInInventory", new ShippingSalesDocumentSummary())}: {totalBoxes}     ";
         }
 
         return result; //value.ToString("N2", format);
