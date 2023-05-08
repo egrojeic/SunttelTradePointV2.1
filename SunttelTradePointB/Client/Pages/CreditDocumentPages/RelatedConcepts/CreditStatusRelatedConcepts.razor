@@ -19,7 +19,7 @@
 <MessageSaveComponent isVisible="isVisible" message="@msg">
 </MessageSaveComponent>
 <PageTitleComponent Title="Credit Status"
-                    Description="Here you can add credit status" IconName="Payments.png">
+                    Description="Here you can add credit status" IconName="credit.png">
 </PageTitleComponent>
 
 
@@ -156,8 +156,8 @@
     public void Home()
     {
         string paramFilter = filter != null ? filter : "";
-        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/Credits/{paramFilter}");
-        Navigation.NavigateTo($"/Credits");
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/CreditStatusGeneral/{paramFilter}");
+        Navigation.NavigateTo($"/CreditStatusGeneral");
     }
 
 

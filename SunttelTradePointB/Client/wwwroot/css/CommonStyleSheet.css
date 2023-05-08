@@ -10,6 +10,15 @@
     color: white;
 }
 
+.info-text-size {
+    width: auto;
+    height: 30px;
+    border-radius: 5px;
+    border-color: #ced4da;
+    font-size: 12px;
+    text-align: start;
+}
+
 .select-style {
     width: 100%;
     height: 30px;
@@ -410,7 +419,7 @@
     grid-template-columns: repeat(4, 1fr);
     grid-auto-rows: minmax(40px, auto);
     grid-column-gap: 10px;
-    grid-row-gap: 12px;
+    grid-row-gap: 0px;
     align-items: start;
     margin-top: 20px;
     width:100%;
@@ -496,7 +505,7 @@
 
 
 .p-mode-text{
-  height:20px;
+  height:30px;
   margin-top:2px;
   padding-left:10px;
   border-radius:5px;
@@ -512,16 +521,7 @@
     
 }
 
-.info-text-size {
-    font-size: 12px;
-    line-height: 0px;
-    height: 20px;
-    word-wrap: break-word;
-    font-weight: normal;
-}
 
-.info-title-size {
-    font-size: 12px;    
-}
+
 
 

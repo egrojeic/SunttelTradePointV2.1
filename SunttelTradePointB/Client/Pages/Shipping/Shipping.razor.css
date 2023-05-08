@@ -17,6 +17,7 @@
         flex-direction: row;
         column-gap: 20px;
         align-content: center;
+        font-size: 12px;
     }
 
         .container-total .item b {

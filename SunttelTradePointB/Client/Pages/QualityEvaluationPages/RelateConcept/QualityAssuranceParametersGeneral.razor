@@ -15,13 +15,26 @@
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
     }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
 </style>
 
-<PageTitleComponent Title="Quality Parameter" IconName="commercialActivities.png"
+<PageTitleComponent Title="Quality Parameter" IconName="QualityParameters.png"
                     Description="With this tool you can add edit quality parameter">
 </PageTitleComponent>
-
-
 
 
 <div class="panelMenuContainer">
@@ -79,9 +92,9 @@
 
 @code {
 
-    [Parameter]
-    public string _filterItems { get; set; }
-    List<QualityAssuranceParameter>? qualityAssuranceParameterList { get; set; }
+        [Parameter]
+        public string _filterItems { get; set; }
+        List<QualityAssuranceParameter>? qualityAssuranceParameterList { get; set; }
 
     public QualityAssuranceParameter qualityAssuranceParameter { get; set; }
     IList<QualityAssuranceParameter>? selectedcommercialdocuments;
@@ -104,7 +117,7 @@
     {
 
 
-        if (_filterItems != null) LoadData();
+        _filterItems = "all"; LoadData();
         base.OnInitialized();
 
     }

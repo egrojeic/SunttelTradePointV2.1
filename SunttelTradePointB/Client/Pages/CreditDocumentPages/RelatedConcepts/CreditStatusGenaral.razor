@@ -11,23 +11,36 @@
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
     }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
 </style>
 
-
-<PageTitleComponent Title="Credit Status " IconName="Payments.png"
+<PageTitleComponent Title="Credit Status " IconName="credit.png"
                     Description="With this tool you can create and edit credit status ">
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
+      <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
     <CreditStatusMenu></CreditStatusMenu>
-    <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>   
+    <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
 </div>
-
-
 
 <div class="tableContainer">
 
-   
+
     @if (isLoading)
     {
 
@@ -52,12 +65,12 @@
                     TItem="CreditStatus"
                     ColumnWidth="300px"
                     SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"                   
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
             <Columns>
 
-                <RadzenDataGridColumn TItem="CreditStatus" Property="Name" Title="@GetName("Name",new BasicConcept())" Width="308px" />              
-             
+                <RadzenDataGridColumn TItem="CreditStatus" Property="Name" Title="@GetName("Name",new BasicConcept())" Width="308px" />
+
             </Columns>
         </RadzenDataGrid>
     }
@@ -69,7 +82,7 @@
     [Parameter]
     public string _filterItems { get; set; }
     public List<CreditStatus> creditStatusList { get; set; }
-   
+
 
     bool isLoading = false;
 
@@ -88,27 +101,26 @@
     protected async override void OnInitialized()
     {
 
-        if (_filterItems != null) LoadData();
+        _filterItems = "all"; LoadData();
         base.OnInitialized();
 
     }
 
     public async void LoadData()
     {
-        isLoading = true;       
-        creditStatusList = await CreditDocumentServices.GetCreditStatuses(startingDate, enDate, (filter != null ? filter:"all"), 1, 20);
+        isLoading = true;
+        creditStatusList = await CreditDocumentServices.GetCreditStatuses(startingDate, enDate, (filter != null ? filter : "all"), 1, 20);
         isLoading = false;
         StateHasChanged();
     }
 
-   
 
 
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CreditStatus> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-      
-        </RadzenMenu>
+
+    </RadzenMenu>
     );
 
 
@@ -122,7 +134,7 @@
         }
     }
 
-    public void Setfilter( string value)
+    public void Setfilter(string value)
     {
         filter = value;
         StateHasChanged();
@@ -136,7 +148,14 @@
 
     public void Add()
     {
-        
+
+    }
+
+    public void Home()
+    {
+        string paramFilter = filter != null ? filter : "";
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/Credits/{paramFilter}");
+        Navigation.NavigateTo($"/Credits");
     }
 
 

@@ -19,12 +19,10 @@
 <MessageSaveComponent isVisible="isVisible" message="@msg">
 </MessageSaveComponent>
 <PageTitleComponent Title="Credit Type"
-                    Description="Here you can add credit type" IconName="Payments.png">
+                    Description="Here you can add credit type" IconName="credit.png">
 </PageTitleComponent>
 
-
 <form>
-
     <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
         <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
@@ -158,8 +156,8 @@
     public void Home()
     {
         string paramFilter = filter != null ? filter : "";
-        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/Credits/{paramFilter}");
-        Navigation.NavigateTo($"/Credits");
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/CreditTypeGeneral/{paramFilter}");
+        Navigation.NavigateTo($"/CreditTypeGeneral");
     }
 
  
