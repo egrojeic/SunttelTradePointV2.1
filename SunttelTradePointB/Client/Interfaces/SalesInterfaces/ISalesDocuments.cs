@@ -50,7 +50,7 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// <param name="documentTypeId"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
-        Task<List<CommercialDocument>> GetCommercialDocumentList(DateTime startDate, DateTime endDate, string documentTypeId, string filter);
+        Task<List<CommercialDocument>> GetCommercialDocumentList(DateTime startDate, DateTime endDate, string documentTypeId, string filter, Concept vendor ,bool isSale);
 
         /// <summary>
         /// Retrives a item with commercialDocument items meeting search criteria
@@ -64,7 +64,7 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// </summary>
         /// <param">No</param>      
         /// <returns></returns>
-        Task<List<CommercialDocumentType>> GetCommercialDocumentTypes();
+        Task<List<CommercialDocumentType>> GetCommercialDocumentTypes(bool isSale);
 
 
         /// <summary>

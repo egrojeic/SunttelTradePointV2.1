@@ -37,19 +37,11 @@
     public List<CommercialDocumentType> commercialDocumentTypeList { get; set; }
     [Parameter]
     public EventCallback<CommercialDocumentType> SetDocumentTypeMode { get; set; }
-
-    static bool ShowMenu { get; set; } = false;
-    public string commandStyle = "display: 'none';";
-
-    const string PASTE = "e-btn-icons e-paste";
-    const string PASTESPECIAL = "e-btn-icons e-paste-special";
-    const string PASTEASFORMULA = "e-btn-icons e-paste-formula";
-    const string PASTEASHYPERLINK = "e-btn-icons e-paste-hyperlink";
+    bool isSale = false;
 
     void ToggleMenu()
     {
-        ShowMenu = !ShowMenu;
-        commandStyle = $"display: {(ShowMenu ? "block" : "none")}";
+      
         StateHasChanged();
 
     }
@@ -58,7 +50,7 @@
 
     protected async override void OnInitialized()
     {
-        commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes();
+        commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes(isSale);
         StateHasChanged();
     }
 

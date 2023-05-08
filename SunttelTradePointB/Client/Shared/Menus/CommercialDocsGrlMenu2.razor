@@ -9,26 +9,26 @@
 
 
 <div id="container-menu-general">
-  
-        <div>
-            <label class="label-style color-white">
-                @(GetName("DocumentType",new CommercialDocument())+" ")
-            </label>
-        </div>
 
-        <div >
-            <select @onchange="SetDocumentType" class="select-style">
-                @if (commercialDocumentTypeList != null)
+    <div>
+        <label class="label-style color-white">
+            @(GetName("DocumentType", new CommercialDocument()) + " ")
+        </label>
+    </div>
+
+    <div>
+        <select @onchange="SetDocumentType" class="select-style">
+            @if (commercialDocumentTypeList != null)
+            {
+                @foreach (var item in commercialDocumentTypeList)
                 {
-                    @foreach (var item in commercialDocumentTypeList)
-                    {
-                        <option value="@(item.Id)" selected>@(item.Name)</option>
-                    }
+                    <option value="@(item.Id)" selected>@(item.Name)</option>
                 }
-            </select>
-        </div>
+            }
+        </select>
+    </div>
 
-    <div><label class="label-style color-white" >@GetName("Vendor",new CommercialDocument())</label></div>
+    <div><label class="label-style color-white">@GetName("Vendor",new CommercialDocument())</label></div>
     <div class="Vendor">
         <InputTextSelector3 styleCaption="width:200px;" TItem="Concept"
                             Id="Vendor"
@@ -47,14 +47,18 @@
     [Parameter]
     public List<CommercialDocumentType> commercialDocumentTypeList { get; set; }
     [Parameter]
-    public EventCallback<CommercialDocumentType> SetDocumentTypeId { get; set; }
+    public EventCallback<CommercialDocumentType> SetDocumentTypeId { get; set; } [Parameter]
+    public EventCallback<Concept> SetVendor { get; set; }
+    [Parameter]
+    public bool isSale { get; set; }
+
     public List<Concept> vendorList = new();
     public Concept vendor = new();
     string SearcherValue = "";
 
     protected async override void OnInitialized()
     {
-        commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes();
+        commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes(isSale);
         StateHasChanged();
     }
 
@@ -94,7 +98,7 @@
         SearcherValue = arg.IdControl.ToString();
         if (SearcherValue == "Vendor")
         {
-            var list = await actorsNodeServive.GetEntityActorFaceList(arg.value.ToString());
+            var list = await DocumentServices.GetCommercialVendorList(arg.value.ToString(), isSale, 1,50);
             vendorList = new();
             foreach (var item in list)
             {
@@ -117,8 +121,8 @@
             vendor = item;
 
         }
-     
-       
+
+
         StateHasChanged();
     }
 

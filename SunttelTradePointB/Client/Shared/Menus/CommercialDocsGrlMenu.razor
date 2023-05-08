@@ -45,20 +45,16 @@
     
     [Parameter]
     public EventCallback<string> SetDocumentTypeId { get; set; }
+    [EditorRequired]
+    [Parameter]
+    public string namePage { get; set; }
+
     static bool ShowMenu { get; set; } = false;
     public string commandStyle = "display: 'none';";
-
-    const string PASTE = "e-btn-icons e-paste";
-    const string PASTESPECIAL = "e-btn-icons e-paste-special";
-    const string PASTEASFORMULA = "e-btn-icons e-paste-formula";
-    const string PASTEASHYPERLINK = "e-btn-icons e-paste-hyperlink";
-
+ 
     void ToggleMenu()
-    {
-        ShowMenu = !ShowMenu;
-        commandStyle = $"display: {(ShowMenu ? "block" : "none")}";
+    {       
         StateHasChanged();
-
     }
 
     void OnClick(RadzenSplitButtonItem item, string buttonName)
@@ -91,7 +87,7 @@
 
     private void CreateNew()
     {
-        Navigation.NavigateTo("/SaleItem");
+        Navigation.NavigateTo($"/{namePage}");
     }
 
 }
