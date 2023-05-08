@@ -77,7 +77,7 @@
                 LogicalFilterOperator="LogicalFilterOperator.Or"
                 CellContextMenu="@ShowContextMenuWithContent"
                 PageNumbersCount="100"
-                PageSize="2">
+                PageSize="50">
 
             <Columns>
                 <RadzenDataGridColumn TItem="AssemblyType" Property="Name" Title="@GetName("Name", new AtomConcept())" Width="80px" />
@@ -126,6 +126,8 @@
     protected override Task OnInitializedAsync()
     {
         var r = modePage;
+        _filterItems = "all";
+        LoadData();
         if (itemAssemblyTypeId == null)
         {
             itemAssemblyType = new();

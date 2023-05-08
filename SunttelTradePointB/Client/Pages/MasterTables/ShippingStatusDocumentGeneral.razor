@@ -64,7 +64,7 @@ else
                 LogicalFilterOperator="LogicalFilterOperator.Or"
                 CellContextMenu="@ShowContextMenuWithContent"
                 PageNumbersCount="100"
-                PageSize="10">
+                PageSize="50">
 
         <Columns>
             <RadzenDataGridColumn TItem="ShippingStatus" Property="ShippingStatuses.Name" Title="@GetName("Name", new ShippingStatus())" Width="80px" />
@@ -99,7 +99,7 @@ else
     protected override void OnInitialized()
     {
         transactItemsService.Page = "ShippingStatus";
-        if (_filterItems == "" && _filterItems is null) return;
+        _filterItems = "all";
         LoadData();
     }
 
