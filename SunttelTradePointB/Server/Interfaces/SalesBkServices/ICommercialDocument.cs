@@ -40,11 +40,12 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <param name="documentTypeId"></param>
+        /// <param name="vendorName"></param>
         /// <param name="filter"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<CommercialDocument>? CommercialDocuments, string? ErrorDescription)> GetCommercialDocumentsByDateSpan(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, string documentTypeId, string? filter = null, int? page = 1, int? perPage = 10);
+        Task<(bool IsSuccess, List<CommercialDocument>? CommercialDocuments, string? ErrorDescription)> GetCommercialDocumentsByDateSpan(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, string documentTypeId, string vendorName, string? filter = null, int? page = 1, int? perPage = 10);
 
         /// <summary>
         /// Saves an  Business line document. If it doesn't exists, it'll be created
@@ -62,8 +63,10 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <param name="filterCondition"></param>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="isASale"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<CommercialDocumentType>? commercialDocumentTypes, string? ErrorDescription)> GetCommercialDocumentTypes(string userId, string ipAddress, string filterCondition);
+        Task<(bool IsSuccess, List<CommercialDocumentType>? commercialDocumentTypes, string? ErrorDescription)> GetCommercialDocumentTypes(string userId, string ipAddress, string squadId, bool isASale, string? filterCondition);
 
         /// <summary>
         /// Retrieves a Transactional Type of the corresponding id
