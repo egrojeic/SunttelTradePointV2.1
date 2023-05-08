@@ -22,9 +22,10 @@
             {
                 @foreach (var item in commercialDocumentTypeList)
                 {
-                    <option value="@(item.Id)" selected>@(item.Name)</option>
+                    <option value="@(item.Id)" >@(item.Name)</option>
                 }
             }
+            <option value="selected" selected>selected</option>
         </select>
     </div>
 
@@ -117,7 +118,7 @@
     {
         if (SearcherValue == "Vendor")
         {
-
+            SetVendor.InvokeAsync(vendor);
             vendor = item;
 
         }

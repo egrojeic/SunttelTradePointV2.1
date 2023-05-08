@@ -180,9 +180,7 @@
             commercialdocumentList = await DocumentServices.GetCommercialDocumentList(startingDate, endDate, commercialDocumentType.Id, (_filterItems != null ? _filterItems : "all"),vendor, isSale);
 
         }
-        isLoading = false;
-
-        //await SynthesisToSpeakerAsync( $"Se encontraron {commercialdocumentList.Count()}, resultados voz dos");
+        isLoading = false;     
         StateHasChanged();
     }
 

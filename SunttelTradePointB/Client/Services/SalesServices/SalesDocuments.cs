@@ -102,15 +102,13 @@ namespace SunttelTradePointB.Client.Services.SalesServices
 
 
 
-
-        ///Gets
         public async Task<List<CommercialDocument>> GetCommercialDocumentList(DateTime startDate, DateTime endDate, string documentTypeId, string filter,Concept vendor, bool isSales)
         {
             CultureInfo culture = new CultureInfo("en-US");
             try
             {
                 string path = basepath.Replace("Name", "GetCommercialDocumentsByDateSpan");
-                var responseMessage = await Gethttp($"{path}&startDate={startDate.ToString("yyyy-MM-dd", culture)}&endDate={endDate}&documentTypeId={documentTypeId}&filter={filter}&vendor={vendor}");
+                var responseMessage = await Gethttp($"{path}&startDate={startDate.ToString("yyyy-MM-dd", culture)}&endDate={endDate}&documentTypeId={documentTypeId}&filter={filter}&vendorName={vendor.Name}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocument>>();
                 return list != null ? list : new List<CommercialDocument>();
             }
