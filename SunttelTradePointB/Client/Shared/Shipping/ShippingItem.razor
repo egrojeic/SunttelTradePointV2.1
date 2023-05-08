@@ -350,6 +350,7 @@
     MessageSaveComponent? referAlert;
     string msg = "";
     bool isLoading = false;
+    bool isSales = true; 
 
     protected override void OnParametersSet()
     {
@@ -370,7 +371,7 @@
         }
 
 
-        documentTypeList = await DocumentServices.GetCommercialDocumentTypes();
+        documentTypeList = await DocumentServices.GetCommercialDocumentTypes(isSales);
         businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
 
         carrierList = await DocumentServices.GetCarrierList();

@@ -51,6 +51,7 @@ builder.Services.AddScoped<StandingOrderServices>();
 builder.Services.AddScoped<ShippingServices>();
 builder.Services.AddScoped<QualityEvaluationServices>();
 builder.Services.AddScoped<AccountsReceivableServices>();
+builder.Services.AddScoped<SalesBIViewerServices>();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 

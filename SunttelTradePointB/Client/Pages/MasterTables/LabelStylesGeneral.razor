@@ -70,7 +70,7 @@ else
                 LogicalFilterOperator="LogicalFilterOperator.Or"
                 CellContextMenu="@ShowContextMenuWithContent"
                 PageNumbersCount="100"
-                PageSize="2">
+                PageSize="50">
 
             <Columns>
                 <RadzenDataGridColumn TItem="LabelStyle" Property="Name" Title="@GetName( "Name", new AtomConcept())" Width="80px" />
@@ -110,10 +110,8 @@ else
 
     protected override void OnInitialized()
     {
-        if (_filterItems != "" && _filterItems != null)
-        {
-            LoadData();
-        }
+      _filterItems = "all";
+      LoadData();       
         transactItemsService.Page = "LabelStyles";
 
 

@@ -73,7 +73,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await GetFilteredIdentificationType();
+        await GetFilteredIdentificationType("all");
     }
 
     public async Task GetFilteredIdentificationType(string filter = "")

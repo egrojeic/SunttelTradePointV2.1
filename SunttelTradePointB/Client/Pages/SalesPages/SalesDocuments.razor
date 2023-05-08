@@ -1,4 +1,6 @@
 ﻿@page "/SalesDocuments"
+@page "/Purchases"
+@page "/ProviderCredits"
 @page "/SalesDocuments/{_filterItems}"
 @using SunttelTradePointB.Shared.Sales;
 @using System.Globalization;
@@ -29,24 +31,23 @@
 </style>
 
 
-<PageTitleComponent Title="Sales" IconName="Sales.png"
-                    Description="With this tool you can create and edit Sales operations such as Orders and Invoices">
+<PageTitleComponent Title="@namePage" IconName="@icoLogo"
+                    Description="@("With this tool you can create and edit" + @namePage)">
 </PageTitleComponent>
 
 
 
 <div class="panelMenuContainer">
-    <CommercialDocsGrlMenu></CommercialDocsGrlMenu>
+    <CommercialDocsGrlMenu namePage="@backPage"></CommercialDocsGrlMenu>
 
     <RangeDatesInput @bind-StartDate="@startingDate" @bind-EndDate="@endDate"
                      EventSearchAll="EventSearchAll"></RangeDatesInput>
 </div>
 
 <div class="panelMenuContainer aling">
-    <CommercialDocsGrlMenu2 SetDocumentTypeId="SetDocumentTypeId"></CommercialDocsGrlMenu2>
+    <CommercialDocsGrlMenu2 isSale="@isSale" SetVendor="SetVendor" SetDocumentTypeId="SetDocumentTypeId"></CommercialDocsGrlMenu2>
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
 </div>
-
 
 <div class="tableContainer">
 
@@ -54,7 +55,7 @@
     @if (isLoading)
     {
 
-        <WaitingProcessIndicator loadingTopic="Characteristic Items"></WaitingProcessIndicator>
+        <WaitingProcessIndicator loadingTopic="Items"></WaitingProcessIndicator>
 
     }
     else
@@ -120,8 +121,6 @@
     }
 </div>
 
-
-
 @code {
 
     [Parameter]
@@ -131,7 +130,15 @@
     public CommercialDocumentType commercialDocumentType { get; set; }
     IList<CommercialDocument>? selectedcommercialdocuments;
 
+    public Concept vendor { get; set; }
+
     bool isLoading = false;
+    bool isSale = true;
+
+    string namePage = ""; 
+
+    string backPage = "";
+    string icoLogo = "";
 
     public DateTime startingDate { get; set; }
     public DateTime endDate { get; set; }
@@ -148,21 +155,33 @@
 
     protected async override void OnInitialized()
     {
-
+        ValidateUri();
         if (startingDate == DateTime.MinValue) startingDate = DateTime.Now;
         if (endDate == DateTime.MinValue) endDate = DateTime.Now.AddMonths(1);
         if (_filterItems != null) LoadData();
         base.OnInitialized();
-
     }
+
+
+    protected override void OnParametersSet()
+    {
+        ValidateUri();
+        StateHasChanged();
+    }
+
+    protected override bool ShouldRender()
+    {
+        StateHasChanged();
+        return base.ShouldRender();
+    }
+
 
     public async void LoadData()
     {
         isLoading = true;
         if (commercialDocumentType != null)
         {
-            // startingDate = new  DateTime(2019, 1, 1);
-            commercialdocumentList = await DocumentServices.GetCommercialDocumentList(startingDate, endDate, commercialDocumentType.Id, (_filterItems != null ? _filterItems : "all"));
+            commercialdocumentList = await DocumentServices.GetCommercialDocumentList(startingDate, endDate, commercialDocumentType.Id, (_filterItems != null ? _filterItems : "all"),vendor, isSale);
 
         }
         isLoading = false;
@@ -186,6 +205,16 @@
         StateHasChanged();
     }
 
+    public async void SetVendor(Concept item)
+    {
+        if (vendor == null) vendor = new();
+        if (item != null)
+        {
+            vendor = item;
+        }
+        StateHasChanged();
+    }
+
 
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CommercialDocument> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
@@ -196,9 +225,8 @@
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
-        CommercialDocument argObj = (CommercialDocument)args.Value;
-        Console.WriteLine($"Menu item with Value={argObj.Id} clicked");
-        Navigation.NavigateTo($"SaleItem/{argObj.Id}");
+        CommercialDocument argObj = (CommercialDocument)args.Value;        
+        Navigation.NavigateTo($"{backPage}/{argObj.Id}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
@@ -231,5 +259,42 @@
         }
 
         return value.ToString("N2", format);
+    }
+
+
+    public void ValidateUri()
+    {
+        string Name = Navigation.Uri;
+        if (Name.Contains("Purchases") || Name.Contains("ProviderCredits"))
+        {
+            isSale = false;
+            if (Name.Contains("Purchases"))
+            {
+                namePage = "Purchases";
+                backPage = "PurchasesItem";
+
+                icoLogo = "PurchasesIco.png";
+            };
+
+            if (Name.Contains("ProviderCredits"))
+            {
+                namePage = "Provider Credits";
+                backPage = "ProviderCreditsItem";
+                icoLogo = "ProviderCredits.png";
+            }
+        }
+
+        if (Name.Contains("SalesDocuments"))
+        {
+            isSale = true;
+            if (Name.Contains("SalesDocuments"))
+            {
+                backPage = "SaleItem";
+                namePage = "Sales";
+                icoLogo = "commercialDocument.png";
+            }
+
+        }
+        StateHasChanged();
     }
 }

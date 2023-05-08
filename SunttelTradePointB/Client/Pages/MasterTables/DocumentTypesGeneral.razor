@@ -42,7 +42,7 @@
 @if (isLoading)
 {
 
-    <WaitingProcessIndicator loadingTopic="Transactional Items"></WaitingProcessIndicator>
+    <WaitingProcessIndicator loadingTopic="Type Items"></WaitingProcessIndicator>
 
 }
 else
@@ -114,7 +114,7 @@ else
     protected override void OnInitialized()
     {
         transactItemsService.Page = "CommercialDocumentType";
-        if (_filterItems == "" && _filterItems is null) return;
+        _filterItems = "all";
         LoadData();
     }
 

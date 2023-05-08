@@ -76,7 +76,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await GetFilterPalletTypes();
+       
+        await GetFilterPalletTypes("all");
     }
 
     private async Task GetFilterPalletTypes(string filter = "")
