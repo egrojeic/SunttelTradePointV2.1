@@ -94,7 +94,7 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetCommercialDocumentsByDateSpan")]
-        public async Task<IActionResult> GetCommercialDocumentsByDateSpan(string userId, string ipAddress, DateTime startDate, DateTime endDate, string documentTypeId, string vendorName, string? filter = null, int? page = 1, int? perPage = 10)
+        public async Task<IActionResult> GetCommercialDocumentsByDateSpan(string userId, string ipAddress, DateTime startDate, DateTime endDate, string documentTypeId, string? vendorName, string? filter = null, int? page = 1, int? perPage = 10)
         {
             var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];

@@ -125,7 +125,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         /// <param name="perPage"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, List<CommercialDocument>? CommercialDocuments, string? ErrorDescription)> GetCommercialDocumentsByDateSpan(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, string documentTypeId, string vendorName, string? filter = null, int? page = 1, int? perPage = 10)
+        public async Task<(bool IsSuccess, List<CommercialDocument>? CommercialDocuments, string? ErrorDescription)> GetCommercialDocumentsByDateSpan(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, string documentTypeId, string? vendorName, string? filter = null, int? page = 1, int? perPage = 10)
         {
             try
             {
@@ -153,7 +153,8 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 }
 
                 // Filtro por vendor name
-                pipeline.Add(
+                if(vendorName != null || vendorName != "" ){
+                    pipeline.Add(
                     new BsonDocument(
                         "$match",
                         new BsonDocument(
@@ -162,7 +163,9 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                                         "$regex", new BsonRegularExpression($"/{filter}/i"))
                             )
                     )
-                );
+                    );
+                }
+                
 
 
                 pipeline.Add(
