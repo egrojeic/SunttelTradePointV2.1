@@ -152,11 +152,11 @@ namespace SunttelTradePointB.Server.Interfaces.CreditBkServices
         /// Upload file csv a products
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="ipAdress"></param>
+        /// <param name="ipAddress"></param>
         /// <param name="squadId"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, string? ActorsNodesList, string? ErrorDescription)> SaveProductsCSV(IFormFile file);
+        Task<(bool IsSuccess, string? ActorsNodesList, string? ErrorDescription)> SaveProductsCSV(string userId, string ipAddress, string squadId, IFormFile file);
 
 
     }

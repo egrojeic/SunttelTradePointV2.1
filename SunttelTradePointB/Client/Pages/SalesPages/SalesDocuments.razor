@@ -32,10 +32,8 @@
 
 
 <PageTitleComponent Title="@namePage" IconName="@icoLogo"
-                    Description="@("With this tool you can create and edit" + @namePage)">
+                    Description="@("With this tool you can create and edit " + @namePage)">
 </PageTitleComponent>
-
-
 
 <div class="panelMenuContainer">
     <CommercialDocsGrlMenu namePage="@backPage"></CommercialDocsGrlMenu>
@@ -45,7 +43,7 @@
 </div>
 
 <div class="panelMenuContainer aling">
-    <CommercialDocsGrlMenu2 isSale="@isSale" SetVendor="SetVendor" SetDocumentTypeId="SetDocumentTypeId"></CommercialDocsGrlMenu2>
+    <CommercialDocsGrlMenu2 isASale="@isSale" SetVendor="SetVendor" SetDocumentTypeId="SetDocumentTypeId"></CommercialDocsGrlMenu2>
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
 </div>
 
@@ -222,7 +220,7 @@
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         CommercialDocument argObj = (CommercialDocument)args.Value;        
-        Navigation.NavigateTo($"{backPage}/{argObj.Id}");
+        Navigation.NavigateTo($"{backPage}/{page}/{argObj.Id}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();

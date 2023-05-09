@@ -29,7 +29,7 @@
         </select>
     </div>
 
-    <div><label class="label-style color-white">@GetName("Vendor",new CommercialDocument())</label></div>
+    <div><label class="label-style color-white">@GetName(isASale?"Vendor":"Buyer",new CommercialDocument())</label></div>
     <div class="Vendor">
         <InputTextSelector3 styleCaption="width:200px;" TItem="Concept"
                             Id="Vendor"
@@ -51,7 +51,7 @@
     public EventCallback<CommercialDocumentType> SetDocumentTypeId { get; set; } [Parameter]
     public EventCallback<Concept> SetVendor { get; set; }
     [Parameter]
-    public bool isSale { get; set; }
+    public bool isASale { get; set; }
 
     public List<Concept> vendorList = new();
     public Concept vendor = new();
@@ -59,14 +59,14 @@
 
     protected async override void OnInitialized()
     {
-        commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes(isSale);
+        commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes(isASale);
         StateHasChanged();
     }
 
 
     protected async override void OnParametersSet()
     {
-        commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes(isSale);
+        commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes(isASale);
         StateHasChanged();
     }
 
@@ -107,7 +107,7 @@
         SearcherValue = arg.IdControl.ToString();
         if (SearcherValue == "Vendor")
         {
-            var list = await DocumentServices.GetCommercialVendorList(arg.value.ToString(), isSale, 1,50);
+            var list = await DocumentServices.GetCommercialVendorList(arg.value.ToString(), isASale, 1,50);
             vendorList = new();
             foreach (var item in list)
             {
@@ -126,7 +126,7 @@
     {
         if (SearcherValue == "Vendor")
         {
-            SetVendor.InvokeAsync(vendor);
+            SetVendor.InvokeAsync(item);
             vendor = item;
 
         }

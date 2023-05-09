@@ -149,8 +149,6 @@ else
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         Box argObj = (Box)args.Value;
-
-
         Navigation.NavigateTo($"/BoxeConcept/Boxes/{_filterItems}/{argObj.Id}");
 
     }

@@ -48,6 +48,18 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         Task<(bool IsSuccess, List<CommercialDocument>? CommercialDocuments, string? ErrorDescription)> GetCommercialDocumentsByDateSpan(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, string documentTypeId, string? vendorName, string? filter = null, int? page = 1, int? perPage = 10);
 
         /// <summary>
+        /// Retrieves a document having the specified id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="documentId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, CommercialDocument? CommercialDocument, string? ErrorDescription)> UpdateCommercialDocumentShippingSummary(string userId, string ipAdress, string squadId, string documentId);
+
+
+
+        /// <summary>
         /// Saves an  Business line document. If it doesn't exists, it'll be created
         /// </summary>
         /// <param name="userId"></param>

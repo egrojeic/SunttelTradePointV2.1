@@ -346,10 +346,11 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveProductsCSV")]
-        public async Task<IActionResult> SaveProductsCSV(IFormFile file)
+        public async Task<IActionResult> SaveProductsCSV(string userId, string ipAddress, IFormFile file)
         {
-
-            var response = await _credit.SaveProductsCSV(file);
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString().ToUpper() ?? ""; // Request.Headers["SquadId"];
+            var response = await _credit.SaveProductsCSV(userId, ipAddress, squadId, file);
 
             if (response.IsSuccess)
             {

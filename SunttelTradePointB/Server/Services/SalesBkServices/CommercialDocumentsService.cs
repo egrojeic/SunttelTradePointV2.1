@@ -153,7 +153,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 }
 
                 // Filtro por vendor name
-                if(vendorName != null || vendorName != "" ){
+                if(!(vendorName == null || vendorName == "") ){
                     pipeline.Add(
                     new BsonDocument(
                         "$match",
@@ -238,6 +238,51 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
             }
         }
 
+        /// <summary>
+        /// Retrieves a document having the specified id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="commercialDocumentId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<(bool IsSuccess, CommercialDocument? CommercialDocument, string? ErrorDescription)> UpdateCommercialDocumentShippingSummary(string userId, string ipAdress, string squadId, string commercialDocumentId)
+        {
+            try
+            {
+                var pipelineDetails = new List<BsonDocument>();
+                double totalQuantity = 0;
+
+                // Para detalles 
+                pipelineDetails.Add(
+                    new BsonDocument("$match", new BsonDocument("IdCommercialDocument", new ObjectId(commercialDocumentId)))
+                );
+                
+                List<SalesDocumentItemsDetails> resultDetails = await _CommercialDocumentDetailImports.Aggregate<SalesDocumentItemsDetails>(pipelineDetails).ToListAsync();
+
+                foreach(SalesDocumentItemsDetails item in resultDetails)
+                {
+                    totalQuantity = totalQuantity + item.Qty;
+                }
+
+                var pipeline = new List<BsonDocument>();
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(commercialDocumentId)))
+                );
+
+                var resultPrev = await _CommercialDocumentCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                CommercialDocument result = resultPrev.Select(d => BsonSerializer.Deserialize<CommercialDocument>(d)).ToList()[0];
+
+                result.ShippingSummary.TotalBoxes = (int)totalQuantity;
+                return (true, result, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, null, ex.Message);
+            }
+        }
+
         #region Commercial Document Type
         /// <summary>
         /// Retrieves a list of Transactional Item Types with the posibility to receive an optional paremeter
@@ -278,11 +323,6 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 pipeline.Add(
                     new BsonDocument("$match", new BsonDocument("SquadId", squadId))
                 );
-
-
-
-
-
 
                 List<CommercialDocumentType> results = await _CommercialDocumentType.Aggregate<CommercialDocumentType>(pipeline).ToListAsync();
                 
