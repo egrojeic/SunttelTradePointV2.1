@@ -35,8 +35,6 @@
                     Description="@("With this tool you can create and edit " + @namePage)">
 </PageTitleComponent>
 
-
-
 <div class="panelMenuContainer">
     <CommercialDocsGrlMenu namePage="@backPage"></CommercialDocsGrlMenu>
 
@@ -222,7 +220,7 @@
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         CommercialDocument argObj = (CommercialDocument)args.Value;        
-        Navigation.NavigateTo($"{backPage}/{argObj.Id}");
+        Navigation.NavigateTo($"{backPage}/{page}/{argObj.Id}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
