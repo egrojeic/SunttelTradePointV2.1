@@ -1,16 +1,36 @@
 ﻿@page "/PDFAnalyse"
-
+@using SunttelTradePointB.Client.Services.IAServices;
+@inject IARecognition _IARecognition;
 <PageTitleComponent Title="IA Tools" IconName="recipeModel.png"
                     Description="Here you can insert a document in pdf format to be analyzed and ask questions regarding the document">
 </PageTitleComponent>
 
-<h1>insert your PDF to be analyzed</h1>
+<div class="w-100 text-center cont">
+    <h2>Insert your PDF to be analyzed</h2>
 
-<div class="mb-3">
-    <label for="pdfInput" class="form-label text-center">Upload PDF file:</label>
-    <InputFile type="file" class="form-control" id="pdfInput" accept=".pdf" OnChange="@HandleFileUpload" />
+
+    <div class="card">
+        <div class="card-body">
+            <i class="fa-solid fa-upload upload-icon"></i>
+            <p>Select a file</p>
+            <InputFile type="file" class="form-control mb-2" id="pdfInput" accept=".pdf" OnChange="@HandleFileUpload" />
+            @if (file is not null)
+            {
+                <button class="btn mb-2" @onclick="SaveFile">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save File
+                </button>
+                <br />
+            }
+            @if (saving)
+            {
+                <label class="mb-2">@message</label>
+            }
+        </div>
+    </div>
 </div>
 
+@*
 <div class="mb-3">
     <label for="questionInput" class="form-label">Ask a question:</label>
     <input type="text" class="form-control" id="questionInput" placeholder="Enter your question here" @bind-value="question" />
@@ -19,25 +39,69 @@
 <div class="mb-3">
     <label for="answerInput" class="form-label">Answer:</label>
     <input type="text" class="form-control" id="answerInput" readonly @bind-value="answer" />
-</div>
+</div>*@
 
 @code {
     private string question = "";
     private string answer = "";
     private IBrowserFile file;
+    public bool saving = false;
+    public string message = "";
 
-    private void HandleFileUpload(InputFileChangeEventArgs e)
+
+    private async void HandleFileUpload(InputFileChangeEventArgs e)
     {
-        file = e.File;
+        try
+        {
+            file = e.File;
+        }
+        catch (Exception ex)
+        {
+            Console.Write(ex.Message);
+        }
+
+
+    }
+
+    public async void SaveFile()
+    {
+        if (file is null) return;
+        saving = true;
+        try
+        {
+            message = "Saving...";
+            var resp = await _IARecognition.UploadFileAsync(file);
+            if (resp.IsSuccessStatusCode)
+            {
+                message = "Document saved successfully";
+            }
+            else
+            {
+                message = "Error saving the document";
+            }
+        }
+        catch (Exception ex)
+        {
+            message = "Error trying to save the document.";
+        }
+        StateHasChanged();
     }
 
 }
 
 <style>
-    h1 {
-        margin-top: 1rem;
+
+    .cont {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    h2 {
+        margin-top: 2rem;
         margin-bottom: 2rem;
         font-weight: bold;
+        color: #00CCFF
     }
 
     .mb-3 {
@@ -46,5 +110,23 @@
 
     .form-label {
         font-weight: bold;
+    }
+
+    .card {
+        width: max-content;
+    }
+
+    .upload-icon {
+        font-size: 2.4rem;
+    }
+
+    .btn {
+        background-color: #00CCFF;
+        color: white;
+    }
+
+    .btn:hover {
+            background-color: #0077B3;
+        color: white;
     }
 </style>

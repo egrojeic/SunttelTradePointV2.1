@@ -8,6 +8,7 @@ using SunttelTradePointB.Shared.Sales;
 using System.Reflection;
 using System.Net.Http;
 using SunttelTradePointB.Shared.IA;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace SunttelTradePointB.Client.Services.IAServices
 {
@@ -24,12 +25,13 @@ namespace SunttelTradePointB.Client.Services.IAServices
         {
             if (ContainCreate(value))
             {
-               return Create.GetCreate(value);
+                return Create.GetCreate(value);
             }
             return null;
         }
 
-        private bool ContainCreate(string value) {
+        private bool ContainCreate(string value)
+        {
             bool result = false;
             List<string> list = new List<string>();
             list.Add("crear");
@@ -46,16 +48,32 @@ namespace SunttelTradePointB.Client.Services.IAServices
             return result;
         }
 
+        public async Task<HttpResponseMessage> UploadFileAsync(IBrowserFile file)
+        {
+            try
+            {
+                using var content = new MultipartFormDataContent();
 
+                content.Add(new StreamContent(file.OpenReadStream(file.Size)), "file", file.Name);
 
+                return await _httpClient.PostAsync("http://127.0.0.1:8000/uploadfile/", content);
+            }
+            catch (Exception ex)
+            {
+                return new HttpResponseMessage()
+                {
+                    StatusCode = HttpStatusCode.InternalServerError                    
+                };
+            }
+        }
     }
 
-   public class Create
+    public class Create
     {
         IASpeechRecognition IASpeechRecognition = new IASpeechRecognition();
         static List<string> list = new List<string>();
-           
-       public static IASpeechRecognition GetCreate(string value)
+
+        public static IASpeechRecognition GetCreate(string value)
         {
             if (ContainProduct(value))
             {
@@ -68,7 +86,7 @@ namespace SunttelTradePointB.Client.Services.IAServices
             return null;
         }
 
-       private static bool ContainProduct(string value)
+        private static bool ContainProduct(string value)
         {
             bool result = false;
             list.Clear();
@@ -86,12 +104,14 @@ namespace SunttelTradePointB.Client.Services.IAServices
             return result;
         }
 
+       
 
-        
+
+
     }
 
-  
-    
+
+
 
 
 }
