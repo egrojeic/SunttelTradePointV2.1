@@ -16,7 +16,7 @@
             <InputFile type="file" class="form-control mb-2" id="pdfInput" accept=".pdf" OnChange="@HandleFileUpload" />
             @if (file is not null)
             {
-                <button class="btn mb-2" @onclick="SaveFile">
+                <button class="btn btn-main mb-2" @onclick="SaveFile">
                     <i class="fa-solid fa-floppy-disk"></i>
                     Save File
                 </button>
@@ -30,20 +30,7 @@
     </div>
 </div>
 
-@*
-<div class="mb-3">
-    <label for="questionInput" class="form-label">Ask a question:</label>
-    <input type="text" class="form-control" id="questionInput" placeholder="Enter your question here" @bind-value="question" />
-</div>
-
-<div class="mb-3">
-    <label for="answerInput" class="form-label">Answer:</label>
-    <input type="text" class="form-control" id="answerInput" readonly @bind-value="answer" />
-</div>*@
-
 @code {
-    private string question = "";
-    private string answer = "";
     private IBrowserFile file;
     public bool saving = false;
     public string message = "";
@@ -120,13 +107,13 @@
         font-size: 2.4rem;
     }
 
-    .btn {
+    .btn-main {
         background-color: #00CCFF;
         color: white;
     }
 
-    .btn:hover {
+        .btn-main:hover {
             background-color: #0077B3;
-        color: white;
-    }
+            color: white;
+        }
 </style>

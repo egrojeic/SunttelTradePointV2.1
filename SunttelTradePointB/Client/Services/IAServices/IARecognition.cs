@@ -66,6 +66,21 @@ namespace SunttelTradePointB.Client.Services.IAServices
                 };
             }
         }
+
+        public async Task<HttpResponseMessage> AskQuestion(string question)
+        {
+            try
+            {
+                return await _httpClient.GetAsync($"http://127.0.0.1:8000/ask/?question={question}");
+            }
+            catch (Exception ex)
+            {
+                return new HttpResponseMessage()
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                };
+            }
+        }
     }
 
     public class Create

@@ -1,0 +1,146 @@
+﻿@using Microsoft.AspNetCore.Components.Web
+@using SunttelTradePointB.Client.Services.IAServices;
+@inject IARecognition _IARecognition;
+
+<p>If you need help, don't hesitate to ask us a question. our model is fed with business information.</p>
+<div class="chat-container">
+    <!-- Aquí se mostrarán los mensajes del chat -->
+    @foreach (var message in messages)
+    {
+        <button class="@message.Class">
+            <div class="text">
+                @message.Value
+            </div>
+        </button>
+    }
+</div>
+<div class="input-container">
+    <input @bind-value="_messageInput.Value" type="text" style="border: 1px solid gray;" placeholder="Escribe un mensaje..." class="message-input" />
+    <button @onclick="SendMessage" class="send-button">Enviar</button>
+</div>
+
+
+@code {
+    public MessageInput _messageInput = new MessageInput();
+    List<MessageInput> messages = new List<MessageInput>();
+
+    private async void SendMessage()
+    {
+
+        // Obtener el contenido del mensaje del input
+        var messageContent = _messageInput.Value;
+
+        if (messageContent is null) return;
+
+        messages.Add(new MessageInput()
+            {
+                Value = messageContent,
+                Class = "messages-container"
+            });
+
+        // Enviar el mensaje al servidor
+        var responseHTTP = await _IARecognition.AskQuestion(messageContent);
+
+        if (responseHTTP.IsSuccessStatusCode)
+        {
+            var answer = await responseHTTP.Content.ReadFromJsonAsync<IAQuestion>();
+
+            messages.Add(new MessageInput()
+                {
+                    Value = answer?.response,
+                    Class = "response-container"
+                });
+        }
+
+        // Limpiar el input después de enviar el mensaje
+        _messageInput.Value = "";
+        StateHasChanged();
+    }
+
+    public class MessageInput
+    {
+        public string? Class { get; set; }
+        public string? Value { get; set; }
+    }
+
+    public class IAQuestion
+    {
+        public string? response { get; set; }
+    }
+
+}
+
+<style>
+    .chat-container {
+        display: flex;
+        flex-direction: column;
+        height: 317px;
+        border: 1px solid gray;
+        border-radius: 10px;
+        padding: 15px;
+        cursor: default;
+        overflow: auto;
+    }
+
+    .messages-container {
+        padding: 10px;
+        border: none;
+        border-radius: 10px;
+        background-color: #00CCFF;
+        color: white;
+        margin-bottom: 20px;
+        text-align: right;
+    }
+
+    .response-container {
+        padding: 10px;
+        text-align: left;
+        border: none;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        cursor: default;
+    }
+
+
+    .input-container {
+        display: flex;
+        padding: 10px;
+        position: absolute;
+        bottom: 0;
+        width: -webkit-fill-available;
+        left: 0;
+    }
+
+    .text {
+        word-wrap: break-word;
+        max-width: 630px;
+    }
+
+    .message-input {
+        flex: 1;
+        margin-right: 10px;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .send-button {
+        padding: 10px;
+        background-color: #2196f3;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .message {
+        background-color: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+</style>
