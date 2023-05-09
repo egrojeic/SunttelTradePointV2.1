@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using CsvHelper;
+using CsvHelper.Configuration;
+using Microsoft.AspNetCore.Http.HttpResults;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
@@ -10,7 +12,9 @@ using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Server.Migrations;
 using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.Security;
+using System.Globalization;
 using System.Linq.Dynamic.Core;
 using System.Net;
 using System.Reflection.Metadata;
@@ -1135,6 +1139,47 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             
         }
 
-      
+        /// <summary>
+        /// Upload file csv a products
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public  async Task<(bool IsSuccess, string? ActorsNodesList, string? ErrorDescription)> SaveEntitiesCSV(string userId, string ipAddress, string squadId, IFormFile file)
+        {
+            try
+            {
+                List<ActorsImport>? lista = new List<ActorsImport>();
+                using (var reader = new StreamReader(file.OpenReadStream()))
+                {
+                    // Configuración de CsvHelper
+                    var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+                    {
+                        Delimiter = ",",
+                        HasHeaderRecord = true
+                    };
+                    var csv = new CsvReader(reader, config);
+                    // Lectura de los registros del archivo CSV
+                    var records = csv.GetRecords<ActorsImport>().ToList();
+
+
+                    foreach (var record in records)
+                    {
+                        var creditType = await SaveEntity(userId, ipAddress, null);
+                    }
+                    return (true, null, "Services created successfully");
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+
     }
 }

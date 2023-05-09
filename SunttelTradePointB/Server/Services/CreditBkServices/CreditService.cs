@@ -8,6 +8,7 @@ using SunttelTradePointB.Shared.Accounting;
 using SunttelTradePointB.Shared.Common;
 using Syncfusion.Blazor.Grids;
 using System.Globalization;
+using SunttelTradePointB.Shared.SquadsMgr;
 
 namespace SunttelTradePointB.Server.Services.CreditBkServices
 {
@@ -578,7 +579,7 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
         /// <param name="squadId"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, string? ActorsNodesList, string? ErrorDescription)> SaveProductsCSV(IFormFile file)
+        public async Task<(bool IsSuccess, string? ActorsNodesList, string? ErrorDescription)> SaveProductsCSV(string userId, string ipAddress, string squadId, IFormFile file)
         {
             try
             {
@@ -597,7 +598,7 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
                     var records = csv.GetRecords<CreditType>().ToList();
                     foreach (var record in records)
                     {
-                        var creditType = await SaveCreditType("123445", "56789", "7B66BBE8-C288-4BAD-8DB7-3DAA32108FED", record);
+                        var creditType = await SaveCreditType(userId, ipAddress, squadId, record);
                     }
                     return (true, null, "Services created successfully");
 

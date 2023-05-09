@@ -238,5 +238,17 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         public Task<(bool IsSuccess, string imageName, string? ErrorDescription)> SaveEntitySkinImage(string userId, string ipAdress, string entityActorId, string skinImage);
 
+        /// <summary>
+        /// Upload file csv a entities
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, string? ActorsNodesList, string? ErrorDescription)> SaveEntitiesCSV(string userId, string ipAddress, string squadId, IFormFile file);
+
+
+
     }
 }

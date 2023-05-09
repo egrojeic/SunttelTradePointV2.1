@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CsvHelper.Configuration;
+using CsvHelper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
+using SunttelTradePointB.Shared.Accounting;
 using SunttelTradePointB.Shared.Common;
+using System.Globalization;
 
 namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
 {
@@ -570,5 +574,33 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
                 return NotFound(response.ErrorDescription);
             }
         }
+
+
+        // Para importar desde un archivo csv
+        /// <summary>
+        /// Upload file csv a entity
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveEntitiesCSV")]
+        public async Task<IActionResult> SaveEntitiesCSV(string userId, string ipAddress, IFormFile file)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString().ToUpper() ?? ""; // Request.Headers["SquadId"];
+            var response = await _entityNodes.SaveEntitiesCSV(userId, ipAddress, squadId, file);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.ActorsNodesList);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
     }
 }

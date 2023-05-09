@@ -108,6 +108,30 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
                 return NotFound(response.ErrorDescription);
         }
 
+        /// <summary>
+        /// Retrieves a Sales Document matching with its Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="documentId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("UpdateCommercialDocumentShippingSummary")]
+        public async Task<IActionResult> UpdateCommercialDocumentShippingSummary(string userId, string ipAdress, string documentId)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _commercialDocument.UpdateCommercialDocumentShippingSummary(userId, ipAdress, squadId, documentId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.CommercialDocument);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+
         #endregion
 
         #region Commercial Document Type
