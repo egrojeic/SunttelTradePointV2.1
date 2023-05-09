@@ -1,7 +1,7 @@
-﻿@page "/SalesDocuments"
-@page "/Purchases"
-@page "/ProviderCredits"
-@page "/SalesDocuments/{_filterItems}"
+﻿@page "/SalesDocuments/{page}"
+@page "/Purchases/{page}"
+@page "/ProviderCredits/{page}"
+@page "/SalesDocuments"
 @using SunttelTradePointB.Shared.Sales;
 @using System.Globalization;
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
@@ -125,6 +125,8 @@
 
     [Parameter]
     public string _filterItems { get; set; }
+    [Parameter]
+   public string page { get; set; }
     List<CommercialDocument>? commercialdocumentList { get; set; }
 
     public CommercialDocumentType commercialDocumentType { get; set; }

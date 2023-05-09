@@ -50,7 +50,7 @@
     public EventCallback<CommercialDocumentType> SetDocumentTypeId { get; set; } [Parameter]
     public EventCallback<Concept> SetVendor { get; set; }
     [Parameter]
-    public bool isSale { get; set; }
+    public bool isSale { get; set; } = true;
 
     public List<Concept> vendorList = new();
     public Concept vendor = new();
@@ -98,7 +98,7 @@
         SearcherValue = arg.IdControl.ToString();
         if (SearcherValue == "Vendor")
         {
-            var list = await DocumentServices.GetCommercialVendorList(arg.value.ToString(), isSale, 1,50);
+            var list = await DocumentServices.GetCommercialVendorList(arg.value.ToString(), true, 1,50);
             vendorList = new();
             foreach (var item in list)
             {
