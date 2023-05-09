@@ -86,6 +86,14 @@ namespace SunttelTradePointB.Client.Interfaces.QualityEvaluationInterfaces
         Task<List<QualityAction>> GetQualityActionList(string filter, int page, int perPage);
 
         /// <summary>
+        /// Retrives a  QualityParameterGroup item meeting search criteria
+        /// </summary>      
+        /// <param name="qualityId"></param>     
+        /// <returns></returns>
+        Task<QualityParameterGroup> GetQualityParameterGroupById(string qualityId);
+
+
+        /// <summary>
         /// Retrives a  QualityReportType item meeting search criteria
         /// </summary>      
         /// <param name="qualityReportTypeId"></param>               

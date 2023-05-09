@@ -119,12 +119,12 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<List<CommercialDocumentType>> GetCommercialDocumentTypes(bool isSale)
+        public async Task<List<CommercialDocumentType>> GetCommercialDocumentTypes(bool isASale)
         {
             try
             {
                 string path = basepath.Replace("Name", "GetCommercialDocumentTypes");
-                var responseMessage = await Gethttp($"{path}&isSale={isSale}");
+                var responseMessage = await Gethttp($"{path}&isASale={isASale}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocumentType>>();
                 return list != null ? list : new List<CommercialDocumentType>();
             }

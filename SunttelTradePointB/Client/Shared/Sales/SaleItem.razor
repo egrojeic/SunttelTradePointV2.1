@@ -384,7 +384,7 @@
 
     protected override void OnParametersSet()
     {
-        var r = page;
+        ValidateUri();
         StateHasChanged();
     }
 

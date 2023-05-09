@@ -63,6 +63,14 @@
         StateHasChanged();
     }
 
+
+    protected async override void OnParametersSet()
+    {
+        commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes(isSale);
+        StateHasChanged();
+    }
+
+
     void OnClick(RadzenSplitButtonItem item, string buttonName)
     {
         if (item != null)
