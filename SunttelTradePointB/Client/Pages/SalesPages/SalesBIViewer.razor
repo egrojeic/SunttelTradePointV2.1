@@ -1,7 +1,6 @@
 ﻿@page "/SalesBI"
 @using Syncfusion.Blazor.PivotView
-@using Syncfusion.Blazor
-@*@using ThemeHelper*@
+@using Syncfusion.Blazor;
 @using System.Text.Json;
 @using System.Text.Json.Serialization;
 @using SunttelTradePointB.Shared.Sales;
@@ -19,8 +18,8 @@
 
         .e-pivotview .e-grouping-bar .e-pivot-button, .e-pivotview .e-group-rows .e-pivot-button:hover {
             background-color: #0d223f;
-            box-shadow:0px 0px 5px gray;
-            color:black;
+            box-shadow: 0px 0px 5px gray;
+            color: black;
         }
 </style>
 
@@ -51,10 +50,21 @@ else
 
     @if (commercialdocumentList != null)
     {
-        <SfPivotView TValue="BISalesConsolidated" ShowGroupingBar="true" AllowNumberFormatting="true">
+        <SfPivotView TValue="BISalesConsolidated" Height="500" Width="100%"
+             @ref="@Pivot"
+             Toolbar="@Olap"
+             ShowGroupingBar="true"
+             ShowFieldList=true
+             ShowToolbar=true
+             AllowConditionalFormatting=true
+             AllowCalculatedField=true
+             AllowPdfExport=true
+             AllowExcelExport=true
+             ShowTooltip=true>
+            <PivotViewDisplayOption Primary="Primary.Table" View="View.Both"></PivotViewDisplayOption>
             <PivotViewDataSourceSettings DataSource="@commercialdocumentList">
                 <PivotViewColumns>
-                    <PivotViewColumn Name="DocumentTypeName" Caption="@GetName("DocumentTypeName",new BISalesConsolidated())"></PivotViewColumn>
+                    <PivotViewColumn Name="DocumentTypeName" Caption="@GetName("DocumentTypeName",new BISalesConsolidated())" AllowDragAndDrop="true"></PivotViewColumn>
                     <PivotViewColumn Name="VendorName" Caption="@GetName("VendorName",new BISalesConsolidated())"></PivotViewColumn>
                     <PivotViewColumn Name="BuyerName" Caption="@GetName("BuyerName",new BISalesConsolidated())"></PivotViewColumn>
                     <PivotViewColumn Name="BuyerCommercialGroup" Caption="@GetName("BuyerCommercialGroup",new BISalesConsolidated())"></PivotViewColumn>
@@ -68,10 +78,9 @@ else
                     <PivotViewColumn Name="ArrivalDate" Caption="@GetName("ArrivalDate",new BISalesConsolidated())"></PivotViewColumn>
                 </PivotViewColumns>
                 <PivotViewRows>
-
                 </PivotViewRows>
                 <PivotViewValues>
-                    <PivotViewValue Name="FinanceSummaryTotalAmount" Caption="@GetName("FinanceSummaryTotalAmount",new BISalesConsolidated())"></PivotViewValue>
+                    <PivotViewValue Name="FinanceSummaryTotalAmount" Caption="@GetName("FinanceSummaryTotalAmount",new BISalesConsolidated())" AllowDragAndDrop=true></PivotViewValue>
                     <PivotViewValue Name="FinanceSummaryTotalCosts" Caption="@GetName("FinanceSummaryTotalCosts",new BISalesConsolidated())"></PivotViewValue>
                     <PivotViewValue Name="FinanceSummaryTotalTaxes" Caption="@GetName("FinanceSummaryTotalTaxes",new BISalesConsolidated())"></PivotViewValue>
                     <PivotViewValue Name="FinanceSummaryTotalDiscounts" Caption="@GetName("FinanceSummaryTotalDiscounts",new BISalesConsolidated())"></PivotViewValue>
@@ -86,6 +95,7 @@ else
                     <PivotViewFormatSetting Name="FinanceSummaryTotalPaid" Format="N2" UseGrouping=true></PivotViewFormatSetting>
                 </PivotViewFormatSettings>
             </PivotViewDataSourceSettings>
+            <PivotViewEvents TValue="BISalesConsolidated" RenameReport="RenameReport" RemoveReport="RemoveReport" SaveReport="SaveReport" LoadReport="LoadReport" FetchReport="FetchReport"></PivotViewEvents>
         </SfPivotView>
     }
 
@@ -93,14 +103,41 @@ else
 }
 
 
+
+
 @code {
     [Parameter]
     public string _filterItems { get; set; }
 
-    SfPivotView<BISalesConsolidated> refSfPivotView { get; set; }
+ 
 
     public CommercialDocumentType commercialDocumentType { get; set; }
     public List<BISalesConsolidated> commercialdocumentList { get; set; }
+
+    #region Pivot
+
+    SfPivotView<BISalesConsolidated> Pivot;
+    public List<ToolbarItems> Olap = new List<ToolbarItems> {
+        ToolbarItems.New,
+        ToolbarItems.Save,
+        ToolbarItems.SaveAs,
+        ToolbarItems.Rename,
+        ToolbarItems.Remove,
+        ToolbarItems.Load,
+        ToolbarItems.Grid,
+        ToolbarItems.Chart,
+        ToolbarItems.MDX,
+        ToolbarItems.Export,
+        ToolbarItems.SubTotal,
+        ToolbarItems.GrandTotal,
+        ToolbarItems.ConditionalFormatting,
+        ToolbarItems.FieldList,
+
+    };
+    public List<string> Report = new List<string>();
+    public List<string> ReportName = new List<string>();
+
+    #endregion End Pivot
 
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
     bool isLoading = false;
@@ -114,12 +151,10 @@ else
     {
         if (firstRender)
         {
-            if (refSfPivotView != null) await refSfPivotView.LayoutRefreshAsync();
+           
             StateHasChanged();
         }
-
     }
-
 
     public string docsFilter
     {
@@ -144,10 +179,10 @@ else
         commercialdocumentList = new();
         if (commercialDocumentType != null)
         {
-            commercialdocumentList = await _SalesBIViewerServices.GetSalesBIList(startingDate, endDate, commercialDocumentType.Id, (_filterItems != null ? _filterItems : "all"), 1, 500);
+            commercialdocumentList = await _SalesBIViewerServices.GetSalesBIList(startingDate, endDate, commercialDocumentType.Id, (_filterItems != null ? _filterItems : "all"), 1, 200);
         }
 
-        if (refSfPivotView != null) await refSfPivotView.LayoutRefreshAsync();
+      
         isLoading = false;
 
         StateHasChanged();
@@ -170,6 +205,91 @@ else
     }
 
 
+
+    #region EventPivot
+
+    public void SaveReport(SaveReportArgs args)
+    {
+        int i = 0;
+        bool IsSaved = false;
+        for (i = 0; i < this.ReportName.Count; i++)
+        {
+            if (this.ReportName[i] == args.ReportName)
+            {
+                this.Report[i] = args.Report;
+                IsSaved = true;
+            }
+        }
+        if (args.Report != null && !(IsSaved))
+        {
+            this.Report.Add(args.Report);
+            this.ReportName.Add(args.ReportName);
+        }
+
+    }
+    public void FetchReport(FetchReportArgs args)
+    {
+        args.ReportName = ReportName.ToArray();
+    }
+    public async Task LoadReport(LoadReportArgs args)
+    {
+        int i = 0;
+        int j = 0;
+
+
+        for (i = 0; i < ReportName.Count; i++)
+        {
+            if (ReportName[i] == args.ReportName)
+            {
+                j = i;
+            }
+        }
+        if (Pivot != null) await this.Pivot.LoadPersistDataAsync(Report[j]);
+
+    }
+    public async Task RemoveReport(RemoveReportArgs args)
+    {
+        int i = 0;
+        for (i = 0; i < ReportName.Count; i++)
+        {
+            if (ReportName[i] == args.ReportName)
+            {
+                ReportName.RemoveAt(i);
+                Report.RemoveAt(i);
+                break;
+            }
+        }
+        if (Report.Count > 0)
+        {
+            await this.Pivot.LoadPersistDataAsync(Report[0]);
+        }
+    }
+    public void RenameReport(RenameReportArgs args)
+    {
+        if (args.IsReportExists)
+        {
+            int j = 0;
+            for (j = 0; j < ReportName.Count; j++)
+            {
+                if (ReportName[j] == args.Rename)
+                {
+                    ReportName.RemoveAt(j);
+                    Report.RemoveAt(j);
+                    break;
+                }
+            }
+        }
+        int i = 0;
+        for (i = 0; i <= (ReportName.Count - 1); i++)
+        {
+            if (ReportName[i] == args.ReportName)
+            {
+                ReportName[i] = args.Rename;
+            }
+        }
+    }
+
+    #endregion EndEventPivot
 
 
 

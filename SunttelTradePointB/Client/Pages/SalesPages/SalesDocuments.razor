@@ -32,7 +32,7 @@
 
 
 <PageTitleComponent Title="@namePage" IconName="@icoLogo"
-                    Description="@("With this tool you can create and edit" + @namePage)">
+                    Description="@("With this tool you can create and edit " + @namePage)">
 </PageTitleComponent>
 
 
@@ -45,7 +45,7 @@
 </div>
 
 <div class="panelMenuContainer aling">
-    <CommercialDocsGrlMenu2 isSale="@isSale" SetVendor="SetVendor" SetDocumentTypeId="SetDocumentTypeId"></CommercialDocsGrlMenu2>
+    <CommercialDocsGrlMenu2 isASale="@isSale" SetVendor="SetVendor" SetDocumentTypeId="SetDocumentTypeId"></CommercialDocsGrlMenu2>
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
 </div>
 

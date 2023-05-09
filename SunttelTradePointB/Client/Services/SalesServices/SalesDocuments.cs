@@ -107,8 +107,9 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             CultureInfo culture = new CultureInfo("en-US");
             try
             {
+                string nameVendor = vendor != null ? vendor.Name : "";
                 string path = basepath.Replace("Name", "GetCommercialDocumentsByDateSpan");
-                var responseMessage = await Gethttp($"{path}&startDate={startDate.ToString("yyyy-MM-dd", culture)}&endDate={endDate}&documentTypeId={documentTypeId}&filter={filter}&vendorName={vendor.Name}");
+                var responseMessage = await Gethttp($"{path}&startDate={startDate.ToString("yyyy-MM-dd", culture)}&endDate={endDate}&documentTypeId={documentTypeId}&filter={filter}&vendorName={nameVendor}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocument>>();
                 return list != null ? list : new List<CommercialDocument>();
             }
