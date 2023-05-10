@@ -18,14 +18,19 @@
 @if (processing)
 {
     <label style="text-align: right; width: 100%">
-        Procesing...
+        Processing...
     </label>
 }
 <div class="input-container">
     <input @bind-value="_messageInput.Value" type="text" style="border: 1px solid gray;" placeholder="Escribe un mensaje..." class="message-input" />
-    <button @onclick="SendMessage" class="send-button ml-1 text-white">
-        <img class="img-mic" src="@(GetIco())" />
-        <img style="display:@(setTextRecognition?"block":"none");" class="img-load" src="/images/loadingIco.gif" />
+
+    <button @onclick="Speak" class="send-button me-1 text-white">
+        <img class="ico" src="/images/speak.svg" />
+    </button>
+
+    <button @onclick="Listen" class="send-button me-1 text-white">
+        <img class="img-mic" src="@(mic.GetIco())" />
+        @*<img style="display:@(setTextRecognition?"block":"none");" class="img-load" src="/images/loadingIco.gif" />*@
     </button>
 
     <button @onclick="SendMessage" class="send-button">Enviar</button>
@@ -42,23 +47,27 @@
 </div>
 *@
 
-<SpeechRecognition SetFilter="SetFilter"></SpeechRecognition>
-<TextToSpeech @ref="x"></TextToSpeech>
+<SpeechRecognition @ref="mic" SetFilter="SetFilter"></SpeechRecognition>
+<TextToSpeech @ref="speaker"></TextToSpeech>
 
 @code {
-    TextToSpeech? x;
-    bool onstartRecognition = false;
-    bool setTextRecognition = false;
-    public bool status = true;
-    public string resulRecognition = "";
+    SpeechRecognition? mic = new SpeechRecognition();
+    TextToSpeech? speaker;
     public MessageInput _messageInput = new MessageInput();
     List<MessageInput> messages = new List<MessageInput>();
     public bool processing = false;
 
     public void SetFilter(string value)
     {
+        processing = false;
         _messageInput.Value = value;
         StateHasChanged();
+    }
+
+    private void Listen()
+    {
+        mic!.StartRecognition();
+        processing = true;
     }
 
     private async void SendMessage()
@@ -97,54 +106,23 @@
         StateHasChanged();
     }
 
-    DotNetObjectReference<SpeechRecognition> _reference;
-    public async void StartRecognition()
+    public void Speak()
     {
-        await Task.Delay(TimeSpan.FromSeconds(1));
-        if (status)
+        string value = "";
+
+        if (messages.Any())
         {
-            status = false;
-            resulRecognition = "";
-            StateHasChanged();
-            await Js.InvokeVoidAsync("Recognition", false);
+            messages.ForEach(x =>
+            {
+                value += $@"{x.Value}";
+            });
+
+            speaker!.Speack(value);
         }
 
     }
 
-    public string GetIco()
-    {
-        //if (ondblclickEnable) return "/images//headset.svg";
-        if (onstartRecognition) return "/images//mic-on.svg";
-        return "/images//mic-off.svg";
-    }
-
-    [JSInvokable]
-    public void OnstartRecognition()
-    {
-        onstartRecognition = true;
-        status = false;
-        StateHasChanged();
-    }
-
-    [JSInvokable]
-    public void OnEndRecognition()
-    {
-        status = true;
-        onstartRecognition = false;
-        //ondblclickEnable = false;
-        StateHasChanged();
-    }
-
-    [JSInvokable]
-    public void OnerrorRecognition()
-    {
-        //ondblclickEnable = false;
-        onstartRecognition = false;
-        status = true;
-        StateHasChanged();
-    }
-
-
+  
     public class MessageInput
     {
 
