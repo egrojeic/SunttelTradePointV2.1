@@ -1,4 +1,5 @@
-﻿using CsvHelper;
+﻿using AutoMapper;
+using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.AspNetCore.Http.HttpResults;
 using MongoDB.Bson;
@@ -30,7 +31,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
     /// </summary>
     public class EntityActorNodesService : IActorsNodes
     {
-
+        private readonly IMapper _mapper;
         IMongoCollection<EntityActor> _entityActorsCollection;
         IMongoCollection<EntityRole> _rolesCollection;
         IMongoCollection<BsonDocument> _generalEntityCollection;
@@ -41,19 +42,17 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// Initialize the component passing the configuration to get the connection string
         /// </summary>
         /// <param name="config"></param>
-        public EntityActorNodesService(IConfiguration config)
+        /// <param name="mapper"></param>
+        public EntityActorNodesService(IConfiguration config, IMapper mapper)
         {
             var mongoClient = new MongoClient(config.GetConnectionString("MongoConectionString"));
             string DataBaseName = config["DatabaseMongo"];
 
             var mongoDatabase = mongoClient.GetDatabase(DataBaseName);
+            _mapper = mapper;
             _entityActorsCollection = mongoDatabase.GetCollection<EntityActor>("EntityNodes");
-
             _generalEntityCollection = mongoDatabase.GetCollection<BsonDocument>("EntityNodes");
-
-
             _rolesCollection = mongoDatabase.GetCollection<EntityRole>("Roles");
-
             _entityActorsCollection = mongoDatabase.GetCollection<EntityActor>("EntityNodes");
             _entityGroup = mongoDatabase.GetCollection<EntityGroup>("EntityGroups");
 
@@ -1162,14 +1161,18 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     };
                     var csv = new CsvReader(reader, config);
                     // Lectura de los registros del archivo CSV
+                    // LOS 3 
                     var records = csv.GetRecords<ActorsImport>().ToList();
 
+                    List<EntityActor> results = _mapper.Map<List<EntityActor>>(records);
 
-                    foreach (var record in records)
+
+                    // 
+                    foreach (var resultEntity in results)
                     {
-                        var creditType = await SaveEntity(userId, ipAddress, null);
+                        var creditType = await SaveEntity(userId, ipAddress, resultEntity);
                     }
-                    return (true, null, "Services created successfully");
+                    return (true, null, "Entities created successfully");
 
                 }
 
@@ -1179,7 +1182,5 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 return (false, null, e.Message);
             }
         }
-
-
     }
 }
