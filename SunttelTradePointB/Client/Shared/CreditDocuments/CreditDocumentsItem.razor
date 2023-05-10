@@ -1,6 +1,9 @@
-@page "/CreditDocumentsItem"
-@page "/CreditDocumentsItem/{creditDocumentsItemId}"
-@page "/CreditDocumentsItem/{creditDocumentsItemId}/{filter}"
+@page "/CreditDocumentsItem/{page}"
+@page "/CreditDocumentsItem/{page}/{creditDocumentsItemId}"
+@page "/CreditDocumentsItem/{page}/{creditDocumentsItemId}/{filter}"
+@page "/ProviderCreditsItem/{page}"
+@page "/ProviderCreditsItem/{page}/{creditDocumentsItemId}"
+@page "/ProviderCreditsItem/{page}/{creditDocumentsItemId}/{filter}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
@@ -17,8 +20,8 @@
 
 <MessageSaveComponent isVisible="isVisible" message="@alertMsg">
 </MessageSaveComponent>
-<PageTitleComponent Title=" Credit Document"
-                    Description="Here you can add credit document" IconName="creditTypeDocument.png">
+<PageTitleComponent Title="@namePage"
+                    Description="@($"Here you can add and edit {namePage.ToLower()}")" IconName="@icoLogo">
 </PageTitleComponent>
 
 
@@ -64,10 +67,11 @@
                 {
                     @foreach (var item in creditTypeList)
                     {
-                        <option value="@item.Id">@item.Name</option> // falta .Name
+                        <option value="@item.Id">@item.Name</option>
+                        // falta .Name
                     }
                 }
-                @if (creditDocument.CreditDocumentType!= null)
+                @if (creditDocument.CreditDocumentType != null)
                 {
                     <option value="@creditDocument.CreditDocumentType.Id" selected>@creditDocument.CreditDocumentType.Name</option>
                 }
@@ -90,9 +94,9 @@
                             Id="Vendor"
                             caption="@(creditDocument.Vendor !=null ? creditDocument.Vendor.Name:"")"
                             EventIdSelectionAndId="EventIdSelectionAndId"
-                            EventSearcherValueAndId="EventSearcherValueAndId"        
+                            EventSearcherValueAndId="EventSearcherValueAndId"
                             Items="@vendorList"
-                            style="left:-150px;">
+                            style="left:auto;">
         </InputTextSelector3>
 
 
@@ -101,11 +105,11 @@
 
         <InputTextSelector3 TItem="Concept"
                             Id="Buyer"
-                            caption="@(creditDocument.Buyer !=null ? creditDocument.Buyer.Name:"")"
+                            caption="@(creditDocument.Buyer !=null ? creditDocument.Buyer.Name:"")"                           
                             EventIdSelectionAndId="EventIdSelectionAndId"
                             EventSearcherValueAndId="EventSearcherValueAndId"
                             Items="@buyerList"
-                            style="left:-150px;">
+                            style="left:auto;">
         </InputTextSelector3>
 
 
@@ -121,15 +125,20 @@
     public string creditDocumentsItemId { get; set; }
     [Parameter]
     public string filter { get; set; }
+    [Parameter]
+    public string page { get; set; } = "";
 
 
     TextToSpeech textToSpeech;
+    string namePage = "";
+    string backPage = "";
+    string icoLogo = "";
 
-    string page = "";
     string alertMsg = "";
     string SearcherValue = "";
     bool menuVisible = false;
     bool isVisible = false;
+    bool isASale = false;
     public CreditDocument creditDocument = new();
 
 
@@ -153,13 +162,13 @@
 
     protected override void OnParametersSet()
     {
-        var r = page;
+        ValidateUri();
         StateHasChanged();
     }
 
     protected override async void OnInitialized()
     {
-
+        ValidateUri();
         isLoading = true;
         StateHasChanged();
         if (creditDocumentsItemId != null)
@@ -167,12 +176,18 @@
             creditDocument = await CreditDocumentServices.GetCreditDocumentById(creditDocumentsItemId);
 
         }
-        creditTypeList = await CreditDocumentServices.GetCreditTypes((filter!=null? filter:"all"),1,20);
+        creditTypeList = await CreditDocumentServices.GetCreditTypes((filter != null ? filter : "all"), 1, 20);
         LoadDocument();
         isLoading = false;
         StateHasChanged();
     }
 
+
+    //protected override void OnAfterRender(bool firstRender)
+    //{
+    //    StateHasChanged();
+    //    base.OnAfterRender(firstRender);
+    //}
 
 
     public async void ItemSelected(MenuEventArgs e)
@@ -209,13 +224,11 @@
 
 
 
-    public async void SelectItem( ChangeEventArgs arg)
+    public async void SelectItem(ChangeEventArgs arg)
     {
 
 
     }
-
-
 
 
     public async void EventSearcherValueAndId((string value, string IdControl) arg)
@@ -224,13 +237,17 @@
 
         if (SearcherValue == "Vendor")
         {
-            vendorList=  await DocumentServices.GetCommercialVendorList(arg.value, creditDocument.CreditDocumentType.IsASale,1,20);
+            vendorList = await DocumentServices.GetCommercialVendorList(arg.value, creditDocument.CreditDocumentType.IsASale, 1, 20);
 
+        }
+        else
+        {
+            alert("require credit document type");
         }
 
         if (SearcherValue == "Buyer")
-        {           
-            buyerList = await DocumentServices.GetCommercialBuyerList(arg.value, creditDocument.CreditDocumentType.IsASale,1,20);
+        {
+            buyerList = await DocumentServices.GetCommercialBuyerList(arg.value, creditDocument.CreditDocumentType.IsASale, 1, 20);
         }
 
         StateHasChanged();
@@ -246,7 +263,7 @@
     {
         if (SearcherValue == "Vendor")
         {
-            creditDocument.Vendor = item;          
+            creditDocument.Vendor = item;
 
         }
 
@@ -286,8 +303,8 @@
     public void Home()
     {
         string paramFilter = filter != null ? filter : "";
-        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/Credits/{paramFilter}");
-        Navigation.NavigateTo($"/Credits");
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/{backPage}/{paramFilter}");
+        Navigation.NavigateTo($"/{backPage}");
     }
 
     public void OpenAlert(string _msg, int _status, bool visible)
@@ -325,12 +342,9 @@
     {
         if (creditDocument == null) creditDocument = new();
         if (creditDocument.CreditDocumentType == null) creditDocument.CreditDocumentType = new();
-
         if (creditDocument.Vendor == null) creditDocument.Vendor = new();
         if (creditDocument.Buyer == null) creditDocument.Buyer = new();
         if (creditDocument.CreditDate == DateTime.MinValue) creditDocument.CreditDate = DateTime.Now;
-
-
     }
 
 
@@ -353,4 +367,35 @@
 
         StateHasChanged();
     }
+
+    public void ValidateUri()
+    {
+        string Name = Navigation.Uri;
+        if (Name.Contains("ProviderCreditsItem"))
+        {
+            isASale = false;
+
+            if (Name.Contains("ProviderCreditsItem"))
+            {
+                namePage = "Provider Credit";
+                backPage = $"ProviderCredits/{page}";
+                icoLogo = "ProviderCredits.png";
+            }
+        }
+
+        if (Name.Contains("CreditDocumentsItem"))
+        {
+            isASale = true;
+            if (Name.Contains("CreditDocumentsItem"))
+            {
+                backPage = $"Credits/{page}";
+                namePage = " Credit Document";
+                icoLogo = "creditTypeDocument.png";
+            }
+
+        }
+        StateHasChanged();
+    }
+
+
 }

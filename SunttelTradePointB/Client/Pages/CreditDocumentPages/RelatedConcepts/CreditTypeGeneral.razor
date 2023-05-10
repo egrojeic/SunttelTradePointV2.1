@@ -74,7 +74,6 @@
 
                 <RadzenDataGridColumn TItem="CreditType" Property="Name" Title="@GetName("Name",new BasicConcept())" Width="308px" />
                 <RadzenDataGridColumn TItem="CreditType" Property="Name" Title="@GetName("IsASale",new BasicConcept())" Width="308px" >
-
                     <Template>
                         @{
                             var IsASale = (bool)context.GetType().GetProperty(nameof(CreditType.IsASale)).GetValue(context);

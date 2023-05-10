@@ -1,8 +1,6 @@
 @page "/SaleItem/{page}"
 @page "/PurchasesItem/{page}"
-@page "/ProviderCreditsItem/{page}"
 @page "/PurchasesItem/{page}/{commercialDocumentId}/{filter}"
-@page "/ProviderCreditsItem/{page}/{commercialDocumentId}/{filter}"
 @page "/SaleItem/{page}/{commercialDocumentId}"
 @page "/SaleItem/{page}/{commercialDocumentId}/{filter}"
 @using SunttelTradePointB.Shared.Sales;
@@ -17,7 +15,6 @@
 @inject GeographicPlacesService geoPlaces
 @inject ActorsNodeService actorsNodeServive
 @inject IJSRuntime Js
-
 
 <style>
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
@@ -325,8 +322,6 @@
   
 
 </form>
-
-
 
 
 @code {

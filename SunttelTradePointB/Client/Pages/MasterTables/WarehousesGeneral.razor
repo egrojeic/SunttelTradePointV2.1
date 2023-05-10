@@ -51,10 +51,6 @@
         @if (warehouseList != null)
         {
 
-
-
-
-
             <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
                     AllowAlternatingRows="true"
@@ -180,7 +176,7 @@
         lblWarehouseAddress = UICommonFunctions.GetDisplayName(new Warehouse(), "WarehouseAddress");
         lblContactPerson = UICommonFunctions.GetDisplayName(new Warehouse(), "ContactPerson");
         lblIsActive = UICommonFunctions.GetDisplayName(new Warehouse(), "IsActive");
-        await GetFilterWarehouse();
+        await GetFilterWarehouse("all");
     }
 
     public async Task GetFilterWarehouse(string filter = "")

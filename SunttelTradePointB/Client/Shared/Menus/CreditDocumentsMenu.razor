@@ -46,6 +46,16 @@
 
     [Parameter]
     public EventCallback<string> SetDocumentTypeId { get; set; }
+    [Parameter]
+    public string page { get; set; }
+
+
+
+    protected override void OnParametersSet()
+    {
+        StateHasChanged();
+        base.OnParametersSet();
+    }
 
     void OnClick(RadzenSplitButtonItem item, string buttonName)
     {
@@ -82,7 +92,7 @@
 
     private void CreateNew()
     {
-        Navigation.NavigateTo("/CreditDocumentsItem");
+        Navigation.NavigateTo($"/{page}");
     }
 
 }

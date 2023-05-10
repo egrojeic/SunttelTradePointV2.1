@@ -1,36 +1,37 @@
-﻿
+﻿@inject IJSRuntime Js
 
-@inject IJSRuntime Js
-
-<div class="container @Class">
-    <img @onclick="Speack" class="ico" src="/images/speak.svg" >       
-   </img>
+<div style="display:@(enableIco?"block":"none");" class="container @Class">
+    <img @onclick="Speack" class="ico" src="/images/speak.svg">
+    </img>
 </div>
 
 
-@code {    
-   
+@code {
+
     [Parameter]
-    public EventCallback<string> EventChange{get; set;}
+    public EventCallback<string> EventChange { get; set; }
     [Parameter]
-    public string Class { get; set; } 
+    public string Class { get; set; }
     [Parameter]
     public string Id { get; set; }
+    [Parameter]
+    public bool enableIco { get; set; } = false;
+
 
     protected async override void OnInitialized()
     {
-       // if (Js != null) await Js.InvokeVoidAsync("speak", $"{value}.");
+        // if (Js != null) await Js.InvokeVoidAsync("speak", $"{value}.");
 
     }
 
     public async void Speack()
     {
-       await EventChange.InvokeAsync(Id);
-       // if (Js != null) await Js.InvokeVoidAsync("speak", $"prueba");
-    
+        await EventChange.InvokeAsync(Id);
+        // if (Js != null) await Js.InvokeVoidAsync("speak", $"prueba");
+
     }
     public async void Speack(string value)
-    {       
+    {
         if (Js != null) await Js.InvokeVoidAsync("speak", value);
     }
 
@@ -49,7 +50,7 @@
 
 
     //            using (var result = await synthesizer.SpeakTextAsync(text))
-    //            {
+        //            {
 
     //                if (result.Reason == ResultReason.SynthesizingAudioCompleted)
     //                {
