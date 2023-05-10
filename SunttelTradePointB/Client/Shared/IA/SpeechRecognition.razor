@@ -5,7 +5,7 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime Js
 
-<div class="container">
+<div style="display:@(enableIco?"block":"none");" class="container">
     <div style="display:@(resulRecognition!=""?"block":"none");" class="item-1">
         <p class="text">@resulRecognition</p>
     </div>
@@ -15,11 +15,11 @@
     </div>
 </div>
 
-
-
 @code {
     [Parameter]
     public EventCallback<string> SetFilter{ get; set; }
+    [Parameter]
+    public bool enableIco { get; set; } = false;
 
     bool status = true;
     bool onstartRecognition = false;
@@ -27,8 +27,8 @@
     bool ondblclickEnable = false;
     bool recognitionEnable = false;
     string resulRecognition = "";
+  
 
-   
     DotNetObjectReference<SpeechRecognition> _reference;
     public async void StartRecognition()
     {

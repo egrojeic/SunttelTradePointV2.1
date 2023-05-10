@@ -1,0 +1,53 @@
+﻿@page "/ActorsImporting"
+
+
+@using SunttelTradePointB.Shared.Common
+
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+@inject ActorsNodeService actorsNodeServive;
+
+
+
+<PageTitleComponent Title="Actors Importing" IconName="ActorsIco.png"
+                    Description="you can import actors">
+</PageTitleComponent>
+
+
+<div class="panelMenuContainer">
+    <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>   
+</div>
+
+
+<form>
+    <div class="form-group">
+        <label for="fileInput">Seleccionar archivo:</label>
+        <input type="file" class="form-control-file" id="fileInput" @onchange="HandleFileUpload" />
+    </div>
+    <button type="submit" class="btn btn-primary">Subir archivo</button>
+</form>
+
+
+
+
+@code {
+    [Parameter]
+    public string filter { get; set; }
+
+
+    private ElementReference fileInput;
+
+    private async Task HandleFileUpload()
+    {
+        //var file = await fileInput.[0].Text();
+        // Hacer algo con el archivo
+    }
+
+
+    public void Home()
+    {       
+        Navigation.NavigateTo($"/ActorsImporting/{filter}");      
+    }
+
+
+}
