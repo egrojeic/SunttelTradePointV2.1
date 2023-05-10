@@ -15,8 +15,15 @@ namespace SunttelTradePointB.Shared.DataViews.Profiles
     {
         public EntityProfile() 
         {
-            CreateMap<ActorsImport, EntityActor>();
+            CreateMap<ActorsImport, EntityActor>()
+                .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Codigo))
+                .ForPath(dest => dest.InvoicingAddress.AddressLine1, opt => opt.MapFrom(src => src.Address1))
+                .ForPath(dest => dest.InvoicingAddress.AddressLine1, opt => opt.MapFrom(src => src.Address1))
+                .ForPath(dest => dest.InvoicingAddress.ZipCode, opt => opt.MapFrom(src => src.Address1))
                 
+                .ForPath(dest => dest.DefaultEntityRole.Id , opt => opt.MapFrom(src => src.TypeActorId))
+                .ForPath(dest => dest.DefaultEntityRole.Name, opt => opt.MapFrom(src => src.TypeActor))
+                .ForPath(dest => dest.DefaultEntityRole.EntityRoleClassifier.Id, opt => opt.MapFrom(src => src.TypeActorClassifier));
         }
     }
 }
