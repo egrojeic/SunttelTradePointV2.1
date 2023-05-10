@@ -20,7 +20,7 @@
     <Authorized>
 
         <div class="top-row">
-
+          
             <div style="@(!collapseNavMenu?"margin-left:20px;":"")" id="tradePointInfoSup">
                 <div id="TradePointIdentifierDiv">
                     <img src="/images/logo.png" id="tradePintLogo" />
@@ -36,6 +36,10 @@
 
             <h1 id="currentWeek">Week: @weekDate</h1>
 
+            <button id="bot" type="button" @onclick="OpenBotAssist" class="btn btn-primary bot">
+                <i class="fa-solid fa-robot"></i>
+                Bot Assistant
+            </button>
 
             <button type="button" class="btn btn-link ml-md-auto" @onclick="@LogoutClick">Logout</button>
 
@@ -48,6 +52,8 @@
                 <img class="btn-menu-close @(collapseNavMenu?"btn-menu-width-open":"btn-menu-width-close") " src="@(collapseNavMenu?"/images/close.png":"images/menu-1.png")">
             </div>
 
+            
+
             <div class="@(NavMenuCssClass)">
                 <NavMenu />
             </div>
@@ -59,8 +65,8 @@
 
         </div>
 
-        <img @onclick="OpenBotAssist" src="images/botR.svg" class="btn-floating" alt=""
-             height="100" width="100">
+        @*<img @onclick="OpenBotAssist" src="images/botR.svg" class="btn-floating" alt=""
+        height="100" width="100">*@
 
     </Authorized>
 </AuthorizeView>

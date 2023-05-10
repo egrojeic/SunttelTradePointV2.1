@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Components.Web
 @using SunttelTradePointB.Client.Services.IAServices;
-@inject IARecognition _IARecognition;
+@inject IARecognition Recognition;
+@inject IJSRuntime Js
 
 <p>If you need help, don't hesitate to ask us a question. our model is fed with business information.</p>
 <div class="chat-container">
@@ -14,23 +15,61 @@
         </button>
     }
 </div>
+@if (processing)
+{
+    <label style="text-align: right; width: 100%">
+        Procesing...
+    </label>
+}
 <div class="input-container">
     <input @bind-value="_messageInput.Value" type="text" style="border: 1px solid gray;" placeholder="Escribe un mensaje..." class="message-input" />
+    <button @onclick="SendMessage" class="send-button ml-1 text-white">
+        <img class="img-mic" src="@(GetIco())" />
+        <img style="display:@(setTextRecognition?"block":"none");" class="img-load" src="/images/loadingIco.gif" />
+    </button>
+
     <button @onclick="SendMessage" class="send-button">Enviar</button>
 </div>
+@*
+<div class="container">
+    <div style="display:@(resulRecognition!=""?"block":"none");" class="item-1">
+        <p class="text">@resulRecognition</p>
+    </div>
+    <div class="item-2">
+        <img @ondblclick="ActiveRecognition" @onclick="StartRecognition" class="img-mic" src="@(GetIco())" />
+        <img style="display:@(setTextRecognition?"block":"none");" class="img-load" src="/images/loadingIco.gif" />
+    </div>
+</div>
+*@
 
+<SpeechRecognition SetFilter="SetFilter"></SpeechRecognition>
+<TextToSpeech @ref="x"></TextToSpeech>
 
 @code {
+    TextToSpeech? x;
+    bool onstartRecognition = false;
+    bool setTextRecognition = false;
+    public bool status = true;
+    public string resulRecognition = "";
     public MessageInput _messageInput = new MessageInput();
     List<MessageInput> messages = new List<MessageInput>();
+    public bool processing = false;
+
+    public void SetFilter(string value)
+    {
+        _messageInput.Value = value;
+        StateHasChanged();
+    }
 
     private async void SendMessage()
     {
-
         // Obtener el contenido del mensaje del input
         var messageContent = _messageInput.Value;
 
-        if (messageContent is null) return;
+        if (string.IsNullOrEmpty(messageContent)) return;
+        processing = true;
+
+        _messageInput.Value = "";
 
         messages.Add(new MessageInput()
             {
@@ -39,7 +78,9 @@
             });
 
         // Enviar el mensaje al servidor
-        var responseHTTP = await _IARecognition.AskQuestion(messageContent);
+        var responseHTTP = await Recognition.AskQuestion(messageContent);
+
+        processing = false;
 
         if (responseHTTP.IsSuccessStatusCode)
         {
@@ -53,12 +94,60 @@
         }
 
         // Limpiar el input después de enviar el mensaje
-        _messageInput.Value = "";
         StateHasChanged();
     }
 
+    DotNetObjectReference<SpeechRecognition> _reference;
+    public async void StartRecognition()
+    {
+        await Task.Delay(TimeSpan.FromSeconds(1));
+        if (status)
+        {
+            status = false;
+            resulRecognition = "";
+            StateHasChanged();
+            await Js.InvokeVoidAsync("Recognition", false);
+        }
+
+    }
+
+    public string GetIco()
+    {
+        //if (ondblclickEnable) return "/images//headset.svg";
+        if (onstartRecognition) return "/images//mic-on.svg";
+        return "/images//mic-off.svg";
+    }
+
+    [JSInvokable]
+    public void OnstartRecognition()
+    {
+        onstartRecognition = true;
+        status = false;
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void OnEndRecognition()
+    {
+        status = true;
+        onstartRecognition = false;
+        //ondblclickEnable = false;
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void OnerrorRecognition()
+    {
+        //ondblclickEnable = false;
+        onstartRecognition = false;
+        status = true;
+        StateHasChanged();
+    }
+
+
     public class MessageInput
     {
+
         public string? Class { get; set; }
         public string? Value { get; set; }
     }
@@ -68,13 +157,13 @@
         public string? response { get; set; }
     }
 
-}
+   }
 
 <style>
     .chat-container {
         display: flex;
         flex-direction: column;
-        height: 317px;
+        height: 300px;
         border: 1px solid gray;
         border-radius: 10px;
         padding: 15px;
