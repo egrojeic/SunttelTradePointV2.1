@@ -22,7 +22,7 @@
     public bool enableIco { get; set; } = false;
 
     bool status = true;
-    bool onstartRecognition = false;
+    public bool onstartRecognition = false;
     bool setTextRecognition = false;
     bool ondblclickEnable = false;
     bool recognitionEnable = false;
@@ -74,7 +74,8 @@
     public async void SetTextRecognition(string result)
     {
         setTextRecognition = true;
-        if (result.ToLower().Contains("buscar")) SetFilter.InvokeAsync(result.Replace("buscar",""));
+        if (result.ToLower().Contains("buscar")) SetFilter.InvokeAsync(result.Replace("buscar", ""));
+        if (result.ToLower().Contains("bot")) SetFilter.InvokeAsync(result.Replace("bot", ""));
         var RecognitionItem = await Recognition.GetValueRecognition(result);
         if (RecognitionItem != null)
         {
