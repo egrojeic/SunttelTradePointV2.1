@@ -27,7 +27,7 @@
     
     </style>
 
-<PageTitleComponent Title="Shipping" IconName="commercialActivities.png"
+<PageTitleComponent Title="Shipping" IconName="Shipping.png"
                     Description="With this tool you can view shipping">
 </PageTitleComponent>
 
@@ -213,24 +213,18 @@
 
 
     public string SumTotal()
-    {
-        CultureInfo format = new CultureInfo("en-US", false);
+    {    
+
         double value = 0;
         string result = "";
         if (commercialdocumentList != null)
         {
-
-            var statusList = commercialdocumentList.GroupBy(s => s.ShippingStatusDocument).ToList();
-            int counStatus = 0;
-
-            foreach (var item in statusList)
-            {
-                if (!result.ToLower().Contains(item.FirstOrDefault().ShippingStatusDocument.Name.ToLower()))
-                {
-                    counStatus = commercialdocumentList.Where(s => s.ShippingStatusDocument.Id == item.FirstOrDefault().ShippingStatusDocument.Id).Count();
-                    result += item.FirstOrDefault().ShippingStatusDocument.Name + " : " + counStatus + "  ,  ";
-                };
-            }
+            string totalBoxes = commercialdocumentList.Sum(s => s.ShippingSummary.TotalBoxes).ToString("N2");
+            string totalScanned = commercialdocumentList.Sum(s => s.ShippingSummary.TotalScanned).ToString("N2");
+            string totalInInventory = commercialdocumentList.Sum(s => s.ShippingSummary.TotalInInventory).ToString("N2");
+            result =  $"{GetName("TotalBoxes", new ShippingSalesDocumentSummary())}: {totalBoxes}       ";
+            result += $"{GetName("TotalScanned", new ShippingSalesDocumentSummary())}: {totalBoxes}      ";
+            result += $"{GetName("TotalInInventory", new ShippingSalesDocumentSummary())}: {totalBoxes}     ";
         }
 
         return result; //value.ToString("N2", format);

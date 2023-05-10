@@ -1,0 +1,145 @@
+﻿@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+@using SunttelTradePointB.Shared.Sales
+@inject NavigationManager Navigation
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject ActorsNodeService actorsNodeServive;
+
+
+
+
+<div id="container-menu-general">
+
+    <div>
+        <label class="label-style color-white">
+            @(GetName("DocumentType", new CommercialDocument()) + " ")
+        </label>
+    </div>
+
+    <div>
+        <select @onchange="SetDocumentType" class="select-style">
+            @if (commercialDocumentTypeList != null)
+            {
+                @foreach (var item in commercialDocumentTypeList)
+                {
+                    <option value="@(item.Id)" selected>@(item.Name)</option>
+                }
+            }
+        </select>
+    </div>
+
+  @*  <div><label class="label-style color-white">@GetName("Vendor",new CommercialDocument())</label></div>
+    <div class="Vendor">
+        <InputTextSelector3 styleCaption="width:200px;" TItem="Concept"
+                            Id="Vendor"
+                            caption="@(vendor !=null ? vendor?.Name:"" )"
+                            Items="vendorList"
+                            EventIdSelectionAndId="EventIdSelectionAndId"
+                            EventSearcherValueAndId="EventSearcherValueAndId">
+
+        </InputTextSelector3>
+    </div>*@
+
+</div>
+
+
+@code {
+    [Parameter]
+    public List<CommercialDocumentType> commercialDocumentTypeList { get; set; }
+    [Parameter]
+    public EventCallback<CommercialDocumentType> SetDocumentTypeId { get; set; } [Parameter]
+    public EventCallback<Concept> SetVendor { get; set; }
+    [Parameter]
+    public bool isSale { get; set; } = true;
+
+    public List<Concept> vendorList = new();
+    public Concept vendor = new();
+    string SearcherValue = "";
+
+    protected async override void OnInitialized()
+    {
+        commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes(isSale);
+        StateHasChanged();
+    }
+
+    void OnClick(RadzenSplitButtonItem item, string buttonName)
+    {
+        if (item != null)
+        {
+            Console.WriteLine($"{buttonName}, item with value {item.Value} clicked");
+        }
+        else
+        {
+            Console.WriteLine($"{buttonName} clicked");
+        }
+    }
+
+
+
+    private void ItemSelected(MenuEventArgs args)
+    {
+        var Selected_item = args.Item.Id;
+        Navigation.NavigateTo(Selected_item);
+    }
+
+    private void SetDocumentType(ChangeEventArgs args)
+    {
+        var Selected_item = commercialDocumentTypeList.Where(s => s.Id == args.Value.ToString()).FirstOrDefault();
+        if (Selected_item != null)
+        {
+            SetDocumentTypeId.InvokeAsync(Selected_item);
+        }
+    }
+
+
+
+    public async void EventSearcherValueAndId((string value, string IdControl) arg)
+    {
+        SearcherValue = arg.IdControl.ToString();
+        if (SearcherValue == "Vendor")
+        {
+            var list = await DocumentServices.GetCommercialVendorList(arg.value.ToString(), true, 1,50);
+            vendorList = new();
+            foreach (var item in list)
+            {
+                vendorList.Add(item);
+            }
+
+        }
+
+
+        StateHasChanged();
+    }
+
+
+
+    public async void EventIdSelectionAndId(Concept item)
+    {
+        if (SearcherValue == "Vendor")
+        {
+
+            vendor = item;
+
+        }
+
+
+        StateHasChanged();
+    }
+
+
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+
+    private void CreateNew()
+    {
+        Navigation.NavigateTo("/SaleItem");
+    }
+
+}
+
+

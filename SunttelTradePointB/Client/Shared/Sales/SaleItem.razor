@@ -1,6 +1,10 @@
-@page "/SaleItem"
-@page "/SaleItem/{commercialDocumentId}"
-@page "/SaleItem/{commercialDocumentId}/{filter}"
+@page "/SaleItem/{page}"
+@page "/PurchasesItem/{page}"
+@page "/ProviderCreditsItem/{page}"
+@page "/PurchasesItem/{page}/{commercialDocumentId}/{filter}"
+@page "/ProviderCreditsItem/{page}/{commercialDocumentId}/{filter}"
+@page "/SaleItem/{page}/{commercialDocumentId}"
+@page "/SaleItem/{page}/{commercialDocumentId}/{filter}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
@@ -38,20 +42,13 @@
 
 <MessageSaveComponent isVisible="isVisible" message="@alertMsg">
 </MessageSaveComponent>
-<PageTitleComponent Title=" Commercial Document"
-                    Description="Here you can add commercial document" IconName="commercialDocument.png">
+<PageTitleComponent Title="@namePage"
+                    Description="@($"Here you can add {@namePage}")" IconName="@icoLogo">
 </PageTitleComponent>
 
 <form>
 
-    @if (page == "")
-    {
-
-    }
-
-    @if (page == "")
-    {
-
+   
         <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
             <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
@@ -103,7 +100,7 @@
 
             <div>
                 <select @onchange="SelectItemDocumentType" class="select-style info-text-size">
-                  
+
                     @if (documentTypeList != null && documentTypeList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
@@ -179,7 +176,7 @@
             <div>
                 <select @onchange="SelectItemDeliveryAddress" class="select-style info-text-size">
 
-                   
+
                     @if (addressList != null && addressList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
@@ -207,7 +204,7 @@
             <div><label class="info-text-size">@GetName("Carrier",new CommercialDocument())</label></div>
             <div>
                 <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size">
-                  
+
                     @if (carrierList != null && carrierList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
@@ -229,7 +226,7 @@
             <div><label class="info-text-size">@GetName("VendorWarehouse",new CommercialDocument())</label></div>
             <div>
                 <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size">
-                   
+
                     @if (vendorWarehouseList != null && vendorWarehouseList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
@@ -248,7 +245,7 @@
             <div><label class="info-text-size">@GetName("BuyerWarehouse",new CommercialDocument())</label></div>
             <div>
                 <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size ">
-                 
+
                     @if (buyerWarehouseList != null && buyerWarehouseList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
@@ -267,7 +264,7 @@
             <div><label class="info-text-size">@GetName("BusinessLineDoc",new CommercialDocument())</label></div>
             <div>
                 <select @onchange="SelectItemBusinessLineDoc" class="select-style info-text-size">
-                  
+
                     @if (businessLineDocList != null && businessLineDocList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
@@ -325,7 +322,7 @@
 
             </TabItems>
         </SfTab>
-    }
+  
 
 </form>
 
@@ -337,15 +334,20 @@
     public string commercialDocumentId { get; set; }
     [Parameter]
     public string filter { get; set; }
-
+    [Parameter]
+    public  string page { get; set; }
 
     TextToSpeech textToSpeech;
 
-    string page = "";
+
     string alertMsg = "";
     string SearcherValue = "";
+    string namePage = "";
+    string backPage = "";
+    string icoLogo = "";
     bool menuVisible = false;
     bool isVisible = false;
+    bool isSale = false;
     public CommercialDocument commercialDocument = new();
     // public SalesDocumentItemsDetails items = new();
 
@@ -355,7 +357,7 @@
     #endregion Status
 
     #region Input3
-    public List<CommercialDocumentType> documentTypeList  = new();
+    public List<CommercialDocumentType> documentTypeList = new();
     public List<BusinessLine> businessLineDocList = new();
     public List<Concept> salesPersonList = new();
     public List<Concept> vendorList = new();
@@ -376,13 +378,13 @@
 
     protected override void OnParametersSet()
     {
-        var r = page;
+        ValidateUri();
         StateHasChanged();
     }
 
     protected override async void OnInitialized()
     {
-
+        ValidateUri();
         isLoading = true;
         StateHasChanged();
         if (commercialDocumentId != null)
@@ -392,10 +394,8 @@
 
         }
 
-
-        documentTypeList = await DocumentServices.GetCommercialDocumentTypes();
+        documentTypeList = await DocumentServices.GetCommercialDocumentTypes(isSale);
         businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
-
         carrierList = await DocumentServices.GetCarrierList();
         LoadCommercialDocument();
         isLoading = false;
@@ -413,7 +413,7 @@
             string tile = e.Item != null ? e.Item.Text : "";
             if (tile == "Save")
             {
-                LoadCommercialDocument();              
+                LoadCommercialDocument();
                 var result = await DocumentServices.SaveCommercialDocument(commercialDocument);
                 if (result != null)
                 {
@@ -424,7 +424,6 @@
                 {
                     alert("required fields", 1);
                 }
-
             }
         }
         else
@@ -545,11 +544,11 @@
         CloseMenu(false);
     }
 
-    public void alert(string _msg, int? status =0)
+    public void alert(string _msg, int? status = 0)
     {
         isVisible = true;
         alertMsg = _msg;
-       
+
         StateHasChanged();
     }
 
@@ -564,8 +563,8 @@
     public void Home()
     {
         string paramFilter = filter != null ? filter : "";
-        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/SalesDocuments/{paramFilter}");
-        Navigation.NavigateTo($"/SalesDocuments");
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/{backPage}/{page}/{paramFilter}");
+        Navigation.NavigateTo($"/{backPage}/{page}");
     }
 
     public void OpenAlert(string _msg, int _status, bool visible)
@@ -610,8 +609,23 @@
         if (commercialDocument.SalesPerson == null) commercialDocument.SalesPerson = new();
         if (commercialDocument.Carrier == null) commercialDocument.Carrier = new();
         if (commercialDocument.DeliveryAddress == null) commercialDocument.DeliveryAddress = new();
-        if (commercialDocument.ShippingStatusDocument == null) commercialDocument.ShippingStatusDocument = new();
-        if (commercialDocument.FinanceStatusDocument == null) commercialDocument.FinanceStatusDocument = new();
+        if (commercialDocument.ShippingStatusDocument == null) commercialDocument.ShippingStatusDocument = new ShippingStatus
+
+            {
+                Name = "IN PROGRESS",
+                Id = "000000000000000000000F51",
+                AffectInventory = false,
+                EditingAllowed = true
+
+            };
+        if (commercialDocument.FinanceStatusDocument == null) commercialDocument.FinanceStatusDocument = new FinanceStatus
+            {
+                Name = "IN PROGRESS",
+                Id = "000000000000000000000F51",
+                AffectFinance = false,
+                EditingAllowed = true
+
+            };
         if (commercialDocument.OriginDocument == null) commercialDocument.OriginDocument = new();
         if (commercialDocument.VendorWarehouse == null) commercialDocument.VendorWarehouse = new();
         if (commercialDocument.BuyerWarehouse == null) commercialDocument.BuyerWarehouse = new();
@@ -621,9 +635,6 @@
         if (commercialDocument.Items == null) commercialDocument.Items = new();
         if (commercialDocument.ShipDate == DateTime.MinValue) commercialDocument.ShipDate = DateTime.Today;
         if (commercialDocument.ArrivalDate == DateTime.MinValue) commercialDocument.ArrivalDate = DateTime.Today;
-
-
-
 
         if (businessLineDocList == null) businessLineDocList = new();
         if (documentTypeList == null) documentTypeList = new();
@@ -651,7 +662,7 @@
 
     public void NavigationTo(string name)
     {
-        Navigation.NavigateTo(name);
+        Navigation.NavigateTo($"{name}");
     }
     public void EventChange(string item)
     {
@@ -671,4 +682,42 @@
         }
         StateHasChanged();
     }
+
+
+    public void ValidateUri()
+    {
+        string Name = Navigation.Uri;
+        if (Name.Contains("PurchasesItem") || Name.Contains("ProviderCreditsItem"))
+        {
+            isSale = false;
+            if (Name.Contains("PurchasesItem"))
+            {
+                namePage = "Purchase";
+                backPage = "Purchases";
+                icoLogo = "PurchasesIco.png";
+            };
+
+            if (Name.Contains("ProviderCreditsItem"))
+            {
+                namePage = "Provider Credit";
+                backPage = "ProviderCredits";
+                icoLogo = "ProviderCredits.png";
+            }
+        }
+
+        if (Name.Contains("SaleItem"))
+        {
+            isSale = true;
+            if (Name.Contains("SaleItem"))
+            {
+                backPage = "SalesDocuments";
+                namePage = "Sale";
+                icoLogo = "commercialDocument.png";
+            }
+
+        }
+        StateHasChanged();
+    }
+
+
 }

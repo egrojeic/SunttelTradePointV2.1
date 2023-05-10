@@ -102,15 +102,14 @@ namespace SunttelTradePointB.Client.Services.SalesServices
 
 
 
-
-        ///Gets
-        public async Task<List<CommercialDocument>> GetCommercialDocumentList(DateTime startDate, DateTime endDate, string documentTypeId, string filter)
+        public async Task<List<CommercialDocument>> GetCommercialDocumentList(DateTime startDate, DateTime endDate, string documentTypeId, string filter,Concept vendor, bool isSales)
         {
             CultureInfo culture = new CultureInfo("en-US");
             try
             {
+                string nameVendor = vendor != null ? vendor.Name : "";
                 string path = basepath.Replace("Name", "GetCommercialDocumentsByDateSpan");
-                var responseMessage = await Gethttp($"{path}&startDate={startDate.ToString("yyyy-MM-dd", culture)}&endDate={endDate}&documentTypeId={documentTypeId}&filter={filter}");
+                var responseMessage = await Gethttp($"{path}&startDate={startDate.ToString("yyyy-MM-dd", culture)}&endDate={endDate}&documentTypeId={documentTypeId}&filter={filter}&vendorName={nameVendor}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocument>>();
                 return list != null ? list : new List<CommercialDocument>();
             }
@@ -121,12 +120,12 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<List<CommercialDocumentType>> GetCommercialDocumentTypes()
+        public async Task<List<CommercialDocumentType>> GetCommercialDocumentTypes(bool isASale)
         {
             try
             {
                 string path = basepath.Replace("Name", "GetCommercialDocumentTypes");
-                var responseMessage = await Gethttp($"{path}");
+                var responseMessage = await Gethttp($"{path}&isASale={isASale}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocumentType>>();
                 return list != null ? list : new List<CommercialDocumentType>();
             }

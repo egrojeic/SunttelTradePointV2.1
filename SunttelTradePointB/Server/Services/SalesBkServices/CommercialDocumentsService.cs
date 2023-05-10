@@ -119,12 +119,13 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <param name="documentTypeId"></param>
+        /// <param name="vendorName"></param>
         /// <param name="filter"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, List<CommercialDocument>? CommercialDocuments, string? ErrorDescription)> GetCommercialDocumentsByDateSpan(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, string documentTypeId, string? filter = null, int? page = 1, int? perPage = 10)
+        public async Task<(bool IsSuccess, List<CommercialDocument>? CommercialDocuments, string? ErrorDescription)> GetCommercialDocumentsByDateSpan(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, string documentTypeId, string? vendorName, string? filter = null, int? page = 1, int? perPage = 10)
         {
             try
             {
@@ -150,7 +151,23 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     }
                 );
                 }
+
+                // Filtro por vendor name
+                if(!(vendorName == null || vendorName == "") ){
+                    pipeline.Add(
+                    new BsonDocument(
+                        "$match",
+                        new BsonDocument(
+                                 "Vendor.FullClassName",
+                                    new BsonDocument(
+                                        "$regex", new BsonRegularExpression($"/{filter}/i"))
+                            )
+                    )
+                    );
+                }
                 
+
+
                 pipeline.Add(
                     new BsonDocument{
                         { "$match",
@@ -221,6 +238,51 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
             }
         }
 
+        /// <summary>
+        /// Retrieves a document having the specified id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="commercialDocumentId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<(bool IsSuccess, CommercialDocument? CommercialDocument, string? ErrorDescription)> UpdateCommercialDocumentShippingSummary(string userId, string ipAdress, string squadId, string commercialDocumentId)
+        {
+            try
+            {
+                var pipelineDetails = new List<BsonDocument>();
+                double totalQuantity = 0;
+
+                // Para detalles 
+                pipelineDetails.Add(
+                    new BsonDocument("$match", new BsonDocument("IdCommercialDocument", new ObjectId(commercialDocumentId)))
+                );
+                
+                List<SalesDocumentItemsDetails> resultDetails = await _CommercialDocumentDetailImports.Aggregate<SalesDocumentItemsDetails>(pipelineDetails).ToListAsync();
+
+                foreach(SalesDocumentItemsDetails item in resultDetails)
+                {
+                    totalQuantity = totalQuantity + item.Qty;
+                }
+
+                var pipeline = new List<BsonDocument>();
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("_id", new ObjectId(commercialDocumentId)))
+                );
+
+                var resultPrev = await _CommercialDocumentCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                CommercialDocument result = resultPrev.Select(d => BsonSerializer.Deserialize<CommercialDocument>(d)).ToList()[0];
+
+                result.ShippingSummary.TotalBoxes = (int)totalQuantity;
+                return (true, result, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, null, ex.Message);
+            }
+        }
+
         #region Commercial Document Type
         /// <summary>
         /// Retrieves a list of Transactional Item Types with the posibility to receive an optional paremeter
@@ -228,9 +290,11 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         /// <param name="filterCondition"></param>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="isASale"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, List<CommercialDocumentType>? commercialDocumentTypes, string? ErrorDescription)> GetCommercialDocumentTypes(string userId, string ipAddress, string? filterCondition = null)
+        public async Task<(bool IsSuccess, List<CommercialDocumentType>? commercialDocumentTypes, string? ErrorDescription)> GetCommercialDocumentTypes(string userId, string ipAddress, string squadId, bool isASale, string? filterCondition = null)
         {
             try
             {
@@ -250,6 +314,15 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     )
                 );
                 }
+
+                // Filtro por IsASale
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("IsASale", isASale))
+                );
+                // Filtro por SquadId
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                );
 
                 List<CommercialDocumentType> results = await _CommercialDocumentType.Aggregate<CommercialDocumentType>(pipeline).ToListAsync();
                 

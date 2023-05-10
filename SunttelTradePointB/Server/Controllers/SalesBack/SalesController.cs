@@ -94,11 +94,11 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetCommercialDocumentsByDateSpan")]
-        public async Task<IActionResult> GetCommercialDocumentsByDateSpan(string userId, string ipAddress, DateTime startDate, DateTime endDate, string documentTypeId, string? filter = null, int? page = 1, int? perPage = 10)
+        public async Task<IActionResult> GetCommercialDocumentsByDateSpan(string userId, string ipAddress, DateTime startDate, DateTime endDate, string documentTypeId, string? vendorName, string? filter = null, int? page = 1, int? perPage = 10)
         {
             var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
-            var response = await _commercialDocument.GetCommercialDocumentsByDateSpan(userId, ipAddress, squadId, startDate, endDate, documentTypeId, filter, page, perPage);
+            var response = await _commercialDocument.GetCommercialDocumentsByDateSpan(userId, ipAddress, squadId, startDate, endDate, documentTypeId, vendorName, filter, page, perPage);
 
             if (response.IsSuccess)
             {
@@ -107,6 +107,30 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
             else
                 return NotFound(response.ErrorDescription);
         }
+
+        /// <summary>
+        /// Retrieves a Sales Document matching with its Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="documentId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("UpdateCommercialDocumentShippingSummary")]
+        public async Task<IActionResult> UpdateCommercialDocumentShippingSummary(string userId, string ipAdress, string documentId)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _commercialDocument.UpdateCommercialDocumentShippingSummary(userId, ipAdress, squadId, documentId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.CommercialDocument);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
 
         #endregion
 
@@ -117,12 +141,15 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         /// <param name="filterCondition"></param>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
+        /// <param name="isASale"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetCommercialDocumentTypes")]
-        public async Task<IActionResult> GetCommercialDocumentTypes(string userId, string ipAddress, string? filterCondition = null)
+        public async Task<IActionResult> GetCommercialDocumentTypes(string userId, string ipAddress, bool isASale,  string? filterCondition = null)
         {
-            var response = await _commercialDocument.GetCommercialDocumentTypes(userId, ipAddress, filterCondition);
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _commercialDocument.GetCommercialDocumentTypes(userId, ipAddress, squadId, isASale, filterCondition);
 
             if (response.IsSuccess)
             {

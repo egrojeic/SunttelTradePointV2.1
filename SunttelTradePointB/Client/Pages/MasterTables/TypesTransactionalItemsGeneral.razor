@@ -71,7 +71,7 @@ else
                 LogicalFilterOperator="LogicalFilterOperator.Or"
                 CellContextMenu="@ShowContextMenuWithContent"
                 PageNumbersCount="100"
-                PageSize="2">
+                PageSize="50">
 
         <Columns>
             <RadzenDataGridColumn TItem="TransactionalItemType" Property="Name" Title="@GetName("Name", new TransactionalItemType())" Width="80px" />
@@ -80,7 +80,7 @@ else
                 <Template>
                     @{
                         var HasProductionSpecs = (bool)context.GetType().GetProperty(nameof(TransactionalItemType.HasProductionSpecs)).GetValue(context);
-                        <input type="checkbox" checked="@HasProductionSpecs" disabled />                      
+                        <input type="checkbox" checked="@HasProductionSpecs" disabled />
                     }
                 </Template>
             </RadzenDataGridColumn>
@@ -94,7 +94,7 @@ else
             </RadzenDataGridColumn>
         </Columns>
     </RadzenDataGrid>
-  
+
 }
 
 
@@ -103,10 +103,10 @@ else
 
     [Parameter]
     public string _filterItems { get; set; } = "";
-    public List<TransactionalItemType> transactionalItemType { get; set; }  
-   
+    public List<TransactionalItemType> transactionalItemType { get; set; }
 
-    bool isLoading = false;  
+
+    bool isLoading = false;
 
     public string? conceptFilter
     {
@@ -123,19 +123,18 @@ else
     protected override void OnInitialized()
     {
 
-        if (_filterItems != "" && _filterItems != null)
-        {
-            LoadData();
-        }
+        _filterItems = "all";
+        LoadData();
+
         transactItemsService.Page = "TypesTransactionalItems";
-    }   
+    }
 
 
     private async Task LoadData()
     {
         isLoading = true;
         var data = await transactItemsService.GetTransactionalItemTypes(_filterItems);
-        transactionalItemType = data; 
+        transactionalItemType = data;
         isLoading = false;
         StateHasChanged();
 
@@ -151,9 +150,9 @@ else
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
-        TransactionalItemType argObj = (TransactionalItemType)args.Value;   
+        TransactionalItemType argObj = (TransactionalItemType)args.Value;
         Navigation.NavigateTo($"/TypesTransactionalItemsConcept/TypesTransactionalItems/{_filterItems}/{argObj.Id}");
-      
+
     }
 
     #endregion Grid

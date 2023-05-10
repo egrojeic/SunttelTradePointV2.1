@@ -32,7 +32,7 @@
 </style>
 
 
-<PageTitleComponent Title="Credit Document" IconName="Payments.png"
+<PageTitleComponent Title="Credit Document" IconName="creditTypeDocument.png"
                     Description="With this tool you can create and edit credit document ">
 </PageTitleComponent>
 
@@ -199,7 +199,7 @@
         SearcherValue = arg.IdControl.ToString();
         if (SearcherValue == "Vendor")
         {
-            var list =  await actorsNodeServive.GetEntityActorFaceList(arg.value.ToString());
+            var list = await DocumentServices.GetCommercialVendorList(arg.value.ToString(), true, 1, 50);
             vendorList = new();
             foreach (var item in list)
             {

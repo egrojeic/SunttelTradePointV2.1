@@ -2,6 +2,7 @@
 @using System.Globalization
 @using System.Security.Claims
 @using System.Text.Json;
+@inject DialogService DialogService
 @inject NavigationManager Navigation
 @inherits LayoutComponentBase
 @inject NavigationManager navigationManager
@@ -12,26 +13,26 @@
 @inject IJSRuntime JS;
 
 
-<RadzenContextMenu/>
-<RadzenDialog/>
+<RadzenContextMenu />
+<RadzenDialog />
 
 <AuthorizeView>
     <Authorized>
-      
+
         <div class="top-row">
-           
+
             <div style="@(!collapseNavMenu?"margin-left:20px;":"")" id="tradePointInfoSup">
-                    <div id="TradePointIdentifierDiv">
-                        <img src="/images/logo.png" id="tradePintLogo" />
-                        <a class="sunttelbrand" href="" id="SunttelBrand">Sunttel Software</a>
-                    </div>
+                <div id="TradePointIdentifierDiv">
+                    <img src="/images/logo.png" id="tradePintLogo" />
+                    <a class="sunttelbrand" href="" id="SunttelBrand">Sunttel Software</a>
                 </div>
+            </div>
 
             <h1 id="helloUser">Hello @context.User.Identity.Name</h1>
-            
-           @* <h1 id="squadName">@squd.Nombre</h1>*@
 
-          @*  <h1 id="currentDate">Date: @currentDate</h1>*@
+            @* <h1 id="squadName">@squd.Nombre</h1>*@
+
+            @*  <h1 id="currentDate">Date: @currentDate</h1>*@
 
             <h1 id="currentWeek">Week: @weekDate</h1>
 
@@ -44,7 +45,7 @@
         <div class="page">
 
             <div @onclick="ToggleNavMenu">
-                <img class="btn-menu-close @(collapseNavMenu?"btn-menu-width-open":"btn-menu-width-close") "  src="@(collapseNavMenu?"/images/close.png":"images/menu-1.png")">
+                <img class="btn-menu-close @(collapseNavMenu?"btn-menu-width-open":"btn-menu-width-close") " src="@(collapseNavMenu?"/images/close.png":"images/menu-1.png")">
             </div>
 
             <div class="@(NavMenuCssClass)">
@@ -58,10 +59,13 @@
 
         </div>
 
+        <img @onclick="OpenBotAssist" src="images/botR.svg" class="btn-floating" alt=""
+             height="100" width="100">
+
     </Authorized>
 </AuthorizeView>
 
-@functions{
+@functions {
 
     [CascadingParameter]
     Task<AuthenticationState> AuthenticationState { get; set; }
@@ -88,7 +92,8 @@
 
             navigationManager.NavigateTo("/login");
         }
-        else {
+        else
+        {
 
 
             if (UIClientGlobalVariables.UserId == null || UIClientGlobalVariables.UserId == "")
@@ -105,14 +110,15 @@
         if (Navigation.Uri.Contains("SalesFromProductList")) collapseNavMenu = false;
         if (Navigation.Uri.Contains("SalesFromInventroy")) collapseNavMenu = false;
         if (Navigation.Uri.Contains("SalesFromProductionOrder")) collapseNavMenu = false;
-      
+
 
         StateHasChanged();
 
 
         try
         {
-            if (UIClientGlobalVariables.PublicIpAddress==""){
+            if (UIClientGlobalVariables.PublicIpAddress == "")
+            {
                 var response = await HttpClient.GetStringAsync("https://api.ipify.org");
                 if (response == null || response == "")
                     response = "127.0.0.0";
@@ -126,7 +132,7 @@
             var currentUri = new Uri(navigationManager.Uri);
             var publicIpAddress = currentUri.Host;
             UIClientGlobalVariables.PublicIpAddress = publicIpAddress;
-        } 
+        }
 
 
 
@@ -150,7 +156,7 @@
 
     public static int GetIso8601WeekOfYear(DateTime time)
     {
-        // Seriously cheat.  If its Monday, Tuesday or Wednesday, then it'll 
+        // Seriously cheat.  If its Monday, Tuesday or Wednesday, then it'll
         // be the same week# as whatever Thursday, Friday or Saturday are,
         // and we always get those right
         DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
@@ -161,16 +167,24 @@
 
         // Return the week of our adjusted day
         return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
-    } 
+    }
 
-   
-  
+
+
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
-        
+
         StateHasChanged();
     }
- 
+
+    private async void OpenBotAssist()
+    {
+        await DialogService.OpenAsync<BotAssistant>($"Bot Assistan",
+        null,
+               //new Dictionary<string, object>() { { "OrderID", orderID } },
+               new DialogOptions() { Width = "700px", Height = "520px", Resizable = false, Draggable = true });
+    }
+
 
 }

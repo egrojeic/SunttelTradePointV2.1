@@ -102,7 +102,7 @@
         }
 
 
-        documentTypeList = await DocumentServices.GetCommercialDocumentTypes();
+        documentTypeList = await DocumentServices.GetCommercialDocumentTypes(false);
         businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
 
         carrierList = await DocumentServices.GetCarrierList();

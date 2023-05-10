@@ -169,7 +169,7 @@ namespace SunttelTradePointB.Server.Services
         }
 
 
-
+        // TODO: MODIFY
         /// <summary>
         /// Retrieves the list of tools for a given user and squad
         /// </summary>

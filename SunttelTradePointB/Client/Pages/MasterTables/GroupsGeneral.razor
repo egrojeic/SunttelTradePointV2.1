@@ -94,11 +94,8 @@ else
     protected override void OnInitialized()
     {
 
-
-        if (_filterItems != "" && _filterItems != null)
-        {
-            LoadData();
-        }
+       _filterItems = "all";       
+            LoadData();       
         transactItemsService.Page = "Groups";
     }
 

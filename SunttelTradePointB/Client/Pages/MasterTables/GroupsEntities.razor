@@ -76,7 +76,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await GetFilteredGroup();
+        await GetFilteredGroup("all");
     }
 
     public async Task GetFilteredGroup(string filter = "")

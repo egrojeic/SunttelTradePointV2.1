@@ -161,3 +161,11 @@
         padding-right: 1.5rem !important;
     }
 }
+
+.btn-floating {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    /* border-radius: 50%; */
+}

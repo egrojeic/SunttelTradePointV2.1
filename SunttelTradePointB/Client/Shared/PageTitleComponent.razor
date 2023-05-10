@@ -1,7 +1,7 @@
-﻿<div id = "headerContainer">
+﻿<div id="headerContainer">
 
     <div id="headerTitle">
-        <img src="images/@IconName" id="iconSection"/>
+        <img src="images/@IconName" id="iconSection" />
         <h1>@Title</h1>
     </div>
     <hr />
@@ -17,5 +17,13 @@
     [Parameter]
     public string? Description { get; set; }
 
+    protected override void OnInitialized()
+    {
+        StateHasChanged();
+    }
 
+    protected override void OnParametersSet()
+    {
+        StateHasChanged();
+    }
 }

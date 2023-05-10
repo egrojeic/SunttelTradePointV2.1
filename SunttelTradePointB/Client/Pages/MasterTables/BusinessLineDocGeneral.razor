@@ -30,7 +30,7 @@
     }
 </style>
 
-<PageTitleComponent Title="Business line documents" IconName="Sales.png"
+<PageTitleComponent Title="Business line documents" IconName="businessLineDocConcept.png"
                     Description="Describe the Business line documents">
 </PageTitleComponent>
 
@@ -64,7 +64,7 @@ else
                 LogicalFilterOperator="LogicalFilterOperator.Or"
                 CellContextMenu="@ShowContextMenuWithContent"
                 PageNumbersCount="100"
-                PageSize="10">
+                PageSize="50">
 
         <Columns>
             <RadzenDataGridColumn TItem="BusinessLine" Property="Name" Title="@GetName("Name", new BasicConcept())" Width="80px" />
