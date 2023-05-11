@@ -4,8 +4,8 @@
 
 <div class="controlContainer">
     <div>
-    <label class="col-sm-2 col-form-label label-style color-white">@(StartDateName != null ? StartDateName : " Start")</label>
-        </div>
+        <label class="col-sm-2 col-form-label label-style color-white">@(StartDateName != null ? StartDateName : " Start")</label>
+    </div>
     @if (StartDate != DateTime.MinValue)
     {
         <div>
@@ -23,7 +23,7 @@
     }
     @if (!disableBtn)
     {
-        <div class="style-div" >
+        <div class="style-div">
             <button @onclick="@SearchAll" class="reload-button">
                 <img src="/images/findreload.png" />
             </button>
@@ -58,13 +58,21 @@
 
     public void SetDateStart(ChangeEventArgs arg)
     {
-        StartDate = DateTime.Parse(arg.Value.ToString());
+        try
+        {
+            StartDate = DateTime.Parse(arg.Value.ToString());
+        }
+        catch { }
         StartDateChanged.InvokeAsync(StartDate);
     }
 
     public void SetDateEnd(ChangeEventArgs arg)
     {
-        EndDate = DateTime.Parse(arg.Value.ToString());
+        try
+        {
+            EndDate = DateTime.Parse(arg.Value.ToString());
+        }
+        catch { }
         EndDateChanged.InvokeAsync(EndDate);
     }
 

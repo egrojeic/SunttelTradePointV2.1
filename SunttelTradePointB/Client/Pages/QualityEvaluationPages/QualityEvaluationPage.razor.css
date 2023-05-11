@@ -1,3 +1,7 @@
 ﻿.style-color {
     background-color:grey;
 }
+.color-item {
+    height: 50px;
+    width: 50px;
+}
