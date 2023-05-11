@@ -518,7 +518,7 @@
     {
         AppliedPayment argObj = (AppliedPayment)args.Value;
 
-        Navigation.NavigateTo($"SaleItem/{argObj.Id}");
+        Navigation.NavigateTo($"{backPage}/{argObj.Id}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
@@ -536,7 +536,7 @@
     {
         PaymentImportFileRecord argObj = (PaymentImportFileRecord)args.Value;
 
-        Navigation.NavigateTo($"SaleItem/{argObj.Id}");
+        Navigation.NavigateTo($"{backPage}/{argObj.Id}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
