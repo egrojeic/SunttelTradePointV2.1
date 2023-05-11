@@ -7,9 +7,10 @@
 <button type="button" @onclick='()=>SetNavigateTo("TransactionalItemCard")' class="general-menu-button"><i class="fa-solid fa-file"></i> Create New ...</button>
 
         <SfSplitButton Content="Import Data" IconCss="fa-solid fa-file-import" CssClass="splitButtonsStyle">
+            <SplitButtonEvents ItemSelected="ItemSelected"> </SplitButtonEvents>
             <DropDownMenuItems>
-                <DropDownMenuItem Text="Importing from the cloud..." IconCss="fa-solid fa-cloud-arrow-up"></DropDownMenuItem>
-                <DropDownMenuItem Text="Uploading a csv file..." IconCss="fa-solid fa-file-csv"></DropDownMenuItem>
+                <DropDownMenuItem  Text="Importing from the cloud..." IconCss="fa-solid fa-cloud-arrow-up"></DropDownMenuItem>
+                <DropDownMenuItem Id="TypesTransactionalUploadingACsv" Text="Uploading a csv file..." IconCss="fa-solid fa-file-csv"></DropDownMenuItem>
             </DropDownMenuItems>
         </SfSplitButton>
 

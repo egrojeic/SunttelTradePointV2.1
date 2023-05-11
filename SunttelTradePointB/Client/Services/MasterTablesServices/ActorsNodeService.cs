@@ -48,7 +48,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
 
 
-        public async Task<bool> EntityImport(MultipartFormDataContent file)
+        public async Task<List<EntityActor>> EntityImport(MultipartFormDataContent file)
         {
             try
             {
@@ -56,18 +56,18 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
                 if (response != null)
                 {
-                    return true; //await response.Content.ReadFromJsonAsync<List<EntityActor>>();
+                    return await response.Content.ReadFromJsonAsync<List<EntityActor>>();
                 }
                 else
                 {
-                    return false;
+                    return null;
                 }
 
             }
             catch (Exception ex)
             {
                 string errMessage = ex.Message;
-                return false;
+                return null;
             }
         }
 

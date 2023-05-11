@@ -9,7 +9,7 @@
 
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesBIViewerServices _SalesBIViewerServices
 @inject NavigationManager NavigationManager
-@inject IJSRuntime JSRuntime;
+
 
 <style>
     .e-pivotview .e-grouping-bar .e-pivot-button, .e-pivotview .e-group-rows .e-pivot-button {
@@ -53,7 +53,7 @@
 else
 {
 
-    
+
     @if (commercialdocumentList != null)
     {
         <SfPivotView TValue="BISalesConsolidated" Height="500" Width="100%"
@@ -85,16 +85,24 @@ else
             </PivotViewDataSourceSettings>
             <PivotViewEvents TValue="BISalesConsolidated" RenameReport="RenameReport" RemoveReport="RemoveReport" SaveReport="SaveReport" LoadReport="LoadReport" FetchReport="FetchReport"></PivotViewEvents>
         </SfPivotView>
-        <div class="container-total">
-            <div class="item"><label>@($"Count item : {commercialdocumentList.Count}")</label> </div>
-        </div>
+
     }
 
 
 }
 
-
-
+@if (commercialdocumentList != null)
+{
+    <div class="container-total">
+        <div class="item">
+            <label>
+                @(
+                    $"Count item : {commercialdocumentList.Count}"
+                    )
+            </label>
+        </div>
+    </div>
+}
 
 @code {
     [Parameter]
@@ -138,14 +146,13 @@ else
         base.OnInitialized();
     }
 
-    protected async override Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-
-            StateHasChanged();
-        }
-    }
+    //protected async override Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    if (firstRender)
+    //    {
+    //        StateHasChanged();
+    //    }
+    //}
 
     public string docsFilter
     {
@@ -171,9 +178,14 @@ else
         if (commercialDocumentType != null)
         {
             commercialdocumentList = await _SalesBIViewerServices.GetSalesBIList(startingDate, endDate, commercialDocumentType.Id, (_filterItems != null ? _filterItems : "all"), 1, 4000);
-            commercialdocumentList = commercialdocumentList.Where(s => s.Id != null).ToList();
-        }
+            if (commercialdocumentList != null)
+            {
+                if (commercialdocumentList.Where(s => s.Id == null).ToList().Count > 0)
+                {
 
+                }
+            }
+        }
 
         isLoading = false;
 

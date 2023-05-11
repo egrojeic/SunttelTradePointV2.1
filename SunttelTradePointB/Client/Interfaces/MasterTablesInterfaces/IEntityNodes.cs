@@ -38,6 +38,13 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<EntityActor> UpdateEntityActor(EntityActor entityActor);
 
+        /// <summary>
+        /// Upload the info of an list Entity item in format CSV
+        /// </summary>
+        /// <param name="entityActor"></param>
+        /// <returns></returns>
+        Task<List<EntityActor>> EntityImport(MultipartFormDataContent file);
+
 
         /// <summary>
         /// Retrieves a list of addresses of an actor
