@@ -19,11 +19,55 @@
     <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 </div>
 
-<div class="iport-file" >
+<div class="iport-file">
     <UploadFile EventMultipartFormDataContent="FileUpload"
                 isLoading="isLoading">
     </UploadFile>
 </div>
+
+@if (isLoading)
+{
+
+    <WaitingProcessIndicator loadingTopic="Entities"></WaitingProcessIndicator>
+
+
+}
+else
+{
+    @if (entityNodesList != null && statusSaved)
+    {
+
+
+        <RadzenDataGrid AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="true"
+                FilterMode="FilterMode.Advanced"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                AllowSorting="true"
+                PageSize="50"
+                AllowPaging="true"
+                PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                ShowPagingSummary="true"
+                Data="@entityNodesList"
+                TItem="EntityActor"
+                ColumnWidth="300px"
+                SelectionMode="DataGridSelectionMode.Single"
+                LogicalFilterOperator="LogicalFilterOperator.Or"
+                        Class="m-4">
+
+            <Columns>
+                <RadzenDataGridColumn TItem="EntityActor" Property="Code" Title="Code" Frozen="true" Width="80px" />
+                <RadzenDataGridColumn TItem="EntityActor" Property="Name" Filterable="true" Title="Name" Frozen="true" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                <RadzenDataGridColumn TItem="EntityActor" Property="EMailAddress" Title="EMailAddress" Width="160px" />
+            </Columns>
+        </RadzenDataGrid>
+
+
+    }
+}
+
+
+
 
 
 
@@ -31,6 +75,10 @@
     [Parameter]
     public string filter { get; set; }
     bool isLoading = false;
+
+    public bool statusSaved { get; set; } = false;
+
+    List<EntityActor>? entityNodesList;
 
     private ElementReference fileInput;
 
@@ -42,10 +90,12 @@
 
     public async void FileUpload(MultipartFormDataContent file)
     {
+        statusSaved = false;
         isLoading = true;
         StateHasChanged();
-        await actorsNodeServive.EntityImport(file);
+        var list = await actorsNodeServive.EntityImport(file);
         isLoading = false;
+        statusSaved = true;
         StateHasChanged();
     }
 

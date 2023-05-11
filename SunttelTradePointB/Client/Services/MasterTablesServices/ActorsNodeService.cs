@@ -56,7 +56,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
                 if (response != null)
                 {
-                    return true; //await response.Content.ReadFromJsonAsync<EntityActor>(); ;
+                    return true; //await response.Content.ReadFromJsonAsync<List<EntityActor>>();
                 }
                 else
                 {
