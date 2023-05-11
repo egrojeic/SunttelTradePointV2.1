@@ -56,9 +56,19 @@ else
                         Class="m-4">
 
             <Columns>
+                <RadzenDataGridColumn TItem="EntityActor" Title="Status" Frozen="true" Sortable="false" Filterable="false" Width="60px">
+                    <Template Context="data">
+                        <RadzenImage Path="@(GetFullPathPhoto())" style="width: 40px; height: 40px; border-radius: 8px;" />
+                    </Template>
+                </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="EntityActor" Property="Code" Title="Code" Frozen="true" Width="80px" />
                 <RadzenDataGridColumn TItem="EntityActor" Property="Name" Filterable="true" Title="Name" Frozen="true" Width="180px" TextAlign="Radzen.TextAlign.Center" />
                 <RadzenDataGridColumn TItem="EntityActor" Property="EMailAddress" Title="EMailAddress" Width="160px" />
+                <RadzenDataGridColumn TItem="EntityActor" Title="Status comment" Frozen="true" Sortable="false" Filterable="false" Width="60px">
+                    <Template Context="data">
+                        <p>...</p>
+                    </Template>
+                </RadzenDataGridColumn>
             </Columns>
         </RadzenDataGrid>
 
@@ -97,6 +107,10 @@ else
         isLoading = false;
         statusSaved = true;
         StateHasChanged();
+    }
+
+    public string GetFullPathPhoto(){
+        return "ok_ico.png";
     }
 
 
