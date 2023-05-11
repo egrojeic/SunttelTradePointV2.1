@@ -31,8 +31,8 @@
 
 @inject IJSRuntime Js
 
-<PageTitleComponent Title="Payments" IconName="Payments.png"
-                    Description="With this tool you can create and edit payments ">
+<PageTitleComponent Title="@(namePage)" IconName="Payments.png"
+                    Description="@($"With this tool you can create and edit {namePage}")">
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
@@ -55,7 +55,7 @@
     @if (isLoading)
     {
 
-        <WaitingProcessIndicator loadingTopic="Payments"></WaitingProcessIndicator>
+        <WaitingProcessIndicator loadingTopic="@(namePage)"></WaitingProcessIndicator>
 
     }
     else
