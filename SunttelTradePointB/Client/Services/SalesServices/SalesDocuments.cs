@@ -241,7 +241,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             {
                 // page, perPage, filterName
                 string path = basepath.Replace("Name", "GetCommercialDocumentDetails");
-                var responseMessage = await Gethttp($"{path}&page={page}&perPage={perPage}&filterId={commercialDocumentId}");
+                var responseMessage = await Gethttp($"{path}&page={page}&perPage={perPage}&IdCommercialDocument={commercialDocumentId}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<SalesDocumentItemsDetails>>();
                 return list != null ? list : new List<SalesDocumentItemsDetails>();
             }
@@ -255,8 +255,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         public async Task<List<AddItemCommercialDocument>> GetCommercialProductList(string commercialDocumentId,string customerId,string filter, int? page = 1, int? perPage = 10)
         {
             try
-            {
-                
+            {                
                 string path = $"api/TransactionalItems/GetProductsByCustomerId?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&customerId={customerId}&nameLike={filter}&page={page}&perPage={perPage}";
                 var responseMessage = await Gethttp(path);
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<AddItemCommercialDocument>>();
