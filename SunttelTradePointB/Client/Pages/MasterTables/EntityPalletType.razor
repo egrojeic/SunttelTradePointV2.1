@@ -23,7 +23,7 @@
     <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
 </div>
 
-<div class="tableBodyContainer">
+<div >
     @if (isLoading)
     {
         <WaitingProcessIndicator loadingTopic="Pallet Types"></WaitingProcessIndicator>
@@ -32,7 +32,7 @@
         {
             <SfGrid DataSource="palletTypesList"
             Height="auto"
-            Width="auto"
+            Width="100%"
             TValue="PalletType"
             AllowFiltering="true"
             AllowTextWrap="false"
@@ -75,8 +75,7 @@
     }
 
     protected override async Task OnInitializedAsync()
-    {
-       
+    {       
         await GetFilterPalletTypes("all");
     }
 

@@ -93,7 +93,6 @@
                         @{
                             var ReturnedPayment = (bool)context.GetType().GetProperty(nameof(Payment.ReturnedPayment)).GetValue(context);
                             <input type="checkbox" checked="@ReturnedPayment" />
-
                         }
                     </Template>
                 </RadzenDataGridColumn>

@@ -24,7 +24,7 @@
     <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
 </div>
 
-<div class="tableBodyContainer">
+<div >
     @if (isLoading)
     {
         <WaitingProcessIndicator loadingTopic="Identification type"></WaitingProcessIndicator>
@@ -33,7 +33,7 @@
         {
             <SfGrid DataSource="entityIdentificationTypeList"
             Height="auto"
-            Width="auto"
+            Width="100%"
             TValue="IdentificationType"
             AllowFiltering="true"
             AllowTextWrap="false"

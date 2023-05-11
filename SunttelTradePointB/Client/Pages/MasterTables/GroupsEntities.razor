@@ -23,17 +23,18 @@
     <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
 </div>
 
-<div class="tableBodyContainer">
+<div>
     @if (isLoading)
     {
         <WaitingProcessIndicator loadingTopic="Groups"></WaitingProcessIndicator>
+
     }else{
         @if(entityGroupList != null)
         {
             <SfGrid 
                 DataSource="entityGroupList"
                 Height="auto"
-                Width="auto"
+                Width="100%"
                 TValue="EntityGroup"
                 AllowFiltering="true"
                 AllowTextWrap="false"

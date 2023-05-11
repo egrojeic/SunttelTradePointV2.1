@@ -63,12 +63,12 @@ else
                 ShowPagingSummary="true"
                 Data="@seasonBusiness"
                 TItem="SeasonBusiness"
-                ColumnWidth="300px"
+                ColumnWidth="100%"
                 SelectionMode="DataGridSelectionMode.Single"
                 LogicalFilterOperator="LogicalFilterOperator.Or"
                 CellContextMenu="@ShowContextMenuWithContent"
                 PageNumbersCount="100"
-                PageSize="2">
+                PageSize="50">
 
         <Columns>
             <RadzenDataGridColumn TItem="SeasonBusiness" Property="Box.Name)" Title="@GetName("Name", new AtomConcept())"></RadzenDataGridColumn>
