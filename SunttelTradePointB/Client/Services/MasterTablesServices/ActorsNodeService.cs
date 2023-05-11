@@ -1,13 +1,17 @@
-﻿using MongoDB.Driver.Linq;
+﻿using MongoDB.Driver.Core.WireProtocol.Messages;
+using MongoDB.Driver.Linq;
 using Radzen;
 using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Client.Models;
 using SunttelTradePointB.Client.Shared.EntityShareComponents.EntitySubComponents;
+using SunttelTradePointB.Shared.Accounting;
 using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.Communications;
 using System.Net;
 using System.Net.Http.Json;
 using System.Net.WebSockets;
+
+
 
 namespace SunttelTradePointB.Client.Services.MasterTablesServices
 {
@@ -41,6 +45,33 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         {
             _httpClient = httpClient;
         }
+
+
+
+        public async Task<bool> EntityImport(MultipartFormDataContent file)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsync($"/api/EntityNodesMaintenance/SaveEntitiesCSV?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}", file);
+
+                if (response != null)
+                {
+                    return true; //await response.Content.ReadFromJsonAsync<EntityActor>(); ;
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+        }
+
+
 
         /// <summary>
         /// Returns the list of possible Roles for Entities

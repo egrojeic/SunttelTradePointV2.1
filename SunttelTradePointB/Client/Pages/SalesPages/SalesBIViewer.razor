@@ -21,6 +21,11 @@
             box-shadow: 0px 0px 5px gray;
             color: black;
         }
+
+    .e-pivotview {
+        min-height: 200px;
+        width: 900px;
+    }
 </style>
 
 
@@ -48,6 +53,17 @@
 else
 {
 
+    //ShowFieldList = true
+    @* ShowGroupingBar = "true"
+             AllowDeferLayoutUpdate = "true"
+             EnableVirtualization = "true"
+             AllowDrillThrough = "true"
+             ShowToolbar = true
+             AllowConditionalFormatting = true
+             AllowCalculatedField = true
+             AllowPdfExport = true
+             AllowExcelExport = true
+             ShowTooltip = true*@
     @if (commercialdocumentList != null)
     {
         <SfPivotView TValue="BISalesConsolidated" Height="500" Width="100%"
@@ -64,29 +80,11 @@ else
             <PivotViewDisplayOption Primary="Primary.Table" View="View.Both"></PivotViewDisplayOption>
             <PivotViewDataSourceSettings DataSource="@commercialdocumentList">
                 <PivotViewColumns>
-                    <PivotViewColumn Name="DocumentTypeName" Caption="@GetName("DocumentTypeName",new BISalesConsolidated())" AllowDragAndDrop="true"></PivotViewColumn>
-                    <PivotViewColumn Name="VendorName" Caption="@GetName("VendorName",new BISalesConsolidated())"></PivotViewColumn>
-                    <PivotViewColumn Name="BuyerName" Caption="@GetName("BuyerName",new BISalesConsolidated())"></PivotViewColumn>
-                    <PivotViewColumn Name="BuyerCommercialGroup" Caption="@GetName("BuyerCommercialGroup",new BISalesConsolidated())"></PivotViewColumn>
-                    <PivotViewColumn Name="SalesPersonName" Caption="@GetName("SalesPersonName",new BISalesConsolidated())"></PivotViewColumn>
-                    <PivotViewColumn Name="CarrierName" Caption="@GetName("CarrierName",new BISalesConsolidated())"></PivotViewColumn>
-                    <PivotViewColumn Name="SeasonName" Caption="@GetName("SeasonName",new BISalesConsolidated())"></PivotViewColumn>
-                    <PivotViewColumn Name="SeasoStandingOrderIdnName" Caption="@GetName("StandingOrderId",new BISalesConsolidated())"></PivotViewColumn>
-                    <PivotViewColumn Name="PO" Caption="@GetName("PO",new BISalesConsolidated())"></PivotViewColumn>
-                    <PivotViewColumn Name="ShipDate" Caption="@GetName("ShipDate",new BISalesConsolidated())"></PivotViewColumn>
-                    <PivotViewColumn Name="DeliveryDate" Caption="@GetName("DeliveryDate",new BISalesConsolidated())"></PivotViewColumn>
-                    <PivotViewColumn Name="ArrivalDate" Caption="@GetName("ArrivalDate",new BISalesConsolidated())"></PivotViewColumn>
                 </PivotViewColumns>
                 <PivotViewRows>
                 </PivotViewRows>
                 <PivotViewValues>
-                    <PivotViewValue Name="FinanceSummaryTotalAmount" Caption="@GetName("FinanceSummaryTotalAmount",new BISalesConsolidated())" AllowDragAndDrop=true></PivotViewValue>
-                    <PivotViewValue Name="FinanceSummaryTotalCosts" Caption="@GetName("FinanceSummaryTotalCosts",new BISalesConsolidated())"></PivotViewValue>
-                    <PivotViewValue Name="FinanceSummaryTotalTaxes" Caption="@GetName("FinanceSummaryTotalTaxes",new BISalesConsolidated())"></PivotViewValue>
-                    <PivotViewValue Name="FinanceSummaryTotalDiscounts" Caption="@GetName("FinanceSummaryTotalDiscounts",new BISalesConsolidated())"></PivotViewValue>
-                    <PivotViewValue Name="FinanceSummaryTotalPaid" Caption="@GetName("FinanceSummaryTotalPaid",new BISalesConsolidated())"></PivotViewValue>
                 </PivotViewValues>
-
                 <PivotViewFormatSettings>
                     <PivotViewFormatSetting Name="FinanceSummaryTotalAmount" Format="N2" UseGrouping=true></PivotViewFormatSetting>
                     <PivotViewFormatSetting Name="FinanceSummaryTotalCosts" Format="N2" UseGrouping=true></PivotViewFormatSetting>
@@ -97,6 +95,9 @@ else
             </PivotViewDataSourceSettings>
             <PivotViewEvents TValue="BISalesConsolidated" RenameReport="RenameReport" RemoveReport="RemoveReport" SaveReport="SaveReport" LoadReport="LoadReport" FetchReport="FetchReport"></PivotViewEvents>
         </SfPivotView>
+        <div class="container-total">
+            <div class="item"><label>@($"Count item : {commercialdocumentList.Count}")</label> </div>
+        </div>
     }
 
 
@@ -109,7 +110,7 @@ else
     [Parameter]
     public string _filterItems { get; set; }
 
- 
+
 
     public CommercialDocumentType commercialDocumentType { get; set; }
     public List<BISalesConsolidated> commercialdocumentList { get; set; }
@@ -151,7 +152,7 @@ else
     {
         if (firstRender)
         {
-           
+
             StateHasChanged();
         }
     }
@@ -179,10 +180,11 @@ else
         commercialdocumentList = new();
         if (commercialDocumentType != null)
         {
-            commercialdocumentList = await _SalesBIViewerServices.GetSalesBIList(startingDate, endDate, commercialDocumentType.Id, (_filterItems != null ? _filterItems : "all"), 1, 200);
+            commercialdocumentList = await _SalesBIViewerServices.GetSalesBIList(startingDate, endDate, commercialDocumentType.Id, (_filterItems != null ? _filterItems : "all"), 1, 4000);
+            commercialdocumentList = commercialdocumentList.Where(s => s.Id != null).ToList();
         }
 
-      
+
         isLoading = false;
 
         StateHasChanged();

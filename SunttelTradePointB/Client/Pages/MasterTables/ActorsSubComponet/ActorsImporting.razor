@@ -9,31 +9,28 @@
 
 
 
-<PageTitleComponent Title="Actors Importing" IconName="ActorsIco.png"
+<PageTitleComponent Title="Actors Importing" IconName="upload.png"
                     Description="you can import actors">
 </PageTitleComponent>
 
 
+
 <div class="panelMenuContainer">
-    <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>   
+    <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 </div>
 
-
-<form>
-    <div class="form-group">
-        <label for="fileInput">Seleccionar archivo:</label>
-        <input type="file" class="form-control-file" id="fileInput" @onchange="HandleFileUpload" />
-    </div>
-    <button type="submit" class="btn btn-primary">Subir archivo</button>
-</form>
-
+<div class="iport-file" >
+    <UploadFile EventMultipartFormDataContent="FileUpload"
+                isLoading="isLoading">
+    </UploadFile>
+</div>
 
 
 
 @code {
     [Parameter]
     public string filter { get; set; }
-
+    bool isLoading = false;
 
     private ElementReference fileInput;
 
@@ -43,10 +40,19 @@
         // Hacer algo con el archivo
     }
 
+    public async void FileUpload(MultipartFormDataContent file)
+    {
+        isLoading = true;
+        StateHasChanged();
+        await actorsNodeServive.EntityImport(file);
+        isLoading = false;
+        StateHasChanged();
+    }
+
 
     public void Home()
-    {       
-        Navigation.NavigateTo($"/ActorsImporting/{filter}");      
+    {
+        Navigation.NavigateTo($"/ActorsImporting/{filter}");
     }
 
 
