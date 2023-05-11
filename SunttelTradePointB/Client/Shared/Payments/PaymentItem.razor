@@ -44,7 +44,7 @@
 
 <MessageSaveComponent isVisible="isVisible" message="@msg">
 </MessageSaveComponent>
-<PageTitleComponent Title="@(namePage)"
+<PageTitleComponent Title="@namePage"
                     Description="@($"Here you can add {namePage}")" IconName="Payments.png">
 </PageTitleComponent>
 
@@ -391,7 +391,7 @@
     {
 
         //isLoading = true;
-
+        ValidateUri();
         Load();
         if (paymentItemId != null)
         {
@@ -407,7 +407,11 @@
         StateHasChanged();
     }
 
-
+     protected override void OnParametersSet()
+    {
+        ValidateUri();
+        StateHasChanged();
+    }
 
     public async void ItemSelected(MenuEventArgs e)
     {
