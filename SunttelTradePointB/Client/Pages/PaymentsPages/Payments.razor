@@ -1,5 +1,7 @@
-﻿@page "/Payments"
-@page "/Payments/{_filterItems}"
+﻿@page "/SalesPayments/{page}"
+@page "/Payments/{page}/{_filterItems}"
+@page "/PurchasesPayments/{page}"
+@page "/PurchasesPayments/{page}/{_filterItems}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Accounting
 @inject SunttelTradePointB.Client.Services.PaymentServices.PaymentServices PaymentServices
@@ -34,17 +36,16 @@
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
-    <PaymentsMenu ></PaymentsMenu>   
-    <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>   
+    <PaymentsMenu></PaymentsMenu>
+    <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
 </div>
-<div class="panelMenuContainer">  
+<div class="panelMenuContainer">
     <PaymentMenu2 SetDocumentTypeId="SetDocumentTypeId"></PaymentMenu2>
     <RangeDatesInput @bind-StartDate="@startingDate"
                      StartDateName="From"
                      @bind-EndDate="endDate"
                      EndDateName="To"
-                     EventSearchAll="EventSearchAll"        
-       ></RangeDatesInput>
+                     EventSearchAll="EventSearchAll"></RangeDatesInput>
 </div>
 
 
@@ -74,25 +75,25 @@
                     TItem="Payment"
                     ColumnWidth="300px"
                     SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"                   
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
             <Columns>
 
-                <RadzenDataGridColumn TItem="Payment" Property="DocumentType.Name" Title="@GetName("DocumentType",new Payment())"  Width="308px" />
-                <RadzenDataGridColumn TItem="Payment" Property="Code" Title="@GetName("Code",new Payment())"  Width="208px" />
+                <RadzenDataGridColumn TItem="Payment" Property="DocumentType.Name" Title="@GetName("DocumentType",new Payment())" Width="308px" />
+                <RadzenDataGridColumn TItem="Payment" Property="Code" Title="@GetName("Code",new Payment())" Width="208px" />
                 <RadzenDataGridColumn TItem="Payment" Property="PaymentRef" Title="@GetName("PaymentRef",new Payment())" Filterable="false" Sortable="false" Width="208px" />
                 <RadzenDataGridColumn TItem="Payment" Property="PaymentDate" Title="@GetName("PaymentDate",new Payment())" Filterable="false" Sortable="false" Width="208px" />
                 <RadzenDataGridColumn TItem="Payment" Property="Payer.Name" Title="@GetName("Payer",new Payment())" Filterable="false" Sortable="false" Width="208px" />
-                <RadzenDataGridColumn TItem="Payment" Property="Receiver.Name" Title="@GetName("Receiver",new Payment())" Filterable="false" Sortable="false" Width="208px" />              
+                <RadzenDataGridColumn TItem="Payment" Property="Receiver.Name" Title="@GetName("Receiver",new Payment())" Filterable="false" Sortable="false" Width="208px" />
                 <RadzenDataGridColumn TItem="Payment" Property="Status.Name" Title="@GetName("Status",new Payment())" Width="208px" />
                 <RadzenDataGridColumn TItem="Payment" Property="Receiver.Name" Title="@GetName("Receiver",new Payment())" Filterable="false" Sortable="false" Width="208px" />
                 <RadzenDataGridColumn TItem="Payment" Property="PaymentValue" Title="@GetName("PaymentValue",new Payment())" Filterable="false" Sortable="false" Width="208px" />
-                <RadzenDataGridColumn TItem="Payment" Property="ReturnedPayment" Title="@GetName("ReturnedPayment",new Payment())" Filterable="false" Sortable="false" Width="208px" >
+                <RadzenDataGridColumn TItem="Payment" Property="ReturnedPayment" Title="@GetName("ReturnedPayment",new Payment())" Filterable="false" Sortable="false" Width="208px">
                     <Template>
                         @{
-                            var ReturnedPayment = (bool)context.GetType().GetProperty(nameof(Payment.ReturnedPayment)).GetValue(context);                          
-                                <input type="checkbox" checked="@ReturnedPayment" />
-                          
+                            var ReturnedPayment = (bool)context.GetType().GetProperty(nameof(Payment.ReturnedPayment)).GetValue(context);
+                            <input type="checkbox" checked="@ReturnedPayment" />
+
                         }
                     </Template>
                 </RadzenDataGridColumn>
@@ -106,9 +107,16 @@
 @code {
     [Parameter]
     public string _filterItems { get; set; }
+    [Parameter]
+    public string page { get; set; }
     public List<Payment> paymentList { get; set; }
     public CommercialDocumentType documentType { get; set; }
 
+    string namePage = "";
+    string backPage = "";
+    string icoLogo = "";
+
+    bool isASale = false;
     bool isLoading = false;
 
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
@@ -127,10 +135,18 @@
     {
 
         if (_filterItems != null) LoadData();
+        ValidateUri();
         base.OnInitialized();
 
 
     }
+
+    protected override void OnParametersSet()
+    {
+        ValidateUri();
+        StateHasChanged();
+    }
+
 
     public async void LoadData()
     {
@@ -158,25 +174,25 @@
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<Payment> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-      
-        </RadzenMenu>
+
+    </RadzenMenu>
     );
 
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         Payment argObj = (Payment)args.Value;
-        Navigation.NavigateTo($"PaymentItem/{argObj.Id}/{_filterItems}");
+        Navigation.NavigateTo($"{backPage}/{page}/{argObj.Id}/{_filterItems}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
         }
     }
 
-    public void Setfilter( string value)
+    public void Setfilter(string value)
     {
         filter = value;
-         StateHasChanged();
+        StateHasChanged();
     }
 
     public string GetName(string Name, Object Obj)
@@ -184,10 +200,34 @@
         if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
     }
-   
+
     public void EventSearchAll(string value)
     {
         filter = value;
+    }
+
+    public void ValidateUri()
+    {
+        string Name = Navigation.Uri;
+        if (Name.Contains("SalesPayments"))
+        {
+            isASale = false;
+            namePage = "Sales Payments";
+            backPage = $"SalesPaymentsItem/{page}";
+            icoLogo = "Payments.png";
+        }
+        else
+        if (Name.Contains("PurchasesPayments"))
+        {
+            isASale = true;
+            if (Name.Contains("PurchasesPayments"))
+            {
+                backPage = $"PurchasesPaymentsItem/{page}";
+                namePage = " Purchases Payments";
+                icoLogo = "Payments.png";
+            }
+        }
+        StateHasChanged();
     }
 
 }

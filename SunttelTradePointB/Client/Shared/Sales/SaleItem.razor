@@ -42,10 +42,11 @@
 <PageTitleComponent Title="@namePage"
                     Description="@($"Here you can add {@namePage}")" IconName="@icoLogo">
 </PageTitleComponent>
+@if (onInitialized)
+{
+    <form>
 
-<form>
 
-   
         <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
             <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
@@ -319,9 +320,14 @@
 
             </TabItems>
         </SfTab>
-  
 
-</form>
+
+    </form>
+}
+else
+{
+    <WaitingProcessIndicator loadingTopic="Loading..."></WaitingProcessIndicator>
+}
 
 
 @code {
@@ -343,6 +349,7 @@
     bool menuVisible = false;
     bool isVisible = false;
     bool isSale = false;
+    bool onInitialized = false;
     public CommercialDocument commercialDocument = new();
     // public SalesDocumentItemsDetails items = new();
 
@@ -379,6 +386,7 @@
 
     protected override async void OnInitialized()
     {
+        onInitialized = false;
         ValidateUri();
         isLoading = true;
         StateHasChanged();
@@ -394,6 +402,7 @@
         carrierList = await DocumentServices.GetCarrierList();
         LoadCommercialDocument();
         isLoading = false;
+         onInitialized = true;
         StateHasChanged();
     }
 
