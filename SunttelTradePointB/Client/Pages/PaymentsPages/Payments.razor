@@ -79,16 +79,16 @@
                     CellContextMenu="@ShowContextMenuCommercialDocument">
             <Columns>
 
-                <RadzenDataGridColumn TItem="Payment" Property="DocumentType.Name" Title="@GetName("DocumentType",new Payment())" Width="308px" />
-                <RadzenDataGridColumn TItem="Payment" Property="Code" Title="@GetName("Code",new Payment())" Width="208px" />
-                <RadzenDataGridColumn TItem="Payment" Property="PaymentRef" Title="@GetName("PaymentRef",new Payment())" Filterable="false" Sortable="false" Width="208px" />
-                <RadzenDataGridColumn TItem="Payment" Property="PaymentDate" Title="@GetName("PaymentDate",new Payment())" Filterable="false" Sortable="false" Width="208px" />
-                <RadzenDataGridColumn TItem="Payment" Property="Payer.Name" Title="@GetName("Payer",new Payment())" Filterable="false" Sortable="false" Width="208px" />
-                <RadzenDataGridColumn TItem="Payment" Property="Receiver.Name" Title="@GetName("Receiver",new Payment())" Filterable="false" Sortable="false" Width="208px" />
-                <RadzenDataGridColumn TItem="Payment" Property="Status.Name" Title="@GetName("Status",new Payment())" Width="208px" />
-                <RadzenDataGridColumn TItem="Payment" Property="Receiver.Name" Title="@GetName("Receiver",new Payment())" Filterable="false" Sortable="false" Width="208px" />
-                <RadzenDataGridColumn TItem="Payment" Property="PaymentValue" Title="@GetName("PaymentValue",new Payment())" Filterable="false" Sortable="false" Width="208px" />
-                <RadzenDataGridColumn TItem="Payment" Property="ReturnedPayment" Title="@GetName("ReturnedPayment",new Payment())" Filterable="false" Sortable="false" Width="208px">
+                <RadzenDataGridColumn TItem="Payment" Property="DocumentType.Name" Title="@GetName("DocumentType",new Payment())" Width="208px" />
+                <RadzenDataGridColumn TItem="Payment" Property="Code" Title="@GetName("Code",new Payment())" Width="88px" />
+                <RadzenDataGridColumn TItem="Payment" Property="PaymentRef" Title="@GetName("PaymentRef",new Payment())" Filterable="false" Sortable="false" Width="88px" />
+                <RadzenDataGridColumn TItem="Payment" Property="PaymentDate" Title="@GetName("PaymentDate",new Payment())" Filterable="false" FormatString="{0:yyyy-MM-dd}" Sortable="false" Width="88px" />
+                <RadzenDataGridColumn TItem="Payment" Property="Payer.Name" Title="@GetName("Payer",new Payment())" Filterable="false" Sortable="false" Width="108px" />
+                <RadzenDataGridColumn TItem="Payment" Property="Receiver.Name" Title="@GetName("Receiver",new Payment())" Filterable="false" Sortable="false" Width="88px" />
+                <RadzenDataGridColumn TItem="Payment" Property="Status.Name" Title="@GetName("Status",new Payment())" Width="88px" />
+                <RadzenDataGridColumn TItem="Payment" Property="Receiver.Name" Title="@GetName("Receiver",new Payment())" Filterable="false" Sortable="false" Width="108px" />
+                <RadzenDataGridColumn TItem="Payment" Property="PaymentValue" Title="@GetName("PaymentValue",new Payment())" Filterable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Sortable="false" Width="108px" />
+                <RadzenDataGridColumn TItem="Payment" Property="ReturnedPayment" Title="@GetName("ReturnedPayment",new Payment())" TextAlign="TextAlign.Center" Filterable="false" Sortable="false" Width="208px">
                     <Template>
                         @{
                             var ReturnedPayment = (bool)context.GetType().GetProperty(nameof(Payment.ReturnedPayment)).GetValue(context);
