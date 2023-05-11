@@ -852,6 +852,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
+        /// <param name="commercialDocumentId"></param>
         /// <param name="squadId"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
@@ -859,32 +860,18 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         /// <param name="groupName"></param>
         /// <param name="code"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<SalesDocumentItemsDetails>? GetCommercialDocumentDetails, string? ErrorDescription)> GetCommercialDocumentDetails(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? nameLike = null, string? groupName = null, string? code = null)
+        public async Task<(bool IsSuccess, List<SalesDocumentItemsDetails>? GetCommercialDocumentDetails, string? ErrorDescription)> GetCommercialDocumentDetails(string userId, string ipAddress, string commercialDocumentId, string squadId, int? page = 1, int? perPage = 10, string? groupName = null, string? code = null)
         {
             try
             {
-                string strNameFiler = nameLike == null ? "" : nameLike;
                 var skip = (page - 1) * perPage;
 
                 var pipeline = new List<BsonDocument>();
 
-                if (!(strNameFiler.ToLower() == "all" || strNameFiler.ToLower() == "todos"))
-                {
-                    pipeline.Add(
-                    new BsonDocument{
-                        { "$match",  new BsonDocument {
-                            { "$text",
-                                new BsonDocument {
-                                    { "$search",strNameFiler },
-                                    { "$language","english" },
-                                    { "$caseSensitive",false },
-                                    { "$diacriticSensitive",false }
-                                }
-                            }
-                        }}
-                    }
+
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("IdCommercialDocument", new ObjectId(commercialDocumentId)))
                 );
-                }
 
                 pipeline.Add(
                     new BsonDocument{

@@ -206,6 +206,7 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
+        /// <param name="commercialDocumentId"></param>
         /// <param name="squadId"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
@@ -213,7 +214,7 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <param name="groupName"></param>
         /// <param name="code"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<SalesDocumentItemsDetails>? GetCommercialDocumentDetails, string? ErrorDescription)> GetCommercialDocumentDetails(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? nameLike = null, string? groupName = null, string? code = null);
+        Task<(bool IsSuccess, List<SalesDocumentItemsDetails>? GetCommercialDocumentDetails, string? ErrorDescription)> GetCommercialDocumentDetails(string userId, string ipAddress, string commercialDocumentId, string squadId, int? page = 1, int? perPage = 10, string? groupName = null, string? code = null);
 
         /// <summary>
         /// Retrieves an object of a transactional Item by id

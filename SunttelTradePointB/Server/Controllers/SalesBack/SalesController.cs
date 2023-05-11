@@ -498,24 +498,25 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
+        /// <param name="commercialDocumentId"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
-        /// <param name="filterId"></param>
+        /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetCommercialDocumentDetails")]
         public async Task<IActionResult> GetCommercialDocumentDetails(
             string userId,
             string ipAddress,
+            string commercialDocumentId,
             int? page = 1,
-            int? perPage = 10,
-            string? filterId = null)
+            int? perPage = 10)
         {
 
             var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
 
-            var response = await _commercialDocument.GetCommercialDocumentDetails(userId, ipAddress, squadId, page, perPage, filterId);
+            var response = await _commercialDocument.GetCommercialDocumentDetails(userId, ipAddress, commercialDocumentId, squadId, page, perPage);
 
             if (response.IsSuccess)
             {
