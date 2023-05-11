@@ -1,33 +1,113 @@
-﻿
+﻿@using System.IO
+@using SixLabors.ImageSharp;
+@using SixLabors.ImageSharp.Formats.Jpeg;
+@using System.Threading;
+@using Microsoft.AspNetCore.Http
+@using System.Net.Http.Headers
 
-@*
-<div class="control-section">
-    <div class="row">
-        <div class="container-file-upload">
-            <form>
-                <div>
-                    <img src="@imgUrl" style="height:120px; width:180px; border-radius:10px 10px 0px 0px; margin-left:5px;" @ref="previewImageElem" /><br />
-                    <div class="btn color-btn width">
-                        <label class="btn-file" for="file-input">
-                            <div><p> Choose your img </p></div>
-                        </label>
-                        <InputFile id="file-input" @ref="referInputFile" lang="en" OnChange="@LoadFile" accept="image/*" style="color:transparent;width:180px; border-radius:0px 0px 10px 10px; display:none;" />
-                    </div>
-                </div>
 
-                <div class="py-2">
-                    <button type="submit" class="size-btn color-btn" style="float:right" @onclick="Save"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
-                    @if (BtnBackEnable)
-                    {
-                        <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
-                    }
-                </div>
-            </form>           
+
+
+<div class="container-file">
+
+
+    @if (isLoading)
+    {
+
+        <WaitingProcessIndicator loadingTopic="Upload File"></WaitingProcessIndicator>
+
+    }
+    else
+    {
+        <div class="item">
+            <img src="/images/upload.png" /><br />
+            <div class="input-style">
+                <label for="file-input">
+                    <div><p> Choose your file </p></div>
+                </label>
+                <InputFile id="file-input" @ref="referInputFile" OnChange="@LoadFile" accept="@accept" style="color:transparent;width:180px; border-radius:0px 0px 10px 10px; display:none;" />
+            </div>
         </div>
+    }
+
+    <h1>
+        @(status ? "charge completed" : "")
+    </h1>
+
+    @* <div class="py-2">
+    <button type="button" class="size-btn color-btn" style="float:right" @onclick="Save"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+
     </div>
-</div>*@
+    *@
+</div>
 
 
 @code {
+    [Parameter]
+    public EventCallback<MultipartFormDataContent> EventMultipartFormDataContent { get; set; }
+    [Parameter]
+    public string uploadingFileType { get; set; } = "1";
+    [Parameter]
+    public string fileName { get; set; } = "";
+    [Parameter]
+    public string accept { get; set; } = ".csv";
+    [Parameter]
+    public bool isLoading { get; set; }
+    [Parameter]
+    public bool status { get; set; }
+
+    MultipartFormDataContent filteData { get; set; }
+
+    private InputFile referInputFile;
+    string imgUrl = "";
+
+    protected override void OnInitialized()
+    {
+        StateHasChanged();
+
+    }
+
+
+    protected override void OnParametersSet()
+    {
+        StateHasChanged();
+        base.OnParametersSet();
+    }
+
+
+    private async Task LoadFile(InputFileChangeEventArgs e)
+    {
+        var maxFiles = 1;
+
+        foreach (IBrowserFile file in e.GetMultipleFiles())
+        {
+            UploadFileItem(file, e);
+        }
+    }
+
+
+    public async void Save()
+    {
+        await EventMultipartFormDataContent.InvokeAsync(filteData);
+        StateHasChanged();
+    }
+
+
+    public void UploadFileItem(IBrowserFile fileItem, InputFileChangeEventArgs e)
+    {
+
+        var bufer = new byte[fileItem.Size];
+
+        var file = e.File;
+
+        var formData = new MultipartFormDataContent();
+        formData.Add(new StreamContent(file.OpenReadStream()), "file", file.Name);
+
+        EventMultipartFormDataContent.InvokeAsync(formData);
+
+        bufer = null;
+
+        StateHasChanged();
+    }
 
 }
