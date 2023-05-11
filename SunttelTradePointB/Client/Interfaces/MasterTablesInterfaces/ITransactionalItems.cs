@@ -389,6 +389,12 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<string> UploadFiles(MultipartFormDataContent multipartFormDataContent);
 
+        /// Upload files with transactional item in format CSV
+        /// </summary>
+        /// <param name="multipartFormDataContent"></param>     
+        /// <returns></returns>
+        Task<List<TransactionalItem>> TransactionalItemsUpload(MultipartFormDataContent file);
+
 
         /// <summary>
         /// Retrives a Transactional Item by transactionalItemId

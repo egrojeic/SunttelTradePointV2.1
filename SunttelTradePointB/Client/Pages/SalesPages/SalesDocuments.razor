@@ -99,6 +99,7 @@
                     </Template>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="Notes" Title="Notes" Filterable="false" Sortable="false" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="@nameof(CommercialDocument.Id)"  Title="@GetName("Id", new FinanceSalesDocumentSummary())" Width="100px" />
             </Columns>
         </RadzenDataGrid>
         <div class="container-total">

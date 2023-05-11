@@ -1396,6 +1396,34 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
+
+        public async Task<List<TransactionalItem>> TransactionalItemsUpload(MultipartFormDataContent file)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsync($"/api/TransactionalItems/SaveTransactionalItemsCSV?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}", file);
+
+                if (response != null)
+                {
+                    return await response.Content.ReadFromJsonAsync<List<TransactionalItem>>();
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+
+
+
+
         Task<TransactionalItemStatus> ITransactionalItems.GetSelectorListPackingMaterials(string? filterString)
         {
             throw new NotImplementedException();
