@@ -564,8 +564,8 @@
     public void Home()
     {
         string paramFilter = filter != null ? filter : "";
-        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/{backPage}/{page}/{paramFilter}");
-        Navigation.NavigateTo($"/{backPage}/{page}");
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/{backPage}/{paramFilter}");
+        Navigation.NavigateTo($"/{backPage}");
     }
 
     public void OpenAlert(string _msg, int _status, bool visible)
