@@ -260,7 +260,7 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <param name="squadId"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, string? CommercialDocumentsList, string? ErrorDescription)> SaveCommercialDocumentsCSV(string userId, string ipAddress, string squadId, IFormFile file);
+        Task<(bool IsSuccess, List<CommercialDocument>? CommercialDocumentsList, string? ErrorDescription)> SaveCommercialDocumentsCSV(string userId, string ipAddress, string squadId, IFormFile file);
 
 
 

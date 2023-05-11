@@ -362,7 +362,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="squadId"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, string? TransactionalItemsList, string? ErrorDescription)> SaveTransactionalItemsCSV(string userId, string ipAddress, string squadId, IFormFile file);
+        Task<(bool IsSuccess, List<TransactionalItem>? TransactionalItemsList, string? ErrorDescription)> SaveTransactionalItemsCSV(string userId, string ipAddress, string squadId, IFormFile file);
 
 
     }

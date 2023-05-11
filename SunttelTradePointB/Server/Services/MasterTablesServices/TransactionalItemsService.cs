@@ -1659,7 +1659,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="squadId"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, string? TransactionalItemsList, string? ErrorDescription)> SaveTransactionalItemsCSV(string userId, string ipAddress, string squadId, IFormFile file)
+        public async Task<(bool IsSuccess, List<TransactionalItem>? TransactionalItemsList, string? ErrorDescription)> SaveTransactionalItemsCSV(string userId, string ipAddress, string squadId, IFormFile file)
         {
             try
             {
@@ -1685,7 +1685,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     {
                         var TransactionalItem = await SaveTransactionalItem(userId, ipAddress, resultEntity);
                     }
-                    return (true, null, "Entities created successfully");
+                    return (true, results, null);
 
                 }
 

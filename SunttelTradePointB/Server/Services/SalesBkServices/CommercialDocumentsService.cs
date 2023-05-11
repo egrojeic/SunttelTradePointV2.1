@@ -1148,7 +1148,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         /// <param name="squadId"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, string? CommercialDocumentsList, string? ErrorDescription)> SaveCommercialDocumentsCSV(string userId, string ipAddress, string squadId, IFormFile file)
+        public async Task<(bool IsSuccess, List<CommercialDocument>? CommercialDocumentsList, string? ErrorDescription)> SaveCommercialDocumentsCSV(string userId, string ipAddress, string squadId, IFormFile file)
         {
             try
             {
@@ -1174,7 +1174,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     {
                         var Entity = await SaveCommercialDocument(userId, ipAddress, result);
                     }
-                    return (true, null, "Entities created successfully");
+                    return (true, results, null);
 
                 }
 
