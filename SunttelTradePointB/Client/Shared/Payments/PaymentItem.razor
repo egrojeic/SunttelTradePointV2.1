@@ -55,8 +55,6 @@
 
     </div>
 
-
-
     <div class="grid-columns-header grid-columns-6">
 
         <div><label class="info-text-size">@GetName("DocumentType",new CommercialDocument())</label></div>
@@ -108,9 +106,9 @@
             <InputTextSelector3 TItem="Concept"
                                 Id="Receiver"
                                 caption="@(payment.Receiver !=null ?payment.Receiver?.Name:"" )"
-                Items="ReceiverList"
-                EventIdSelectionAndId="EventIdSelectionAndId"
-                EventSearcherValueAndId="EventSearcherValueAndId">
+                                Items="ReceiverList"
+                                EventIdSelectionAndId="EventIdSelectionAndId"
+                                EventSearcherValueAndId="EventSearcherValueAndId">
             </InputTextSelector3>
         </div>
 
@@ -166,10 +164,10 @@
 
         <div><label class="info-text-size">@GetName("PaymentValue",new Payment())</label></div>
         <InputTextDisable Enable="true" style=" font-weight:none;" @bind-ValueDouble="@payment.PaymentValue"></InputTextDisable>
-          
-        <div><label class="info-text-size" >@GetName("DiscountReason",new Payment())</label></div>
+
+        <div><label class="info-text-size">@GetName("DiscountReason",new Payment())</label></div>
         <InputTextDisable Enable="true" style=" font-weight:none;" @bind-ValueDouble="@payment.PaymentValue"></InputTextDisable>
-     
+
 
     </div>
 
@@ -206,9 +204,9 @@
                                 </svg>
                             </div>
 
-                             @if (ImportFileRecordList != null)
+                            @if (ImportFileRecordList != null)
                             {
-                            <RadzenDataGrid AllowFiltering="true"
+                                <RadzenDataGrid AllowFiltering="true"
                                         AllowColumnResize="true"
                                         AllowAlternatingRows="true"
                                         FilterMode="FilterMode.Advanced"
@@ -224,23 +222,23 @@
                                         SelectionMode="DataGridSelectionMode.Single"
                                         LogicalFilterOperator="LogicalFilterOperator.Or"
                                         CellContextMenu="@ShowContextMenuCommercialDocument">
-                                <Columns>
+                                    <Columns>
 
-                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="PayerCode" Title="@GetName("PayerCode", new PaymentImportFileRecord())" Width="200px" />
-                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="PaymentDocRef" Title="@GetName("PaymentDocRef", new PaymentImportFileRecord())" Width="208px" />
-                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="PaymentDocDate" Title="@GetName("PaymentDocDate", new PaymentImportFileRecord())" Width="208px" />
-                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="InvoiceToPay" Title="@GetName("InvoiceToPay", new PaymentImportFileRecord())" Width="208px" />
-                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="PaymentDocRef" Title="@GetName("PaymentDocRef", new PaymentImportFileRecord())" Width="208px" />
-                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="PONumberToPay" Title="@GetName("PONumberToPay", new PaymentImportFileRecord())" Width="208px" />
-                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="InvoiceTotalAmount" Title="@GetName("InvoiceTotalAmount", new PaymentImportFileRecord())" Filterable="false" Sortable="false" Width="208px" />
-                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="Discount" Title="@GetName("Discount", new PaymentImportFileRecord())" Filterable="false" Sortable="false" Width="208px" />
-                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="Credits" Title="@GetName("Credits", new PaymentImportFileRecord())" Filterable="false" Sortable="false" Width="208px" />
-                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="DiscountReason" Title="@GetName("DiscountReason", new PaymentImportFileRecord())" Width="208px" />
-                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="HasCustomerError" Title="@GetName("HasCustomerError", new PaymentImportFileRecord())" Width="208px" />
-                                    <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="HasInvoiceError" Title="@GetName("HasInvoiceError", new PaymentImportFileRecord())" Width="208px" />
+                                        <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="PayerCode" Title="@GetName("PayerCode", new PaymentImportFileRecord())" Width="200px" />
+                                        <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="PaymentDocRef" Title="@GetName("PaymentDocRef", new PaymentImportFileRecord())" Width="208px" />
+                                        <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="PaymentDocDate" Title="@GetName("PaymentDocDate", new PaymentImportFileRecord())" Width="208px" />
+                                        <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="InvoiceToPay" Title="@GetName("InvoiceToPay", new PaymentImportFileRecord())" Width="208px" />
+                                        <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="PaymentDocRef" Title="@GetName("PaymentDocRef", new PaymentImportFileRecord())" Width="208px" />
+                                        <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="PONumberToPay" Title="@GetName("PONumberToPay", new PaymentImportFileRecord())" Width="208px" />
+                                        <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="InvoiceTotalAmount" Title="@GetName("InvoiceTotalAmount", new PaymentImportFileRecord())" Filterable="false" Sortable="false" Width="208px" />
+                                        <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="Discount" Title="@GetName("Discount", new PaymentImportFileRecord())" Filterable="false" Sortable="false" Width="208px" />
+                                        <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="Credits" Title="@GetName("Credits", new PaymentImportFileRecord())" Filterable="false" Sortable="false" Width="208px" />
+                                        <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="DiscountReason" Title="@GetName("DiscountReason", new PaymentImportFileRecord())" Width="208px" />
+                                        <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="HasCustomerError" Title="@GetName("HasCustomerError", new PaymentImportFileRecord())" Width="208px" />
+                                        <RadzenDataGridColumn TItem="PaymentImportFileRecord" Property="HasInvoiceError" Title="@GetName("HasInvoiceError", new PaymentImportFileRecord())" Width="208px" />
 
-                                </Columns>
-                            </RadzenDataGrid>
+                                    </Columns>
+                                </RadzenDataGrid>
                             }
                         }
 
@@ -291,22 +289,22 @@
                                         SelectionMode="DataGridSelectionMode.Single"
                                         LogicalFilterOperator="LogicalFilterOperator.Or"
                                         CellContextMenu="@ShowContextMenuCommercialDocument">
-                                <Columns>
+                                    <Columns>
 
 
-                                    <RadzenDataGridColumn TItem="AppliedPayment" Property="InvoiceCode" Title="@GetName("InvoiceCode", new AppliedPayment())" Width="308px" />
-                                    <RadzenDataGridColumn TItem="AppliedPayment" Property="PaymentDocRef" Title="@GetName("PaymentDocRef", new AppliedPayment())" Width="208px" />
-                                    <RadzenDataGridColumn TItem="AppliedPayment" Property="InvoicePO" Title="@GetName("InvoicePO", new AppliedPayment())" Width="208px" />
-                                    <RadzenDataGridColumn TItem="AppliedPayment" Property="InvoiceDate" Title="@GetName("InvoiceDate", new AppliedPayment())" Width="208px" />
-                                    <RadzenDataGridColumn TItem="AppliedPayment" Property="InvoiceBuyer" Title="@GetName("InvoiceBuyer", new AppliedPayment())" Width="208px" />
-                                    <RadzenDataGridColumn TItem="AppliedPayment" Property="InvoiceTotalAmount" Title="@GetName("InvoiceTotalAmount", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />
-                                    <RadzenDataGridColumn TItem="AppliedPayment" Property="AppliedAmount" Title="@GetName("AppliedAmount", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />
-                                    <RadzenDataGridColumn TItem="AppliedPayment" Property="Discount" Title="@GetName("Discount", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />
-                                    <RadzenDataGridColumn TItem="AppliedPayment" Property="Credit" Title="@GetName("Credit", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />
-                                    <RadzenDataGridColumn TItem="AppliedPayment" Property="DiscountReason" Title="@GetName("DiscountReason", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />
+                                        <RadzenDataGridColumn TItem="AppliedPayment" Property="InvoiceCode" Title="@GetName("InvoiceCode", new AppliedPayment())" Width="308px" />
+                                        <RadzenDataGridColumn TItem="AppliedPayment" Property="PaymentDocRef" Title="@GetName("PaymentDocRef", new AppliedPayment())" Width="208px" />
+                                        <RadzenDataGridColumn TItem="AppliedPayment" Property="InvoicePO" Title="@GetName("InvoicePO", new AppliedPayment())" Width="208px" />
+                                        <RadzenDataGridColumn TItem="AppliedPayment" Property="InvoiceDate" Title="@GetName("InvoiceDate", new AppliedPayment())" Width="208px" />
+                                        <RadzenDataGridColumn TItem="AppliedPayment" Property="InvoiceBuyer" Title="@GetName("InvoiceBuyer", new AppliedPayment())" Width="208px" />
+                                        <RadzenDataGridColumn TItem="AppliedPayment" Property="InvoiceTotalAmount" Title="@GetName("InvoiceTotalAmount", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />
+                                        <RadzenDataGridColumn TItem="AppliedPayment" Property="AppliedAmount" Title="@GetName("AppliedAmount", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />
+                                        <RadzenDataGridColumn TItem="AppliedPayment" Property="Discount" Title="@GetName("Discount", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />
+                                        <RadzenDataGridColumn TItem="AppliedPayment" Property="Credit" Title="@GetName("Credit", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />
+                                        <RadzenDataGridColumn TItem="AppliedPayment" Property="DiscountReason" Title="@GetName("DiscountReason", new AppliedPayment())" Filterable="false" Sortable="false" Width="208px" />
 
-                                </Columns>
-                            </RadzenDataGrid>
+                                    </Columns>
+                                </RadzenDataGrid>
                             }
                         }
 
@@ -339,6 +337,8 @@
     [Parameter]
     public string paymentItemId { get; set; }
     [Parameter]
+    public string  page { get; set; }
+    [Parameter]
     public string filter { get; set; }
     public Payment payment { get; set; }
 
@@ -360,6 +360,11 @@
 
     #endregion List
 
+    string namePage = "";
+    string backPage = "";
+    string icoLogo = "";
+
+    bool isASale = false;
 
     MessageSaveComponent? referAlert;
     string msg = "";
@@ -367,7 +372,7 @@
     string SearcherValue = "";
     bool isVisible = false;
 
-   
+
 
     protected override async void OnInitialized()
     {
@@ -439,7 +444,7 @@
         if (payment.DocumentType != null)
         {
 
-            if (SearcherValue == "Payer" && payment.DocumentType !=null)
+            if (SearcherValue == "Payer" && payment.DocumentType != null)
             {
 
                 PayerList = await PaymentServices.GetPayerList(arg.value, payment.DocumentType.IsASale);
@@ -472,12 +477,13 @@
 
     public void EventIdSelectionMenuItem(string name)
     {
-        try{
+        try
+        {
             //Js.InvokeAsync<object>("open", name, "_blank");
         }
         catch
         {
-            
+
         }
     }
 
@@ -489,7 +495,7 @@
     @<RadzenMenu Click="OnMenuItemClickAppliedPayment">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
-          );
+      );
 
     void OnMenuItemClickAppliedPayment(MenuItemEventArgs args)
     {
@@ -601,6 +607,30 @@
     public void NavigationTo(string name)
     {
         Navigation.NavigateTo(name);
+    }
+
+    public void ValidateUri()
+    {
+        string Name = Navigation.Uri;
+        if (Name.Contains("SalesPaymentsItem"))
+        {
+            isASale = false;
+            namePage = "Sales Payments Item";
+            backPage = $"SalesPayments/{page}";
+            icoLogo = "Payments.png";
+        }
+        else
+        if (Name.Contains("PurchasesPaymentsItem"))
+        {
+            isASale = true;
+            if (Name.Contains("PurchasesPaymentsItem"))
+            {
+                backPage = $"PurchasesPayments/{page}";
+                namePage = " Purchases Payments";
+                icoLogo = "Payments.png";
+            }
+        }
+        StateHasChanged();
     }
 
 }
