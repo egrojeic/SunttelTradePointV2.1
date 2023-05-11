@@ -161,7 +161,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     new BsonDocument(
                         "$match",
                         new BsonDocument(
-                                 "Vendor.FullClassName",
+                                 "Vendor.Name",
                                     new BsonDocument(
                                         "$regex", new BsonRegularExpression($"/{filter}/i"))
                             )
