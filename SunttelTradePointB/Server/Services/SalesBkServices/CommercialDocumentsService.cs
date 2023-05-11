@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using CsvHelper.Configuration;
+using CsvHelper;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -11,6 +13,7 @@ using SunttelTradePointB.Shared.DataViews.BI;
 using SunttelTradePointB.Shared.DataViews.Profiles;
 using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.Sales;
+using System.Globalization;
 
 namespace SunttelTradePointB.Server.Services.SalesBkServices
 {
@@ -1137,6 +1140,50 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         }
         #endregion
 
+        /// <summary>
+        /// Upload file csv a entities
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, string? CommercialDocumentsList, string? ErrorDescription)> SaveCommercialDocumentsCSV(string userId, string ipAddress, string squadId, IFormFile file)
+        {
+            try
+            {
+                List<QCDocumentsImport>? lista = new List<QCDocumentsImport>();
+                using (var reader = new StreamReader(file.OpenReadStream()))
+                {
+                    // Configuración de CsvHelper
+                    var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+                    {
+                        Delimiter = ",",
+                        HasHeaderRecord = true
+                    };
+                    var csv = new CsvReader(reader, config);
+                    // Lectura de los registros del archivo CSV
+                    // LOS 3 
+                    var records = csv.GetRecords<QCDocumentsImport>().ToList();
+
+                    List<CommercialDocument> results = _mapper.Map<List<CommercialDocument>>(records);
+
+
+                    // 
+                    foreach (var result in results)
+                    {
+                        var Entity = await SaveCommercialDocument(userId, ipAddress, result);
+                    }
+                    return (true, null, "Entities created successfully");
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
 
     }
 }

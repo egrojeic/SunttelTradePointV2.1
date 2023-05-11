@@ -1,11 +1,16 @@
-﻿using MongoDB.Bson;
+﻿using AutoMapper;
+using CsvHelper;
+using CsvHelper.Configuration;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents;
 using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.Sales;
+using System.Globalization;
 using System.Net;
 using System.Reflection;
 
@@ -18,7 +23,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
     /// </summary>
     public class TransactionalItemsService : ITransactionalItemsBack
     {
-
+        private readonly IMapper _mapper;
         IMongoCollection<TransactionalItem> _TransactionalItemsCollection;
         IMongoCollection<TransactionalItemType> _transactionalItemTypes;
         IMongoCollection<Box> _box;
@@ -37,12 +42,13 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// Initialize the component passing the configuration to get the connection string
         /// </summary>
         /// <param name="config"></param>
-        public TransactionalItemsService(IConfiguration config)
+        public TransactionalItemsService(IConfiguration config, IMapper mapper)
         {
             var mongoClient = new MongoClient(config.GetConnectionString("MongoConectionString"));
             string DataBaseName = config["DatabaseMongo"];
 
             var mongoDatabase = mongoClient.GetDatabase(DataBaseName);
+            _mapper = mapper;
             _TransactionalItemsCollection = mongoDatabase.GetCollection<TransactionalItem>("TransactionalItems");
             _transactionalItemTypes = mongoDatabase.GetCollection<TransactionalItemType>("TransactionalItemTypes");
             _box = mongoDatabase.GetCollection<Box>("Box");
@@ -1644,5 +1650,53 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 return (false, null, e.Message);
             }
         }
+
+        /// <summary>
+        /// Upload file csv a transactional items
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, string? TransactionalItemsList, string? ErrorDescription)> SaveTransactionalItemsCSV(string userId, string ipAddress, string squadId, IFormFile file)
+        {
+            try
+            {
+                List<ProductsImport>? lista = new List<ProductsImport>();
+                using (var reader = new StreamReader(file.OpenReadStream()))
+                {
+                    // Configuración de CsvHelper
+                    var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+                    {
+                        Delimiter = ",",
+                        HasHeaderRecord = true
+                    };
+                    var csv = new CsvReader(reader, config);
+                    // Lectura de los registros del archivo CSV
+                    // LOS 3 
+                    var records = csv.GetRecords<ActorsImport>().ToList();
+
+                    List<TransactionalItem> results = _mapper.Map<List<TransactionalItem>>(records);
+
+
+                    // 
+                    foreach (var resultEntity in results)
+                    {
+                        var TransactionalItem = await SaveTransactionalItem(userId, ipAddress, resultEntity);
+                    }
+                    return (true, null, "Entities created successfully");
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+
+
     }
 }

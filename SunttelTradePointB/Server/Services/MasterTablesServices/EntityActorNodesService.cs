@@ -1139,14 +1139,14 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         }
 
         /// <summary>
-        /// Upload file csv a products
+        /// Upload file csv a entities
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
         /// <param name="squadId"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public  async Task<(bool IsSuccess, string? ActorsNodesList, string? ErrorDescription)> SaveEntitiesCSV(string userId, string ipAddress, string squadId, IFormFile file)
+        public  async Task<(bool IsSuccess, List<EntityActor>? ActorsNodesList, string? ErrorDescription)> SaveEntitiesCSV(string userId, string ipAddress, string squadId, IFormFile file)
         {
             try
             {
@@ -1170,9 +1170,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     // 
                     foreach (var resultEntity in results)
                     {
-                        var creditType = await SaveEntity(userId, ipAddress, resultEntity);
+                        var Entity = await SaveEntity(userId, ipAddress, resultEntity);
                     }
-                    return (true, null, "Entities created successfully");
+                    return (true, results, null);
 
                 }
 

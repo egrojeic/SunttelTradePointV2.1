@@ -578,7 +578,6 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         }
         #endregion
 
-
         #region Sales BI
         /// <summary>
         /// Retrieves a list of Commercial documents of the Squad for the date span and Document type
@@ -608,8 +607,34 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
             else
                 return NotFound(response.ErrorDescription);
         }
-
-
         #endregion
+
+        // Para importar desde un archivo csv
+        /// <summary>
+        /// Upload file csv a commercial documents
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveCommercialDocumentsCSV")]
+        public async Task<IActionResult> SaveCommercialDocumentsCSV(string userId, string ipAddress, IFormFile file)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString().ToUpper() ?? ""; // Request.Headers["SquadId"];
+            var response = await _commercialDocument.SaveCommercialDocumentsCSV(userId, ipAddress, squadId, file);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.CommercialDocumentsList);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
+
     }
 }

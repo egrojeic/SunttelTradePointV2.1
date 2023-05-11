@@ -354,5 +354,16 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<(bool IsSuccess, List<AddItemCommercialDocument>? AddItemCommercialDocumentResponse, string? ErrorDescription)> GetProductsByCustomerId(string userId, string ipAdress, string squadId, string customerId, string? nameLike = null, int? page = 1, int? perPage = 10);
 
+        /// <summary>
+        /// Upload file csv a transactional items
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, string? TransactionalItemsList, string? ErrorDescription)> SaveTransactionalItemsCSV(string userId, string ipAddress, string squadId, IFormFile file);
+
+
     }
 }

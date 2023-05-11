@@ -246,7 +246,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="squadId"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, string? ActorsNodesList, string? ErrorDescription)> SaveEntitiesCSV(string userId, string ipAddress, string squadId, IFormFile file);
+        Task<(bool IsSuccess, List<EntityActor>? ActorsNodesList, string? ErrorDescription)> SaveEntitiesCSV(string userId, string ipAddress, string squadId, IFormFile file);
 
 
 

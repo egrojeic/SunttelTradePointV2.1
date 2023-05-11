@@ -908,6 +908,31 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
                 return NotFound(response.ErrorDescription);
         }
 
+        /// <summary>
+        /// Upload file csv a transactional items
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveTransactionalItemsCSV")]
+        public async Task<IActionResult> SaveTransactionalItemsCSV(string userId, string ipAddress, IFormFile file)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString().ToUpper() ?? ""; // Request.Headers["SquadId"];
+            var response = await _transactionalItems.SaveTransactionalItemsCSV(userId, ipAddress, squadId, file);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.TransactionalItemsList);
+            }
+            else
+            {
+                return NotFound(response.ErrorDescription);
+            }
+        }
+
 
 
     }

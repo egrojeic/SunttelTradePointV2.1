@@ -252,6 +252,16 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <returns></returns>
         Task<(bool IsSuccess, List<BISalesConsolidated>? CommercialDocuments, string? ErrorDescription)> GetSalesBI(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, string documentTypeId, string? filter = null, int? page = 1, int? perPage = 10);
 
+        /// <summary>
+        /// Upload file csv a commercial documents
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, string? CommercialDocumentsList, string? ErrorDescription)> SaveCommercialDocumentsCSV(string userId, string ipAddress, string squadId, IFormFile file);
+
 
 
 
