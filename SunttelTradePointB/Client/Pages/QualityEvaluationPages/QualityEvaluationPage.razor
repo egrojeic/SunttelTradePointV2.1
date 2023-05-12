@@ -82,15 +82,20 @@
                     CellContextMenu="@ShowContextMenuCommercialDocument">
             <Columns>
 
-                <RadzenDataGridColumn TItem="QualityEvaluation" Property="QualityReportType.Name" Title="@GetName("QualityReportType", new QualityEvaluation() )" Width="208px" />
-                <RadzenDataGridColumn TItem="QualityEvaluation" Property="InspectionDate" Title="@GetName("InspectionDate", new QualityEvaluation() )" Filterable="false" Sortable="false" FormatString="{0:MM/dd/yyyy}" Width="158px" />
-                <RadzenDataGridColumn TItem="QualityEvaluation" Property="QuantityToInspect" Title="@GetName("QuantityToInspect", new QualityEvaluation() )" Filterable="false" Width="158px" />
-                <RadzenDataGridColumn TItem="QualityEvaluation" Property="QuantityInspected" Title="@GetName("QuantityInspected", new QualityEvaluation() )" Filterable="false" Width="158px" />
-                <RadzenDataGridColumn TItem="QualityEvaluation" Property="QuantityWithIssues" Title="@GetName("QuantityWithIssues", new QualityEvaluation() )" Filterable="false" Width="158px" />
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="QualityReportType.Name" Title="@GetName("QualityReportType", new QualityEvaluation() )" Width="108px" />
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="InspectionDate" Title="@GetName("InspectionDate", new QualityEvaluation() )" Filterable="false" Sortable="false" FormatString="{0:MM/dd/yyyy}" Width="88px" />
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="QuantityToInspect" Title="@GetName("QuantityToInspect", new QualityEvaluation() )" Filterable="false" Width="88px" />
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="QuantityInspected" Title="@GetName("QuantityInspected", new QualityEvaluation() )" Filterable="false" Width="88px" />
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="QuantityWithIssues" Title="@GetName("QuantityWithIssues", new QualityEvaluation() )" Filterable="false" Width="88px" />
                 <RadzenDataGridColumn TItem="QualityEvaluation" Property="Pack" Title="@GetName("Pack", new QualityEvaluation() )" Filterable="false" Width="88px" />
-                <RadzenDataGridColumn TItem="QualityEvaluation" Property="TrafficLightStatus.Name" Title="@GetName("TrafficLightStatus", new QualityEvaluation() )" Filterable="false" Width="158px" />
-                <RadzenDataGridColumn TItem="QualityEvaluation" Property="ActionToTake.Name" Title="@GetName("ActionToTake", new QualityEvaluation() )" Filterable="false" Width="158px" />
-                <RadzenDataGridColumn TItem="QualityEvaluation" Property="OverKill" Title="@GetName("OverKill", new QualityEvaluation() )" Filterable="false" Sortable="false" Width="158px">
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="@nameof(QualityEvaluation.TrafficLightStatus)" Title="@GetName("TrafficLightStatus", new QualityEvaluation() )" Width="88px">
+                    <Template Context="data">
+                        <div class="color-item" style="background-color:rgb(@(GetColor(data.TrafficLightStatus)));">                            
+                        </div>                      
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="ActionToTake.Name" Title="@GetName("ActionToTake", new QualityEvaluation() )" Filterable="false" Width="108px" />
+                <RadzenDataGridColumn TItem="QualityEvaluation" Property="OverKill" Title="@GetName("OverKill", new QualityEvaluation() )" Filterable="false" Sortable="false" Width="88px">
                     <Template>
                         @{
                             var OverKill = (bool)context.GetType().GetProperty(nameof(QualityEvaluation.OverKill)).GetValue(context);
@@ -132,11 +137,8 @@
 
     protected async override void OnInitialized()
     {
-
-
         if (_filterItems != null) LoadData();
         base.OnInitialized();
-
     }
 
     public async void LoadData()
@@ -188,6 +190,16 @@
     {
         docsFilter = value;
         StateHasChanged();
+    }
+
+    public string GetColor(QualityTrafficLight item)
+    {
+        string Color = "0,0,0";
+        if (item != null)
+        {
+            Color = $"{item.R},{item.G},{item.B}";
+        }
+        return Color;
     }
 
     public string GetName(string Name, Object Obj)

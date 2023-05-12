@@ -241,7 +241,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             {
                 // page, perPage, filterName
                 string path = basepath.Replace("Name", "GetCommercialDocumentDetails");
-                var responseMessage = await Gethttp($"{path}&page={page}&perPage={perPage}&IdCommercialDocument={commercialDocumentId}");
+                var responseMessage = await Gethttp($"{path}&page={page}&perPage={perPage}&commercialDocumentId={commercialDocumentId}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<SalesDocumentItemsDetails>>();
                 return list != null ? list : new List<SalesDocumentItemsDetails>();
             }

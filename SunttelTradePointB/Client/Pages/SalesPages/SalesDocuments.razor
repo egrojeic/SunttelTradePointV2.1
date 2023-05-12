@@ -71,8 +71,7 @@
                     ShowPagingSummary="true"
                     Data="@commercialdocumentList"
                     TItem="CommercialDocument"
-                    ColumnWidth="100%"
-                    
+                    ColumnWidth="100%"                    
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"
                     @bind-Value="@selectedcommercialdocuments"
@@ -97,6 +96,11 @@
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="ToInvoice" TextAlign="TextAlign.Center" Title="To Invoice" Filterable="false" Sortable="false" Width="100px">
                     <Template Context="commercialdocumentItem">
                         <RadzenCheckBox @bind-Value="commercialdocumentItem.ToInvoice" />
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CommercialDocument" TextAlign="TextAlign.Center" Title="@GetName("Items", new CommercialDocument())" Filterable="false" Sortable="false" Width="50px">
+                    <Template Context="commercialdocumentItem">
+                        <p>@(commercialdocumentItem.Items!=null?commercialdocumentItem.Items.Count:0)</p>
                     </Template>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="Notes" Title="Notes" Filterable="false" Sortable="false" Width="200px" />

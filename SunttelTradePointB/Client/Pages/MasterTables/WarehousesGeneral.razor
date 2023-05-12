@@ -41,7 +41,7 @@
 
 </div>
 
-<div class="tableBodyContainer">
+<div >
     @if (isLoading)
     {
         <WaitingProcessIndicator loadingTopic="Warehouses"></WaitingProcessIndicator>
@@ -62,7 +62,7 @@
                     ShowPagingSummary="true"
                     Data="@warehouseList"
                     TItem="Warehouse"
-                    ColumnWidth="300px"
+                    ColumnWidth="100%"
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"
                     CellContextMenu="@ShowContextMenuWithContent"

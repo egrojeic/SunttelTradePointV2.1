@@ -6,6 +6,7 @@
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.DataViews.BI
 @using SunttelTradePointB.Client.Shared.Menus.SalesBI
+@using Syncfusion.Blazor.Data
 
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesBIViewerServices _SalesBIViewerServices
 @inject NavigationManager NavigationManager
@@ -44,6 +45,7 @@
                      EventSearchAll="EventSearchAll"></RangeDatesInput>
 </div>
 
+
 @if (isLoading)
 {
 
@@ -54,7 +56,7 @@ else
 {
 
 
-    @if (commercialdocumentList != null)
+    @if (commercialdocumentList != null )
     {
         <SfPivotView TValue="BISalesConsolidated" Height="100%" Width="100%"
              @ref="@Pivot"
@@ -121,6 +123,8 @@ else
 
 
 
+
+
 @code {
     [Parameter]
     public string _filterItems { get; set; }
@@ -163,14 +167,7 @@ else
         base.OnInitialized();
     }
 
-    //protected async override Task OnAfterRenderAsync(bool firstRender)
-    //{
-    //    if (firstRender)
-    //    {
-    //        StateHasChanged();
-    //    }
-    //}
-
+   
     public string docsFilter
     {
         get { return _filterItems; }

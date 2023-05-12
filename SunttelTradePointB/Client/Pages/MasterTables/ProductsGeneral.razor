@@ -43,7 +43,7 @@
 </div>
 
 
-<div class="tableBodyContainer">
+<div >
 
 
     @if (isLoading)
@@ -68,7 +68,7 @@
                     ShowPagingSummary="true"
                     Data="@itemList"
                     TItem="TransactionalItem"
-                    ColumnWidth="300px"
+                    ColumnWidth="100%"
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"
                     @bind-Value=@selectedItems Class="m-4"
