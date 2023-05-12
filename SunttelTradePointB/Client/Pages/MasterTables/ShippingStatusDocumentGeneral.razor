@@ -47,7 +47,7 @@
 }
 else
 {
-
+    if(ShippingStatuses!=null){
     <RadzenDataGrid AllowFiltering="true"
                 AllowColumnResize="true"
                 AllowAlternatingRows="true"
@@ -59,7 +59,7 @@ else
                 ShowPagingSummary="true"
                 Data="@ShippingStatuses"
                 TItem="ShippingStatus"
-                ColumnWidth="300px"
+                ColumnWidth="100%"
                 SelectionMode="DataGridSelectionMode.Single"
                 LogicalFilterOperator="LogicalFilterOperator.Or"
                 CellContextMenu="@ShowContextMenuWithContent"
@@ -68,7 +68,7 @@ else
 
         <Columns>
             <RadzenDataGridColumn TItem="ShippingStatus" Property="ShippingStatuses.Name" Title="@GetName("Name", new ShippingStatus())" Width="80px" />
-            <RadzenDataGridColumn TItem="ShippingStatus" Property="AffectInventory" Title="@GetName("AffectInventory", new ShippingStatus())" Width="120px" TextAlign="Radzen.TextAlign.Center">
+            <RadzenDataGridColumn TItem="ShippingStatus" Property="AffectInventory" Title="@GetName("AffectInventory", new ShippingStatus())" Width="120px" Filterable="false" TextAlign="Radzen.TextAlign.Center">
                 <Template>
                     @{
                         bool AffectInventory = (bool)context.GetType().GetProperty(nameof(ShippingStatus.AffectInventory)).GetValue(context);
@@ -76,7 +76,7 @@ else
                     }
                 </Template>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="ShippingStatus" Property="EditingAllowed" Title="@GetName("EditingAllowed", new ShippingStatus())" Width="120px" TextAlign="Radzen.TextAlign.Center">
+            <RadzenDataGridColumn TItem="ShippingStatus" Property="EditingAllowed" Title="@GetName("EditingAllowed", new ShippingStatus())" Width="120px" Filterable="false" TextAlign="Radzen.TextAlign.Center">
                 <Template>
                     @{
                         bool EditingAllowed = (bool)context.GetType().GetProperty(nameof(ShippingStatus.EditingAllowed)).GetValue(context);
@@ -86,6 +86,17 @@ else
             </RadzenDataGridColumn>
         </Columns>
     </RadzenDataGrid>
+        <div class="container-total">
+            <div class="item">
+                <label>
+                    @(
+                        $"Records: {ShippingStatuses.Count}"
+                        )
+                </label>
+            </div>
+        </div>
+
+    }
 }
 
 

@@ -41,6 +41,14 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
 
 
         /// <summary>
+        /// Retrives a list with LabelPaper items meeting search criteria
+        /// </summary>
+        /// <param name="filterString"></param>         
+        /// <returns></returns>
+        Task<List<LabelPaper>> GetConceptPaperList(string? filterString = "all");
+
+
+        /// <summary>
         /// etrives a list with Box To Sale Items
         /// </summary>        //   
         /// <returns></returns>

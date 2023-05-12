@@ -1,6 +1,6 @@
 @page "/PaymentStatus"
 @page "/PaymentStatus/{PaymentStatusesId}"
-@page "/PaymentStatus/{filter}/{PaymentStatusesId}"
+@page "/PaymentStatus/{PaymentStatusesId}/{filter}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
@@ -102,8 +102,9 @@
         Load();
         if (paymentStatusesId != null)
         {
-            var result = await PaymentServices.GetPaymentStatusById(paymentStatusesId);
+            paymentStatus = await PaymentServices.GetPaymentStatusById(paymentStatusesId);
         }
+        Load();
         isLoading = false;
         StateHasChanged();
     }
@@ -230,6 +231,7 @@
     public void Load()
     {
         if (paymentStatus == null) paymentStatus = new();
+        if (paymentStatus.Name == null) paymentStatus.Name ="";
 
     }
 

@@ -10,6 +10,30 @@
 @inject TransactionalItemsService transactionalService;
 @inject ContextMenuService ContextMenuService
 
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
+    .e-tab .e-tab-header.e-vertical .e-toolbar-item .e-tab-text{
+        font-size:12px;
+        width:150px;
+    }
+</style>
 
 @if (@viewMsg)
 {
@@ -186,7 +210,7 @@
             <div class="detailsTitleContainer">
                 <h3 class="subTitleDetailForm">@GetName( "ZebraFieldsSpecs", new ZebraLabelSpecs())</h3>
             </div>
-            <div class="flex-horizontal-center ">
+            <div>
 
                 <RadzenDataGrid AllowFiltering="true"
                             AllowColumnResize="true"
@@ -362,8 +386,10 @@
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                 </svg>
                             </div>
-                            <div class="flex-horizontal-center ">
-                                <RadzenDataGrid AllowFiltering="true"
+                            <div >
+                                @if (dataMaxLabelLineSpecsView != null && dataMaxLabelLineSpecsView.Count > 0)
+                                {
+                                    <RadzenDataGrid AllowFiltering="true"
                                                 AllowColumnResize="true"
                                                 AllowAlternatingRows="true"
                                                 FilterMode="FilterMode.Advanced"
@@ -374,28 +400,36 @@
                                                 ShowPagingSummary="true"
                                                 Data="@dataMaxLabelLineSpecsView"
                                                 TItem="DataMaxLabelLineSpecView"
-                                                ColumnWidth="300px"
+                                                ColumnWidth="100%"
                                                 SelectionMode="DataGridSelectionMode.Single"
                                                 LogicalFilterOperator="LogicalFilterOperator.Or"
                                                 CellContextMenu="@ShowContextMenuWithContent"
                                                 PageNumbersCount="100"
-                                                PageSize="2">
+                                                PageSize="50">
 
-                                    <Columns>
-                                        <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="FieldInLabel" Title="@GetName( "Name", new DataMaxLabelLineSpec())" Width="80px" />
-                                        <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="Rotation" Title="@GetName( "Rotation", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                        <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="Font" Title="@GetName( "Font", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                        <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="Width" Title="@GetName( "Width", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                        <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="Height" Title="@GetName( "Height", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-
-                                        <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="FontSize" Title="@GetName( "FontSize", new DataMaxLabelLineSpec())" Width="80px" />
-                                        <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="Row" Title="@GetName( "Row", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                        <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="GGColumn" Title="@GetName( "GGColumn", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                        <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="IIIColumn" Title="@GetName( "IIIColumn", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                        <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="JColumn" Title="@GetName( "JColumn", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                    </Columns>
-                                </RadzenDataGrid>
-
+                                        <Columns>                                      
+                                            <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="Rotation" Title="@GetName( "Rotation", new DataMaxLabelLineSpec())" Width="80px" Filterable="false" Sortable="false" TextAlign="Radzen.TextAlign.Right" />
+                                            <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="Font" Title="@GetName( "Font", new DataMaxLabelLineSpec())" Width="80px" Filterable="false" Sortable="false" TextAlign="Radzen.TextAlign.Right" />
+                                            <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="Width" Title="@GetName( "Width", new DataMaxLabelLineSpec())" Width="80px" Filterable="false" Sortable="false" TextAlign="Radzen.TextAlign.Right" />
+                                            <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="Height" Title="@GetName( "Height", new DataMaxLabelLineSpec())" Width="180px" Filterable="false" Sortable="false" TextAlign="Radzen.TextAlign.Right" />
+                                            <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="FontSize" Title="@GetName( "FontSize", new DataMaxLabelLineSpec())" Width="80px"  Filterable="false" Sortable="false" TextAlign="Radzen.TextAlign.Right" />
+                                            <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="Row" Title="@GetName( "Row", new DataMaxLabelLineSpec())" Width="80px" Filterable="false" Sortable="false" TextAlign="Radzen.TextAlign.Right" />
+                                            <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="GGColumn" Title="@GetName( "GGColumn", new DataMaxLabelLineSpec())" Filterable="false" Sortable="false" Width="80px" TextAlign="Radzen.TextAlign.Right" />
+                                            <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="IIIColumn" Title="@GetName( "IIIColumn", new DataMaxLabelLineSpec())" Filterable="false" Sortable="false" Width="80px" TextAlign="Radzen.TextAlign.Right" />
+                                            <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="JColumn" Title="@GetName( "JColumn", new DataMaxLabelLineSpec())" Filterable="false" Sortable="false" Width="80px" TextAlign="Radzen.TextAlign.Right" />
+                                            <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="Id" Title="@GetName( "Id", new DataMaxLabelLineSpec())" Width="50px" Filterable="false" Sortable="false" TextAlign="Radzen.TextAlign.Right" />
+                                        </Columns>
+                                    </RadzenDataGrid>
+                                    <div class="container-total">
+                                        <div class="item">
+                                            <label>
+                                                @(
+                                                    $"Records: {dataMaxLabelLineSpecsView.Count}"
+                                            )
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </ContentTemplate>
@@ -405,7 +439,6 @@
                         <TabHeader Text="@GetName( "ZebraLabelSettings", new LabelStyle())"></TabHeader>
                     </ChildContent>
                     <ContentTemplate>
-
                         <div class="flex-verical-start">
                             <div class="grid-columns-header ">
                                 <div><label><strong class="c-red">*</strong> @GetName( "ColumnSeparatorSpace", new DataMaxLabelSpecs())</label> </div>
@@ -419,8 +452,10 @@
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                 </svg>
                             </div>
-                            <div class="flex-horizontal-center ">
-                                <RadzenDataGrid AllowFiltering="true"
+                            <div >
+                                @if (zebraLabelLineSpecsView != null && zebraLabelLineSpecsView.Count > 0)
+                                {
+                                    <RadzenDataGrid AllowFiltering="true"
                                                 AllowColumnResize="true"
                                                 AllowAlternatingRows="true"
                                                 FilterMode="FilterMode.Advanced"
@@ -431,28 +466,36 @@
                                                 ShowPagingSummary="true"
                                                 Data="@zebraLabelLineSpecsView"
                                                 TItem="ZebraLabelLineSpecView"
-                                                ColumnWidth="300px"
+                                                ColumnWidth="100%"
                                                 SelectionMode="DataGridSelectionMode.Single"
                                                 LogicalFilterOperator="LogicalFilterOperator.Or"
                                                 CellContextMenu="@ShowContextMenuWithContent"
                                                 PageNumbersCount="100"
-                                                PageSize="2">
+                                                PageSize="50">
+                                        <Columns>
 
-                                    <Columns>
-                                        <RadzenDataGridColumn TItem="ZebraLabelLineSpecView" Property="@nameof(ZebraLabelLineSpecView.NameLabelField)" Title="@GetName( "Name", new DataMaxLabelLineSpec())" Width="80px" />
-                                        <RadzenDataGridColumn TItem="ZebraLabelLineSpecView" Property="@nameof(ZebraLabelLineSpecView.CampoA)" Title="@GetName( "Rotation", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                        <RadzenDataGridColumn TItem="ZebraLabelLineSpecView" Property="@nameof(ZebraLabelLineSpecView.CampoB)" Title="@GetName( "Font", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                        <RadzenDataGridColumn TItem="ZebraLabelLineSpecView" Property="@nameof(ZebraLabelLineSpecView.CampoC)" Title="@GetName( "Width", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                        <RadzenDataGridColumn TItem="ZebraLabelLineSpecView" Property="@nameof(ZebraLabelLineSpecView.CampoD)" Title="@GetName( "Height", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                        <RadzenDataGridColumn TItem="ZebraLabelLineSpecView" Property="@nameof(ZebraLabelLineSpecView.CampoEEE)" Title="@GetName( "Height", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                        <RadzenDataGridColumn TItem="ZebraLabelLineSpecView" Property="@nameof(ZebraLabelLineSpecView.CampoFFFF)" Title="@GetName( "Height", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                        <RadzenDataGridColumn TItem="ZebraLabelLineSpecView" Property="@nameof(ZebraLabelLineSpecView.CampoGGGG)" Title="@GetName( "Height", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                        <RadzenDataGridColumn TItem="ZebraLabelLineSpecView" Property="@nameof(ZebraLabelLineSpecView.CampoHHHH)" Title="@GetName( "Height", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                        <RadzenDataGridColumn TItem="ZebraLabelLineSpecView" Property="@nameof(ZebraLabelLineSpecView.CampoIIII)" Title="@GetName( "Height", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                            <RadzenDataGridColumn TItem="ZebraLabelLineSpecView" Property="@nameof(ZebraLabelLineSpecView.CampoA)" Title="@GetName( "Rotation", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Right" />
+                                            <RadzenDataGridColumn TItem="ZebraLabelLineSpecView" Property="@nameof(ZebraLabelLineSpecView.CampoB)" Title="@GetName( "Font", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Right" />
+                                            <RadzenDataGridColumn TItem="ZebraLabelLineSpecView" Property="@nameof(ZebraLabelLineSpecView.CampoC)" Title="@GetName( "Width", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Right" />
+                                            <RadzenDataGridColumn TItem="ZebraLabelLineSpecView" Property="@nameof(ZebraLabelLineSpecView.CampoD)" Title="@GetName( "Height", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Right" />
+                                            <RadzenDataGridColumn TItem="ZebraLabelLineSpecView" Property="@nameof(ZebraLabelLineSpecView.CampoEEE)" Title="@GetName( "CampoEEE", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Right" />
+                                            <RadzenDataGridColumn TItem="ZebraLabelLineSpecView" Property="@nameof(ZebraLabelLineSpecView.CampoFFFF)" Title="@GetName( "CampoFFFF", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Right" />
+                                            <RadzenDataGridColumn TItem="ZebraLabelLineSpecView" Property="@nameof(ZebraLabelLineSpecView.CampoGGGG)" Title="@GetName( "CampoGGGG", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Right" />
+                                            <RadzenDataGridColumn TItem="ZebraLabelLineSpecView" Property="@nameof(ZebraLabelLineSpecView.CampoHHHH)" Title="@GetName( "CampoHHHH", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Right" />
+                                            <RadzenDataGridColumn TItem="ZebraLabelLineSpecView" Property="@nameof(ZebraLabelLineSpecView.CampoIIII)" Title="@GetName( "CampoIIII", new DataMaxLabelLineSpec())" Width="180px" TextAlign="Radzen.TextAlign.Right" />
 
-                                    </Columns>
-                                </RadzenDataGrid>
-
+                                        </Columns>
+                                    </RadzenDataGrid>
+                                    <div class="container-total">
+                                        <div class="item">
+                                            <label>
+                                                @(
+                                                    $"Records: {zebraLabelLineSpecsView.Count}"
+                                            )
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
                             </div>
 
                         </div>
@@ -498,7 +541,7 @@
     List<LabelPurposeView> dataMaxUsedForsView = new();
     List<LabelPurpose> dataMaxUsedFors = new();
     LabelPurpose dataMaxUsedFor = new();
-    List<GridColumn> gridColumnListDataMaxSettings = new();
+  
     LabelField dataMaxFieldInLabel = new();
     #endregion Tag 2
 
@@ -514,12 +557,10 @@
     List<LabelPurposeView> usedForList = new();
     List<LabelPurpose> zebraUsedFors = new();
     LabelPurpose zebraUsedFor = new();
-    List<GridColumn> gridColumnListZebraLabelSettings = new();
+  
 
 
     #endregion Tag 3
-
-
 
     public bool modeEdit = true, viewMsg = false;
     public string msg = "", pageView = "";
@@ -557,31 +598,11 @@
             }
 
 
-
         }
         if (labelStylesId == null)
         {
             labelStyle = new();
         }
-
-        gridColumnListDataMaxSettings = new List<GridColumn>
-                    {
-
-              new GridColumn() { Field=nameof(DataMaxLabelSpecs.ColumnSeparatorSpace) ,  HeaderText = @GetName( "ColumnSeparatorSpace", new DataMaxLabelSpecs())  },
-
-                    };
-
-
-
-
-        gridColumnListZebraLabelSettings = new List<GridColumn>
-                    {
-
-              new GridColumn() { Field=nameof(zebraLabelSettings.ColumnSeparatorSpace) ,  HeaderText = @GetName( "ColumnSeparatorSpace", new ZebraLabelSpecs())  },
-
-                    };
-
-
 
 
     }
@@ -692,6 +713,8 @@
             zebraUsedForsView.Add(new LabelPurposeView { value = zebraUsedFor.ToString() });
 
         }
+
+      
 
         Msg("Added", 1);
         StateHasChanged();

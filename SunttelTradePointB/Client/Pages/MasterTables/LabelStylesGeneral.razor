@@ -75,9 +75,10 @@ else
             <Columns>
                 <RadzenDataGridColumn TItem="LabelStyle" Property="Name" Title="@GetName( "Name", new AtomConcept())" Width="80px" />
                 <RadzenDataGridColumn TItem="LabelStyle" Property="Code" Title="@GetName( "Code", new AtomConcept())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                <RadzenDataGridColumn TItem="LabelStyle" Property="@nameof(LabelStyle.PDFReportName)" Title="@GetName( "PDFReportName", new LabelStyle())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                <RadzenDataGridColumn TItem="LabelStyle" Property="@nameof(LabelStyle.Purpose)" Title="@GetName( "Purpose", new LabelStyle())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
                  <RadzenDataGridColumn TItem="LabelStyle" Property="Notes" Title="@GetName( "Notes", new AtomConcept())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                <RadzenDataGridColumn TItem="LabelStyle" Property="PDFReportName" Title="@GetName( "PDFReportName", new LabelStyle())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                <RadzenDataGridColumn TItem="LabelStyle" Property="Purpose" Title="@GetName( "Purpose", new LabelStyle())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                <RadzenDataGridColumn TItem="LabelStyle" Property="Id" Title="@GetName( "Id", new LabelStyle())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
             </Columns>
         </RadzenDataGrid>
 

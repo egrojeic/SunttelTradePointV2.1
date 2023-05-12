@@ -30,7 +30,8 @@
     }
 </style>
 
-
+<MessageSaveComponent isVisible="visibleMsg" message="@msg">
+</MessageSaveComponent>
 <PageTitleComponent Title="@namePage" IconName="@icoLogo"
                     Description="@("With this tool you can create and edit " + @namePage)">
 </PageTitleComponent>
@@ -58,7 +59,7 @@
     }
     else
     {
-
+        if(commercialdocumentList!=null){
         <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
                     AllowAlternatingRows="true"
@@ -109,6 +110,9 @@
         </RadzenDataGrid>
         <div class="container-total">
             <div class="item">
+                @($"Records: {commercialdocumentList.Count}")
+            </div>
+            <div class="item">
                 @GetName(nameof(CommercialDocument.FinanceSummary.TotalTaxes), new CommercialDocument()):<b>@SumTotal("TotalTaxes")</b>
             </div>
             <div class="item">
@@ -122,6 +126,7 @@
             </div>
 
         </div>
+        }
     }
 </div>
 
@@ -130,7 +135,7 @@
     [Parameter]
     public string _filterItems { get; set; }
     [Parameter]
-   public string page { get; set; }
+    public string page { get; set; }
     List<CommercialDocument>? commercialdocumentList { get; set; }
 
     public CommercialDocumentType commercialDocumentType { get; set; }
@@ -142,9 +147,10 @@
     bool isSale = true;
 
     string namePage = ""; 
-
     string backPage = "";
     string icoLogo = "";
+    bool  visibleMsg = false;
+    string  msg = "";
 
     public DateTime startingDate { get; set; }
     public DateTime endDate { get; set; }
@@ -175,7 +181,7 @@
         StateHasChanged();
     }
 
-    
+
 
 
     public async void LoadData()
@@ -185,6 +191,10 @@
         {
             commercialdocumentList = await DocumentServices.GetCommercialDocumentList(startingDate, endDate, commercialDocumentType.Id, (_filterItems != null ? _filterItems : "all"),vendor, isSale);
 
+        }
+        else
+        {
+            alert("Type required");
         }
         isLoading = false;     
         StateHasChanged();
@@ -219,7 +229,7 @@
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CommercialDocument> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
 
@@ -261,6 +271,12 @@
         return value.ToString("N2", format);
     }
 
+    public void alert(string _msg)
+    {
+        visibleMsg = true;
+        this.msg = _msg;
+        StateHasChanged();
+    }
 
     public void ValidateUri()
     {

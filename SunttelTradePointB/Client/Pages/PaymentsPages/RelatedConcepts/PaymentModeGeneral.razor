@@ -36,14 +36,14 @@
     <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
     <PaymentModeMenu></PaymentModeMenu>
-    <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>   
+    <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
 </div>
 
 
 
 <div class="tableContainer">
 
-   
+
     @if (isLoading)
     {
 
@@ -52,9 +52,9 @@
     }
     else
     {
-
-
-        <RadzenDataGrid AllowFiltering="true"
+        @if (paymentModetList != null)
+        {
+            <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
                     AllowAlternatingRows="true"
                     FilterMode="FilterMode.Advanced"
@@ -64,18 +64,29 @@
                     AllowPaging="true"
                     PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                     ShowPagingSummary="true"
-                    Data="PaymentModetList"
+                    Data="paymentModetList"
                     TItem="PaymentMode"
-                    ColumnWidth="300px"
+                    ColumnWidth="100%"
                     SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"                   
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
-            <Columns>
+                <Columns>
 
-                <RadzenDataGridColumn TItem="PaymentMode" Property="Name" Title="@GetName("Name",new BasicConcept())" Width="308px" />              
-             
-            </Columns>
-        </RadzenDataGrid>
+                    <RadzenDataGridColumn TItem="PaymentMode" Property="Name" Title="@GetName("Name",new BasicConcept())" Width="308px" />
+
+                </Columns>
+            </RadzenDataGrid>
+            <div class="container-total">
+                <div class="item">
+                    <label>
+                        @(
+                            $"Records: {paymentModetList.Count}"
+                            )
+                    </label>
+                </div>
+            </div>
+        }
+
     }
 </div>
 
@@ -84,8 +95,8 @@
 @code {
     [Parameter]
     public string _filterItems { get; set; }
-    public List<PaymentMode> PaymentModetList { get; set; }
-   
+    public List<PaymentMode> paymentModetList { get; set; }
+
 
     bool isLoading = false;
 
@@ -104,28 +115,28 @@
     protected async override void OnInitialized()
     {
 
-       _filterItems ="all";
-       LoadData();
+        _filterItems = "all";
+        LoadData();
         base.OnInitialized();
 
     }
 
     public async void LoadData()
     {
-        isLoading = true;       
-          PaymentModetList =   await PaymentServices.GetPaymentModesList(0,1,(filter != null ? filter : "all"));      
+        isLoading = true;
+        paymentModetList = await PaymentServices.GetPaymentModesList(0, 1, (filter != null ? filter : "all"));
         isLoading = false;
         StateHasChanged();
     }
 
-   
+
 
 
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<PaymentMode> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-      
-        </RadzenMenu>
+
+    </RadzenMenu>
     );
 
 
@@ -139,7 +150,7 @@
         }
     }
 
-    public void Setfilter( string value)
+    public void Setfilter(string value)
     {
         filter = value;
         StateHasChanged();
@@ -153,16 +164,17 @@
 
     public void Add()
     {
-        
+
     }
     private void Home()
     {
-        Navigation.NavigateTo("/Payments");
+         Navigation.NavigateTo("/SalesPayments/1");
     }
 
     public void EventIdSelectionMenuItem(string name)
     {
-        Js.InvokeAsync<object>("open", name, "_blank");
+        Navigation.NavigateTo(name);
+       // Js.InvokeAsync<object>("open", name, "_blank");
 
     }
 

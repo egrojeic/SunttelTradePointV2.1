@@ -63,7 +63,7 @@ else
                 LogicalFilterOperator="LogicalFilterOperator.Or"
                 CellContextMenu="@ShowContextMenuWithContent"
                 PageNumbersCount="100"
-                PageSize="10">
+                PageSize="50">
 
         <Columns>
             <RadzenDataGridColumn TItem="CommercialDocumentType" Property="Name" Title="@GetName("Name", new CommercialDocumentType())" Width="80px" />
@@ -101,6 +101,16 @@ else
             </RadzenDataGridColumn>
         </Columns>
     </RadzenDataGrid>
+    <div class="container-total">
+        <div class="item">
+            <label>
+                @(
+                    $"Records: {commercialDocumentTypes.Count}"
+                    )
+            </label>
+        </div>
+    </div>
+
 }
 
 
@@ -109,16 +119,15 @@ else
     public string _filterItems { get; set; } = "";
 
     public List<CommercialDocumentType> commercialDocumentTypes = new List<CommercialDocumentType>();
-
+    bool isLoading = true;
+    bool isASale = true;
 
     protected override void OnInitialized()
     {
         transactItemsService.Page = "CommercialDocumentType";
         _filterItems = "all";
         LoadData();
-    }
-
-    bool isLoading = false;
+    } 
 
     public string? conceptFilter
     {
@@ -133,7 +142,7 @@ else
     private async Task LoadData()
     {
         isLoading = true;
-        commercialDocumentTypes = await SalesDocumentsService.GetCommercialDocumentsTypes(_filterItems);
+        commercialDocumentTypes = await SalesDocumentsService.GetCommercialDocumentsTypes(_filterItems, isASale);
         isLoading = false;
         StateHasChanged();
     }

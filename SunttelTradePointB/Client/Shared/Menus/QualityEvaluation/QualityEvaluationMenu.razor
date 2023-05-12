@@ -52,7 +52,8 @@
 
     public void EventIdSelectionMenuItem(string name)
     {
-        Js.InvokeAsync<object>("open", name, "_blank");
+        Navigation.NavigateTo(name);
+       //Js.InvokeAsync<object>("open", name, "_blank");
     }
 
     private void CreateNew()

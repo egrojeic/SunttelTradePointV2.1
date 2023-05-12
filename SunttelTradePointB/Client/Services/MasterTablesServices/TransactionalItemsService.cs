@@ -1048,6 +1048,26 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
 
         }
+        public async Task<List<LabelPaper>> GetConceptPaperList(string? filterString = "all")
+        {
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+                var responseMessage = await Gethttp($"/api/TransactionalItemsRelatedConcepts/GetLabelPapers?userId={userId}&ipAddress={ipAddress}&filterString={filterString}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<LabelPaper>>();
+
+                return list;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+
+                return null;
+
+            }
+
+        }
 
         public async Task<bool> SaveProductPackingSpec(string transactionalItemId, PackingSpecs packingSpecs)
         {
@@ -1426,7 +1446,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-      
+
 
         Task<TransactionalItemStatus> ITransactionalItems.GetSelectorListPackingMaterials(string? filterString)
         {

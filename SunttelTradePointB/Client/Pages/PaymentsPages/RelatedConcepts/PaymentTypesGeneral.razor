@@ -33,7 +33,7 @@
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
-    <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+    <button @onclick="Home" class="general-menu-button btn-new"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
     <PaymentTypeMenu></PaymentTypeMenu>
     <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
 </div>
@@ -56,9 +56,9 @@
     }
     else
     {
-
-
-        <RadzenDataGrid AllowFiltering="true"
+        @if (paymentTypettList!=null)
+        {
+            <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
                     AllowAlternatingRows="true"
                     FilterMode="FilterMode.Advanced"
@@ -80,6 +80,17 @@
 
             </Columns>
         </RadzenDataGrid>
+            <div class="container-total">
+                <div class="item">
+                    <label>
+                        @(
+                            $"Records: {paymentTypettList.Count}"
+                            )
+                    </label>
+                </div>
+            </div>
+
+        }
     }
 </div>
 
@@ -162,12 +173,13 @@
 
     private void Home()
     {
-        Navigation.NavigateTo("/Payments");
+        Navigation.NavigateTo("SalesPayments/1");
     }
 
     public void EventIdSelectionMenuItem(string name)
     {
-        Js.InvokeAsync<object>("open", name, "_blank");
+        Navigation.NavigateTo(name);
+       // Js.InvokeAsync<object>("open", name, "_blank");
 
     }
 

@@ -148,7 +148,7 @@ namespace SunttelTradePointB.Client.Interfaces.IPaymentInterfaces
         /// </summary>
         /// <param name="paymentTypeId"></param>       
         /// <returns></returns>
-        Task<List<PaymentStatus>> GetPaymentStatusById(string paymentTypeId);
+        Task<PaymentStatus> GetPaymentStatusById(string paymentTypeId);
 
 
 

@@ -1,5 +1,6 @@
 @page "/QualityEvaluationItem"
 @page "/QualityEvaluationItem/{QualityEvaluationId}/{filter}"
+@page "/QualityEvaluationItem/{QualityEvaluationId}"
 
 
 @using SunttelTradePointB.Shared.Quality;
@@ -311,7 +312,6 @@
 
             </TabItems>
         </SfTab>
-
     }
 
 
@@ -342,9 +342,7 @@
 
             </div>
         </div>
-    }
-
- 
+    }    
 
 </form>
 }
@@ -354,6 +352,8 @@
 @code {
     [Parameter]
     public string qualityEvaluationId { get; set; }
+    [Parameter]
+    public EventCallback<string> PageHome { get; set; }
     [Parameter]
     public string filter { get; set; }
 
@@ -617,17 +617,17 @@
     #endregion grid
 
 
-    public void Add(string value)
-    {
-        EventIdSelectionMenuItem(value);
-    }
+    //public void Add(string value)
+    //{
+    //    EventIdSelectionMenuItem(value);
+    //}
 
 
-    public void EventIdSelectionMenuItem(string name)
-    {
-        Js.InvokeAsync<object>("open", name, "_blank");
+    //public void EventIdSelectionMenuItem(string name)
+    //{
+    //    Js.InvokeAsync<object>("open", name, "_blank");
 
-    }
+    //}
 
     public void alert(string _msg, int? status = 0)
     {
@@ -642,7 +642,8 @@
     {
         string paramFilter = filter != null ? filter : "";
         if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/QualityControlPanel/{paramFilter}");
-        Navigation.NavigateTo($"/QualityControlPanel");
+        PageHome.InvokeAsync("grid");
+        // Navigation.NavigateTo($"/QualityControlPanel");
     }
 
     public void OpenAlert(string _msg, int _status, bool visible)

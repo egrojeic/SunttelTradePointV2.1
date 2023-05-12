@@ -28,10 +28,10 @@
     }
 </style>
 
-<PageTitleComponent Title="Credit Status " IconName="creditStatus.png"
+<PageTitleComponent Title="Credit Status " IconName="CreditStatusGeneral.png"
                     Description="With this tool you can create and edit credit status ">
 </PageTitleComponent>
-
+<img src="~/images/reloa" >
 <div class="panelMenuContainer">
       <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
     <CreditStatusMenu></CreditStatusMenu>
@@ -49,9 +49,9 @@
     }
     else
     {
-
-
-        <RadzenDataGrid AllowFiltering="true"
+        @if (creditStatusList != null)
+        {
+            <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
                     AllowAlternatingRows="true"
                     FilterMode="FilterMode.Advanced"
@@ -73,6 +73,17 @@
 
             </Columns>
         </RadzenDataGrid>
+          <div class="container-total">
+            <div class="item">
+                <label>
+                    @(
+                                $"Records: {creditStatusList.Count}"
+                        )
+                </label>
+            </div>
+        </div>
+
+        }
     }
 </div>
 

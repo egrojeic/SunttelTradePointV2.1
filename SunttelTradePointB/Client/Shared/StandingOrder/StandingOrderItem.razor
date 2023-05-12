@@ -15,9 +15,25 @@
 @inject ActorsNodeService actorsNodeServive
 @inject IJSRuntime Js
 
+
 <style>
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
+    }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
     }
 </style>
 
@@ -223,6 +239,7 @@
     string alertMsg = "";
     string SearcherValue = "";
     bool isVisible = false;
+    bool isASale = true;
     public StandingOrder standingOrderDetails = new();
 
 
@@ -242,7 +259,7 @@
 
     MessageSaveComponent? referAlert;
     string msg = "";
-    bool isLoading = false;
+    bool isLoading = true;
 
     protected override void OnParametersSet()
     {
@@ -260,7 +277,7 @@
             standingOrderDetails = await StandingOrderServices.GetStandingOrderById(standingOrderId);
 
         }
-        documentType = await DocumentServices.GetCommercialDocumentsTypes("all");
+        documentType = await DocumentServices.GetCommercialDocumentsTypes("all", isASale);
 
         businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
         LoadDocument();

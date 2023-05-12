@@ -68,8 +68,19 @@ else
 
         <Columns>
             <RadzenDataGridColumn TItem="BusinessLine" Property="Name" Title="@GetName("Name", new BasicConcept())" Width="80px" />
+            <RadzenDataGridColumn TItem="BusinessLine" Property="@nameof(BusinessLine.Id)" Title="@GetName("Name", new BasicConcept())" Width="50px" />
         </Columns>
     </RadzenDataGrid>
+    <div class="container-total">
+        <div class="item">
+            <label>
+                @(
+                    $"Records: {businessLines.Count}"
+                    )
+            </label>
+        </div>
+    </div>
+
 }
 
 

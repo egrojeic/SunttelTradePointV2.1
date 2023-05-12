@@ -38,7 +38,7 @@
     <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
 </div>
 <div class="panelMenuContainer">
-    <StandingOrderMenu2 SetDocumentTypeMode="SetDocumentType"></StandingOrderMenu2>
+    <StandingOrderMenu2 isASale="isASale" SetDocumentTypeMode="SetDocumentType"></StandingOrderMenu2>
     <RangeDatesInput @bind-StartDate="@startingDate"
                      @bind-EndDate="endDate"
                      StartDateName="From"
@@ -79,9 +79,9 @@
                     PageNumbersCount="100">
                 <Columns>
                     <RadzenDataGridColumn TItem="StandingOrder" Property="DocumentNumber" Title="@GetName("DocumentNumber",new StandingOrder())" Width="108px" />
-                    <RadzenDataGridColumn TItem="StandingOrder" Property="BusinessLineDoc.Name" Title="@GetName("BusinessLineDoc",new StandingOrder())" Width="108px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="BusinessLineDoc.Name" Title="@GetName("BusinessLineDoc",new StandingOrder())"  Width="108px" />
                     <RadzenDataGridColumn TItem="StandingOrder" Property="PO" Title="@GetName("PO",new StandingOrder())" Width="98px" />
-                    <RadzenDataGridColumn TItem="StandingOrder" Property="StartingShipDate" Title="@GetName("StartingShipDate",new StandingOrder())" Width="108px">
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="StartingShipDate" Title="@GetName("StartingShipDate",new StandingOrder())" Filterable="false" Width="118px">
                         <Template>
                             @{
                                 var FinalShipDate = (DateTime)context.GetType().GetProperty(nameof(StandingOrder.FinalShipDate)).GetValue(context);
@@ -89,7 +89,7 @@
                             }
                         </Template>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="StandingOrder" Property="FinalShipDate" FormatString="MM/dd/yyyy" Title="@GetName("FinalShipDate",new StandingOrder())" Width="100px">
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="FinalShipDate" FormatString="MM/dd/yyyy" Title="@GetName("FinalShipDate",new StandingOrder())" Filterable="false" Width="118px">
                         <Template>
                             @{
                                 var FinalShipDate = (DateTime)context.GetType().GetProperty(nameof(StandingOrder.FinalShipDate)).GetValue(context);
@@ -101,14 +101,19 @@
                     <RadzenDataGridColumn TItem="StandingOrder" Property="Vendor.Name" Title="@GetName("Vendor",new StandingOrder())" Width="208px" />
                     <RadzenDataGridColumn TItem="StandingOrder" Property="Buyer.Name" Title="@GetName("Buyer",new StandingOrder())" Width="208px" />
                     <RadzenDataGridColumn TItem="StandingOrder" Property="SalesPerson" Title="@GetName("SalesPerson",new StandingOrder())" Width="158px" />
-                    <RadzenDataGridColumn TItem="StandingOrder" Property="@nameof(StandingOrder.FrequencyInDays)" Title="@GetName("FrequencyInDays",new StandingOrder())" Filterable="false" Width="58px" />
+                    <RadzenDataGridColumn TItem="StandingOrder" Property="@nameof(StandingOrder.FrequencyInDays)" Title="@GetName("FrequencyInDays",new StandingOrder())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Width="58px" />
                     <RadzenDataGridColumn TItem="StandingOrder" Property="DeliveryAddress" Title="@GetName("DeliveryAddress",new StandingOrder())" Sortable="false" Filterable="false" Width="208px" />
                     <RadzenDataGridColumn TItem="StandingOrder" Property="TransportationMode" Title="@GetName("TransportationMode",new StandingOrder())" Sortable="false" Filterable="false" Width="150px" />
 
                 </Columns>
             </RadzenDataGrid>
             <div class="container-total">
-                <div class="item"><label>@SumTotal()</label> </div>
+                <div class="item">
+                    <label>
+                        @($"Records: {standingOrderList.Count}")
+                    </label>
+                </div>
+                  <div class="item"><label>@SumTotal()</label> </div>
             </div>
         }
     }
@@ -121,7 +126,7 @@
     public string _filterItems { get; set; }
     public List<StandingOrder> standingOrderList { get; set; }
     public CommercialDocumentType documentType { get; set; }
-
+    public bool isASale = true;
     bool isLoading = false;
 
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
@@ -138,11 +143,8 @@
 
     protected async override void OnInitialized()
     {
-
         if (_filterItems != null) LoadData();
         base.OnInitialized();
-
-
     }
 
     public async void LoadData()
