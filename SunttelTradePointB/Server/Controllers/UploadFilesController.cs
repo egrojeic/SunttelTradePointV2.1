@@ -86,6 +86,9 @@ namespace SunttelTradePointB.Server.Controllers
                 case "1":
                     uploadFolder = "entityImages";
                     break;
+                case "2":
+                    uploadFolder = "qualityImages";
+                    break;
 
             }
             //var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), uploadFolder);

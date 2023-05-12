@@ -1675,7 +1675,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     var csv = new CsvReader(reader, config);
                     // Lectura de los registros del archivo CSV
                     // LOS 3 
-                    var records = csv.GetRecords<ActorsImport>().ToList();
+                    var records = csv.GetRecords<ProductsImport>().ToList();
 
                     List<TransactionalItem> results = _mapper.Map<List<TransactionalItem>>(records);
 

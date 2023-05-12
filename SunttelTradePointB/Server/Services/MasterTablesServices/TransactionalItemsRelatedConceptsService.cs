@@ -887,13 +887,17 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 {
                     var pipeline = new List<BsonDocument>();
 
-                    pipeline.Add(
+                    if (filter.ToLower() != "all")
+                    {
+                        pipeline.Add(
                         new BsonDocument(
                             "$match", new BsonDocument(
                                 "Name", new BsonDocument("$regex", new BsonRegularExpression($"/{filter}/i"))
                             )
                         )
-                    );
+                        );
+                    }
+
                     List<LabelStyle> results = await _labelStyle.Aggregate<LabelStyle>(pipeline).ToListAsync();
                     return (true, results, null);
                 }
