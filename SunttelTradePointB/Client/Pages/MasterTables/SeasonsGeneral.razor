@@ -49,10 +49,11 @@
 }
 else
 {
-    if (seasonBusiness == null) seasonBusiness = new();
+    if (seasonBusiness != null)
+    {
 
 
-    <RadzenDataGrid AllowFiltering="true"
+        <RadzenDataGrid AllowFiltering="true"
                 AllowColumnResize="true"
                 AllowAlternatingRows="true"
                 FilterMode="FilterMode.Advanced"
@@ -70,19 +71,26 @@ else
                 PageNumbersCount="100"
                 PageSize="50">
 
-        <Columns>
-            <RadzenDataGridColumn TItem="SeasonBusiness" Property="Box.Name)" Title="@GetName("Name", new AtomConcept())"></RadzenDataGridColumn>
+            <Columns>
+                <RadzenDataGridColumn TItem="SeasonBusiness" Property="Name" Title="@GetName("Name", new AtomConcept())"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SeasonBusiness" Property="Code" Title="@GetName("Code", new AtomConcept())"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SeasonBusiness" Property="FlagSundayShipping)" Title="@GetName("FlagSundayShipping", new SeasonBusiness())"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SeasonBusiness" Property="StartDate" Title="@GetName("StartDate", new SeasonBusiness())" FormatString="{0:yyyy-MM-dd}" Filterable="false"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SeasonBusiness" Property="EndDate" Title="@GetName("EndDate", new SeasonBusiness())" FormatString="{0:yyyy-MM-dd}" Filterable="false"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SeasonBusiness" Property="Notes" Title="@GetName("Notes", new AtomConcept())"></RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+        <div class="container-total">
+            <div class="item">
+                <label>
+                    @(
+                        $"Records: {seasonBusiness.Count}"
+                        )
+                </label>
+            </div>
+        </div>
 
-            <RadzenDataGridColumn TItem="SeasonBusiness" Property="SeasonBusiness.Name" Title="@GetName("Name", new AtomConcept())"></RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="SeasonBusiness" Property="SeasonBusiness.Code" Title="@GetName("Code", new AtomConcept())"></RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="SeasonBusiness" Property="SeasonBusiness.FlagSundayShipping)" Title="@GetName("FlagSundayShipping", new SeasonBusiness())"></RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="SeasonBusiness" Property="SeasonBusiness.StartDate" Title="@GetName("StartDate", new SeasonBusiness())"></RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="SeasonBusiness" Property="SeasonBusiness.EndDate" Title="@GetName("EndDate", new SeasonBusiness())"></RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="SeasonBusiness" Property="SeasonBusiness.Notes" Title="@GetName("Notes", new AtomConcept())"></RadzenDataGridColumn>
-        </Columns>
-    </RadzenDataGrid>
-
-
+    }
 }
 
 
@@ -95,9 +103,9 @@ else
 
     bool isLoading = false;
     List<ContextMenuItemModel> contextMenuItemModel = new List<ContextMenuItemModel>()
-        {
+            {
         new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" }
-        };
+            };
 
     public string? conceptFilter
     {
@@ -112,7 +120,7 @@ else
     protected override void OnInitialized()
     {
         _filterItems = "all";
-        LoadData();        
+        LoadData();
         transactItemsService.Page = "SeasonsGeneral";
     }
     private async Task LoadData()

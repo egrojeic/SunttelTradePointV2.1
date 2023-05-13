@@ -12,8 +12,13 @@
 @inject NavigationManager navigationManager
 
 <style>
+    th {
+        z-index: 0;
+    }
+
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
+        z-index: 0;
     }
 
     .rz-datatable-data td, .rz-grid-table td {
@@ -22,7 +27,7 @@
 
         .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
             background-color: #1bc7b7;
-            box-shadow: 0px 2px 5px;
+            box-shadow: 0px 0px 5px;
             font-weight: bold;
         }
 
@@ -36,13 +41,10 @@
                     Description="Actors or nodes are those persons, companies, or entities who are involved in the network of your system">
 </PageTitleComponent>
 
-
 <div class="panelMenuContainer padding">
     <EntityNodesMenu></EntityNodesMenu>
     <SearchComponent @bind-FilterTextSet="@entitiesFilter"></SearchComponent>
-
 </div>
-
 
 <div >
 
@@ -57,8 +59,6 @@
     {
         @if (entityNodesList != null)
         {
-
-
             <RadzenDataGrid 
                     AllowFiltering="true"
                     AllowColumnResize="true"
@@ -69,16 +69,12 @@
                     PageSize="50"
                     AllowPaging="true"
                     PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    Data="@entityNodesList"
-                    TItem="EntityActor"
-                    ColumnWidth="100%"
+                    ShowPagingSummary="true"                    
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"
-                    @bind-Value=@selectedEntities 
-                    Class="m-4"
+                    Data="@entityNodesList"
+                    TItem="EntityActor"                  
                     CellContextMenu="@ShowContextMenuWithContent">
-
                 <Columns>
                     <RadzenDataGridColumn TItem="EntityActor" Property="Code" Title="Code" Frozen="true" Width="80px" />
                     <RadzenDataGridColumn TItem="EntityActor" Property="Name" Filterable="true" Title="Name" Frozen="true" Width="180px" TextAlign="Radzen.TextAlign.Center" />
@@ -87,16 +83,19 @@
                     <RadzenDataGridColumn TItem="EntityActor" Property="GetFirstPhone" Title="Phone" Width="120px" />
                     <RadzenDataGridColumn TItem="EntityActor" Property="DefaultEntityRole" Title="Default Role" Width="120px" />
                     <RadzenDataGridColumn TItem="EntityActor" Property="FullClassName" Title="Groups" Width="120px" />
-
                 </Columns>
             </RadzenDataGrid>
-
-
+            <div class="container-total">
+                <div class="item">
+                    <label>
+                        @(
+                            $"Records: {entityNodesList.Count}"
+                            )
+                    </label>
+                </div>
+            </div>
         }
     }
-
-
-
 
 </div>
 

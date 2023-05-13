@@ -48,6 +48,13 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         Task<List<LabelPaper>> GetConceptPaperList(string? filterString = "all");
 
 
+         /// <summary>
+        /// Retrives a  AssemblyType item meeting search criteria
+        /// </summary>
+        /// <param name="assemblyTypeId"></param>         
+        /// <returns></returns>
+        Task<AssemblyType> GetAssemblyTypeByID(string assemblyTypeId);
+
         /// <summary>
         /// etrives a list with Box To Sale Items
         /// </summary>        //   

@@ -21,11 +21,13 @@ namespace SunttelTradePointB.Client
         public static string pathSquadsImages = "/SkinImagesByAccount";
         static string _pathEntityImages = "/uploads/entityImages";
         static string _pathTransactionalItemsImages = "uploads/transactionalItemsImages";
+        public static string _pathQualityEvaluationImages = "uploads/qualityImages";
 
-        public static string PathEntityImages { 
-            get { return _pathEntityImages; } 
-            set { _pathEntityImages = value; } 
-        } 
+        public static string PathEntityImages
+        {
+            get { return _pathEntityImages; }
+            set { _pathEntityImages = value; }
+        }
         public static string PathTransactionalItemsImages { get; set; } = "/uploads/transactionalItemsImages";
 
 

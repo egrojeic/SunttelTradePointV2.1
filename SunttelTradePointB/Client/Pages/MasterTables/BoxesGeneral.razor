@@ -71,7 +71,7 @@ else
                 PageSize="50">
 
             <Columns>
-                <RadzenDataGridColumn TItem="Box" Property="Name" Title="@GetName("Name", new AtomConcept())" Width="250px"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Box" Property="Name" Title="@GetName("Name", new AtomConcept())" Width="200px"></RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="Box" Property="Code" Title="@GetName("Code", new AtomConcept())" Filterable="false" Width="80px" ></RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="Box" Property="Cost" Title="@GetName("Cost", new Box())" TextAlign="Radzen.TextAlign.Right" FormatString="{0:N2}" Width="100px"></RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="Box" Property="ContainersNumber" Title="@GetName("ContainersNumber", new Box())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="80px"></RadzenDataGridColumn>
@@ -80,9 +80,9 @@ else
                         <RadzenCheckBox @bind-Value="@data.FlagWet" />
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="Box" Property="Length" Title="@GetName("Length", new Box())" Width="80px"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Box" Property="Length" Title="@GetName("Length", new Box())" TextAlign="Radzen.TextAlign.Right" Width="80px"></RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="Box" Property="Width" Title="@GetName("Width", new Box())" TextAlign="Radzen.TextAlign.Right" Width="80px"></RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="Box" Property="Height" Title="@GetName("Height", new Box())" Width="80px" ></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Box" Property="Height" Title="@GetName("Height", new Box())" Width="80px" TextAlign="Radzen.TextAlign.Right"></RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="Box" Property="Notes" Title="@GetName("Notes", new Box())" Width="80px"></RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="Box" Property="Id" Title="@GetName("Id", new Box())" Width="50px"></RadzenDataGridColumn>
             </Columns>
@@ -92,6 +92,11 @@ else
                 <label>
                     @(
                         $"Records: {boxes.Count}"
+                        )
+                </label>
+                <label>
+                    @(
+                        $"{GetName("Cost", new Box())}: {boxes.Sum(s=>s.Cost).ToString("N2")}"
                         )
                 </label>
             </div>

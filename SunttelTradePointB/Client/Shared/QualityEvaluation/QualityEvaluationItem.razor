@@ -22,6 +22,27 @@
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
     }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
+
+
+    .e-tab .e-tab-header.e-vertical .e-toolbar-item .e-tab-text {
+        font-size: 12px;
+        width: 150px;
+    }
 </style>
 
 
@@ -202,7 +223,7 @@
                                         FilterMode="FilterMode.Advanced"
                                         FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                         AllowSorting="true"
-                                        PageSize="20"
+                                        PageSize="50"
                                         AllowPaging="true"
                                         PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                                         ShowPagingSummary="true"
@@ -218,6 +239,16 @@
 
                                         </Columns>
                                     </RadzenDataGrid>
+                                        <div class="container-total">
+                                            <div class="item">
+                                                <label>
+                                                    @(
+                                                        $"Records: {QualityEvaluation.EvaluationParameters.Count}"
+                                                        )
+                                                </label>
+                                            </div>
+                                        </div>
+
                                 }
                             }
 
@@ -233,9 +264,7 @@
                         <div class="container-item">
                             @if (isLoading)
                             {
-
                                 <WaitingProcessIndicator loadingTopic="Quality Evaluation Images"></WaitingProcessIndicator>
-
                             }
                             else
                             {
@@ -250,8 +279,6 @@
                                     </div>
                                 }
 
-
-
                                 if (QualityEvaluation.QualityEvaluationImages != null)
                                 {
                                     <RadzenDataGrid AllowFiltering="true"
@@ -260,7 +287,7 @@
                                         FilterMode="FilterMode.Advanced"
                                         FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                         AllowSorting="true"
-                                        PageSize="20"
+                                        PageSize="50"
                                         AllowPaging="true"
                                         PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                                         ShowPagingSummary="true"
@@ -279,6 +306,15 @@
                                             </RadzenDataGridColumn>
                                         </Columns>
                                     </RadzenDataGrid>
+                                        <div class="container-total">
+                                            <div class="item">
+                                                <label>
+                                                    @(
+                                                        $"Records: {QualityEvaluation.QualityEvaluationImages.Count}"
+                                                        )
+                                                </label>
+                                            </div>
+                                        </div>
 
                                 }
                             }
@@ -395,9 +431,6 @@
 
     protected override async void OnInitialized()
     {
-
-        isLoading = true;
-        StateHasChanged();
         LoadQualityEvaluation();
         if (qualityEvaluationId != null)
         {
@@ -409,19 +442,26 @@
                 if (transactionalItem != null) itemName = transactionalItem.Name;
             }
         }
-        LoadQualityEvaluation();
-        LoadParameter();
-        actionToTakeList = await QualityEvaluationServices.GetQualityActionList("all", 1, 80);
-        trafficLightStatusList = await QualityEvaluationServices.GetQualityTrafficLightList("all", 1, 20);
-        typeList = await QualityEvaluationServices.GetQualityReportTypeList("all", 1, 20);
         qualityParameterGroupList = await QualityEvaluationServices.GetQualityParameterGrouplList("all", 1, 20);
-        isLoading = false;
+        LoadQualityEvaluation();
         StateHasChanged();
+        LoadParameter();
+      
     }
+
+
+
 
     public async Task LoadParameter()
     {
+
+        isLoading = true;
+        StateHasChanged();   
+        actionToTakeList = await QualityEvaluationServices.GetQualityActionList("all", 1, 80);
+        trafficLightStatusList = await QualityEvaluationServices.GetQualityTrafficLightList("all", 1, 20);
+        typeList = await QualityEvaluationServices.GetQualityReportTypeList("all", 1, 20);            
         qualityAssuranceParameterList = await QualityEvaluationServices.GetQualityAssuranceParameterlList("all", 1, 20);
+        isLoading = false;
         StateHasChanged();
     }
 
@@ -562,12 +602,11 @@
         await LoadParameter();
         qualityAssuranceParameterList = qualityAssuranceParameterList.Where(s => s.ParameterGroup.Id == Id).ToList();
         Page("group");
-
     }
 
     public string GetFullPathPhoto(string imgName)
     {
-        return UIClientGlobalVariables.PathTransactionalItemsImages + "/" + imgName;
+        return UIClientGlobalVariables._pathQualityEvaluationImages + "/" + imgName;
     }
 
     public void Page(string value)
@@ -637,11 +676,10 @@
     }
 
 
-
     public void Home()
     {
         string paramFilter = filter != null ? filter : "";
-        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/QualityControlPanel/{paramFilter}");
+        //if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/QualityControlPanel/{paramFilter}");
         PageHome.InvokeAsync("grid");
         // Navigation.NavigateTo($"/QualityControlPanel");
     }

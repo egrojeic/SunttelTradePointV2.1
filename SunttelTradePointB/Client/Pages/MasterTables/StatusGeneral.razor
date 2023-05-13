@@ -36,9 +36,8 @@
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
-    <MenuConcet OriginPage="@Page"></MenuConcet>
+    <MenuConcet OriginPage="Products"></MenuConcet>
     <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
-
 </div>
 
 
@@ -76,8 +75,15 @@ else
 
         </Columns>
     </RadzenDataGrid>
-
-
+    <div class="container-total">
+        <div class="item">
+            <label>
+                @(
+                    $"Records: {transactionalItemStatuss.Count}"
+                    )
+            </label>
+        </div>
+    </div>
 }
 
 

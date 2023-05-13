@@ -30,23 +30,37 @@
     }else{
         @if(palletTypesList != null)
         {
-            <SfGrid DataSource="palletTypesList"
-            Height="auto"
-            Width="100%"
-            TValue="PalletType"
-            AllowFiltering="true"
-            AllowTextWrap="false"
-            AllowPaging="true"
-            AllowResizing="true"
-            ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" } })">
-                <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
-                <GridColumns>
-                    <GridColumn Field="@nameof(PalletType.Code)" HeaderText="Code" Width="110"></GridColumn>
-                    <GridColumn Field="@nameof(PalletType.LegacyId)" HeaderText="LegacyId" Width="110"></GridColumn>
-                    <GridColumn Field="@nameof(PalletType.Name)" HeaderText="Name" Width="110"></GridColumn>
-                </GridColumns>
-                <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="PalletType"></GridEvents>
-            </SfGrid>
+
+            <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="50"
+                    ColumnWidth="100%"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    CellContextMenu="@ShowContextMenuCommercialDocument"
+                    Data="palletTypesList"
+                    TItem="PalletType">
+                <Columns>
+                    <RadzenDataGridColumn TItem="PalletType" Property="Code" Title="@GetName("Code",new PalletType())" Filterable="false" Width="150px" />
+                    <RadzenDataGridColumn TItem="PalletType" Property="Name" Title="@GetName("Name",new PalletType())" Filterable="false" Width="150px" />
+                </Columns>
+            </RadzenDataGrid>
+            <div class="container-total">
+                <div class="item">
+                    <label>
+                        @(
+                            $"Records: {palletTypesList.Count}"
+                            )
+                    </label>
+                </div>
+            </div>
 
             
         }
@@ -104,15 +118,30 @@
         }
     }
 
-    public void OnContextMenuClick(ContextMenuClickEventArgs<PalletType> args)
-    {
-        PalletType _PalletType = new();
-        _PalletType = args.RowInfo.RowData;
+   
 
-        if (args.Item.Text == "Edit")
+
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<PalletType> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        PalletType argObj = (PalletType)args.Value;
+        navigationManager.NavigateTo($"EntityPalletType/{argObj.Id}/Edit");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
-            navigationManager.NavigateTo($"EntityPalletType/{_PalletType.Id}/Edit");
+            ContextMenuService.Close();
         }
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
     }
 
 

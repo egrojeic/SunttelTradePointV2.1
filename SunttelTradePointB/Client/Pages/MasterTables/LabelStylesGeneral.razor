@@ -38,7 +38,7 @@
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
-    <MenuConcet></MenuConcet>
+    <MenuConcet OriginPage="Products"></MenuConcet>
     <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
 
 </div>
@@ -65,7 +65,7 @@ else
                 ShowPagingSummary="true"
                 Data="@labelStyles"
                 TItem="LabelStyle"
-                ColumnWidth="300px"
+                ColumnWidth="100%"
                 SelectionMode="DataGridSelectionMode.Single"
                 LogicalFilterOperator="LogicalFilterOperator.Or"
                 CellContextMenu="@ShowContextMenuWithContent"
@@ -81,6 +81,15 @@ else
                 <RadzenDataGridColumn TItem="LabelStyle" Property="Id" Title="@GetName( "Id", new LabelStyle())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
             </Columns>
         </RadzenDataGrid>
+        <div class="container-total">
+            <div class="item">
+                <label>
+                    @(
+                        $"Records: {labelStyles.Count}"
+                        )
+                </label>
+            </div>
+        </div>
 
 
     }

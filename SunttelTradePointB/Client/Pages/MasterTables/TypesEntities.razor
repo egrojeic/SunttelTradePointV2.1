@@ -44,26 +44,45 @@
     @if (isLoading)
     {
         <WaitingProcessIndicator loadingTopic="Entity Types"></WaitingProcessIndicator>
-    }else{
-        @if(entityTypesList != null)
+    }
+    else
+    {
+        @if (entityTypesList != null)
         {
-            <SfGrid DataSource="entityTypesList"
-            Height="auto"
-            Width="100%"
-            TValue="EntityType"
-            AllowFiltering="true"
-            AllowTextWrap="false"
-            AllowPaging="true"
-            AllowResizing="true"
-            ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" } })">
-                <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
-                <GridColumns>
-                    <GridColumn Field="@nameof(EntityType.Code)" HeaderText="Code" Width="110"></GridColumn>
-                    <GridColumn Field="@nameof(EntityType.LegacyId)" HeaderText="LegacyId" Width="110"></GridColumn>
-                    <GridColumn Field="@nameof(EntityType.Name)" HeaderText="Name" Width="110"></GridColumn>
-                </GridColumns>
-                <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="EntityType"></GridEvents>
-            </SfGrid>
+
+            <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="50"
+                    ColumnWidth="100%"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"                  
+                    CellContextMenu="@ShowContextMenuCommercialDocument"
+                    Data="entityTypesList"
+                    TItem="EntityType">
+                <Columns>
+                    <RadzenDataGridColumn TItem="EntityType" Property="Code" Title="@GetName("Code",new EntityType())" Filterable="false" Width="150px" />
+                    <RadzenDataGridColumn TItem="EntityType" Property="Name" Title="@GetName("LegacyId",new EntityType())" Filterable="false" Width="150px" />
+                </Columns>
+            </RadzenDataGrid>
+            <div class="container-total">
+                <div class="item">
+                    <label>
+                        @(
+                            $"Records: {entityTypesList.Count}"
+                            )
+                    </label>
+                </div>
+            </div>
+
+
+           
 
         }
     }
@@ -94,7 +113,7 @@
 
     private async Task GetEntityTypes(string filter = "")
     {
-        if(filter.Length > 0)
+        if (filter.Length > 0)
         {
             isLoading = true;
             StateHasChanged();
@@ -108,7 +127,7 @@
             StateHasChanged();
 
         }
-    } 
+    }
 
     void ShowContextMenu(MouseEventArgs e)
     {
@@ -118,16 +137,28 @@
         }
     }
 
-    public void OnContextMenuClick(ContextMenuClickEventArgs<EntityType> args)
-    {
-        EntityType _EntityType = new();
-        _EntityType = args.RowInfo.RowData;
 
-        if (args.Item.Text == "Edit")
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<EntityType> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        EntityType argObj = (EntityType)args.Value;        
+        navigationManager.NavigateTo($"/EntityType/{argObj.Id}/Edit");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
-            navigationManager.NavigateTo($"/EntityType/{_EntityType.Id}/Edit");
+            ContextMenuService.Close();
         }
     }
 
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+  
 
 }

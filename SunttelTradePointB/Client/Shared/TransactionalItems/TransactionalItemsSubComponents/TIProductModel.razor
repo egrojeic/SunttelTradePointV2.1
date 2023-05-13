@@ -9,8 +9,23 @@
 @inject TransactionalItemsService transactionalService;
 
 <style>
-    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
+    }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
     }
 </style>
 
@@ -43,13 +58,13 @@ else
                 FilterMode="FilterMode.Advanced"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                 AllowSorting="true"
-                PageSize="4"
+                PageSize="50"
                 AllowPaging="true"
                 PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                 ShowPagingSummary="true"
                 Data="@ProductModels"
                 TItem="ProductModel"
-                ColumnWidth="300px"
+                ColumnWidth="100%"
                 SelectionMode="DataGridSelectionMode.Single"
                 LogicalFilterOperator="LogicalFilterOperator.Or"
                 CellContextMenu="@ShowContextMenuWithContent"
@@ -62,9 +77,18 @@ else
                 <RadzenDataGridColumn TItem="ProductModel" Property="Status.Name" Title="Status" Width="200px" />
                 <RadzenDataGridColumn TItem="ProductModel" Property="ReferenceCost" Title="Reference Cost" Width="120px" />
 
-
             </Columns>
         </RadzenDataGrid>
+          <div class="container-total">
+                    <div class="item">
+                        <label>
+                            @(
+                                $"Records: {ProductModels.Count}"
+                                )
+                        </label>
+                    </div>
+                </div>
+
     }
 }
 

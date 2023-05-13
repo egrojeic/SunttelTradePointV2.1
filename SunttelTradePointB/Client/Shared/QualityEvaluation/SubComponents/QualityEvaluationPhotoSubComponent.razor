@@ -180,13 +180,11 @@
     {
         qualityEvaluationPhoto.ParameterGroup = qualityParameterGroupList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
         StateHasChanged();
-    }
-
-  
+    }  
 
     public string GetFullPathPhoto(string imgName)
     {
-        return UIClientGlobalVariables.PathTransactionalItemsImages + "/" + imgName;
+        return UIClientGlobalVariables._pathQualityEvaluationImages + "/" + imgName;
     }
 
     protected void SetIcoGroup(string value)

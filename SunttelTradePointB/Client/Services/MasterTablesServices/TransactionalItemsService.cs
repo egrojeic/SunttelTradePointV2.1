@@ -198,6 +198,26 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
+         public async Task<AssemblyType> GetAssemblyTypeByID(string assemblyTypeId)
+        {          
+            try
+            {
+                var responseMessage = await Gethttp($"/api/TransactionalItemsRelatedConcepts/GetAssemblyTypeByID?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}&assemblyTypeId={assemblyTypeId}");
+                var item = await responseMessage.Content.ReadFromJsonAsync<AssemblyType>();
+
+
+                return item ;
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+
+                return null;
+
+            }
+        }
+
         public async Task<TransactionalItem> GetTransactionalItemById(string? transactionalItemId = null)
         {
             transactionalItemId = transactionalItemId != null ? transactionalItemId : "";

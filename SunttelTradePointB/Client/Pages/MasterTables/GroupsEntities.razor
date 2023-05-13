@@ -31,25 +31,38 @@
     }else{
         @if(entityGroupList != null)
         {
-            <SfGrid 
-                DataSource="entityGroupList"
-                Height="auto"
-                Width="100%"
-                TValue="EntityGroup"
-                AllowFiltering="true"
-                AllowTextWrap="false"
-                AllowPaging="true"
-                AllowResizing="true"    
-                ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" } })">
-                <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
-                <GridColumns>
-                    <GridColumn Field="@nameof(EntityGroup.Code)" HeaderText="Code" Width="110"></GridColumn>
-                    <GridColumn Field="@nameof(EntityGroup.Name)" HeaderText="Name" Width="110"></GridColumn>
-                    <GridColumn Field="@nameof(EntityGroup.GroupClassificationCriteria)" HeaderText="Group Classification" Width="110"></GridColumn>
-                </GridColumns>
-                    <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="EntityGroup"></GridEvents>
-            </SfGrid>
 
+            <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="50"
+                    ColumnWidth="100%"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    CellContextMenu="@ShowContextMenuCommercialDocument"
+                    Data="entityGroupList"
+                    TItem="EntityGroup">
+                <Columns>
+                    <RadzenDataGridColumn TItem="EntityGroup" Property="Code" Title="@GetName("Code",new EntityGroup())" Filterable="false" Width="50px" />
+                    <RadzenDataGridColumn TItem="EntityGroup" Property="Name" Title="@GetName("Name",new EntityGroup())" Filterable="false" Width="150px" />
+                    <RadzenDataGridColumn TItem="EntityGroup" Property="GroupClassificationCriteria" Title="@GetName("GroupClassificationCriteria",new EntityGroup())" Filterable="false" Width="150px" />
+                </Columns>
+            </RadzenDataGrid>
+            <div class="container-total">
+                <div class="item">
+                    <label>
+                        @(
+                            $"Records: {entityGroupList.Count}"
+                            )
+                    </label>
+                </div>
+            </div>
 
         }
     }
@@ -102,15 +115,28 @@
         }
     }
 
-    public void OnContextMenuClick(ContextMenuClickEventArgs<EntityGroup> args)
-    {
-        EntityGroup _EntityGroup = new();
-        _EntityGroup = args.RowInfo.RowData;
 
-        if (args.Item.Text == "Edit")
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<EntityGroup> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        EntityGroup argObj = (EntityGroup)args.Value;        
+        navigationManager.NavigateTo($"/GroupsEntities/{argObj.Id}");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
-            navigationManager.NavigateTo($"/GroupsEntities/{_EntityGroup.Id}");
+            ContextMenuService.Close();
         }
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
     }
 
 }
