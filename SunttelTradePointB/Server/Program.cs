@@ -36,6 +36,7 @@ using SunttelTradePointB.Server.Interfaces.QualityBkServices;
 using SunttelTradePointB.Server.Services.QualityBkServices;
 using SunttelTradePointB.Server.Interfaces.StandingOrderBkServices;
 using SunttelTradePointB.Server.Services.StandingOrderBkServices;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,6 +61,16 @@ builder.Services.AddSwaggerGen(c =>
     c.OperationFilter<HeaderSquadIdFilter>();
 });
 
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
+    {
+        // Depedne donde se ejcute el proyecto identity
+         options.Authority = "https://localhost:7125";
+         options.TokenValidationParameters = new TokenValidationParameters
+         {
+             ValidateAudience = false
+         };
+    });
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
