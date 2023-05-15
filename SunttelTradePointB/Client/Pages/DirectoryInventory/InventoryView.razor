@@ -1,0 +1,225 @@
+﻿
+@using SunttelTradePointB.Shared.Sales;
+@using SunttelTradePointB.Shared.InvetoryModels;
+@using System.Globalization;
+@inject SunttelTradePointB.Client.Services.InventoryServices.Inventory _Inventory
+@inject ContextMenuService ContextMenuService
+@inject NavigationManager Navigation
+@inject WarehouseService warehouseService
+
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:hover {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
+</style>
+
+<PageTitleComponent Title="Inventory" IconName="inventory.png"
+                    Description="With this tool you can create and edit inventory">
+</PageTitleComponent>
+
+<div class="panelMenuContainer">
+    <InventoryMenu></InventoryMenu>
+    <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
+</div>
+
+<div class="panelMenuContainer">
+    <InventoryMenu2 Setwarehouse="Setwarehouse"></InventoryMenu2>
+    <RangeDatesInput @bind-StartDate="@startingDate"
+                     StartDateName="Date"
+                     EventSearchAll="EventSearchAll"></RangeDatesInput>
+</div>
+
+<div class="tableContainer">
+
+    @if (isLoading)
+    {
+
+        <WaitingProcessIndicator loadingTopic="InventoryDetail Items"></WaitingProcessIndicator>
+
+    }
+    else
+    {
+        @if (InventoryDetaiList != null)
+        {
+            <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="20"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@InventoryDetaiList"
+                    TItem="InventoryDetail"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    CellContextMenu="@ShowContextMenuCommercialDocument">
+                <Columns>
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="CurrentWarehouse.Name" Title="@GetName("CurrentWarehouse", new InventoryDetail())" Width="280px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="InventoryItem.Name" Title="@GetName("InventoryItem", new InventoryDetail())" Width="180px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="Qty" Title="@GetName("Qty", new InventoryDetail())" Width="50px" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyAvailable" Title="@GetName("QtyAvailable", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyReserved" Title="@GetName("QtyReserved", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnHand" Title="@GetName("QtyOnHand", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnOrder" Title="@GetName("QtyOnOrder", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnSalesOrder" Title="@GetName("QtyOnSalesOrder", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnPurchaseOrder" Title="@GetName("QtyOnPurchaseOrder", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnSalesOrder" Title="@GetName("QtyOnSalesOrder", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnTransferOrder" Title="@GetName("QtyOnTransferOrder", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnProductionOrder" Title="@GetName("QtyOnProductionOrder", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="EntryScannedQty" Title="@GetName("EntryScannedQty", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="100px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="EntryDate" Title="@GetName("EntryDate", new InventoryDetail())" FormatString="{0:MM/dd/yyyy}" Width="100px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="ItemBox.Name" Title="@GetName("ItemBox", new InventoryDetail())" Width="100px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="Pack" Title="@GetName("Pack", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="BoxCode" Title="@GetName("BoxCode", new InventoryDetail())" Width="80px" TextAlign="Radzen.TextAlign.Center" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="CustomerReservedFor.Name" Title="@GetName("CustomerReservedFor", new InventoryDetail())" Filterable="false" Sortable="false" Width="180px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="UnitCost" Title="@GetName("UnitCost", new InventoryDetail())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="50px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="BasicUnitsQty" Title="@GetName("BasicUnitsQty", new InventoryDetail())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="80px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="InventoryBusinessLine.Name" Title="@GetName("InventoryBusinessLine", new InventoryDetail())" Filterable="false" Sortable="false" Width="100px" />
+
+                </Columns>
+            </RadzenDataGrid>
+
+            <div class="container-total">
+                <div class="item">@($"Records: {InventoryDetaiList.Count}")</div>
+                <div class="item">@GetName("Qty", new InventoryDetail()):<b>@SumQty()</b></div>
+                <div class="item">@GetName("QtyOnHand", new InventoryDetail()):<b>@SumQtyOnHand()</b></div>
+            </div>
+        }       }
+</div>
+
+
+
+@code {
+    [Parameter]
+    public string _filterItems { get; set; }
+    List<InventoryDetail>? InventoryDetaiList;
+    public List<Concept> buyerList { get; set; }
+    public Concept buyer { get; set; }
+    public Warehouse warehouse { get; set; }
+
+    bool isLoading = false;
+
+    DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
+
+    public string docsFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+    protected async override void OnInitialized()
+    {
+        if (_filterItems != null) LoadData();
+        base.OnInitialized();
+    }
+
+    public async void LoadData()
+    {
+        isLoading = true;
+        if (warehouse != null && warehouse.Id != null)
+        {
+            InventoryDetaiList = await _Inventory.GetInventoryList(_filterItems, warehouse.Id, startingDate, 1, 10);
+        }
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<InventoryDetail> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        InventoryDetail argObj = (InventoryDetail)args.Value;
+
+        Navigation.NavigateTo($"InventoryItem/{argObj.Id}");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+
+    public async void Setwarehouse(Warehouse item)
+    {
+
+        if (item != null)
+        {
+            warehouse = item;
+        }
+        StateHasChanged();
+    }
+
+
+
+    public async void EventIdSelectionAndId(Concept item)
+    {
+
+        //if (SearcherValue == "Buyer")
+        //{
+        //    commercialDocument.Buyer = item;
+        //    buyerWarehouseList = await DocumentServices.GetCommercialBuyerWarehouseList(item.Id);
+        //    addressList = await DocumentServices.GetEntityDetailsAddressList(item.Id);
+
+        //}
+
+        StateHasChanged();
+    }
+
+
+    public string SumQty()
+    {
+        CultureInfo format = new CultureInfo("en-US", false);
+        double value = 0;
+        if (InventoryDetaiList != null) value = InventoryDetaiList.Sum(i => i.Qty);
+        return value.ToString();
+    }
+
+
+    public string SumQtyOnHand()
+    {
+        CultureInfo format = new CultureInfo("en-US", false);
+        double value = 0;
+        if (InventoryDetaiList != null) value = InventoryDetaiList.Sum(i => i.QtyOnHand);
+        return value.ToString();
+    }
+
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    public void EventSearchAll(string value)
+    {
+        docsFilter = value;
+    }
+
+}
