@@ -10,6 +10,34 @@
 @inject ContextMenuService ContextMenuService
 
 
+<style>
+
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
+
+    .e-tab .e-tab-header.e-vertical .e-toolbar-item .e-tab-text {
+        font-size: 12px;
+        width: 150px;
+    }
+</style>
+
+
 @if (@viewMsg)
 {
     <MessageSaveComponent isVisible="viewMsg" message="@msg">
@@ -189,7 +217,8 @@
                                                     FilterMode="FilterMode.Advanced"
                                                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                                     AllowSorting="true"
-                                                    PageSize="20"
+                                                    PageSize="50"
+                                                    ColumnWidth="100%"
                                                     AllowPaging="true"
                                                     PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                                                     ShowPagingSummary="true"
@@ -204,9 +233,15 @@
 
                                             </Columns>
                                         </RadzenDataGrid>
-
-
-
+                                        <div style="width: 100%; display: flex; flex-direction: row; column-gap: 20px; background-color: #f1f1f1; box-shadow: 0px 0px 5px; justify-content: center;   align-content: end;  align-items: center;">
+                                            <div style=" height: auto; width: auto; display: flex; flex-direction: row;  column-gap: 20px; align-content: center; font-size: 12px;">
+                                                <label>
+                                                    @(
+                                                        $"Records: {materialsRecipeItemsAssembly.Count}"
+                                                        )
+                                                </label>
+                                            </div>
+                                        </div>
                                     }
 
 
@@ -263,9 +298,9 @@
     bool isLoading = false;
 
     string msg = "",
-        pageView = "",
-        SearcherValueMode = "",
-        Mode = "";
+    pageView = "",
+    SearcherValueMode = "",
+    Mode = "";
     int ParamCountResul = 0;
     int status = 0;
 
@@ -571,7 +606,7 @@
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
-        );
+    );
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {

@@ -38,7 +38,7 @@
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
-    <MenuConcet></MenuConcet>
+    <MenuConcet OriginPage="Products"></MenuConcet>
     <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
 
 </div>
@@ -65,7 +65,7 @@ else
                 ShowPagingSummary="true"
                 Data="@labelStyles"
                 TItem="LabelStyle"
-                ColumnWidth="300px"
+                ColumnWidth="100%"
                 SelectionMode="DataGridSelectionMode.Single"
                 LogicalFilterOperator="LogicalFilterOperator.Or"
                 CellContextMenu="@ShowContextMenuWithContent"
@@ -75,11 +75,21 @@ else
             <Columns>
                 <RadzenDataGridColumn TItem="LabelStyle" Property="Name" Title="@GetName( "Name", new AtomConcept())" Width="80px" />
                 <RadzenDataGridColumn TItem="LabelStyle" Property="Code" Title="@GetName( "Code", new AtomConcept())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                <RadzenDataGridColumn TItem="LabelStyle" Property="@nameof(LabelStyle.PDFReportName)" Title="@GetName( "PDFReportName", new LabelStyle())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                <RadzenDataGridColumn TItem="LabelStyle" Property="@nameof(LabelStyle.Purpose)" Title="@GetName( "Purpose", new LabelStyle())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
                  <RadzenDataGridColumn TItem="LabelStyle" Property="Notes" Title="@GetName( "Notes", new AtomConcept())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                <RadzenDataGridColumn TItem="LabelStyle" Property="PDFReportName" Title="@GetName( "PDFReportName", new LabelStyle())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                <RadzenDataGridColumn TItem="LabelStyle" Property="Purpose" Title="@GetName( "Purpose", new LabelStyle())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                <RadzenDataGridColumn TItem="LabelStyle" Property="Id" Title="@GetName( "Id", new LabelStyle())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
             </Columns>
         </RadzenDataGrid>
+        <div class="container-total">
+            <div class="item">
+                <label>
+                    @(
+                        $"Records: {labelStyles.Count}"
+                        )
+                </label>
+            </div>
+        </div>
 
 
     }

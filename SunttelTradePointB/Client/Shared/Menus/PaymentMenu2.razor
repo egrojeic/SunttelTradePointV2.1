@@ -7,27 +7,25 @@
 
 
 
-@*
-<div class="aling-div ">
 
+<div class="aling-div ">
     <div>
         <label class="lblControl col-form-label">
             @GetName("DocumentType",new Payment())
         </label>
     </div>
-
-        <div class="InventoryBusinessLine">
-            <select @onchange="SetDocumentType" class="select-style">
-                @if (commercialDocumentTypeList != null)
+    <div class="InventoryBusinessLine">
+        <select @onchange="SetDocumentType" class="select-style">
+            @if (commercialDocumentTypeList != null)
+            {
+                @foreach (var item in commercialDocumentTypeList)
                 {
-                    @foreach (var item in commercialDocumentTypeList)
-                    {
-                        <option value="@(item.Id)" selected>@(item.Name)</option>
-                    }
+                    <option value="@(item.Id)" selected>@(item.Name)</option>
                 }
-            </select>
-        </div>
-</div>*@
+            }
+        </select>
+    </div>
+</div>
 
 
 @code {
@@ -36,21 +34,26 @@
     [Parameter]
     public EventCallback<CommercialDocumentType> SetDocumentTypeId { get; set; }
     [Parameter]
-    public bool isSales { get; set; }
+    public bool isASales { get; set; } 
+    [Parameter]
+    public bool pageBack { get; set; }
 
 
     void ToggleMenu()
     {
-
         StateHasChanged();
-
     }
 
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
 
 
     protected async override void OnInitialized()
     {
-        commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes(isSales);
+        commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes(isASales);
         StateHasChanged();
     }
 
@@ -91,7 +94,7 @@
 
     private void CreateNew()
     {
-        Navigation.NavigateTo("/SaleItem");
+        Navigation.NavigateTo($"/{pageBack}");
     }
 
 }

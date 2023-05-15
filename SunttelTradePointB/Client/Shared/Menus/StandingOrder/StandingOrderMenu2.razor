@@ -10,7 +10,7 @@
 <div id="container-menu-general">
     <nav>
         <div>
-            <label class="lblControl col-form-label" style="color:white" >
+            <label class="lblControl col-form-label" style="color:white">
                 @GetName("DocumentType",new CommercialDocument())
             </label>
         </div>
@@ -37,20 +37,17 @@
     public List<CommercialDocumentType> commercialDocumentTypeList { get; set; }
     [Parameter]
     public EventCallback<CommercialDocumentType> SetDocumentTypeMode { get; set; }
-    bool isSale = false;
+    [Parameter]
+    public bool isASale { get; set; } = true;
 
     void ToggleMenu()
     {
-      
         StateHasChanged();
-
     }
-
-
 
     protected async override void OnInitialized()
     {
-        commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes(isSale);
+        commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes(isASale);
         StateHasChanged();
     }
 

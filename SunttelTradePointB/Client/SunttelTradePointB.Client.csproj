@@ -9,6 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Shared\TransactionalItems\TransactionalItemsSubComponents\DataGrid.razor" />
+    <Content Remove="Shared\TransactionalItems\TransactionalItemsSubComponents\GridPackingRecipe.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Shared\TransactionalItems\TransactionalItemsSubComponents\NewPackingRecipe.razor~RF19b0e97.TMP" />
   </ItemGroup>
 

@@ -17,7 +17,7 @@
         padding: 3px;
     }
 
-        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:hover {
             background-color: #1bc7b7;
             box-shadow: 0px 2px 5px;
             font-weight: bold;
@@ -33,7 +33,6 @@
                     Description="With this tool you can create and edit inventory">
 </PageTitleComponent>
 
-
 <div class="panelMenuContainer">
     <InventoryMenu></InventoryMenu>
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
@@ -46,11 +45,7 @@
                      EventSearchAll="EventSearchAll"></RangeDatesInput>
 </div>
 
-
-
-
 <div class="tableContainer">
-
 
     @if (isLoading)
     {
@@ -60,8 +55,9 @@
     }
     else
     {
-
-        <RadzenDataGrid AllowFiltering="true"
+        @if (InventoryDetaiList != null)
+        {
+            <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
                     AllowAlternatingRows="true"
                     FilterMode="FilterMode.Advanced"
@@ -77,39 +73,38 @@
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
-            <Columns>
+                <Columns>
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="CurrentWarehouse.Name" Title="@GetName("CurrentWarehouse", new InventoryDetail())" Width="280px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="InventoryItem.Name" Title="@GetName("InventoryItem", new InventoryDetail())" Width="180px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="Qty" Title="@GetName("Qty", new InventoryDetail())" Width="50px" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyAvailable" Title="@GetName("QtyAvailable", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyReserved" Title="@GetName("QtyReserved", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnHand" Title="@GetName("QtyOnHand", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnOrder" Title="@GetName("QtyOnOrder", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnSalesOrder" Title="@GetName("QtyOnSalesOrder", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnPurchaseOrder" Title="@GetName("QtyOnPurchaseOrder", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnSalesOrder" Title="@GetName("QtyOnSalesOrder", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnTransferOrder" Title="@GetName("QtyOnTransferOrder", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnProductionOrder" Title="@GetName("QtyOnProductionOrder", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="EntryScannedQty" Title="@GetName("EntryScannedQty", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="100px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="EntryDate" Title="@GetName("EntryDate", new InventoryDetail())" FormatString="{0:MM/dd/yyyy}" Width="100px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="ItemBox.Name" Title="@GetName("ItemBox", new InventoryDetail())" Width="100px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="Pack" Title="@GetName("Pack", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="BoxCode" Title="@GetName("BoxCode", new InventoryDetail())" Width="80px" TextAlign="Radzen.TextAlign.Center" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="CustomerReservedFor.Name" Title="@GetName("CustomerReservedFor", new InventoryDetail())" Filterable="false" Sortable="false" Width="180px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="UnitCost" Title="@GetName("UnitCost", new InventoryDetail())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="50px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="BasicUnitsQty" Title="@GetName("BasicUnitsQty", new InventoryDetail())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="80px" />
+                    <RadzenDataGridColumn TItem="InventoryDetail" Property="InventoryBusinessLine.Name" Title="@GetName("InventoryBusinessLine", new InventoryDetail())" Filterable="false" Sortable="false" Width="100px" />
 
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="CurrentWarehouse.Name" Title="@GetName("CurrentWarehouse", new InventoryDetail())" Width="180px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="InventoryItem.Name" Title="@GetName("InventoryItem", new InventoryDetail())" Width="180px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="Qty" Title="@GetName("Qty", new InventoryDetail())" Width="50px" Filterable="false" Sortable="false" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyAvailable" Title="@GetName("QtyAvailable", new InventoryDetail())" Filterable="false" Sortable="false" Width="50px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyReserved" Title="@GetName("QtyReserved", new InventoryDetail())" Filterable="false" Sortable="false" Width="50px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnHand" Title="@GetName("QtyOnHand", new InventoryDetail())" Filterable="false" Sortable="false" Width="50px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnOrder" Title="@GetName("QtyOnOrder", new InventoryDetail())" Filterable="false" Sortable="false" Width="50px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnSalesOrder" Title="@GetName("QtyOnSalesOrder", new InventoryDetail())" Filterable="false" Sortable="false" Width="50px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnPurchaseOrder" Title="@GetName("QtyOnPurchaseOrder", new InventoryDetail())" Filterable="false" Sortable="false" Width="50px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnSalesOrder" Title="@GetName("QtyOnSalesOrder", new InventoryDetail())" Filterable="false" Sortable="false" Width="50px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnTransferOrder" Title="@GetName("QtyOnTransferOrder", new InventoryDetail())" Filterable="false" Sortable="false" Width="50px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnProductionOrder" Title="@GetName("QtyOnProductionOrder", new InventoryDetail())" Filterable="false" Sortable="false" Width="50px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="EntryScannedQty" Title="@GetName("EntryScannedQty", new InventoryDetail())" Filterable="false" Sortable="false" Width="100px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="EntryDate" Title="@GetName("EntryDate", new InventoryDetail())" FormatString="{0:MM/dd/yyyy}" Width="50px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="ItemBox.Name" Title="@GetName("ItemBox", new InventoryDetail())" Width="100px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="Pack" Title="@GetName("Pack", new InventoryDetail())" Filterable="false" Sortable="false" Width="50px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="BoxCode" Title="@GetName("BoxCode", new InventoryDetail())" Width="80px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="CustomerReservedFor.Name" Title="@GetName("CustomerReservedFor", new InventoryDetail())" Filterable="false" Sortable="false" Width="180px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="UnitCost" Title="@GetName("UnitCost", new InventoryDetail())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="50px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="BasicUnitsQty" Title="@GetName("BasicUnitsQty", new InventoryDetail())" Filterable="false" Sortable="false" Width="50px" />
-                <RadzenDataGridColumn TItem="InventoryDetail" Property="InventoryBusinessLine.Name" Title="@GetName("InventoryBusinessLine", new InventoryDetail())" Filterable="false" Sortable="false" Width="100px" />
+                </Columns>
+            </RadzenDataGrid>
 
-
-            </Columns>
-        </RadzenDataGrid>
-
-        <div class="container-total">
-            <div class="item">@GetName("Qty", new InventoryDetail()):<b>@SumQty()</b></div>
-            <div class="item">@GetName("QtyOnHand", new InventoryDetail()):<b>@SumQtyOnHand()</b></div>
-        </div>
-    }
+            <div class="container-total">
+                <div class="item">@($"Records: {InventoryDetaiList.Count}")</div>
+                <div class="item">@GetName("Qty", new InventoryDetail()):<b>@SumQty()</b></div>
+                <div class="item">@GetName("QtyOnHand", new InventoryDetail()):<b>@SumQtyOnHand()</b></div>
+            </div>
+        }       }
 </div>
 
 

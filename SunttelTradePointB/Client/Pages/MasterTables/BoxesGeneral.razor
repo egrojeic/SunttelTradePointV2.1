@@ -71,18 +71,36 @@ else
                 PageSize="50">
 
             <Columns>
-                <RadzenDataGridColumn TItem="Box" Property="Box.Name)" Title="@GetName("Name", new AtomConcept())"></RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="Box" Property="Box.Code)" Title="@GetName("Code", new AtomConcept())"></RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="Box" Property="Box.Cost)" Title="@GetName("Cost", new Box())"></RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="Box" Property="Box.ContainersNumber)" Title="@GetName("ContainersNumber", new Box())"></RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="Box" Property="Box.FlagWet)" Title="@GetName("FlagWet", new Box())"></RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="Box" Property="Box.Length)" Title="@GetName("Length", new Box())"></RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="Box" Property="Box.Width)" Title="@GetName("Width", new Box())"></RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="Box" Property="Box.Height)" Title="@GetName("Height", new Box())"></RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="Box" Property="Box.Notes)" Title="@GetName("Notes", new Box())"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Box" Property="Name" Title="@GetName("Name", new AtomConcept())" Width="200px"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Box" Property="Code" Title="@GetName("Code", new AtomConcept())" Filterable="false" Width="80px" ></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Box" Property="Cost" Title="@GetName("Cost", new Box())" TextAlign="Radzen.TextAlign.Right" FormatString="{0:N2}" Width="100px"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Box" Property="ContainersNumber" Title="@GetName("ContainersNumber", new Box())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="80px"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Box" Property="FlagWet" Title="@GetName("FlagWet", new Box())" Sortable="false" TextAlign="Radzen.TextAlign.Center" Width="80px">
+                    <Template Context="data">
+                        <RadzenCheckBox @bind-Value="@data.FlagWet" />
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Box" Property="Length" Title="@GetName("Length", new Box())" TextAlign="Radzen.TextAlign.Right" Width="80px"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Box" Property="Width" Title="@GetName("Width", new Box())" TextAlign="Radzen.TextAlign.Right" Width="80px"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Box" Property="Height" Title="@GetName("Height", new Box())" Width="80px" TextAlign="Radzen.TextAlign.Right"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Box" Property="Notes" Title="@GetName("Notes", new Box())" Width="80px"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Box" Property="Id" Title="@GetName("Id", new Box())" Width="50px"></RadzenDataGridColumn>
             </Columns>
         </RadzenDataGrid>
-
+        <div class="container-total">
+            <div class="item">
+                <label>
+                    @(
+                        $"Records: {boxes.Count}"
+                        )
+                </label>
+                <label>
+                    @(
+                        $"{GetName("Cost", new Box())}: {boxes.Sum(s=>s.Cost).ToString("N2")}"
+                        )
+                </label>
+            </div>
+        </div>
 
     }
 
@@ -96,13 +114,7 @@ else
     List<GridColumn> ListGridBox = new List<GridColumn>();
     SfGrid<Box>? referDataGrid;
 
-    bool isLoading = false;
-
-    List<ContextMenuItemModel> contextMenuItemModel = new List<ContextMenuItemModel>()
-            {
-        new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" }
-            };
-
+    bool isLoading = false;  
 
     public string? conceptFilter
     {

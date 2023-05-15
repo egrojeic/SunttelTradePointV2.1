@@ -348,7 +348,7 @@ else
     string icoLogo = "";
     bool menuVisible = false;
     bool isVisible = false;
-    bool isSale = false;
+    bool isASale = false;
     bool onInitialized = false;
     public CommercialDocument commercialDocument = new();
     // public SalesDocumentItemsDetails items = new();
@@ -397,7 +397,7 @@ else
 
         }
 
-        documentTypeList = await DocumentServices.GetCommercialDocumentTypes(isSale);
+        documentTypeList = await DocumentServices.GetCommercialDocumentTypes(isASale);
         businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
         carrierList = await DocumentServices.GetCarrierList();
         LoadCommercialDocument();
@@ -481,7 +481,7 @@ else
         SearcherValue = arg.IdControl.ToString();
         if (SearcherValue == "DocumentType")
         {
-            documentTypeList = await DocumentServices.GetCommercialDocumentsTypes(arg.value);
+            documentTypeList = await DocumentServices.GetCommercialDocumentsTypes(arg.value, isASale);
         }
         if (SearcherValue == "Vendor")
         {
@@ -693,7 +693,7 @@ else
         string Name = Navigation.Uri;
         if (Name.Contains("PurchasesItem") || Name.Contains("ProviderCreditsItem"))
         {
-            isSale = false;
+            isASale = false;
             if (Name.Contains("PurchasesItem"))
             {
                 namePage = "Purchase";
@@ -711,7 +711,7 @@ else
 
         if (Name.Contains("SaleItem"))
         {
-            isSale = true;
+            isASale = true;
             if (Name.Contains("SaleItem"))
             {
                 backPage = "SalesDocuments";

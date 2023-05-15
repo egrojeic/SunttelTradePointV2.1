@@ -36,11 +36,11 @@
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
-    <PaymentsMenu page="@backPage"></PaymentsMenu>
+    <PaymentsMenu  page="@backPage"></PaymentsMenu>
     <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
 </div>
 <div class="panelMenuContainer">
-    <PaymentMenu2 isSales="isASale" SetDocumentTypeId="SetDocumentTypeId"></PaymentMenu2>
+    <PaymentMenu2 isASales="@isASale"  SetDocumentTypeId="SetDocumentTypeId"></PaymentMenu2>
     <RangeDatesInput @bind-StartDate="@startingDate"
                      StartDateName="From"
                      @bind-EndDate="endDate"
@@ -60,6 +60,9 @@
     }
     else
     {
+
+        @if (paymentList!=null)
+        {
 
         <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
@@ -98,9 +101,17 @@
                 </RadzenDataGridColumn>
             </Columns>
         </RadzenDataGrid>
+        <div class="container-total">
+            <div class="item">
+                <label>
+                    @($"Records: {paymentList.Count}")
+                </label>
+            </div>
+            <div class="item"><label>@SumTotal()</label> </div>
+        </div>
+        }
     }
 </div>
-
 
 
 @code {
@@ -137,7 +148,6 @@
         ValidateUri();
         base.OnInitialized();
 
-
     }
 
     protected override void OnParametersSet()
@@ -150,9 +160,8 @@
     public async void LoadData()
     {
         isLoading = true;
-        if (documentType != null || true)
-        {
-            startingDate = new DateTime(2019, 1, 1);
+        if (documentType != null)
+        {            
             paymentList = await PaymentServices.GetPaymentList((filter != null ? filter : "all"), (documentType != null ? documentType?.Id : ""), startingDate, endDate, 1, 10);
         }
         isLoading = false;
@@ -205,12 +214,27 @@
         filter = value;
     }
 
+    public string SumTotal()
+    {
+
+        double value = 0;
+        string result = "";
+        if (paymentList != null)
+        {
+            string paymentValue = paymentList.Sum(s => s.PaymentValue).ToString("N2");                 
+            result = $"{GetName("PaymentValue", new Payment())}: {paymentValue}";
+          
+        }
+
+        return result; //value.ToString("N2", format);
+    }
+
     public void ValidateUri()
     {
         string Name = Navigation.Uri;
         if (Name.Contains("SalesPayments"))
         {
-            isASale = false;
+            isASale = true;
             namePage = "Sales Payments";
             backPage = $"SalesPaymentsItem/{page}";
             icoLogo = "Payments.png";
@@ -218,7 +242,7 @@
         else
         if (Name.Contains("PurchasesPayments"))
         {
-            isASale = true;
+            isASale = false;
             if (Name.Contains("PurchasesPayments"))
             {
                 backPage = $"PurchasesPaymentsItem/{page}";

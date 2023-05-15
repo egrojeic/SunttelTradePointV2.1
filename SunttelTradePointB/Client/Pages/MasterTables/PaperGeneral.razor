@@ -1,0 +1,157 @@
+﻿@page "/PaperGeneral"
+@page "/PaperGeneral/{_filterItems}"
+@using SunttelTradePointB.Shared.Common
+@using SunttelTradePointB.Client.Shared.Menus.Paper
+@inject HttpClient Http
+@inject TransactionalItemsService transactItemsService;
+@inject IJSRuntime JSRuntime
+@inject ContextMenuService ContextMenuService
+@inject DialogService DialogService
+@inject NavigationManager Navigation
+
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
+</style>
+
+<PageTitleComponent Title="Papers" IconName="paper.png"
+                    Description="LabelPaper to keep the different products">
+</PageTitleComponent>
+
+<div class="panelMenuContainer">
+    <PaperMenu></PaperMenu>
+    <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
+</div>
+
+@if (isLoading)
+{
+
+    <WaitingProcessIndicator loadingTopic="Transactional Items"></WaitingProcessIndicator>
+
+}
+else
+{
+    @if (papers != null)
+    {
+        <RadzenDataGrid AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="true"
+                FilterMode="FilterMode.Advanced"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                AllowSorting="true"
+                AllowPaging="true"
+                PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                ShowPagingSummary="true"
+                Data="@papers"
+                TItem="LabelPaper"              
+                SelectionMode="DataGridSelectionMode.Single"
+                LogicalFilterOperator="LogicalFilterOperator.Or"
+                CellContextMenu="@ShowContextMenuWithContent"               
+                PageSize="50">
+
+            <Columns>
+                <RadzenDataGridColumn TItem="LabelPaper" Property="@nameof(LabelPaper.Name)" Title="@GetName("Name", new LabelPaper())" Width="200"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="LabelPaper" Property="@nameof(LabelPaper.Code)" Title="@GetName("Code", new LabelPaper())" TextAlign="Radzen.TextAlign.Center" Width="50" Filterable="false"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="LabelPaper" Property="@nameof(LabelPaper.Height)" Title="@GetName("Height", new LabelPaper())" TextAlign="Radzen.TextAlign.Right" Width="80" Filterable="false" Sortable="false" ></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="LabelPaper" Property="@nameof(LabelPaper.Width)" Title="@GetName("Height", new LabelPaper())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="80" ></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="LabelPaper" Property="@nameof(LabelPaper.Notes)" Title="@GetName("Notes", new LabelPaper())" TextAlign="Radzen.TextAlign.Center" Filterable="false" Sortable="false" Width="80"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="LabelPaper" Property="@nameof(LabelPaper.Id)" Title="@GetName("Id", new LabelPaper())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="80"></RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+        <div class="container-total">
+            <div class="item">
+                <label>
+                    @(
+                        $"Records: {papers.Count}"
+                        )
+                </label>
+            </div>
+        </div>
+
+
+    }
+
+}
+
+@code {
+    [Parameter]
+    public string _filterItems { get; set; } = "";
+    public List<LabelPaper> papers { get; set; }
+
+   
+   
+
+    bool isLoading = false;
+
+    public string? conceptFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        _filterItems = "all";
+        LoadData();
+
+        transactItemsService.Page = "Paper";
+    }
+
+ 
+
+    private async Task LoadData()
+    {
+        isLoading = true;
+        papers = await transactItemsService.GetConceptPaperList(_filterItems);
+        isLoading = false;
+        StateHasChanged();
+    }
+
+
+    #region Grid
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<LabelPaper> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        LabelPaper argObj = (LabelPaper)args.Value;
+        Navigation.NavigateTo($"/PaperConcept/{argObj.Id}/{_filterItems}");
+
+    }
+
+    #endregion Grid
+
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name) != null ? UICommonFunctions.GetDisplayName(Obj, Name) : Name;
+        return Name;
+    }
+
+
+
+}

@@ -341,16 +341,16 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
             }
         }
 
-        public async Task<List<PaymentStatus>> GetPaymentStatusById(string paymentTypeId)
+        public async Task<PaymentStatus> GetPaymentStatusById(string paymentId)
         {
             try
             {
                 string Url = pathApi.Replace("*Name", "GetPaymentStatusById");
                 Url = GetGlobalVariables(Url);
-                var responseMessage = await Gethttp(Url);
-                var list = await responseMessage.Content.ReadFromJsonAsync<List<PaymentStatus>>();
+                var responseMessage = await Gethttp($"{Url}&paymentId={paymentId}");
+                PaymentStatus list = await responseMessage.Content.ReadFromJsonAsync<PaymentStatus>();
               
-                return list != null ? list : new List<PaymentStatus>();
+                return list ;
             }
             catch (Exception ex)
             {

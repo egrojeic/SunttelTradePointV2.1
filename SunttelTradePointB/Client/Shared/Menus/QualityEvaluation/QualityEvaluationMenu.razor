@@ -21,11 +21,11 @@
             <SplitButtonEvents ItemSelected="ItemSelected">
             </SplitButtonEvents>
             <DropDownMenuItems>
-                <DropDownMenuItem Id="QualityReportTypeGeneral" Text="Quality Report Type" IconCss="fa-solid fa-clipboard-list"></DropDownMenuItem>
-                <DropDownMenuItem Id="QualityTrafficLightGeneral" Text="Quality Traffic Light" IconCss="fa-solid fa-traffic-light"></DropDownMenuItem>
+                <DropDownMenuItem Id="QualityReportTypeGeneral" Text="Quality Report Type" IconCss="e-menu-icon fa-solid fa-table-columns"></DropDownMenuItem>
+                <DropDownMenuItem Id="QualityTrafficLightGeneral" Text="Quality Traffic Light" IconCss="e-menu-icon  fa-solid fa-layer-group"></DropDownMenuItem>
                 <DropDownMenuItem Id="QualityParameterGroupGeneral" Text="Quality Parameter Group" IconCss="fa-solid fa-clipboard-list"></DropDownMenuItem>
                 <DropDownMenuItem Id="QualityActionGeneral" Text="Quality Action" IconCss="fa-solid fa-clipboard-list"></DropDownMenuItem>
-                <DropDownMenuItem Id="QualityAssuranceParameterGeneral" Text="Quality Parameter" IconCss="fa-solid fa-clipboard-list"></DropDownMenuItem>
+                <DropDownMenuItem Id="QualityAssuranceParameterGeneral" Text="Quality Parameter" IconCss="e-menu-icon fa-solid fa-bookmark"></DropDownMenuItem>
             </DropDownMenuItems>
         </SfSplitButton>    
     </nav>
@@ -33,16 +33,17 @@
 
 
 @code {
-  
 
+    [Parameter]
+    public EventCallback<string> PageHome { get; set; }
 
     protected async override void OnInitialized()
     {
-       // commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes();
+        // commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes();
         StateHasChanged();
     }
 
-  
+
 
     private void ItemSelected(MenuEventArgs args)
     {
@@ -52,12 +53,14 @@
 
     public void EventIdSelectionMenuItem(string name)
     {
-        Js.InvokeAsync<object>("open", name, "_blank");
+        Navigation.NavigateTo(name);
+        //Js.InvokeAsync<object>("open", name, "_blank");
     }
 
     private void CreateNew()
     {
-        Navigation.NavigateTo("/QualityEvaluationItem");
+        PageHome.InvokeAsync("item");
+        // Navigation.NavigateTo("/QualityEvaluationItem");
     }
 
 }

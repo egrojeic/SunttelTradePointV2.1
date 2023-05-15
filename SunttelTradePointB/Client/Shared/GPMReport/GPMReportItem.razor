@@ -82,6 +82,7 @@
     MessageSaveComponent? referAlert;
     string msg = "";
     bool isLoading = false;
+    bool isASale = false;
 
     protected override void OnParametersSet()
     {
@@ -187,7 +188,7 @@
         SearcherValue = arg.IdControl.ToString();
         if (SearcherValue == "DocumentType")
         {
-            documentTypeList = await DocumentServices.GetCommercialDocumentsTypes(arg.value);
+            documentTypeList = await DocumentServices.GetCommercialDocumentsTypes(arg.value, isASale);
         }
         if (SearcherValue == "Vendor")
         {

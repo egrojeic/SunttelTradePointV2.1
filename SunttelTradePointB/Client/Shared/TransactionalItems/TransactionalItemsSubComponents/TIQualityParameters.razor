@@ -11,6 +11,21 @@
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
     }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
 </style>
 
 
@@ -47,6 +62,7 @@
                         PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                         ShowPagingSummary="true"
                         Data="@qualityParameters"
+                        PageSize="50"
                         TItem="TransactionalItemQualityPair"
                         SelectionMode="DataGridSelectionMode.Single"
                         LogicalFilterOperator="LogicalFilterOperator.Or"
@@ -55,10 +71,20 @@
 
                     <Columns>
                         <RadzenDataGridColumn TItem="TransactionalItemQualityPair" Property="TransactionalItemQualityPair.TransactionalItemQuality.Name" Title="@GetName( "TransactionalItemQuality", new TransactionalItemQualityPair())" />
-                        <RadzenDataGridColumn TItem="TransactionalItemQualityPair" Property="TransactionalItemQualityPair.Value" Title="@GetName( "Value", new TransactionalItemQualityPair())" />
+                        <RadzenDataGridColumn TItem="TransactionalItemQualityPair" Property="TransactionalItemQualityPair.Value" Title="@GetName( "Value", new TransactionalItemQualityPair())" FormatString="{0:N2}" TextAlign="Radzen.TextAlign.Right" />
 
                     </Columns>
                 </RadzenDataGrid>
+                  <div class="container-total">
+                    <div class="item">
+                        <label>
+                            @(
+                                $"Records: {qualityParameters.Count}"
+                                )
+                        </label>
+                    </div>
+                </div>
+
             }
         }
     </div>

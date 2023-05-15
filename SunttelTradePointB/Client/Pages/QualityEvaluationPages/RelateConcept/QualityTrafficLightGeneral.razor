@@ -64,8 +64,9 @@
     }
     else
     {
-
-        <RadzenDataGrid AllowFiltering="true"
+        @if (qualityTrafficLightList != null)
+        {
+            <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
                     AllowAlternatingRows="true"
                     FilterMode="FilterMode.Advanced"
@@ -95,6 +96,17 @@
 
             </Columns>
         </RadzenDataGrid>
+          <div class="container-total">
+            <div class="item">
+                <label>
+                    @(
+                        $"Records: {qualityTrafficLightList.Count}"
+                        )
+                </label>
+            </div>
+        </div>
+
+        }
     }
 </div>
 
@@ -199,7 +211,8 @@
 
     public void EventIdSelectionMenuItem(string name)
     {
-        Js.InvokeAsync<object>("open", name, "_blank");
+        Navigation.NavigateTo(name);
+        //Js.InvokeAsync<object>("open", name, "_blank");
     }
 
 }

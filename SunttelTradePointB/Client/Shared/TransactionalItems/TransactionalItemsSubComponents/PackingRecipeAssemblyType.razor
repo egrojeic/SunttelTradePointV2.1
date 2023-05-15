@@ -11,8 +11,22 @@
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
     }
-</style>
 
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
+</style>
 
 @if (@viewMsg)
 {
@@ -22,6 +36,8 @@
 <PageTitleComponent Title="@GetName("ItemAssemblyType", new PackingSpecs())" IconName="assemblyType.png"
                     Description="Here you can add tags">
 </PageTitleComponent>
+
+
 
 
 @if (modePage == "addAndEdit")
@@ -56,7 +72,7 @@
     else
     {
         <div class="panelMenuContainer">
-            <MenuConcet></MenuConcet>
+            <MenuConcet OriginPage="Products"></MenuConcet>
             <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
 
         </div>
@@ -86,6 +102,16 @@
 
             </Columns>
         </RadzenDataGrid>
+        <div class="container-total">
+            <div class="item">
+                <label>
+                    @(
+                        $"Records: {itemAssemblysType.Count}"
+                        )
+                </label>
+            </div>
+        </div>
+
     }
 
 
@@ -123,23 +149,26 @@
     }
 
 
-    protected override Task OnInitializedAsync()
+    protected async override Task OnInitializedAsync()
     {
         var r = modePage;
         _filterItems = "all";
         LoadData();
         if (itemAssemblyTypeId == null)
         {
-            itemAssemblyType = new();
+            itemAssemblyType = await transactionalService.GetAssemblyTypeByID(itemAssemblyTypeId);
         }
         transactionalService.Page = "ItemAssemblyType";
-      
-        return base.OnInitializedAsync();
+        StateHasChanged();
+
     }
 
     protected override void OnParametersSet()
     {
         transactionalService.Page = "ItemAssemblyType";
+        _filterItems = "all";
+        LoadData();
+        StateHasChanged();
         base.OnParametersSet();
     }
 

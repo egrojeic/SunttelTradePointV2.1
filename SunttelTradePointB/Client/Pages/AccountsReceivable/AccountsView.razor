@@ -1,0 +1,228 @@
+﻿
+
+
+@using System;
+@using System.Globalization;
+@using SunttelTradePointB.Shared.Sales;
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject SunttelTradePointB.Client.Services.AccountsReceivableServices.AccountsReceivableServices AccountsReceivableServices
+@inject ContextMenuService ContextMenuService
+@inject NavigationManager Navigation
+@inject IJSRuntime Js
+
+
+
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
+</style>
+
+<PageTitleComponent Title="Accounts Receivable" IconName="commercialActivities.png"
+                    Description="With this tool you can see accounts receivable">
+</PageTitleComponent>
+
+
+<div class="panelMenuContainer">
+    <AccountsReceivableMenu></AccountsReceivableMenu>
+    <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
+    <RangeDatesInput @bind-StartDate="@date"
+                     StartDateName="Date"
+                     EventSearchAll="EventSearchAll"></RangeDatesInput>
+
+</div>
+
+
+
+<div class="tableContainer">
+
+
+    @if (isLoading)
+    {
+
+        <WaitingProcessIndicator loadingTopic="Characteristic Items"></WaitingProcessIndicator>
+
+    }
+    else
+    {
+
+        @if (commercialdocumentList!=null)
+        {
+            <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="50"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@commercialdocumentList"
+                    TItem="CommercialDocument"
+                    ColumnWidth="100%"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    @bind-Value="@selectedcommercialdocuments"
+                  >
+                <Columns>
+                    <RadzenDataGridColumn  TItem="CommercialDocument" Property="@nameof(CommercialDocument.DocumentNumber)" Title="@GetName("DocumentNumber", new CommercialDocument() )" Width="128px" />
+                    <RadzenDataGridColumn  TItem="CommercialDocument" Property="@nameof(CommercialDocument.DeliveryDate)" FormatString="{0:MM/dd/yyyy}" Title="@GetName("DeliveryDate", new CommercialDocument() )" Filterable="false" Width="100px" />
+                    <RadzenDataGridColumn  TItem="CommercialDocument" Property="Vendor.Name" Title="@GetName("Vendor", new CommercialDocument() )" Width="200px" />
+                    <RadzenDataGridColumn  TItem="CommercialDocument" Property="Buyer.Name" Title="@GetName("Buyer", new CommercialDocument() )" Width="200px" />
+                    <RadzenDataGridColumn  TItem="CommercialDocument" Property="ShippingStatusDocument.Name" Title="@GetName("ShippingStatusDocument", new CommercialDocument() )" Width="80px" />
+                    <RadzenDataGridColumn  TItem="CommercialDocument" Property="Season.Name" Title="@GetName("Season", new CommercialDocument() )" Width="100px" />
+                    <RadzenDataGridColumn  TItem="CommercialDocument" Property="FinanceSummary.TotalTaxes" Title="@GetName("TotalTaxes", new FinanceSalesDocumentSummary() )" TextAlign="TextAlign.Right" FormatString="{0:N2}" Filterable="false" Sortable="false" Width="80px" />
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalDiscounts" Title="@GetName("TotalDiscounts", new FinanceSalesDocumentSummary() )" TextAlign="TextAlign.Right" FormatString="{0:N2}" Filterable="false" Sortable="false" Width="80px" />
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalCosts" Title="@GetName("TotalCosts", new FinanceSalesDocumentSummary() )" TextAlign="TextAlign.Right" FormatString="{0:N2}" Filterable="false" Sortable="false" Width="80px" />
+                    <RadzenDataGridColumn  TItem="CommercialDocument" Property="FinanceSummary.TotalAmount" Title="@GetName("TotalAmount", new FinanceSalesDocumentSummary() )" TextAlign="TextAlign.Right" FormatString="{0:N2}" Filterable="false" Sortable="false" Width="80px" />
+                </Columns>
+            </RadzenDataGrid>
+            <div class="container-total">
+                <div class="item">
+                <label>
+                    @($"Records: {commercialdocumentList.Count}")
+                </label>
+            </div>
+            <div class="item"><label>@SumTotal()</label> </div>
+        </div>
+        }
+    }
+</div>
+
+
+@code {
+
+    [Parameter]
+    public string _filterItems { get; set; }
+    List<CommercialDocument>? commercialdocumentList { get; set; }
+    NumberFormatInfo Us = new CultureInfo("en-US", false).NumberFormat;
+    public Warehouse warehouse { get; set; }
+    IList<CommercialDocument>? selectedcommercialdocuments;
+
+    bool isLoading = false;
+
+    DateTime date = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
+
+    public string docsFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+    protected async override void OnInitialized()
+    {
+
+
+        if (_filterItems != null) LoadData();
+        base.OnInitialized();
+
+    }
+
+    public async void LoadData()
+    {
+        isLoading = true;
+
+        commercialdocumentList = await AccountsReceivableServices.GetAccountsReceivableServicesList(date, (_filterItems != null ? _filterItems : "all"), 1, 20);
+
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    public void EventSearchAll(string value)
+    {
+        docsFilter = value;
+    }
+
+    public async void Setwarehouse(Warehouse item)
+    {
+
+        if (item != null)
+        {
+            warehouse = item;
+        }
+        StateHasChanged();
+    }
+
+
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CommercialDocument> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        CommercialDocument argObj = (CommercialDocument)args.Value;
+        Navigation.NavigateTo($"AccountsReceivableippingItem/{argObj.Id}/{docsFilter}");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    
+    }
+
+
+    public string SumTotal()
+    {
+
+        double value = 0;
+        string result = "";
+        if (commercialdocumentList != null)
+        {
+            string totalDiscounts = commercialdocumentList.Sum(s => s.FinanceSummary.TotalDiscounts).ToString("N2");
+            string totalPaid = commercialdocumentList.Sum(s => s.FinanceSummary.TotalPaid).ToString("N2");
+            string totalTaxes = commercialdocumentList.Sum(s => s.FinanceSummary.TotalTaxes).ToString("N2");
+            string totalAmount = commercialdocumentList.Sum(s => s.FinanceSummary.TotalAmount).ToString("N2");
+           
+            result = $"{GetName("TotalBoxes", new CommercialDocument())}: {totalDiscounts}       ";
+            result += " _ ";
+            result += $"{GetName("TotalScanned", new CommercialDocument())}: {totalPaid}      ";
+            result += " _ ";
+            result += $"{GetName("TotalInInventory", new CommercialDocument())}: {totalTaxes}     ";
+            result += " _ ";
+            result += $"{GetName("TotalAmount", new CommercialDocument())}: {totalAmount}     ";
+           
+        }
+
+        return result; 
+    }
+
+
+    public void SetdocsFilter(string value)
+    {
+        docsFilter = value;
+        StateHasChanged();
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+
+
+
+
+}

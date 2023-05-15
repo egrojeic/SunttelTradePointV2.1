@@ -38,7 +38,7 @@
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
-    <MenuConcet></MenuConcet>
+    <MenuConcet OriginPage="Products"></MenuConcet>
     <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
 
 </div>
@@ -52,8 +52,9 @@
 }
 else
 {
-    @if (conceptGroup == null) conceptGroup = new();
-    <RadzenDataGrid AllowFiltering="true"
+    @if (conceptGroup != null)
+    {
+        <RadzenDataGrid AllowFiltering="true"
                 AllowColumnResize="true"
                 AllowAlternatingRows="true"
                 FilterMode="FilterMode.Advanced"
@@ -64,20 +65,31 @@ else
                 ShowPagingSummary="true"
                 Data="@conceptGroup"
                 TItem="ConceptGroup"
-                ColumnWidth="300px"
+                ColumnWidth="100%"
                 SelectionMode="DataGridSelectionMode.Single"
                 LogicalFilterOperator="LogicalFilterOperator.Or"
                 CellContextMenu="@ShowContextMenuWithContent"
                 PageNumbersCount="100"
-                PageSize="2">
+                PageSize="50">
 
-        <Columns>
-            <RadzenDataGridColumn TItem="ConceptGroup" Property="Name" Title="@GetName("TransactionalItemCharacteristic", new ConceptGroup())" Width="80px" />
-            <RadzenDataGridColumn TItem="ConceptGroup" Property="Code" Title="@GetName("Value", new ConceptGroup())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-            <RadzenDataGridColumn TItem="ConceptGroup" Property="GroupClassificationCriteria" Title="@GetName("GroupClassificationCriteria", new ConceptGroup())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+            <Columns>
+                <RadzenDataGridColumn TItem="ConceptGroup" Property="Name" Title="@GetName("TransactionalItemCharacteristic", new ConceptGroup())" Width="250px" />
+                <RadzenDataGridColumn TItem="ConceptGroup" Property="Code" Title="@GetName("Value", new ConceptGroup())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                <RadzenDataGridColumn TItem="ConceptGroup" Property="GroupClassificationCriteria" Title="@GetName("GroupClassificationCriteria", new ConceptGroup())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
 
-        </Columns>
-    </RadzenDataGrid>
+            </Columns>
+        </RadzenDataGrid>
+        <div class="container-total">
+            <div class="item">
+                <label>
+                    @(
+                        $"Records: {conceptGroup.Count}"
+                                    )
+                </label>
+            </div>
+        </div>
+    }
+
 }
 
 

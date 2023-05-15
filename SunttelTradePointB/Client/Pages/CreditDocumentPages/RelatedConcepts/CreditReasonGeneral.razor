@@ -26,6 +26,13 @@
         background-color: #1bc7b7;
         font-weight: bold;
     }
+
+
+    .e-tab .e-tab-header.e-vertical .e-toolbar-item .e-tab-text {
+        font-size: 12px;
+        width: 150px;
+    }
+
 </style>
 
 <PageTitleComponent Title="Credit Reason" IconName="creditReason.png"
@@ -35,12 +42,12 @@
 <div class="panelMenuContainer">
     <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
     <CreditReasonMenu></CreditReasonMenu>
-    <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>   
+    <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
 </div>
 
 <div class="tableContainer">
 
-   
+
     @if (isLoading)
     {
 
@@ -49,8 +56,9 @@
     }
     else
     {
-
-        <RadzenDataGrid AllowFiltering="true"
+        @if (creditReasonList!=null)
+        {
+            <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
                     AllowAlternatingRows="true"
                     FilterMode="FilterMode.Advanced"
@@ -62,16 +70,27 @@
                     ShowPagingSummary="true"
                     Data="creditReasonList"
                     TItem="CreditReason"
-                    ColumnWidth="300px"
+                    ColumnWidth="100%"
                     SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"                   
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
-            <Columns>
+                <Columns>
 
-                <RadzenDataGridColumn TItem="CreditReason" Property="Name" Title="@GetName("Name",new BasicConcept())" Width="308px" />              
-             
-            </Columns>
-        </RadzenDataGrid>
+                    <RadzenDataGridColumn TItem="CreditReason" Property="Name" Title="@GetName("Name",new BasicConcept())" Width="308px" />
+
+                </Columns>
+            </RadzenDataGrid>
+            <div class="container-total">
+                <div class="item">
+                    <label>
+                        @(
+                            $"Records: {creditReasonList.Count}"
+                            )
+                    </label>
+                </div>
+            </div>
+        }
+
     }
 </div>
 
@@ -107,20 +126,20 @@
 
     public async void LoadData()
     {
-        isLoading = true;       
-        creditReasonList = await CreditDocumentServices.GetCreditReasonList( (filter != null ? filter : "all"),1,20);
+        isLoading = true;
+        creditReasonList = await CreditDocumentServices.GetCreditReasonList((filter != null ? filter : "all"), 1, 20);
         isLoading = false;
         StateHasChanged();
     }
 
-   
+
 
 
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CreditReason> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-      
-        </RadzenMenu>
+
+    </RadzenMenu>
     );
 
 
@@ -134,7 +153,7 @@
         }
     }
 
-    public void Setfilter( string value)
+    public void Setfilter(string value)
     {
         filter = value;
         StateHasChanged();
@@ -148,7 +167,7 @@
 
     public void Add()
     {
-        
+
     }
 
     public void Home()

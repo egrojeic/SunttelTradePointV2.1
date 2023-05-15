@@ -101,7 +101,6 @@
                     <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="Vendor.Name" Title="@GetName("Vendor",new CreditDocument())" Width="208px" />
                     <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="Vendor.Buyer" Title="@GetName("Buyer",new CreditDocument())" Width="208px" />
                     <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CreditDocumentStatus.Name" Title="@GetName("CreditDocumentStatus",new CreditDocument())" Sortable="false" Width="80px" />
-
                     <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CreditValue" Title="@GetName("CreditValue",new CreditDocument())" TextAlign="TextAlign.Right" FormatString="{0:N2}" Filterable="false" Width="90px" />
                     <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CommercialDocumentRef.DocumentCode" Title="@GetName("DocumentCode",new CommercialDocumentSummaryInfo())" Filterable="false" Width="108px" />
                     <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CommercialDocumentRef.DocumentDate" Title="@GetName("DocumentDate",new CommercialDocumentSummaryInfo())" FormatString="{0:MM/dd/yyyy}" Filterable="false" Width="108px" />
@@ -117,6 +116,7 @@
                 </Columns>
             </RadzenDataGrid>
             <div class="container-total">
+                <div class="item"><label>@($"Records: {CreditDocumentList.Count}")</label> </div>
                 <div class="item"><label>@SumTotal()</label> </div>
             </div>
         }
@@ -219,7 +219,7 @@
         SearcherValue = arg.IdControl.ToString();
         if (SearcherValue == "Vendor")
         {
-            var list = await DocumentServices.GetCommercialVendorList(arg.value.ToString(), true, 1, 50);
+            var list = await DocumentServices.GetCommercialVendorList(arg.value.ToString(), isASale, 1, 50);
             vendorList = new();
             foreach (var item in list)
             {
@@ -252,7 +252,7 @@
         {
             var statusList = CreditDocumentList.GroupBy(s => s.CreditDocumentStatus).ToList();
             var CreditValueTotal = CreditDocumentList.Sum(s => s.CreditValue);
-            result = GetName("CreditValue", new CreditDocument()) + " : " + CreditValueTotal + " ";
+            result = GetName("CreditValue", new CreditDocument()) + " : " + CreditValueTotal + "   ,";
             foreach (var item in statusList)
             {
                 if (!result.ToLower().Contains(item.FirstOrDefault().CreditDocumentStatus.Name.ToLower()))
@@ -290,20 +290,28 @@
         if (Name.Contains("ProviderCredits"))
         {
             isASale = false;
-            namePage = "Provider Credit";
+            namePage = " Provider Credit";
             backPage = $"ProviderCreditsItem/{page}";
             icoLogo = "ProviderCredits.png";
-        }else
+        }
+        else
+        if (Name.Contains("PurchasesCredits"))
+        {
+            isASale = false;
+            namePage = " Purchases Credits";
+            backPage = $"PurchasesCreditsItem/{page}";
+            icoLogo = "ProviderCredits.png";
+        }
+        else
         if (Name.Contains("Credits"))
         {
-            isASale = true;
-            if (Name.Contains("Credits"))
-            {
+            isASale = true;           
                 backPage = $"CreditDocumentsItem/{page}";
                 namePage = " Credits";
                 icoLogo = "creditTypeDocument.png";
-            }
+           
         }
+        CreditDocumentList = new();
         StateHasChanged();
     }
 

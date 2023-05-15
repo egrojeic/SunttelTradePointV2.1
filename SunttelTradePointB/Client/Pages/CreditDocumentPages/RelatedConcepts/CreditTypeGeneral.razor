@@ -53,7 +53,7 @@
     else
     {
 
-
+        @if(creditTypeList!=null){
         <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
                     AllowAlternatingRows="true"
@@ -66,25 +66,32 @@
                     ShowPagingSummary="true"
                     Data="creditTypeList"
                     TItem="CreditType"
-                    ColumnWidth="300px"
+                    ColumnWidth="100%"
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"                   
                     CellContextMenu="@ShowContextMenuCommercialDocument">
             <Columns>
 
-                <RadzenDataGridColumn TItem="CreditType" Property="Name" Title="@GetName("Name",new BasicConcept())" Width="308px" />
-                <RadzenDataGridColumn TItem="CreditType" Property="Name" Title="@GetName("IsASale",new BasicConcept())" Width="308px" >
-                    <Template>
-                        @{
-                            var IsASale = (bool)context.GetType().GetProperty(nameof(CreditType.IsASale)).GetValue(context);
-
-                            <input type="checkbox" checked="@IsASale" />                          
-                        }
+                <RadzenDataGridColumn TItem="CreditType" Property="Name" Title="@GetName("Name",new BasicConcept())" Width="208px" />
+                <RadzenDataGridColumn TItem="CreditType"  Title="@GetName("IsASale",new BasicConcept())" Width="88px" >
+                        <Template Context="data">
+                      <RadzenCheckBox  @bind-Value="@data.IsASale" ></RadzenCheckBox>
                     </Template>
-
                 </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CreditType" Property="Id" Title="@GetName("Id",new BasicConcept())" Width="58px" />
             </Columns>
         </RadzenDataGrid>
+            <div class="container-total">
+                <div class="item">
+                    <label>
+                        @(
+                            $"Records: {creditTypeList.Count}"
+                            )
+                    </label>
+                </div>
+            </div>
+
+        }
     }
 </div>
 

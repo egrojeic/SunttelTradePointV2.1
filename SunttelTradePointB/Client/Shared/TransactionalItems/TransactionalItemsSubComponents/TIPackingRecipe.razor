@@ -7,8 +7,23 @@
 @inject TransactionalItemsService transactionalService;
 
 <style>
-    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+   .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
+    }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
     }
 </style>
 
@@ -21,7 +36,8 @@
         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
     </svg>
 </div>
-<div class="flex-horizontal-center ">
+<div>
+    @*// class="flex-horizontal-center "*@
 
  @if (isLoading)
 {
@@ -37,42 +53,50 @@ else
     
             <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
-                    AllowAlternatingRows="true"
+                    AllowAlternatingRows="true"                   
                     FilterMode="FilterMode.Advanced"
                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    AllowSorting="true"
-                    PageSize="@itemsPerPage"
+                    AllowSorting="true"                   
                     AllowPaging="true"
                     PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    Data="@productPackingSpecsView"
-                    TItem="PackingSpecsView"
+                    ShowPagingSummary="true"  
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"
+                    Data="@productPackingSpecsView"
+                    TItem="PackingSpecsView"                  
                     CellContextMenu="@ShowContextMenuWithContent"
-                    ColumnWidth="300"
+                    ColumnWidth="100%"
+                    PageSize="50"
                     PageNumbersCount="100"
                            >
 
                 <Columns>
-                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.CustomerName)" Title="@GetName(new PackingSpecs(), "Customer")" Width="250"></RadzenDataGridColumn>
-                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.CustomerCode)" Title="@GetName(new Concept(), "Code")" Width="100"> </RadzenDataGridColumn>
+                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.CustomerName)" Title="@GetName(new PackingSpecs(), "Customer")" Width="250px"></RadzenDataGridColumn>
                     <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.SeasonName)" Title="@GetName(new PackingSpecs(), "Season")" Width="150"> </RadzenDataGridColumn>
-                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.ModelRecipeName)" Title="@GetName(new PackingSpecs(), "ProductModel")" Width="150"> </RadzenDataGridColumn>
-                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.PackLayersToBuy)" Title="@GetName(new PackingSpecs(), "PackLayersToBuy")" Width="150"> </RadzenDataGridColumn>
-                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.PackPerBoxLayer)" Title="@GetName(new PackingSpecs(), "PackPerBoxLayer")" Width="150"> </RadzenDataGridColumn>
-                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.PackingBoxToBuyName)" Title="@GetName(new PackingSpecs(), "PackingBoxToBuy")" Width="150"> </RadzenDataGridColumn>
-                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.PackingBoxToSaleName)" Title="@GetName(new PackingSpecs(), "PackingBoxToSale")" Width="150"> </RadzenDataGridColumn>
-                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.PackLayersToSale)" Title="@GetName(new PackingSpecs(), "PackLayersToSale")" Width="150"> </RadzenDataGridColumn>
-                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.UnitPrice)" Title="@GetName(new PriceInfo(), "UnitPrice")" Width="150"> </RadzenDataGridColumn>
+                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.ModelRecipeName)" Title="@GetName(new PackingSpecs(), "ModelRecipe")" TextAlign="Radzen.TextAlign.Right"  > </RadzenDataGridColumn>
+                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.PackLayersToBuy)" Title="@GetName(new PackingSpecs(), "PackLayersToBuy")" TextAlign="Radzen.TextAlign.Right" > </RadzenDataGridColumn>
+                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.PackPerBoxLayer)" Title="@GetName(new PackingSpecs(), "PackPerBoxLayer")"  Width="100"> </RadzenDataGridColumn>
+                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.PackingBoxToBuyName)" Title="@GetName(new PackingSpecs(), "PackingBoxToBuy")"  > </RadzenDataGridColumn>
+                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.PackingBoxToSaleName)" Title="@GetName(new PackingSpecs(), "PackingBoxToSale")" > </RadzenDataGridColumn>
+                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.PackLayersToSale)" Title="@GetName(new PackingSpecs(), "PackLayersToSale")"> </RadzenDataGridColumn>
+                    <RadzenDataGridColumn CssClass="Text-grid" TItem="PackingSpecsView" Property="@nameof(PackingSpecsView.UnitPrice)" Title="@GetName(new PriceInfo(), "UnitPrice")" FormatString="{0:N2}" TextAlign="Radzen.TextAlign.Right" > </RadzenDataGridColumn>
 
                 </Columns>
             </RadzenDataGrid>
-        
+          <div class="container-total">
+                    <div class="item">
+                        <label>
+                            @(
+                                $"Records: {productPackingSpecsView.Count}"
+                                )
+                        </label>
+                    </div>
+                </div>
+
     }
 }
-</div>
 
+</div>
 
 
 @code {

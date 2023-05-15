@@ -8,7 +8,7 @@
 
 <div id="container-menu-general">
     <nav>
-        <button class="general-menu-button btn-new" @onclick="CreateNew"><i class="fa-solid fa-file"></i></button>
+        <button class="general-menu-button btn-new  " @onclick="CreateNew"><i class="fa-solid fa-file"></i></button>
 
         <SfSplitButton Content="Import..." IconCss="fa-solid fa-file-import" CssClass="splitButtonsStyle">
             <DropDownMenuItems>
@@ -16,24 +16,16 @@
                 <DropDownMenuItem Text="Uploading a csv file..." IconCss="fa-solid fa-file-csv"></DropDownMenuItem>
             </DropDownMenuItems>
         </SfSplitButton>
-
-        <SfSplitButton Content="Views" IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
-            <SplitButtonEvents ItemSelected="ItemSelected">
-            </SplitButtonEvents>
-            <DropDownMenuItems>
-                <DropDownMenuItem Id="Consolidated" Text="Consolidated" IconCss="fa-solid fa-group-arrows-rotate"></DropDownMenuItem>
-                <DropDownMenuItem Id="Detailed" Text="Detailed" IconCss="fa-solid fa-layer-group"></DropDownMenuItem>
-            </DropDownMenuItems>
-        </SfSplitButton>
+             
 
          <SfSplitButton Content="Related Concepts" IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
             <SplitButtonEvents ItemSelected="ItemSelected">
             </SplitButtonEvents>
             <DropDownMenuItems>
-                <DropDownMenuItem Id="PaymentTypeGeneral" Text="Payment Types" IconCss="fa-solid fa-money-bill"></DropDownMenuItem>
-                <DropDownMenuItem Id="PaymentStatusGeneral" Text="Payment Statuses" IconCss="fa-solid fa-money-bill"></DropDownMenuItem>
+                <DropDownMenuItem Id="PaymentTypeGeneral" Text="Payment Types" IconCss="e-menu-icon fa-solid fa-sitemap"></DropDownMenuItem>
+                <DropDownMenuItem Id="PaymentStatusGeneral" Text="Payment Statuses" IconCss="e-menu-icon fa-solid fa-signal"></DropDownMenuItem>
                 <DropDownMenuItem Id="PaymentModeGeneral" Text="Payment Modes" IconCss="fa-solid fa-money-bill"></DropDownMenuItem>
-                <DropDownMenuItem Id="PaymentViaGeneral" Text="Payment Vias" IconCss="fa-solid fa-money-bill"></DropDownMenuItem>
+                <DropDownMenuItem Id="PaymentViaGeneral" Text="Payment Vias" IconCss="fa-solid fa-cash-register"></DropDownMenuItem>
             </DropDownMenuItems>
         </SfSplitButton>
 
@@ -86,7 +78,8 @@
 
     public void CreateNewTab(string name)
     {
-        Js.InvokeAsync<object>("open", name, "_blank");
+        Navigation.NavigateTo(name);
+       // Js.InvokeAsync<object>("open", name, "_blank");
 
     }
 

@@ -4,6 +4,9 @@
 @page "/ProviderCreditsItem/{page}"
 @page "/ProviderCreditsItem/{page}/{creditDocumentsItemId}"
 @page "/ProviderCreditsItem/{page}/{creditDocumentsItemId}/{filter}"
+@page "/PurchasesCreditsItem/{page}"
+@page "/PurchasesCreditsItem/{page}/{creditDocumentsItemId}"
+@page "/PurchasesCreditsItem/{page}/{creditDocumentsItemId}/{filter}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
@@ -382,16 +385,20 @@
                 icoLogo = "ProviderCredits.png";
             }
         }
-
+        if (Name.Contains("PurchasesCreditsItem"))
+        {
+            isASale = false;
+            namePage = " Purchases Credit";
+            backPage = $"PurchasesCredits/{page}";
+            icoLogo = "ProviderCredits.png";
+        }
         if (Name.Contains("CreditDocumentsItem"))
         {
             isASale = true;
-            if (Name.Contains("CreditDocumentsItem"))
-            {
+           
                 backPage = $"CustomerCredits/{page}";
                 namePage = " Credit Document";
-                icoLogo = "creditTypeDocument.png";
-            }
+                icoLogo = "creditTypeDocument.png";            
 
         }
         StateHasChanged();

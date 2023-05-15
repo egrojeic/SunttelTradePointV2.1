@@ -1,0 +1,248 @@
+﻿
+
+
+@using System.Globalization;
+@using SunttelTradePointB.Shared.Sales;
+@inject SunttelTradePointB.Client.Services.ShippingServices.ShippingServices ShippingServices
+@inject ContextMenuService ContextMenuService
+@inject NavigationManager Navigation
+
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
+</style>
+
+<PageTitleComponent Title="Shipping" IconName="Shipping.png"
+                    Description="With this tool you can view shipping">
+</PageTitleComponent>
+
+<div class="panelMenuContainer">
+    <ShippingMenu></ShippingMenu>
+    <ShippingMenu2 SetWarehouse="Setwarehouse" Changed="ReLoad"></ShippingMenu2>
+    <RangeDatesInput @bind-StartDate="@startingDate"
+                     StartDateName="Date"
+                     EventSearchAll="EventSearchAll"></RangeDatesInput>
+    <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
+
+</div>
+
+
+<div class="tableContainer">
+
+
+    @if (isLoading)
+    {
+
+        <WaitingProcessIndicator loadingTopic="Shipping"></WaitingProcessIndicator>
+
+    }
+    else
+    {
+        @if (commercialdocumentList!=null)
+        {
+            <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    RowSelect="RowSelect"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="50"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@commercialdocumentList"
+                    TItem="CommercialDocument"
+                    ColumnWidth="100%"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    @bind-Value="@selectedcommercialdocuments"                  
+                    @ref="radzenDataGrid">
+                <Columns>
+
+                    <RadzenDataGridColumn  TItem="CommercialDocument" Property="DocumentNumber" Title="@GetName("DocumentNumber", new CommercialDocument() )" Width="108px">
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="ShipDate" Title="Ship Date" FormatString="{0:MM/dd/yyyy}" Filterable="false" Width="100px" />
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="DeliveryDate" FormatString="{0:MM/dd/yyyy}" Title="Delivery Date" Filterable="false" Width="100px" />
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="Buyer.Name" Title="Customer" Width="200px" />
+                    <RadzenDataGridColumn TItem="CommercialDocument" Title="@GetName("PickingTicketPrinted", new SalesDocumentPrintingSatus() )" Sortable="false" Width="80px">
+                        <Template Context="Item">
+                            <RadzenCheckBox @bind-Value="Item.PrintingSatus.PickingTicketPrinted" />
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="PrintingSatus.LabelsPrinted" Title="@GetName("LabelsPrinted", new SalesDocumentPrintingSatus() )" Sortable="false" Width="80px">
+                        <Template Context="Item">
+                            <RadzenCheckBox @bind-Value="Item.PrintingSatus.LabelsPrinted" />
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="PrintingSatus.BillOfLandingPrinted" Title="@GetName("BillOfLandingPrinted", new SalesDocumentPrintingSatus() )" Sortable="false" Width="80px">
+                        <Template Context="Item">
+                            <RadzenCheckBox @bind-Value="Item.PrintingSatus.BillOfLandingPrinted" />
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="ShippingSummary.TotalScanned" TextAlign="Radzen.TextAlign.Right" Title="@GetName("TotalScanned", new CommercialDocument() )" Filterable="false" Width="80px" />
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="ShippingSummary.TotalInInventory" TextAlign="Radzen.TextAlign.Right" Title="@GetName("TotalInInventory", new CommercialDocument() )" Filterable="false" Width="80px" />
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="ShippingSummary.TotalBoxes" TextAlign="Radzen.TextAlign.Right" Title="@GetName("TotalBoxes", new CommercialDocument() )" Filterable="false" Width="80px" />
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="ShippingStatusDocument.Name" Title="@GetName("ShippingStatusDocument", new CommercialDocument() )" TextAlign="Radzen.TextAlign.Center" Width="100px" Filterable="false" />
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceStatusDocument.Name" Title="@GetName("FinanceStatusDocument", new CommercialDocument() )" TextAlign="Radzen.TextAlign.Center" Filterable="false" Width="100px" />
+
+                </Columns>
+
+            </RadzenDataGrid>
+            <div class="container-total">
+                <div class="item">
+                    <label>
+                        @($"Records: {commercialdocumentList.Count}")
+                    </label>
+                </div>
+                <div class="item"><label>@SumTotal()</label> </div>
+            </div>
+        }
+    }
+</div>
+
+
+
+@code {
+
+    [Parameter]
+    public string _filterItems { get; set; }
+    List<CommercialDocument>? commercialdocumentList { get; set; }
+
+    public Warehouse warehouse { get; set; }
+    IList<CommercialDocument>? selectedcommercialdocuments;
+    public List<ShippingStatus> shippingStatusDocumentList = new();
+    bool isLoading = false;
+    string font = "12px";
+    DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
+    RadzenDataGrid<CommercialDocument> radzenDataGrid;
+
+
+    public string docsFilter
+    {
+        get { return _filterItems; }
+        set
+        {
+            _filterItems = value;
+            LoadData();
+        }
+    }
+
+    protected async override void OnInitialized()
+    {
+
+
+        if (_filterItems != null) LoadData();
+        base.OnInitialized();
+
+    }
+
+    public async void LoadData()
+    {
+        isLoading = true;
+        if (warehouse != null)
+        {
+            commercialdocumentList = await ShippingServices.GetShippingtList(startingDate, startingDate, warehouse.Id, (_filterItems != null ? _filterItems : "all"), 1, 20);
+
+        }
+        isLoading = false;
+
+        StateHasChanged();
+    }
+
+    public void EventSearchAll(string value)
+    {
+        docsFilter = value;
+    }
+
+    public async void Setwarehouse(Warehouse item)
+    {
+
+        if (item != null)
+        {
+            warehouse = item;
+        }
+        StateHasChanged();
+    }
+
+
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CommercialDocument> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="View" Value=args.Data Icon="edit"></RadzenMenuItem>
+        </RadzenMenu>
+    );
+
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        CommercialDocument argObj = (CommercialDocument)args.Value;
+        Console.WriteLine($"Menu item with Value={argObj.Id} clicked");
+        Navigation.NavigateTo($"ShippingItem/{argObj.Id}");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            radzenDataGrid.Style = " background-color: #e9e9e9;";
+            ContextMenuService.Close();
+        }
+    }
+
+    public void SetdocsFilter(string value)
+    {
+        docsFilter = value;
+        StateHasChanged();
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+
+
+    public string SumTotal()
+    {
+
+        double value = 0;
+        string result = "";
+        if (commercialdocumentList != null)
+        {
+            string totalBoxes = commercialdocumentList.Sum(s => s.ShippingSummary.TotalBoxes).ToString("N2");
+            string totalScanned = commercialdocumentList.Sum(s => s.ShippingSummary.TotalScanned).ToString("N2");
+            string totalInInventory = commercialdocumentList.Sum(s => s.ShippingSummary.TotalInInventory).ToString("N2");
+            result = $"{GetName("TotalBoxes", new ShippingSalesDocumentSummary())}: {totalBoxes}       ";
+            result += " , ";
+            result += $"{GetName("TotalScanned", new ShippingSalesDocumentSummary())}: {totalBoxes}      ";
+            result += " , ";
+            result += $"{GetName("TotalInInventory", new ShippingSalesDocumentSummary())}: {totalBoxes}     ";
+        }
+
+        return result; //value.ToString("N2", format);
+    }
+
+    public void RowSelect(CommercialDocument item)
+    {
+
+    }
+
+    public void ReLoad()
+    {
+        StateHasChanged();
+    }
+
+}

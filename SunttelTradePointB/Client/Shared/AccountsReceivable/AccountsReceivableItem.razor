@@ -315,7 +315,7 @@
     string SearcherValue = "";
     bool menuVisible = false;
     bool isVisible = false;
-    bool isSale = true;
+    bool isASale = true;
     public CommercialDocument commercialDocument = new();
     // public SalesDocumentItemsDetails items = new();
 
@@ -362,7 +362,7 @@
             commercialDocument.Items = await DocumentServices.GetCommercialDocumentDetails(accountsReceivableippingId);
         }
 
-        documentTypeList = await DocumentServices.GetCommercialDocumentTypes(isSale);
+        documentTypeList = await DocumentServices.GetCommercialDocumentTypes(isASale);
         businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
 
         carrierList = await DocumentServices.GetCarrierList();
@@ -447,7 +447,7 @@
         SearcherValue = arg.IdControl.ToString();
         if (SearcherValue == "DocumentType")
         {
-            documentTypeList = await DocumentServices.GetCommercialDocumentsTypes(arg.value);
+            documentTypeList = await DocumentServices.GetCommercialDocumentsTypes(arg.value, isASale);
         }
         if (SearcherValue == "Vendor")
         {

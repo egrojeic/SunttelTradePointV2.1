@@ -12,6 +12,21 @@
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
     }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
 </style>
 
 <div class="detailsTitleContainer">
@@ -49,7 +64,7 @@ else
                 ColumnWidth="300px"
                 CellContextMenu="@ShowContextMenuWithContent"
                 PageNumbersCount="100"
-                PageSize="20">
+                PageSize="50">
 
             <Columns>
                 <RadzenDataGridColumn TItem="TransactionalItemCharacteristicPair" Property="TransactionalItemCharacteristicPair.TransactionalItemCharacteristic.Name" Title="@GetName("TransactionalItemCharacteristic", new TransactionalItemCharacteristicPair())" Width="80px" />
@@ -57,6 +72,16 @@ else
 
             </Columns>
         </RadzenDataGrid>
+        <div class="container-total">
+            <div class="item">
+                <label>
+                    @(
+                        $"Records: {transactionalItemTypeCharacteristics.Count}"
+                        )
+                </label>
+            </div>
+        </div>
+
     }
 }
 

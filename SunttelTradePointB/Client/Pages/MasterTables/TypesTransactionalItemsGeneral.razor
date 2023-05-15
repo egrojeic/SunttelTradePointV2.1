@@ -38,7 +38,7 @@
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
-    <MenuConcet></MenuConcet>
+    <MenuConcet OriginPage="Products"></MenuConcet>
     <SearchComponent @bind-FilterTextSet="@conceptFilter"></SearchComponent>
 
 </div>
@@ -54,7 +54,8 @@
 }
 else
 {
-
+    @if (transactionalItemType!=null)
+    {
     <RadzenDataGrid AllowFiltering="true"
                 AllowColumnResize="true"
                 AllowAlternatingRows="true"
@@ -66,11 +67,10 @@ else
                 ShowPagingSummary="true"
                 Data="@transactionalItemType"
                 TItem="TransactionalItemType"
-                ColumnWidth="300px"
+                ColumnWidth="100%"
                 SelectionMode="DataGridSelectionMode.Single"
                 LogicalFilterOperator="LogicalFilterOperator.Or"
-                CellContextMenu="@ShowContextMenuWithContent"
-                PageNumbersCount="100"
+                CellContextMenu="@ShowContextMenuWithContent"               
                 PageSize="50">
 
         <Columns>
@@ -94,6 +94,17 @@ else
             </RadzenDataGridColumn>
         </Columns>
     </RadzenDataGrid>
+    <div class="container-total">
+        <div class="item">
+            <label>
+                @(
+                    $"Records: {transactionalItemType.Count}"
+                    )
+            </label>
+        </div>
+    </div>
+    }
+
 
 }
 

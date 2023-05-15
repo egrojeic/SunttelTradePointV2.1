@@ -20,6 +20,26 @@
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
     }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
+
+    .e-tab .e-tab-header.e-vertical .e-toolbar-item .e-tab-text {
+        font-size: 12px;
+        width: 150px;
+    }
 </style>
 
 
@@ -48,7 +68,7 @@
                 <div>
                     <input @bind-value="TransactionalItemTag.Key" class="form-control info-text-size" placeholder="Edit key" />
                 </div>
-                <div >
+                <div>
                     <label class="info-text-size">@Value</label>
                 </div>
                 <div>
@@ -182,6 +202,16 @@
 
                                         </Columns>
                                     </RadzenDataGrid>
+                                    <div class="container-total">
+                                        <div class="item">
+                                            <label>
+                                                @(
+                                                    $"Records: {TransactionalItemTagList.Count}"
+                                                    )
+                                            </label>
+                                        </div>
+                                    </div>
+
                                 }
 
                             }
@@ -256,7 +286,7 @@
         {
 
             _TransactionalItemProcessStep = await transactionalService.GetTransactionalItemDetailsProductionSpecsById(transactionalItemId, productionSpecsToId);
-            if (_TransactionalItemProcessStep !=null)
+            if (_TransactionalItemProcessStep != null)
             {
                 TransactionalItemTagList = _TransactionalItemProcessStep.TransactionalItemProcessTags != null ? _TransactionalItemProcessStep.TransactionalItemProcessTags : new();
 
@@ -333,7 +363,7 @@
     {
         if (Element == "control")
         {
-            if (SubPage != null && SubPage != ""){ Navigation.NavigateTo($"/{Page}/{SubPage}/{transactionalItemId}"); }
+            if (SubPage != null && SubPage != "") { Navigation.NavigateTo($"/{Page}/{SubPage}/{transactionalItemId}"); }
             else
             {
                 Navigation.NavigateTo($"/{Page}/{transactionalItemId}");
@@ -436,10 +466,6 @@
         }
         StateHasChanged();
     }
-
-
-
-
 
 
     private void Msg(string? Msg, int status)

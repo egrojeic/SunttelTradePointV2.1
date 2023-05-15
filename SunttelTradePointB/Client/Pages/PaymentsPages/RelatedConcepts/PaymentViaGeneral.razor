@@ -28,7 +28,7 @@
     }
 </style>
 
-<PageTitleComponent Title="Payment Vias" IconName="Payments.png"
+<PageTitleComponent Title="Payment Vias" IconName="paymentVias.png"
                     Description="With this tool you can create and edit payment vias ">
 </PageTitleComponent>
 
@@ -51,9 +51,9 @@
     }
     else
     {
-
-
-        <RadzenDataGrid AllowFiltering="true"
+        @if (paymentViatList != null)
+        {
+            <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
                     AllowAlternatingRows="true"
                     FilterMode="FilterMode.Advanced"
@@ -65,16 +65,27 @@
                     ShowPagingSummary="true"
                     Data="paymentViatList"
                     TItem="PaymentVia"
-                    ColumnWidth="300px"
+                    ColumnWidth="100%"
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
-            <Columns>
+                <Columns>
 
-                <RadzenDataGridColumn TItem="PaymentVia" Property="Name" Title="@GetName("Name",new BasicConcept())" Width="308px" />
+                    <RadzenDataGridColumn TItem="PaymentVia" Property="Name" Title="@GetName("Name",new BasicConcept())" Width="308px" />
 
-            </Columns>
-        </RadzenDataGrid>
+                </Columns>
+            </RadzenDataGrid>
+            <div class="container-total">
+                <div class="item">
+                    <label>
+                        @(
+                            $"Records: {paymentViatList.Count}"
+                            )
+                    </label>
+                </div>
+            </div>
+
+        }
     }
 </div>
 
@@ -103,8 +114,8 @@
     protected async override void OnInitialized()
     {
 
-        _filterItems ="all";
-       LoadData();
+        _filterItems = "all";
+        LoadData();
         base.OnInitialized();
 
     }
@@ -157,12 +168,13 @@
 
     private void Home()
     {
-        Navigation.NavigateTo("/Payments");
+        Navigation.NavigateTo("/SalesPayments/1");
     }
 
     public void EventIdSelectionMenuItem(string name)
     {
-        Js.InvokeAsync<object>("open", name, "_blank");
+        Navigation.NavigateTo(name);
+      //  Js.InvokeAsync<object>("open", name, "_blank");
 
     }
 

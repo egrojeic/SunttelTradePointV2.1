@@ -43,7 +43,7 @@
 </div>
 
 
-<div >
+<div>
 
 
     @if (isLoading)
@@ -61,19 +61,19 @@
                     AllowAlternatingRows="true"
                     FilterMode="FilterMode.Advanced"
                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    AllowSorting="true"
-                    PageSize="@itemsPerPage"
+                    AllowSorting="true"                   
                     AllowPaging="true"
                     PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                     ShowPagingSummary="true"
                     Data="@itemList"
+                    PageSize="50"
                     TItem="TransactionalItem"
                     ColumnWidth="100%"
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"
                     @bind-Value=@selectedItems Class="m-4"
                     CellContextMenu="@ShowContextMenuWithContent"
-                    PageNumbersCount="100">
+                   >
 
                 <Columns>
                     <RadzenDataGridColumn TItem="TransactionalItem" Property="Code" Title="Code" Frozen="false" Width="80px" />
@@ -90,11 +90,20 @@
                             }
                         </Template>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="TransactionalItem" Property="ReferenceCost" Title="Reference Cost" Width="120px" />
-
+                    <RadzenDataGridColumn TItem="TransactionalItem" Property="ReferenceCost" Title="Reference Cost" Width="120px" TextAlign="Radzen.TextAlign.Right" />
 
                 </Columns>
             </RadzenDataGrid>
+            <div class="container-total">
+                <div class="item">
+                    <label>
+                        @(
+                            $"Records: {itemList.Count}"
+                            )
+                    </label>
+                </div>
+            </div>
+
         }
 
 
@@ -118,12 +127,14 @@
 
     protected override void OnInitialized()
     {
-        if (_filterItems != "" && _filterItems != null) { 
-            LoadData(); }
+        if (_filterItems != "" && _filterItems != null)
+        {
+            LoadData();
+        }
         base.OnInitialized();
     }
 
-   
+
 
     public string? productsFilter
     {
@@ -168,7 +179,7 @@
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<TransactionalItem> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-        </RadzenMenu>
+    </RadzenMenu>
     );
 
     void OnMenuItemClick(MenuItemEventArgs args)
@@ -203,6 +214,6 @@
     {
         _filterItems = value;
         LoadData();
-       
+
     }
 }

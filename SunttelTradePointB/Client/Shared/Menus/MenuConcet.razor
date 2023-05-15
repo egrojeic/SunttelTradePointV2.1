@@ -6,7 +6,7 @@
 <div id="container-menu-general">
     <nav>
         <button @onclick='Home' class="general-menu-button" style="text-align:center;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-        <button @onclick="CreateNew" class="general-menu-button"><i class="fa-solid fa-file"></i> Create New...</button>
+        <button @onclick="CreateNew" class="general-menu-button"><i class="fa-solid fa-file"></i></button>
 
         <SfSplitButton Content="Import Data" IconCss="fa-solid fa-file-import" CssClass="splitButtonsStyle">
             <DropDownMenuItems>
@@ -26,19 +26,7 @@
 
     [Parameter]
     public string? OriginPage { get; set; }
-
-    const string PASTE = "e-btn-icons e-paste";
-    const string PASTESPECIAL = "e-btn-icons e-paste-special";
-    const string PASTEASFORMULA = "e-btn-icons e-paste-formula";
-    const string PASTEASHYPERLINK = "e-btn-icons e-paste-hyperlink";
-
-    void ToggleMenu()
-    {
-        ShowMenu = !ShowMenu;
-        commandStyle = $"display: {(ShowMenu ? "block" : "none")}";
-        StateHasChanged();
-
-    }
+      
 
     void OnClick(RadzenSplitButtonItem item, string buttonName)
     {

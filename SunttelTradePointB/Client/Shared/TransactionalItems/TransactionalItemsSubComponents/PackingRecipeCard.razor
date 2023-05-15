@@ -16,8 +16,23 @@
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
     }
-</style>
 
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
+
+</style>
 
 @if (@viewMsg)
 {
@@ -59,7 +74,7 @@
                                         Items="MaterialsConcept">
 
                         </InputTextSelector3>
-                        <div><label class="info-text-size" >@GetName( "Quantity",new MaterialRecipeItem())</label></div>
+                        <div><label class="info-text-size">@GetName( "Quantity",new MaterialRecipeItem())</label></div>
                         <div><input type="number" @bind="materialRecipeItem.Quantity" class="form-control border-color info-text-size" required /></div>
                         <div></div>
                         <div class="flex-horizontal-end">
@@ -82,8 +97,8 @@
 
             <div class="grid-columns-2-img">
                 <div class="grid-columns-header">
-                    <div >
-                        <label for="name" class="info-text-size""">Name</label>
+                    <div>
+                        <label for="name" class="info-text-size" "">Name</label>
                     </div>
                     <div>
                         <input type="text" class="form-control info-text-size" id="name" @bind-value="@MateriaoNew.Name" autocomplete="off" />
@@ -141,7 +156,7 @@
                 <div class="flex-horizontal-center">
                     <div class="grid-columns-2 box-shadow-mode">
 
-                        <div><label class="info-text-size" >@GetName( "Quantity",new MaterialRecipeItem())</label></div>
+                        <div><label class="info-text-size">@GetName( "Quantity",new MaterialRecipeItem())</label></div>
                         <div><input type="number" @bind="materialRecipeItem.Quantity" class="form-control border-color info-text-size" required /></div>
                         <div></div>
                         <div class="flex-horizontal-end">
@@ -252,7 +267,7 @@
                                             FilterMode="FilterMode.Advanced"
                                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                             AllowSorting="true"
-                                            PageSize="2"
+                                            PageSize="50"
                                             AllowPaging="true"
                                             PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                                             ShowPagingSummary="true"
@@ -265,11 +280,21 @@
                                             PageNumbersCount="100">
 
                                         <Columns>
-                                            <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="Material.Name" Title="@GetName( "Name", new AtomConcept())" Frozen="false" Width="80px" />
+                                            <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="Name" Title="@GetName( "Name", new AtomConcept())" Frozen="false" Width="80px" />
                                             <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="Quantity" Filterable="true" Title="@GetName( "Quantity", new AtomConcept())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
 
                                         </Columns>
                                     </RadzenDataGrid>
+                                    <div style="width: 100%; display: flex; flex-direction: row; column-gap: 20px; background-color: #f1f1f1; box-shadow: 0px 0px 5px; justify-content: center;   align-content: end;  align-items: center;">
+                                        <div style=" height: auto; width: auto; display: flex; flex-direction: row;  column-gap: 20px; align-content: center; font-size: 12px;">
+                                            <label>
+                                                @(
+                                                    $"Records: {materialsRecipeItemsAssembly.Count}"
+                                                    )
+                                            </label>
+                                        </div>
+                                    </div>
+
                                 }
 
 
@@ -280,51 +305,51 @@
                     @if (false)
                     {
                         @*   <TabItem>
-                        <ChildContent>
-                            <TabHeader Text="@GetName( "ComponentItemRecipe", new PackRecipeItem())"></TabHeader>
-                        </ChildContent>
-                        <ContentTemplate>
+                <ChildContent>
+                <TabHeader Text="@GetName( "ComponentItemRecipe", new PackRecipeItem())"></TabHeader>
+                </ChildContent>
+                <ContentTemplate>
 
-                            <div class="flex-horizontal-center">
-                                <div class="detailsTitleContainer">
-                                    <h3 class="subTitleDetailForm">@GetName( "ComponentItemRecipe", new PackRecipeItem())</h3>
-                                    <svg @onclick='()=>ClosedAdd("ComponentItemRecipeChildren")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
-                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                                    </svg>
-                                </div>
+                <div class="flex-horizontal-center">
+                <div class="detailsTitleContainer">
+                <h3 class="subTitleDetailForm">@GetName( "ComponentItemRecipe", new PackRecipeItem())</h3>
+                <svg @onclick='()=>ClosedAdd("ComponentItemRecipeChildren")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                </svg>
+                </div>
 
-                                @if (materialsRecipeItemsAssembly != null)
-                                {
-                                    <RadzenDataGrid AllowFiltering="true"
-                                            AllowColumnResize="true"
-                                            AllowAlternatingRows="true"
-                                            FilterMode="FilterMode.Advanced"
-                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                            AllowSorting="true"
-                                            PageSize="2"
-                                            AllowPaging="true"
-                                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                                            ShowPagingSummary="true"
-                                            Data="@assemblyRecipeItemsChldren"
-                                            TItem="PackRecipeItem"
-                                            ColumnWidth="300px"
-                                            SelectionMode="DataGridSelectionMode.Single"
-                                            LogicalFilterOperator="LogicalFilterOperator.Or"
-                                            CellContextMenu="@ShowContextMenuWithContent"
-                                            PageNumbersCount="100">
+                @if (materialsRecipeItemsAssembly != null)
+                {
+                <RadzenDataGrid AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="true"
+                FilterMode="FilterMode.Advanced"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                AllowSorting="true"
+                PageSize="2"
+                AllowPaging="true"
+                PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                ShowPagingSummary="true"
+                Data="@assemblyRecipeItemsChldren"
+                TItem="PackRecipeItem"
+                ColumnWidth="300px"
+                SelectionMode="DataGridSelectionMode.Single"
+                LogicalFilterOperator="LogicalFilterOperator.Or"
+                CellContextMenu="@ShowContextMenuWithContent"
+                PageNumbersCount="100">
 
-                                        <Columns>
-                                            <RadzenDataGridColumn TItem="PackRecipeItem" Property="ItemComponent.Name" Title="@GetName( "Name", new AtomConcept())" Frozen="false" Width="80px" />
-                                            <RadzenDataGridColumn TItem="PackRecipeItem" Property="Quantity" Filterable="true" Title="@GetName( "Quantity", new PackRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                <Columns>
+                <RadzenDataGridColumn TItem="PackRecipeItem" Property="ItemComponent.Name" Title="@GetName( "Name", new AtomConcept())" Frozen="false" Width="80px" />
+                <RadzenDataGridColumn TItem="PackRecipeItem" Property="Quantity" Filterable="true" Title="@GetName( "Quantity", new PackRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
 
-                                        </Columns>
-                                    </RadzenDataGrid>
-                                }
+                </Columns>
+                </RadzenDataGrid>
+                }
 
-                            </div>
-                        </ContentTemplate>
-                    </TabItem>*@
+                </div>
+                </ContentTemplate>
+                </TabItem>*@
                     }
                 </TabItems>
             </SfTab>
@@ -521,7 +546,7 @@
                                 <div><input @bind="PriceInfo.RetailBulkNumberOfItems" type="number" class="form-control border-color info-text-size" /></div>
                                 <div><label class="info-text-size"> @GetName("RetailBulkPrice", new PriceInfo() )</label></div>
                                 <div><input @bind="PriceInfo.RetailBulkPrice" type="number" class="form-control border-color info-text-size" /></div>
-                                <div><label class="info-text-size" > @GetName("TotalPrice", new PriceInfo() )</label></div>
+                                <div><label class="info-text-size"> @GetName("TotalPrice", new PriceInfo() )</label></div>
                                 <div><input @bind="PriceInfo.TotalPrice" type="number" class="form-control border-color info-text-size" /></div>
 
                                 <div><label>@GetName( "TotalPriceItemTypeBasedOn", new PriceInfo())</label></div>
@@ -617,9 +642,9 @@
 
                                 <div><label class="info-text-size"> @GetName("UPCComments", new LabelInstruction()) </label></div>
                                 <div><input @bind="labelInstruction.UPCComments" class="form-control border-color border-color info-text-size" required /></div>
-                                <div><label class="info-text-size" > @GetName("BoxUPCCode", new LabelInstruction()) </label></div>
+                                <div><label class="info-text-size"> @GetName("BoxUPCCode", new LabelInstruction()) </label></div>
                                 <div><input @bind="labelInstruction.BoxUPCCode" class="form-control border-color info-text-size" required /></div>
-                                <div><label class="info-text-size" > @GetName("InnerProductUPCCode", new LabelInstruction()) </label></div>
+                                <div><label class="info-text-size"> @GetName("InnerProductUPCCode", new LabelInstruction()) </label></div>
                                 <div><input @bind="labelInstruction.InnerProductUPCCode" class="form-control border-color info-text-size" required /></div>
                                 <div><label class="info-text-size"> @GetName("UPCDateCodeFormat", new LabelInstruction()) </label></div>
                                 <div><input @bind="labelInstruction.UPCDateCodeFormat" type="number" class="form-control border-color info-text-size" required /></div>
@@ -659,45 +684,54 @@
                         @{
                             pageView = "ListOfMaterials";
                         }
-                        <div style="display:flex; flex-direction:column; justify-content:center;">
 
-                            <div class="detailsTitleContainer">
-                                <h3 class="subTitleDetailForm">@GetName( "ListOfMaterials", new PackingSpecs())</h3>
-                                <svg @onclick='()=>ClosedAdd("ListOfMaterials")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
-                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                                </svg>
+
+                        <div class="detailsTitleContainer">
+                            <h3 class="subTitleDetailForm">@GetName( "ListOfMaterials", new PackingSpecs())</h3>
+                            <svg @onclick='()=>ClosedAdd("ListOfMaterials")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                            </svg>
+                        </div>
+
+
+                        @if (listOfMaterials != null)
+                        {
+                            <RadzenDataGrid @ref="GridlistOfMaterials" AllowFiltering="true"
+                                        AllowColumnResize="true"
+                                        AllowAlternatingRows="true"
+                                        FilterMode="FilterMode.Advanced"
+                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                        AllowSorting="true"
+                                        PageSize="50"
+                                        AllowPaging="true"
+                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                        ShowPagingSummary="true"
+                                        Data="@listOfMaterials"
+                                        TItem="MaterialRecipeItem"
+                                        SelectionMode="DataGridSelectionMode.Single"
+                                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                                        CellContextMenu="@ShowContextMenuWithContent"
+                                        PageNumbersCount="100">
+
+                                <Columns>
+                                    <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="Material.Code" Title="@GetName("Code",new AtomConcept())" Frozen="false" Width="80px" />
+                                    <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="Material.Name" Filterable="true" Title="@GetName("Material",new MaterialRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                    <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="Quantity" Title="@GetName("Quantity",new MaterialRecipeItem())" Width="200px" />
+                                </Columns>
+                            </RadzenDataGrid>
+
+                            <div style="width: 100%; display: flex; flex-direction: row; column-gap: 20px; background-color: #f1f1f1; box-shadow: 0px 0px 5px; justify-content: center;   align-content: end;  align-items: center;">
+                                <div style=" height: auto; width: auto; display: flex; flex-direction: row;  column-gap: 20px; align-content: center; font-size: 12px;">
+                                    <label>
+                                        @("Records:" + listOfMaterials.Count)
+                                    </label>
+                                </div>
                             </div>
 
+                        }
 
-                            @if (listOfMaterials != null)
-                            {
-                                <RadzenDataGrid @ref="GridlistOfMaterials" AllowFiltering="true"
-                                            AllowColumnResize="true"
-                                            AllowAlternatingRows="true"
-                                            FilterMode="FilterMode.Advanced"
-                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                            AllowSorting="true"
-                                            PageSize="4"
-                                            AllowPaging="true"
-                                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                                            ShowPagingSummary="true"
-                                            Data="@listOfMaterials"
-                                            TItem="MaterialRecipeItem"
-                                            SelectionMode="DataGridSelectionMode.Single"
-                                            LogicalFilterOperator="LogicalFilterOperator.Or"
-                                            CellContextMenu="@ShowContextMenuWithContent"
-                                            PageNumbersCount="100">
 
-                                    <Columns>
-                                        <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="Material.Code" Title="@GetName("Code",new AtomConcept())" Frozen="false" Width="80px" />
-                                        <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="Material.Name" Filterable="true" Title="@GetName("Material",new MaterialRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                        <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="Quantity" Title="@GetName("Quantity",new MaterialRecipeItem())" Width="200px" />
-                                    </Columns>
-                                </RadzenDataGrid>
-                            }
-
-                        </div>
 
                     </ContentTemplate>
                 </TabItem>
@@ -706,59 +740,71 @@
                         <TabHeader Text="@GetName("AssemblyRecipeItems", new PackingSpecs())"></TabHeader>
                     </ChildContent>
                     <ContentTemplate>
-                        <div style="display:flex; flex-direction:column; justify-content:center;">
-
-                            <div class="detailsTitleContainer">
-                                <h3 class="subTitleDetailForm">@GetName( "AssemblyRecipeItems", new PackingSpecs())</h3>
-                                <svg @onclick='()=>ClosedAdd("AssemblyRecipeItems")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
-                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                                </svg>
-                            </div>
-
-                            <div class="content-btn">
-                                @* <button type="button" @onclick='()=>AddAssemblyControl(true)' class="size-btn color-btn" style=' display:@(btnAddMaterials?"block":"none");'>+</button>*@
-                            </div>
 
 
-                            @if (assemblyRecipeItems != null)
-                            {
-                                <RadzenDataGrid AllowFiltering="true"
-                                            AllowColumnResize="true"
-                                            AllowAlternatingRows="true"
-                                            FilterMode="FilterMode.Advanced"
-                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                            AllowSorting="true"
-                                            PageSize="20"
-                                            AllowPaging="true"
-                                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                                            ShowPagingSummary="true"
-                                            Data="@assemblyRecipeItems"
-                                            TItem="PackRecipeItem"
-                                            SelectionMode="DataGridSelectionMode.Single"
-                                            LogicalFilterOperator="LogicalFilterOperator.Or"
-                                            CellContextMenu="@ShowContextMenuWithContent"
-                                            PageNumbersCount="100">
-
-                                    <Columns>
-                                        <RadzenDataGridColumn  TItem="PackRecipeItem" Property="ItemComponent.Name" Title="@GetName( "ComponentItemRecipe",new PackRecipeItem())" Frozen="false" Width="80px" />
-                                        <RadzenDataGridColumn TItem="PackRecipeItem" Property="RecipeQualityModifier.Name" Filterable="true" Title="@GetName( "Quantity",new PackRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                        <RadzenDataGridColumn TItem="PackRecipeItem" Property="Quantity" Filterable="true" Title="@GetName( "RecipeQualityModifier",new PackRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                        <RadzenDataGridColumn TItem="PackRecipeItem" Property="Id" Filterable="true" Title="@GetName( "Id",new PackRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-
-                                    </Columns>
-                                </RadzenDataGrid>
-                            }
-
+                        <div class="detailsTitleContainer">
+                            <h3 class="subTitleDetailForm">@GetName( "AssemblyRecipeItems", new PackingSpecs())</h3>
+                            <svg @onclick='()=>ClosedAdd("AssemblyRecipeItems")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                            </svg>
                         </div>
+
+                        <div class="content-btn">
+                            @* <button type="button" @onclick='()=>AddAssemblyControl(true)' class="size-btn color-btn" style=' display:@(btnAddMaterials?"block":"none");'>+</button>*@
+                        </div>
+
+
+                        @if (assemblyRecipeItems != null)
+                        {
+                            <RadzenDataGrid AllowFiltering="true"
+                                        AllowColumnResize="true"
+                                        AllowAlternatingRows="true"
+                                        FilterMode="FilterMode.Advanced"
+                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                        AllowSorting="true"
+                                        PageSize="50"
+                                        AllowPaging="true"
+                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                        ShowPagingSummary="true"
+                                        Data="@assemblyRecipeItems"
+                                        TItem="PackRecipeItem"
+                                        SelectionMode="DataGridSelectionMode.Single"
+                                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                                        CellContextMenu="@ShowContextMenuWithContent"
+                                        PageNumbersCount="100">
+
+                                <Columns>
+                                    <RadzenDataGridColumn TItem="PackRecipeItem" Property="ItemComponent.Name" Title="@GetName( "ComponentItemRecipe",new PackRecipeItem())" Frozen="false" Width="80px" />
+                                    <RadzenDataGridColumn TItem="PackRecipeItem" Property="RecipeQualityModifier.Name" Filterable="true" Title="@GetName( "Quantity",new PackRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                    <RadzenDataGridColumn TItem="PackRecipeItem" Property="Quantity" Filterable="true" Title="@GetName( "RecipeQualityModifier",new PackRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                    <RadzenDataGridColumn TItem="PackRecipeItem" Property="Id" Filterable="true" Title="@GetName( "Id",new PackRecipeItem())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+
+                                </Columns>
+                            </RadzenDataGrid>
+                            <div style="width: 100%; display: flex; flex-direction: row; column-gap: 20px; background-color: #f1f1f1; box-shadow: 0px 0px 5px; justify-content: center;   align-content: end;  align-items: center;">
+                                <div style=" height: auto; width: auto; display: flex; flex-direction: row;  column-gap: 20px; align-content: center; font-size: 12px;">
+                                    <label>
+                                        @("Records:" + assemblyRecipeItems.Count)
+                                    </label>
+                                </div>
+                            </div>
+
+
+                        }
+
+
                     </ContentTemplate>
                 </TabItem>
             </TabItems>
         </SfTab>
+
     </div>
 
 
 </form>
+
+
 
 @code {
     [Parameter]
@@ -772,6 +818,7 @@
     public string Mode { get; set; } = "Add";
     bool viewMsg = false, modeEdit = true;
     string msg = "";
+    string Records = "";
     string pageView = "";
     SfTab? referTag;
     TransactionalItemGroupSelector? referGroup;
@@ -1013,7 +1060,7 @@
 
     public void AddListOfMaterials()
     {
-        if (assemblyRecipeItem !=null)
+        if (assemblyRecipeItem != null)
         {
             assemblyRecipeItem.ItemComponent = itemComponent != null ? itemComponent : new();
             assemblyRecipeItem.ListOfMaterials = materialsRecipeItemsAssembly != null ? materialsRecipeItemsAssembly : new();
@@ -1089,7 +1136,7 @@
 
 
         }
-       if(GridlistOfMaterials!=null) GridlistOfMaterials.Reload();
+        if (GridlistOfMaterials != null) GridlistOfMaterials.Reload();
         StateHasChanged();
     }
 
@@ -1550,7 +1597,7 @@
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<MaterialRecipeItem> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-        </RadzenMenu>
+    </RadzenMenu>
     );
 
     void OnMenuItemClick(MenuItemEventArgs args)
@@ -1577,14 +1624,14 @@
 
         if (materialRecipeItem != null && pageView == "ListOfMaterials")
         {
-           var material = listOfMaterials.Where(s=>s.Material.Id == argObj.Material.Id).FirstOrDefault();
-            MaterialConcept = material !=null ? material.Material : new();
+            var material = listOfMaterials.Where(s => s.Material.Id == argObj.Material.Id).FirstOrDefault();
+            MaterialConcept = material != null ? material.Material : new();
             ClosedAdd("ListOfMaterials");
 
         }
 
-        
-      
+
+
 
     }
 

@@ -32,7 +32,7 @@
     }
 </style>
 
-<PageTitleComponent Title="Quality Report Types" IconName="QualityParameters.png"
+<PageTitleComponent Title="Quality Report Types" IconName="qualityReportType.png"
                     Description="With this tool you can add edit quality report types">
 </PageTitleComponent>
 
@@ -49,8 +49,6 @@
 
 
 
-
-
 <div class="tableContainer">
 
 
@@ -62,14 +60,16 @@
     }
     else
     {
+        @if (qualityReportTypeList != null)
+        {
 
-        <RadzenDataGrid AllowFiltering="true"
+            <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
                     AllowAlternatingRows="true"
                     FilterMode="FilterMode.Advanced"
                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                     AllowSorting="true"
-                    PageSize="20"
+                    PageSize="50"
                     AllowPaging="true"
                     PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                     ShowPagingSummary="true"
@@ -86,6 +86,17 @@
 
             </Columns>
         </RadzenDataGrid>
+            <div class="container-total">
+                <div class="item">
+                    <label>
+                        @(
+                            $"Records: {qualityReportTypeList.Count}"
+                            )
+                    </label>
+                </div>
+            </div>
+
+        }
     }
 </div>
 
@@ -178,7 +189,8 @@
 
     public void EventIdSelectionMenuItem(string name)
     {
-        Js.InvokeAsync<object>("open", name, "_blank");
+         Navigation.NavigateTo(name);
+        //Js.InvokeAsync<object>("open", name, "_blank");
     }
 
 }

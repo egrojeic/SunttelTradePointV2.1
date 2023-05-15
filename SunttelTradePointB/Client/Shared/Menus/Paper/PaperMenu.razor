@@ -1,0 +1,44 @@
+﻿@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+@inject NavigationManager Navigation
+@inject TransactionalItemsService transactionalService;
+
+<div id="container-menu-general">
+    <nav>
+        <button @onclick='Home' class="general-menu-button" style="text-align:center;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+        <button @onclick="CreateNewBox" class="general-menu-button"><i class="fa-solid fa-file"></i></button>
+
+        <SfSplitButton Content="Import Data" IconCss="fa-solid fa-file-import" CssClass="splitButtonsStyle">
+            <DropDownMenuItems>
+                <DropDownMenuItem Text="Importing from the cloud..." IconCss="fa-solid fa-cloud-arrow-up"></DropDownMenuItem>
+                <DropDownMenuItem Text="Uploading a csv file..." IconCss="fa-solid fa-file-csv"></DropDownMenuItem>
+            </DropDownMenuItems>
+
+        </SfSplitButton>
+
+
+
+    </nav>
+
+</div>
+
+@code {
+    static bool ShowMenu { get; set; } = false;
+   
+  
+ 
+
+    public void CreateNewBox()
+    {
+        string Page = transactionalService.Page != null ? transactionalService.Page : "";
+     
+        Navigation.NavigateTo($"/PaperConcept");
+       
+    }
+    public void Home()
+    {
+        Navigation.NavigateTo($"/Products");
+    }
+
+}
+

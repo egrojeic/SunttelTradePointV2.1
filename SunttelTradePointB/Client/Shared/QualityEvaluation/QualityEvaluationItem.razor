@@ -1,5 +1,6 @@
 @page "/QualityEvaluationItem"
 @page "/QualityEvaluationItem/{QualityEvaluationId}/{filter}"
+@page "/QualityEvaluationItem/{QualityEvaluationId}"
 
 
 @using SunttelTradePointB.Shared.Quality;
@@ -20,6 +21,27 @@
 <style>
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
+    }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
+
+
+    .e-tab .e-tab-header.e-vertical .e-toolbar-item .e-tab-text {
+        font-size: 12px;
+        width: 150px;
     }
 </style>
 
@@ -46,7 +68,7 @@
     {
 
         <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
-            <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+            <button @onclick="Home" type="button" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
             <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
                 <SplitButtonEvents ItemSelected="ItemSelected">
@@ -201,7 +223,7 @@
                                         FilterMode="FilterMode.Advanced"
                                         FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                         AllowSorting="true"
-                                        PageSize="20"
+                                        PageSize="50"
                                         AllowPaging="true"
                                         PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                                         ShowPagingSummary="true"
@@ -217,6 +239,16 @@
 
                                         </Columns>
                                     </RadzenDataGrid>
+                                        <div class="container-total">
+                                            <div class="item">
+                                                <label>
+                                                    @(
+                                                        $"Records: {QualityEvaluation.EvaluationParameters.Count}"
+                                                        )
+                                                </label>
+                                            </div>
+                                        </div>
+
                                 }
                             }
 
@@ -232,9 +264,7 @@
                         <div class="container-item">
                             @if (isLoading)
                             {
-
                                 <WaitingProcessIndicator loadingTopic="Quality Evaluation Images"></WaitingProcessIndicator>
-
                             }
                             else
                             {
@@ -249,8 +279,6 @@
                                     </div>
                                 }
 
-
-
                                 if (QualityEvaluation.QualityEvaluationImages != null)
                                 {
                                     <RadzenDataGrid AllowFiltering="true"
@@ -259,7 +287,7 @@
                                         FilterMode="FilterMode.Advanced"
                                         FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                         AllowSorting="true"
-                                        PageSize="20"
+                                        PageSize="50"
                                         AllowPaging="true"
                                         PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                                         ShowPagingSummary="true"
@@ -278,6 +306,15 @@
                                             </RadzenDataGridColumn>
                                         </Columns>
                                     </RadzenDataGrid>
+                                        <div class="container-total">
+                                            <div class="item">
+                                                <label>
+                                                    @(
+                                                        $"Records: {QualityEvaluation.QualityEvaluationImages.Count}"
+                                                        )
+                                                </label>
+                                            </div>
+                                        </div>
 
                                 }
                             }
@@ -311,7 +348,6 @@
 
             </TabItems>
         </SfTab>
-
     }
 
 
@@ -342,9 +378,7 @@
 
             </div>
         </div>
-    }
-
- 
+    }    
 
 </form>
 }
@@ -354,6 +388,8 @@
 @code {
     [Parameter]
     public string qualityEvaluationId { get; set; }
+    [Parameter]
+    public EventCallback PageHome { get; set; }
     [Parameter]
     public string filter { get; set; }
 
@@ -395,9 +431,6 @@
 
     protected override async void OnInitialized()
     {
-
-        isLoading = true;
-        StateHasChanged();
         LoadQualityEvaluation();
         if (qualityEvaluationId != null)
         {
@@ -409,19 +442,26 @@
                 if (transactionalItem != null) itemName = transactionalItem.Name;
             }
         }
-        LoadQualityEvaluation();
-        LoadParameter();
-        actionToTakeList = await QualityEvaluationServices.GetQualityActionList("all", 1, 80);
-        trafficLightStatusList = await QualityEvaluationServices.GetQualityTrafficLightList("all", 1, 20);
-        typeList = await QualityEvaluationServices.GetQualityReportTypeList("all", 1, 20);
         qualityParameterGroupList = await QualityEvaluationServices.GetQualityParameterGrouplList("all", 1, 20);
-        isLoading = false;
+        LoadQualityEvaluation();
         StateHasChanged();
+        LoadParameter();
+      
     }
+
+
+
 
     public async Task LoadParameter()
     {
+
+        isLoading = true;
+        StateHasChanged();   
+        actionToTakeList = await QualityEvaluationServices.GetQualityActionList("all", 1, 80);
+        trafficLightStatusList = await QualityEvaluationServices.GetQualityTrafficLightList("all", 1, 20);
+        typeList = await QualityEvaluationServices.GetQualityReportTypeList("all", 1, 20);            
         qualityAssuranceParameterList = await QualityEvaluationServices.GetQualityAssuranceParameterlList("all", 1, 20);
+        isLoading = false;
         StateHasChanged();
     }
 
@@ -562,12 +602,11 @@
         await LoadParameter();
         qualityAssuranceParameterList = qualityAssuranceParameterList.Where(s => s.ParameterGroup.Id == Id).ToList();
         Page("group");
-
     }
 
     public string GetFullPathPhoto(string imgName)
     {
-        return UIClientGlobalVariables.PathTransactionalItemsImages + "/" + imgName;
+        return UIClientGlobalVariables._pathQualityEvaluationImages + "/" + imgName;
     }
 
     public void Page(string value)
@@ -600,7 +639,7 @@
     void ShowContextMenuTransactionalItem(DataGridCellMouseEventArgs<QualityEvaluationDetail> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick1">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
 
@@ -617,17 +656,17 @@
     #endregion grid
 
 
-    public void Add(string value)
-    {
-        EventIdSelectionMenuItem(value);
-    }
+    //public void Add(string value)
+    //{
+    //    EventIdSelectionMenuItem(value);
+    //}
 
 
-    public void EventIdSelectionMenuItem(string name)
-    {
-        Js.InvokeAsync<object>("open", name, "_blank");
+    //public void EventIdSelectionMenuItem(string name)
+    //{
+    //    Js.InvokeAsync<object>("open", name, "_blank");
 
-    }
+    //}
 
     public void alert(string _msg, int? status = 0)
     {
@@ -636,13 +675,13 @@
         StateHasChanged();
     }
 
-
-
     public void Home()
     {
-        string paramFilter = filter != null ? filter : "";
-        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/QualityControlPanel/{paramFilter}");
-        Navigation.NavigateTo($"/QualityControlPanel");
+       // string paramFilter = filter != null ? filter : "";
+        //if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/QualityControlPanel/{paramFilter}");
+        PageHome.InvokeAsync("grid");
+        // Navigation.NavigateTo($"/QualityControlPanel");
+        StateHasChanged();
     }
 
     public void OpenAlert(string _msg, int _status, bool visible)

@@ -32,24 +32,19 @@
     }
 </style>
 
-<PageTitleComponent Title="Quality Parameter" IconName="QualityParameters.png"
+<PageTitleComponent Title="Quality Parameter" IconName="qualityAssuranceParameter.png"
                     Description="With this tool you can add edit quality parameter">
 </PageTitleComponent>
-
 
 <div class="panelMenuContainer">
     <QualityAssuranceParameterMenu>
     </QualityAssuranceParameterMenu>
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
-   @* <RangeDatesInput StartDate="@startingDate"
-                     StartDateName="Date"
-                     EventSearchAll="EventSearchAll"></RangeDatesInput>*@
+    @* <RangeDatesInput StartDate="@startingDate"
+    StartDateName="Date"
+    EventSearchAll="EventSearchAll"></RangeDatesInput>*@
 
 </div>
-
-
-
-
 
 <div class="tableContainer">
 
@@ -62,14 +57,15 @@
     }
     else
     {
-
-        <RadzenDataGrid AllowFiltering="true"
+        @if (qualityAssuranceParameterList != null)
+        {
+            <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
                     AllowAlternatingRows="true"
                     FilterMode="FilterMode.Advanced"
                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                     AllowSorting="true"
-                    PageSize="20"
+                    PageSize="50"
                     AllowPaging="true"
                     PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                     ShowPagingSummary="true"
@@ -80,21 +76,31 @@
                     LogicalFilterOperator="LogicalFilterOperator.Or"
                     @bind-Value="@selectedcommercialdocuments"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
-            <Columns>
+                <Columns>
 
-                <RadzenDataGridColumn TItem="QualityAssuranceParameter" Property="@nameof(QualityAssuranceParameter.Name)" Title="@GetName("Name", new QualityAssuranceParameter() )" Width="208px" />
+                    <RadzenDataGridColumn TItem="QualityAssuranceParameter" Property="@nameof(QualityAssuranceParameter.Name)" Title="@GetName("Name", new QualityAssuranceParameter() )" Width="208px" />
 
-            </Columns>
-        </RadzenDataGrid>
+                </Columns>
+            </RadzenDataGrid>
+            <div class="container-total">
+                <div class="item">
+                    <label>
+                        @(
+                            $"Records: {qualityAssuranceParameterList.Count}"
+                            )
+                    </label>
+                </div>
+            </div>
+        }
     }
 </div>
 
 
 @code {
 
-        [Parameter]
-        public string _filterItems { get; set; }
-        List<QualityAssuranceParameter>? qualityAssuranceParameterList { get; set; }
+    [Parameter]
+    public string _filterItems { get; set; }
+    List<QualityAssuranceParameter>? qualityAssuranceParameterList { get; set; }
 
     public QualityAssuranceParameter qualityAssuranceParameter { get; set; }
     IList<QualityAssuranceParameter>? selectedcommercialdocuments;
@@ -125,9 +131,9 @@
     public async void LoadData()
     {
         isLoading = true;
-      
-            qualityAssuranceParameterList = await QualityEvaluationServices.GetQualityAssuranceParameterlList((_filterItems != null ? _filterItems : "all"), 1, 20);
-       
+
+        qualityAssuranceParameterList = await QualityEvaluationServices.GetQualityAssuranceParameterlList((_filterItems != null ? _filterItems : "all"), 1, 20);
+
         isLoading = false;
         StateHasChanged();
     }
@@ -179,7 +185,8 @@
 
     public void EventIdSelectionMenuItem(string name)
     {
-        Js.InvokeAsync<object>("open", name, "_blank");
+        Navigation.NavigateTo(name);
+        //Js.InvokeAsync<object>("open", name, "_blank");
     }
 
 }

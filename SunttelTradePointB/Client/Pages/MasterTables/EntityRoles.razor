@@ -47,25 +47,39 @@
     }else{
         @if(entityRolesList != null)
         {
-            <SfGrid DataSource="entityRolesList"
-                Height="auto"
-                Width="100%"
-                TValue="EntityRole"
-                AllowFiltering="true"
-                AllowTextWrap="false"
-                AllowPaging="true"
-                AllowResizing="true"    
-                
-                ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" } })">
-                <GridFilterSettings Type="FilterType.Menu"></GridFilterSettings>
-                <GridColumns>
-                    <GridColumn Field="@nameof(EntityRole.Code)" HeaderText="Code" Width="130px"></GridColumn>
-                    @*<GridColumn Field="@nameof(EntityRole.LegacyId)" HeaderText="Legacy Id" Width="130px"></GridColumn>*@
-                    <GridColumn Field="@nameof(EntityRole.Name)" HeaderText="Name" Width="auto"></GridColumn>
-                    @*<GridColumn Field="@nameof(EntityRole.EntityRoleClassifier.ToString)" HeaderText="Role Classifier" Width="110"></GridColumn>*@
-                </GridColumns>
-                <GridEvents ContextMenuItemClicked="OnContextMenuClick" TValue="EntityRole"></GridEvents>
-            </SfGrid>
+
+
+            <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    PageSize="50"
+                    ColumnWidth="100%"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    CellContextMenu="@ShowContextMenuCommercialDocument"
+                    Data="entityRolesList"
+                    TItem="EntityRole">
+                <Columns>
+                    <RadzenDataGridColumn TItem="EntityRole" Property="Code" Title="@GetName("Code",new EntityRole())" Filterable="false" Width="150px" />
+                    <RadzenDataGridColumn TItem="EntityRole" Property="Name" Title="@GetName("Name",new EntityRole())" Filterable="false" Width="150px" />
+                </Columns>
+            </RadzenDataGrid>
+            <div class="container-total">
+                <div class="item">
+                    <label>
+                        @(
+                            $"Records: {entityRolesList.Count}"
+                            )
+                    </label>
+                </div>
+            </div>
+
         }
     }
 </div>
@@ -101,10 +115,8 @@
         {
             isLoading = true;
             StateHasChanged();
-
            
-           filter = "all";
-            
+           filter = "all";            
 
             var response = await actorsNodeServive.GetListEntityRoles(filter);
 
@@ -116,16 +128,28 @@
         }
     }
 
-    public void OnContextMenuClick(ContextMenuClickEventArgs<EntityRole> args)
-    {
-        EntityRole _EntityRole = new();
-        _EntityRole = args.RowInfo.RowData;
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<EntityRole> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
 
-        if (args.Item.Text == "Edit")
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        EntityRole argObj = (EntityRole)args.Value;     
+        navigationManager.NavigateTo($"/EntityRoles/{argObj.Id}/Edit");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
-            navigationManager.NavigateTo($"/EntityRoles/{_EntityRole.Id}/Edit");
+            ContextMenuService.Close();
         }
     }
 
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
 
 }

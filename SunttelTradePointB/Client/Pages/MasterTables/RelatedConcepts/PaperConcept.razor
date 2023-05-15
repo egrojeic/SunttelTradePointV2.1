@@ -1,5 +1,6 @@
-﻿@page "/PaperConcept/{Page}/{filterItems}/{labelPaperId}"
-@page "/PaperConcept/{Page}"
+﻿@page "/PaperConcept/{labelPaperId}/{filterItems}"
+@page "/PaperConcept/{filterItems}"
+@page "/PaperConcept"
 
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
@@ -13,7 +14,7 @@
 }
 
 <PageTitleComponent Title="@GetName("Paper", new LabelStyle())" IconName="paper.png"
-                    Description="@($"Here you can add {GetName("Paper", new LabelStyle()).ToLower()} ")">
+                    Description="@($"Here you can add and edit {GetName("Paper", new LabelStyle()).ToLower()} ")">
 </PageTitleComponent>
 
 <div class="flex-horizontal-center">
@@ -61,6 +62,7 @@
         {
             labelPaper = new();
         }
+        StateHasChanged();
         base.OnInitialized();
     }
 
@@ -112,6 +114,7 @@
 
     public void Closed(string value)
     {
-        if (value == "control") Navigation.NavigateTo($"/{Page}/{filterItems}");
+        if (filterItems !=null) Navigation.NavigateTo($"/PaperGeneral/{filterItems}");
+        Navigation.NavigateTo($"/PaperGeneral");
     }
 }
