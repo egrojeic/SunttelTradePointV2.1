@@ -68,7 +68,7 @@
     {
 
         <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
-            <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+            <button @onclick="Home" type="button" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
             <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
                 <SplitButtonEvents ItemSelected="ItemSelected">
@@ -389,7 +389,7 @@
     [Parameter]
     public string qualityEvaluationId { get; set; }
     [Parameter]
-    public EventCallback<string> PageHome { get; set; }
+    public EventCallback PageHome { get; set; }
     [Parameter]
     public string filter { get; set; }
 
@@ -639,7 +639,7 @@
     void ShowContextMenuTransactionalItem(DataGridCellMouseEventArgs<QualityEvaluationDetail> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick1">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
 
@@ -678,10 +678,11 @@
 
     public void Home()
     {
-        string paramFilter = filter != null ? filter : "";
+       // string paramFilter = filter != null ? filter : "";
         //if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/QualityControlPanel/{paramFilter}");
         PageHome.InvokeAsync("grid");
         // Navigation.NavigateTo($"/QualityControlPanel");
+        StateHasChanged();
     }
 
     public void OpenAlert(string _msg, int _status, bool visible)

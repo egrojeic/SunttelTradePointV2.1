@@ -36,7 +36,7 @@
 
 @if (page == "item")
 {
-    <QualityEvaluationItem PageHome="Page" qualityEvaluationId="@qualityEvaluationId">
+    <QualityEvaluationItem PageHome="@PageHome" qualityEvaluationId="@qualityEvaluationId">
     </QualityEvaluationItem>
 }
 
@@ -46,7 +46,7 @@
                     Description="With this tool you can add and edit quality control panel">
     </PageTitleComponent>
     <div class="panelMenuContainer">
-        <QualityEvaluationMenu>
+        <QualityEvaluationMenu PageHome="@Page">
         </QualityEvaluationMenu>
         <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
     </div>
@@ -195,7 +195,7 @@
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<QualityEvaluation> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
 
@@ -231,6 +231,13 @@
     public void Page(string name)
     {
         page = name;
+        StateHasChanged();
+    }
+    
+    public void PageHome()
+    {
+        page = "grid";
+        StateHasChanged();
     }
 
     public string GetName(string Name, Object Obj)
