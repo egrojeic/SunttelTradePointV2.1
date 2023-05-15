@@ -17,7 +17,7 @@ namespace SunttelTradePointB.Shared.DataViews.Profiles
         {
             CreateMap<ActorsImport, EntityActor>()
                 .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Codigo))
-                .ForPath(dest => dest.InvoicingAddress.AddressLine1, opt => opt.MapFrom(src => src.Address1))
+                .ForPath(dest => dest.EMailAddress , opt => opt.MapFrom(src => src.EMailAddres))
                 .ForPath(dest => dest.InvoicingAddress.AddressLine1, opt => opt.MapFrom(src => src.Address1))
                 .ForPath(dest => dest.InvoicingAddress.ZipCode, opt => opt.MapFrom(src => src.Address1))
                 

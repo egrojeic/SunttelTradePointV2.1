@@ -369,7 +369,6 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <param name="userId"></param>
         /// <param name="ipAdress"></param>
         /// <param name="entity"></param>
-        /// <param name="entityActorId"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveEntity")]
@@ -384,6 +383,28 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
             else
                 return NotFound(response.ErrorDescription);
         }
+
+        /// <summary>
+        /// Saves an Entity/Actor document. If it doesn't exists, it'll be created
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("SaveEntities")]
+        public async Task<IActionResult> SaveEntities(string userId, string ipAdress, List<EntityActor> entities)
+        {
+            var response = await _entityNodes.SaveEntities(userId, ipAdress, entities);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.entityActorListResponse);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
 
         /// <summary>
         /// Saves an address of an entity. If it exists, it'll be updated, otherwise it 'll be inserted in the array

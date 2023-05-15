@@ -20,7 +20,7 @@ namespace SunttelTradePointB.Server.Interfaces.InventoryBkServices
         /// <param name="perPage"></param>
         /// <param name="filterName"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<InventoryDetail>? InventoryList, string? ErrorDescription)> GetInventory(string userId, string ipAddress, string squadId, string warehouseId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filterName = null);
+        Task<(bool IsSuccess, List<InventoryDetail>? InventoryList, string? ErrorDescription)> GetInventory(string userId, string ipAddress, string squadId, string warehouseId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filterName = null, string? customerName = null, string? itemName = null, string? boxCode = null);
 
         /// <summary>
         /// Retrieves a inventory having the specified id

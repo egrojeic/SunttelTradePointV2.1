@@ -426,6 +426,40 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
         }
 
+        // <summary>
+        /// Saves a list of Entity/Actors. If it does not exist, it will be created.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<EntityActor>? entityActorListResponse, string? ErrorDescription)> SaveEntities(string userId, string ipAddress, List<EntityActor> entities)
+        {
+            try
+            {
+                var entitiesToInsert = new List<EntityActor>();
+
+                foreach (var entity in entities)
+                {
+                    if (entity.Id == null)
+                    {
+                        entity.Id = ObjectId.GenerateNewId().ToString();
+                    }
+
+                    entitiesToInsert.Add(entity);
+                }
+
+                await _entityActorsCollection.InsertManyAsync(entitiesToInsert);
+
+                return (true, entitiesToInsert, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+
 
         /// <summary>
         /// Saves an address of an entity. If it exists, it'll be updated, otherwise it 'll be inserted in the array
@@ -1160,18 +1194,14 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         HasHeaderRecord = true
                     };
                     var csv = new CsvReader(reader, config);
+
                     // Lectura de los registros del archivo CSV
-                    // LOS 3 
                     var records = csv.GetRecords<ActorsImport>().ToList();
 
                     List<EntityActor> results = _mapper.Map<List<EntityActor>>(records);
 
-
-                    // 
-                    foreach (var resultEntity in results)
-                    {
-                        var Entity = await SaveEntity(userId, ipAddress, resultEntity);
-                    }
+                    var Entity = await SaveEntities(userId, ipAddress, results);
+                    
                     return (true, results, null);
 
                 }

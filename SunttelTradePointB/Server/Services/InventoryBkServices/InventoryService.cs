@@ -41,8 +41,11 @@ namespace SunttelTradePointB.Server.Services.InventoryBkServices
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="filterName"></param>
+        /// <param name="customerName"></param>
+        /// <param name="itemName"></param>
+        /// <param name="boxCode"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<InventoryDetail>? InventoryList, string? ErrorDescription)> GetInventory(string userId, string ipAddress, string squadId, string warehouseId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filterName = null)
+        public async Task<(bool IsSuccess, List<InventoryDetail>? InventoryList, string? ErrorDescription)> GetInventory(string userId, string ipAddress, string squadId, string warehouseId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filterName = null, string? customerName = null, string? itemName = null, string? boxCode = null)
         {
             try
             {
@@ -90,6 +93,28 @@ namespace SunttelTradePointB.Server.Services.InventoryBkServices
                         {"$limit",  perPage}
                         }
                     );
+
+                    if (customerName != null || customerName != "")
+                    {
+                        pipeline.Add(
+                            new BsonDocument("$match", new BsonDocument("CustomerReservedFor.Name", customerName))
+                        );
+                    }
+
+                    if (itemName != null || itemName != "")
+                    {
+                        pipeline.Add(
+                            new BsonDocument("$match", new BsonDocument("InventoryItem.Name", itemName))
+                        );
+                    }
+
+                    if (boxCode != null || boxCode != "")
+                    {
+                        pipeline.Add(
+                            new BsonDocument("$match", new BsonDocument("BoxCode", boxCode))
+                        );
+                    }
+
 
                     List<InventoryDetail> results = await _InventoryCollection.Aggregate<InventoryDetail>(pipeline).ToListAsync();
                     return (true, results, null);

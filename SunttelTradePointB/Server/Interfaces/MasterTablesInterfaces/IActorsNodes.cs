@@ -76,6 +76,15 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         public Task<(bool IsSuccess, EntityActor? entityActorResponse, string? ErrorDescription)> SaveEntity(string userId, string ipAdress, EntityActor entity);
 
         /// <summary>
+        /// Saves a list of Entity/Actors. If it does not exist, it will be created.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        public Task<(bool IsSuccess, List<EntityActor>? entityActorListResponse, string? ErrorDescription)> SaveEntities(string userId, string ipAdress, List<EntityActor> entities);
+
+        /// <summary>
         /// Saves an address of an entity. If it exists, it'll be updated, otherwise it 'll be inserted in the array
         /// </summary>
         /// <param name="userId"></param>
