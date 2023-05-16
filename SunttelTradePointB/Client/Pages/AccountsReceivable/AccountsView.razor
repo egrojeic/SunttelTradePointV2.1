@@ -9,29 +9,22 @@
 @inject IJSRuntime Js
 
 
-
 <style>
-    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
-        font-size: 12px;
+    .e-pivotview .e-grouping-bar .e-pivot-button, .e-pivotview .e-group-rows .e-pivot-button {
+        background-color: #0d223f;
     }
 
-    .rz-datatable-data td, .rz-grid-table td {
-        padding: 3px;
-    }
-
-        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
-            background-color: #1bc7b7;
-            box-shadow: 0px 2px 5px;
-            font-weight: bold;
+        .e-pivotview .e-grouping-bar .e-pivot-button, .e-pivotview .e-group-rows .e-pivot-button:hover {
+            background-color: #0d223f;
+            box-shadow: 0px 0px 5px gray;
+            color: black;
         }
 
-    .rz-state-highlight {
-        background-color: #1bc7b7;
-        font-weight: bold;
+    .e-pivotview {
+        min-height: 200px;
+        width: 100%;
     }
 </style>
-
-
 
 @if (isLoading)
 {
