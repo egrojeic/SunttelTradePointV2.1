@@ -146,7 +146,7 @@
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         CreditReason argObj = (CreditReason)args.Value;
-        Navigation.NavigateTo($"CreditReason/{page}/{argObj.Id}/{_filterItems}");
+        Navigation.NavigateTo($"CreditReason/{_page}/{argObj.Id}/{_filterItems}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
@@ -174,7 +174,7 @@
     {
         string paramFilter = filter != null ? filter : "";
         if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/Credits/{paramFilter}");
-        Navigation.NavigateTo($"/{page}/1");
+        Navigation.NavigateTo($"/{_page}/1");
     }
 
     public void EventIdSelectionMenuItem(string name)

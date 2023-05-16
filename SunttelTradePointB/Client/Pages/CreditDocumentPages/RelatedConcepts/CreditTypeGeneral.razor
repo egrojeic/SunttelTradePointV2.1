@@ -1,6 +1,6 @@
 ﻿@page "/CreditTypeGeneral"
-@page "/CreditTypeGeneral/{page}"
-@page "/CreditTypeGeneral/{page}/{_filterItems}"
+@page "/CreditTypeGeneral/{_page}"
+@page "/CreditTypeGeneral/{_page}/{_filterItems}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Accounting
 
@@ -36,7 +36,7 @@
 
 <div class="panelMenuContainer">
     <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-    <CreditTypeMenu></CreditTypeMenu>
+    <CreditTypeMenu page="@_page"></CreditTypeMenu>
     <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>   
 </div>
 
@@ -102,7 +102,7 @@
     [Parameter]
     public string _filterItems { get; set; }
     [Parameter]
-    public string page { get; set; }
+    public string _page { get; set; }
     public List<CreditType> creditTypeList { get; set; }
    
 
@@ -148,7 +148,7 @@
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         CreditType argObj = (CreditType)args.Value;
-        Navigation.NavigateTo($"CreditType/{page}/{argObj.Id}/{_filterItems}");
+        Navigation.NavigateTo($"CreditType/{_page}/{argObj.Id}/{_filterItems}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
@@ -176,7 +176,7 @@
     {
         string paramFilter = filter != null ? filter : "";
         if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/Credits/{paramFilter}");
-        Navigation.NavigateTo($"/{page}/1");
+        Navigation.NavigateTo($"/{_page}/1");
     }
 
 
