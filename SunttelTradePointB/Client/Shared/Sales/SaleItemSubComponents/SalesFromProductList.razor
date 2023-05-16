@@ -96,8 +96,6 @@
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PullDate" Title="@GetName("PullDate", new SalesDocumentItemsDetails())" FormatString="{0:yyyy-MM-dd}" Filterable="false" Width="100px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="FormatedPullDate" Title="@GetName("FormatedPullDate", new SalesDocumentItemsDetails())" FormatString="{0:yyyy-MM-dd}" Filterable="false" Width="100px" />
                     
-                    
-                   
                 </Columns>
             </RadzenDataGrid>
         }
@@ -238,6 +236,7 @@
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+        <RadzenMenuItem Text="Delete" Value=args.Data Icon="delete"></RadzenMenuItem>
       
         </RadzenMenu>
     );
