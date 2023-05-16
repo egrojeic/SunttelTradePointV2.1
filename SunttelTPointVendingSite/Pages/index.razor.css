@@ -1,0 +1,30 @@
+﻿.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid lightgray;
+    box-shadow: 2px 2px 8px 4px #d3d3d3d1;
+    border-radius: 0px 0px 10px 10px;
+    font-family: sans-serif;
+    margin: 15px 22px;
+    width: 230px;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: 40px 0px;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0px 80px;
+}
+
+.myPage {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
