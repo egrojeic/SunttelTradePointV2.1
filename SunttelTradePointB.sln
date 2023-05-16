@@ -14,6 +14,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SunttelTradePointB.Shared",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SunttelTradePointB.Identity", "SunttelTradePointB\Identity\SunttelTradePointB.Identity.csproj", "{1ECBA5C6-D1D6-4194-A87E-4EEA1CB7F512}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SunttelTPointVendingSite", "SunttelTPointVendingSite\SunttelTPointVendingSite.csproj", "{0A245C2E-BA89-450B-A5CC-6FAC25765794}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,10 @@ Global
 		{1ECBA5C6-D1D6-4194-A87E-4EEA1CB7F512}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1ECBA5C6-D1D6-4194-A87E-4EEA1CB7F512}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1ECBA5C6-D1D6-4194-A87E-4EEA1CB7F512}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A245C2E-BA89-450B-A5CC-6FAC25765794}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A245C2E-BA89-450B-A5CC-6FAC25765794}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A245C2E-BA89-450B-A5CC-6FAC25765794}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A245C2E-BA89-450B-A5CC-6FAC25765794}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
