@@ -1,6 +1,4 @@
-﻿
-
-
+﻿@using Syncfusion.Blazor.PivotView
 @using System;
 @using System.Globalization;
 @using SunttelTradePointB.Shared.Sales;
@@ -33,84 +31,80 @@
     }
 </style>
 
-<PageTitleComponent Title="Accounts Receivable" IconName="commercialActivities.png"
-                    Description="With this tool you can see accounts receivable">
-</PageTitleComponent>
 
 
-<div class="panelMenuContainer">
-    <AccountsReceivableMenu></AccountsReceivableMenu>
-    <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
-    <RangeDatesInput @bind-StartDate="@date"
-                     StartDateName="Date"
-                     EventSearchAll="EventSearchAll"></RangeDatesInput>
-
-</div>
-
-
-
-<div class="tableContainer">
-
-
-    @if (isLoading)
+@if (isLoading)
+{
+    <WaitingProcessIndicator loadingTopic="Shipping"></WaitingProcessIndicator>
+}
+else
+{
+    @if (commercialdocumentViewList != null)
     {
+        <SfPivotView TValue="CommercialDocumentView" Height="100%" Width="100%"
+             @ref="@Pivot"
+             Toolbar="@Olap"
+             ShowGroupingBar="true"
+             ShowFieldList=true
+             ShowToolbar=true
+             AllowConditionalFormatting=true
+             AllowCalculatedField=true
+             AllowPdfExport=true
+             AllowExcelExport=true
+             ShowTooltip=true>
+            <PivotViewDisplayOption Primary="Primary.Table" View="View.Both"></PivotViewDisplayOption>
+            <PivotViewDataSourceSettings DataSource="@commercialdocumentViewList">
+                <PivotViewColumns>
+                    <PivotViewColumn Name="@nameof(CommercialDocumentView.DocumentNumber)" Caption="@GetName(nameof(CommercialDocument.DocumentNumber),new CommercialDocument())"></PivotViewColumn>
+                    <PivotViewColumn Name="@nameof(CommercialDocumentView.BuyerName)" Caption="@GetName(nameof(CommercialDocument.DocumentNumber),new CommercialDocument())"></PivotViewColumn>
+                    <PivotViewColumn Name="@nameof(CommercialDocument.TrackingNumber)" Caption="@GetName(nameof(CommercialDocument.TrackingNumber),new CommercialDocument())"></PivotViewColumn>
+                    <PivotViewColumn Name="@nameof(CommercialDocumentView.FinanceSummaryTotalCosts)" Caption="@GetName(nameof(CommercialDocument.FinanceStatusDocument),new CommercialDocument())"></PivotViewColumn>
+                    <PivotViewColumn Name="@nameof(CommercialDocumentView.ShippingStatusDocumentName)" Caption="@GetName(nameof(CommercialDocument.ShippingStatusDocument),new CommercialDocument())"></PivotViewColumn>
+                   
+                </PivotViewColumns>
+                <PivotViewRows>
+                </PivotViewRows>
+                <PivotViewValues>
+                    <PivotViewValue Name="@nameof(CommercialDocumentView.FinanceSummaryTotalAmount)" Caption="@GetName(nameof(CommercialDocument.FinanceSummary.TotalAmount),new CommercialDocument())"></PivotViewValue>
+                    <PivotViewValue Name="@nameof(CommercialDocumentView.FinanceSummaryTotalDiscounts)" Caption="@GetName(nameof(CommercialDocument.FinanceSummary.TotalDiscounts),new CommercialDocument())"></PivotViewValue>
+                    <PivotViewValue Name="@nameof(CommercialDocumentView.FinanceSummaryTotalTaxes)" Caption="@GetName(nameof(CommercialDocument.FinanceSummary.TotalTaxes),new CommercialDocument())"></PivotViewValue>
+                    <PivotViewValue Name="@nameof(CommercialDocumentView.DeliveryDate)" Caption="@GetName(nameof(CommercialDocument.DeliveryDate),new CommercialDocument())"></PivotViewValue>
 
-        <WaitingProcessIndicator loadingTopic="Characteristic Items"></WaitingProcessIndicator>
+                </PivotViewValues>
+                <PivotViewFormatSettings>
+                    <PivotViewFormatSetting Name="@nameof(CommercialDocumentView.FinanceSummaryTotalAmount)" Format="N2" UseGrouping=true></PivotViewFormatSetting>
+                    <PivotViewFormatSetting Name="@nameof(CommercialDocumentView.FinanceSummaryTotalDiscounts)" Format="N2" UseGrouping=true></PivotViewFormatSetting>
+                    <PivotViewFormatSetting Name="@nameof(CommercialDocumentView.FinanceSummaryTotalTaxes)" Format="N2" UseGrouping=true></PivotViewFormatSetting>
+                    <PivotViewFormatSetting Name="@nameof(CommercialDocumentView.DeliveryDate)" Format="{0:d}" UseGrouping=true></PivotViewFormatSetting>
 
-    }
-    else
-    {
-
-        @if (commercialdocumentList!=null)
+                </PivotViewFormatSettings>
+            </PivotViewDataSourceSettings>
+            <PivotViewEvents TValue="CommercialDocumentView" RenameReport="RenameReport" RemoveReport="RemoveReport" SaveReport="SaveReport" LoadReport="LoadReport" FetchReport="FetchReport"></PivotViewEvents>
+        </SfPivotView>
+        @if (commercialdocumentList != null)
         {
-            <RadzenDataGrid AllowFiltering="true"
-                    AllowColumnResize="true"
-                    AllowAlternatingRows="true"
-                    FilterMode="FilterMode.Advanced"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    AllowSorting="true"
-                    PageSize="50"
-                    AllowPaging="true"
-                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    Data="@commercialdocumentList"
-                    TItem="CommercialDocument"
-                    ColumnWidth="100%"
-                    SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"
-                    @bind-Value="@selectedcommercialdocuments"
-                  >
-                <Columns>
-                    <RadzenDataGridColumn  TItem="CommercialDocument" Property="@nameof(CommercialDocument.DocumentNumber)" Title="@GetName("DocumentNumber", new CommercialDocument() )" Width="128px" />
-                    <RadzenDataGridColumn  TItem="CommercialDocument" Property="@nameof(CommercialDocument.DeliveryDate)" FormatString="{0:MM/dd/yyyy}" Title="@GetName("DeliveryDate", new CommercialDocument() )" Filterable="false" Width="100px" />
-                    <RadzenDataGridColumn  TItem="CommercialDocument" Property="Vendor.Name" Title="@GetName("Vendor", new CommercialDocument() )" Width="200px" />
-                    <RadzenDataGridColumn  TItem="CommercialDocument" Property="Buyer.Name" Title="@GetName("Buyer", new CommercialDocument() )" Width="200px" />
-                    <RadzenDataGridColumn  TItem="CommercialDocument" Property="ShippingStatusDocument.Name" Title="@GetName("ShippingStatusDocument", new CommercialDocument() )" Width="80px" />
-                    <RadzenDataGridColumn  TItem="CommercialDocument" Property="Season.Name" Title="@GetName("Season", new CommercialDocument() )" Width="100px" />
-                    <RadzenDataGridColumn  TItem="CommercialDocument" Property="FinanceSummary.TotalTaxes" Title="@GetName("TotalTaxes", new FinanceSalesDocumentSummary() )" TextAlign="TextAlign.Right" FormatString="{0:N2}" Filterable="false" Sortable="false" Width="80px" />
-                    <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalDiscounts" Title="@GetName("TotalDiscounts", new FinanceSalesDocumentSummary() )" TextAlign="TextAlign.Right" FormatString="{0:N2}" Filterable="false" Sortable="false" Width="80px" />
-                    <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalCosts" Title="@GetName("TotalCosts", new FinanceSalesDocumentSummary() )" TextAlign="TextAlign.Right" FormatString="{0:N2}" Filterable="false" Sortable="false" Width="80px" />
-                    <RadzenDataGridColumn  TItem="CommercialDocument" Property="FinanceSummary.TotalAmount" Title="@GetName("TotalAmount", new FinanceSalesDocumentSummary() )" TextAlign="TextAlign.Right" FormatString="{0:N2}" Filterable="false" Sortable="false" Width="80px" />
-                </Columns>
-            </RadzenDataGrid>
             <div class="container-total">
                 <div class="item">
-                <label>
-                    @($"Records: {commercialdocumentList.Count}")
-                </label>
+                    <label>
+                        @(
+                            $"Count item : {commercialdocumentList.Count}"
+                            )
+                    </label>
+                </div>
             </div>
-            <div class="item"><label>@SumTotal()</label> </div>
-        </div>
         }
     }
-</div>
+
+}
 
 
 @code {
 
     [Parameter]
     public string _filterItems { get; set; }
-    List<CommercialDocument>? commercialdocumentList { get; set; }
+    [Parameter]
+    public List<CommercialDocument>? commercialdocumentList { get; set; }
+    public List<CommercialDocumentView>? commercialdocumentViewList { get; set; }
     NumberFormatInfo Us = new CultureInfo("en-US", false).NumberFormat;
     public Warehouse warehouse { get; set; }
     IList<CommercialDocument>? selectedcommercialdocuments;
@@ -118,6 +112,32 @@
     bool isLoading = false;
 
     DateTime date = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
+
+    #region Pivot
+
+    SfPivotView<CommercialDocumentView> Pivot;
+    public List<ToolbarItems> Olap = new List<ToolbarItems> {
+        ToolbarItems.New,
+        ToolbarItems.Save,
+        ToolbarItems.SaveAs,
+        ToolbarItems.Rename,
+        ToolbarItems.Remove,
+        ToolbarItems.Load,
+        ToolbarItems.Grid,
+        ToolbarItems.Chart,
+        ToolbarItems.MDX,
+        ToolbarItems.Export,
+        ToolbarItems.SubTotal,
+        ToolbarItems.GrandTotal,
+        ToolbarItems.ConditionalFormatting,
+        ToolbarItems.FieldList,
+
+                        };
+    public List<string> Report = new List<string>();
+    public List<string> ReportName = new List<string>();
+
+    #endregion End Pivot
+
 
     public string docsFilter
     {
@@ -131,9 +151,7 @@
 
     protected async override void OnInitialized()
     {
-
-
-        if (_filterItems != null) LoadData();
+         LoadData();
         base.OnInitialized();
 
     }
@@ -142,7 +160,33 @@
     {
         isLoading = true;
 
-        commercialdocumentList = await AccountsReceivableServices.GetAccountsReceivableServicesList(date, (_filterItems != null ? _filterItems : "all"), 1, 20);
+        if (commercialdocumentList != null)
+        {
+            commercialdocumentViewList = new List<CommercialDocumentView>();
+            foreach (var item in commercialdocumentList)
+            {
+                commercialdocumentViewList.Add(new CommercialDocumentView
+                        {
+                            BuyerName = item.Buyer != null ? item.Buyer.Name : "",
+                            FinanceSummaryTotalAmount = item.FinanceSummary != null ? item.FinanceSummary.TotalAmount : 0,
+                            FinanceSummaryTotalCosts = item.FinanceSummary != null ? item.FinanceSummary.TotalCosts : 0,
+                            FinanceSummaryTotalDiscounts = item.FinanceSummary != null ? item.FinanceSummary.TotalDiscounts : 0,
+                            FinanceSummaryTotalTaxes = item.FinanceSummary != null ? item.FinanceSummary.TotalTaxes : 0,
+                            ShippingStatusDocumentName = item.ShippingStatusDocument != null ? item.ShippingStatusDocument.Name : "",
+                            DocumentNumber = item.DocumentNumber,
+                            Id = item.Id,
+                            SquadId = item.SquadId,                           
+                            StandingOrderId = item.StandingOrderId,
+                            TrackingNumber = item.TrackingNumber,
+                           DeliveryDate = item.DeliveryDate,
+                           SeasonName = item.Season !=null ? item.Season.Name:"",
+                           VendorName = item.Vendor !=null? item.Vendor.Name:""
+
+
+                        });
+            }
+
+        }
 
         isLoading = false;
         StateHasChanged();
@@ -179,7 +223,7 @@
         {
             ContextMenuService.Close();
         }
-    
+
     }
 
 
@@ -194,7 +238,7 @@
             string totalPaid = commercialdocumentList.Sum(s => s.FinanceSummary.TotalPaid).ToString("N2");
             string totalTaxes = commercialdocumentList.Sum(s => s.FinanceSummary.TotalTaxes).ToString("N2");
             string totalAmount = commercialdocumentList.Sum(s => s.FinanceSummary.TotalAmount).ToString("N2");
-           
+
             result = $"{GetName("TotalBoxes", new CommercialDocument())}: {totalDiscounts}       ";
             result += " _ ";
             result += $"{GetName("TotalScanned", new CommercialDocument())}: {totalPaid}      ";
@@ -202,10 +246,10 @@
             result += $"{GetName("TotalInInventory", new CommercialDocument())}: {totalTaxes}     ";
             result += " _ ";
             result += $"{GetName("TotalAmount", new CommercialDocument())}: {totalAmount}     ";
-           
+
         }
 
-        return result; 
+        return result;
     }
 
 
@@ -222,7 +266,109 @@
     }
 
 
+    #region EventPivot
 
+    public void SaveReport(SaveReportArgs args)
+    {
+        int i = 0;
+        bool IsSaved = false;
+        for (i = 0; i < this.ReportName.Count; i++)
+        {
+            if (this.ReportName[i] == args.ReportName)
+            {
+                this.Report[i] = args.Report;
+                IsSaved = true;
+            }
+        }
+        if (args.Report != null && !(IsSaved))
+        {
+            this.Report.Add(args.Report);
+            this.ReportName.Add(args.ReportName);
+        }
+
+    }
+    public void FetchReport(FetchReportArgs args)
+    {
+        args.ReportName = ReportName.ToArray();
+    }
+    public async Task LoadReport(LoadReportArgs args)
+    {
+        int i = 0;
+        int j = 0;
+
+
+        for (i = 0; i < ReportName.Count; i++)
+        {
+            if (ReportName[i] == args.ReportName)
+            {
+                j = i;
+            }
+        }
+        if (Pivot != null) await this.Pivot.LoadPersistDataAsync(Report[j]);
+
+    }
+    public async Task RemoveReport(RemoveReportArgs args)
+    {
+        int i = 0;
+        for (i = 0; i < ReportName.Count; i++)
+        {
+            if (ReportName[i] == args.ReportName)
+            {
+                ReportName.RemoveAt(i);
+                Report.RemoveAt(i);
+                break;
+            }
+        }
+        if (Report.Count > 0)
+        {
+            await this.Pivot.LoadPersistDataAsync(Report[0]);
+        }
+    }
+    public void RenameReport(RenameReportArgs args)
+    {
+        if (args.IsReportExists)
+        {
+            int j = 0;
+            for (j = 0; j < ReportName.Count; j++)
+            {
+                if (ReportName[j] == args.Rename)
+                {
+                    ReportName.RemoveAt(j);
+                    Report.RemoveAt(j);
+                    break;
+                }
+            }
+        }
+        int i = 0;
+        for (i = 0; i <= (ReportName.Count - 1); i++)
+        {
+            if (ReportName[i] == args.ReportName)
+            {
+                ReportName[i] = args.Rename;
+            }
+        }
+    }
+
+    public class CommercialDocumentView
+    {
+        public int DocumentNumber { get; set; }
+        public string Id { get; set; }
+        public string SquadId { get; set; }
+        public string StandingOrderId { get; set; }
+        public string TrackingNumber { get; set; }
+        public DateTime DeliveryDate { get; set; }
+        public string VendorName { get; set; }
+        public string BuyerName { get; set; }
+        public string ShippingStatusDocumentName { get; set; }
+        public string SeasonName { get; set; }
+        public double FinanceSummaryTotalTaxes { get; set; }
+        public double FinanceSummaryTotalDiscounts { get; set; }
+        public double FinanceSummaryTotalCosts { get; set; }
+        public double FinanceSummaryTotalAmount { get; set; }
+
+    }
+
+    #endregion EndEventPivot
 
 
 }

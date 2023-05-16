@@ -199,3 +199,8 @@
     border-radius: 5px;
     background-color: red;
 }
+
+.container-vertical{
+display:flex;
+
+}
