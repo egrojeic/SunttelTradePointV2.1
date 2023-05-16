@@ -64,13 +64,20 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
-        // Depedne donde se ejcute el proyecto identity
+        // Depende donde se ejcute el proyecto identity
          options.Authority = "https://localhost:7125";
          options.TokenValidationParameters = new TokenValidationParameters
          {
              ValidateAudience = false
          };
     });
+
+// Adding claim based authorization
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ClientPolicy", policy => policy.RequireClaim("client_id", "movieClient"));
+});
+
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()

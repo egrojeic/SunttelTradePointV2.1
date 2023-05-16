@@ -23,16 +23,16 @@ builder.Services.AddIdentityServer()
 
 
 builder.Services.AddSingleton<ICorsPolicyService>((container) => {
-var logger = container.GetRequiredService<ILogger<DefaultCorsPolicyService>>();
-return new DefaultCorsPolicyService(logger)
-{
-AllowAll = true
-};
+    var logger = container.GetRequiredService<ILogger<DefaultCorsPolicyService>>();
+    return new DefaultCorsPolicyService(logger)
+    {
+        AllowAll = true
+    };
 });
 
 builder.Services.Configure<MvcOptions>(options =>
 {
-options.Filters.Add(new ContentSecurityPolicyMiddleware());
+    options.Filters.Add(new ContentSecurityPolicyMiddleware());
 });
 
 var app = builder.Build();
@@ -49,15 +49,15 @@ app.UseCors("AllowAll");
 // Add the following lines to log the request headers and origin:
 app.Use(async (context, next) =>
 {
-var origin = context.Request.Headers["Origin"].ToString();
-Console.WriteLine($">>> Request from origin: {origin}");
-await next.Invoke();
+    var origin = context.Request.Headers["Origin"].ToString();
+    Console.WriteLine($">>> Request from origin: {origin}");
+    await next.Invoke();
 });
 
 app.Use(async (context, next) =>
 {
-context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'; connect-src 'self' wss://localhost:44364");
-await next();
+    context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'; connect-src 'self' wss://localhost:44364");
+    await next();
 });
 
 app.UseAuthorization();
