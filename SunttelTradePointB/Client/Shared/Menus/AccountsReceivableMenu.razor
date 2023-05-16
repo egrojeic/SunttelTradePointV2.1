@@ -24,6 +24,21 @@
                 <DropDownMenuItem Id="PaymentTypeGeneral" Text="Payment Types" IconCss="fa-solid fa-money-bill"></DropDownMenuItem>
             </DropDownMenuItems>
         </SfSplitButton>
+
+        <SfSplitButton Content="Views" IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
+            <SplitButtonEvents ItemSelected="ItemSelectedView">
+            </SplitButtonEvents>
+            <DropDownMenuItems>
+                @if (page != "view")
+                {
+                    <DropDownMenuItem Id="view" Text="Diagram view" IconCss="e-menu-icon fa-solid fa-chart-simple"></DropDownMenuItem>
+                }
+                else
+                {
+                    <DropDownMenuItem Id="table" Text="Table" IconCss="e-menu-icon fa-solid fa-table"></DropDownMenuItem>
+                }
+            </DropDownMenuItems>
+        </SfSplitButton>
     
     </nav>
 
@@ -31,24 +46,35 @@
 
 
 @code {
-  
+    string page = "";
+    [Parameter]
+    public EventCallback<string> PageHome { get; set; }
     protected async override void OnInitialized()
     {
-       // commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes();
+       
         StateHasChanged();
     }
-
-  
+     
 
     private void ItemSelected(MenuEventArgs args)
     {
-        var Selected_item = args.Item.Id;
-        EventIdSelectionMenuItem(Selected_item);
+      
+        Navigation.NavigateTo(args.Item.Id);
     }
+
+    private void ItemSelectedView(MenuEventArgs args)
+    {
+        page = args.Item.Id;
+        PageHome.InvokeAsync(page);
+        StateHasChanged();
+
+    }
+
 
     public void EventIdSelectionMenuItem(string name)
     {
-        Js.InvokeAsync<object>("open", name, "_blank");
+        Navigation.NavigateTo(name);
+      //  Js.InvokeAsync<object>("open", name, "_blank");
     }
 
     private void CreateNew()

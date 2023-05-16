@@ -18,15 +18,30 @@
             </DropDownMenuItems>
         </SfSplitButton>     
 
-        <SfSplitButton Content="Views" IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
+     @*   <SfSplitButton Content="Views" IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
             <SplitButtonEvents ItemSelected="ItemSelected">
             </SplitButtonEvents>
             <DropDownMenuItems>
                 <DropDownMenuItem Id="Consolidated" Text="Consolidated" IconCss="fa-solid fa-group-arrows-rotate"></DropDownMenuItem>
                 <DropDownMenuItem Id="Detailed" Text="Detailed" IconCss="fa-solid fa-layer-group"></DropDownMenuItem>
+            </DropDownMenuItems>
+        </SfSplitButton>*@
 
+        <SfSplitButton Content="Views" IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
+            <SplitButtonEvents ItemSelected="ItemSelectedView">
+            </SplitButtonEvents>
+            <DropDownMenuItems>
+                @if (page != "view")
+                {
+                    <DropDownMenuItem Id="view" Text="Diagram view" IconCss="e-menu-icon fa-solid fa-chart-simple"></DropDownMenuItem>
+                }
+                else
+                {
+                    <DropDownMenuItem Id="table" Text="Table" IconCss="e-menu-icon fa-solid fa-table"></DropDownMenuItem>
+                }
             </DropDownMenuItems>
         </SfSplitButton>
+
 
     </nav>
 
@@ -34,14 +49,16 @@
 
 
 @code {
-  
+    [Parameter]
+    public EventCallback<string> PageHome { get; set; }
+    public string page { get; set; }
+
     protected async override void OnInitialized()
     {
        // commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes();
         StateHasChanged();
     }
-
-  
+     
 
     private void ItemSelected(MenuEventArgs args)
     {
@@ -49,7 +66,13 @@
         Navigation.NavigateTo(Selected_item);
     }
 
-  
+    private void ItemSelectedView(MenuEventArgs args)
+    {
+        page = args.Item.Id;
+        PageHome.InvokeAsync(page); 
+        StateHasChanged();
+
+    }  
 
     private void CreateNew()
     {

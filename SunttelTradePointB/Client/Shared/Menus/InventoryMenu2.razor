@@ -45,39 +45,29 @@
     public List<CommercialDocumentType> commercialDocumentTypeList { get; set; }
     [Parameter]
     public EventCallback<Warehouse> Setwarehouse { get; set; }
-     [Parameter]
+    [Parameter]
+    public EventCallback changed { get; set; }
+    [Parameter]
     public bool isSale { get; set; }
 
     List<Warehouse> warehouseList = new();
     Warehouse warehouse = new();
 
- 
+
     void ToggleMenu()
     {
         StateHasChanged();
 
     }
 
-
-
     protected async override void OnInitialized()
     {
         commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes(isSale);
         warehouseList = await InventoryServices.GetWarehouseList("all");
+        changed.InvokeAsync(null);
         StateHasChanged();
     }
-
-    void OnClick(RadzenSplitButtonItem item, string buttonName)
-    {
-        if (item != null)
-        {
-            Console.WriteLine($"{buttonName}, item with value {item.Value} clicked");
-        }
-        else
-        {
-            Console.WriteLine($"{buttonName} clicked");
-        }
-    }
+      
 
     private void ItemSelected(MenuEventArgs args)
     {
@@ -89,7 +79,6 @@
     {
 
     }
-
 
     public async void SelectItemVendorWarehous(ChangeEventArgs arg)
     {       
@@ -107,9 +96,7 @@
     {
         if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
-    }
-
-    
+    }    
 
     private void CreateNew()
     {

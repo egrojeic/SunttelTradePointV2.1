@@ -35,19 +35,22 @@
                     Description="@($"With this tool you can create and edit {namePage}")">
 </PageTitleComponent>
 
-<div class="panelMenuContainer">
-    <PaymentsMenu  page="@backPage"></PaymentsMenu>
-    <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
-</div>
-<div class="panelMenuContainer">
-    <PaymentMenu2 isASales="@isASale"  SetDocumentTypeId="SetDocumentTypeId"></PaymentMenu2>
-    <RangeDatesInput @bind-StartDate="@startingDate"
+    <div class="panelMenuContainer">
+        <PaymentsMenu PageHome="@Page"  page="@backPage"></PaymentsMenu>
+        <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
+    </div>
+    <div class="panelMenuContainer">
+        <PaymentMenu2 isASales="@isASale"  SetDocumentTypeId="SetDocumentTypeId"></PaymentMenu2>
+        <RangeDatesInput @bind-StartDate="@startingDate"
                      StartDateName="From"
                      @bind-EndDate="endDate"
                      EndDateName="To"
                      EventSearchAll="EventSearchAll"></RangeDatesInput>
-</div>
+    </div>
 
+
+@if (page == "table")
+{
 
 <div class="tableContainer">
 
@@ -87,7 +90,6 @@
                 <RadzenDataGridColumn TItem="Payment" Property="PaymentRef" Title="@GetName("PaymentRef",new Payment())" Filterable="false" Sortable="false" Width="88px" />
                 <RadzenDataGridColumn TItem="Payment" Property="PaymentDate" Title="@GetName("PaymentDate",new Payment())" Filterable="false" FormatString="{0:yyyy-MM-dd}" Sortable="false" Width="88px" />
                 <RadzenDataGridColumn TItem="Payment" Property="Payer.Name" Title="@GetName("Payer",new Payment())" Filterable="false" Sortable="false" Width="108px" />
-                <RadzenDataGridColumn TItem="Payment" Property="Receiver.Name" Title="@GetName("Receiver",new Payment())" Filterable="false" Sortable="false" Width="88px" />
                 <RadzenDataGridColumn TItem="Payment" Property="Status.Name" Title="@GetName("Status",new Payment())" Width="88px" />
                 <RadzenDataGridColumn TItem="Payment" Property="Receiver.Name" Title="@GetName("Receiver",new Payment())" Filterable="false" Sortable="false" Width="108px" />
                 <RadzenDataGridColumn TItem="Payment" Property="PaymentValue" Title="@GetName("PaymentValue",new Payment())" Filterable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Sortable="false" Width="108px" />
@@ -112,13 +114,18 @@
         }
     }
 </div>
+}
 
+@if (page == "view")
+{
+    <PaymentsView paymentList="paymentList"></PaymentsView>
+}
 
 @code {
     [Parameter]
     public string _filterItems { get; set; }
     [Parameter]
-    public string page { get; set; }
+    public string page { get; set; } = "table";
     public List<Payment> paymentList { get; set; }
     public CommercialDocumentType documentType { get; set; }
 
@@ -183,7 +190,7 @@
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
 
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
 
@@ -211,7 +218,12 @@
 
     public void EventSearchAll(string value)
     {
-        filter = value;
+        filter = "all";
+        LoadData();
+    }
+    public void Page(string name){
+        page = name;
+        StateHasChanged();
     }
 
     public string SumTotal()

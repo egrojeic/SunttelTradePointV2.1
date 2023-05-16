@@ -29,6 +29,20 @@
             </DropDownMenuItems>
         </SfSplitButton>
 
+        <SfSplitButton Content="Views" IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
+            <SplitButtonEvents ItemSelected="ItemSelectedView">
+            </SplitButtonEvents>
+            <DropDownMenuItems>
+                @if (page != "view")
+                {
+                    <DropDownMenuItem Id="view" Text="Diagram view" IconCss="e-menu-icon fa-solid fa-chart-simple"></DropDownMenuItem>
+                }
+                else
+                {
+                    <DropDownMenuItem Id="table" Text="Table" IconCss="e-menu-icon fa-solid fa-table"></DropDownMenuItem>
+                }
+            </DropDownMenuItems>
+        </SfSplitButton>
     </nav>
 
 </div>
@@ -39,6 +53,8 @@
 
     [Parameter]
     public EventCallback<string> SetDocumentTypeId { get; set; }
+    [Parameter]
+    public EventCallback<string> PageHome { get; set; }
     [Parameter]
     public string page { get; set; }
 
@@ -81,6 +97,12 @@
         Navigation.NavigateTo(name);
        // Js.InvokeAsync<object>("open", name, "_blank");
 
+    }
+    private void ItemSelectedView(MenuEventArgs args)
+    {
+        page = args.Item.Id;       
+        PageHome.InvokeAsync(page); StateHasChanged();
+     
     }
 
     private void CreateNew()

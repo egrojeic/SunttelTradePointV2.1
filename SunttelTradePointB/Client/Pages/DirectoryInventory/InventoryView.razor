@@ -1,4 +1,4 @@
-﻿
+﻿@using Syncfusion.Blazor.PivotView
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.InvetoryModels;
 @using System.Globalization;
@@ -28,186 +28,162 @@
     }
 </style>
 
-<PageTitleComponent Title="Inventory" IconName="inventory.png"
-                    Description="With this tool you can create and edit inventory">
-</PageTitleComponent>
 
-<div class="panelMenuContainer">
-    <InventoryMenu></InventoryMenu>
-    <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
-</div>
 
-<div class="panelMenuContainer">
-    <InventoryMenu2 Setwarehouse="Setwarehouse"></InventoryMenu2>
-    <RangeDatesInput @bind-StartDate="@startingDate"
-                     StartDateName="Date"
-                     EventSearchAll="EventSearchAll"></RangeDatesInput>
-</div>
-
-<div class="tableContainer">
-
-    @if (isLoading)
+@if (isLoading)
+{
+    <WaitingProcessIndicator loadingTopic="Inventory"></WaitingProcessIndicator>
+}
+else
+{
+    @if (InventoryDetaiViewList != null)
     {
+        <SfPivotView TValue="InventoryDetailView" Height="100%" Width="100%"
+             @ref="@Pivot"
+             Toolbar="@Olap"
+             ShowGroupingBar="true"
+             ShowFieldList=true
+             ShowToolbar=true
+             AllowConditionalFormatting=true
+             AllowCalculatedField=true
+             AllowPdfExport=true
+             AllowExcelExport=true
+             ShowTooltip=true>
+            <PivotViewDisplayOption Primary="Primary.Table" View="View.Both"></PivotViewDisplayOption>
+            <PivotViewDataSourceSettings DataSource="@InventoryDetaiViewList">
+                <PivotViewColumns>
+                    <PivotViewColumn Name="@nameof(InventoryDetailView.InventoryBusinessLineName)" Caption="@GetName(nameof(InventoryDetail.InventoryBusinessLine),new InventoryDetail())"></PivotViewColumn>
+                    <PivotViewColumn Name="@nameof(InventoryDetailView.CurrentWarehouseName)" Caption="@GetName(nameof(InventoryDetail.CurrentWarehouse),new InventoryDetail())"></PivotViewColumn>
+                    <PivotViewColumn Name="@nameof(InventoryDetailView.CustomerReservedForName)" Caption="@GetName(nameof(InventoryDetail.CustomerReservedFor),new InventoryDetail())"></PivotViewColumn>
+                    <PivotViewColumn Name="@nameof(InventoryDetailView.InventoryItemName)" Caption="@GetName(nameof(InventoryDetail.InventoryItem),new InventoryDetail())"></PivotViewColumn>
+                    <PivotViewColumn Name="@nameof(InventoryDetailView.ItemBoxName)" Caption="@GetName(nameof(InventoryDetail.ItemBox),new InventoryDetail())"></PivotViewColumn>
+                    <PivotViewColumn Name="@nameof(InventoryDetailView.BoxCode)" Caption="@GetName(nameof(InventoryDetail.BoxCode),new InventoryDetail())"></PivotViewColumn>
+                    <PivotViewColumn Name="@nameof(InventoryDetailView.EntryDate)" Caption="@GetName(nameof(InventoryDetail.EntryDate),new InventoryDetail())"></PivotViewColumn>                   
+                </PivotViewColumns>
+                <PivotViewRows>
+                </PivotViewRows>
+                <PivotViewValues>
+                    <PivotViewValue Name="@nameof(InventoryDetailView.Qty)" Caption="@GetName(nameof(InventoryDetail.Qty),new InventoryDetail())"></PivotViewValue>
+                    <PivotViewValue Name="@nameof(InventoryDetailView.QtyOnProductionOrder)" Caption="@GetName(nameof(InventoryDetail.QtyOnProductionOrder),new InventoryDetail())"></PivotViewValue>
+                    <PivotViewValue Name="@nameof(InventoryDetailView.QtyOnPurchaseOrder)" Caption="@GetName(nameof(InventoryDetail.QtyOnPurchaseOrder ),new InventoryDetail())"></PivotViewValue>
+                    <PivotViewValue Name="@nameof(InventoryDetailView.QtyOnOrder )" Caption="@GetName(nameof(InventoryDetail.QtyOnOrder),new InventoryDetail())"></PivotViewValue>
+                    <PivotViewValue Name="@nameof(InventoryDetailView.QtyOnTransferOrder )" Caption="@GetName(nameof(InventoryDetail.QtyOnTransferOrder),new InventoryDetail())"></PivotViewValue>
+                    <PivotViewValue Name="@nameof(InventoryDetailView.BasicUnitsQty)" Caption="@GetName(nameof(InventoryDetail.BasicUnitsQty),new InventoryDetail())"></PivotViewValue>
+                    <PivotViewValue Name="@nameof(InventoryDetailView.EntryScannedQty)" Caption="@GetName(nameof(InventoryDetail.EntryScannedQty),new InventoryDetail())"></PivotViewValue>
+                    <PivotViewValue Name="@nameof(InventoryDetailView.UnitCost)" Caption="@GetName(nameof(InventoryDetail.UnitCost),new InventoryDetail())"></PivotViewValue>
 
-        <WaitingProcessIndicator loadingTopic="InventoryDetail Items"></WaitingProcessIndicator>
+                </PivotViewValues>
+                <PivotViewFormatSettings>
+                    <PivotViewFormatSetting Name="@nameof(InventoryDetailView.UnitCost)" Format="N2" UseGrouping=true></PivotViewFormatSetting>
 
-    }
-    else
-    {
-        @if (InventoryDetaiList != null)
+                </PivotViewFormatSettings>
+            </PivotViewDataSourceSettings>
+            <PivotViewEvents TValue="InventoryDetailView" RenameReport="RenameReport" RemoveReport="RemoveReport" SaveReport="SaveReport" LoadReport="LoadReport" FetchReport="FetchReport"></PivotViewEvents>
+        </SfPivotView>
+        @if (InventoryDetaiViewList != null)
         {
-            <RadzenDataGrid AllowFiltering="true"
-                    AllowColumnResize="true"
-                    AllowAlternatingRows="true"
-                    FilterMode="FilterMode.Advanced"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    AllowSorting="true"
-                    PageSize="20"
-                    AllowPaging="true"
-                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    Data="@InventoryDetaiList"
-                    TItem="InventoryDetail"
-                    ColumnWidth="300px"
-                    SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"
-                    CellContextMenu="@ShowContextMenuCommercialDocument">
-                <Columns>
-                    <RadzenDataGridColumn TItem="InventoryDetail" Property="CurrentWarehouse.Name" Title="@GetName("CurrentWarehouse", new InventoryDetail())" Width="280px" />
-                    <RadzenDataGridColumn TItem="InventoryDetail" Property="InventoryItem.Name" Title="@GetName("InventoryItem", new InventoryDetail())" Width="180px" />
-                    <RadzenDataGridColumn TItem="InventoryDetail" Property="Qty" Title="@GetName("Qty", new InventoryDetail())" Width="50px" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" />
-                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyAvailable" Title="@GetName("QtyAvailable", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
-                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyReserved" Title="@GetName("QtyReserved", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
-                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnHand" Title="@GetName("QtyOnHand", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
-                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnOrder" Title="@GetName("QtyOnOrder", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
-                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnSalesOrder" Title="@GetName("QtyOnSalesOrder", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
-                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnPurchaseOrder" Title="@GetName("QtyOnPurchaseOrder", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
-                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnSalesOrder" Title="@GetName("QtyOnSalesOrder", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
-                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnTransferOrder" Title="@GetName("QtyOnTransferOrder", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
-                    <RadzenDataGridColumn TItem="InventoryDetail" Property="QtyOnProductionOrder" Title="@GetName("QtyOnProductionOrder", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
-                    <RadzenDataGridColumn TItem="InventoryDetail" Property="EntryScannedQty" Title="@GetName("EntryScannedQty", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="100px" />
-                    <RadzenDataGridColumn TItem="InventoryDetail" Property="EntryDate" Title="@GetName("EntryDate", new InventoryDetail())" FormatString="{0:MM/dd/yyyy}" Width="100px" />
-                    <RadzenDataGridColumn TItem="InventoryDetail" Property="ItemBox.Name" Title="@GetName("ItemBox", new InventoryDetail())" Width="100px" />
-                    <RadzenDataGridColumn TItem="InventoryDetail" Property="Pack" Title="@GetName("Pack", new InventoryDetail())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="50px" />
-                    <RadzenDataGridColumn TItem="InventoryDetail" Property="BoxCode" Title="@GetName("BoxCode", new InventoryDetail())" Width="80px" TextAlign="Radzen.TextAlign.Center" />
-                    <RadzenDataGridColumn TItem="InventoryDetail" Property="CustomerReservedFor.Name" Title="@GetName("CustomerReservedFor", new InventoryDetail())" Filterable="false" Sortable="false" Width="180px" />
-                    <RadzenDataGridColumn TItem="InventoryDetail" Property="UnitCost" Title="@GetName("UnitCost", new InventoryDetail())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="50px" />
-                    <RadzenDataGridColumn TItem="InventoryDetail" Property="BasicUnitsQty" Title="@GetName("BasicUnitsQty", new InventoryDetail())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="80px" />
-                    <RadzenDataGridColumn TItem="InventoryDetail" Property="InventoryBusinessLine.Name" Title="@GetName("InventoryBusinessLine", new InventoryDetail())" Filterable="false" Sortable="false" Width="100px" />
-
-                </Columns>
-            </RadzenDataGrid>
-
             <div class="container-total">
-                <div class="item">@($"Records: {InventoryDetaiList.Count}")</div>
-                <div class="item">@GetName("Qty", new InventoryDetail()):<b>@SumQty()</b></div>
-                <div class="item">@GetName("QtyOnHand", new InventoryDetail()):<b>@SumQtyOnHand()</b></div>
+                <div class="item">
+                    <label>
+                        @(
+                            $"Count item : {InventoryDetaiViewList.Count}"
+                            )
+                    </label>
+                </div>
             </div>
-        }       }
-</div>
+        }
+    }
+
+}
+
+
 
 
 
 @code {
     [Parameter]
-    public string _filterItems { get; set; }
-    List<InventoryDetail>? InventoryDetaiList;
+    public List<InventoryDetail>? InventoryDetaiList { get; set; }   
+    List<InventoryDetailView>? InventoryDetaiViewList;
+
     public List<Concept> buyerList { get; set; }
     public Concept buyer { get; set; }
     public Warehouse warehouse { get; set; }
 
-    bool isLoading = false;
+    bool isLoading = true;
+
+    #region Pivot
+
+    SfPivotView<InventoryDetailView> Pivot;
+    public List<ToolbarItems> Olap = new List<ToolbarItems> {
+        ToolbarItems.New,
+        ToolbarItems.Save,
+        ToolbarItems.SaveAs,
+        ToolbarItems.Rename,
+        ToolbarItems.Remove,
+        ToolbarItems.Load,
+        ToolbarItems.Grid,
+        ToolbarItems.Chart,
+        ToolbarItems.MDX,
+        ToolbarItems.Export,
+        ToolbarItems.SubTotal,
+        ToolbarItems.GrandTotal,
+        ToolbarItems.ConditionalFormatting,
+        ToolbarItems.FieldList
+                                                };
+    public List<string> Report = new List<string>();
+    public List<string> ReportName = new List<string>();
+
+    #endregion End Pivot
 
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
 
-    public string docsFilter
-    {
-        get { return _filterItems; }
-        set
-        {
-            _filterItems = value;
-            LoadData();
-        }
-    }
-
     protected async override void OnInitialized()
     {
-        if (_filterItems != null) LoadData();
+        LoadData();
         base.OnInitialized();
     }
 
     public async void LoadData()
     {
         isLoading = true;
-        if (warehouse != null && warehouse.Id != null)
+
+        if (InventoryDetaiList != null)
         {
-            InventoryDetaiList = await _Inventory.GetInventoryList(_filterItems, warehouse.Id, startingDate, 1, 10);
+            InventoryDetaiViewList = new List<InventoryDetailView>();
+            foreach (var item in InventoryDetaiList.Take(500))
+            {
+                InventoryDetaiViewList.Add(new InventoryDetailView
+                    {
+                        Id = item.Id,
+                        SquadId = item.SquadId,
+                        EntryDate = item.EntryDate,
+                        ItemBoxName = item.ItemBox!=null ? item.ItemBox.Name:"",
+                        BoxCode = item.BoxCode,
+                        BasicUnitsQty = item.BasicUnitsQty,
+                        Qty = item.Qty,
+                        QtyAvailable = item.QtyAvailable,
+                        QtyOnHand = item.QtyOnHand,
+                        QtyOnOrder = item.QtyOnOrder,
+                        QtyOnProductionOrder = item.QtyOnProductionOrder,
+                        QtyOnPurchaseOrder = item.QtyOnPurchaseOrder,
+                        QtyOnSalesOrder = item.QtyOnSalesOrder,
+                        QtyOnTransferOrder = item.QtyOnTransferOrder,
+                        QtyReserved = item.QtyReserved,
+                        EntryScannedQty = item.EntryScannedQty,
+                        CurrentWarehouseName = item.CurrentWarehouse !=null ?  item.CurrentWarehouse.Name:"",
+                        CustomerReservedForName = item.CustomerReservedFor !=null ? item.CustomerReservedFor.Name:"",
+                        InventoryBusinessLineName = item.InventoryBusinessLine != null ? item.InventoryBusinessLine.Name : "",
+                        InventoryItemName = item.InventoryItem !=null? item.InventoryItem.Name:"",
+                        UnitCost = item.UnitCost,
+                        Pack = item.Pack
+                        
+                    });
+            }
+
         }
+
         isLoading = false;
         StateHasChanged();
-    }
-
-    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<InventoryDetail> args) => ContextMenuService.Open(args, ds =>
-    @<RadzenMenu Click="OnMenuItemClick">
-        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
-    );
-
-
-    void OnMenuItemClick(MenuItemEventArgs args)
-    {
-        InventoryDetail argObj = (InventoryDetail)args.Value;
-
-        Navigation.NavigateTo($"InventoryItem/{argObj.Id}");
-        if (!args.Value.Equals(3) && !args.Value.Equals(4))
-        {
-            ContextMenuService.Close();
-        }
-    }
-
-
-    public async void Setwarehouse(Warehouse item)
-    {
-
-        if (item != null)
-        {
-            warehouse = item;
-        }
-        StateHasChanged();
-    }
-
-
-
-    public async void EventIdSelectionAndId(Concept item)
-    {
-
-        //if (SearcherValue == "Buyer")
-        //{
-        //    commercialDocument.Buyer = item;
-        //    buyerWarehouseList = await DocumentServices.GetCommercialBuyerWarehouseList(item.Id);
-        //    addressList = await DocumentServices.GetEntityDetailsAddressList(item.Id);
-
-        //}
-
-        StateHasChanged();
-    }
-
-
-    public string SumQty()
-    {
-        CultureInfo format = new CultureInfo("en-US", false);
-        double value = 0;
-        if (InventoryDetaiList != null) value = InventoryDetaiList.Sum(i => i.Qty);
-        return value.ToString();
-    }
-
-
-    public string SumQtyOnHand()
-    {
-        CultureInfo format = new CultureInfo("en-US", false);
-        double value = 0;
-        if (InventoryDetaiList != null) value = InventoryDetaiList.Sum(i => i.QtyOnHand);
-        return value.ToString();
     }
 
 
@@ -217,9 +193,123 @@
         return Name;
     }
 
-    public void EventSearchAll(string value)
+
+    #region EventPivot
+
+    public void SaveReport(SaveReportArgs args)
     {
-        docsFilter = value;
+        int i = 0;
+        bool IsSaved = false;
+        for (i = 0; i < this.ReportName.Count; i++)
+        {
+            if (this.ReportName[i] == args.ReportName)
+            {
+                this.Report[i] = args.Report;
+                IsSaved = true;
+            }
+        }
+        if (args.Report != null && !(IsSaved))
+        {
+            this.Report.Add(args.Report);
+            this.ReportName.Add(args.ReportName);
+        }
+
     }
+    public void FetchReport(FetchReportArgs args)
+    {
+        args.ReportName = ReportName.ToArray();
+    }
+    public async Task LoadReport(LoadReportArgs args)
+    {
+        int i = 0;
+        int j = 0;
+
+
+        for (i = 0; i < ReportName.Count; i++)
+        {
+            if (ReportName[i] == args.ReportName)
+            {
+                j = i;
+            }
+        }
+        if (Pivot != null) await this.Pivot.LoadPersistDataAsync(Report[j]);
+
+    }
+    public async Task RemoveReport(RemoveReportArgs args)
+    {
+        int i = 0;
+        for (i = 0; i < ReportName.Count; i++)
+        {
+            if (ReportName[i] == args.ReportName)
+            {
+                ReportName.RemoveAt(i);
+                Report.RemoveAt(i);
+                break;
+            }
+        }
+        if (Report.Count > 0)
+        {
+            await this.Pivot.LoadPersistDataAsync(Report[0]);
+        }
+    }
+    public void RenameReport(RenameReportArgs args)
+    {
+        if (args.IsReportExists)
+        {
+            int j = 0;
+            for (j = 0; j < ReportName.Count; j++)
+            {
+                if (ReportName[j] == args.Rename)
+                {
+                    ReportName.RemoveAt(j);
+                    Report.RemoveAt(j);
+                    break;
+                }
+            }
+        }
+        int i = 0;
+        for (i = 0; i <= (ReportName.Count - 1); i++)
+        {
+            if (ReportName[i] == args.ReportName)
+            {
+                ReportName[i] = args.Rename;
+
+            }
+        }
+    }
+
+
+    public class InventoryDetailView
+    {
+        public string Id { get; set; }
+        public string SquadId { get; set; }
+        public string CurrentWarehouseName { get; set; }
+        public string InventoryItemName { get; set; }
+        public double Qty { get; set; }
+        public double QtyAvailable { get; set; }
+        public double QtyReserved { get; set; }
+        public double QtyOnHand { get; set; }
+        public double QtyOnOrder { get; set; }
+        public double QtyOnSalesOrder { get; set; }
+        public double QtyOnPurchaseOrder { get; set; }
+        public double QtyOnProductionOrder { get; set; }
+        public double QtyOnTransferOrder { get; set; }
+        public double EntryScannedQty { get; set; }
+        public DateTime EntryDate { get; set; }
+        public string ItemBoxName { get; set; }
+        public double Pack { get; set; }
+        public string BoxCode { get; set; }
+        public string CustomerReservedForName { get; set; }
+        public double UnitCost { get; set; }
+        public double BasicUnitsQty { get; set; }
+        public string InventoryBusinessLineName { get; set; }
+
+
+    }
+
+    #endregion EndEventPivot
+
+
+   
 
 }
