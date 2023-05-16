@@ -34,14 +34,15 @@
 
 
 @code {
-  
+    [Parameter]
+    public string page { get; set; }
+
     protected async override void OnInitialized()
     {
        // commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes();
         StateHasChanged();
     }
-
-  
+      
 
     private void ItemSelected(MenuEventArgs args)
     {
@@ -53,7 +54,7 @@
 
     private void CreateNew()
     {
-        Navigation.NavigateTo("/CreditStatus");
+        Navigation.NavigateTo($"/CreditStatus/{page}");
     }
 
 }

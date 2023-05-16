@@ -31,7 +31,7 @@
 
 @inject IJSRuntime Js
 
-<PageTitleComponent Title="@(namePage)" IconName="Payments.png"
+<PageTitleComponent Title="@(namePage+(page=="table"?"":" Dynamic View"))" IconName="Payments.png"
                     Description="@($"With this tool you can create and edit {namePage}")">
 </PageTitleComponent>
 

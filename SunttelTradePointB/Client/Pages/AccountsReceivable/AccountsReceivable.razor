@@ -11,8 +11,6 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime Js
 
-
-
 <style>
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
@@ -34,7 +32,7 @@
     }
 </style>
 
-<PageTitleComponent Title="Accounts Receivable" IconName="commercialActivities.png"
+<PageTitleComponent Title="@("Accounts Receivable "+(page=="table "?"":"Dynamic View"))" IconName="commercialActivities.png"
                     Description="With this tool you can see accounts receivable">
 </PageTitleComponent>
 

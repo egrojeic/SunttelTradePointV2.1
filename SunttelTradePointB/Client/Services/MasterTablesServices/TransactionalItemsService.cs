@@ -1479,11 +1479,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             try
             {
-
+                 var IDSquads = UIClientGlobalVariables.ActiveSquad;
 
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
-                var g = UIClientGlobalVariables.ActiveSquad;
-                request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad.IDSquads.ToString());
+               
+               if(IDSquads!=null) request.Headers.Add("SquadId", IDSquads.ToString());
 
 
                 var response = await _httpClient.SendAsync(request);

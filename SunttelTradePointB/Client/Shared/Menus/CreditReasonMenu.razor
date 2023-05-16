@@ -34,7 +34,8 @@
 
 
 @code {
-  
+    [Parameter]
+    public string page{ get; set; }
     protected async override void OnInitialized()
     {
        // commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes();
@@ -53,7 +54,7 @@
 
     private void CreateNew()
     {
-        Navigation.NavigateTo("/CreditReason");
+        Navigation.NavigateTo($"/CreditReason/{page}");
     }
 
 }

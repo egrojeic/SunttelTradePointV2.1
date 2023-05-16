@@ -1,5 +1,6 @@
 ﻿@page "/CreditReasonGeneral"
-@page "/CreditReasonGeneral/{_filterItems}"
+@page "/CreditReasonGeneral/{page}"
+@page "/CreditReasonGeneral/{page}/{_filterItems}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Accounting
 @inject SunttelTradePointB.Client.Services.CreditDocumentServices.CreditDocumentServices CreditDocumentServices
@@ -41,18 +42,15 @@
 
 <div class="panelMenuContainer">
     <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-    <CreditReasonMenu></CreditReasonMenu>
+    <CreditReasonMenu page="page"></CreditReasonMenu>
     <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
 </div>
 
 <div class="tableContainer">
 
-
     @if (isLoading)
     {
-
         <WaitingProcessIndicator loadingTopic="Credit Reason"></WaitingProcessIndicator>
-
     }
     else
     {
@@ -98,7 +96,9 @@
 
 @code {
     [Parameter]
-    public string _filterItems { get; set; }
+    public string _filterItems { get; set; } 
+    [Parameter]
+    public string page { get; set; }
     public List<CreditReason> creditReasonList { get; set; }
 
 
@@ -146,7 +146,7 @@
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         CreditReason argObj = (CreditReason)args.Value;
-        Navigation.NavigateTo($"CreditReason/{argObj.Id}/{_filterItems}");
+        Navigation.NavigateTo($"CreditReason/{page}/{argObj.Id}/{_filterItems}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
@@ -174,7 +174,7 @@
     {
         string paramFilter = filter != null ? filter : "";
         if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/Credits/{paramFilter}");
-        Navigation.NavigateTo($"/Credits");
+        Navigation.NavigateTo($"/{page}/1");
     }
 
     public void EventIdSelectionMenuItem(string name)

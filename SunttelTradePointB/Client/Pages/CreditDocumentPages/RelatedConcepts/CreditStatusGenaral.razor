@@ -1,5 +1,6 @@
 ﻿@page "/CreditStatusGeneral"
-@page "/CreditStatusGeneral/{_filterItems}"
+@page "/CreditStatusGeneral/{page}"
+@page "/CreditStatusGeneral/{page}/{_filterItems}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Accounting
 @inject SunttelTradePointB.Client.Services.CreditDocumentServices.CreditDocumentServices CreditDocumentServices
@@ -34,7 +35,7 @@
 <img src="~/images/reloa" >
 <div class="panelMenuContainer">
       <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-    <CreditStatusMenu></CreditStatusMenu>
+    <CreditStatusMenu page="@($"{page}")"></CreditStatusMenu>
     <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
 </div>
 
@@ -91,6 +92,8 @@
 
 @code {
     [Parameter]
+    public string page { get; set; }
+    [Parameter]
     public string _filterItems { get; set; }
     public List<CreditStatus> creditStatusList { get; set; }
 
@@ -111,10 +114,8 @@
 
     protected async override void OnInitialized()
     {
-
         _filterItems = "all"; LoadData();
         base.OnInitialized();
-
     }
 
     public async void LoadData()
@@ -138,7 +139,7 @@
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         CreditStatus argObj = (CreditStatus)args.Value;
-        Navigation.NavigateTo($"CreditStatus/{argObj.Id}/{_filterItems}");
+        Navigation.NavigateTo($"CreditStatus/{page}/{argObj.Id}/{_filterItems}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
@@ -166,14 +167,13 @@
     {
         string paramFilter = filter != null ? filter : "";
         if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/Credits/{paramFilter}");
-        Navigation.NavigateTo($"/Credits");
+        Navigation.NavigateTo($"/{page}/1");
     }
 
+    //public void EventIdSelectionMenuItem(string name)
+    //{
+    //    Js.InvokeAsync<object>("open", name, "_blank");
 
-    public void EventIdSelectionMenuItem(string name)
-    {
-        Js.InvokeAsync<object>("open", name, "_blank");
-
-    }
+    //}
 
 }

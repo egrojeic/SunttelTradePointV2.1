@@ -27,7 +27,7 @@
         </SfSplitButton>
 
          <SfSplitButton Content="Related Concepts" IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
-            <SplitButtonEvents ItemSelected="ItemSelected">
+            <SplitButtonEvents ItemSelected="ItemSelectedConcepts">
             </SplitButtonEvents>
             <DropDownMenuItems>
                 <DropDownMenuItem Id="CreditStatusGeneral" Text="Credit Status" IconCss="e-menu-icon e-icons e-repeat"></DropDownMenuItem>
@@ -48,6 +48,8 @@
     public EventCallback<string> SetDocumentTypeId { get; set; }
     [Parameter]
     public string page { get; set; }
+    [Parameter]
+    public string actualPage { get; set; }
 
 
 
@@ -71,9 +73,14 @@
 
     private void ItemSelected(MenuEventArgs args)
     {
-        var Selected_item = args.Item.Id;
-        // Navigation.NavigateTo(Selected_item);
+        var Selected_item = args.Item.Id;        
          CreateNewTab(args.Item.Id);
+    }
+    
+    private void ItemSelectedConcepts(MenuEventArgs args)
+    {
+        var Selected_item = args.Item.Id;      
+        Navigation.NavigateTo(Selected_item + $"/{actualPage}");
     }
 
     private void SetDocumentType(MenuEventArgs args)
@@ -86,8 +93,8 @@
 
     public void CreateNewTab(string name)
     {
-        Js.InvokeAsync<object>("open", name, "_blank");
-
+        Navigation.NavigateTo(name);
+      //  Js.InvokeAsync<object>("open", name, "_blank");
     }
 
     private void CreateNew()

@@ -1,6 +1,6 @@
-@page "/CreditType"
-@page "/CreditType/{creditTypeId}"
-@page "/CreditType/{creditTypeId}/{filter}"
+@page "/CreditType/{page}"
+@page "/CreditType/{page}/{creditTypeId}"
+@page "/CreditType/{page}/{creditTypeId}/{filter}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
@@ -64,6 +64,8 @@
     public string creditTypeId { get; set; }
     [Parameter]
     public string filter { get; set; }
+      [Parameter]
+    public string page { get; set; }
 
     public CreditType creditType { get; set; }
     TextToSpeech textToSpeech;
@@ -156,8 +158,8 @@
     public void Home()
     {
         string paramFilter = filter != null ? filter : "";
-        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/CreditTypeGeneral/{paramFilter}");
-        Navigation.NavigateTo($"/CreditTypeGeneral");
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/CreditTypeGeneral/{page}/{paramFilter}");
+        Navigation.NavigateTo($"/CreditTypeGeneral/{page}");
     }
 
  

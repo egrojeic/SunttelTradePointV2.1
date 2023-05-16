@@ -1,6 +1,6 @@
-@page "/CreditStatus"
-@page "/CreditStatus/{creditStatusId}"
-@page "/CreditStatus/{creditStatusId}/{filter}"
+@page "/CreditStatus/{page}"
+@page "/CreditStatus/{page}/{creditStatusId}"
+@page "/CreditStatus/{page}/{creditStatusId}/{filter}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
@@ -64,6 +64,8 @@
     public string creditStatusId { get; set; }
     [Parameter]
     public string filter { get; set; }
+    [Parameter]
+    public string page { get; set; }
 
     public CreditStatus creditStatus { get; set; }
     TextToSpeech textToSpeech;
@@ -156,8 +158,8 @@
     public void Home()
     {
         string paramFilter = filter != null ? filter : "";
-        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/CreditStatusGeneral/{paramFilter}");
-        Navigation.NavigateTo($"/CreditStatusGeneral");
+        if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/CreditStatusGeneral/{page}/{paramFilter}");
+        Navigation.NavigateTo($"/CreditStatusGeneral/{page}");
     }
 
 

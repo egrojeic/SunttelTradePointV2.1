@@ -1,5 +1,6 @@
 ﻿@page "/CreditTypeGeneral"
-@page "/CreditTypeGeneral/{_filterItems}"
+@page "/CreditTypeGeneral/{page}"
+@page "/CreditTypeGeneral/{page}/{_filterItems}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Accounting
 
@@ -100,6 +101,8 @@
 @code {
     [Parameter]
     public string _filterItems { get; set; }
+    [Parameter]
+    public string page { get; set; }
     public List<CreditType> creditTypeList { get; set; }
    
 
@@ -145,7 +148,7 @@
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         CreditType argObj = (CreditType)args.Value;
-        Navigation.NavigateTo($"CreditType/{argObj.Id}/{_filterItems}");
+        Navigation.NavigateTo($"CreditType/{page}/{argObj.Id}/{_filterItems}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
@@ -173,7 +176,7 @@
     {
         string paramFilter = filter != null ? filter : "";
         if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/Credits/{paramFilter}");
-        Navigation.NavigateTo($"/Credits");
+        Navigation.NavigateTo($"/{page}/1");
     }
 
 

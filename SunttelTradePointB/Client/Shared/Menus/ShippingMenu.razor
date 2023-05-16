@@ -10,20 +10,14 @@
 <div >
     <nav>
       @*  <button class="general-menu-button btn-new" @onclick="CreateNew"><i class="fa-solid fa-file"></i></button>*@
-        <SfSplitButton Content="Import..." IconCss="fa-solid fa-file-import" CssClass="splitButtonsStyle">
-            <DropDownMenuItems>
-                <DropDownMenuItem Text="Importing from the cloud..." IconCss="fa-solid fa-cloud-arrow-up"></DropDownMenuItem>
-                <DropDownMenuItem Text="Uploading a csv file..." IconCss="fa-solid fa-file-csv"></DropDownMenuItem>
-            </DropDownMenuItems>
-        </SfSplitButton>     
-
+      
         <SfSplitButton Content="Views" IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
             <SplitButtonEvents ItemSelected="ItemSelectedView">
             </SplitButtonEvents>
             <DropDownMenuItems>
                 @if (page != "view")
                 {
-                    <DropDownMenuItem Id="view" Text="Diagram view" IconCss="e-menu-icon fa-solid fa-chart-simple"></DropDownMenuItem>
+                    <DropDownMenuItem Id="view" Text="Dynamic View" IconCss="e-menu-icon fa-solid fa-chart-simple"></DropDownMenuItem>
                 }
                 else
                 {

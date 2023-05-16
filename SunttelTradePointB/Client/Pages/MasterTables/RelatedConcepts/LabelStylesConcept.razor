@@ -29,9 +29,10 @@
         background-color: #1bc7b7;
         font-weight: bold;
     }
-    .e-tab .e-tab-header.e-vertical .e-toolbar-item .e-tab-text{
-        font-size:12px;
-        width:150px;
+
+    .e-tab .e-tab-header.e-vertical .e-toolbar-item .e-tab-text {
+        font-size: 12px;
+        width: 150px;
     }
 </style>
 
@@ -45,7 +46,7 @@
     @if (pageView == "labelStyleDataMaxUserFor")
     {
         <PageTitleComponent Title="@GetName("UsedFor", new LabelField())" IconName="palette.png"
-                        Description='@($"Here you can add {GetName("DataMaxLabelSettings", new LabelStyle()).ToLower()}")'>
+                        Description='@($"Here you can add {GetName("UsedFor", new LabelStyle()).ToLower()}")'>
         </PageTitleComponent>
 
         <div class="flex-verical-start">
@@ -54,15 +55,13 @@
                     <button @onclick='()=>ClosedAdd("DataMaxLabelLineSpec")' class="general-menu-button" style="text-align:center;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
                     <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
-                        <SplitButtonEvents ItemSelected="ItemSelected">
+                        <SplitButtonEvents ItemSelected="ItemAddUsedFor">
                         </SplitButtonEvents>
                         <DropDownMenuItems>
-                            <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+
                             <DropDownMenuItem Separator="true"></DropDownMenuItem>
-                            <DropDownMenuItem Text="Save" Id="dataMaxUsedFors" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
-                            <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
-                            <DropDownMenuItem Separator="true"></DropDownMenuItem>
-                            <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+                            <DropDownMenuItem Text="Add" Id="dataMaxUsedFors" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+
                         </DropDownMenuItems>
                     </SfSplitButton>
                 </nav>
@@ -74,7 +73,7 @@
                     </label>
                 </div>
                 <div style="position:relative;">
-                    <select class="form-control info-text-size" @bind="dataMaxUsedFor" placeholder="Edit value">
+                    <select class="select-style" @bind="dataMaxUsedFor" placeholder="Edit value">
                         <option value="@LabelPurpose.Provider">@LabelPurpose.Provider.ToString()</option>
                         <option value="@LabelPurpose.Customer">@LabelPurpose.Customer.ToString()</option>
                         <option value="@LabelPurpose.Inventory">@LabelPurpose.Inventory.ToString()</option>
@@ -86,34 +85,34 @@
             <div class="detailsTitleContainer">
                 <h3 class="subTitleDetailForm ">@GetName( "UsedFor", new LabelField())</h3>
             </div>
-            <div class="flex-horizontal-center ">
 
+            @if (dataMaxUsedForsView != null && dataMaxUsedForsView.Count > 0)
+            {
                 <RadzenDataGrid AllowFiltering="true"
-                            AllowColumnResize="true"
-                            AllowAlternatingRows="true"
-                            FilterMode="FilterMode.Advanced"
-                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            AllowSorting="true"
-                            AllowPaging="true"
-                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                            ShowPagingSummary="true"
-                            Data="@usedForList"
-                            TItem="LabelPurposeView"
-                            ColumnWidth=" 300px"
-                            SelectionMode="DataGridSelectionMode.Single"
-                            LogicalFilterOperator="LogicalFilterOperator.Or"
-                            CellContextMenu="@ShowContextMenuWithContentUsedFor"
-                            PageNumbersCount="100"
-                            PageSize="2">
+                        AllowColumnResize="true"
+                        AllowAlternatingRows="true"
+                        FilterMode="FilterMode.Advanced"
+                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        AllowSorting="true"
+                        AllowPaging="true"
+                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                        ShowPagingSummary="true"
+                        Data="@dataMaxUsedForsView"
+                        TItem="LabelPurposeView"
+                        ColumnWidth=" 300px"
+                        SelectionMode="DataGridSelectionMode.Single"
+                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                        CellContextMenu="@ShowContextMenuWithContentUsedFor"
+                        PageNumbersCount="100"
+                        PageSize="50">
 
                     <Columns>
-                        <RadzenDataGridColumn TItem="LabelField" Property="@nameof(LabelField.Name)" Title="@GetName( "Name", new LabelField())" Width="80px" />
+                        <RadzenDataGridColumn TItem="LabelPurposeView" Property="@nameof(LabelPurposeView.value)" Title="@GetName( "Name", new LabelField())" Width="80px" />
 
                     </Columns>
                 </RadzenDataGrid>
+            }
 
-
-            </div>
         </div>
     }
 
@@ -178,15 +177,13 @@
                     <button @onclick='()=>ClosedAdd("ZebraLabelSpecs")' class="general-menu-button" style="text-align:center;"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
                     <SfSplitButton Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
-                        <SplitButtonEvents ItemSelected="ItemSelected">
+                        <SplitButtonEvents ItemSelected="ItemAddUsedFor">
                         </SplitButtonEvents>
                         <DropDownMenuItems>
-                            <DropDownMenuItem Text="New" IconCss="fa-solid fa-file"></DropDownMenuItem>
+
                             <DropDownMenuItem Separator="true"></DropDownMenuItem>
-                            <DropDownMenuItem Text="Save" Id="zebraUsedFors" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
-                            <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
-                            <DropDownMenuItem Separator="true"></DropDownMenuItem>
-                            <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
+                            <DropDownMenuItem Text="Add" Id="zebraUsedFors" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
+
                         </DropDownMenuItems>
                     </SfSplitButton>
                 </nav>
@@ -198,7 +195,7 @@
                     </label>
                 </div>
                 <div style="position:relative;">
-                    <select class="form-control" @bind="zebraUsedFor" placeholder="Edit value">
+                    <select class="select-style" @bind="zebraUsedFor" placeholder="Edit value">
                         <option value="@LabelPurpose.Provider">@LabelPurpose.Provider.ToString()</option>
                         <option value="@LabelPurpose.Customer">@LabelPurpose.Customer.ToString()</option>
                         <option value="@LabelPurpose.Inventory">@LabelPurpose.Inventory.ToString()</option>
@@ -228,7 +225,7 @@
                             LogicalFilterOperator="LogicalFilterOperator.Or"
                             CellContextMenu="@ShowContextMenuWithContent"
                             PageNumbersCount="100"
-                            PageSize="2">
+                            PageSize="50">
 
                     <Columns>
                         <RadzenDataGridColumn TItem="LabelPurposeView" Property="@nameof(LabelPurposeView.value)" Title="@GetName( "LabelPurpose", new LabelStylesConcept())" Width="80px" />
@@ -299,7 +296,6 @@
     }
 </div>
 
-
 <div class="flex-verical-center position-relative" style="display:@(modeEdit?"flex":"none");">
 
 
@@ -361,7 +357,7 @@
 
             </InputTextSelector3>
         </div>
-
+        <hr>
         <SfTab Height="400px" HeaderPlacement="HeaderPosition.Left">
             <TabAnimationSettings>
                 <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
@@ -386,7 +382,7 @@
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                 </svg>
                             </div>
-                            <div >
+                            <div>
                                 @if (dataMaxLabelLineSpecsView != null && dataMaxLabelLineSpecsView.Count > 0)
                                 {
                                     <RadzenDataGrid AllowFiltering="true"
@@ -407,12 +403,12 @@
                                                 PageNumbersCount="100"
                                                 PageSize="50">
 
-                                        <Columns>                                      
+                                        <Columns>
                                             <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="Rotation" Title="@GetName( "Rotation", new DataMaxLabelLineSpec())" Width="80px" Filterable="false" Sortable="false" TextAlign="Radzen.TextAlign.Right" />
                                             <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="Font" Title="@GetName( "Font", new DataMaxLabelLineSpec())" Width="80px" Filterable="false" Sortable="false" TextAlign="Radzen.TextAlign.Right" />
                                             <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="Width" Title="@GetName( "Width", new DataMaxLabelLineSpec())" Width="80px" Filterable="false" Sortable="false" TextAlign="Radzen.TextAlign.Right" />
                                             <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="Height" Title="@GetName( "Height", new DataMaxLabelLineSpec())" Width="180px" Filterable="false" Sortable="false" TextAlign="Radzen.TextAlign.Right" />
-                                            <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="FontSize" Title="@GetName( "FontSize", new DataMaxLabelLineSpec())" Width="80px"  Filterable="false" Sortable="false" TextAlign="Radzen.TextAlign.Right" />
+                                            <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="FontSize" Title="@GetName( "FontSize", new DataMaxLabelLineSpec())" Width="80px" Filterable="false" Sortable="false" TextAlign="Radzen.TextAlign.Right" />
                                             <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="Row" Title="@GetName( "Row", new DataMaxLabelLineSpec())" Width="80px" Filterable="false" Sortable="false" TextAlign="Radzen.TextAlign.Right" />
                                             <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="GGColumn" Title="@GetName( "GGColumn", new DataMaxLabelLineSpec())" Filterable="false" Sortable="false" Width="80px" TextAlign="Radzen.TextAlign.Right" />
                                             <RadzenDataGridColumn TItem="DataMaxLabelLineSpecView" Property="IIIColumn" Title="@GetName( "IIIColumn", new DataMaxLabelLineSpec())" Filterable="false" Sortable="false" Width="80px" TextAlign="Radzen.TextAlign.Right" />
@@ -425,7 +421,7 @@
                                             <label>
                                                 @(
                                                     $"Records: {dataMaxLabelLineSpecsView.Count}"
-                                            )
+                                                    )
                                             </label>
                                         </div>
                                     </div>
@@ -452,7 +448,7 @@
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                 </svg>
                             </div>
-                            <div >
+                            <div>
                                 @if (zebraLabelLineSpecsView != null && zebraLabelLineSpecsView.Count > 0)
                                 {
                                     <RadzenDataGrid AllowFiltering="true"
@@ -491,7 +487,7 @@
                                             <label>
                                                 @(
                                                     $"Records: {zebraLabelLineSpecsView.Count}"
-                                            )
+                                                    )
                                             </label>
                                         </div>
                                     </div>
@@ -541,7 +537,7 @@
     List<LabelPurposeView> dataMaxUsedForsView = new();
     List<LabelPurpose> dataMaxUsedFors = new();
     LabelPurpose dataMaxUsedFor = new();
-  
+
     LabelField dataMaxFieldInLabel = new();
     #endregion Tag 2
 
@@ -554,10 +550,10 @@
     LabelField zebraFieldInLabel = new();
     LabelStyle labelStylezebra = new();
     List<LabelPurposeView> zebraUsedForsView = new();
-    List<LabelPurposeView> usedForList = new();
+
     List<LabelPurpose> zebraUsedFors = new();
     LabelPurpose zebraUsedFor = new();
-  
+
 
 
     #endregion Tag 3
@@ -577,12 +573,14 @@
                 labelPaper = labelStyle.Paper != null ? labelStyle.Paper : new();
                 zebraLabelSettings = labelStyle.ZebraLabelSettings != null ? labelStyle.ZebraLabelSettings : new();
                 zebraLabelLineSpecs = zebraLabelSettings.ZebraFieldsSpecs != null ? zebraLabelSettings.ZebraFieldsSpecs : new();
+
                 dataMaxLabelSettings = labelStyle.DataMaxLabelSettings != null ? labelStyle.DataMaxLabelSettings : new();
                 dataMaxLabelLineSpecs = dataMaxLabelSettings.DataMaxFieldsSpecs != null ? dataMaxLabelSettings.DataMaxFieldsSpecs : new();
                 dataMaxLabelLineSpecsView = new();
                 foreach (var item in dataMaxLabelLineSpecs)
                 {
                     dataMaxLabelLineSpecsView.Add(ConverToDataMax(item));
+
                 }
                 zebraLabelLineSpecsView = new();
                 foreach (var item in zebraLabelLineSpecs)
@@ -613,6 +611,38 @@
     }
 
 
+    public async void ItemAddUsedFor(MenuEventArgs e)
+    {
+        if (e.Item.Id.ToString() == "dataMaxUsedFors" && dataMaxUsedFor != null)
+        {
+            if (dataMaxUsedForsView == null) dataMaxUsedForsView = new();
+            if (dataMaxUsedFors == null) dataMaxUsedFors = new();
+            if (true)
+            {
+                dataMaxUsedForsView.Add(new LabelPurposeView { value = dataMaxUsedFor.ToString() });
+                dataMaxUsedFors.Add(dataMaxUsedFor);
+                Msg("Add", 0);
+            }
+            dataMaxUsedFor = new();           
+        }
+
+
+        if (e.Item.Id.ToString() == "zebraUsedFors")
+        {
+            if (zebraUsedForsView == null) dataMaxUsedForsView = new();
+            if (zebraUsedFors == null) dataMaxUsedFors = new();
+            if (true)
+            {
+                zebraUsedForsView.Add(new LabelPurposeView { value = zebraUsedFor.ToString() });
+                zebraUsedFors.Add(zebraUsedFor);
+                 Msg("Add", 0);
+            }
+            zebraUsedFor = new();
+           
+        }
+       
+        StateHasChanged();
+    }
     public async void ItemSelected(MenuEventArgs e)
     {
         StateHasChanged();
@@ -626,6 +656,7 @@
                 labelStyle.Paper = labelPaper;
                 if (zebraLabelSettings.ZebraFieldsSpecs == null) zebraLabelSettings.ZebraFieldsSpecs = new();
                 zebraLabelSettings.ZebraFieldsSpecs = zebraLabelLineSpecs;
+              
                 zebraLabelSettingss.Add(zebraLabelSettings);
                 labelStyle.ZebraLabelSettings = zebraLabelSettings;
                 if (dataMaxLabelSettings.DataMaxFieldsSpecs == null) dataMaxLabelSettings.DataMaxFieldsSpecs = new();
@@ -692,8 +723,7 @@
         if (value == "ZebraLabelSpecs")
         {
             if (zebraLabelLineSpecs == null) zebraLabelLineSpecs = new();
-            zebraLabelLineSpec.FieldInLabel = zebraFieldInLabel != null ? zebraFieldInLabel : new();
-            zebraLabelLineSpec.FieldInLabel.UsedFor = zebraUsedFors;
+            zebraLabelLineSpec.FieldInLabel = zebraFieldInLabel != null ? zebraFieldInLabel : new();             
             zebraLabelLineSpecs.Add(zebraLabelLineSpec);
             zebraLabelLineSpecsView.Add(ConverToZebraLabel(zebraLabelLineSpec));
             zebraLabelLineSpec = new();
@@ -714,7 +744,7 @@
 
         }
 
-      
+
 
         Msg("Added", 1);
         StateHasChanged();
@@ -745,25 +775,28 @@
     }
 
 
-
-
-
-
-
-
     #region Grid
 
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<DataMaxLabelLineSpecView> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
-      );
+    );
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         DataMaxLabelLineSpecView argObj = (DataMaxLabelLineSpecView)args.Value;
         dataMaxLabelLineSpec = dataMaxLabelLineSpecs.Where(s => s.Id != null && s.Id == argObj.Id).FirstOrDefault();
         dataMaxFieldInLabel = dataMaxLabelLineSpec.FieldInLabel != null ? dataMaxLabelLineSpec.FieldInLabel : new();
+        dataMaxUsedFors = dataMaxFieldInLabel != null ? dataMaxFieldInLabel.UsedFor : new();
+        dataMaxUsedForsView = new();
+        if (dataMaxUsedFors != null)
+        {
+            foreach (var item in dataMaxUsedFors)
+            {
+                dataMaxUsedForsView.Add(new LabelPurposeView { value = item.ToString() });
+            }
+        }
         ClosedAdd("DataMaxLabelLineSpec");
     }
 
@@ -771,11 +804,22 @@
     @<RadzenMenu Click="OnMenuItemClickZebraLabelLineSpecView">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
-           );
+        );
 
     void OnMenuItemClickZebraLabelLineSpecView(MenuItemEventArgs args)
     {
-        ZebraLabelLineSpecView zebraLabelLineSpec = (ZebraLabelLineSpecView)args.Value;
+        ZebraLabelLineSpecView zebraLabelLineSpecView = (ZebraLabelLineSpecView)args.Value;
+        zebraLabelLineSpec = zebraLabelLineSpecs.Where(s => s.Id == zebraLabelLineSpecView.Id).FirstOrDefault();
+        zebraFieldInLabel.Name =zebraLabelLineSpec.FieldInLabel !=null ? zebraLabelLineSpec.FieldInLabel.Name:"";
+        zebraUsedFors = zebraLabelLineSpec.FieldInLabel != null ? zebraLabelLineSpec.FieldInLabel.UsedFor : new();
+        dataMaxUsedForsView = new();
+        if (zebraUsedFors != null)
+        {
+            foreach (var item in zebraUsedFors)
+            {
+                zebraUsedForsView.Add(new LabelPurposeView { value = item.ToString() });
+            }
+        }
         ClosedAdd("ZebraLabelSpecs");
     }
 
@@ -783,11 +827,12 @@
     @<RadzenMenu Click="OnMenuItemClickLabelPurpose">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
-        );
+    );
 
     void OnMenuItemClickLabelPurpose(MenuItemEventArgs args)
     {
         LabelPurposeView zebraLabelLineSpec = (LabelPurposeView)args.Value;
+
         ClosedAdd("ZebraLabelSpecs");
     }
     void ShowContextMenuWithContentUsedFor(DataGridCellMouseEventArgs<LabelPurposeView> args) => ContextMenuService.Open(args, ds =>
@@ -798,8 +843,8 @@
 
     void OnMenuItemClickUsedFor(MenuItemEventArgs args)
     {
-       var userFor = (LabelPurposeView)args.Value;
-      
+        var userFor = (LabelPurposeView)args.Value;
+
         ClosedAdd("ZebraLabelSpecs");
     }
 
@@ -828,8 +873,6 @@
                 labelPaper = paper;
             }
         }
-
-
         StateHasChanged();
 
     }
@@ -837,7 +880,7 @@
     protected async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
         SearcherValue = arg.IdControl.ToString();
-        if (SearcherValue == "Paper")
+        if (SearcherValue == "Paper" && transactionalService != null)
         {
             labelPapers = await transactionalService.GetSelectorListLabelPaper(arg.value.ToString());
             ParamCountResul = labelPapers.Count();
@@ -893,7 +936,7 @@
 
     public string GetName(string Name, Object Obj)
     {
-        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        Name = UICommonFunctions.GetDisplayName(Obj, Name) != null ? UICommonFunctions.GetDisplayName(Obj, Name) : "";
         return Name;
     }
 
@@ -908,6 +951,7 @@
 
         item = new DataMaxLabelLineSpecView()
             {
+                Id = ObjDataMax.Id,
                 NameLabelField = ObjFieldInLabel != null ? ObjFieldInLabel.Name : "",
                 Rotation = ObjDataMax.Rotation != null ? ObjDataMax.Rotation : "",
                 Font = ObjDataMax.Font != null ? ObjDataMax.Font : "",
@@ -918,6 +962,7 @@
                 GGColumn = ObjDataMax.GGColumn != null ? ObjDataMax.GGColumn : "",
                 IIIColumn = ObjDataMax.IIIColumn != null ? ObjDataMax.IIIColumn : "",
                 JColumn = ObjDataMax.JColumn != null ? ObjDataMax.JColumn : "",
+                FieldInLabel = ObjDataMax.FieldInLabel != null ? ObjDataMax.FieldInLabel : new()
             };
         return item;
     }

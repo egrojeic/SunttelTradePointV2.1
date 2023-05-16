@@ -34,13 +34,12 @@
     }
 </style>
 
-
 <PageTitleComponent Title="@namePage" IconName="@icoLogo"
                     Description="@($"With this tool you can create and edit {@namePage}")">
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
-    <CreditDocumentsMenu page="@backPage"></CreditDocumentsMenu>
+    <CreditDocumentsMenu actualPage="@actualPage" page="@backPage"></CreditDocumentsMenu>
     <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
 </div>
 <div class="panelMenuContainer">
@@ -140,6 +139,7 @@
 
     string namePage = "";
     string backPage = "";
+    string actualPage = "";
     string icoLogo = "";
     string SearcherValue = "";
 
@@ -178,7 +178,7 @@
     public async void LoadData()
     {
         isLoading = true;
-        if (documentType != null || true)
+        if (vendor != null || true)
         {
             CreditDocumentList = await CreditDocumentServices.GetCreditDocumentList(startingDate, endDate, (filter != null ? filter : "all"), 1, 10);
         }
@@ -206,7 +206,7 @@
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         CreditDocument argObj = (CreditDocument)args.Value;
-        Navigation.NavigateTo($"{backPage}/{page}/{argObj.Id}/{_filterItems}");
+        Navigation.NavigateTo($"{backPage}/{argObj.Id}/{_filterItems}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
@@ -290,6 +290,7 @@
         if (Name.Contains("ProviderCredits"))
         {
             isASale = false;
+            actualPage = "";
             namePage = " Provider Credit";
             backPage = $"ProviderCreditsItem/{page}";
             icoLogo = "ProviderCredits.png";
@@ -298,6 +299,7 @@
         if (Name.Contains("PurchasesCredits"))
         {
             isASale = false;
+            actualPage = "PurchasesCredits";
             namePage = " Purchases Credits";
             backPage = $"PurchasesCreditsItem/{page}";
             icoLogo = "ProviderCredits.png";
@@ -305,11 +307,12 @@
         else
         if (Name.Contains("Credits"))
         {
-            isASale = true;           
-                backPage = $"CreditDocumentsItem/{page}";
-                namePage = " Credits";
-                icoLogo = "creditTypeDocument.png";
-           
+            isASale = true;
+            actualPage = "CustomerCredits";
+            backPage = $"CreditDocumentsItem/{page}";
+            namePage = " Credits";
+            icoLogo = "creditTypeDocument.png";
+
         }
         CreditDocumentList = new();
         StateHasChanged();
