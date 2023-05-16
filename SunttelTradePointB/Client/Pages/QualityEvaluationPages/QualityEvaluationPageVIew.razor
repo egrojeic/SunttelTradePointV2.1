@@ -1,0 +1,355 @@
+﻿
+@using Syncfusion.Blazor.PivotView
+@using SunttelTradePointB.Shared.Quality;
+@using SunttelTradePointB.Client.Shared.Menus.QualityEvaluation;
+@using SunttelTradePointB.Client.Shared.QualityEvaluation;
+
+@inject TransactionalItemsService transactItemsService;
+@inject SunttelTradePointB.Client.Services.QualityEvaluationServices.QualityEvaluationServices QualityEvaluationServices
+@inject ContextMenuService ContextMenuService
+@inject NavigationManager Navigation
+@inject IJSRuntime Js
+
+<style>
+    .e-pivotview .e-grouping-bar .e-pivot-button, .e-pivotview .e-group-rows .e-pivot-button {
+        background-color: #0d223f;
+    }
+
+        .e-pivotview .e-grouping-bar .e-pivot-button, .e-pivotview .e-group-rows .e-pivot-button:hover {
+            background-color: #0d223f;
+            box-shadow: 0px 0px 5px gray;
+            color: black;
+        }
+
+    .e-pivotview {
+        min-height: 200px;
+        width: 100%;
+    }
+</style>
+
+
+@if (isLoading)
+{
+    <WaitingProcessIndicator loadingTopic="Quality Evaluation Dynamic View "></WaitingProcessIndicator>
+}
+else
+{
+    @if (qualityEvaluationViewList != null)
+    {
+        <SfPivotView TValue="QualityEvaluationView" Height="100%" Width="100%"
+             @ref="@Pivot"
+             Toolbar="@Olap"
+             ShowGroupingBar="true"
+             ShowFieldList=true
+             ShowToolbar=true
+             AllowConditionalFormatting=true
+             AllowCalculatedField=true
+             AllowPdfExport=true
+             AllowExcelExport=true
+             ShowTooltip=true>
+            <PivotViewDisplayOption Primary="Primary.Table" View="View.Both"></PivotViewDisplayOption>
+            <PivotViewDataSourceSettings DataSource="@qualityEvaluationViewList">
+                <PivotViewColumns>
+                    <PivotViewColumn Name="@nameof(QualityEvaluationView.QualityReportTypeName)" Caption="@GetName(nameof(QualityEvaluation.QualityReportType.Name),new QualityEvaluation())"></PivotViewColumn>
+                    <PivotViewColumn Name="@nameof(QualityEvaluationView.TrafficLightStatus)" Caption="@GetName(nameof(QualityEvaluation.TrafficLightStatus),new QualityEvaluation())"></PivotViewColumn>
+                    <PivotViewColumn Name="@nameof(QualityEvaluationView.OverKill)" Caption="@GetName(nameof(QualityEvaluation.OverKill),new QualityEvaluation())"></PivotViewColumn>
+                    <PivotViewColumn Name="@nameof(QualityEvaluationView.ActionToTakeName)" Caption="@GetName(nameof(QualityEvaluation.ActionToTake),new QualityEvaluation())"></PivotViewColumn>
+                    <PivotViewColumn Name="@nameof(QualityEvaluationView.InspectionDate)" Caption="@GetName(nameof(QualityEvaluation.InspectionDate),new QualityEvaluation())"></PivotViewColumn>
+                   
+                </PivotViewColumns>
+                <PivotViewRows>
+                </PivotViewRows>
+                <PivotViewValues>
+                    <PivotViewValue Name="@nameof(QualityEvaluationView.QuantityWithIssues)" Caption="@GetName(nameof(QualityEvaluation.QuantityWithIssues),new QualityEvaluation())"></PivotViewValue>
+                    <PivotViewValue Name="@nameof(QualityEvaluationView.Pack)" Caption="@GetName(nameof(QualityEvaluation.Pack),new QualityEvaluation())"></PivotViewValue>
+                    <PivotViewValue Name="@nameof(QualityEvaluationView.QuantityToInspect)" Caption="@GetName(nameof(QualityEvaluation.QuantityToInspect),new QualityEvaluation())"></PivotViewValue>
+                    <PivotViewValue Name="@nameof(QualityEvaluationView.QuantityInspected)" Caption="@GetName(nameof(QualityEvaluation.QuantityInspected),new QualityEvaluation())"></PivotViewValue>
+                  
+                </PivotViewValues>
+                <PivotViewFormatSettings>
+                    <PivotViewFormatSetting Name="@nameof(QualityEvaluationView.InspectionDate)" Format="{0:yyyy-MM-dd}" ></PivotViewFormatSetting>
+                   
+                </PivotViewFormatSettings>
+            </PivotViewDataSourceSettings>
+            <PivotViewEvents TValue="QualityEvaluationView" RenameReport="RenameReport" RemoveReport="RemoveReport" SaveReport="SaveReport" LoadReport="LoadReport" FetchReport="FetchReport"></PivotViewEvents>
+        </SfPivotView>
+        @if (qualityEvaluationViewList != null)
+        {
+            <div class="container-total">
+                <div class="item">
+                    <label>
+                        @(
+                            $"Count item : {qualityEvaluationViewList.Count}"
+                            )
+                    </label>
+                </div>
+            </div>
+        }
+    }
+
+}
+
+
+@code {
+
+    [Parameter]
+    public string _filterItems { get; set; }
+    [Parameter]
+    public List<QualityEvaluation>? QualityEvaluationList { get; set; }
+    List<QualityEvaluationView>? qualityEvaluationViewList { get; set; }
+
+    public QualityReportType qualityReportType { get; set; }
+    IList<QualityEvaluation>? selectedcommercialdocuments;
+
+    bool isLoading = false;
+    string page = "grid";
+    string qualityEvaluationId = "";
+
+
+    #region Pivot
+
+    SfPivotView<QualityEvaluationView> Pivot;
+    public List<ToolbarItems> Olap = new List<ToolbarItems> {
+        ToolbarItems.New,
+        ToolbarItems.Save,
+        ToolbarItems.SaveAs,
+        ToolbarItems.Rename,
+        ToolbarItems.Remove,
+        ToolbarItems.Load,
+        ToolbarItems.Grid,
+        ToolbarItems.Chart,
+        ToolbarItems.MDX,
+        ToolbarItems.Export,
+        ToolbarItems.SubTotal,
+        ToolbarItems.GrandTotal,
+        ToolbarItems.ConditionalFormatting,
+        ToolbarItems.FieldList,
+
+                                                    };
+    public List<string> Report = new List<string>();
+    public List<string> ReportName = new List<string>();
+
+    #endregion End Pivot
+
+    DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
+
+    protected async override void OnInitialized()
+    {
+        isLoading = true;
+        base.OnInitialized();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        isLoading = true;
+        if (firstRender) LoadData();
+        base.OnAfterRender(firstRender);
+    }
+
+    protected override void OnParametersSet()
+    {
+        isLoading = true;
+        LoadData();
+        base.OnParametersSet();
+    }
+
+    public async Task LoadData()
+    {       
+        isLoading = true;
+        if (QualityEvaluationList != null)
+        {
+            qualityEvaluationViewList = new();
+            foreach (var item in QualityEvaluationList)
+            {
+                qualityEvaluationViewList.Add(new QualityEvaluationView
+                    {
+                        QualityReportTypeName = item.QualityReportType != null ? item.QualityReportType.Name : "",
+                        ActionToTakeName = item.ActionToTake != null ? item.ActionToTake.Name : "",
+                        InspectionDate = item.InspectionDate,
+                        Pack = item.Pack,
+                        QuantityInspected = item.QuantityInspected,
+                        QuantityToInspect  = item.QuantityToInspect,
+                        QuantityWithIssues = item.QuantityWithIssues,
+                        OverKill = item.OverKill,
+                        TrafficLightStatus = item.TrafficLightStatus!=null ?item.TrafficLightStatus.Name:"",
+                        Id = item.Id,
+                        SquadId = item.SquadId
+            });
+            }
+
+        }
+      
+        isLoading = false;
+        StateHasChanged();
+    }
+
+   
+
+    public async void SetType(QualityReportType item)
+    {
+
+        if (item != null)
+        {
+            qualityReportType = item;
+        }
+        StateHasChanged();
+    }
+
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<QualityEvaluation> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        QualityEvaluation argObj = (QualityEvaluation)args.Value;
+        qualityEvaluationId = argObj.Id;
+        Page("item");
+        StateHasChanged();
+        // Navigation.NavigateTo($"QualityEvaluationItem/{argObj.Id}/{docsFilter}");
+        if (!args.Value.Equals(3) && !args.Value.Equals(4))
+        {
+            ContextMenuService.Close();
+        }
+    }
+
+  
+    public string GetColor(QualityTrafficLight item)
+    {
+        string Color = "0,0,0";
+        if (item != null)
+        {
+            Color = $"{item.R},{item.G},{item.B}";
+        }
+        return Color;
+    }
+
+    public void Page(string name)
+    {
+        page = name;
+        StateHasChanged();
+    }
+
+    public void PageHome()
+    {
+        page = "grid";
+        StateHasChanged();
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    #region EventPivot
+
+    public void SaveReport(SaveReportArgs args)
+    {
+        int i = 0;
+        bool IsSaved = false;
+        for (i = 0; i < this.ReportName.Count; i++)
+        {
+            if (this.ReportName[i] == args.ReportName)
+            {
+                this.Report[i] = args.Report;
+                IsSaved = true;
+            }
+        }
+        if (args.Report != null && !(IsSaved))
+        {
+            this.Report.Add(args.Report);
+            this.ReportName.Add(args.ReportName);
+        }
+
+    }
+
+    public void FetchReport(FetchReportArgs args)
+    {
+        args.ReportName = ReportName.ToArray();
+    }
+
+    public async Task LoadReport(LoadReportArgs args)
+    {
+        int i = 0;
+        int j = 0;
+
+
+        for (i = 0; i < ReportName.Count; i++)
+        {
+            if (ReportName[i] == args.ReportName)
+            {
+                j = i;
+            }
+        }
+        if (Pivot != null) await this.Pivot.LoadPersistDataAsync(Report[j]);
+
+    }
+
+    public async Task RemoveReport(RemoveReportArgs args)
+    {
+        int i = 0;
+        for (i = 0; i < ReportName.Count; i++)
+        {
+            if (ReportName[i] == args.ReportName)
+            {
+                ReportName.RemoveAt(i);
+                Report.RemoveAt(i);
+                break;
+            }
+        }
+        if (Report.Count > 0)
+        {
+            await this.Pivot.LoadPersistDataAsync(Report[0]);
+        }
+    }
+
+    public void RenameReport(RenameReportArgs args)
+    {
+        if (args.IsReportExists)
+        {
+            int j = 0;
+            for (j = 0; j < ReportName.Count; j++)
+            {
+                if (ReportName[j] == args.Rename)
+                {
+                    ReportName.RemoveAt(j);
+                    Report.RemoveAt(j);
+                    break;
+                }
+            }
+        }
+        int i = 0;
+        for (i = 0; i <= (ReportName.Count - 1); i++)
+        {
+            if (ReportName[i] == args.ReportName)
+            {
+                ReportName[i] = args.Rename;
+
+            }
+        }
+    }
+
+
+    public class QualityEvaluationView
+    {
+        public string Id { get; set; }
+        public string SquadId { get; set; }
+        public string QualityReportTypeName { get; set; }
+        public DateTime InspectionDate { get; set; }
+        public double QuantityToInspect { get; set; }
+        public double QuantityInspected { get; set; }
+        public double QuantityWithIssues { get; set; }
+        public double Pack { get; set; }
+        public string TrafficLightStatus { get; set; }
+        public string ActionToTakeName { get; set; }
+        public bool OverKill { get; set; }
+
+    }
+
+    #endregion EndEventPivot
+
+
+
+}

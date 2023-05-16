@@ -10,12 +10,15 @@
 <div id="container-menu-general">
     <nav>
         <button class="general-menu-button btn-new" @onclick="CreateNew"><i class="fa-solid fa-file"></i></button>
-        <SfSplitButton Content="Import..." IconCss="fa-solid fa-file-import" CssClass="splitButtonsStyle">
-            <DropDownMenuItems>
-                <DropDownMenuItem Text="Importing from the cloud..." IconCss="fa-solid fa-cloud-arrow-up"></DropDownMenuItem>
-                <DropDownMenuItem Text="Uploading a csv file..." IconCss="fa-solid fa-file-csv"></DropDownMenuItem>
-            </DropDownMenuItems>
-        </SfSplitButton>
+        @if (PageView != "view")
+        {
+            <SfSplitButton Content="Import..." IconCss="fa-solid fa-file-import" CssClass="splitButtonsStyle">
+                <DropDownMenuItems>
+                    <DropDownMenuItem Text="Importing from the cloud..." IconCss="fa-solid fa-cloud-arrow-up"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Uploading a csv file..." IconCss="fa-solid fa-file-csv"></DropDownMenuItem>
+                </DropDownMenuItems>
+            </SfSplitButton>
+        }
 
         <SfSplitButton Content="Related Concepts" IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
             <SplitButtonEvents ItemSelected="ItemSelected">
@@ -27,7 +30,23 @@
                 <DropDownMenuItem Id="QualityActionGeneral" Text="Quality Action" IconCss="fa-solid fa-clipboard-list"></DropDownMenuItem>
                 <DropDownMenuItem Id="QualityAssuranceParameterGeneral" Text="Quality Parameter" IconCss="e-menu-icon fa-solid fa-bookmark"></DropDownMenuItem>
             </DropDownMenuItems>
-        </SfSplitButton>    
+        </SfSplitButton>
+
+        <SfSplitButton Content="Views" IconCss="fa-solid fa-arrows-to-circle" CssClass="splitButtonsStyle">
+            <SplitButtonEvents ItemSelected="ItemSelectedView">
+            </SplitButtonEvents>
+            <DropDownMenuItems>
+                @if (PageView != "view")
+                {
+                    <DropDownMenuItem Id="view" Text="Dynamic View" IconCss="e-menu-icon fa-solid fa-chart-simple"></DropDownMenuItem>
+                }
+                else
+                {
+                    <DropDownMenuItem Id="grid" Text="Table" IconCss="e-menu-icon fa-solid fa-table"></DropDownMenuItem>
+                }
+            </DropDownMenuItems>
+        </SfSplitButton>
+
     </nav>
 </div>
 
@@ -36,10 +55,13 @@
 
     [Parameter]
     public EventCallback<string> PageHome { get; set; }
+    [Parameter]
+    public string PageView { get; set; }
+
 
     protected async override void OnInitialized()
     {
-        // commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes();
+
         StateHasChanged();
     }
 
@@ -61,6 +83,12 @@
     {
         PageHome.InvokeAsync("item");
         // Navigation.NavigateTo("/QualityEvaluationItem");
+    }
+
+    private void ItemSelectedView(MenuEventArgs args)
+    {
+        PageHome.InvokeAsync(args.Item.Id);
+
     }
 
 }

@@ -149,6 +149,12 @@ else
 
     }
 
+     protected override void OnParametersSet()
+    {
+        LoadData();
+        StateHasChanged();
+    }
+
     public async void LoadData()
     {
         isLoading = true;

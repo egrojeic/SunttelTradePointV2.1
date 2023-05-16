@@ -1,5 +1,6 @@
 @page "/SalesFromProductList"
 @page "/SalesFromProductList/{commercialDocumentId}/{BuyerId}"
+@page "/SalesFromProductList/{commercialDocumentId}/{idItem}/{BuyerId}"
 
 @using SunttelTradePointB.Shared.Sales;
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
@@ -26,7 +27,7 @@
 </PageTitleComponent>
 
 <div class="panelMenuContainer">
-    <button type="button" @onclick='()=>SetNavigateTo("SaleItem")' class="general-menu-button"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i> </button>
+    <button type="button" @onclick='()=>SetNavigateTo($"SaleItem/1/{commercialDocumentId}")' class="general-menu-button"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i> </button>
 
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
 </div>
@@ -56,7 +57,7 @@
                     TItem="SalesDocumentItemsDetails"
                     ColumnWidth="300px"
                     PageNumbersCount="100"
-                    PageSize="15"
+                    PageSize="50"
                     CellContextMenu="@ShowContextMenuWithContent"
                     AllowRowSelectOnRowClick="true"
                     CellDoubleClick="OnCellDoubleClick">
@@ -77,14 +78,14 @@
                         <EditTemplate Context="itemEdit">
                             <RadzenNumeric @bind-Value="itemEdit.UnitPrice" />
                         </EditTemplate>
-                    </RadzenDataGridColumn><RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitCost" Title="@GetName("UnitCost", new SalesDocumentItemsDetails())" Filterable="false" FormatString="{0:N2}" Width="120px" />
+                    </RadzenDataGridColumn><RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitCost" Title="@GetName("UnitCost", new SalesDocumentItemsDetails())" Filterable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxRate" Title="@GetName("TaxRate", new SalesDocumentItemsDetails())" Filterable="false" Width="80px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxValue" Title="@GetName("TaxValue", new SalesDocumentItemsDetails())" Filterable="false" FormatString="{0:N2}" Width="100px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Total" Title="@GetName("Total", new SalesDocumentItemsDetails())" Filterable="false" FormatString="{0:N2}" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxValue" Title="@GetName("TaxValue", new SalesDocumentItemsDetails())" Filterable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="100px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Total" Title="@GetName("Total", new SalesDocumentItemsDetails())" Filterable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PurchaseSpecs" Title="@GetName("PurchaseSpecs", new SalesDocumentItemsDetails())" Filterable="false" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Provider" Title="@GetName("Provider", new SalesDocumentItemsDetails())" Filterable="false" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="OriginalPrice" Title="@GetName("OriginalPrice", new SalesDocumentItemsDetails())" Filterable="false" FormatString="{0:N2}" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ProcurementPtje" Title="@GetName("ProcurementPtje", new SalesDocumentItemsDetails())" Width="100px">
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="OriginalPrice" Title="@GetName("OriginalPrice", new SalesDocumentItemsDetails())" Filterable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ProcurementPtje" Title="@GetName("ProcurementPtje", new SalesDocumentItemsDetails())" TextAlign="TextAlign.Right"  Width="100px">
                         <Template>
                             @{
                                 var MarkedForQCInspection = context.GetType().GetProperty(nameof(SalesDocumentItemsDetails.ProcurementPtje))?.GetValue(context);
@@ -94,21 +95,7 @@
                     </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PullDate" Title="@GetName("PullDate", new SalesDocumentItemsDetails())" FormatString="{0:yyyy-MM-dd}" Filterable="false" Width="100px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="FormatedPullDate" Title="@GetName("FormatedPullDate", new SalesDocumentItemsDetails())" FormatString="{0:yyyy-MM-dd}" Filterable="false" Width="100px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Id" Title=" " >
-                        <Template>
-                            @{
-                                var Id = context.GetType().GetProperty(nameof(SalesDocumentItemsDetails.Id))?.GetValue(context).ToString();
-                                if ( EditId != Id)
-                                {
-                                    <input @onclick='()=>SaveItem(Id)'  class="btn-grid btn-grid-color" type="button" value="select">
-                                }
-                                if (EditId != "" && EditId == Id)
-                                {
-                                    <input @onclick='()=>SaveEdit(Id)' class="btn-grid btn-grid-color" type="button" value="save">
-                                }
-                            }
-                        </Template>
-                    </RadzenDataGridColumn>
+                    
                     
                    
                 </Columns>
@@ -123,7 +110,9 @@
     [Parameter]
     public string _filterItems { get; set; }
     [Parameter]
-    public string commercialDocumentId { get; set; }
+    public string commercialDocumentId { get; set; } 
+    [Parameter]
+    public string idItem { get; set; }
     [Parameter]
     public string BuyerId { get; set; }
 
@@ -163,6 +152,10 @@
         if (BuyerId != null && commercialDocumentId !=null)
         {
             var list = await DocumentServices.GetCommercialProductList(commercialDocumentId, BuyerId, (_filterItems != null ? _filterItems : "all"), 1, 10);
+            if (idItem != null)
+            {
+                list = list.Where(s => s.TransactionalItem.Id == idItem).ToList();
+            }
             listItemByListProduct(list);
         }
        

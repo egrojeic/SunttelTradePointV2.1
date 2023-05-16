@@ -33,7 +33,7 @@
             <SplitButtonEvents ItemSelected="ItemSelectedView">
             </SplitButtonEvents>
             <DropDownMenuItems>
-                @if (page != "view")
+                @if (pageView != "view")
                 {
                     <DropDownMenuItem Id="view" Text="Dynamic View" IconCss="e-menu-icon fa-solid fa-chart-simple"></DropDownMenuItem>
                 }
@@ -56,7 +56,9 @@
     [Parameter]
     public EventCallback<string> PageHome { get; set; }
     [Parameter]
-    public string page { get; set; }
+    public string page { get; set; } 
+    [Parameter]
+    public string pageView { get; set; }
 
 
     protected override void OnParametersSet()
