@@ -655,6 +655,9 @@ namespace SunttelTradePointB.Shared.Common
 
         [DisplayName("Customers in List")]
         public List<Concept> CustomersInList { get; set; }
+
+        [DisplayName("Ecommerce")]
+        public bool IsECommerce { get; set; }
     }
 
 
