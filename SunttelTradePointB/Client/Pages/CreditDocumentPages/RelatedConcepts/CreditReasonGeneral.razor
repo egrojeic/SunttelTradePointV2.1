@@ -42,7 +42,7 @@
 
 <div class="panelMenuContainer">
     <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-    <CreditReasonMenu page="page"></CreditReasonMenu>
+    <CreditReasonMenu page="@_page"></CreditReasonMenu>
     <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
 </div>
 
@@ -98,7 +98,7 @@
     [Parameter]
     public string _filterItems { get; set; } 
     [Parameter]
-    public string page { get; set; }
+    public string _page { get; set; }
     public List<CreditReason> creditReasonList { get; set; }
 
 
