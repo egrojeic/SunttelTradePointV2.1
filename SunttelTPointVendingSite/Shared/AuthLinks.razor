@@ -1,0 +1,39 @@
+﻿@*<AuthorizeView>
+    <Authorized>
+        Hola, <a href="EditUser" class="nav-link btn btn-link">@context.User.Identity!.Name</a>
+
+         @if (!string.IsNullOrEmpty(photoUser))
+            {
+                <div class="mx-2">
+                    <img src="@photoUser" width="50" height="50" style="border-radius:50%" />
+                </div>
+
+            }
+        <a href="Logout" class="nav-link btn btn-link">Cerrar Sesión</a>
+    </Authorized>
+    <NotAuthorized>
+    </NotAuthorized>
+</AuthorizeView>*@
+
+<div class="input-group ubi">
+    <input type="text" class="form-control" placeholder="What are you looking for?" aria-label="Recipient's username" aria-describedby="button-addon2">
+    <button class="btn btn-outline-secondary" type="button" id="button-addon2">Search</button>
+</div>
+
+<a href="Register" class="nav-link btn btn-primary">Register</a>
+<a href="Login" class="nav-link btn btn-primary">Sign In</a>
+
+@code {
+    private string? photoUser;
+
+    //protected async override Task OnParametersSetAsync()
+    //{
+    //    var authenticationState = await authenticationStateTask;
+    //    var claims = authenticationState.User.Claims.ToList();
+    //    var photoClaim = claims.FirstOrDefault(x => x.Type == "Photo");
+    //    if (photoClaim is not null)
+    //    {
+    //        photoUser = photoClaim.Value;
+    //    }
+    //}
+}

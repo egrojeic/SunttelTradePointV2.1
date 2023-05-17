@@ -10,8 +10,8 @@
 }
 else
 {
-    <div class="mb-2" style="display: flex; flex-wrap:wrap; align-items: center;">
-        <div>
+    @*  <div class="mb-2" style="display: flex; flex-wrap:wrap; align-items: center;">
+        <div class="container-md">
             <input style="width: 400px;" type="text" class="form-control" id="titulo" placeholder="Buscar producto..." @bind-value="Filter" />
         </div>
         <div class="mx-1">
@@ -21,44 +21,86 @@ else
                 <i class="oi oi-cart" />
             </button>
         </div>
-        @*  <AuthorizeView>
+         <AuthorizeView>
     <Authorized>
     @if (counter > 0)
     {
     <a href="/Orders/ShowCart" class="btn btn-primary">Ver Carro de Compras (@counter)</a>
     }
     </Authorized>
-    </AuthorizeView>*@
+    </AuthorizeView>
 
-    </div>
+    </div>*@
 
-    <div class="myPage">
+    <div class="container">
 
-        <div class="container">
+        <div class="item">
+            <h5>
+                Categories:
+            </h5>
+            <ul>
+                <li> Buy & Sell </li>
+                <li> ×Tools (5,219) </li>
+                <li> Power Tools (2,720) </li>
+                <li> Hand Tools (1,208) </li>
+                <li> Other (948) </li>
+                <li> Tool Storage & Benches (236 </li>
+                <li> Ladders & Scaffolding (107) </li>
+            </ul>
+            <h5>
+                Location:
+            </h5>
+            <ul>
+                <li> Manitoba (4,544) </li>
+                <li> Brandon Area (147) </li>
+                <li> Flin Flon (2) </li>
+                <li> Thompson (2) </li>
+                <li> Winnipeg (4,393) </li>
+            </ul>
 
-            @foreach (var product in Products!)
-            {
-                <div class="card">
-                    <div class="text-center zoom">
-                        <img src="@product.MainImage" style="height: 224px; width: 224px; object-fit: contain;" class="text-center" alt="@product.Name" />
-                    </div>
+            <h5>
+                Filter byOffer Type:
 
-                    <div class="card-body">
-                        <h5 class="card-title text-navy"> @product.Name</h5>
-                        <p class="card-text smfnt">@product.Description</p>
-                        <h5 class="text-muted">@($"{product.Price:C2}")</h5>
-                    </div>
-                    <div class="card-footer">
-                        <a href="/ProductDetail/@product.Id" class="btn btn-sm btn-secondary"><i class="oi oi-info me-1" />Details</a>
-                        <button class="btn btn-sm btn-primary" @onclick=@(() => AddToCartAsync(product.Id))><i class="oi oi-plus" /> Add to Cart</button>
-                    </div>
-                </div>
-            }
+            </h5>
+            <ul>
+                <li> All Types </li>
+                <li> Offering (4,515) </li>
+                <li> Wanted (29) </li>
+            </ul>
+
         </div>
-        <Pagination CurrentPage="currentPage"
-                    TotalPages="totalPages"
-                    SelectedPage="SelectedPageAsync" />
+        <div class="item2">
 
+            <div class="cont">
+
+                @foreach (var product in Products!)
+                {
+                    <div class="card">
+                        <div class="text-center zoom">
+                            <img src="@product.MainImage" style="height: 224px; width: 224px; object-fit: contain;" class="text-center" alt="@product.Name" />
+                        </div>
+
+                        <div class="card-body">
+                            <h5 class="card-title text-navy"> @product.Name</h5>
+                            <p class="card-text smfnt">@product.Description</p>
+                            <h5 class="text-muted">@($"{product.Price:C2}")</h5>
+                        </div>
+                        <div class="card-footer">
+                            <a href="/ProductDetail/@product.Id" class="btn btn-sm btn-secondary"><i class="oi oi-info me-1" />Details</a>
+                            <button class="btn btn-sm btn-primary" @onclick=@(() => AddToCartAsync(product.Id))><i class="oi oi-plus" /> Add to Cart</button>
+                        </div>
+                        <div class="card-footer">
+                            <a href="/ProductDetail/@product.Id" class="btn btn-sm btn-secondary"><i class="oi oi-info me-1" />Details</a>
+                            <button class="btn btn-sm btn-primary" @onclick=@(() => AddToCartAsync(product.Id))><i class="oi oi-plus" /> Add to Cart</button>
+                        </div>
+                    </div>
+                }
+            </div>
+            <Pagination CurrentPage="currentPage"
+                        TotalPages="totalPages"
+                        SelectedPage="SelectedPageAsync" />
+
+        </div>
     </div>
 
 }
@@ -156,6 +198,15 @@ else
 
     private async Task LoadAsync(int page = 1)
     {
+        Products.Add(p);
+        Products.Add(p2);
+        Products.Add(p3);
+        Products.Add(p);
+        Products.Add(p2);
+        Products.Add(p3);
+        Products.Add(p);
+        Products.Add(p2);
+        Products.Add(p3);
         Products.Add(p);
         Products.Add(p2);
         Products.Add(p3);

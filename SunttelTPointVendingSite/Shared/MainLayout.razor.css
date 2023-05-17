@@ -4,8 +4,20 @@
     flex-direction: column;
 }
 
+.user {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    margin-left: 1.5rem !important;
+}
+
 main {
     flex: 1;
+}
+
+.btn-link{
+    margin-left: 1rem !important;
+    margin-right: 1rem !important;
 }
 
 .sidebar {
@@ -15,10 +27,27 @@ main {
 .top-row {
     background-color: #f7f7f7;
     border-bottom: 1px solid #d6d5d5;
-    justify-content: flex-end;
+    justify-content: space-between;
     height: 3.5rem;
     display: flex;
     align-items: center;
+}
+
+.top-row2 {
+    /* Propiedades heredadas de .top-row */
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #d6d5d5;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+
+    /* Nuevas propiedades */
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.top-row2 span{
+    margin: 0px 5px;
 }
 
     .top-row ::deep a, .top-row ::deep .btn-link {
@@ -79,3 +108,5 @@ main {
         padding-right: 1.5rem !important;
     }
 }
+
+
