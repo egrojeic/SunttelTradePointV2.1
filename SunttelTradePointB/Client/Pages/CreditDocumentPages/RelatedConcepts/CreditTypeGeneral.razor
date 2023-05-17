@@ -30,6 +30,17 @@
     }
 </style>
 
+@if (deleteVisible)
+{
+    <div class="container-alert-delete">
+        <label class="label-style">¿Are you sure to permanently delete @nameDelete?</label>
+        <div class="item-btn">
+            <buton @onclick="CancelDelete" class="cancel">Cancel</buton>
+            <buton @onclick="Delete" class="delete">Delete</buton>
+        </div>
+    </div>
+}
+
 <PageTitleComponent Title="Credit Type" IconName="creditType.png"
                     Description="With this tool you can create and edit credit type ">
 </PageTitleComponent>
@@ -37,14 +48,13 @@
 <div class="panelMenuContainer">
     <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
     <CreditTypeMenu page="@_page"></CreditTypeMenu>
-    <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>   
+    <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
 </div>
 
 
 
 <div class="tableContainer">
 
-   
     @if (isLoading)
     {
 
@@ -54,8 +64,9 @@
     else
     {
 
-        @if(creditTypeList!=null){
-        <RadzenDataGrid AllowFiltering="true"
+        @if (creditTypeList != null)
+        {
+            <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
                     AllowAlternatingRows="true"
                     FilterMode="FilterMode.Advanced"
@@ -69,19 +80,19 @@
                     TItem="CreditType"
                     ColumnWidth="100%"
                     SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"                   
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
-            <Columns>
+                <Columns>
 
-                <RadzenDataGridColumn TItem="CreditType" Property="Name" Title="@GetName("Name",new BasicConcept())" Width="208px" />
-                <RadzenDataGridColumn TItem="CreditType"  Title="@GetName("IsASale",new BasicConcept())" Width="88px" >
+                    <RadzenDataGridColumn TItem="CreditType" Property="Name" Title="@GetName("Name",new BasicConcept())" Width="208px" />
+                    <RadzenDataGridColumn TItem="CreditType" Title="@GetName("IsASale",new BasicConcept())" Width="88px">
                         <Template Context="data">
-                      <RadzenCheckBox  @bind-Value="@data.IsASale" ></RadzenCheckBox>
-                    </Template>
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CreditType" Property="Id" Title="@GetName("Id",new BasicConcept())" Width="58px" />
-            </Columns>
-        </RadzenDataGrid>
+                            <RadzenCheckBox @bind-Value="@data.IsASale"></RadzenCheckBox>
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="CreditType" Property="Id" Title="@GetName("Id",new BasicConcept())" Width="58px" />
+                </Columns>
+            </RadzenDataGrid>
             <div class="container-total">
                 <div class="item">
                     <label>
@@ -104,7 +115,10 @@
     [Parameter]
     public string _page { get; set; }
     public List<CreditType> creditTypeList { get; set; }
-   
+
+    bool deleteVisible = false;
+    string nameDelete = "";
+    string IdDelete = "";
 
     bool isLoading = false;
 
@@ -122,40 +136,57 @@
 
     protected async override void OnInitialized()
     {
-
-        _filterItems ="all"; LoadData();
+        _filterItems = "all"; LoadData();
         base.OnInitialized();
 
     }
 
     public async void LoadData()
     {
-        isLoading = true;       
+        isLoading = true;
         creditTypeList = await CreditDocumentServices.GetCreditTypes((filter != null ? filter : "all"), 1, 20);
         isLoading = false;
         StateHasChanged();
     }
 
-   
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CreditType> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-      
-        </RadzenMenu>
+        <RadzenMenuItem Text="Delete" Value=args.Data Icon="delete"></RadzenMenuItem>
+    </RadzenMenu>
     );
 
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         CreditType argObj = (CreditType)args.Value;
-        Navigation.NavigateTo($"CreditType/{_page}/{argObj.Id}/{_filterItems}");
+        if (args.Text == "Edit") Navigation.NavigateTo($"CreditType/{_page}/{argObj.Id}/{_filterItems}");
+        if (args.Text == "Delete")
+        {
+            deleteVisible = true;
+            nameDelete =("Name :"+ argObj.Name); IdDelete = argObj.Id;
+        }
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
         }
     }
 
-    public void Setfilter( string value)
+    public void Delete()
+    {
+        deleteVisible = false;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        nameDelete = "";
+        IdDelete = "";
+        deleteVisible = false;
+        StateHasChanged();
+    }
+
+    public void Setfilter(string value)
     {
         filter = value;
         StateHasChanged();
@@ -169,16 +200,15 @@
 
     public void Add()
     {
-        
+
     }
 
-     public void Home()
+    public void Home()
     {
         string paramFilter = filter != null ? filter : "";
         if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/Credits/{paramFilter}");
         Navigation.NavigateTo($"/{_page}/1");
     }
-
 
     public void EventIdSelectionMenuItem(string name)
     {

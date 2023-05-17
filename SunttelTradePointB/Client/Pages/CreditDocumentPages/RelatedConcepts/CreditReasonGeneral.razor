@@ -36,6 +36,17 @@
 
 </style>
 
+@if (deleteVisible)
+{
+    <div class="container-alert-delete">
+        <label class="label-style">¿Are you sure to permanently delete @nameDelete?</label>
+        <div class="item-btn">
+            <buton @onclick="CancelDelete" class="cancel">Cancel</buton>
+            <buton @onclick="Delete" class="delete">Delete</buton>
+        </div>
+    </div>
+}
+
 <PageTitleComponent Title="Credit Reason" IconName="creditReason.png"
                     Description="With this tool you can create and edit Credit Reason ">
 </PageTitleComponent>
@@ -54,7 +65,7 @@
     }
     else
     {
-        @if (creditReasonList!=null)
+        @if (creditReasonList != null)
         {
             <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
@@ -92,17 +103,19 @@
     }
 </div>
 
-
-
 @code {
     [Parameter]
-    public string _filterItems { get; set; } 
+    public string _filterItems { get; set; }
     [Parameter]
     public string _page { get; set; }
     public List<CreditReason> creditReasonList { get; set; }
 
 
     bool isLoading = false;
+
+    bool deleteVisible = false;
+    string nameDelete = "";
+    string IdDelete = "";
 
     DateTime startingDate = DateTime.Now;
 
@@ -132,21 +145,38 @@
         StateHasChanged();
     }
 
+    public void Delete()
+    {
+        deleteVisible = false;
+        StateHasChanged();
+    }
 
+    public void CancelDelete()
+    {
+        nameDelete = "";
+        IdDelete = "";
+        deleteVisible = false;
+        StateHasChanged();
+    }
 
 
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CreditReason> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-
-    </RadzenMenu>
+        <RadzenMenuItem Text="Delete" Value=args.Data Icon="delete"></RadzenMenuItem>
+        </RadzenMenu>
     );
 
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         CreditReason argObj = (CreditReason)args.Value;
-        Navigation.NavigateTo($"CreditReason/{_page}/{argObj.Id}/{_filterItems}");
+        if (args.Text == "Edit") Navigation.NavigateTo($"CreditReason/{_page}/{argObj.Id}/{_filterItems}");
+        if (args.Text == "Delete")
+        {
+            deleteVisible = true;
+            nameDelete = ("Name :"+ argObj.Name); IdDelete = argObj.Id;
+        }
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
@@ -177,10 +207,10 @@
         Navigation.NavigateTo($"/{_page}/1");
     }
 
-    public void EventIdSelectionMenuItem(string name)
-    {
-        Js.InvokeAsync<object>("open", name, "_blank");
+    //public void EventIdSelectionMenuItem(string name)
+    //{
+    //    Js.InvokeAsync<object>("open", name, "_blank");
 
-    }
+    //}
 
 }

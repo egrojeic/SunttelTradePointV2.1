@@ -73,7 +73,8 @@
                     TItem="SalesDocumentItemsDetails"
                     ColumnWidth="100px"
                     PageNumbersCount="100"
-                    PageSize="20">
+                    PageSize="20"
+                    CellContextMenu="@ShowContextMenuWithContent">
 
                 <Columns>
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName("TransactionalItem", new SalesDocumentItemsDetails())" Width="200px" />
@@ -183,7 +184,7 @@
 
         if (argObj != null)
         {
-
+            Js.InvokeAsync<object>("open", $"SalesFromProductList/{commercialDocumentId}/{argObj.Id}/{buyerId}", "_blank");
         }
     }
 

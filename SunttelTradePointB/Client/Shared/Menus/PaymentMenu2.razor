@@ -3,10 +3,7 @@
 @using SunttelTradePointB.Shared.Sales
 @using SunttelTradePointB.Shared.Accounting
 @inject NavigationManager Navigation
-@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
-
-
-
+@inject SunttelTradePointB.Client.Services.PaymentServices.PaymentServices PaymentServices
 
 <div class="aling-div ">
     <div>
@@ -16,13 +13,14 @@
     </div>
     <div class="InventoryBusinessLine">
         <select @onchange="SetDocumentType" class="select-style">
-            @if (commercialDocumentTypeList != null)
+            @if (paymentTypeList != null)
             {
-                @foreach (var item in commercialDocumentTypeList)
+                @foreach (var item in paymentTypeList)
                 {
-                    <option value="@(item.Id)" selected>@(item.Name)</option>
+                    <option value="@(item.Id)" >@(item.Name)</option>
                 }
             }
+            <option  selected>select</option>
         </select>
     </div>
 </div>
@@ -30,9 +28,9 @@
 
 @code {
     [Parameter]
-    public List<CommercialDocumentType> commercialDocumentTypeList { get; set; }
+    public List<PaymentType> paymentTypeList { get; set; }
     [Parameter]
-    public EventCallback<CommercialDocumentType> SetDocumentTypeId { get; set; }
+    public EventCallback<PaymentType> SetTypeId { get; set; }
     [Parameter]
     public bool isASales { get; set; } 
     [Parameter]
@@ -45,15 +43,18 @@
     }
 
 
-    protected override void OnParametersSet()
-    {
+    protected async override void OnParametersSet()
+    {      
+        paymentTypeList = await PaymentServices.GetPaymentTypeList(1,100,"all");
+        if(paymentTypeList!=null) paymentTypeList = paymentTypeList.Where(s => s.IsASale == isASales).ToList();
+        StateHasChanged();
         base.OnParametersSet();
     }
 
-
     protected async override void OnInitialized()
     {
-        commercialDocumentTypeList = await DocumentServices.GetCommercialDocumentTypes(isASales);
+        paymentTypeList = await PaymentServices.GetPaymentTypeList(1, 100, "all");
+        if (paymentTypeList != null) paymentTypeList = paymentTypeList.Where(s => s.IsASale == isASales).ToList();
         StateHasChanged();
     }
 
@@ -77,10 +78,10 @@
 
     private void SetDocumentType(ChangeEventArgs args)
     {
-        var Selected_item = commercialDocumentTypeList.Where(s => s.Id == args.Value.ToString()).FirstOrDefault();
-        if (Selected_item != null)
+        var Selected_item = paymentTypeList.Where(s => s.Id == args.Value.ToString()).FirstOrDefault();
+        if (Selected_item != null )
         {
-            SetDocumentTypeId.InvokeAsync(Selected_item);
+            SetTypeId.InvokeAsync(Selected_item);
         }
     }
 

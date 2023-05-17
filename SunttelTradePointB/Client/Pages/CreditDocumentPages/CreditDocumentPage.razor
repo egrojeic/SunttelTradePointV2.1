@@ -34,6 +34,18 @@
     }
 </style>
 
+
+@if (deleteVisible)
+{
+    <div class="container-alert-delete">
+        <label class="label-style">¿Are you sure to permanently delete @nameDelete?</label>
+        <div class="item-btn">
+            <buton @onclick="CancelDelete" class="cancel">Cancel</buton>
+            <buton @onclick="Delete" class="delete">Delete</buton>
+        </div>
+    </div>
+}
+
 <PageTitleComponent Title="@namePage" IconName="@icoLogo"
                     Description="@($"With this tool you can create and edit {@namePage}")">
 </PageTitleComponent>
@@ -136,6 +148,9 @@
     public List<Concept> vendorList = new();
     public Concept vendor = new();
 
+    bool deleteVisible = false;
+    string nameDelete = "";
+    string IdDelete = "";
 
     string namePage = "";
     string backPage = "";
@@ -199,6 +214,7 @@
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CreditDocument> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+        <RadzenMenuItem Text="Delete" Value=args.Data Icon="delete"></RadzenMenuItem>
     </RadzenMenu>
     );
 
@@ -206,7 +222,12 @@
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         CreditDocument argObj = (CreditDocument)args.Value;
-        Navigation.NavigateTo($"{backPage}/{argObj.Id}/{_filterItems}");
+        if (args.Text == "Edit") Navigation.NavigateTo($"{backPage}/{argObj.Id}/{_filterItems}");
+        if (args.Text == "Delete")
+        {
+            deleteVisible = true;
+            nameDelete =("Code :" +argObj.Code); IdDelete = argObj.Id;
+        }
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
@@ -264,6 +285,20 @@
         }
 
         return result; //value.ToString("N2", format);
+    }
+
+    public void Delete()
+    {
+        deleteVisible = false;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        nameDelete = "";
+        IdDelete = "";
+        deleteVisible = false;
+        StateHasChanged();
     }
 
 

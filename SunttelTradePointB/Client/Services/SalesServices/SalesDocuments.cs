@@ -108,8 +108,8 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             try
             {
                 string nameVendor = vendor != null ? vendor.Name : "";
-                string path = basepath.Replace("Name", "GetCommercialDocumentsByDateSpan");
-                var responseMessage = await Gethttp($"{path}&startDate={startDate.ToString("yyyy-MM-dd", culture)}&endDate={endDate}&documentTypeId={documentTypeId}&filter={filter}&vendorName={nameVendor}");
+                string path = basepath.Replace("Name", newValue: "GetCommercialDocumentsByDateSpan");
+                var responseMessage = await Gethttp($"{path}&startDate={startDate.ToString("yyyy-MM-dd")}&endDate={endDate.ToString("yyyy-MM-dd")}&documentTypeId={documentTypeId}&filter={filter}&vendorName={nameVendor}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocument>>();
                 return list != null ? list : new List<CommercialDocument>();
             }
@@ -135,7 +135,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
                 return null;
             }
         }
-
+        
         //Shipping Statuses
         public async Task<List<ShippingStatus>> GetShippingStatuses(string filter)
         {
@@ -256,7 +256,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {                
-                string path = $"api/TransactionalItems/GetProductsByCustomerId?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&customerId={customerId}&nameLike={filter}&page={page}&perPage={perPage}";
+                string path = $"api/TransactionalItems/GetProductsByCustomerId?userId=*Id&ipAdress=*Ip&customerId={customerId}&nameLike={filter}&page={page}&perPage={perPage}";
                 var responseMessage = await Gethttp(path);
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<AddItemCommercialDocument>>();
                 return list != null ? list : new List<AddItemCommercialDocument>();
@@ -503,8 +503,11 @@ namespace SunttelTradePointB.Client.Services.SalesServices
                 var SquadId = UIClientGlobalVariables.ActiveSquad;
                 var ReplaceIdUser = UIClientGlobalVariables.UserId;
                 var ReplacePublicIpAddress = UIClientGlobalVariables.PublicIpAddress;
+                if(ReplacePublicIpAddress=="")ReplacePublicIpAddress="000";
+                if(ReplaceIdUser=="")ReplaceIdUser="000";
 
-                Url = Url.Replace("*Id", ReplaceIdUser ?? "000").Replace("*Ip", ReplacePublicIpAddress ?? "000");
+                Url = Url.Replace("*Id", ReplaceIdUser ?? "000");
+                Url = Url.Replace("*Ip", ReplacePublicIpAddress ?? "000");
 
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
 

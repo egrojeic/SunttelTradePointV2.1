@@ -1,5 +1,5 @@
 ﻿@page "/SalesPayments/{page}"
-@page "/Payments/{page}/{_filterItems}"
+@page "/SalesPayments/{page}/{_filterItems}"
 @page "/PurchasesPayments/{page}"
 @page "/PurchasesPayments/{page}/{_filterItems}"
 @using SunttelTradePointB.Shared.Sales;
@@ -31,16 +31,16 @@
 
 @inject IJSRuntime Js
 
-<PageTitleComponent Title="@(namePage+(page=="table"?"":" Dynamic View"))" IconName="Payments.png"
+<PageTitleComponent Title="@(namePage+(pageView=="table"?"":" Dynamic View"))" IconName="Payments.png"
                     Description="@($"With this tool you can create and edit {namePage}")">
 </PageTitleComponent>
 
     <div class="panelMenuContainer">
-        <PaymentsMenu PageHome="@Page"  page="@backPage"></PaymentsMenu>
+    <PaymentsMenu PageHome="@Page" pageView="@pageView" page="@backPage"></PaymentsMenu>
         <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
     </div>
     <div class="panelMenuContainer">
-        <PaymentMenu2 isASales="@isASale"  SetDocumentTypeId="SetDocumentTypeId"></PaymentMenu2>
+    <PaymentMenu2 isASales="@isASale" SetTypeId="SetPaymentType"></PaymentMenu2>
         <RangeDatesInput @bind-StartDate="@startingDate"
                      StartDateName="From"
                      @bind-EndDate="endDate"
@@ -49,7 +49,7 @@
     </div>
 
 
-@if (page == "table")
+@if (pageView == "table")
 {
 
 <div class="tableContainer">
@@ -64,7 +64,7 @@
     else
     {
 
-        @if (paymentList!=null)
+        @if (paymentList!=null && paymentList.Count>0)
         {
 
         <RadzenDataGrid AllowFiltering="true"
@@ -87,20 +87,22 @@
 
                 <RadzenDataGridColumn TItem="Payment" Property="DocumentType.Name" Title="@GetName("DocumentType",new Payment())" Width="208px" />
                 <RadzenDataGridColumn TItem="Payment" Property="Code" Title="@GetName("Code",new Payment())" Width="88px" />
-                <RadzenDataGridColumn TItem="Payment" Property="PaymentRef" Title="@GetName("PaymentRef",new Payment())" Filterable="false" Sortable="false" Width="88px" />
-                <RadzenDataGridColumn TItem="Payment" Property="PaymentDate" Title="@GetName("PaymentDate",new Payment())" Filterable="false" FormatString="{0:yyyy-MM-dd}" Sortable="false" Width="88px" />
-                <RadzenDataGridColumn TItem="Payment" Property="Payer.Name" Title="@GetName("Payer",new Payment())" Filterable="false" Sortable="false" Width="108px" />
+                <RadzenDataGridColumn TItem="Payment" Property="@nameof(Payment.PaymentRef)" Title="@GetName("PaymentRef",new Payment())" Filterable="false" Sortable="false" Width="88px" />
+                        <RadzenDataGridColumn TItem="Payment" Property="@nameof(Payment.PaymentDate)" Title="@GetName("PaymentDate",new Payment())" Filterable="false" FormatString="{0:yyyy-MM-dd}" Sortable="false" Width="88px" />
+                        <RadzenDataGridColumn TItem="Payment" Property="Payer.Name" Title="@GetName("Payer",new Payment())" Filterable="false" Sortable="false" Width="108px" />
                 <RadzenDataGridColumn TItem="Payment" Property="Status.Name" Title="@GetName("Status",new Payment())" Width="88px" />
                 <RadzenDataGridColumn TItem="Payment" Property="Receiver.Name" Title="@GetName("Receiver",new Payment())" Filterable="false" Sortable="false" Width="108px" />
                 <RadzenDataGridColumn TItem="Payment" Property="PaymentValue" Title="@GetName("PaymentValue",new Payment())" Filterable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Sortable="false" Width="108px" />
-                <RadzenDataGridColumn TItem="Payment" Property="ReturnedPayment" Title="@GetName("ReturnedPayment",new Payment())" TextAlign="TextAlign.Center" Filterable="false" Sortable="false" Width="208px">
-                    <Template>
-                        @{
-                            var ReturnedPayment = (bool)context.GetType().GetProperty(nameof(Payment.ReturnedPayment)).GetValue(context);
-                            <input type="checkbox" checked="@ReturnedPayment" />
-                        }
-                    </Template>
+                <RadzenDataGridColumn TItem="Payment" Property="@nameof(Payment.ReturnedPayment)" Title="@GetName("ReturnedPayment",new Payment())" TextAlign="TextAlign.Center" Filterable="false" Sortable="false" Width="208px">
+                            <Template Context="data">
+                                <RadzenCheckBox @bind-Value="@data.ReturnedPayment" />
+                            </Template>
                 </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="Payment" Property="DocumentType.IsASale" Title="@GetName("IsASale",new Payment())" TextAlign="TextAlign.Center" Filterable="false" Sortable="false" Width="208px">
+                            <Template Context="data">
+                             <RadzenCheckBox @bind-Value="@data.DocumentType.IsASale" />
+                            </Template>
+                        </RadzenDataGridColumn>
             </Columns>
         </RadzenDataGrid>
         <div class="container-total">
@@ -116,7 +118,7 @@
 </div>
 }
 
-@if (page == "view")
+@if (pageView == "view")
 {
     <PaymentsView paymentList="paymentList"></PaymentsView>
 }
@@ -125,9 +127,10 @@
     [Parameter]
     public string _filterItems { get; set; }
     [Parameter]
-    public string page { get; set; } = "table";
+    public string page { get; set; }
+    public string pageView { get; set; } = "table";
     public List<Payment> paymentList { get; set; }
-    public CommercialDocumentType documentType { get; set; }
+    public PaymentType paymentType { get; set; }
 
     string namePage = "";
     string backPage = "";
@@ -160,27 +163,27 @@
     protected override void OnParametersSet()
     {
         ValidateUri();
+        pageView = "table";
         StateHasChanged();
     }
-
 
     public async void LoadData()
     {
         isLoading = true;
-        if (documentType != null)
+        if (paymentType != null)
         {            
-            paymentList = await PaymentServices.GetPaymentList((filter != null ? filter : "all"), (documentType != null ? documentType?.Id : ""), startingDate, endDate, 1, 10);
+            paymentList = await PaymentServices.GetPaymentList((filter != null ? filter : "all"), (paymentType != null ? paymentType?.Id : ""), startingDate, endDate, 1, 10);
         }
         isLoading = false;
         StateHasChanged();
     }
 
-    public async void SetDocumentTypeId(CommercialDocumentType item)
+    public async void SetPaymentType(PaymentType item)
     {
 
         if (item != null)
         {
-            documentType = item;
+            paymentType = item;
         }
         StateHasChanged();
     }
@@ -222,7 +225,7 @@
         LoadData();
     }
     public void Page(string name){
-        page = name;
+        pageView = name;
         StateHasChanged();
     }
 

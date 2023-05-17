@@ -32,7 +32,7 @@
     }
 </style>
 
-<PageTitleComponent Title="@("Accounts Receivable "+(page=="table "?"":"Dynamic View"))" IconName="commercialActivities.png"
+<PageTitleComponent Title="@("Accounts Receivable "+(_page=="table"?"":"Dynamic View"))" IconName="commercialActivities.png"
                     Description="With this tool you can see accounts receivable">
 </PageTitleComponent>
 
@@ -48,14 +48,12 @@
 </div>
 
 
-@if (page == "table")
+@if (_page == "table")
 {
     <div class="tableContainer">
         @if (isLoading)
         {
-
-            <WaitingProcessIndicator loadingTopic="Characteristic Items"></WaitingProcessIndicator>
-
+            <WaitingProcessIndicator loadingTopic="Accounts Receivable Items"></WaitingProcessIndicator>
         }
         else
         {
@@ -103,7 +101,7 @@
         }
     </div>
 }
-@if (page == "view")
+@if (_page == "view")
 {
     <AccountsView commercialdocumentList="@commercialdocumentList"></AccountsView>
 }
@@ -113,7 +111,7 @@
 
     [Parameter]
     public string _filterItems { get; set; }
-    public string page { get; set; } = "table";
+    public string _page { get; set; } = "table";
     List<CommercialDocument>? commercialdocumentList { get; set; }
     NumberFormatInfo Us = new CultureInfo("en-US", false).NumberFormat;
     public Warehouse warehouse { get; set; }
@@ -222,7 +220,7 @@
 
     public void PageHome(string name)
     {
-        page = name;
+        _page = name;
         StateHasChanged();
     }
 

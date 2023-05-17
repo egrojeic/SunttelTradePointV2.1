@@ -34,19 +34,19 @@
 </style>
 
 
-@if (page == "item")
+@if (_page == "item")
 {
     <QualityEvaluationItem PageHome="@PageHome" qualityEvaluationId="@qualityEvaluationId">
     </QualityEvaluationItem>
 }
 
-@if (page == "grid")
+@if (_page == "grid")
 {
     <PageTitleComponent Title="Quality Control Panel" IconName="QualityParameters.png"
                     Description="With this tool you can add and edit quality control panel">
     </PageTitleComponent>
     <div class="panelMenuContainer">
-        <QualityEvaluationMenu PageHome="@Page">
+        <QualityEvaluationMenu PageView="@_page" PageHome="@Page">
         </QualityEvaluationMenu>
         <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
     </div>
@@ -61,13 +61,9 @@
     </div>
 
     <div class="tableContainer">
-
-
         @if (isLoading)
         {
-
-            <WaitingProcessIndicator loadingTopic="Characteristic Items"></WaitingProcessIndicator>
-
+            <WaitingProcessIndicator loadingTopic="Quality Evaluation Items"></WaitingProcessIndicator>
         }
         else
         {
@@ -91,7 +87,6 @@
                     @bind-Value="@selectedcommercialdocuments"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
                     <Columns>
-
                         <RadzenDataGridColumn TItem="QualityEvaluation" Property="QualityReportType.Name" Title="@GetName("QualityReportType", new QualityEvaluation() )" Width="108px" />
                         <RadzenDataGridColumn TItem="QualityEvaluation" Property="InspectionDate" Title="@GetName("InspectionDate", new QualityEvaluation() )" Filterable="false" Sortable="false" FormatString="{0:MM/dd/yyyy}" Width="88px" />
                         <RadzenDataGridColumn TItem="QualityEvaluation" Property="QuantityToInspect" Title="@GetName("QuantityToInspect", new QualityEvaluation() )" TextAlign="Radzen.TextAlign.Right" Filterable="false" Width="88px" />
@@ -132,6 +127,29 @@
     </div>
 }
 
+@if (_page == "view")
+{
+    <PageTitleComponent Title="Quality Control Panel Dynamic View" IconName="QualityParameters.png"
+                    Description="With this tool you can add and edit quality control panel">
+    </PageTitleComponent>
+    <div class="panelMenuContainer">
+        <QualityEvaluationMenu PageView="@_page" PageHome="@Page">
+        </QualityEvaluationMenu>
+        <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
+    </div>
+
+    <div class="panelMenuContainer">
+        <QualityEvaluationMenu2 SetType="SetType"></QualityEvaluationMenu2>
+        <RangeDatesInput @bind-StartDate="@startingDate"
+                     StartDateName="Form"
+                     EndDateName="To"
+                     @bind-EndDate="endDate"
+                     EventSearchAll="EventSearchAll"></RangeDatesInput>
+    </div>
+
+    <QualityEvaluationPageVIew QualityEvaluationList="@qualityEvaluationList"></QualityEvaluationPageVIew>
+
+}
 
 @code {
 
@@ -143,7 +161,7 @@
     IList<QualityEvaluation>? selectedcommercialdocuments;
 
     bool isLoading = false;
-    string page = "grid";
+    string _page = "grid";
     string qualityEvaluationId = "";
 
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
@@ -191,13 +209,11 @@
         StateHasChanged();
     }
 
-
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<QualityEvaluation> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
         </RadzenMenu>
     );
-
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
@@ -230,13 +246,13 @@
 
     public void Page(string name)
     {
-        page = name;
+        _page = name;
         StateHasChanged();
     }
     
     public void PageHome()
     {
-        page = "grid";
+        _page = "grid";
         StateHasChanged();
     }
 
@@ -245,6 +261,4 @@
         if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
     }
-
-
 }

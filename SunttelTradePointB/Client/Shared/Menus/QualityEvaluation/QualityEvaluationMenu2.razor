@@ -39,11 +39,11 @@
 
 
 @code {
-    
+
     public List<QualityReportType> TypeList { get; set; }
     [Parameter]
     public EventCallback<QualityReportType> SetType { get; set; }
-  
+
 
     QualityReportType qualityReportType = new();
 
@@ -55,16 +55,10 @@
         StateHasChanged();
     }
 
-    void OnClick(RadzenSplitButtonItem item, string buttonName)
+    protected async override void OnParametersSet()
     {
-        if (item != null)
-        {
-            Console.WriteLine($"{buttonName}, item with value {item.Value} clicked");
-        }
-        else
-        {
-            Console.WriteLine($"{buttonName} clicked");
-        }
+         TypeList = await QualityEvaluationServices.GetQualityReportTypeList("all",1,50);
+        base.OnParametersSet();
     }
 
     private void ItemSelected(MenuEventArgs args)

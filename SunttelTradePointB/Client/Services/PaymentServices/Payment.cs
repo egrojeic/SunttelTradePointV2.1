@@ -364,7 +364,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
         {
             try
             {
-                string Url = pathApi.Replace("*Name", "GetDocPaymentVias");
+                string Url = pathApi.Replace("*Name", "GetPaymentTypes");
                 Url = GetGlobalVariables($"{Url}&filter={filter}");
                 var responseMessage = await Gethttp(Url);
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<PaymentType>>();
