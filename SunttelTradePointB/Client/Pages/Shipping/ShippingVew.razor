@@ -131,15 +131,7 @@ else
 
     #endregion End Pivot
 
-    public string docsFilter
-    {
-        get { return _filterItems; }
-        set
-        {
-            _filterItems = value;
-            LoadData();
-        }
-    }
+ 
 
     protected async override void OnInitialized()
     {
@@ -185,11 +177,7 @@ else
 
         StateHasChanged();
     }
-
-    public void EventSearchAll(string value)
-    {
-        docsFilter = value;
-    }
+       
 
     public async void Setwarehouse(Warehouse item)
     {
@@ -219,20 +207,13 @@ else
             radzenDataGrid.Style = " background-color: #e9e9e9;";
             ContextMenuService.Close();
         }
-    }
-
-    public void SetdocsFilter(string value)
-    {
-        docsFilter = value;
-        StateHasChanged();
-    }
+    }   
 
     public string GetName(string Name, Object Obj)
     {
         if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
     }
-
 
 
     public string SumTotal()
