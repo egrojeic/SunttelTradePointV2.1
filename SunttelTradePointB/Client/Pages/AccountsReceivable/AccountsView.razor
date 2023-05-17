@@ -102,7 +102,7 @@ else
     public Warehouse warehouse { get; set; }
     IList<CommercialDocument>? selectedcommercialdocuments;
 
-    bool isLoading = false;
+    bool isLoading = true;
 
     DateTime date = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
 
@@ -144,6 +144,7 @@ else
 
     protected async override void OnInitialized()
     {
+        isLoading = true;
          LoadData();
         base.OnInitialized();
 
@@ -151,6 +152,7 @@ else
 
      protected override void OnParametersSet()
     {
+        isLoading = true;
         LoadData();
         StateHasChanged();
     }

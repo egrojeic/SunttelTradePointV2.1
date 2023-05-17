@@ -100,7 +100,7 @@ else
     public Warehouse warehouse { get; set; }
     IList<CommercialDocument>? selectedcommercialdocuments;
     public List<ShippingStatus> shippingStatusDocumentList = new();
-    bool isLoading = false;
+    bool isLoading = true;
     string font = "12px";
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
     RadzenDataGrid<CommercialDocument> radzenDataGrid;
@@ -143,13 +143,14 @@ else
 
     protected async override void OnInitialized()
     {
+        isLoading = true;
         LoadData();
         base.OnInitialized();
     }
 
     protected override void OnAfterRender(bool firstRender)
     {
-        isLoading = false;
+        isLoading = true;
         base.OnAfterRender(firstRender);
     }
 

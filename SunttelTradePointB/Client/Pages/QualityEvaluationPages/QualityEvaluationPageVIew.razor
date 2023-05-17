@@ -136,15 +136,11 @@ else
     protected async override void OnInitialized()
     {
         isLoading = true;
+        LoadData();
         base.OnInitialized();
     }
 
-    protected override void OnAfterRender(bool firstRender)
-    {
-        isLoading = true;
-        if (firstRender) LoadData();
-        base.OnAfterRender(firstRender);
-    }
+    
 
     protected override void OnParametersSet()
     {
