@@ -36,16 +36,8 @@
 
 </style>
 
-@if (deleteVisible)
-{
-    <div class="container-alert-delete">
-        <label class="label-style">¿Are you sure to permanently delete @nameDelete?</label>
-        <div class="item-btn">
-            <buton @onclick="CancelDelete" class="cancel">Cancel</buton>
-            <buton @onclick="Delete" class="delete">Delete</buton>
-        </div>
-    </div>
-}
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
+
 
 <PageTitleComponent Title="Credit Reason" IconName="creditReason.png"
                     Description="With this tool you can create and edit Credit Reason ">
@@ -84,8 +76,18 @@
                     LogicalFilterOperator="LogicalFilterOperator.Or"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
                 <Columns>
-
                     <RadzenDataGridColumn TItem="CreditReason" Property="Name" Title="@GetName("Name",new BasicConcept())" Width="308px" />
+                    <RadzenDataGridColumn TItem="CreditReason" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
+                        <Template Context="data">
+
+                            <Confirm Id="@data.Id" TextValue="@($"¿Are you sure to permanently delete Name: {@data.Name} ?")"
+                             IdSelect="@IdDelete"
+                             ConfirmIdAction='ConfirmDelete'
+                             CancelAction="CancelDelete"
+                             SelectIdAction="SelectDelete"></Confirm>
+
+                        </Template>
+                    </RadzenDataGridColumn>
 
                 </Columns>
             </RadzenDataGrid>
@@ -110,12 +112,10 @@
     public string _page { get; set; }
     public List<CreditReason> creditReasonList { get; set; }
 
-
+    bool viewMsg = false;
     bool isLoading = false;
-
-    bool deleteVisible = false;
-    string nameDelete = "";
     string IdDelete = "";
+    string msg = "";
 
     DateTime startingDate = DateTime.Now;
 
@@ -145,25 +145,36 @@
         StateHasChanged();
     }
 
-    public void Delete()
+    #region Confirm
+    public async void ConfirmDelete(string Id)
     {
-        deleteVisible = false;
+        Alert("...", false);
+        bool result = await CreditDocumentServices.DeleteCreditReasonsById(Id);
+        if (result) { creditReasonList = await CreditDocumentServices.GetCreditReasonList((filter != null ? filter : "all"), 1, 20); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
         StateHasChanged();
     }
 
     public void CancelDelete()
     {
-        nameDelete = "";
         IdDelete = "";
-        deleteVisible = false;
         StateHasChanged();
     }
-
+    #endregion Confirm
 
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CreditReason> args) => ContextMenuService.Open(args, ds =>
-    @<RadzenMenu Click="OnMenuItemClick">
-        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-        <RadzenMenuItem Text="Delete" Value=args.Data Icon="delete"></RadzenMenuItem>
+        @<RadzenMenu Click="OnMenuItemClick">
+            <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+            <RadzenMenuItem Text="Delete" Value=args.Data Icon="delete"></RadzenMenuItem>
         </RadzenMenu>
     );
 
@@ -174,8 +185,7 @@
         if (args.Text == "Edit") Navigation.NavigateTo($"CreditReason/{_page}/{argObj.Id}/{_filterItems}");
         if (args.Text == "Delete")
         {
-            deleteVisible = true;
-            nameDelete = ("Name :"+ argObj.Name); IdDelete = argObj.Id;
+            IdDelete = argObj.Id;
         }
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
@@ -200,6 +210,12 @@
 
     }
 
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
+    }
+
     public void Home()
     {
         string paramFilter = filter != null ? filter : "";
@@ -213,4 +229,4 @@
 
     //}
 
-}
+    }

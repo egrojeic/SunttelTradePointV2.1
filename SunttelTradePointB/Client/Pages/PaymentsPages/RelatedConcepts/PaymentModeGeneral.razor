@@ -28,6 +28,9 @@
     }
 </style>
 
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
+
+
 <PageTitleComponent Title="Payment Vias" IconName="paymentMode.png"
                     Description="With this tool you can create and edit payment vias ">
 </PageTitleComponent>
@@ -71,9 +74,18 @@
                     LogicalFilterOperator="LogicalFilterOperator.Or"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
                 <Columns>
-
                     <RadzenDataGridColumn TItem="PaymentMode" Property="Name" Title="@GetName("Name",new BasicConcept())" Width="308px" />
+                    <RadzenDataGridColumn TItem="PaymentMode" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
+                        <Template Context="data">
 
+                            <Confirm Id="@data.Id" TextValue="@($"¿Are you sure to permanently delete Name: {@data.Name} ?")"
+                             IdSelect="@IdDelete"
+                             ConfirmIdAction='ConfirmDelete'
+                             CancelAction="CancelDelete"
+                             SelectIdAction="SelectDelete"></Confirm>
+
+                        </Template>
+                    </RadzenDataGridColumn>
                 </Columns>
             </RadzenDataGrid>
             <div class="container-total">
@@ -97,7 +109,9 @@
     public string _filterItems { get; set; }
     public List<PaymentMode> paymentModetList { get; set; }
 
-
+    bool viewMsg = false;
+    string IdDelete = "";
+    string msg = "";
     bool isLoading = false;
 
     DateTime startingDate = DateTime.Now;
@@ -156,6 +170,33 @@
         StateHasChanged();
     }
 
+
+    #region Confirm
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await PaymentServices.DeletePaymentModeById(Id);
+        if (result) { LoadData(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
+
     public string GetName(string Name, Object Obj)
     {
         if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
@@ -166,15 +207,22 @@
     {
 
     }
+
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
+    }
+
     private void Home()
     {
-         Navigation.NavigateTo("/SalesPayments/1");
+        Navigation.NavigateTo("/SalesPayments/1");
     }
 
     public void EventIdSelectionMenuItem(string name)
     {
         Navigation.NavigateTo(name);
-       // Js.InvokeAsync<object>("open", name, "_blank");
+        // Js.InvokeAsync<object>("open", name, "_blank");
 
     }
 

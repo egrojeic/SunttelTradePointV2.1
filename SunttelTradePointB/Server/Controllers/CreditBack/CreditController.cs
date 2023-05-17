@@ -3,6 +3,7 @@ using SunttelTradePointB.Server.Interfaces.CreditBkServices;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Shared.Accounting;
 using SunttelTradePointB.Shared.InvetoryModels;
+using System.Net;
 
 namespace SunttelTradePointB.Server.Controllers.CreditBack
 {
@@ -126,6 +127,49 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
             else
                 return NotFound(response.ErrorDescription);
         }
+
+
+           /// <summary>
+        /// Delete a CreditType if not associated with a CreditDocument
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="creditTypeId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteCreditTypeById")]
+        public async Task<IActionResult> DeleteCreditTypeById(string userId, string ipAddress, string creditTypeId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _credit.DeleteCreditTypeById(userId, ipAddress, squadId, creditTypeId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                         return NotFound("Type in use");
+                    }                    
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+                
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
+
 
         /// <summary>
         /// Retrieves an credit type object by Id
@@ -256,6 +300,47 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
             }
         }
 
+
+         /// <summary>
+        /// Delete a CreditStatus if not associated with a CreditDocument
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="creditStatusId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteCreditStatusById")]
+        public async Task<IActionResult> DeleteCreditStatusById(string userId, string ipAddress, string creditStatusId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _credit.DeleteCreditStatusById(userId, ipAddress, squadId, creditStatusId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                         return NotFound("Status in use");
+                    }                    
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+                
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
         #endregion
 
         #region Credit Reason
@@ -334,6 +419,48 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
                 return NotFound(response.ErrorDescription);
             }
         }
+
+
+        /// <summary>
+        /// Delete a CreditReason if not associated with a CreditDocument
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="reasonId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteCreditReasonById")]
+        public async Task<IActionResult> DeleteCreditReasonById(string userId, string ipAddress, string reasonId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _credit.DeleteCreditReasonsById(userId, ipAddress, squadId, reasonId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                         return NotFound("Reason in use");
+                    }                    
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+                
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
 
         #endregion
 

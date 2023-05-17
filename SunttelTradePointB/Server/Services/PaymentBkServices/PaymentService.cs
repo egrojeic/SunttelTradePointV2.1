@@ -292,6 +292,49 @@ namespace SunttelTradePointB.Server.Services.PaymentBkServices
                 return (false, null, e.Message);
             }
         }
+
+
+        /// <summary>
+        /// Delete an PaymentMode not associated with Payments
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="paymentModeId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeletePaymentModeById(string userId, string ipAddress, string squadId, string? paymentModeId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+                pipeline.Add(
+                   new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+               );
+
+                var payments = await _PaymentCollection.Aggregate<Payment>(pipeline).ToListAsync();
+
+                var filterPayments = payments.Where(s => s.DocPaymentMode.Id == paymentModeId).ToList();
+
+                if (filterPayments == null || filterPayments.Count <= 0)
+                {
+                    var result = _PaymentModeCollection.DeleteOne(s => s.Id == paymentModeId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count payments {filterPayments.Count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+
+
+        }
+
+
+
         #endregion
 
         #region PaymentVia
@@ -312,7 +355,7 @@ namespace SunttelTradePointB.Server.Services.PaymentBkServices
                 string strFilter = filter == null ? "" : filter;
                 var skip = (page - 1) * perPage;
 
-                if (strFilter.Length > 0)
+                if (strFilter != "all")
                 {
                     var pipeline = new List<BsonDocument>();
 
@@ -360,6 +403,48 @@ namespace SunttelTradePointB.Server.Services.PaymentBkServices
             {
                 return (false, null, e.Message);
             }
+        }
+
+
+
+
+        /// <summary>
+        /// Delete an PaymentVia not associated with Payments
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="paymentViaId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeletePaymentViaById(string userId, string ipAddress, string squadId, string? paymentViaId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+                pipeline.Add(
+                   new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+               );
+
+                var payments = await _PaymentCollection.Aggregate<Payment>(pipeline).ToListAsync();
+
+                var filterPayments = payments.Where(s => s.DocPaymentVia.Id == paymentViaId).ToList();
+
+                if (filterPayments == null || filterPayments.Count <= 0)
+                {
+                    var result = _PaymentViaCollection.DeleteOne(s => s.Id == paymentViaId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count payments {filterPayments.Count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+
+
         }
 
         /// <summary>
@@ -546,6 +631,45 @@ namespace SunttelTradePointB.Server.Services.PaymentBkServices
                 return (false, null, e.Message);
             }
         }
+
+        /// <summary>
+        /// Delete an PaymentType not associated with Payments
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="paymentTypeId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeletePaymentTypeById(string userId, string ipAddress, string squadId, string? paymentTypeId)
+        {
+            try
+            {
+
+                var pipeline = new List<BsonDocument>();
+                pipeline.Add(
+                   new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+               );
+
+                var payments = await _PaymentCollection.Aggregate<Payment>(pipeline).ToListAsync();
+
+                var filterPayments = payments.Where(s => s.DocumentType.Id == paymentTypeId).ToList();
+
+                if (filterPayments == null || filterPayments.Count <= 0)
+                {
+                    var result = _PaymentTypeCollection.DeleteOne(s => s.Id == paymentTypeId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count payments {payments.Count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+        }
+
         #endregion
 
         #region Payment Status
@@ -581,9 +705,9 @@ namespace SunttelTradePointB.Server.Services.PaymentBkServices
                     );
                     }
 
-                    pipeline.Add(
-                    new BsonDocument("$match", new BsonDocument("SquadId", squadId))
-                    );
+                    //pipeline.Add(
+                    //new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                    //);
 
                     pipeline.Add(
                     new BsonDocument{
@@ -610,7 +734,7 @@ namespace SunttelTradePointB.Server.Services.PaymentBkServices
                     }
                     else
                     {
-                        return (true, paymentStatus, null);
+                        return (true, paymentStatus.Where(s => s.SquadId.ToLower() == squadId.ToLower()).ToList(), null);
                     }
                 }
             }
@@ -676,6 +800,48 @@ namespace SunttelTradePointB.Server.Services.PaymentBkServices
                 return (false, null, e.Message);
             }
         }
+
+
+        /// <summary>
+        /// Delete an PaymentStatus not associated with Payments
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="paymentStatusId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeletePaymentStatusById(string userId, string ipAddress, string squadId, string? paymentStatusId)
+        {
+            try
+            {
+
+                var pipeline = new List<BsonDocument>();
+                pipeline.Add(
+                   new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+               );
+
+                var payments = await _PaymentCollection.Aggregate<Payment>(pipeline).ToListAsync();
+
+                var filterPayments = payments.Where(s => s.Status.Id == paymentStatusId).ToList();
+
+                if (filterPayments == null || filterPayments.Count <= 0)
+                {
+                    var result = _PaymentStatusCollection.DeleteOne(s => s.Id == paymentStatusId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count payments {filterPayments.Count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+        }
+
+
+
         #endregion
 
     }

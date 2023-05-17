@@ -28,6 +28,9 @@
     }
 </style>
 
+
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
+
 <PageTitleComponent Title="Payment Status" IconName="signal.png"
                     Description="With this tool you can create and edit payment status ">
 </PageTitleComponent>
@@ -72,13 +75,13 @@
                     ShowPagingSummary="true"
                     Data="PaymentStatustViatList"
                     TItem="PaymentStatus"
-                    ColumnWidth="100%"
+                    ColumnWidth="110px"
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
                 <Columns>
-                    <RadzenDataGridColumn TItem="PaymentStatus" Property="Name" Title="@GetName("Name",new BasicConcept())" Width="308px" />
-                    <RadzenDataGridColumn TItem="PaymentStatus" Property="Name" Title="@GetName("Name",new PaymentStatus())" Width="308px">
+                    <RadzenDataGridColumn TItem="PaymentStatus" Property="Name" Title="@GetName("Name",new BasicConcept())" Sortable="false" Width="208px" />
+                    <RadzenDataGridColumn TItem="PaymentStatus" Property="@nameof(PaymentStatus.EditingAllowed)" Title="@GetName("EditingAllowed",new PaymentStatus())" Width="90px">
                         <Template>
                             @{
                                 var EditingAllowed = (bool)context.GetType().GetProperty(nameof(PaymentStatus.EditingAllowed)).GetValue(context);
@@ -86,12 +89,24 @@
                             }
                         </Template>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="PaymentStatus" Property="Name" Title="@GetName("Enabled",new PaymentStatus())" Width="308px">
+                    <RadzenDataGridColumn TItem="PaymentStatus" Property="Enabled" Title="@GetName("Enabled",new PaymentStatus())" Sortable="false" Width="90px">
                         <Template>
                             @{
                                 var Enabled = (bool)context.GetType().GetProperty(nameof(PaymentStatus.Enabled)).GetValue(context);
                                 <input type="checkbox" checked="@Enabled" />
                             }
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="PaymentStatus" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="120px" TextAlign="Radzen.TextAlign.Center">
+                        <Template Context="data">
+
+                            <Confirm Id="@data.Id" TextValue="@($"¿Are you sure to permanently delete Name: {@data.Name} ?")"
+                             IdSelect="@IdDelete"
+                             ConfirmIdAction='ConfirmDelete'
+                             CancelAction="CancelDelete"
+                             SelectIdAction="SelectDelete"></Confirm>
+
                         </Template>
                     </RadzenDataGridColumn>
                 </Columns>
@@ -118,7 +133,9 @@
     public string _filterItems { get; set; }
     public List<PaymentStatus> PaymentStatustViatList { get; set; }
 
-
+    bool viewMsg = false;
+    string IdDelete = "";
+    string msg = "";
     bool isLoading = false;
 
     DateTime startingDate = DateTime.Now;
@@ -145,7 +162,7 @@
     public async void LoadData()
     {
         isLoading = true;
-        PaymentStatustViatList = await PaymentServices.GetPaymentStatusList(1,500, (filter != null ? filter : "all"));
+        PaymentStatustViatList = await PaymentServices.GetPaymentStatusList(1, 500, (filter != null ? filter : "all"));
         isLoading = false;
         StateHasChanged();
     }
@@ -177,6 +194,33 @@
         StateHasChanged();
     }
 
+    #region Confirm
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await PaymentServices.DeletePaymentStatusById(Id);
+        if (result) { LoadData(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
+
+
     public string GetName(string Name, Object Obj)
     {
         if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
@@ -187,6 +231,12 @@
     {
 
     }
+
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
+    }
     private void Home()
     {
         Navigation.NavigateTo("/SalesPayments/1");
@@ -195,7 +245,7 @@
     public void EventIdSelectionMenuItem(string name)
     {
         Navigation.NavigateTo(name);
-       // Js.InvokeAsync<object>("open", name, "_blank");
+        // Js.InvokeAsync<object>("open", name, "_blank");
 
     }
 

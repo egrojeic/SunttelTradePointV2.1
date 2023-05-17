@@ -28,6 +28,11 @@
     }
 </style>
 
+
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
+
+
+
 <PageTitleComponent Title="Payment Vias" IconName="paymentVias.png"
                     Description="With this tool you can create and edit payment vias ">
 </PageTitleComponent>
@@ -72,7 +77,17 @@
                 <Columns>
 
                     <RadzenDataGridColumn TItem="PaymentVia" Property="Name" Title="@GetName("Name",new BasicConcept())" Width="308px" />
+                    <RadzenDataGridColumn TItem="PaymentVia" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
+                        <Template Context="data">
 
+                            <Confirm Id="@data.Id" TextValue="@($"¿Are you sure to permanently delete Name: {@data.Name} ?")"
+                             IdSelect="@IdDelete"
+                             ConfirmIdAction='ConfirmDelete'
+                             CancelAction="CancelDelete"
+                             SelectIdAction="SelectDelete"></Confirm>
+
+                        </Template>
+                    </RadzenDataGridColumn>
                 </Columns>
             </RadzenDataGrid>
             <div class="container-total">
@@ -96,7 +111,9 @@
     public string _filterItems { get; set; }
     public List<PaymentVia> paymentViatList { get; set; }
 
-
+    string IdDelete = "";
+    string msg = "";
+    bool viewMsg = false;
     bool isLoading = false;
 
     DateTime startingDate = DateTime.Now;
@@ -155,6 +172,32 @@
         StateHasChanged();
     }
 
+    #region Confirm
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await PaymentServices.DeletePaymentViaById(Id);
+        if (result) { LoadData(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
+
     public string GetName(string Name, Object Obj)
     {
         if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
@@ -166,6 +209,12 @@
 
     }
 
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
+    }
+
     private void Home()
     {
         Navigation.NavigateTo("/SalesPayments/1");
@@ -174,7 +223,7 @@
     public void EventIdSelectionMenuItem(string name)
     {
         Navigation.NavigateTo(name);
-      //  Js.InvokeAsync<object>("open", name, "_blank");
+        //  Js.InvokeAsync<object>("open", name, "_blank");
 
     }
 

@@ -179,6 +179,45 @@ namespace SunttelTradePointB.Server.Controllers.PaymentBack
             }
         }
 
+         /// <summary>
+        /// Delete a CreditReason if not associated with a CreditDocument
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="paymentModeid"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeletePaymentModeById")]
+        public async Task<IActionResult> DeletePaymentModeById(string userId, string ipAddress, string paymentModeid)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _payment.DeletePaymentModeById(userId, ipAddress, squadId, paymentModeid);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                         return NotFound("Mode in use");
+                    }                    
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+                
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         #endregion
 
         #region PaymentVia
@@ -242,7 +281,7 @@ namespace SunttelTradePointB.Server.Controllers.PaymentBack
         [ActionName("SaveDocPaymentVia")]
         public async Task<IActionResult> SaveDocPaymentVia(string userId, string ipAddress, [FromBody] PaymentVia paymentVia)
         {
-            var customHeaderValue = Request.Headers["SquadId"];
+            var customHeaderValue = paymentVia.SquadId;
             var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
 
             var response = await _payment.SaveDocPaymentVia(userId, ipAddress, squadId, paymentVia);
@@ -256,6 +295,49 @@ namespace SunttelTradePointB.Server.Controllers.PaymentBack
                 return NotFound(response.ErrorDescription);
             }
         }
+
+        /// <summary>
+        /// Delete a PaymentVia if not associated with a Payment
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="paymentViaId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeletePaymentViaById")]
+        public async Task<IActionResult> DeletePaymentViaById(string userId, string ipAddress, string paymentViaId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _payment.DeletePaymentViaById(userId, ipAddress, squadId, paymentViaId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                         return NotFound("Via in use");
+                    }                    
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+                
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
+
+
         #endregion
 
         #region Payment Type
@@ -332,6 +414,47 @@ namespace SunttelTradePointB.Server.Controllers.PaymentBack
                 return NotFound(response.ErrorDescription);
             }
         }
+
+
+        /// <summary>
+        /// Delete a PaymentType if not associated with a Payment
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="paymentTypeId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeletePaymentTypeById")]
+        public async Task<IActionResult> DeletePaymentTypeById(string userId, string ipAddress, string paymentTypeId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _payment.DeletePaymentTypeById(userId, ipAddress, squadId, paymentTypeId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                         return NotFound("Type in use");
+                    }                    
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+                
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         #endregion
 
         #region Payment Status
@@ -408,6 +531,47 @@ namespace SunttelTradePointB.Server.Controllers.PaymentBack
                 return NotFound(response.ErrorDescription);
             }
         }
+
+
+         /// <summary>
+        /// Delete a PaymentType if not associated with a Payment
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="deletePaymentStatusId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeletePaymentStatusById")]
+        public async Task<IActionResult> DeletePaymentStatusById(string userId, string ipAddress, string paymentStatusId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _payment.DeletePaymentStatusById(userId, ipAddress, squadId, paymentStatusId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                         return NotFound("Status in use");
+                    }                    
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+                
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         #endregion
     }
 }

@@ -35,16 +35,7 @@
 </style>
 
 
-@if (deleteVisible)
-{
-    <div class="container-alert-delete">
-        <label class="label-style">¿Are you sure to permanently delete @nameDelete?</label>
-        <div class="item-btn">
-            <buton @onclick="CancelDelete" class="cancel">Cancel</buton>
-            <buton @onclick="Delete" class="delete">Delete</buton>
-        </div>
-    </div>
-}
+
 
 <PageTitleComponent Title="@namePage" IconName="@icoLogo"
                     Description="@($"With this tool you can create and edit {@namePage}")">
@@ -107,15 +98,16 @@
                     Data="CreditDocumentList"
                     TItem="CreditDocument">
                 <Columns>
-                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CreditDocumentType.Name" Title="@GetName("CreditDocumentType",new CreditDocument())" Filterable="false" Width="150px" />
-                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="Code" Title="@GetName("Code",new CreditDocument())" Filterable="false" Sortable="false" Width="90px" />
-                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="Vendor.Name" Title="@GetName("Vendor",new CreditDocument())" Width="208px" />
-                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="Vendor.Buyer" Title="@GetName("Buyer",new CreditDocument())" Width="208px" />
-                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CreditDocumentStatus.Name" Title="@GetName("CreditDocumentStatus",new CreditDocument())" Sortable="false" Width="80px" />
-                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CreditValue" Title="@GetName("CreditValue",new CreditDocument())" TextAlign="TextAlign.Right" FormatString="{0:N2}" Filterable="false" Width="90px" />
-                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CommercialDocumentRef.DocumentCode" Title="@GetName("DocumentCode",new CommercialDocumentSummaryInfo())" Filterable="false" Width="108px" />
-                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="CommercialDocumentRef.DocumentDate" Title="@GetName("DocumentDate",new CommercialDocumentSummaryInfo())" FormatString="{0:MM/dd/yyyy}" Filterable="false" Width="108px" />
-                    <RadzenDataGridColumn CssClass="info-text-size" TItem="CreditDocument" Property="IsDirect" Title="@GetName("IsDirect",new CreditDocument())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
+                    <RadzenDataGridColumn  TItem="CreditDocument" Property="CreditDocumentType.Name" Title="@GetName("CreditDocumentType",new CreditDocument())" Filterable="false" Width="150px" />
+                    <RadzenDataGridColumn  TItem="CreditDocument" Property="Code" Title="@GetName("Code",new CreditDocument())" Filterable="false" Sortable="false" Width="90px" />
+                    <RadzenDataGridColumn  TItem="CreditDocument" Property="Vendor.Name" Title="@GetName("Vendor",new CreditDocument())" Width="208px" />
+                    <RadzenDataGridColumn  TItem="CreditDocument" Property="Vendor.Buyer" Title="@GetName("Buyer",new CreditDocument())" Width="208px" />
+                    <RadzenDataGridColumn  TItem="CreditDocument" Property="CreditDocumentStatus.Name" Title="@GetName("CreditDocumentStatus",new CreditDocument())" Sortable="false" Width="80px" />
+                    <RadzenDataGridColumn  TItem="CreditDocument" Property="CreditValue" Title="@GetName("CreditValue",new CreditDocument())" TextAlign="TextAlign.Right" FormatString="{0:N2}" Filterable="false" Width="90px" />
+                    <RadzenDataGridColumn  TItem="CreditDocument" Property="CommercialDocumentRef.DocumentCode" Title="@GetName("DocumentCode",new CommercialDocumentSummaryInfo())" Filterable="false" Width="108px" />
+                    <RadzenDataGridColumn  TItem="CreditDocument" Property="CommercialDocumentRef.DocumentDate" Title="@GetName("DocumentDate",new CommercialDocumentSummaryInfo())" FormatString="{0:MM/dd/yyyy}" Filterable="false" Width="108px" />
+                    <RadzenDataGridColumn TItem="CreditDocument" Property="CreditDocumentReason.Name" Title="@GetName("CreditDocumentReason",new CommercialDocumentSummaryInfo())"  Filterable="false" Width="108px" />
+                    <RadzenDataGridColumn  TItem="CreditDocument" Property="IsDirect" Title="@GetName("IsDirect",new CreditDocument())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
                         <Template>
                             @{
                                 var IsDirect = (bool)context.GetType().GetProperty(nameof(CreditDocument.IsDirect)).GetValue(context);
@@ -123,7 +115,7 @@
                             }
                         </Template>
                     </RadzenDataGridColumn>
-
+                   
                 </Columns>
             </RadzenDataGrid>
             <div class="container-total">

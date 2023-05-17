@@ -29,7 +29,7 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
         /// Constructor
         /// </summary>
         /// 
-        public CreditService(IConfiguration config) 
+        public CreditService(IConfiguration config)
         {
             var mongoClient = new MongoClient(config.GetConnectionString("MongoConectionString"));
             string DataBaseName = config["DatabaseMongo"];
@@ -238,6 +238,46 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
             }
         }
 
+
+
+        /// <summary>
+        /// Delete an CreditType not associated with CreditDocument
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="creditTypeId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteCreditTypeById(string userId, string ipAddress, string squadId, string? creditTypeId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+                // pipeline.Add(
+                //    new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                //);
+                //     
+                var creditDocuments = await _CreditDocumentCollection.Aggregate<CreditDocument>(pipeline).ToListAsync();
+
+                var filterCreditDocuments = creditDocuments.Where(s => s.CreditDocumentType.Id == creditTypeId).ToList();
+
+                if (filterCreditDocuments == null || filterCreditDocuments.Count <= 0)
+                {
+                    var result = _CreditTypeCollection.DeleteOne(s => s.Id == creditTypeId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count creditDocuments {filterCreditDocuments.Count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+        }
+
+
         /// <summary>
         /// Saves an Credit document. If it doesn't exists, it'll be created
         /// </summary>
@@ -362,6 +402,53 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
                 return (false, null, e.Message);
             }
         }
+
+
+
+
+
+        /// <summary>
+        /// Delete an CreditStatus not associated with CreditDocument
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="creditStatusid"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteCreditStatusById(string userId, string ipAddress, string squadId, string? creditStatusid)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+                pipeline.Add(
+                  new BsonDocument("$match",
+                  new BsonDocument("CreditDocumentStatus.Id", creditStatusid)
+
+                  )
+               );
+
+                var creditDocuments = await _CreditDocumentCollection.Aggregate<CreditDocument>(pipeline).ToListAsync();
+
+                var filterCreditDocuments = creditDocuments.Where(s => s.CreditDocumentStatus.Id == creditStatusid).ToList();
+
+                if (filterCreditDocuments == null || filterCreditDocuments.Count <= 0)
+                {
+                    var result = _CreditStatusCollection.DeleteOne(s => s.Id == creditStatusid);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count creditDocuments {filterCreditDocuments.Count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+        }
+
+
+
 
         /// <summary>
         /// Saves an Credit document. If it doesn't exists, it'll be created
@@ -504,6 +591,53 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
                 return (false, null, e.Message);
             }
         }
+
+
+
+
+        /// <summary>
+        /// Delete an CreditReasons not associated with CreditDocument
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="creditReasonId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteCreditReasonsById(string userId, string ipAddress, string squadId, string? creditReasonId)
+        {
+            try
+            {
+
+                var pipeline = new List<BsonDocument>();
+               // pipeline.Add(
+               //   new BsonDocument("$match",
+               //   new BsonDocument("CreditDocumentReason",
+               //   new BsonDocument("_Id", creditReasonId))
+
+               //   )
+               //);
+
+                var creditDocuments = await _CreditDocumentCollection.Aggregate<CreditDocument>(pipeline).ToListAsync();
+
+                var filterCreditDocuments = creditDocuments.Where(s => s.CreditDocumentReason.Id == creditReasonId).ToList();
+
+                if (filterCreditDocuments == null || filterCreditDocuments.Count <= 0)
+                {
+                    var result = _CreditReasonCollection.DeleteOne(s => s.Id == creditReasonId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count creditDocuments {filterCreditDocuments.Count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+        }
+
+
 
         /// <summary>
         /// Saves an Credit document. If it doesn't exists, it'll be created
