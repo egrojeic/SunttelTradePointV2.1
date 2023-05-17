@@ -100,7 +100,7 @@ else
     string icoLogo = "";
 
     bool isASale = false;
-    bool isLoading = false;
+    bool isLoading = true;
 
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
 
@@ -141,15 +141,15 @@ else
 
     protected async override void OnInitialized()
     {
-
-        LoadData();
-        
+        isLoading = true;
+        LoadData();        
         base.OnInitialized();
 
     }
 
     protected override void OnParametersSet()
     {
+        isLoading = true;
         LoadData();
         StateHasChanged();
     }
