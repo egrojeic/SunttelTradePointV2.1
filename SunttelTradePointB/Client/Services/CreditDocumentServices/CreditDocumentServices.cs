@@ -12,7 +12,7 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
     public class CreditDocumentServices : ICredit
     {
         private readonly HttpClient _httpClient;
-        private string pathApi = "/api/Credit/*Name?userId=*Id&ipAddress=*Ip"; 
+        private string pathApi = "/api/Credit/*Name?userId=*Id&ipAddress=*Ip";
         public CreditDocumentServices(HttpClient httpClient)
         {
             _httpClient = httpClient;
@@ -64,8 +64,8 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
             {
                 string path = $"{pathApi}";
                 // path = GetGlobalVariables(path);
-                 path = path.Replace("*Name", "SaveCreditStatus");
-                creditStatus.SquadId = UIClientGlobalVariables.ActiveSquad!=null ?  UIClientGlobalVariables.ActiveSquad.IDSquads.ToString():"000";
+                path = path.Replace("*Name", "SaveCreditStatus");
+                creditStatus.SquadId = UIClientGlobalVariables.ActiveSquad != null ? UIClientGlobalVariables.ActiveSquad.IDSquads.ToString() : "000";
                 var responseMessage = await _httpClient.PostAsJsonAsync<CreditStatus>($"{path}", creditStatus);
                 return await responseMessage.Content.ReadFromJsonAsync<CreditStatus>();
 
@@ -85,7 +85,7 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
                 string path = $"{pathApi}";
                 path = GetGlobalVariables(path);
                 path = path.Replace("*Name", "SaveCreditReason");
-                creditReason.SquadId = UIClientGlobalVariables.ActiveSquad !=null ? UIClientGlobalVariables.ActiveSquad.IDSquads.ToString():"000";
+                creditReason.SquadId = UIClientGlobalVariables.ActiveSquad != null ? UIClientGlobalVariables.ActiveSquad.IDSquads.ToString() : "000";
                 var responseMessage = await _httpClient.PostAsJsonAsync<CreditReason>($"{path}", creditReason);
                 return await responseMessage.Content.ReadFromJsonAsync<CreditReason>();
 
@@ -99,10 +99,10 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
 
 
 
-        public async Task<List<CreditDocument>> GetCreditDocumentList( DateTime startDate, DateTime endDate,string? filter = null,int ? page = 1, int? perPage = 10)
+        public async Task<List<CreditDocument>> GetCreditDocumentList(DateTime startDate, DateTime endDate, string? filter = null, int? page = 1, int? perPage = 10)
         {
             try
-            {             
+            {
                 string path = $"{pathApi}";
                 path = path.Replace("*Name", "GetCreditDocuments");
                 var responseMessage = await Gethttp($"{path}&startDate={startDate.ToString("yyyy-MM-dd")}&endDate={endDate.ToString("yyyy-MM-dd")}&filter={filter}&page={page}&perPage={perPage}");
@@ -116,7 +116,7 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
             }
         }
 
-        public async Task<CreditDocument> GetCreditDocumentById( string creditId)
+        public async Task<CreditDocument> GetCreditDocumentById(string creditId)
         {
             try
             {
@@ -134,7 +134,7 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
         }
 
 
-        public async Task<List<CreditType>> GetCreditTypes( string? filter = null, int? page = 1, int? perPage = 10)
+        public async Task<List<CreditType>> GetCreditTypes(string? filter = null, int? page = 1, int? perPage = 10)
         {
             try
             {
@@ -187,7 +187,7 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
         }
 
 
-        public async Task<CreditStatus> CreditStatusById(   string creditStatusById)
+        public async Task<CreditStatus> CreditStatusById(string creditStatusById)
         {
             try
             {
@@ -238,7 +238,57 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
             }
         }
 
-       
+
+        public async Task<bool> DeleteCreditReasonsById(string reasonId)
+        {
+            try
+            {
+                string path = $"{pathApi}";
+                path = path.Replace("*Name", "DeleteCreditReasonById");
+                var responseMessage = await Deletehttp($"{path}&reasonId={reasonId}");
+                var result = responseMessage.IsSuccessStatusCode;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteCreditStatusById(string statusId)
+        {
+            try
+            {
+                string path = $"{pathApi}";
+                path = path.Replace("*Name", "DeleteCreditStatusById");
+                var responseMessage = await Deletehttp($"{path}&creditStatusId={statusId}");
+                var result = responseMessage.IsSuccessStatusCode;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteCreditTypeById(string creditTypeId)
+        {
+            try
+            {
+                string path = $"{pathApi}";
+                path = path.Replace("*Name", "DeleteCreditTypeById");
+                var responseMessage = await Deletehttp($"{path}&creditTypeId={creditTypeId}");
+                var result = responseMessage.IsSuccessStatusCode;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+        }
 
 
         public string GetGlobalVariables(string Url)
@@ -247,7 +297,7 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
             var ReplaceIdUser = UIClientGlobalVariables.UserId;
             var ReplacePublicIpAddress = UIClientGlobalVariables.PublicIpAddress;
 
-            Url = Url.Replace("*IP", ReplacePublicIpAddress??"000");
+            Url = Url.Replace("*IP", ReplacePublicIpAddress ?? "000");
             Url = Url.Replace("*Id", ReplaceIdUser ?? "000");
 
             return Url;
@@ -266,9 +316,46 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
                 if (ReplacePublicIpAddress == "") ReplacePublicIpAddress = "000";
 
                 Url = Url.Replace("*Id", ReplaceIdUser ?? "000");
-                Url  = Url.Replace("*Ip", ReplacePublicIpAddress ?? "000");
+                Url = Url.Replace("*Ip", ReplacePublicIpAddress ?? "000");
 
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
+
+                if (SquadId != null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString());
+                if (SquadId == null) request.Headers.Add("SquadId", "0000000000");
+                var response = await _httpClient.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return response;
+                }
+                else { return null; }
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+
+            }
+
+
+        }
+
+        public async Task<HttpResponseMessage> Deletehttp(string Url)
+        {
+            try
+            {
+
+                var SquadId = UIClientGlobalVariables.ActiveSquad;
+                var ReplaceIdUser = UIClientGlobalVariables.UserId;
+                var ReplacePublicIpAddress = UIClientGlobalVariables.PublicIpAddress;
+                if (ReplaceIdUser == "") ReplaceIdUser = "000";
+                if (ReplacePublicIpAddress == "") ReplacePublicIpAddress = "000";
+
+                Url = Url.Replace("*Id", ReplaceIdUser ?? "000");
+                Url = Url.Replace("*Ip", ReplacePublicIpAddress ?? "000");
+
+                var request = new HttpRequestMessage(HttpMethod.Delete, Url);
 
                 if (SquadId != null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString());
                 if (SquadId == null) request.Headers.Add("SquadId", "0000000000");

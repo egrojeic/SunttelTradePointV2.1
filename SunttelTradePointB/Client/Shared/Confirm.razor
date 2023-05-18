@@ -1,0 +1,63 @@
+﻿@if (GetVisible(Id))
+{
+
+    <div class="container-alert-delete">
+        <label class="label-style">@TextValue</label>
+        <div class="item-btn">
+            <buton @onclick='()=>CancelAction.InvokeAsync(null)' class="cancel"><i class="bi bi-x-circle-fill"></i></buton>
+            <buton @onclick='()=>ConfirmIdAction.InvokeAsync(Id)' class="img-delete"><i class="bi bi-trash-fill"></i></buton>
+        </div>
+    </div>
+}
+else
+{
+    <buton @onclick='()=>SelectIdAction.InvokeAsync(Id)' class="img-delete"><i class="bi bi-trash-fill"></i></buton>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    [Parameter]
+    public string IdSelect { get; set; }
+    [Parameter]
+    public string TextValue { get; set; }
+    [Parameter]
+    public EventCallback CancelAction { get; set; }
+    [Parameter]
+    public EventCallback<string> ConfirmIdAction { get; set; }
+    [Parameter]
+    public EventCallback<string> SelectIdAction { get; set; }
+
+    protected override void OnInitialized()
+    {
+        LoadData();
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        LoadData();
+        base.OnParametersSet();
+    }
+
+    public async void LoadData()
+    {
+
+    }
+
+
+    public bool GetVisible(string _Id)
+    {
+        if (this.IdSelect == _Id)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+}
+
+

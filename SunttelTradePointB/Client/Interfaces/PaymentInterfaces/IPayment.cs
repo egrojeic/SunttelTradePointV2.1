@@ -79,7 +79,7 @@ namespace SunttelTradePointB.Client.Interfaces.IPaymentInterfaces
         /// </summary>
         /// <param name="paymentViaId"></param>
         /// <returns></returns>   
-        Task<List<PaymentMode>> GetPaymentViaById(string paymentViaId);
+        Task<PaymentVia> GetPaymentViaById(string paymentViaId);
 
         /// <summary>
         /// Retrives a with Payment item meeting search criteria
@@ -120,7 +120,7 @@ namespace SunttelTradePointB.Client.Interfaces.IPaymentInterfaces
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <returns></returns>
-        Task<List<Payment>> GetPaymentList(string filterName, string documentTypeId, DateTime startDate,DateTime endDate, int? page = 1, int? perPage = 10);
+        Task<List<Payment>> GetPaymentList(string filterName, string documentTypeId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10);
 
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace SunttelTradePointB.Client.Interfaces.IPaymentInterfaces
         /// </summary>
         /// <param name="paymentModeById"></param>       
         /// <returns></returns>
-        Task<List<PaymentType>> GetPaymentModeById(string paymentModeById);
+        Task<List<PaymentMode>> GetPaymentModeByIdList(string paymentModeById);
 
 
 
@@ -179,6 +179,30 @@ namespace SunttelTradePointB.Client.Interfaces.IPaymentInterfaces
         /// <param name="filter"></param>       
         /// <returns></returns>
         Task<List<PaymentStatus>> GetPaymentStatusList(int? page = 1, int? perPage = 10, string? filter = null);
+
+
+        /// <summary>
+        /// Delete a item  PaymentVia 
+        /// </summary>
+        /// <param name="paymentViaId"></param>  
+        /// <returns></returns>
+        Task<bool> DeletePaymentViaById(string paymentViaId);
+
+
+        /// <summary>
+        /// Delete a item paymentStatus 
+        /// </summary>
+        /// <param name="paymentStatusId"></param>  
+        /// <returns></returns>
+        Task<bool> DeletePaymentStatusById(string paymentStatusId);
+
+
+        /// <summary>
+        /// Delete a item PaymentMode 
+        /// </summary>
+        /// <param name="paymentModeId"></param>  
+        /// <returns></returns>
+        Task<bool> DeletePaymentModeById(string paymentModeId);
 
     }
 }

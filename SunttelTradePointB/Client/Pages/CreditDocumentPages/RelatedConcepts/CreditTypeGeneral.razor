@@ -30,16 +30,7 @@
     }
 </style>
 
-@if (deleteVisible)
-{
-    <div class="container-alert-delete">
-        <label class="label-style">¿Are you sure to permanently delete @nameDelete?</label>
-        <div class="item-btn">
-            <buton @onclick="CancelDelete" class="cancel">Cancel</buton>
-            <buton @onclick="Delete" class="delete">Delete</buton>
-        </div>
-    </div>
-}
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
 
 <PageTitleComponent Title="Credit Type" IconName="creditType.png"
                     Description="With this tool you can create and edit credit type ">
@@ -50,8 +41,6 @@
     <CreditTypeMenu page="@_page"></CreditTypeMenu>
     <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
 </div>
-
-
 
 <div class="tableContainer">
 
@@ -91,6 +80,18 @@
                         </Template>
                     </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="CreditType" Property="Id" Title="@GetName("Id",new BasicConcept())" Width="58px" />
+                    <RadzenDataGridColumn TItem="CreditType" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
+                        <Template Context="data">
+
+                            <Confirm Id="@data.Id" TextValue="@($"¿Are you sure to permanently delete Name: {@data.Name} ?")"
+                             IdSelect="@IdDelete"
+                             ConfirmIdAction='ConfirmDelete'
+                             CancelAction="CancelDelete"
+                             SelectIdAction="SelectDelete"></Confirm>
+
+                        </Template>
+                    </RadzenDataGridColumn>
+
                 </Columns>
             </RadzenDataGrid>
             <div class="container-total">
@@ -116,10 +117,9 @@
     public string _page { get; set; }
     public List<CreditType> creditTypeList { get; set; }
 
-    bool deleteVisible = false;
-    string nameDelete = "";
+    string msg = "";
     string IdDelete = "";
-
+    bool viewMsg = false;
     bool isLoading = false;
 
     DateTime startingDate = DateTime.Now;
@@ -152,7 +152,7 @@
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CreditType> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-        <RadzenMenuItem Text="Delete" Value=args.Data Icon="delete"></RadzenMenuItem>
+      
     </RadzenMenu>
     );
 
@@ -161,30 +161,39 @@
     {
         CreditType argObj = (CreditType)args.Value;
         if (args.Text == "Edit") Navigation.NavigateTo($"CreditType/{_page}/{argObj.Id}/{_filterItems}");
-        if (args.Text == "Delete")
-        {
-            deleteVisible = true;
-            nameDelete =("Name :"+ argObj.Name); IdDelete = argObj.Id;
-        }
+     
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
         }
     }
 
-    public void Delete()
+    #region Confirm
+
+    public async void ConfirmDelete(string Id)
     {
-        deleteVisible = false;
+        Alert("...", false);
+        bool result = await CreditDocumentServices.DeleteCreditTypeById(Id);
+        if (result) { LoadData(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
         StateHasChanged();
     }
 
     public void CancelDelete()
     {
-        nameDelete = "";
         IdDelete = "";
-        deleteVisible = false;
         StateHasChanged();
     }
+    #endregion Confirm
 
     public void Setfilter(string value)
     {
@@ -201,6 +210,12 @@
     public void Add()
     {
 
+    }
+
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = true;
+        msg = _msg;
     }
 
     public void Home()

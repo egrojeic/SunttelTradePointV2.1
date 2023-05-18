@@ -110,6 +110,33 @@ namespace SunttelTradePointB.Client.Interfaces.ICreditInterfaces
         /// <returns></returns>
         Task<List<CreditReason>> GetCreditReasonList(string? filter = null, int? page = 1, int? perPage = 10);
 
+         /// <summary>
+        /// Delete an CreditReason not associated with CreditDocument
+        /// </summary>
+        /// <param name="reasonId"></param>      
+        /// <returns></returns>
+        Task<bool> DeleteCreditReasonsById(string reasonId);
+
+         /// <summary>
+        /// Delete an CreditStatus not associated with CreditDocument
+        /// </summary>
+        /// <param name="statusId"></param>      
+        /// <returns></returns>
+        
+        Task<bool> DeleteCreditStatusById(string statusId);
+
+         /// <summary>
+       /// Delete an CreditType not associated with CreditDocument
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="creditReasonId"></param>       
+        /// <returns></returns>
+        Task<bool> DeleteCreditTypeById(string creditTypeId);
+
+
+
     }
 
 

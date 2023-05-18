@@ -549,18 +549,19 @@
         }
 
 .container-alert-delete {
-    background-color:#e8e9ec;
-    padding:5px;
-    border-radius:5px;
-    position:absolute;
-    box-shadow:0px 0px 5px;
-    width:200px;
-    bottom:50%;
-    right:40%;
-    z-index:1000;
+    background-color: #e8e9ec;
+    padding: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 5px;
+    width: auto;
+    bottom: 50%;
+    right: 40%;   
+    white-space: break-spaces;
 }
     .container-alert-delete label{
-        margin-bottom:20px;
+        margin-bottom:2px;
+        word-break:break-word;
     }
 
     .container-alert-delete .item-btn {
@@ -568,19 +569,30 @@
         justify-content: space-between;
     }
 
-
-    .container-alert-delete .delete {
+    .container-alert-delete .img-delete {
         background-color: black;
         color: white;
+        padding-top:4px;
         border-radius: 5px;
-        padding: 5px;
-        box-shadow: 0px 0px 5px;
+        font-size:19px;
+        width:35px;
+        height:35px;
+       
+
     }
+
+
 
     .container-alert-delete .cancel {
         background-color: #00ccff;
+        color: black;
         border-radius: 5px;
-        padding: 5px;
-        box-shadow: 0px 0px 5px;
+        padding-top: 4px;
+        border-radius: 5px;
+        font-size: 19px;
+        width: 35px;
+        height: 35px;
     }
+
+        
 

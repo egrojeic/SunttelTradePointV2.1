@@ -78,7 +78,15 @@ namespace SunttelTradePointB.Server.Interfaces.PaymentBkServices
         Task<(bool IsSuccess, PaymentMode? PaymentMode, string? ErrorDescription)> SaveDocPaymentMode(string userId, string ipAddress, string squadId, PaymentMode paymentMode);
 
 
-
+        /// <summary>
+        /// Delete an PaymentMode not associated with Payments
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="paymentModeId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeletePaymentModeById(string userId, string ipAddress, string squadId, string? paymentModeId);
 
         #endregion
 
@@ -116,6 +124,16 @@ namespace SunttelTradePointB.Server.Interfaces.PaymentBkServices
         Task<(bool IsSuccess, PaymentVia? PaymentVia, string? ErrorDescription)> SaveDocPaymentVia(string userId, string ipAddress, string squadId, PaymentVia paymentVia);
 
 
+        /// <summary>
+        /// Delete an PaymentVia not associated with Payments
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="paymentViaId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeletePaymentViaById(string userId, string ipAddress, string squadId, string? paymentViaId);
+
         #endregion
 
         #region Payment Type
@@ -150,6 +168,18 @@ namespace SunttelTradePointB.Server.Interfaces.PaymentBkServices
         /// <param name="paymentType"></param>
         /// <returns></returns>
         Task<(bool IsSuccess, PaymentType? PaymentType, string? ErrorDescription)> SavePaymentType(string userId, string ipAddress, string squadId, PaymentType paymentType);
+
+
+        /// <summary>
+        /// Delete an PaymentType not associated with Payments
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="paymentTypeId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeletePaymentTypeById(string userId, string ipAddress, string squadId, string? paymentTypeId);
+
         #endregion
 
         #region Payment Status
@@ -184,6 +214,17 @@ namespace SunttelTradePointB.Server.Interfaces.PaymentBkServices
         /// <param name="paymentStatus"></param>
         /// <returns></returns>
         Task<(bool IsSuccess, PaymentStatus? PaymentStatus, string? ErrorDescription)> SavePaymentStatus(string userId, string ipAddress, string squadId, PaymentStatus paymentStatus);
+
+        /// <summary>
+        /// Delete an PaymentStatus not associated with Payments
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="paymentStatusId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeletePaymentStatusById(string userId, string ipAddress, string squadId, string? paymentStatusId);
+
         #endregion
     }
 }

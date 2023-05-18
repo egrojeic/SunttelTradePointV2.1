@@ -158,6 +158,36 @@ namespace SunttelTradePointB.Server.Interfaces.CreditBkServices
         /// <returns></returns>
         Task<(bool IsSuccess, string? ActorsNodesList, string? ErrorDescription)> SaveProductsCSV(string userId, string ipAddress, string squadId, IFormFile file);
 
+       /// <summary>
+        /// Delete an CreditReasons not associated with CreditDocument
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="creditReasonId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess,  bool iCanRemoveIt, string? ErrorDescription)> DeleteCreditReasonsById(string userId, string ipAddress, string squadId, string? creditReasonId);
+
+
+        /// <summary>
+        /// Delete an CreditStatus not associated with CreditDocument
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="creditStatusid"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteCreditStatusById(string userId, string ipAddress, string squadId, string? creditStatusid);
+
+         /// <summary>
+        /// Delete an CreditType not associated with CreditDocument
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="creditTypeId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteCreditTypeById(string userId, string ipAddress, string squadId, string? creditTypeId);
 
     }
 }
