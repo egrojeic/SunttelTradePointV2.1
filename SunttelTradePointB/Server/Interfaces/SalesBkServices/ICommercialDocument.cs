@@ -263,8 +263,37 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <returns></returns>
         Task<(bool IsSuccess, List<CommercialDocument>? CommercialDocumentsList, string? ErrorDescription)> SaveCommercialDocumentsCSV(string userId, string ipAddress, string squadId, IFormFile file);
 
+        /// <summary>
+        /// Delete an CommercialDocumentType not associated with CommercialDocument
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="commercialDocumentTypeId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteCommercialDocumentTypeById(string userId, string ipAddress, string squadId, string? commercialDocumentTypeId);
 
 
+        /// <summary>
+        /// Delete an BusinessLine not associated with CommercialDocument
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="businessLineId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteBusinessLineById(string userId, string ipAddress, string squadId, string? businessLineId);
+
+
+        /// <summary>
+        /// Delete an ShippingStatus not associated with CommercialDocument
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="shippingStatusId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteShippingStatusById(string userId, string ipAddress, string squadId, string? shippingStatusId);
 
     }
 }

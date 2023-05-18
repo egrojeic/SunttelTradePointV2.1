@@ -29,6 +29,8 @@
     }
 </style>
 
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
+
 <PageTitleComponent Title="Commercial Document Types" IconName="documentTypes.png"
                     Description="Describe the type of commercial documents">
 </PageTitleComponent>
@@ -99,6 +101,20 @@ else
                     }
                 </Template>
             </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn TItem="CommercialDocumentType" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
+                <Template Context="data">
+
+                    <Confirm Id="@data.Id" TextValue="@($"¿Confirm delete?")"
+                         IdSelect="@IdDelete"
+                         ConfirmIdAction='ConfirmDelete'
+                         CancelAction="CancelDelete"
+                         SelectIdAction="SelectDelete"></Confirm>
+
+                </Template>
+            </RadzenDataGridColumn>
+
+
         </Columns>
     </RadzenDataGrid>
     <div class="container-total">
@@ -119,7 +135,11 @@ else
     public string _filterItems { get; set; } = "";
 
     public List<CommercialDocumentType> commercialDocumentTypes = new List<CommercialDocumentType>();
-    bool isLoading = true;
+
+    string IdDelete = "";
+    string msg = "";
+    bool viewMsg = false;
+    bool isLoading = false;  
     bool isASale = true;
 
     protected override void OnInitialized()
@@ -127,7 +147,7 @@ else
         transactItemsService.Page = "CommercialDocumentType";
         _filterItems = "all";
         LoadData();
-    } 
+    }
 
     public string? conceptFilter
     {
@@ -142,7 +162,7 @@ else
     private async Task LoadData()
     {
         isLoading = true;
-        commercialDocumentTypes = await SalesDocumentsService.GetCommercialDocumentsTypes(_filterItems, isASale);
+        commercialDocumentTypes = await SalesDocumentsService.GetCommercialDocumentsTypes((_filterItems!=null?_filterItems:"all"), isASale);
         isLoading = false;
         StateHasChanged();
     }
@@ -159,7 +179,7 @@ else
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<CommercialDocumentType> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
     void OnMenuItemClick(MenuItemEventArgs args)
@@ -171,8 +191,37 @@ else
 
     #endregion Grid
 
+    #region Confirm
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await SalesDocumentsService.DeleteCommercialDocumentTypeById(Id);
+        if (result) { LoadData(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
 
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
 
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
+    }
 
     public string GetName(string Name, Object Obj)
     {

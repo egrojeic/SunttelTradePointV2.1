@@ -32,6 +32,8 @@
     }
 </style>
 
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
+
 <PageTitleComponent Title="Quality Action" IconName="QualityParameters.png"
                     Description="With this tool you can add edit quality actions">
 </PageTitleComponent>
@@ -43,8 +45,6 @@
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
 
 </div>
-
-
 
 
 
@@ -82,7 +82,17 @@
                 <Columns>
 
                     <RadzenDataGridColumn TItem="QualityAction" Property="@nameof(QualityAction.Name)" Title="@GetName("Name", new QualityAction() )" Width="208px" />
+                    <RadzenDataGridColumn TItem="QualityAction" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="120px" TextAlign="Radzen.TextAlign.Center">
+                        <Template Context="data">
 
+                            <Confirm Id="@data.Id" TextValue="@($"¿Are you sure to permanently delete Name: {@data.Name} ?")"
+                             IdSelect="@IdDelete"
+                             ConfirmIdAction='ConfirmDelete'
+                             CancelAction="CancelDelete"
+                             SelectIdAction="SelectDelete"></Confirm>
+
+                        </Template>
+                    </RadzenDataGridColumn>
                 </Columns>
             </RadzenDataGrid>
               <div class="container-total">
@@ -109,6 +119,9 @@
     public QualityAction qualityAction { get; set; }
     IList<QualityAction>? selectedcommercialdocuments;
 
+    bool viewMsg = false;
+    string IdDelete = "";
+    string msg = "";
     bool isLoading = false;
 
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
@@ -180,6 +193,38 @@
     {
         docsFilter = value;
         StateHasChanged();
+    }
+
+    #region Confirm
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await QualityEvaluationServices.DeleteQualityActionById(Id);
+        if (result) { LoadData(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
+
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
     }
 
     public string GetName(string Name, Object Obj)

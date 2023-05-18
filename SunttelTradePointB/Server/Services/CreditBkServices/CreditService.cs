@@ -253,22 +253,36 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
             try
             {
                 var pipeline = new List<BsonDocument>();
-                // pipeline.Add(
-                //    new BsonDocument("$match", new BsonDocument("SquadId", squadId))
-                //);
-                //     
-                var creditDocuments = await _CreditDocumentCollection.Aggregate<CreditDocument>(pipeline).ToListAsync();
+               
+                
+                pipeline.Add(
+                  new BsonDocument("$match",
+                  new BsonDocument("CreditDocumentType._id", new ObjectId(creditTypeId))
+                  )
+               );
 
-                var filterCreditDocuments = creditDocuments.Where(s => s.CreditDocumentType.Id == creditTypeId).ToList();
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
 
-                if (filterCreditDocuments == null || filterCreditDocuments.Count <= 0)
+
+               var resultCount = _CreditDocumentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+               int count = resultCount!=null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+
+                if (count <= 0)
                 {
                     var result = _CreditTypeCollection.DeleteOne(s => s.Id == creditTypeId);
                     return (true, result.IsAcknowledged, null);
                 }
                 else
                 {
-                    return (true, false, ($"Count creditDocuments {filterCreditDocuments.Count}"));
+                    return (true, false, ($"Count  {count}"));
                 }
             }
             catch (Exception e)
@@ -422,24 +436,33 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
                 var pipeline = new List<BsonDocument>();
                 pipeline.Add(
                   new BsonDocument("$match",
-                  new BsonDocument("CreditDocumentStatus.Id", creditStatusid)
-
+                  new BsonDocument("CreditDocumentStatus._id", new ObjectId(creditStatusid))
                   )
                );
 
-                var creditDocuments = await _CreditDocumentCollection.Aggregate<CreditDocument>(pipeline).ToListAsync();
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
 
-                var filterCreditDocuments = creditDocuments.Where(s => s.CreditDocumentStatus.Id == creditStatusid).ToList();
 
-                if (filterCreditDocuments == null || filterCreditDocuments.Count <= 0)
+                var resultCount = _CreditDocumentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+               int count = resultCount!=null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+              
+                if (count <= 0)
                 {
                     var result = _CreditStatusCollection.DeleteOne(s => s.Id == creditStatusid);
                     return (true, result.IsAcknowledged, null);
                 }
                 else
                 {
-                    return (true, false, ($"Count creditDocuments {filterCreditDocuments.Count}"));
+                    return (true, false, ($"Count creditDocuments {count}"));
                 }
+                return new();
             }
             catch (Exception e)
             {
@@ -609,27 +632,37 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
             {
 
                 var pipeline = new List<BsonDocument>();
-               // pipeline.Add(
-               //   new BsonDocument("$match",
-               //   new BsonDocument("CreditDocumentReason",
-               //   new BsonDocument("_Id", creditReasonId))
 
-               //   )
-               //);
 
-                var creditDocuments = await _CreditDocumentCollection.Aggregate<CreditDocument>(pipeline).ToListAsync();
+                pipeline.Add(
+                  new BsonDocument("$match",
+                  new BsonDocument("CreditDocumentReason._id", new ObjectId(creditReasonId))
+                  )
+               );
 
-                var filterCreditDocuments = creditDocuments.Where(s => s.CreditDocumentReason.Id == creditReasonId).ToList();
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
 
-                if (filterCreditDocuments == null || filterCreditDocuments.Count <= 0)
+
+                var resultCount = _CreditDocumentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+                int count = resultCount!=null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+                if (count <= 0)
                 {
                     var result = _CreditReasonCollection.DeleteOne(s => s.Id == creditReasonId);
                     return (true, result.IsAcknowledged, null);
                 }
                 else
                 {
-                    return (true, false, ($"Count creditDocuments {filterCreditDocuments.Count}"));
+                    return (true, false, ($"Count creditDocuments {count}"));
                 }
+
             }
             catch (Exception e)
             {

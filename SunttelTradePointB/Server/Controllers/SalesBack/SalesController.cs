@@ -8,6 +8,7 @@ using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.Sales;
 using SunttelTradePointB.Shared.SquadsMgr;
+using ZstdSharp.Unsafe;
 
 namespace SunttelTradePointB.Server.Controllers.SalesBack
 {
@@ -145,7 +146,7 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetCommercialDocumentTypes")]
-        public async Task<IActionResult> GetCommercialDocumentTypes(string userId, string ipAddress, bool isASale,  string? filterCondition = null)
+        public async Task<IActionResult> GetCommercialDocumentTypes(string userId, string ipAddress, bool isASale, string? filterCondition = null)
         {
             var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
@@ -196,7 +197,7 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveCommercialDocumentType")]
-        public async Task<IActionResult> SaveCommercialDocumentType(string userId, string ipAddress,[FromBody] CommercialDocumentType commercialDocumentType)
+        public async Task<IActionResult> SaveCommercialDocumentType(string userId, string ipAddress, [FromBody] CommercialDocumentType commercialDocumentType)
         {
             var response = await _commercialDocument.SaveCommercialDocumentType(userId, ipAddress, commercialDocumentType);
 
@@ -209,6 +210,47 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
                 return NotFound(response.ErrorDescription);
             }
         }
+
+        /// <summary>
+        /// Delete a CommercialDocumentType if not associated with a Quality
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="commercialDocumentTypeId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteCommercialDocumentTypeById")]
+        public async Task<IActionResult> DeleteCommercialDocumentTypeById(string userId, string ipAddress, string commercialDocumentTypeId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _commercialDocument.DeleteCommercialDocumentTypeById(userId, ipAddress, squadId, commercialDocumentTypeId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound("in use");
+                    }
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
         #endregion
 
         #region Finance Status
@@ -267,7 +309,7 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveFinanceStatus")]
-        public async Task<IActionResult> SaveFinanceStatus(string userId, string ipAddress,[FromBody] FinanceStatus financeStatus)
+        public async Task<IActionResult> SaveFinanceStatus(string userId, string ipAddress, [FromBody] FinanceStatus financeStatus)
         {
             var response = await _commercialDocument.SaveFinanceStatus(userId, ipAddress, financeStatus);
 
@@ -358,6 +400,49 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
                 return NotFound(response.ErrorDescription);
 
         }
+
+
+         /// <summary>
+        /// Delete a BusinessLine if not associated with a Quality
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="businessLineId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteBusinessLineById")]
+        public async Task<IActionResult> DeleteBusinessLineById(string userId, string ipAddress, string businessLineId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _commercialDocument.DeleteBusinessLineById(userId, ipAddress, squadId, businessLineId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound("in use");
+                    }
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
+
         #endregion
 
         #region shipping status docs
@@ -425,7 +510,7 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
             var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
 
-            var response = await _commercialDocument.GetShippingStatusDocById(userId, ipAddress,squadId, shippingStatusId);
+            var response = await _commercialDocument.GetShippingStatusDocById(userId, ipAddress, squadId, shippingStatusId);
 
             if (response.IsSuccess)
             {
@@ -464,7 +549,44 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
                 return NotFound(response.ErrorDescription);
         }
 
+         /// <summary>
+        /// Delete a BusinessLine if not associated with a Quality
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="shippingStatusId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteShippingStatusById")]
+        public async Task<IActionResult> DeleteShippingStatusById(string userId, string ipAddress, string shippingStatusId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _commercialDocument.DeleteShippingStatusById(userId, ipAddress, squadId, shippingStatusId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound("in use");
+                    }
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
 
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
         #endregion
 

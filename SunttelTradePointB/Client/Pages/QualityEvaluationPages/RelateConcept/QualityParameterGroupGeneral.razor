@@ -32,6 +32,8 @@
     }
 </style>
 
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
+
 <PageTitleComponent Title="Quality Parameter Group" IconName="qualityParameterGroup.png"
                     Description="With this tool you can add edit quality parameter group">
 </PageTitleComponent>
@@ -54,7 +56,7 @@
     }
     else
     {
-        @if (qualityParameterGroupList!=null)
+        @if (qualityParameterGroupList != null)
         {
             <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
@@ -73,12 +75,23 @@
                     LogicalFilterOperator="LogicalFilterOperator.Or"
                     @bind-Value="@selectedcommercialdocuments"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
-            <Columns>
+                <Columns>
 
-                <RadzenDataGridColumn TItem="QualityParameterGroup" Property="@nameof(QualityParameterGroup.Name)" Title="@GetName("Name", new QualityParameterGroup() )" Width="208px" />
+                    <RadzenDataGridColumn TItem="QualityParameterGroup" Property="@nameof(QualityParameterGroup.Name)" Title="@GetName("Name", new QualityParameterGroup() )" Width="208px" />
+                    <RadzenDataGridColumn TItem="QualityParameterGroup" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="120px" TextAlign="Radzen.TextAlign.Center">
+                        <Template Context="data">
 
-            </Columns>
-        </RadzenDataGrid>
+                            <Confirm Id="@data.Id" TextValue="@($"¿Are you sure to permanently delete Name: {@data.Name} ?")"
+                             IdSelect="@IdDelete"
+                             ConfirmIdAction='ConfirmDelete'
+                             CancelAction="CancelDelete"
+                             SelectIdAction="SelectDelete"></Confirm>
+
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                </Columns>
+            </RadzenDataGrid>
             <div class="container-total">
                 <div class="item">
                     <label>
@@ -103,6 +116,10 @@
     public QualityParameterGroup qualityParameterGroup { get; set; }
     IList<QualityParameterGroup>? selectedcommercialdocuments;
 
+
+    bool viewMsg = false;
+    string IdDelete = "";
+    string msg = "";
     bool isLoading = false;
 
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
@@ -119,20 +136,16 @@
 
     protected async override void OnInitialized()
     {
-
-
         _filterItems = "all"; LoadData();
         base.OnInitialized();
-
     }
 
     public async void LoadData()
     {
         isLoading = true;
-       
-            qualityParameterGroupList = await QualityEvaluationServices.GetQualityParameterGrouplList((_filterItems != null ? _filterItems : "all"), 1, 20);
+        qualityParameterGroupList = await QualityEvaluationServices.GetQualityParameterGrouplList((_filterItems != null ? _filterItems : "all"), 1, 20);
 
-       
+
         isLoading = false;
         StateHasChanged();
     }
@@ -144,7 +157,6 @@
 
     public async void SetType(QualityParameterGroup item)
     {
-
         if (item != null)
         {
             qualityParameterGroup = item;
@@ -176,6 +188,39 @@
         StateHasChanged();
     }
 
+    #region Confirm
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await QualityEvaluationServices.DeleteQualityParameterGroupById(Id);
+        if (result) { LoadData(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
+
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
+    }
+
+
     public string GetName(string Name, Object Obj)
     {
         if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
@@ -184,7 +229,7 @@
 
     public void EventIdSelectionMenuItem(string name)
     {
-         Navigation.NavigateTo(name);
+        Navigation.NavigateTo(name);
         //Js.InvokeAsync<object>("open", name, "_blank");
     }
 

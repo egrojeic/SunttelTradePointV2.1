@@ -104,6 +104,47 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
                 return NotFound(response.ErrorDescription);
             }
         }
+
+         /// <summary>
+        /// Delete a QualityTrafficLight if not associated with a Quality
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="qualityParameterGroupId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteQualityAssuranceParameterById")]
+        public async Task<IActionResult> DeleteQualityAssuranceParameterById(string userId, string ipAddress, string qualityParameterGroupId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _quality.DeleteQualityAssuranceParameterById(userId, ipAddress, squadId, qualityParameterGroupId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound("in use");
+                    }
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
         #endregion
 
         #region Quality Groups
@@ -182,6 +223,47 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
             }
         }
 
+         /// <summary>
+        /// Delete a QualityTrafficLight if not associated with a Quality
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="qualityParameterGroupId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteQualityParameterGroupById")]
+        public async Task<IActionResult> DeleteQualityParameterGroupById(string userId, string ipAddress, string qualityParameterGroupId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _quality.DeleteQualityParameterGroupById(userId, ipAddress, squadId, qualityParameterGroupId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound("in use");
+                    }
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
+
         #endregion
 
         #region Quality Traffic Light
@@ -259,6 +341,47 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
                 return NotFound(response.ErrorDescription);
             }
         }
+
+        
+        /// <summary>
+        /// Delete a QualityTrafficLight if not associated with a Quality
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="qualityTrafficLightId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteQualityTrafficLightById")]
+        public async Task<IActionResult> DeleteQualityTrafficLightById(string userId, string ipAddress, string qualityTrafficLightId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _quality.DeleteQualityTrafficLightById(userId, ipAddress, squadId, qualityTrafficLightId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound("in use");
+                    }
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         #endregion
 
         #region Quality Action
@@ -336,6 +459,47 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
                 return NotFound(response.ErrorDescription);
             }
         }
+
+        /// <summary>
+        /// Delete a QualityReportType if not associated with a Quality
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="qualityActioId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteQualityActionById")]
+        public async Task<IActionResult> DeleteQualityActionById(string userId, string ipAddress, string qualityActioId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _quality.DeleteQualityActionById(userId, ipAddress, squadId, qualityActioId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound("in use");
+                    }
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
         #endregion
 
         #region Quality Type
@@ -413,6 +577,47 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
                 return NotFound(response.ErrorDescription);
             }
         }
+
+        /// <summary>
+        /// Delete a QualityReportType if not associated with a Quality
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="paymentModeid"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteQualityReportTypeById")]
+        public async Task<IActionResult> DeleteQualityReportTypeById(string userId, string ipAddress, string qualityReportTypeId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _quality.DeleteQualityReportTypeById(userId, ipAddress, squadId, qualityReportTypeId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound("in use");
+                    }
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
         #endregion
 
         #region QCDocuments

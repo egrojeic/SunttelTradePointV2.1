@@ -50,7 +50,7 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// <param name="documentTypeId"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
-        Task<List<CommercialDocument>> GetCommercialDocumentList(DateTime startDate, DateTime endDate, string documentTypeId, string filter, Concept vendor ,bool isSale);
+        Task<List<CommercialDocument>> GetCommercialDocumentList(DateTime startDate, DateTime endDate, string documentTypeId, string filter, Concept vendor, bool isSale);
 
         /// <summary>
         /// Retrives a item with commercialDocument items meeting search criteria
@@ -92,5 +92,29 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// <param name="perPage"></param>     
         /// <returns></returns>
         Task<List<Concept>> GetCommercialVendorList(string filter, bool IsASale, int? page = 1, int? perPage = 10);
+
+
+        /// <summary>
+        /// Delete a ShippingStatus
+        /// </summary>  
+        /// <param name="shippingStatusId"></param>     
+        /// <returns></returns>
+        Task<bool> DeleteShippingStatusById(string shippingStatusId);
+
+        /// <summary>
+        /// Delete a BusinessLine
+        /// </summary>  
+        /// <param name="businessLineId"></param>     
+        /// <returns></returns>
+        Task<bool> DeleteBusinessLineById(string businessLineId);
+
+
+        /// <summary>
+        /// Delete a BusinessLine
+        /// </summary>  
+        /// <param name="commercialDocumentTypeId"></param>     
+        /// <returns></returns>
+        Task<bool> DeleteCommercialDocumentTypeById(string commercialDocumentTypeId);
+
     }
 }

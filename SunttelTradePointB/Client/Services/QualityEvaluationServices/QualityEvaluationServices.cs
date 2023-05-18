@@ -407,9 +407,88 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
             }
         }
 
+        public async Task<bool> DeleteQualityActionById(string qualityActionId)
+        {
+            try
+            {
+                string path = basepath.Replace("*Name", "DeleteQualityActionById");
+                var responseMessage = await Deletehttp($"{path}&qualityActioId={qualityActionId}");
+                bool result = responseMessage.IsSuccessStatusCode;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteQualityAssuranceParameterById(string qualityAssuranceId)
+        {
+            try
+            {
+                string path = basepath.Replace("*Name", "DeleteQualityAssuranceParameterById");
+                var responseMessage = await Deletehttp($"{path}&qualityAssuranceId={qualityAssuranceId}");
+                bool result = responseMessage.IsSuccessStatusCode;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteQualityParameterGroupById(string qualityParameterGroupId)
+        {
+            try
+            {
+                string path = basepath.Replace("*Name", "DeleteQualityParameterGroupById");
+                var responseMessage = await Deletehttp($"{path}&qualityParameterGroupId={qualityParameterGroupId}");
+                bool result = responseMessage.IsSuccessStatusCode;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteQualityReportTypeById(string qualityReportTypeId)
+        {
+            try
+            {
+                string path = basepath.Replace("*Name", "DeleteQualityReportTypeById");
+                var responseMessage = await Deletehttp($"{path}&qualityReportTypeId={qualityReportTypeId}");
+                bool result = responseMessage.IsSuccessStatusCode;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+        }
+        public async Task<bool> DeleteQualityTrafficLightById(string qualityTrafficLightId)
+        {
+            try
+            {
+                string path = basepath.Replace("*Name", "DeleteQualityTrafficLightById");
+                var responseMessage = await Deletehttp($"{path}&qualityTrafficLightId={qualityTrafficLightId}");
+                bool result = responseMessage.IsSuccessStatusCode;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+        }
 
 
-        public string GetGlobalVariables(string Url)
+
+        private string GetGlobalVariables(string Url)
         {
             var SquadId = UIClientGlobalVariables.ActiveSquad;
             var ReplaceIdUser = UIClientGlobalVariables.UserId;
@@ -421,13 +500,44 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
             return Url;
         }
 
-
-
-        public async Task<HttpResponseMessage> Gethttp(string Url)
+        private async Task<HttpResponseMessage> Deletehttp(string Url)
         {
             try
             {
+                var SquadId = UIClientGlobalVariables.ActiveSquad;
+                var ReplaceIdUser = UIClientGlobalVariables.UserId;
+                var ReplacePublicIpAddress = UIClientGlobalVariables.PublicIpAddress;
+                if (ReplaceIdUser == "") ReplaceIdUser = "000";
+                if (ReplacePublicIpAddress == "") ReplacePublicIpAddress = "000";
+                Url = Url.Replace("*Id", ReplaceIdUser ?? "000");
+                Url = Url.Replace("*Ip", ReplacePublicIpAddress ?? "000");
+                var request = new HttpRequestMessage(HttpMethod.Delete, Url);
 
+                if (SquadId != null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString().ToLower());
+                if (SquadId == null) request.Headers.Add("SquadId", "0000000000");
+                var response = await _httpClient.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return response;
+                }
+                else { return null; }
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+
+            }
+
+
+        }
+
+        private async Task<HttpResponseMessage> Gethttp(string Url)
+        {
+            try
+            {
                 var SquadId = UIClientGlobalVariables.ActiveSquad;
                 var ReplaceIdUser = UIClientGlobalVariables.UserId;
                 var ReplacePublicIpAddress = UIClientGlobalVariables.PublicIpAddress;

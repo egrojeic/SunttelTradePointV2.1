@@ -172,5 +172,42 @@ namespace SunttelTradePointB.Client.Interfaces.QualityEvaluationInterfaces
         /// <returns></returns>
         Task<List<QualityAssuranceParameter>> GetQualityAssuranceParameterlList(string filter, int page, int perPage);
 
+        /// <summary>
+        /// Delete a QualityAction 
+        /// </summary>      
+        /// <param name="qualityActionId"></param>   
+        /// <returns></returns>
+        Task<bool> DeleteQualityActionById(string qualityActionId);
+
+        /// <summary>
+        /// Delete a QualityAssuranceParameter 
+        /// </summary>      
+        /// <param name="qualityAssuranceId"></param>   
+        /// <returns></returns>
+        Task<bool> DeleteQualityAssuranceParameterById(string qualityAssuranceId);
+
+
+        /// <summary>
+        /// Delete a QualityParameterGroup 
+        /// </summary>      
+        /// <param name="qualityParameterGroupId"></param>   
+        /// <returns></returns>
+        Task<bool> DeleteQualityParameterGroupById(string qualityParameterGroupId);
+
+        /// <summary>
+        /// Delete a QualityReportType
+        /// </summary>      
+        /// <param name="qualityReportTypeId"></param>   
+        /// <returns></returns>
+        Task<bool> DeleteQualityReportTypeById(string qualityReportTypeId);
+
+
+        /// <summary>
+        /// Delete a QualityTrafficLight
+        /// </summary>      
+        /// <param name="qualityTrafficLightId"></param>   
+        /// <returns></returns>
+        Task<bool> DeleteQualityTrafficLightById(string qualityTrafficLightId);
+
     }
 }

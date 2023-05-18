@@ -32,6 +32,8 @@
     }
 </style>
 
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
+
 <PageTitleComponent Title="Quality Report Types" IconName="qualityReportType.png"
                     Description="With this tool you can add edit quality report types">
 </PageTitleComponent>
@@ -41,9 +43,9 @@
     <QualityReportTypeGeneralMenu>
     </QualityReportTypeGeneralMenu>
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
-   @* <RangeDatesInput StartDate="@startingDate"
-                     StartDateName="Date"
-                     EventSearchAll="EventSearchAll"></RangeDatesInput>*@
+    @* <RangeDatesInput StartDate="@startingDate"
+    StartDateName="Date"
+    EventSearchAll="EventSearchAll"></RangeDatesInput>*@
 
 </div>
 
@@ -80,12 +82,23 @@
                     LogicalFilterOperator="LogicalFilterOperator.Or"
                     @bind-Value="@selectedcommercialdocuments"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
-            <Columns>
+                <Columns>
 
-                <RadzenDataGridColumn TItem="QualityReportType" Property="@nameof(QualityReportType.Name)" Title="@GetName("Name", new QualityReportType() )" Width="208px" />
+                    <RadzenDataGridColumn TItem="QualityReportType" Property="@nameof(QualityReportType.Name)" Title="@GetName("Name", new QualityReportType() )" Width="208px" />
 
-            </Columns>
-        </RadzenDataGrid>
+                    <RadzenDataGridColumn TItem="QualityReportType" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="120px" TextAlign="Radzen.TextAlign.Center">
+                        <Template Context="data">
+                            <Confirm Id="@data.Id" TextValue="@($"¿Are you sure to permanently delete Name: {@data.Name} ?")"
+                             IdSelect="@IdDelete"
+                             ConfirmIdAction='ConfirmDelete'
+                             CancelAction="CancelDelete"
+                             SelectIdAction="SelectDelete">
+                         </Confirm>
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                </Columns>
+            </RadzenDataGrid>
             <div class="container-total">
                 <div class="item">
                     <label>
@@ -110,6 +123,9 @@
     public QualityReportType qualityReportType { get; set; }
     IList<QualityReportType>? selectedcommercialdocuments;
 
+    bool viewMsg = false;
+    string IdDelete = "";
+    string msg = "";
     bool isLoading = false;
 
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
@@ -126,15 +142,15 @@
 
     protected async override void OnInitialized()
     {
-        _filterItems = "all"; 
+        _filterItems = "all";
         LoadData();
         base.OnInitialized();
     }
 
     public async void LoadData()
     {
-        isLoading = true;       
-            qualityReportTypeList = await QualityEvaluationServices.GetQualityReportTypeList((_filterItems != null ? _filterItems : "all"), 1, 20);
+        isLoading = true;
+        qualityReportTypeList = await QualityEvaluationServices.GetQualityReportTypeList((_filterItems != null ? _filterItems : "all"), 1, 20);
         if (qualityReportType != null)
         {
         }
@@ -181,6 +197,41 @@
         StateHasChanged();
     }
 
+
+    #region Confirm
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await QualityEvaluationServices.DeleteQualityReportTypeById(Id);
+        if (result) { LoadData(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
+
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
+    }
+
+
     public string GetName(string Name, Object Obj)
     {
         if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
@@ -189,7 +240,7 @@
 
     public void EventIdSelectionMenuItem(string name)
     {
-         Navigation.NavigateTo(name);
+        Navigation.NavigateTo(name);
         //Js.InvokeAsync<object>("open", name, "_blank");
     }
 

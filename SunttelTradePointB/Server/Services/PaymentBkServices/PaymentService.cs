@@ -3,6 +3,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using SunttelTradePointB.Server.Interfaces.PaymentBkServices;
 using SunttelTradePointB.Shared.Accounting;
+using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.InvetoryModels;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -308,28 +309,39 @@ namespace SunttelTradePointB.Server.Services.PaymentBkServices
             {
                 var pipeline = new List<BsonDocument>();
                 pipeline.Add(
-                   new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                new BsonDocument("$match",
+                  new BsonDocument("DocPaymentMode._id", new ObjectId(paymentModeId))
+                  )
                );
 
-                var payments = await _PaymentCollection.Aggregate<Payment>(pipeline).ToListAsync();
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
 
-                var filterPayments = payments.Where(s => s.DocPaymentMode.Id == paymentModeId).ToList();
 
-                if (filterPayments == null || filterPayments.Count <= 0)
+                var resultCount = _PaymentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+                if (count <= 0)
                 {
                     var result = _PaymentModeCollection.DeleteOne(s => s.Id == paymentModeId);
                     return (true, result.IsAcknowledged, null);
                 }
                 else
                 {
-                    return (true, false, ($"Count payments {filterPayments.Count}"));
+                    return (true, false, ($"Count {count}"));
                 }
             }
             catch (Exception e)
             {
                 return (false, false, e.Message);
             }
-
 
         }
 
@@ -422,21 +434,32 @@ namespace SunttelTradePointB.Server.Services.PaymentBkServices
             {
                 var pipeline = new List<BsonDocument>();
                 pipeline.Add(
-                   new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                new BsonDocument("$match",
+                  new BsonDocument("DocPaymentVia._id", new ObjectId(paymentViaId))
+                  )
                );
 
-                var payments = await _PaymentCollection.Aggregate<Payment>(pipeline).ToListAsync();
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
 
-                var filterPayments = payments.Where(s => s.DocPaymentVia.Id == paymentViaId).ToList();
+                var resultCount = _PaymentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
 
-                if (filterPayments == null || filterPayments.Count <= 0)
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+                if (count <= 0)
                 {
                     var result = _PaymentViaCollection.DeleteOne(s => s.Id == paymentViaId);
                     return (true, result.IsAcknowledged, null);
                 }
                 else
                 {
-                    return (true, false, ($"Count payments {filterPayments.Count}"));
+                    return (true, false, ($"Count payments {count}"));
                 }
             }
             catch (Exception e)
@@ -647,21 +670,33 @@ namespace SunttelTradePointB.Server.Services.PaymentBkServices
 
                 var pipeline = new List<BsonDocument>();
                 pipeline.Add(
-                   new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                new BsonDocument("$match",
+                  new BsonDocument("DocumentType._id", new ObjectId(paymentTypeId))
+                  )
                );
 
-                var payments = await _PaymentCollection.Aggregate<Payment>(pipeline).ToListAsync();
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
 
-                var filterPayments = payments.Where(s => s.DocumentType.Id == paymentTypeId).ToList();
 
-                if (filterPayments == null || filterPayments.Count <= 0)
+                var resultCount = _PaymentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+                if (count <= 0)
                 {
                     var result = _PaymentTypeCollection.DeleteOne(s => s.Id == paymentTypeId);
                     return (true, result.IsAcknowledged, null);
                 }
                 else
                 {
-                    return (true, false, ($"Count payments {payments.Count}"));
+                    return (true, false, ($"Count payments {count}"));
                 }
             }
             catch (Exception e)
@@ -817,21 +852,33 @@ namespace SunttelTradePointB.Server.Services.PaymentBkServices
 
                 var pipeline = new List<BsonDocument>();
                 pipeline.Add(
-                   new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                new BsonDocument("$match",
+                  new BsonDocument("Status._id", new ObjectId(paymentStatusId))
+                  )
                );
 
-                var payments = await _PaymentCollection.Aggregate<Payment>(pipeline).ToListAsync();
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
 
-                var filterPayments = payments.Where(s => s.Status.Id == paymentStatusId).ToList();
 
-                if (filterPayments == null || filterPayments.Count <= 0)
+                var resultCount = _PaymentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+                if (count <= 0)
                 {
                     var result = _PaymentStatusCollection.DeleteOne(s => s.Id == paymentStatusId);
                     return (true, result.IsAcknowledged, null);
                 }
                 else
                 {
-                    return (true, false, ($"Count payments {filterPayments.Count}"));
+                    return (true, false, ($"Count {count}"));
                 }
             }
             catch (Exception e)

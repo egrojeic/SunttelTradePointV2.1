@@ -1,10 +1,9 @@
 ﻿@if (GetVisible(Id))
 {
-
-    <div class="container-alert-delete">
-        <label class="label-style">@TextValue</label>
+    <div class="container-alert-delete">        
         <div class="item-btn">
             <buton @onclick='()=>CancelAction.InvokeAsync(null)' class="cancel"><i class="bi bi-x-circle-fill"></i></buton>
+            <label class="label-style">@TextValue</label>
             <buton @onclick='()=>ConfirmIdAction.InvokeAsync(Id)' class="img-delete"><i class="bi bi-trash-fill"></i></buton>
         </div>
     </div>

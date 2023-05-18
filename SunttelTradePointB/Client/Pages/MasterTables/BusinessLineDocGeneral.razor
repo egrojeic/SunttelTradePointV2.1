@@ -30,6 +30,8 @@
     }
 </style>
 
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
+
 <PageTitleComponent Title="Business line documents" IconName="businessLineDocConcept.png"
                     Description="Describe the Business line documents">
 </PageTitleComponent>
@@ -69,6 +71,18 @@ else
         <Columns>
             <RadzenDataGridColumn TItem="BusinessLine" Property="Name" Title="@GetName("Name", new BasicConcept())" Width="80px" />
             <RadzenDataGridColumn TItem="BusinessLine" Property="@nameof(BusinessLine.Id)" Title="@GetName("Name", new BasicConcept())" Width="50px" />
+            <RadzenDataGridColumn TItem="BusinessLine" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
+                <Template Context="data">
+
+                    <Confirm Id="@data.Id" TextValue="@($"¿Confirm delete?")"
+                         IdSelect="@IdDelete"
+                         ConfirmIdAction='ConfirmDelete'
+                         CancelAction="CancelDelete"
+                         SelectIdAction="SelectDelete"></Confirm>
+
+                </Template>
+            </RadzenDataGridColumn>
+        
         </Columns>
     </RadzenDataGrid>
     <div class="container-total">
@@ -98,6 +112,10 @@ else
         LoadData();
     }
 
+
+    string IdDelete = "";
+    string msg = "";
+    bool viewMsg = false;
     bool isLoading = false;
 
     public string? conceptFilter
@@ -142,6 +160,37 @@ else
 
     #endregion Grid
 
+    #region Confirm
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await SalesDocumentsService.DeleteBusinessLineById(Id);
+        if (result) { LoadData(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
+
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
+    }
 
 
 

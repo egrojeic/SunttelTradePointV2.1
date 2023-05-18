@@ -87,7 +87,7 @@
                     @bind-Value="@selectedcommercialdocuments"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
                     <Columns>
-                        <RadzenDataGridColumn TItem="QualityEvaluation" Property="QualityReportType.Name" Title="@GetName("QualityReportType", new QualityEvaluation() )" Width="108px" />
+                        <RadzenDataGridColumn TItem="QualityEvaluation" Property="QualityReportType.Name" Title="@GetName("QualityReportType", new QualityEvaluation() )" Width="108px" />                     
                         <RadzenDataGridColumn TItem="QualityEvaluation" Property="InspectionDate" Title="@GetName("InspectionDate", new QualityEvaluation() )" Filterable="false" Sortable="false" FormatString="{0:MM/dd/yyyy}" Width="88px" />
                         <RadzenDataGridColumn TItem="QualityEvaluation" Property="QuantityToInspect" Title="@GetName("QuantityToInspect", new QualityEvaluation() )" TextAlign="Radzen.TextAlign.Right" Filterable="false" Width="88px" />
                         <RadzenDataGridColumn TItem="QualityEvaluation" Property="QuantityInspected" Title="@GetName("QuantityInspected", new QualityEvaluation() )" TextAlign="Radzen.TextAlign.Right" Filterable="false" Width="88px" />

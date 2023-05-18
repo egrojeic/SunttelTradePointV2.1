@@ -29,6 +29,9 @@
         font-weight: bold;
     }
 </style>
+
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
+
 <PageTitleComponent Title="Status of Shipping Document" IconName="Signal.png"
                     Description="Describe the Status of the Shipping Document">
 </PageTitleComponent>
@@ -47,8 +50,9 @@
 }
 else
 {
-    if(ShippingStatuses!=null){
-    <RadzenDataGrid AllowFiltering="true"
+    if (ShippingStatuses != null)
+    {
+        <RadzenDataGrid AllowFiltering="true"
                 AllowColumnResize="true"
                 AllowAlternatingRows="true"
                 FilterMode="FilterMode.Advanced"
@@ -66,26 +70,38 @@ else
                 PageNumbersCount="100"
                 PageSize="50">
 
-        <Columns>
-            <RadzenDataGridColumn TItem="ShippingStatus" Property="ShippingStatuses.Name" Title="@GetName("Name", new ShippingStatus())" Width="80px" />
-            <RadzenDataGridColumn TItem="ShippingStatus" Property="AffectInventory" Title="@GetName("AffectInventory", new ShippingStatus())" Width="120px" Filterable="false" TextAlign="Radzen.TextAlign.Center">
-                <Template>
-                    @{
-                        bool AffectInventory = (bool)context.GetType().GetProperty(nameof(ShippingStatus.AffectInventory)).GetValue(context);
-                        <input type="checkbox" checked="@AffectInventory" />
-                    }
-                </Template>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="ShippingStatus" Property="EditingAllowed" Title="@GetName("EditingAllowed", new ShippingStatus())" Width="120px" Filterable="false" TextAlign="Radzen.TextAlign.Center">
-                <Template>
-                    @{
-                        bool EditingAllowed = (bool)context.GetType().GetProperty(nameof(ShippingStatus.EditingAllowed)).GetValue(context);
-                        <input type="checkbox" checked="@EditingAllowed" />
-                    }
-                </Template>
-            </RadzenDataGridColumn>
-        </Columns>
-    </RadzenDataGrid>
+            <Columns>
+                <RadzenDataGridColumn TItem="ShippingStatus" Property="ShippingStatuses.Name" Title="@GetName("Name", new ShippingStatus())" Width="80px" />
+                <RadzenDataGridColumn TItem="ShippingStatus" Property="AffectInventory" Title="@GetName("AffectInventory", new ShippingStatus())" Width="120px" Filterable="false" TextAlign="Radzen.TextAlign.Center">
+                    <Template>
+                        @{
+                            bool AffectInventory = (bool)context.GetType().GetProperty(nameof(ShippingStatus.AffectInventory)).GetValue(context);
+                            <input type="checkbox" checked="@AffectInventory" />
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="ShippingStatus" Property="EditingAllowed" Title="@GetName("EditingAllowed", new ShippingStatus())" Width="120px" Filterable="false" TextAlign="Radzen.TextAlign.Center">
+                    <Template>
+                        @{
+                            bool EditingAllowed = (bool)context.GetType().GetProperty(nameof(ShippingStatus.EditingAllowed)).GetValue(context);
+                            <input type="checkbox" checked="@EditingAllowed" />
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="ShippingStatus" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
+                    <Template Context="data">
+
+                        <Confirm Id="@data.Id" TextValue="@($"¿Confirm delete?")"
+                         IdSelect="@IdDelete"
+                         ConfirmIdAction='ConfirmDelete'
+                         CancelAction="CancelDelete"
+                         SelectIdAction="SelectDelete"></Confirm>
+
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
         <div class="container-total">
             <div class="item">
                 <label>
@@ -114,6 +130,9 @@ else
         LoadData();
     }
 
+    string IdDelete = "";
+    string msg = "";
+    bool viewMsg = false;
     bool isLoading = false;
 
     public string? conceptFilter
@@ -158,8 +177,37 @@ else
 
     #endregion Grid
 
+    #region Confirm
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await SalesDocumentsService.DeleteShippingStatusById(Id);
+        if (result) { LoadData(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
 
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
 
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
+    }
 
     public string GetName(string Name, Object Obj)
     {

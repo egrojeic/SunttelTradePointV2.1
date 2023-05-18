@@ -32,6 +32,8 @@
     }
 </style>
 
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
+
 <PageTitleComponent Title="Quality Traffic Light" IconName="Traffic.png"
                     Description="With this tool you can add edit quality traffic light">
 </PageTitleComponent>
@@ -83,28 +85,37 @@
                     LogicalFilterOperator="LogicalFilterOperator.Or"
                     @bind-Value="@selectedcommercialdocuments"
                     CellContextMenu="@ShowContextMenuCommercialDocument">
-            <Columns>
+                <Columns>
 
-                <RadzenDataGridColumn TItem="QualityTrafficLight" Property="@nameof(QualityTrafficLight.Name)" Title="@GetName("Name", new QualityTrafficLight() )" Width="208px" />
-                <RadzenDataGridColumn TItem="QualityTrafficLight" Property="@nameof(QualityTrafficLight)" Title="Color" Width="208px">
-                    <Template Context="data">
-                        <div class="color-item" style="background-color:rgb(@(GetColor(data)));">
-                            
-                        </div>                      
-                    </Template>
-                </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="QualityTrafficLight" Property="@nameof(QualityTrafficLight.Name)" Title="@GetName("Name", new QualityTrafficLight() )" Width="208px" />
+                    <RadzenDataGridColumn TItem="QualityTrafficLight" Property="@nameof(QualityTrafficLight)" Title="Color" Width="208px">
+                        <Template Context="data">
+                            <div class="color-item" style="background-color:rgb(@(GetColor(data)));">
+                            </div>
+                        </Template>
+                    </RadzenDataGridColumn>
 
-            </Columns>
-        </RadzenDataGrid>
-          <div class="container-total">
-            <div class="item">
-                <label>
-                    @(
-                        $"Records: {qualityTrafficLightList.Count}"
-                        )
-                </label>
+                    <RadzenDataGridColumn TItem="QualityTrafficLight" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="120px" TextAlign="Radzen.TextAlign.Center">
+                        <Template Context="data">
+                            <Confirm Id="@data.Id" TextValue="@($"¿Are you sure to permanently delete Name: {@data.Name} ?")"
+                             IdSelect="@IdDelete"
+                             ConfirmIdAction='ConfirmDelete'
+                             CancelAction="CancelDelete"
+                             SelectIdAction="SelectDelete"></Confirm>
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                </Columns>
+            </RadzenDataGrid>
+            <div class="container-total">
+                <div class="item">
+                    <label>
+                        @(
+                            $"Records: {qualityTrafficLightList.Count}"
+                            )
+                    </label>
+                </div>
             </div>
-        </div>
 
         }
     }
@@ -120,6 +131,10 @@
     public QualityTrafficLight qualityTrafficLight { get; set; }
     IList<QualityTrafficLight>? selectedcommercialdocuments;
 
+
+    bool viewMsg = false;
+    string IdDelete = "";
+    string msg = "";
     bool isLoading = false;
 
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
@@ -136,9 +151,8 @@
 
     protected async override void OnInitialized()
     {
-       _filterItems ="all"; LoadData();
+        _filterItems = "all"; LoadData();
         base.OnInitialized();
-
     }
 
     public async void LoadData()
@@ -160,7 +174,6 @@
 
     public async void SetType(QualityTrafficLight item)
     {
-
         if (item != null)
         {
             qualityTrafficLight = item;
@@ -172,7 +185,7 @@
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<QualityTrafficLight> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-        </RadzenMenu>
+    </RadzenMenu>
     );
 
 
@@ -190,6 +203,38 @@
     {
         docsFilter = value;
         StateHasChanged();
+    }
+
+    #region Confirm
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await QualityEvaluationServices.DeleteQualityTrafficLightById(Id);
+        if (result) { LoadData(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
+
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
     }
 
 

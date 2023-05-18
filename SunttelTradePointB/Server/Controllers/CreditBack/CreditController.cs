@@ -88,7 +88,7 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
             var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
 
-            var response = await _credit.SaveCreditDocument(userId, ipAddress, squadId, creditDocument);
+            (bool IsSuccess, CreditDocument? CreditDocument, string? ErrorDescription) response = await _credit.SaveCreditDocument(userId, ipAddress, squadId, creditDocument);
 
             if (response.IsSuccess)
             {

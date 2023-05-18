@@ -73,7 +73,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
                 var resultPrev = await _CommercialDocumentCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
                 CommercialDocument result = resultPrev.Select(d => BsonSerializer.Deserialize<CommercialDocument>(d)).ToList()[0];
-               
+
                 return (true, result, null);
             }
             catch (Exception ex)
@@ -156,7 +156,8 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 }
 
                 // Filtro por vendor name
-                if(!(vendorName == null || vendorName == "") ){
+                if (!(vendorName == null || vendorName == ""))
+                {
                     pipeline.Add(
                     new BsonDocument(
                         "$match",
@@ -168,7 +169,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     )
                     );
                 }
-                
+
 
 
                 pipeline.Add(
@@ -261,10 +262,10 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 pipelineDetails.Add(
                     new BsonDocument("$match", new BsonDocument("IdCommercialDocument", new ObjectId(commercialDocumentId)))
                 );
-                
+
                 List<SalesDocumentItemsDetails> resultDetails = await _CommercialDocumentDetailImports.Aggregate<SalesDocumentItemsDetails>(pipelineDetails).ToListAsync();
 
-                foreach(SalesDocumentItemsDetails item in resultDetails)
+                foreach (SalesDocumentItemsDetails item in resultDetails)
                 {
                     totalQuantity = totalQuantity + item.Qty;
                 }
@@ -328,10 +329,10 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 );
 
                 List<CommercialDocumentType> results = await _CommercialDocumentType.Aggregate<CommercialDocumentType>(pipeline).ToListAsync();
-                
+
                 return (true, results, null);
-                
-                
+
+
             }
             catch (Exception e)
             {
@@ -398,6 +399,60 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 return (false, null, e.Message);
             }
         }
+
+
+        /// <summary>
+        /// Delete an CommercialDocumentType not associated with CommercialDocument
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="commercialDocumentTypeId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteCommercialDocumentTypeById(string userId, string ipAddress, string squadId, string? commercialDocumentTypeId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+                pipeline.Add(
+                new BsonDocument("$match",
+                  new BsonDocument("DocumentType._id", new ObjectId(commercialDocumentTypeId))
+                  )
+               );
+
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
+
+
+
+                var resultCount = _CommercialDocumentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+
+                if (count <= 0)
+                {
+                    var result = _CommercialDocumentType.DeleteOne(s => s.Id == commercialDocumentTypeId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count {count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+
+
+        }
+
         #endregion
 
         #region Finance Status
@@ -568,7 +623,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                                { "Name", new BsonRegularExpression($"/{filterString}/i")
                                     }
                                }
-                            }   
+                            }
                         }
                     );
                 }
@@ -622,10 +677,63 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 return (false, null, e.Message);
             }
         }
+
+        /// <summary>
+        /// Delete an BusinessLine not associated with CommercialDocument
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="businessLineId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteBusinessLineById(string userId, string ipAddress, string squadId, string? businessLineId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+                pipeline.Add(
+                new BsonDocument("$match",
+                  new BsonDocument("BusinessLineDoc._id", new ObjectId(businessLineId))
+                  )
+               );
+
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
+
+
+                var resultCount = _CommercialDocumentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+
+                if (count <= 0)
+                {
+                    var result = _BusinessLineCollection.DeleteOne(s => s.Id == businessLineId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count {count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+
+
+        }
+
+
         #endregion
 
         #region Shippin Status
-         /// <summary>
+        /// <summary>
         /// Saves an  Shipping Status document. If it doesn't exists, it'll be created
         /// </summary>
         /// <param name="userId"></param>
@@ -633,7 +741,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         /// <param name="squadId"></param>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, ShippingStatus? entity, string? ErrorDescription)> SaveShippinStatus(string userId, string ipAdress, string squadId,[FromBody] ShippingStatus entity)
+        public async Task<(bool IsSuccess, ShippingStatus? entity, string? ErrorDescription)> SaveShippinStatus(string userId, string ipAdress, string squadId, [FromBody] ShippingStatus entity)
         {
             try
             {
@@ -811,6 +919,58 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
             }
         }
 
+        /// <summary>
+        /// Delete an ShippingStatus not associated with CommercialDocument
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="shippingStatusId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteShippingStatusById(string userId, string ipAddress, string squadId, string? shippingStatusId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+                pipeline.Add(
+                new BsonDocument("$match",
+                  new BsonDocument("ShippingStatusDocument._id", new ObjectId(shippingStatusId))
+                  )
+               );
+
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
+
+
+                var resultCount = _CommercialDocumentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+
+                if (count <= 0)
+                {
+                    var result = _ShippingStatusCollection.DeleteOne(s => s.Id == shippingStatusId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count {count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+
+
+        }
+
         #endregion
 
         #region Commercial Document Detail
@@ -824,7 +984,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         /// <returns></returns>
         public async Task<(bool IsSuccess, SalesDocumentItemsDetails? salesDocumentItemsDetailsResponse, string? ErrorDescription)> SaveCommercialDocumentDetail(string userId, string ipAdress, string squadId, SalesDocumentItemsDetails salesDocumentItemsDetails)
         {
-            
+
             try
             {
                 if (salesDocumentItemsDetails.SquadId == null)
@@ -844,7 +1004,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
             {
                 return (false, null, e.Message);
             }
-            
+
         }
 
         /// <summary>

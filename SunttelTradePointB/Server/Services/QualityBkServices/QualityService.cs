@@ -2,6 +2,7 @@
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using SunttelTradePointB.Server.Interfaces.QualityBkServices;
+using SunttelTradePointB.Shared.Accounting;
 using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.InvetoryModels;
 using SunttelTradePointB.Shared.Quality;
@@ -78,10 +79,10 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                         );
                     }
 
-                    // Filtro por SquadId
-                    pipeline.Add(
-                        new BsonDocument("$match", new BsonDocument("SquadId", squadId))
-                    );
+                  //  Filtro por SquadId
+                    //pipeline.Add(
+                    //    new BsonDocument("$match", new BsonDocument("SquadId"))
+                    //);
 
                     pipeline.Add(
                     new BsonDocument{
@@ -108,7 +109,7 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                     }
                     else
                     {
-                        return (true, qualityParameters, null);
+                        return (true, qualityParameters.Where(s=>s.SquadId.ToLower() == squadId.ToLower()).ToList(), null);
                     }
                 }
 
@@ -180,6 +181,61 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                 return (false, null, e.Message);
             }
         }
+
+
+        /// <summary>
+        /// Delete an QualityAssuranceParameter not associated with QualityAssurance
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="qualityParameterId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteQualityAssuranceParameterById(string userId, string ipAddress, string squadId, string? qualityParameterId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+                pipeline.Add(
+                new BsonDocument("$match",
+                  new BsonDocument("Parameter._id", new ObjectId(qualityParameterId))
+                  )
+               );
+
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
+
+
+
+                var resultCount = _QCDocumentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+
+                if (count <= 0)
+                {
+                    var result = _QualityParameterCollection.DeleteOne(s => s.Id == qualityParameterId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count {count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+
+
+        }
+
+
         #endregion
 
         #region Quality Parameters Groups
@@ -319,6 +375,62 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                 return (false, null, e.Message);
             }
         }
+
+
+        /// <summary>
+        /// Delete an QualityParameterGroup not associated with Quality
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="qualityParameterGroupId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteQualityParameterGroupById(string userId, string ipAddress, string squadId, string? qualityParameterGroupId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+                pipeline.Add(
+                new BsonDocument("$match",
+                  new BsonDocument("ParameterGroup._id", new ObjectId(qualityParameterGroupId))
+                  )
+               );
+
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
+
+
+
+                var resultCount = _QCDocumentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+
+                if (count <= 0)
+                {
+                    var result = _QualityGroupCollection.DeleteOne(s => s.Id == qualityParameterGroupId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count item {count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+
+
+        }
+
+
+
         #endregion
 
         #region Quality Traffic Lights
@@ -458,6 +570,63 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                 return (false, null, e.Message);
             }
         }
+
+
+        /// <summary>
+        /// Delete an QualityTrafficLight not associated with Quality
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="qualityTrafficLightId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteQualityTrafficLightById(string userId, string ipAddress, string squadId, string? qualityTrafficLightId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+                pipeline.Add(
+                new BsonDocument("$match",
+                  new BsonDocument("TrafficLightStatus._id", new ObjectId(qualityTrafficLightId))
+                  )
+               );
+
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
+
+
+
+                var resultCount = _QCDocumentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+
+
+                if (count <= 0)
+                {
+                    var result = _QualityTrafficLightCollection.DeleteOne(s => s.Id == qualityTrafficLightId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count item {count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+
+
+        }
+
+
+
         #endregion
 
         #region Quality Actions
@@ -597,6 +766,62 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                 return (false, null, e.Message);
             }
         }
+
+
+
+        /// <summary>
+        /// Delete an QualityAction not associated with Quality
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="qualityActioId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteQualityActionById(string userId, string ipAddress, string squadId, string? qualityActioId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+                pipeline.Add(
+                new BsonDocument("$match",
+                  new BsonDocument("ActionToTake._id", new ObjectId(qualityActioId))
+                  )
+               );
+
+
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
+
+
+                var resultCount = _QCDocumentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+
+                if (count <= 0)
+                {
+                    var result = _QualityActionCollection.DeleteOne(s => s.Id == qualityActioId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count item {count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+
+
+        }
+
+
         #endregion
 
         #region Quality Type
@@ -736,6 +961,62 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                 return (false, null, e.Message);
             }
         }
+
+
+        /// <summary>
+        /// Delete an QualityReportType not associated with Quality
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="qualityReportTypeId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteQualityReportTypeById(string userId, string ipAddress, string squadId, string? qualityReportTypeId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+                pipeline.Add(
+                new BsonDocument("$match",
+                  new BsonDocument("QualityReportType._id", new ObjectId(qualityReportTypeId))
+                  )
+               );
+
+
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
+
+
+           
+                 var resultCount = _QCDocumentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+               int count = resultCount!=null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+
+
+                if (count <= 0)
+                {
+                    var result = _QualityReportTypeCollection.DeleteOne(s => s.Id == qualityReportTypeId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count item {count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+
+
+        }
+
         #endregion
 
         #region QC Document
@@ -865,10 +1146,10 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                 }
 
                 var filterQuantity = Builders<QualityEvaluation>.Filter.Eq("_id", new ObjectId(quality.Id));
-                
+
                 var updateQuantity = new ReplaceOptions { IsUpsert = true };
                 var resultQuantity = await _QCDocumentCollection.ReplaceOneAsync(filterQuantity, quality, updateQuantity);
-                
+
                 return (true, quality, null);
             }
             catch (Exception e)

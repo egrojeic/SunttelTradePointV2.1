@@ -41,9 +41,25 @@ namespace SunttelTradePointB.Server.Interfaces.QualityBkServices
         /// <param name="quality"></param>
         /// <returns></returns>
         Task<(bool IsSuccess, QualityAssuranceParameter? QualityParameter, string? ErrorDescription)> SaveQualityParameter(string userId, string ipAddress, string squadId, QualityAssuranceParameter quality);
+
+
+        /// <summary>
+        /// Delete an QualityAssuranceParameter not associated with QualityAssurance
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="qualityParameterGroupId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteQualityAssuranceParameterById(string userId, string ipAddress, string squadId, string? qualityParameterGroupId);
+
+
+
         #endregion
 
+
         #region Quality Groups
+
         /// <summary>
         /// Retrieves a document having the specified id
         /// </summary>
@@ -75,6 +91,18 @@ namespace SunttelTradePointB.Server.Interfaces.QualityBkServices
         /// <param name="quality"></param>
         /// <returns></returns>
         Task<(bool IsSuccess, QualityParameterGroup? QualityGroup, string? ErrorDescription)> SaveQualityParameterGroups(string userId, string ipAddress, string squadId, QualityParameterGroup quality);
+     
+        
+        /// <summary>
+        /// Delete an QualityParameterGroup not associated with Quality
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="qualityParameterGroupId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteQualityParameterGroupById(string userId, string ipAddress, string squadId, string? qualityParameterGroupId);
+        
         #endregion
 
         #region Quality Traffic Light
@@ -110,6 +138,17 @@ namespace SunttelTradePointB.Server.Interfaces.QualityBkServices
         /// <returns></returns>
         Task<(bool IsSuccess, QualityTrafficLight? QualityTrafficLight, string? ErrorDescription)> SaveQualityTrafficLight(string userId, string ipAddress, string squadId, QualityTrafficLight quality);
 
+        
+        /// <summary>
+        /// Delete an QualityTrafficLight not associated with Quality
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="qualityTrafficLightId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteQualityTrafficLightById(string userId, string ipAddress, string squadId, string? qualityTrafficLightId);
+
         #endregion
 
         #region Quality Action
@@ -144,6 +183,18 @@ namespace SunttelTradePointB.Server.Interfaces.QualityBkServices
         /// <param name="quality"></param>
         /// <returns></returns>
         Task<(bool IsSuccess, QualityAction? QualityAction, string? ErrorDescription)> SaveQualityAction(string userId, string ipAddress, string squadId, QualityAction quality);
+      
+        
+        /// <summary>
+        /// Delete an QualityAction not associated with Quality
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="qualityActioId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteQualityActionById(string userId, string ipAddress, string squadId, string? qualityActioId);
+        
         #endregion
 
         #region Quality Type
@@ -178,6 +229,19 @@ namespace SunttelTradePointB.Server.Interfaces.QualityBkServices
         /// <param name="quality"></param>
         /// <returns></returns>
         Task<(bool IsSuccess, QualityReportType? QualityReportType, string? ErrorDescription)> SaveQualityReportType(string userId, string ipAddress, string squadId, QualityReportType quality);
+
+        /// <summary>
+        /// Delete an QualityReportType not associated with Quality
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="qualityReportTypeId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteQualityReportTypeById(string userId, string ipAddress, string squadId, string? qualityReportTypeId);
+
+
+      
         #endregion
 
         #region QCDocument
