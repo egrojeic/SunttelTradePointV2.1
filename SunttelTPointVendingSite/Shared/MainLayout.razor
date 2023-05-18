@@ -22,14 +22,23 @@
                 <i class="oi oi-map-marker me-1"></i>
                 <span>Colombia</span>
             </div>
-            <div class="input-group ubi">
-                @*oi-magnifying-glass*@
+            @*<div class="input-group ubi">
                 <input type="text" class="form-control" placeholder="What are you looking for?" aria-label="Recipient's username" aria-describedby="button-addon2">
                 <button class="btn btn-outline-secondary" type="button" id="button-addon2">Search</button>
             </div>
-            <button type="button" class="btn btn-primary mx-4">
+           *@
+
+            <div class="input-group">
+                <span class="input-group-text" id="basic-addon1">
+                    <i class="oi oi-magnifying-glass"></i>
+                </span>
+                <input type="text" class="form-control" placeholder="What are you looking for?" aria-label="Username" aria-describedby="basic-addon1">
+                <button class="btn btn-outline-secondary" type="button" id="button-addon2">Search</button>
+            </div>
+
+            <a href="/ShowCart" type="button" class="btn btn-primary mx-4">
                 <i class="oi oi-cart" />
-            </button>
+            </a>
 
             <div class="d-flex mx-4">
                 <i class="mx-3 oi oi-heart"></i>
@@ -54,8 +63,10 @@
             <span class="btn btn-light">Help </span>
         </div>
 
-        <article class="content px-4">
-            @Body
+        <article>
+            <div class="myBody">
+                @Body
+            </div>
         </article>
     </main>
 </div>

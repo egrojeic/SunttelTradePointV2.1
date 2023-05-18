@@ -1,3 +1,10 @@
+article {
+    background-color: #f8f9f9 !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .page {
     position: relative;
     display: flex;
@@ -9,6 +16,14 @@
     flex-direction: row !important;
     align-items: center !important;
     margin-left: 1.5rem !important;
+}
+
+.myBody {
+    width: 1190px;
+    background-color: white;
+    margin-top: 2rem;
+    border-radius: 5px;
+    border: 1px solid lightgray;
 }
 
 main {
@@ -108,5 +123,7 @@ main {
         padding-right: 1.5rem !important;
     }
 }
+
+
 
 

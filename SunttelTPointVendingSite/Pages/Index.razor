@@ -68,6 +68,29 @@ else
                 <li> Wanted (29) </li>
             </ul>
 
+            <h5>
+                Price
+            </h5>
+            <div class="row">
+                <div class="col">
+                    from
+                    <input type="number" class="form-control">
+                </div>
+                <div class="col-2 text-center m-0 p-0">
+                    <br>
+                    -
+                </div>
+                <div class="col">
+                    to
+                    <input type="number" class="form-control">
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col d-grid gap-2">
+                    <button class="btn btn-success">Update</button>
+                </div>
+            </div>
+
         </div>
         <div class="item2">
 
@@ -76,7 +99,7 @@ else
                 @foreach (var product in Products!)
                 {
                     <div class="card">
-                        <div class="text-center zoom">
+                        <div class="card-img-top">
                             <img src="@product.MainImage" style="height: 224px; width: 224px; object-fit: contain;" class="text-center" alt="@product.Name" />
                         </div>
 
@@ -86,11 +109,7 @@ else
                             <h5 class="text-muted">@($"{product.Price:C2}")</h5>
                         </div>
                         <div class="card-footer">
-                            <a href="/ProductDetail/@product.Id" class="btn btn-sm btn-secondary"><i class="oi oi-info me-1" />Details</a>
-                            <button class="btn btn-sm btn-primary" @onclick=@(() => AddToCartAsync(product.Id))><i class="oi oi-plus" /> Add to Cart</button>
-                        </div>
-                        <div class="card-footer">
-                            <a href="/ProductDetail/@product.Id" class="btn btn-sm btn-secondary"><i class="oi oi-info me-1" />Details</a>
+                            <a href="/productDetail/@product.Id" class="btn btn-sm btn-secondary"><i class="oi oi-info me-1" />Details</a>
                             <button class="btn btn-sm btn-primary" @onclick=@(() => AddToCartAsync(product.Id))><i class="oi oi-plus" /> Add to Cart</button>
                         </div>
                     </div>

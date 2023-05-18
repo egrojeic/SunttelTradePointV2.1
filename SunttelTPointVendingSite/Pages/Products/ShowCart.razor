@@ -1,0 +1,183 @@
+﻿@page "/ShowCart"
+@*@inject IRepository repository*@
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
+@*@attribute [Authorize(Roles = "Admin, User")]*@
+
+<div class="card">
+    <div class="card-header">
+        <span>
+            <i class="oi oi-cart" /> Shopping cart
+        </span>
+    </div>
+    <div class="card-body">
+
+        @* <EditForm Model="SaleDTO" OnValidSubmit="ConfirmOrderAsync">
+        <DataAnnotationsValidator />
+        <div class="mb-3">
+        <label>Comentarios:</label>
+        <div>
+        <InputText class="form-control" @bind-Value="@SaleDTO.Remarks" />
+        <ValidationMessage For="@(() => SaleDTO.Remarks)" />
+        </div>
+        </div>
+        <button class="btn btn-primary mb-3" type="submit"><i class="oi oi-check" /> Confirmar Pedido</button>
+        </EditForm>*@
+        <table class="table table-striped mb-2">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total Price</th>
+                    <th>Comments</th>
+                    <th style="width:200px"></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <td>
+                        <img src="/Images/tattoo.jpg" style="width:100px;" />
+                    </td>
+                    <td>
+                        Product 1
+                    </td>
+                    <td>
+                        Description
+                    </td>
+                    <td>
+                        2
+                    </td>
+                    <td>
+                        $500.000
+                    </td>
+                    <td>
+                        $1.000.000
+                    </td>
+                    <td>
+                        Comment
+                    </td>
+
+                    <td>
+                        <a href="/Orders/ModifyTemporalSale/1" class="btn btn-warning"><i class="oi oi-pencil" /> Editar</a>
+                        <button class="btn btn-danger" @onclick=@(() => Delete(1))><i class="oi oi-trash" /> Borrar</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="row" style="justify-content: flex-end !important;">
+            <div class="col-3">
+                <h3>Quantity: <strong>@($"{sumQuantity:N2}")</strong></h3>
+            </div>
+            <div class="col-3">
+                <h3>Price: <strong>@($"{sumValue:C2}")</strong></h3>
+            </div>
+        </div>
+        <div class="d-grid gap-2 mt-2">
+            <button class="btn btn-success" type="button">Buy Now</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    //public List<TemporalSale>? temporalSales { get; set; }
+    private float sumQuantity;
+    private decimal sumValue;
+
+    //public SaleDTO SaleDTO { get; set; } = new();
+
+    protected async override Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        try
+        {
+            //var responseHppt = await repository.Get<List<TemporalSale>>("api/temporalSales");
+            //temporalSales = responseHppt.Response!;
+            //sumQuantity = temporalSales.Sum(x => x.Quantity);
+            //sumValue = temporalSales.Sum(x => x.Value);
+        }
+        catch (Exception ex)
+        {
+            await sweetAlertService.FireAsync("Error", ex.Message, SweetAlertIcon.Error);
+        }
+    }
+
+    private async Task Delete(int temporalSaleId)
+    {
+        var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmación",
+                Text = "¿Esta seguro que quieres borrar el registro?",
+                Icon = SweetAlertIcon.Question,
+                ShowCancelButton = true
+            });
+
+        var confirm = string.IsNullOrEmpty(result.Value);
+
+        if (confirm)
+        {
+            return;
+        }
+
+        //var responseHTTP = await repository.Delete($"api/temporalSales/{temporalSaleId}");
+
+        //if (responseHTTP.Error)
+        //{
+        //    if (responseHTTP.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+        //    {
+        //        navigationManager.NavigateTo("/");
+        //        return;
+        //    }
+
+        //    var mensajeError = await responseHTTP.GetErrorMessageAsync();
+        //    await sweetAlertService.FireAsync("Error", mensajeError, SweetAlertIcon.Error);
+        //    return;
+        //}
+
+        await LoadAsync();
+        var toast = sweetAlertService.Mixin(new SweetAlertOptions
+            {
+                Toast = true,
+                Position = SweetAlertPosition.TopEnd,
+                ShowConfirmButton = false,
+                Timer = 5000
+            });
+        await toast.FireAsync(icon: SweetAlertIcon.Success, message: "Producto eliminado del carro de compras.");
+    }
+
+    private async Task ConfirmOrderAsync()
+    {
+        var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmación",
+                Text = "¿Esta seguro que quieres confirmar el pedido?",
+                Icon = SweetAlertIcon.Question,
+                ShowCancelButton = true
+            });
+
+        var confirm = string.IsNullOrEmpty(result.Value);
+        if (confirm)
+        {
+            return;
+        }
+
+        //var httpResponse = await repository.Post("/api/sales", SaleDTO);
+        //if (httpResponse.Error)
+        //{
+        //    var message = await httpResponse.GetErrorMessageAsync();
+        //    await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+        //    return;
+        //}
+
+        //navigationManager.NavigateTo("/Orders/SaleConfirmed");
+    }
+
+
+}

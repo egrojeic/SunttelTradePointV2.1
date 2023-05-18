@@ -1,11 +1,132 @@
-﻿
-@page "/ProductDetail/{productId:int}";
+﻿@page "/ProductDetail/{id:int}"
 
-<h3>ProductDetail</h3>
+@if (product != null)
+{
+    <div class="cont">
+        <section>
+            <div class="product-images">
+                <div class="list-group mx-3">
+                    @foreach (var image in product.Images)
+                    {
+                        <div class="small-card" @onclick="(() => selectedImage = image)">
+                            <img src="@image" alt="Product Image" width="44" height="44" id="small-img" />
+                        </div>
+                    }
+                </div>
+                <div class="img-container">
+                    <img src="@selectedImage" alt="Product Image" id="img-selected" />
+                </div>
+            </div>
 
+            <div class="characteristics">
+                <h2>Characteristics</h2>
+                <ul>
+                    <li>Characteristic 1</li>
+                    <li>Characteristic 2</li>
+                    <li>Characteristic 3</li>
+                    <li>Characteristic 4</li>
+                </ul>
+            </div>
+
+            <div class="description">
+                <h2>Description</h2>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Hic illo voluptatibus incidunt aliquam, saepe, error ab suscipit, repudiandae ea cupiditate accusamus deleniti quibusdam doloribus libero nam necessitatibus illum officiis eligendi.</p>
+            </div>
+        </section>
+
+        <section class="product-detail card">
+
+            <div class="mt-2">
+                <h4>
+                    <b>
+                        @product.Name
+                    </b>
+                </h4>
+            </div>
+
+            <div class="mt-2">
+                <h5>Rating:</h5>
+                <span>
+                    @foreach (var _ in Enumerable.Range(1, product.Rating))
+                    {
+                        <i class="oi oi-star"></i>
+                    }
+                </span>
+            </div>
+
+            <div class="mt-2">
+                <h5>Price:</h5>
+                <span style="font-size: 1.5rem">$@product.Price</span>
+            </div>
+
+            <div class="mt-2">
+                <h5>Quantity:</h5>
+                <div class="quantity-btn">
+                    <button class="btn" type="button">
+                        <i class="oi oi-minus"></i>
+                    </button>
+                    <span class="mx-2">1</span>
+                    <button class="btn" type="button">
+                        <i class="oi oi-plus"></i>
+                    </button>
+                </div>
+                <span class="ms-2">(77 available)</span>
+            </div>
+
+            <div class="d-grid gap-2 mt-4">
+                <button class="btn btn-primary" type="button">
+                    Buy Now
+                </button>
+                <button class="btn btn-info" type="button">
+                    Add to Cart
+                    <i class="oi oi-cart"></i>
+                </button>
+                <button class="btn btn-danger" type="button">
+                    Favorite
+                    <i class="oi oi-heart"></i>
+                </button>
+            </div>
+        </section>
+    </div>
+    <div class="cont">
+    </div>
+}
+else
+{
+    <p>No product selected.</p>
+}
 @code {
 
     [Parameter]
-    public int productId { get; set; }
+    public int id { get; set; }
+
+    public string selectedImage = "";
+
+    class Product
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public List<string> Images { get; set; }
+        public int Rating { get; set; }
+        public decimal Price { get; set; }
+    }
+
+    List<Product> products = new List<Product>
+    {
+        new Product { Id = 1, Name = "Product 1", Images = new List<string> { "Images/ghibli.jpg", "Images/portada.jpeg", "Images/tattoo.jpg" }, Rating = 4, Price = 10.99M },
+        new Product { Id = 2, Name = "Product 2", Images = new List<string> { "https://via.placeholder.com/200", "https://via.placeholder.com/200" }, Rating = 3, Price = 19.99M },
+        new Product { Id = 3, Name = "Product 3", Images = new List<string> { "https://via.placeholder.com/200", "https://via.placeholder.com/200" }, Rating = 5, Price = 5.99M },
+        new Product { Id = 4, Name = "Product 4", Images = new List<string> { "https://via.placeholder.com/200", "https://via.placeholder.com/200" }, Rating = 2, Price = 14.99M },
+    };
+
+    Product product = new Product();
+
+    protected override void OnInitialized()
+    {
+        product = products.FirstOrDefault(p => p.Id == id);
+        selectedImage = product.Images[0];
+    }
 
 }
+
+
