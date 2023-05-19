@@ -9,10 +9,32 @@
 @inject NavigationManager navigationManager
 
 <style>
+    th {
+        z-index: 0;
+    }
+
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
+        z-index: 0;
+    }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 0px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
     }
 </style>
+
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
 
 <PageTitleComponent Title="Pallet Types" IconName="EntityRoles.png"
                     Description="Describes the different pallets types">
@@ -50,6 +72,17 @@
                 <Columns>
                     <RadzenDataGridColumn TItem="PalletType" Property="Code" Title="@GetName("Code",new PalletType())" Filterable="false" Width="150px" />
                     <RadzenDataGridColumn TItem="PalletType" Property="Name" Title="@GetName("Name",new PalletType())" Filterable="false" Width="150px" />
+                    <RadzenDataGridColumn TItem="PalletType" Title="@GetName("Action",new PalletType())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
+                        <Template Context="data">
+
+                            <Confirm Id="@data.Id" TextValue="@($"¿ Confirm delete ?")"
+                             IdSelect="@IdDelete"
+                             ConfirmIdAction='ConfirmDelete'
+                             CancelAction="CancelDelete"
+                             SelectIdAction="SelectDelete"></Confirm>
+
+                        </Template>
+                    </RadzenDataGridColumn>
                 </Columns>
             </RadzenDataGrid>
             <div class="container-total">
@@ -74,26 +107,28 @@
     List<PalletType> palletTypesList;
     IList<PalletType> selectedPalletTypes;
 
-
+    bool viewMsg = false;
+    string msg = "";
+    string IdDelete = "";
     bool isLoading = false;
     string _filterItems = "";
-
+    string filter = "all";
     public string? conceptFilter
     {
         get { return _filterItems; }
         set
         {
             _filterItems = value;
-            GetFilterPalletTypes(_filterItems);
+            GetFilterPalletTypes();
         }
     }
 
     protected override async Task OnInitializedAsync()
     {       
-        await GetFilterPalletTypes("all");
+        await GetFilterPalletTypes();
     }
 
-    private async Task GetFilterPalletTypes(string filter = "")
+    private async Task GetFilterPalletTypes()
     {
         if (filter.Length > 0)
         {
@@ -118,13 +153,11 @@
         }
     }
 
-   
-
 
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<PalletType> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
 
@@ -136,6 +169,40 @@
         {
             ContextMenuService.Close();
         }
+    }
+
+    #region Confirm
+
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result =  await actorsNodeServive.DeletePalletTypeById(Id);
+        if (result) { GetFilterPalletTypes(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
+
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
     }
 
     public string GetName(string Name, Object Obj)

@@ -499,7 +499,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             try
             {
                 string path = basepath.Replace("Name", "DeleteShippingStatusById");
-                var responseMessage = await Deletehttp($"{path}&filshippingStatusIdter={shippingStatusId}");
+                var responseMessage = await Deletehttp($"{path}&shippingStatusId={shippingStatusId}");
                 var result = responseMessage.IsSuccessStatusCode;
                 return result;
 

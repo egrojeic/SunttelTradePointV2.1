@@ -29,6 +29,7 @@
         font-weight: bold;
     }
 </style>
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
 
 <PageTitleComponent Title="Papers" IconName="paper.png"
                     Description="LabelPaper to keep the different products">
@@ -59,18 +60,29 @@ else
                 PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                 ShowPagingSummary="true"
                 Data="@papers"
-                TItem="LabelPaper"              
+                TItem="LabelPaper"
                 SelectionMode="DataGridSelectionMode.Single"
                 LogicalFilterOperator="LogicalFilterOperator.Or"
-                CellContextMenu="@ShowContextMenuWithContent"               
+                CellContextMenu="@ShowContextMenuWithContent"
                 PageSize="50">
 
             <Columns>
                 <RadzenDataGridColumn TItem="LabelPaper" Property="@nameof(LabelPaper.Name)" Title="@GetName("Name", new LabelPaper())" Width="200"></RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="LabelPaper" Property="@nameof(LabelPaper.Code)" Title="@GetName("Code", new LabelPaper())" TextAlign="Radzen.TextAlign.Center" Width="50" Filterable="false"></RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="LabelPaper" Property="@nameof(LabelPaper.Height)" Title="@GetName("Height", new LabelPaper())" TextAlign="Radzen.TextAlign.Right" Width="80" Filterable="false" Sortable="false" ></RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="LabelPaper" Property="@nameof(LabelPaper.Width)" Title="@GetName("Height", new LabelPaper())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="80" ></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="LabelPaper" Property="@nameof(LabelPaper.Height)" Title="@GetName("Height", new LabelPaper())" TextAlign="Radzen.TextAlign.Right" Width="80" Filterable="false" Sortable="false"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="LabelPaper" Property="@nameof(LabelPaper.Width)" Title="@GetName("Height", new LabelPaper())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="80"></RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="LabelPaper" Property="@nameof(LabelPaper.Notes)" Title="@GetName("Notes", new LabelPaper())" TextAlign="Radzen.TextAlign.Center" Filterable="false" Sortable="false" Width="80"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="LabelPaper" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
+                    <Template Context="data">
+
+                        <Confirm Id="@data.Id" TextValue="@($"¿ Confirm delete ?")"
+                         IdSelect="@IdDelete"
+                         ConfirmIdAction='ConfirmDelete'
+                         CancelAction="CancelDelete"
+                         SelectIdAction="SelectDelete"></Confirm>
+
+                    </Template>
+                </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="LabelPaper" Property="@nameof(LabelPaper.Id)" Title="@GetName("Id", new LabelPaper())" TextAlign="Radzen.TextAlign.Right" Filterable="false" Sortable="false" Width="80"></RadzenDataGridColumn>
             </Columns>
         </RadzenDataGrid>
@@ -94,9 +106,9 @@ else
     public string _filterItems { get; set; } = "";
     public List<LabelPaper> papers { get; set; }
 
-   
-   
-
+    bool viewMsg = false;
+    string msg = "";
+    string IdDelete = "";
     bool isLoading = false;
 
     public string? conceptFilter
@@ -113,11 +125,8 @@ else
     {
         _filterItems = "all";
         LoadData();
-
         transactItemsService.Page = "Paper";
     }
-
- 
 
     private async Task LoadData()
     {
@@ -126,7 +135,6 @@ else
         isLoading = false;
         StateHasChanged();
     }
-
 
     #region Grid
 
@@ -140,10 +148,42 @@ else
     {
         LabelPaper argObj = (LabelPaper)args.Value;
         Navigation.NavigateTo($"/PaperConcept/{argObj.Id}/{_filterItems}");
+    }
+    #endregion Grid
 
+    #region Confirm
+
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await transactItemsService.DeleteLabelPaperById(Id);
+        if (result) { LoadData(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
     }
 
-    #endregion Grid
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
+
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
+    }
 
 
     public string GetName(string Name, Object Obj)
@@ -151,7 +191,6 @@ else
         Name = UICommonFunctions.GetDisplayName(Obj, Name) != null ? UICommonFunctions.GetDisplayName(Obj, Name) : Name;
         return Name;
     }
-
 
 
 }

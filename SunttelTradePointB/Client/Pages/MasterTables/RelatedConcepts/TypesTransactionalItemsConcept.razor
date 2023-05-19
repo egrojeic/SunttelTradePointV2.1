@@ -10,14 +10,35 @@
 @inject NavigationManager Navigation
 @inject TransactionalItemsService transactionalService;
 @inject ContextMenuService ContextMenuService
-
 <style>
+    th {
+        z-index: 0;
+    }
 
-.e-tab-header .e-toolbar-item .e-tab-text {
-    text-transform: none;
-    font-size: 5px;
-    color:red;
-} 
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+        z-index: 0;
+    }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 0px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
+    .e-tab-header .e-toolbar-item .e-tab-text {
+        text-transform: none;
+        font-size: 5px;
+        color: red;
+    }
 </style>
 
 <div class="flex-verical-center position-relative" style="display:@(!modeEdit?"flex":"none");">
@@ -43,11 +64,11 @@
                 <div></div>
                 <div><label class="info-text-size">@GetName( "Name", new AtomConcept())</label></div>
                 <div><input type="text" @bind-value="childrenGroup.Name" class="form-control info-text-size" placeholder="Edit value" /></div>
-                <div><label class="info-text-size" >@GetName( "Code", new AtomConcept())</label></div>
+                <div><label class="info-text-size">@GetName( "Code", new AtomConcept())</label></div>
                 <div><input type="text" @bind-value="childrenGroup.Code" class="form-control info-text-size" placeholder="Edit value" /></div>
-                <div><label class="info-text-size" >@GetName( "Notes", new AtomConcept())</label></div>
+                <div><label class="info-text-size">@GetName( "Notes", new AtomConcept())</label></div>
                 <div><input type="text" @bind-value="childrenGroup.Notes" class="form-control info-text-size" placeholder="Edit value" /></div>
-                <div><label class="info-text-size" >@GetName( "GroupClassificationCriteria", new ConceptGroup())</label></div>
+                <div><label class="info-text-size">@GetName( "GroupClassificationCriteria", new ConceptGroup())</label></div>
                 <div><input type="text" @bind-value="childrenGroup.GroupClassificationCriteria" class="form-control info-text-size" placeholder="Edit value" /></div>
                 <div></div>
                 <div class="flex-horizontal-end">
@@ -124,13 +145,31 @@
                             </div>
                             @if (transactionalItemProcessTags == null) transactionalItemProcessTags = new();
 
-                            <DataGrid TParameter="TransactionalItemTag"
-                                  EventCallbackMenu="OnContextMenuClick"
-                                  parameterList="transactionalItemProcessTags"
-                                  GridColumnsList="gridColumnListProcessTag"
-                                  EventCallbackOnLoad="Onload"
-                                  Width="100%">
-                            </DataGrid>
+
+                            <RadzenDataGrid AllowFiltering="true"
+                                        AllowColumnResize="true"
+                                        AllowAlternatingRows="true"
+                                        FilterMode="FilterMode.Advanced"
+                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                        AllowSorting="true"
+                                        AllowPaging="true"
+                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                        ShowPagingSummary="true"
+                                        Data="@transactionalItemProcessTags"
+                                        TItem="TransactionalItemTag"
+                                        ColumnWidth="300px"
+                                        SelectionMode="DataGridSelectionMode.Single"
+                                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                                        CellContextMenu="@ShowContextMenuWithContent"
+                                        PageNumbersCount="100"
+                                        PageSize="50">
+
+                                <Columns>
+                                    <RadzenDataGridColumn TItem="TransactionalItemTag" Property="Key" Title="@GetName("Key", new ConceptGroup())" Width="80px" />
+                                    <RadzenDataGridColumn TItem="TransactionalItemTag" Property="Value" Title="@GetName("Value", new ConceptGroup())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+
+                                </Columns>
+                            </RadzenDataGrid>
                         </div>
                     </ContentTemplate>
                 </TabItem>
@@ -151,13 +190,32 @@
                             </div>
                             @if (costExceptionsByQuantitys == null) costExceptionsByQuantitys = new();
 
-                            <DataGrid TParameter="CostExceptionByQuantity"
-                                  EventCallbackMenu="OnContextMenuClick"
-                                  parameterList="costExceptionsByQuantitys"
-                                  GridColumnsList="gridColumnListByQuantity"
-                                  EventCallbackOnLoad="Onload"
-                                  Width="100%">
-                            </DataGrid>
+                            <RadzenDataGrid AllowFiltering="true"
+                                        AllowColumnResize="true"
+                                        AllowAlternatingRows="true"
+                                        FilterMode="FilterMode.Advanced"
+                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                        AllowSorting="true"
+                                        AllowPaging="true"
+                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                        ShowPagingSummary="true"
+                                        Data="@costExceptionsByQuantitys"
+                                        TItem="CostExceptionByQuantity"
+                                        ColumnWidth="300px"
+                                        SelectionMode="DataGridSelectionMode.Single"
+                                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                                        CellContextMenu="@ShowContextMenuWithContent"
+                                        PageNumbersCount="100"
+                                        PageSize="50">
+
+                                <Columns>
+                                    <RadzenDataGridColumn TItem="CostExceptionByQuantity" Property="MinimumQty" Title="@GetName("MinimumQty", new ConceptGroup())" TextAlign="Radzen.TextAlign.Right" Width="80px" />
+                                    <RadzenDataGridColumn TItem="CostExceptionByQuantity" Property="MaximumQty" Title="@GetName("MaximumQty", new ConceptGroup())" Width="180px" TextAlign="Radzen.TextAlign.Right" />
+
+                                </Columns>
+                            </RadzenDataGrid>
+
+
                         </div>
                     </ContentTemplate>
                 </TabItem>
@@ -252,14 +310,35 @@
             </svg>
         </div>
 
-        <div class="flex-horizontal-center ">
-            <DataGrid TParameter="TransactionalItemCharacteristic"
-                  EventCallbackMenu="OnContextMenuClick"
-                  parameterList="possibleValues"
-                  GridColumnsList="gridColumnListPossibleValues"
-                  Width="100%">
-            </DataGrid>
-        </div>
+
+        <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowAlternatingRows="true"
+                    FilterMode="FilterMode.Advanced"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    AllowSorting="true"
+                    AllowPaging="true"
+                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                    ShowPagingSummary="true"
+                    Data="@possibleValues"
+                    TItem="TransactionalItemCharacteristic"
+                    ColumnWidth="300px"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                    CellContextMenu="@ShowContextMenuWithContent"
+                    PageNumbersCount="100"
+                    PageSize="50">
+
+            <Columns>
+                <RadzenDataGridColumn TItem="TransactionalItemCharacteristic" Property="Name" Title="@GetName("Name", new ProductRecipeQualityModifier())" Width="200px" />
+                <RadzenDataGridColumn TItem="TransactionalItemCharacteristic" Property="Name" Title="@GetName("IsEnabled", new ProductRecipeQualityModifier())" Width="50px">
+                    <Template Context="data">
+                        <RadzenCheckBox @bind-Value="data.IsEnabled"></RadzenCheckBox>
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="TransactionalItemCharacteristic" Property="Name" Title="@GetName("AdditionalDescription", new ProductRecipeQualityModifier())" Width="10px" />
+            </Columns>
+        </RadzenDataGrid>
 
 
 
@@ -290,8 +369,6 @@
             </div>
             <br>
         </div>
-
-
     }
 
     @if (pageView == "QualityParameters")
@@ -361,14 +438,29 @@
 
             @if (recipePossibleModifierValues == null) recipePossibleModifierValues = new();
 
-            <DataGrid TParameter="ProductRecipeQualityModifier"
-                  EventCallbackMenu="OnContextMenuClick"
-                  parameterList="recipePossibleModifierValues"
-                  GridColumnsList="gridColumnListPossibleModifierValues"
-                  EventCallbackOnLoad="Onload"
-                  Width="100%">
 
-            </DataGrid>
+            <RadzenDataGrid AllowFiltering="true"
+                        AllowColumnResize="true"
+                        AllowAlternatingRows="true"
+                        FilterMode="FilterMode.Advanced"
+                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        AllowSorting="true"
+                        AllowPaging="true"
+                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                        ShowPagingSummary="true"
+                        Data="@recipePossibleModifierValues"
+                        TItem="ProductRecipeQualityModifier"
+                        ColumnWidth="300px"
+                        SelectionMode="DataGridSelectionMode.Single"
+                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                        CellContextMenu="@ShowContextMenuWithContent"
+                        PageNumbersCount="100"
+                        PageSize="50">
+
+                <Columns>
+                    <RadzenDataGridColumn TItem="ProductRecipeQualityModifier" Property="Name" Title="@GetName("Name", new ProductRecipeQualityModifier())" Width="80px" />
+                </Columns>
+            </RadzenDataGrid>
 
 
         </div>
@@ -488,7 +580,7 @@
                                         LogicalFilterOperator="LogicalFilterOperator.Or"
                                         CellContextMenu="@ShowContextMenuWithContent"
                                         PageNumbersCount="100"
-                                        PageSize="2">
+                                        PageSize="50">
 
                             <Columns>
                                 <RadzenDataGridColumn TItem="ConceptGroup" Property="Name" Title="@GetName("Name", new ConceptGroup())" Width="80px" />
@@ -518,7 +610,7 @@
 
                         @if (transactionalItemProcessSteps == null) { transactionalItemProcessSteps = new List<TransactionalItemProcessStep>(); }
 
-                              <RadzenDataGrid AllowFiltering="true"
+                        <RadzenDataGrid AllowFiltering="true"
                                         AllowColumnResize="true"
                                         AllowAlternatingRows="true"
                                         FilterMode="FilterMode.Advanced"
@@ -534,7 +626,7 @@
                                         LogicalFilterOperator="LogicalFilterOperator.Or"
                                         CellContextMenu="@ShowContextMenuWithContent"
                                         PageNumbersCount="100"
-                                        PageSize="2">
+                                        PageSize="50">
 
                             <Columns>
                                 <RadzenDataGridColumn TItem="TransactionalItemProcessStep" Property="Name" Title="@GetName("Name", new TransactionalItemProcessStep())" Width="80px" />
@@ -581,11 +673,11 @@
                                         LogicalFilterOperator="LogicalFilterOperator.Or"
                                         CellContextMenu="@ShowContextMenuWithContent"
                                         PageNumbersCount="100"
-                                        PageSize="2">
+                                        PageSize="50">
 
                             <Columns>
                                 <RadzenDataGridColumn TItem="TransactionalItemTypeCharacteristic" Property="Name" Title="@GetName("Name", new TransactionalItemProcessStep())" Width="80px" />
-                               
+
                             </Columns>
                         </RadzenDataGrid>
 
@@ -609,7 +701,7 @@
 
                         @if (transactionalItemQualitys == null) transactionalItemQualitys = new();
 
-                          <RadzenDataGrid AllowFiltering="true"
+                        <RadzenDataGrid AllowFiltering="true"
                                         AllowColumnResize="true"
                                         AllowAlternatingRows="true"
                                         FilterMode="FilterMode.Advanced"
@@ -622,9 +714,9 @@
                                         TItem="TransactionalItemQuality"
                                         ColumnWidth="300px"
                                         SelectionMode="DataGridSelectionMode.Single"
-                                        LogicalFilterOperator="LogicalFilterOperator.Or"                                      
+                                        LogicalFilterOperator="LogicalFilterOperator.Or"
                                         PageNumbersCount="100"
-                                        PageSize="2">
+                                        PageSize="50">
 
                             <Columns>
                                 <RadzenDataGridColumn TItem="TransactionalItemQuality" Property="Name" Title="@GetName("Name", new AtomConcept())" Width="80px" />
@@ -633,7 +725,6 @@
                                 <RadzenDataGridColumn TItem="TransactionalItemQuality" Property="DefaultValue" Title="@GetName("DefaultValue", new AtomConcept())" Width="80px" />
                             </Columns>
                         </RadzenDataGrid>
-                        
                     </div>
 
                 </ContentTemplate>
@@ -644,7 +735,6 @@
                 </ChildContent>
                 <ContentTemplate>
                     <div class="flex-horizontal-center">
-
                         <div class="detailsTitleContainer">
                             <h3 class="subTitleDetailForm">@GetName("InRecipeModifiers", new TransactionalItemType())</h3>
                             <svg @onclick='()=>ClosedAdd("InRecipeModifiers")' title="Add new tag" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style svg-ico" viewBox="0 0 16 16">
@@ -656,16 +746,27 @@
 
                         @if (inRecipeModifiers == null) inRecipeModifiers = new();
 
-                        <DataGrid TParameter="RecipeModifier"
-                                  EventCallbackMenu="OnContextMenuClick"
-                                  parameterList="inRecipeModifiers"
-                                  GridColumnsList="gridColumnListModifier"
-                                  EventCallbackOnLoad="Onload"
-                                  Width="100%">
+                        <RadzenDataGrid AllowFiltering="true"
+                                        AllowColumnResize="true"
+                                        AllowAlternatingRows="true"
+                                        FilterMode="FilterMode.Advanced"
+                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                        AllowSorting="true"
+                                        AllowPaging="true"
+                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                        ShowPagingSummary="true"
+                                        Data="@inRecipeModifiers"
+                                        TItem="RecipeModifier"
+                                        ColumnWidth="300px"
+                                        SelectionMode="DataGridSelectionMode.Single"
+                                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                                        PageNumbersCount="100"
+                                        PageSize="50">
 
-                        </DataGrid>
-
-
+                            <Columns>
+                                <RadzenDataGridColumn TItem="RecipeModifier" Property="Name" Title="@GetName("Name", new AtomConcept())" Width="80px" />
+                            </Columns>
+                        </RadzenDataGrid>
                     </div>
                 </ContentTemplate>
             </TabItem>
@@ -685,7 +786,6 @@
     public string filterItems { get; set; } = "";
 
     bool requiereSave = false;
-
     public TransactionalItemType transactionalItemType = new();
     public List<ConceptGroup> childrenGroups = new();
     public ConceptGroup childrenGroup = new();
@@ -710,17 +810,9 @@
     //public ProductRecipeQualityModifier recipePossibleModifierValue = new();
     public List<ConceptGroup>? Groups = new();
 
-  
-   
+
+
     public List<GridColumn> gridColumnListConceptGroup = new();
-    public List<GridColumn> gridColumnListProcessTag = new();
-    
-    public List<GridColumn> gridColumnListModifier = new();
-    public List<GridColumn> gridColumnListPossibleValues = new();
-    public List<GridColumn> gridColumnListByQuantity = new();
-    public List<GridColumn> gridColumnListPossibleModifierValues = new();
-
-
 
     public bool isLoading = false, dataGridView = true, modeEdit = true, viewMsg = false;
     //public List<PossibleValues> possibleValuesModel = new();
@@ -736,58 +828,25 @@
 
     protected async override void OnInitialized()
     {
-        if (transactionalItemTypeId !=null)
+        if (transactionalItemTypeId != null)
         {
-            
-                transactionalItemType = await transactionalService.GetTransactionalItemType(transactionalItemTypeId);
-                transactionalItemProcessSteps = transactionalItemType.TransactionalItemProcesses != null ? transactionalItemType.TransactionalItemProcesses : new();
-                childrenGroups = transactionalItemType.Groups != null ? transactionalItemType.Groups : new();
-                transactionalItemTypeCharacteristics = transactionalItemType.TransactionalItemTypeCharacteristics != null ? transactionalItemType.TransactionalItemTypeCharacteristics : new();
-                transactionalItemQualitys = transactionalItemType.QualityParameters != null ? transactionalItemType.QualityParameters : new();
-                inRecipeModifiers = transactionalItemType.InRecipeModifiers != null ? transactionalItemType.InRecipeModifiers : new();
-                StateHasChanged();
-            
 
-        }else
+            transactionalItemType = await transactionalService.GetTransactionalItemType(transactionalItemTypeId);
+            transactionalItemProcessSteps = transactionalItemType.TransactionalItemProcesses != null ? transactionalItemType.TransactionalItemProcesses : new();
+            childrenGroups = transactionalItemType.Groups != null ? transactionalItemType.Groups : new();
+            transactionalItemTypeCharacteristics = transactionalItemType.TransactionalItemTypeCharacteristics != null ? transactionalItemType.TransactionalItemTypeCharacteristics : new();
+            transactionalItemQualitys = transactionalItemType.QualityParameters != null ? transactionalItemType.QualityParameters : new();
+            inRecipeModifiers = transactionalItemType.InRecipeModifiers != null ? transactionalItemType.InRecipeModifiers : new();
+            StateHasChanged();
+
+
+        }
+        else
         {
             transactionalItemType = new();
         }
 
 
-        #region Column
-     
-
-     
-      
-        gridColumnListProcessTag = new List<GridColumn>
-        {
-            new GridColumn() { Field = nameof(TransactionalItemTag.Key), HeaderText = GetName("Name", new TransactionalItemTag())  },
-            new GridColumn() { Field = nameof(TransactionalItemTag.Value), HeaderText = GetName("Code", new TransactionalItemTag())  }
-
-        };
-     
-
-        gridColumnListModifier = new List<GridColumn>
-        {
-            new GridColumn() { Field = nameof(RecipeModifier.Name), HeaderText = GetName("Name", new RecipeModifier())  }
-
-        };
-        gridColumnListPossibleModifierValues = new List<GridColumn>
-        {
-         new GridColumn() { Field = nameof(ProductRecipeQualityModifier.Name), HeaderText = GetName("Name", new ProductRecipeQualityModifier())  }
-        };
-        gridColumnListPossibleValues = new List<GridColumn>
-        {
-            new GridColumn() { Field=nameof(TransactionalItemCharacteristic.Name) ,  HeaderText = @GetName( "Name", new TransactionalItemTypeCharacteristic())  },
-            new GridColumn() { Field=nameof(TransactionalItemCharacteristic.IsEnabled) ,  HeaderText = @GetName( "IsEnabled", new TransactionalItemTypeCharacteristic()) , DisplayAsCheckBox=true },
-            new GridColumn() { Field=nameof(TransactionalItemCharacteristic.AdditionalDescription) ,  HeaderText = @GetName( "AdditionalDescription", new TransactionalItemTypeCharacteristic())  },
-        };
-        gridColumnListByQuantity = new List<GridColumn>
-        {
-              new GridColumn() { Field=nameof(CostExceptionByQuantity.MinimumQty) ,  HeaderText = @GetName( "MinimumQty", new CostExceptionByQuantity())  },
-               new GridColumn() { Field=nameof(CostExceptionByQuantity.MaximumQty) ,  HeaderText = @GetName( "MaximumQty", new CostExceptionByQuantity())  }
-        };
-        #endregion Column
 
     }
 
@@ -806,23 +865,7 @@
         }
     }
 
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<CostExceptionByQuantity> args)
-    {
-        costExceptionsByQuantity = args.RowInfo.RowData;
-        if (args.Item.Text == "Edit" && costExceptionsByQuantity != null)
-        {
-            ClosedAdd("CostExceptionsByQuantityProcessStep");
-        }
-        if (args.Item.Text == "Reload")
-        {
-            StateHasChanged();
-        }
-    }
-
-
-
-
-      #region Grid
+    #region Grid
 
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<TransactionalItemTypeCharacteristic> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick2">
@@ -832,14 +875,14 @@
 
     void OnMenuItemClick2(MenuItemEventArgs args)
     {
-        transactionalItemTypeCharacteristic = (TransactionalItemTypeCharacteristic)args.Value;       
+        transactionalItemTypeCharacteristic = (TransactionalItemTypeCharacteristic)args.Value;
 
-        if ( transactionalItemTypeCharacteristic != null)
+        if (transactionalItemTypeCharacteristic != null)
         {
             possibleValues = transactionalItemTypeCharacteristic.PossibleValues != null ? transactionalItemTypeCharacteristic.PossibleValues : new();
             ClosedAdd("TransactionalItemTypeCharacteristics");
         }
-       
+
 
     }
 
@@ -851,7 +894,7 @@
 
     void OnMenuItemClick1(MenuItemEventArgs args)
     {
-        transactionalItemProcessStep = (TransactionalItemProcessStep)args.Value;        
+        transactionalItemProcessStep = (TransactionalItemProcessStep)args.Value;
         if (transactionalItemProcessStep != null)
         {
             transactionalItemProcessTags = transactionalItemProcessStep.TransactionalItemProcessTags;
@@ -860,14 +903,14 @@
             typeOfComponentsToCharge = transactionalItemProcessStep.TypeOfComponentsToCharge;
             ClosedAdd("TransactionalItemProcessesGeneral");
         }
-       
+
     }
 
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<ConceptGroup> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
-    );
+           );
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
@@ -875,65 +918,74 @@
         ClosedAdd("ChildrenGroups");
     }
 
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<TransactionalItemTag> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClickTag">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+           );
+
+    void OnMenuItemClickTag(MenuItemEventArgs args)
+    {
+        transactionalItemProcessTag = (TransactionalItemTag)args.Value;
+
+        ClosedAdd("TransactionalItemProcessestags");
+    }
+
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<CostExceptionByQuantity> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClickQuantity">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClickQuantity(MenuItemEventArgs args)
+    {
+        costExceptionsByQuantity = (CostExceptionByQuantity)args.Value;
+
+        ClosedAdd("CostExceptionsByQuantityProcessStep");
+    }
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<ProductRecipeQualityModifier> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClickModifier">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+       );
+
+    void OnMenuItemClickModifier(MenuItemEventArgs args)
+    {
+        recipePossibleModifierValue = (ProductRecipeQualityModifier)args.Value;
+
+        ClosedAdd("RecipePossibleModifierValues");
+    }
+
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<TransactionalItemCharacteristic> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClickCharacteristic">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+      );
+
+    void OnMenuItemClickCharacteristic(MenuItemEventArgs args)
+    {
+        possibleValue = (TransactionalItemCharacteristic)args.Value;
+
+        ClosedAdd("PossibleValues");
+    }
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<RecipeModifier> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClickRecipeModifier">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClickRecipeModifier(MenuItemEventArgs args)
+    {
+        inRecipeModifier = (RecipeModifier)args.Value;
+        recipePossibleModifierValues = inRecipeModifier.RecipePossibleModifierValues;
+        ClosedAdd("InRecipeModifiers");
+    }
+
     #endregion Grid
-   
-
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemTag> args)
-    {
-
-        transactionalItemProcessTag = args.RowInfo.RowData;
-        if (args.Item.Text == "Edit" && transactionalItemProcessTag != null)
-        {
-            ClosedAdd("TransactionalItemProcessestags");
-        }
-        if (args.Item.Text == "Reload")
-        {
-            StateHasChanged();
-        }
-    }
-
-   
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<RecipeModifier> args)
-    {
-
-        inRecipeModifier = args.RowInfo.RowData;
-
-        if (args.Item.Text == "Edit" && inRecipeModifier != null)
-        {
-            recipePossibleModifierValues = inRecipeModifier.RecipePossibleModifierValues;
-            ClosedAdd("InRecipeModifiers");
-        }
-        if (args.Item.Text == "Reload")
-        {
-            StateHasChanged();
-        }
-    }
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<ProductRecipeQualityModifier> args)
-    {
-        recipePossibleModifierValue = args.RowInfo.RowData;
-
-        if (args.Item.Text == "Edit" && recipePossibleModifierValue != null)
-        {
-            ClosedAdd("RecipePossibleModifierValues");
-        }
-        if (args.Item.Text == "Reload")
-        {
-            StateHasChanged();
-        }
-
-    }
-    public async void OnContextMenuClick(ContextMenuClickEventArgs<TransactionalItemCharacteristic> args)
-    {
-        possibleValue = args.RowInfo.RowData;
-        if (args.Item.Text == "Edit" && possibleValue != null)
-        {
-            ClosedAdd("PossibleValues");
-        }
-        if (args.Item.Text == "Disable")
-        {
-            StateHasChanged();
-        }
-    }
 
 
     #endregion Event
@@ -1029,7 +1081,7 @@
             if (transactionalItemProcessSteps == null) transactionalItemProcessSteps = new();
 
 
-            if ( transactionalItemProcessStep.Id == null)
+            if (transactionalItemProcessStep.Id == null)
             {
 
                 transactionalItemProcessStep.TransactionalItemProcessTags = transactionalItemProcessTags != null ? transactionalItemProcessTags : new();
@@ -1042,7 +1094,7 @@
 
             }
 
-            if ( transactionalItemProcessStep.Id != null)
+            if (transactionalItemProcessStep.Id != null)
             {
                 transactionalItemProcessStep.TransactionalItemProcessTags = transactionalItemProcessTags != null ? transactionalItemProcessTags : new();
                 transactionalItemProcessStep.CostExceptionsByQuantity = costExceptionsByQuantitys != null ? costExceptionsByQuantitys : new();
@@ -1074,9 +1126,11 @@
                     {
                         Msg("value require");
                     }
-                }else{
-                Msg("key require");
-            }
+                }
+                else
+                {
+                    Msg("key require");
+                }
             }
 
             if (transactionalItemProcessTag.Id != null)
@@ -1096,7 +1150,7 @@
         if (value == "CostExceptionsByQuantityProcessStep")
         {
 
-            if ( costExceptionsByQuantity.Id == null)
+            if (costExceptionsByQuantity.Id == null)
             {
                 costExceptionsByQuantitys.Add(costExceptionsByQuantity);
                 costExceptionsByQuantity = new();
@@ -1115,7 +1169,7 @@
 
         if (value == "TransactionalItemTypeCharacteristics")
         {
-            if ( transactionalItemTypeCharacteristic.Id == null)
+            if (transactionalItemTypeCharacteristic.Id == null)
             {
                 if (transactionalItemTypeCharacteristics == null) transactionalItemTypeCharacteristics = new();
                 transactionalItemTypeCharacteristic.PossibleValues = possibleValues != null ? possibleValues : new();
@@ -1125,7 +1179,7 @@
                 Msg("Added");
 
             }
-            if ( transactionalItemTypeCharacteristic.Id != null)
+            if (transactionalItemTypeCharacteristic.Id != null)
             {
                 Msg("Updated");
 
@@ -1138,14 +1192,14 @@
         if (value == "QualityParameters")
         {
 
-            if ( transactionalItemQuality.Id == null)
+            if (transactionalItemQuality.Id == null)
             {
                 if (transactionalItemQualitys == null) transactionalItemQualitys = new();
                 transactionalItemQualitys.Add(transactionalItemQuality);
                 transactionalItemQuality = new();
                 Msg("Added");
             }
-            if ( transactionalItemQuality.Id != null)
+            if (transactionalItemQuality.Id != null)
             {
 
                 Msg("Updated");
@@ -1159,7 +1213,7 @@
         if (value == "InRecipeQualityModifiers")
         {
 
-            if ( inRecipeModifier.Id == null)
+            if (inRecipeModifier.Id == null)
             {
                 if (inRecipeModifiers == null) inRecipeModifiers = new();
                 inRecipeModifier.RecipePossibleModifierValues = recipePossibleModifierValues;
@@ -1167,7 +1221,7 @@
                 inRecipeModifier = new();
                 Msg("Added");
             }
-            if ( inRecipeModifier.Id != null)
+            if (inRecipeModifier.Id != null)
             {
 
                 Msg("Updated");
@@ -1178,14 +1232,14 @@
         if (value == "RecipePossibleModifierValues")
         {
 
-            if ( recipePossibleModifierValue.Id == null)
+            if (recipePossibleModifierValue.Id == null)
             {
                 if (recipePossibleModifierValues == null) recipePossibleModifierValues = new();
                 recipePossibleModifierValues.Add(recipePossibleModifierValue);
                 recipePossibleModifierValue = new();
                 Msg("Added");
             }
-            if ( recipePossibleModifierValue.Id != null)
+            if (recipePossibleModifierValue.Id != null)
             {
 
                 Msg("Updated");
@@ -1245,13 +1299,14 @@
         {
             if (childrenGroup.GroupClassificationCriteria != null)
             {
-                if (childrenGroup.Id == null )
+                if (childrenGroup.Id == null)
                 {
                     childrenGroups.Add(childrenGroup);
                     childrenGroup = new();
                     requiereSave = true;
                     Msg("Added");
-                }else
+                }
+                else
                 {
                     requiereSave = true;
                     Msg("Update");

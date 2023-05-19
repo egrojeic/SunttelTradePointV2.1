@@ -621,7 +621,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 string filter = filterCondition == null ? "" : filterCondition;
                 var skip = (page - 1) * perPage;
 
-                if (filter.Length > 0)
+                if (filter.Length > 0 && filter!="all")
                 {
                     var pipeline = new List<BsonDocument>();
 

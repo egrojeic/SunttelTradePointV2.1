@@ -7,6 +7,7 @@
 @inject NavigationManager Navigation
 @inject ContextMenuService ContextMenuService
 
+
 <style>
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
@@ -27,6 +28,8 @@
         font-weight: bold;
     }
 </style>
+
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
 
 @if (@viewMsg)
 {
@@ -99,7 +102,17 @@
                 <RadzenDataGridColumn TItem="AssemblyType" Property="Name" Title="@GetName("Name", new AtomConcept())" Width="80px" />
                 <RadzenDataGridColumn TItem="AssemblyType" Property="Code" Title="@GetName("Code", new AtomConcept())" Width="80px" />
                 <RadzenDataGridColumn TItem="AssemblyType" Property="Notes" Title="@GetName("Notes", new AtomConcept())" Width="80px" />
+                <RadzenDataGridColumn TItem="AssemblyType" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
+                    <Template Context="data">
 
+                        <Confirm Id="@data.Id" TextValue="@($"¿ Confirm delete ?")"
+                         IdSelect="@IdDelete"
+                         ConfirmIdAction='ConfirmDelete'
+                         CancelAction="CancelDelete"
+                         SelectIdAction="SelectDelete"></Confirm>
+
+                    </Template>
+                </RadzenDataGridColumn>
             </Columns>
         </RadzenDataGrid>
         <div class="container-total">
@@ -134,7 +147,8 @@
 
     bool viewMsg = false;
     string msg = "";
-    int status = 0;
+    string IdDelete = "";
+        int status = 0;
     string transactionalItemId = "";
     bool isLoading = false;
 
@@ -227,6 +241,41 @@
         Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
     }
+
+    #region Confirm
+
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await transactionalService.DeleteAssemblyTypeById(Id);
+        if (result) { LoadData(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
+
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
+    }
+
 
     public async Task Closed(string Element)
     {

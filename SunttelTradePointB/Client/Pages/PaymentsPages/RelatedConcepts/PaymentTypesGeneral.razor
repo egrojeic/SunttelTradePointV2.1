@@ -83,7 +83,7 @@
                     <RadzenDataGridColumn TItem="PaymentType" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
                         <Template Context="data">
 
-                            <Confirm Id="@data.Id" TextValue="@($"¿Are you sure to permanently delete Name: {@data.Name} ?")"
+                            <Confirm Id="@data.Id" TextValue="@($"¿ Confirm delete ?")"
                              IdSelect="@IdDelete"
                              ConfirmIdAction='ConfirmDelete'
                              CancelAction="CancelDelete"

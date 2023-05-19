@@ -110,17 +110,17 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
-        /// <param name="qualityParameterGroupId"></param>
+        /// <param name="qualityParameterId"></param>
         /// <returns></returns>
         [HttpDelete]
         [ActionName("DeleteQualityAssuranceParameterById")]
-        public async Task<IActionResult> DeleteQualityAssuranceParameterById(string userId, string ipAddress, string qualityParameterGroupId)
+        public async Task<IActionResult> DeleteQualityAssuranceParameterById(string userId, string ipAddress, string qualityParameterId)
         {
             try
             {
                 var customHeaderValue = Request.Headers["SquadId"];
                 var squadId = customHeaderValue.ToString() ?? "";
-                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _quality.DeleteQualityAssuranceParameterById(userId, ipAddress, squadId, qualityParameterGroupId);
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _quality.DeleteQualityAssuranceParameterById(userId, ipAddress, squadId, qualityParameterId);
                 if (response.IsSuccess)
                 {
                     if (response.iCanRemoveIt)

@@ -100,5 +100,60 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<(bool IsSuccess, PalletType? palletType, string? ErrorDescription)> GetPalletType(string userId, string ipAdress, string palletTypeId);
 
+
+
+        /// <summary>
+        /// Delete an EntityType not associated with Entity
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="creditTypeId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteEntityTypeById(string userId, string ipAddress, string squadId, string? creditTypeId);
+
+
+        /// <summary>
+        /// Delete an EntityGroup not associated with Entity
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="entityGroupId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteEntityGroupById(string userId, string ipAddress, string squadId, string? entityGroupId);
+
+
+
+        /// <summary>
+        /// Delete an EntityRole not associated with Entity
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="entityRoleId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteEntityRoleById(string userId, string ipAddress, string squadId, string? entityRoleId);
+
+        /// <summary>
+        /// Delete an PalletType not associated with Entity
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="palletTypeId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeletePalletTypeById(string userId, string ipAddress, string squadId, string? palletTypeId);
+
+        /// <summary>
+        /// Delete an identificationType not associated with Entity
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="identificationTypeId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteIdentificationTypeById(string userId, string ipAddress, string squadId, string? identificationTypeId);
+
     }
 }

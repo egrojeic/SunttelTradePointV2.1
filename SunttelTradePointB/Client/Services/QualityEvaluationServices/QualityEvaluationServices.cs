@@ -423,12 +423,12 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
             }
         }
 
-        public async Task<bool> DeleteQualityAssuranceParameterById(string qualityAssuranceId)
+        public async Task<bool> DeleteQualityAssuranceParameterById(string qualityParameterId)
         {
             try
             {
                 string path = basepath.Replace("*Name", "DeleteQualityAssuranceParameterById");
-                var responseMessage = await Deletehttp($"{path}&qualityAssuranceId={qualityAssuranceId}");
+                var responseMessage = await Deletehttp($"{path}&qualityParameterId={qualityParameterId}");
                 bool result = responseMessage.IsSuccessStatusCode;
                 return result;
             }

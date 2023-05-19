@@ -37,6 +37,7 @@
     }
 </style>
 
+
 <PageTitleComponent Title="Actors/Nodes" IconName="ActorsIco.png"
                     Description="Actors or nodes are those persons, companies, or entities who are involved in the network of your system">
 </PageTitleComponent>
@@ -83,6 +84,8 @@
                     <RadzenDataGridColumn TItem="EntityActor" Property="GetFirstPhone" Title="Phone" Width="120px" />
                     <RadzenDataGridColumn TItem="EntityActor" Property="DefaultEntityRole" Title="Default Role" Width="120px" />
                     <RadzenDataGridColumn TItem="EntityActor" Property="FullClassName" Title="Groups" Width="120px" />
+
+                 
                 </Columns>
             </RadzenDataGrid>
             <div class="container-total">
@@ -122,8 +125,9 @@
 
     private string geolocation { get; set; }
 
+  
     bool isLoading = false;
-
+    string stringFilter = "";
     string _filterEntities = "";
 
     public string? entitiesFilter
@@ -131,8 +135,8 @@
         get { return _filterEntities; }
         set
         {
-            _filterEntities = value;
-            GetFilteredEntities(_filterEntities);
+            _filterEntities = value;           
+            GetFilteredEntities();
         }
     }
 
@@ -141,7 +145,7 @@
         await GetFilteredEntities();
     }
 
-    private async Task GetFilteredEntities(string stringFilter = "")
+    private async Task GetFilteredEntities()
     {
         if (stringFilter.Length > 0)
         {
@@ -204,5 +208,10 @@
     </RadzenMenu>
     );
 
-
+  
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name) != null ? UICommonFunctions.GetDisplayName(Obj, Name) : Name;
+        return Name;
+    }
 }

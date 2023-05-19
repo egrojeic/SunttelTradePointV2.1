@@ -48,7 +48,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         Task<List<LabelPaper>> GetConceptPaperList(string? filterString = "all");
 
 
-         /// <summary>
+        /// <summary>
         /// Retrives a  AssemblyType item meeting search criteria
         /// </summary>
         /// <param name="assemblyTypeId"></param>         
@@ -159,7 +159,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// </summary>
         /// <param name="filterString"></param>              
         /// <returns></returns>
-        Task<TransactionalItemStatus> GetSelectorListPackingMaterials(string? filterString = null);
+        Task<List<Concept>> GetSelectorListPackingMaterials(string? filterString = null);
 
         /// <summary>
         /// Retrives a list with transactional item status meeting search criteria
@@ -289,7 +289,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <param name="assemblyType"></param>              
         /// <returns></returns>
         Task<bool> SaveAssemblyType(AssemblyType assemblyType);
-        
+
 
         /// <summary>
         /// Save a  label paper
@@ -436,6 +436,54 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         Task<TransactionalItemProcessStep> GetTransactionalItemDetailsProductionSpecsById(string transactionalItemId, string productionSpecsToId);
 
 
+        /// <summary>
+        /// Delete a ConceptGroup
+        /// </summary>
+        /// <param name="conceptGroupId"></param>     
+        /// <returns></returns>
+        Task<bool> DeleteConceptGroupById(string? conceptGroupId);
+
+        /// <summary>
+        /// Delete a Box
+        /// </summary>
+        /// <param name="boxId"></param>     
+        /// <returns></returns>
+        Task<bool> DeleteBoxById(string? boxId);
+
+        /// <summary>
+        /// Delete a LabelStyle
+        /// </summary>
+        /// <param name="labelStyleId"></param>     
+        /// <returns></returns>
+        Task<bool> DeleteLabelStyleById(string? labelStyleId);
+
+        /// <summary>
+        /// Delete a LabelPaper
+        /// </summary>
+        /// <param name="labelPaperId"></param>     
+        /// <returns></returns>
+        Task<bool> DeleteLabelPaperById(string? labelPaperId);
+
+        /// <summary>
+        /// Delete a SeasonBusiness
+        /// </summary>
+        /// <param name="seasonBusinessId"></param>     
+        /// <returns></returns>
+        Task<bool> DeleteSeasonBusinessById(string? seasonBusinessId);
+
+        /// <summary>
+        /// Delete a transactionalItemStatus
+        /// </summary>
+        /// <param name="transactionalItemStatusId"></param>     
+        /// <returns></returns>
+        Task<bool> DeleteTransactionalItemStatusById(string? transactionalItemStatusId);
+
+         /// <summary>
+        /// Delete a TransactionalItemType
+        /// </summary>
+        /// <param name="transactionalItemTypeId"></param>     
+        /// <returns></returns>
+        Task<bool> DeleteTransactionalItemTypeById(string? transactionalItemTypeId);
     }
 }
 

@@ -33,6 +33,8 @@
     }
 </style>
 
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
+
 <PageTitleComponent Title="Groups of Transactional Items" IconName="group.png"
                     Description="Describe how the commercial items could be classified">
 </PageTitleComponent>
@@ -76,6 +78,18 @@ else
                 <RadzenDataGridColumn TItem="ConceptGroup" Property="Name" Title="@GetName("TransactionalItemCharacteristic", new ConceptGroup())" Width="250px" />
                 <RadzenDataGridColumn TItem="ConceptGroup" Property="Code" Title="@GetName("Value", new ConceptGroup())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
                 <RadzenDataGridColumn TItem="ConceptGroup" Property="GroupClassificationCriteria" Title="@GetName("GroupClassificationCriteria", new ConceptGroup())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                <RadzenDataGridColumn TItem="ConceptGroup" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
+                    <Template Context="data">
+
+                        <Confirm Id="@data.Id" TextValue="@($"¿ Confirm delete ?")"
+                         IdSelect="@IdDelete"
+                         ConfirmIdAction='ConfirmDelete'
+                         CancelAction="CancelDelete"
+                         SelectIdAction="SelectDelete"></Confirm>
+
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="ConceptGroup" Property="Id" Title="@GetName("Id", new ConceptGroup())" Width="50px"></RadzenDataGridColumn>
 
             </Columns>
         </RadzenDataGrid>
@@ -84,7 +98,7 @@ else
                 <label>
                     @(
                         $"Records: {conceptGroup.Count}"
-                                    )
+                        )
                 </label>
             </div>
         </div>
@@ -102,12 +116,15 @@ else
     public List<ConceptGroup> ChildrenGroups { get; set; }
     public List<GridColumn> GridColumnList { get; set; }
 
+    bool viewMsg = false;
+    string msg = "";
+    string IdDelete = "";
 
     protected override void OnInitialized()
     {
 
-       _filterItems = "all";       
-            LoadData();       
+        _filterItems = "all";
+        LoadData();
         transactItemsService.Page = "Groups";
     }
 
@@ -159,7 +176,39 @@ else
 
     #endregion Grid
 
+    #region Confirm
 
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await transactItemsService.DeleteConceptGroupById(Id);
+        if (result) { LoadData(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
+
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
+    }
 
 
     public string GetName(string Name, Object Obj)

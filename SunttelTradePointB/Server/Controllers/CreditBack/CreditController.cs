@@ -129,7 +129,7 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
         }
 
 
-           /// <summary>
+        /// <summary>
         /// Delete a CreditType if not associated with a CreditDocument
         /// </summary>
         /// <param name="userId"></param>
@@ -153,14 +153,14 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
                     }
                     else
                     {
-                         return NotFound("Type in use");
-                    }                    
+                        return NotFound("Type in use");
+                    }
                 }
                 else
                 {
                     return NotFound(response.ErrorDescription);
                 }
-                
+
             }
             catch (Exception e)
             {
@@ -301,7 +301,7 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
         }
 
 
-         /// <summary>
+        /// <summary>
         /// Delete a CreditStatus if not associated with a CreditDocument
         /// </summary>
         /// <param name="userId"></param>
@@ -325,14 +325,14 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
                     }
                     else
                     {
-                         return NotFound("Status in use");
-                    }                    
+                        return NotFound("Status in use");
+                    }
                 }
                 else
                 {
                     return NotFound(response.ErrorDescription);
                 }
-                
+
             }
             catch (Exception e)
             {
@@ -445,14 +445,14 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
                     }
                     else
                     {
-                         return NotFound("Reason in use");
-                    }                    
+                        return NotFound("Reason in use");
+                    }
                 }
                 else
                 {
                     return NotFound(response.ErrorDescription);
                 }
-                
+
             }
             catch (Exception e)
             {

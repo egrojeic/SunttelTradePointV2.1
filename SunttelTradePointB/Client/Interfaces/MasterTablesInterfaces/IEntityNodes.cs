@@ -29,7 +29,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <param name="EntityActorId"></param>
         /// <param name="entityActor"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, string? EntityId, string? error)> SaveEntity(string? EntityActorId,EntityActor entityActor);
+        Task<(bool IsSuccess, string? EntityId, string? error)> SaveEntity(string? EntityActorId, EntityActor entityActor);
 
         /// <summary>
         /// Updates the info of an Entity
@@ -68,7 +68,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <typeparam name="ChannelCommunicationsGroup"></typeparam>
         /// <param name="channelCommunicationsGroupId"></param>
         /// <returns></returns>
-        Task<ChannelCommunicationsGroup> GetChannelCommunicationsGroupById(string  channelCommunicationsGroupId);
+        Task<ChannelCommunicationsGroup> GetChannelCommunicationsGroupById(string channelCommunicationsGroupId);
 
         /// <summary>
         /// Retrives the different related concepts to an Channel Communications Group 
@@ -94,7 +94,33 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<ChannelCommunicationsGroup> SaveChannelCommunicationsGroup(ChannelCommunicationsGroup channelCommunicationsGroup);
 
-        
+        /// <summary>
+        /// Delete a EntityType
+        /// </summary>  
+        /// <param name="palletTypeId"></param>
+        /// <returns></returns>
+        Task<bool> DeleteEntityTypeById(string palletTypeId);
+
+        /// <summary>
+        /// Delete a EntityGroup
+        /// </summary>  
+        /// <param name="entityGroupId"></param>
+        /// <returns></returns>
+        Task<bool> DeleteEntityGroupById(string entityGroupId);
+
+        /// <summary>
+        /// Delete a EntityRole
+        /// </summary>  
+        /// <param name="entityRoleId"></param>
+        /// <returns></returns>
+        Task<bool> DeleteEntityRoleById(string entityRoleId);
+
+        /// <summary>
+        /// Delete a PalletType
+        /// </summary>  
+        /// <param name="palletTypeId"></param>
+        /// <returns></returns>
+        Task<bool> DeletePalletTypeById(string palletTypeId);
 
     }
 }

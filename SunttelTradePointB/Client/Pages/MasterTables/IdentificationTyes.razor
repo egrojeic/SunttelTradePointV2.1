@@ -13,7 +13,24 @@
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
     }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
 </style>
+
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
 
 <PageTitleComponent Title="Types of Identification for Entities" IconName="identificationType.png"
                     Description="Types of identification the different entities could have">
@@ -51,6 +68,17 @@
                 <Columns>
                     <RadzenDataGridColumn TItem="IdentificationType" Property="Code" Title="@GetName("Code",new IdentificationType())" Filterable="false" Width="150px" />
                     <RadzenDataGridColumn TItem="IdentificationType" Property="Name" Title="@GetName("Name",new IdentificationType())" Filterable="false" Width="150px" />
+                    <RadzenDataGridColumn TItem="IdentificationType" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
+                        <Template Context="data">
+
+                            <Confirm Id="@data.Id" TextValue="@($"¿ Confirm delete ?")"
+                             IdSelect="@IdDelete"
+                             ConfirmIdAction='ConfirmDelete'
+                             CancelAction="CancelDelete"
+                             SelectIdAction="SelectDelete"></Confirm>
+
+                        </Template>
+                    </RadzenDataGridColumn>
                 </Columns>
             </RadzenDataGrid>
             <div class="container-total">
@@ -73,33 +101,36 @@
     List<IdentificationType>? entityIdentificationTypeList;
     IList<IdentificationType> selectedIdentificationType;
 
-
+    bool viewMsg = false;
+    string msg = "";
+    string IdDelete = "";
     bool isLoading = false;
     string _filterItems = "";
-
+    string filter = "all";
     public string? conceptFilter
     {
         get { return _filterItems; }
         set
         {
             _filterItems = value;
-            GetFilteredIdentificationType(_filterItems);
+            GetFilteredIdentificationType();
         }
     }
 
     protected override async Task OnInitializedAsync()
     {
-        await GetFilteredIdentificationType("all");
+        filter = "all";
+        await GetFilteredIdentificationType();
     }
 
-    public async Task GetFilteredIdentificationType(string filter = "")
+    public async Task GetFilteredIdentificationType()
     {
         if (filter.Length >= 0)
         {
             isLoading = true;
             StateHasChanged();
 
-            var response = await actorsNodeServive.GetIdentificationTypes(filter);
+            var response = await actorsNodeServive.GetIdentificationTypes((filter != null ?filter :"all"));
 
             if (response != null)
                 entityIdentificationTypeList = response;
@@ -114,7 +145,7 @@
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<IdentificationType> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
 
@@ -126,6 +157,41 @@
         {
             ContextMenuService.Close();
         }
+    }
+
+
+    #region Confirm
+
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await actorsNodeServive.DeleteIdentificationTypeById(Id);
+        if (result) { GetFilteredIdentificationType(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
+
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
     }
 
     public string GetName(string Name, Object Obj)

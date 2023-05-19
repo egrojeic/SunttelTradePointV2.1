@@ -33,6 +33,8 @@
     }
 </style>
 
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
+
 <PageTitleComponent Title="Box Types" IconName="boxes.png"
                     Description="Box types to keep the different products">
 </PageTitleComponent>
@@ -84,7 +86,19 @@ else
                 <RadzenDataGridColumn TItem="Box" Property="Width" Title="@GetName("Width", new Box())" TextAlign="Radzen.TextAlign.Right" Width="80px"></RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="Box" Property="Height" Title="@GetName("Height", new Box())" Width="80px" TextAlign="Radzen.TextAlign.Right"></RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="Box" Property="Notes" Title="@GetName("Notes", new Box())" Width="80px"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Box" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
+                    <Template Context="data">
+
+                        <Confirm Id="@data.Id" TextValue="@($"¿ Confirm delete ?")"
+                         IdSelect="@IdDelete"
+                         ConfirmIdAction='ConfirmDelete'
+                         CancelAction="CancelDelete"
+                         SelectIdAction="SelectDelete"></Confirm>
+
+                    </Template>
+                </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="Box" Property="Id" Title="@GetName("Id", new Box())" Width="50px"></RadzenDataGridColumn>
+           
             </Columns>
         </RadzenDataGrid>
         <div class="container-total">
@@ -110,6 +124,9 @@ else
     List<GridColumn> ListGridBox = new List<GridColumn>();
     SfGrid<Box>? referDataGrid;
 
+    bool viewMsg = false;
+    string msg = "";
+    string IdDelete = "";
     bool isLoading = false;  
 
     public string? conceptFilter
@@ -144,14 +161,12 @@ else
         StateHasChanged();
     }
 
-
-
     #region Grid
 
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<Box> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
     void OnMenuItemClick(MenuItemEventArgs args)
@@ -163,9 +178,38 @@ else
 
     #endregion Grid
 
+    #region Confirm
 
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await transactItemsService.DeleteBoxById(Id);
+        if (result) { LoadData(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
 
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
 
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
 
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
+    }
 
 }

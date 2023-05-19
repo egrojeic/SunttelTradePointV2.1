@@ -198,7 +198,7 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                 var pipeline = new List<BsonDocument>();
                 pipeline.Add(
                 new BsonDocument("$match",
-                  new BsonDocument("Parameter._id", new ObjectId(qualityParameterId))
+                  new BsonDocument("EvaluationParameters._id", new ObjectId(qualityParameterId))
                   )
                );
 
@@ -212,7 +212,7 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                     );
 
 
-
+               
                 var resultCount = _QCDocumentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
                 int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
 

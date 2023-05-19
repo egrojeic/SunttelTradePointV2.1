@@ -29,7 +29,7 @@
         font-weight: bold;
     }
 </style>
-
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
 <PageTitleComponent Title="Entity Roles" IconName="EntityRoles.png"
                     Description="Describes the different roles the entities could play">
 </PageTitleComponent>
@@ -40,12 +40,14 @@
 </div>
 
 
-<div >
+<div>
     @if (isLoading)
     {
         <WaitingProcessIndicator loadingTopic="Roles"></WaitingProcessIndicator>
-    }else{
-        @if(entityRolesList != null)
+    }
+    else
+    {
+        @if (entityRolesList != null)
         {
 
 
@@ -68,6 +70,18 @@
                 <Columns>
                     <RadzenDataGridColumn TItem="EntityRole" Property="Code" Title="@GetName("Code",new EntityRole())" Filterable="false" Width="150px" />
                     <RadzenDataGridColumn TItem="EntityRole" Property="Name" Title="@GetName("Name",new EntityRole())" Filterable="false" Width="150px" />
+
+                    <RadzenDataGridColumn TItem="EntityRole" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
+                        <Template Context="data">
+
+                            <Confirm Id="@data.Id" TextValue="@($"¿ Confirm delete ?")"
+                             IdSelect="@IdDelete"
+                             ConfirmIdAction='ConfirmDelete'
+                             CancelAction="CancelDelete"
+                             SelectIdAction="SelectDelete"></Confirm>
+
+                        </Template>
+                    </RadzenDataGridColumn>
                 </Columns>
             </RadzenDataGrid>
             <div class="container-total">
@@ -90,33 +104,35 @@
     List<EntityRole> entityRolesList;
     IList<EntityRole> selectedRoles;
 
-
+    bool viewMsg = false;
+    string msg = "";
+    string IdDelete = "";
     bool isLoading = false;
     string _filterItems = "";
-
+    string filter = "all";
     public string? conceptFilter
     {
         get { return _filterItems; }
         set
         {
             _filterItems = value;
-            GetFilterRoles(_filterItems);
+            GetFilterRoles();
         }
     }
 
     protected override async Task OnInitializedAsync()
     {
-        await GetFilterRoles("all");
+        await GetFilterRoles();
     }
 
-    private async Task GetFilterRoles(string filter = "")
+    private async Task GetFilterRoles()
     {
-        if(filter.Length > 0)
+        if (filter.Length > 0)
         {
             isLoading = true;
             StateHasChanged();
-           
-           filter = "all";            
+
+            filter = "all";
 
             var response = await actorsNodeServive.GetListEntityRoles(filter);
 
@@ -137,7 +153,7 @@
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
-        EntityRole argObj = (EntityRole)args.Value;     
+        EntityRole argObj = (EntityRole)args.Value;
         navigationManager.NavigateTo($"/EntityRoles/{argObj.Id}/Edit");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
@@ -145,6 +161,39 @@
         }
     }
 
+    #region Confirm
+
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await actorsNodeServive.DeleteEntityRoleById(Id);
+        if (result) { GetFilterRoles(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
+
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
+    }
 
     public string GetName(string Name, Object Obj)
     {

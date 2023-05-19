@@ -31,6 +31,8 @@
         font-weight: bold;
     }
 </style>
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
+
 <PageTitleComponent Title="Status of Transactional Items" IconName="signal.png"
                     Description="Describe how the commercial items could be classified">
 </PageTitleComponent>
@@ -72,7 +74,16 @@ else
             <RadzenDataGridColumn TItem="TransactionalItemStatus" Property="TransactionalItemStatus.Name" Title="@GetName("Name", new TransactionalItemStatus())" Width="80px" />
             <RadzenDataGridColumn TItem="TransactionalItemStatus" Property="TransactionalItemStatus.Code" Title="@GetName("Code", new AtomConcept())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
             <RadzenDataGridColumn TItem="TransactionalItemStatus" Property="TransactionalItemStatus.Notes" Title="@GetName("Notes", new AtomConcept())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-
+            <RadzenDataGridColumn TItem="TransactionalItemStatus" Title="@GetName("Action",new TransactionalItemStatus())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
+                <Template Context="data">
+                    <Confirm Id="@data.Id" TextValue="@($"¿ Confirm delete ?")"
+                         IdSelect="@IdDelete"
+                         ConfirmIdAction='ConfirmDelete'
+                         CancelAction="CancelDelete"
+                         SelectIdAction="SelectDelete"></Confirm>
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="TransactionalItemStatus" Property="Id" Title="@GetName("Id", new TransactionalItemStatus())" Width="50px"></RadzenDataGridColumn>
         </Columns>
     </RadzenDataGrid>
     <div class="container-total">
@@ -95,12 +106,15 @@ else
     public string Page { get; set; } = "";
 
     public List<TransactionalItemStatus> transactionalItemStatuss { get; set; }
-  
+
+    bool viewMsg = false;
+    string msg = "";
+    string IdDelete = "";
 
     protected override void OnInitialized()
-    {      
-         _filterItems ="all";
-          LoadData();        
+    {
+        _filterItems = "all";
+        LoadData();
         transactItemsService.Page = "Status";
     }
 
@@ -114,12 +128,12 @@ else
             _filterItems = value;
             LoadData();
         }
-    }   
+    }
 
     private async Task LoadData()
     {
         isLoading = true;
-        transactionalItemStatuss = await transactItemsService.GetTransactionalStatusesTable(_filterItems);
+        transactionalItemStatuss = await transactItemsService.GetTransactionalStatusesTable((_filterItems!=null? _filterItems:"all"));
         isLoading = false;
         StateHasChanged();
 
@@ -144,13 +158,45 @@ else
     {
         TransactionalItemStatus argObj = (TransactionalItemStatus)args.Value;
 
-       Navigation.NavigateTo($"/StatusConcept/Status/{Page}/{_filterItems}/{argObj.Id}");
+        Navigation.NavigateTo($"/StatusConcept/Status/{Page}/{_filterItems}/{argObj.Id}");
     }
 
     #endregion Grid
 
+    #region Confirm
 
-  
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await transactItemsService.DeleteTransactionalItemStatusById(Id);
+        if (result) { LoadData(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
+
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
+    }
+
 
     public string GetName(string Name, Object Obj)
     {

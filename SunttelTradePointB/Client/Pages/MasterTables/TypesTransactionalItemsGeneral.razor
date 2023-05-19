@@ -32,6 +32,7 @@
         font-weight: bold;
     }
 </style>
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
 
 <PageTitleComponent Title="Types of Transactional Items" IconName="TransactionalTypes.png"
                     Description="Describe how the commercial items could be classified">
@@ -92,7 +93,21 @@ else
                     }
                 </Template>
             </RadzenDataGridColumn>
-        </Columns>
+                <RadzenDataGridColumn TItem="TransactionalItemType" Title="@GetName("Action",new TransactionalItemType())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
+                    <Template Context="data">
+
+                        <Confirm Id="@data.Id" TextValue="@($"¿ Confirm delete ?")"
+                         IdSelect="@IdDelete"
+                         ConfirmIdAction='ConfirmDelete'
+                         CancelAction="CancelDelete"
+                         SelectIdAction="SelectDelete"></Confirm>
+
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="TransactionalItemType" Property="Id" Title="@GetName("Id", new TransactionalItemType())" Width="50px"></RadzenDataGridColumn>
+
+
+            </Columns>
     </RadzenDataGrid>
     <div class="container-total">
         <div class="item">
@@ -116,7 +131,9 @@ else
     public string _filterItems { get; set; } = "";
     public List<TransactionalItemType> transactionalItemType { get; set; }
 
-
+    bool viewMsg = false;
+    string msg = "";
+    string IdDelete = "";
     bool isLoading = false;
 
     public string? conceptFilter
@@ -173,6 +190,40 @@ else
     {
         isLoading = false;
         StateHasChanged();
+    }
+
+    #region Confirm
+
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await transactItemsService.DeleteTransactionalItemTypeById(Id);
+        if (result) { LoadData(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
+
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
     }
 
     public string GetName(string Name, Object Obj)

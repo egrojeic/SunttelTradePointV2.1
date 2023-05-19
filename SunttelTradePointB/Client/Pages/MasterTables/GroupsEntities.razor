@@ -13,7 +13,25 @@
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
     }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
 </style>
+
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
+
 <PageTitleComponent Title="Groups of Entities/Actors/Nodes" IconName="EntityGroups.png"
                     Description="Describe the groups of the entities">
 </PageTitleComponent>
@@ -28,8 +46,10 @@
     {
         <WaitingProcessIndicator loadingTopic="Groups"></WaitingProcessIndicator>
 
-    }else{
-        @if(entityGroupList != null)
+    }
+    else
+    {
+        @if (entityGroupList != null)
         {
 
             <RadzenDataGrid AllowFiltering="true"
@@ -52,6 +72,15 @@
                     <RadzenDataGridColumn TItem="EntityGroup" Property="Code" Title="@GetName("Code",new EntityGroup())" Filterable="false" Width="50px" />
                     <RadzenDataGridColumn TItem="EntityGroup" Property="Name" Title="@GetName("Name",new EntityGroup())" Filterable="false" Width="150px" />
                     <RadzenDataGridColumn TItem="EntityGroup" Property="GroupClassificationCriteria" Title="@GetName("GroupClassificationCriteria",new EntityGroup())" Filterable="false" Width="150px" />
+                    <RadzenDataGridColumn TItem="EntityGroup" Title="@GetName("Action",new EntityGroup())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
+                        <Template Context="data">
+                            <Confirm Id="@data.Id" TextValue="@($"¿ Confirm delete ?")"
+                             IdSelect="@IdDelete"
+                             ConfirmIdAction='ConfirmDelete'
+                             CancelAction="CancelDelete"
+                             SelectIdAction="SelectDelete"></Confirm>
+                        </Template>
+                    </RadzenDataGridColumn>
                 </Columns>
             </RadzenDataGrid>
             <div class="container-total">
@@ -74,9 +103,12 @@
     List<EntityGroup>? entityGroupList;
     IList<EntityGroup> selectedGroups;
 
-
+    bool viewMsg = false;
+    string msg = "";
+    string IdDelete = "";
     bool isLoading = false;
     string _filterItems = "";
+    string filter = "all";
 
     public string? conceptFilter
     {
@@ -84,28 +116,23 @@
         set
         {
             _filterItems = value;
-            GetFilteredGroup(_filterItems);
+            GetFilteredGroup();
         }
     }
 
     protected override async Task OnInitializedAsync()
     {
-        await GetFilteredGroup("all");
+        await GetFilteredGroup();
     }
 
-    public async Task GetFilteredGroup(string filter = "")
+    public async Task GetFilteredGroup()
     {
-        if(filter.Length > 0)
+        if (filter.Length > 0)
         {
             isLoading = true;
             StateHasChanged();
 
-            if (filter.ToLower() == "all" || filter.ToLower() == "todo")
-            {
-                filter = "";
-            }
-
-            var response = await actorsNodeServive.GetListEntityGroups(filter);
+            var response = await actorsNodeServive.GetListEntityGroups((filter != null ? filter:"all" ));
 
             if (response != null)
                 entityGroupList = response;
@@ -119,18 +146,51 @@
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<EntityGroup> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
+        </RadzenMenu>
     );
-
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
-        EntityGroup argObj = (EntityGroup)args.Value;        
+        EntityGroup argObj = (EntityGroup)args.Value;
         navigationManager.NavigateTo($"/GroupsEntities/{argObj.Id}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
             ContextMenuService.Close();
         }
+    }
+
+    #region Confirm
+
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await actorsNodeServive.DeleteEntityGroupById(Id);
+        if (result) { GetFilteredGroup(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
+
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
     }
 
     public string GetName(string Name, Object Obj)

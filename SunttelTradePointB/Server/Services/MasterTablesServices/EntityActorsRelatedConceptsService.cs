@@ -11,14 +11,15 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
     /// </summary>
     public class EntityActorsRelatedConceptsService : IEntitiesRelatedConcepts
     {
-
+        IMongoCollection<EntityActor> _entityActorsCollection;
         IMongoCollection<EntityRole> _entityRole;
         IMongoCollection<EntityRole> _entityRoles;
         IMongoCollection<EntityType> _entityType;
+        IMongoCollection<EntityGroup> _entityGroup;
         IMongoCollection<IdentificationType> _identificationType;
         IMongoCollection<IdentificationType> _identificationTypes;
         IMongoCollection<PalletType> _palletType;
-
+        
 
         /// <summary>
         /// Constructor of the service which retrieves the connection string
@@ -30,12 +31,14 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             string DatabaseName = config["DatabaseMongo"];
 
             var mongoDatabase = mongoClient.GetDatabase(DatabaseName);
+            _entityActorsCollection = mongoDatabase.GetCollection<EntityActor>("EntityNodes");
             _entityRole = mongoDatabase.GetCollection<EntityRole>("Roles");
             _entityRoles = mongoDatabase.GetCollection<EntityRole>("Roles");
             _entityType = mongoDatabase.GetCollection<EntityType>("EntityTypes");
             _identificationType = mongoDatabase.GetCollection<IdentificationType>("IdentificationTypes");
             _identificationTypes = mongoDatabase.GetCollection<IdentificationType>("IdentificationTypes");
             _palletType = mongoDatabase.GetCollection<PalletType>("PalletTypes");
+            _entityGroup = mongoDatabase.GetCollection<EntityGroup>("EntityGroups");
         }
 
 
@@ -171,7 +174,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
             catch (Exception e)
             {
-                return(false, null, e.Message);
+                return (false, null, e.Message);
             }
         }
 
@@ -243,7 +246,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
-                if(entityType.Id== null)
+                if (entityType.Id == null)
                 {
                     entityType.Id = ObjectId.GenerateNewId().ToString();
                 }
@@ -299,7 +302,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
-                if(palletType.Id == null)
+                if (palletType.Id == null)
                 {
                     palletType.Id = ObjectId.GenerateNewId().ToString();
                 }
@@ -315,5 +318,264 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 return (false, null, e.Message);
             }
         }
+
+
+        /// <summary>
+        /// Delete an EntityType not associated with Entity
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="creditTypeId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteEntityTypeById(string userId, string ipAddress, string squadId, string? creditTypeId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+
+                pipeline.Add(
+                  new BsonDocument("$match",
+                  new BsonDocument("EntityType._id", new ObjectId(creditTypeId))
+                  )
+               );
+             
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
+
+                var resultCount = _entityActorsCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+
+                if (count <= 0)
+                {
+                    var result = _entityType.DeleteOne(s => s.Id == creditTypeId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count  {count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Delete an EntityGroup not associated with Entity
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="entityGroupId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteEntityGroupById(string userId, string ipAddress, string squadId, string? entityGroupId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+
+                pipeline.Add(
+                  new BsonDocument("$match",
+                  new BsonDocument("Groups._id", new ObjectId(entityGroupId))
+                  )
+               );
+
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
+
+                var resultCount = _entityActorsCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+
+                if (count <= 0)
+                {
+                    var result = _entityGroup.DeleteOne(s => s.Id == entityGroupId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count  {count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Delete an EntityRole not associated with Entity
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="entityRoleId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteEntityRoleById(string userId, string ipAddress, string squadId, string? entityRoleId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+
+                pipeline.Add(
+                  new BsonDocument("$match",
+                  new BsonDocument("DefaultEntityRole._id", new ObjectId(entityRoleId))
+                  )
+               );
+               
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
+
+                var resultCount = _entityActorsCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+
+                if (count <= 0)
+                {
+                    var result = _entityRole.DeleteOne(s => s.Id == entityRoleId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count  {count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Delete an PalletType not associated with Entity
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="palletTypeId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeletePalletTypeById(string userId, string ipAddress, string squadId, string? palletTypeId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+
+                pipeline.Add(
+                  new BsonDocument("$match",
+                  new BsonDocument("PalletTypeShipping._id", new ObjectId(palletTypeId))
+                  )
+               );
+                
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
+
+                var resultCount = _entityActorsCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+
+                if (count <= 0)
+                {
+                    var result = _palletType.DeleteOne(s => s.Id == palletTypeId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count  {count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+        }
+
+
+
+          /// <summary>
+        /// Delete an identificationType not associated with Entity
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="identificationTypeId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteIdentificationTypeById(string userId, string ipAddress, string squadId, string? identificationTypeId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+
+                pipeline.Add(
+                  new BsonDocument("$match",
+                  new BsonDocument("PalletTypeShipping._id", new ObjectId(identificationTypeId))
+                  )
+               );
+                
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
+
+                var resultCount = _entityActorsCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+
+                if (count <= 0)
+                {
+                    var result = _identificationType.DeleteOne(s => s.Id == identificationTypeId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count  {count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+        }
+
+
+
     }
 }

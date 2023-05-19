@@ -15,6 +15,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
     public class TransactionalItemsRelatedConceptsService : ITransactionalItemsRelatedConceptsBKService
     {
         //1. Llamar el manejador de la colección
+        IMongoCollection<TransactionalItem> _TransactionalItemsCollection;
         IMongoCollection<Box> _boxes;
         IMongoCollection<Box> _boxesCollection;
         IMongoCollection<SeasonBusiness> _seasonBusiness;
@@ -37,6 +38,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             string DataBaseName = config["DatabaseMongo"];
 
             var mongoDatabase = mongoClient.GetDatabase(DataBaseName);
+             _TransactionalItemsCollection = mongoDatabase.GetCollection<TransactionalItem>("TransactionalItems");
             _boxes = mongoDatabase.GetCollection<Box>("Box");
             _boxesCollection = mongoDatabase.GetCollection<Box>("Box");
             _seasonBusiness = mongoDatabase.GetCollection<SeasonBusiness>("BusinessSeasons");
@@ -388,7 +390,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
-                if(box.Id == null)
+                if (box.Id == null)
                 {
                     box.Id = ObjectId.GenerateNewId().ToString();
                 }
@@ -482,7 +484,8 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     transactionalItemType.Id = ObjectId.GenerateNewId().ToString();
                 }
 
-                if (transactionalItemType.QualityParameters != null) {
+                if (transactionalItemType.QualityParameters != null)
+                {
                     transactionalItemType.QualityParameters.ForEach(e =>
                     {
                         if (e.Id == null)
@@ -500,7 +503,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     });
                 }
 
-               
+
 
                 if (transactionalItemType.TransactionalItemProcesses != null)
                 {
@@ -510,7 +513,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                             e.Id = ObjectId.GenerateNewId().ToString();
                     });
                 }
-               
+
 
                 if (transactionalItemType.TransactionalItemTypeCharacteristics != null)
                 {
@@ -520,7 +523,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                             e.Id = ObjectId.GenerateNewId().ToString();
                     });
                 }
-               
+
 
 
                 var filterTransactionalItemType = Builders<TransactionalItemType>.Filter.Eq("_id", new ObjectId(transactionalItemType.Id));
@@ -546,7 +549,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
-                if(transactionalItemGroup.Id == null)
+                if (transactionalItemGroup.Id == null)
                 {
                     transactionalItemGroup.Id = ObjectId.GenerateNewId().ToString();
                 }
@@ -832,11 +835,13 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     labelStyle.Id = ObjectId.GenerateNewId().ToString();
                 }
 
-                if (labelStyle.DataMaxLabelSettings != null) { 
-                    if(labelStyle.DataMaxLabelSettings.DataMaxFieldsSpecs != null)
+                if (labelStyle.DataMaxLabelSettings != null)
+                {
+                    if (labelStyle.DataMaxLabelSettings.DataMaxFieldsSpecs != null)
                     {
-                        labelStyle.DataMaxLabelSettings.DataMaxFieldsSpecs.ForEach(e => { 
-                            if(e.Id== null)
+                        labelStyle.DataMaxLabelSettings.DataMaxFieldsSpecs.ForEach(e =>
+                        {
+                            if (e.Id == null)
                             {
                                 e.Id = ObjectId.GenerateNewId().ToString();
                             }
@@ -848,7 +853,8 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 {
                     if (labelStyle.ZebraLabelSettings.ZebraFieldsSpecs != null)
                     {
-                        labelStyle.ZebraLabelSettings.ZebraFieldsSpecs.ForEach(e => {
+                        labelStyle.ZebraLabelSettings.ZebraFieldsSpecs.ForEach(e =>
+                        {
                             if (e.Id == null)
                             {
                                 e.Id = ObjectId.GenerateNewId().ToString();
@@ -1008,5 +1014,432 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 return (false, null, e.Message);
             }
         }
+
+
+
+        /// <summary>
+        /// Delete an ConceptGroup not associated with TransactionalItems
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="conceptGroupId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteConceptGroupById(string userId, string ipAddress, string squadId, string? conceptGroupId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+
+                pipeline.Add(
+                  new BsonDocument("$match",
+                  new BsonDocument("Groups._id", new ObjectId(conceptGroupId))
+                  )
+               );
+
+
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
+
+
+                var resultCount = _TransactionalItemsCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+
+                if (count <= 0)
+                {
+                    var result = _transactionalItemGroups.DeleteOne(s => s.Id == conceptGroupId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count  {count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Delete an Box not associated with TransactionalItems
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="boxId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteBoxById(string userId, string ipAddress, string squadId, string? boxId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                  new BsonDocument("$match",
+                  new BsonDocument("PackingBoxToSale._id", new ObjectId(boxId))
+                  )
+               );
+
+                pipeline.Add(
+                new BsonDocument("$match",
+                new BsonDocument("PackingBoxToBuy._id", new ObjectId(boxId))
+                )
+             );
+
+
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
+
+
+                var resultCount = _TransactionalItemsCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+
+                if (count <= 0)
+                {
+                    var result = _boxes.DeleteOne(s => s.Id == boxId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count  {count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+        }
+
+
+
+        /// <summary>
+        /// Delete an LabelStyle not associated with TransactionalItems
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="labelStyleId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteLabelStyleById(string userId, string ipAddress, string squadId, string? labelStyleId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+
+                pipeline.Add(
+                  new BsonDocument("$match",
+                  new BsonDocument("PalletLabelStyle._id", new ObjectId(labelStyleId))
+                  )
+               );
+
+
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
+
+
+                var resultCount = _TransactionalItemsCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+
+                if (count <= 0)
+                {
+                    var result = _labelStyle.DeleteOne(s => s.Id == labelStyleId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count  {count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Delete an LabelPaper not associated with TransactionalItems
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="labelPaperId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteLabelPaperById(string userId, string ipAddress, string squadId, string? labelPaperId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+
+                pipeline.Add(
+                  new BsonDocument("$match",
+                  new BsonDocument("Paper._id", new ObjectId(labelPaperId))
+                  )
+               );
+
+
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
+
+
+                var resultCount = _TransactionalItemsCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+
+                if (count <= 0)
+                {
+                    var result = _LabelPaper.DeleteOne(s => s.Id == labelPaperId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count  {count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Delete an SeasonBusiness not associated with TransactionalItems
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="seasonBusinessId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteSeasonBusinessById(string userId, string ipAddress, string squadId, string? seasonBusinessId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+
+                pipeline.Add(
+                  new BsonDocument("$match",
+                  new BsonDocument("Season._id", new ObjectId(seasonBusinessId))
+                  )
+               );
+
+
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
+
+
+                var resultCount = _TransactionalItemsCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+
+                if (count <= 0)
+                {
+                    var result = _seasonBusiness.DeleteOne(s => s.Id == seasonBusinessId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count  {count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Delete an TransactionalItemStatus not associated with TransactionalItems
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="transactionalItemStatusId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteTransactionalItemStatusById(string userId, string ipAddress, string squadId, string? transactionalItemStatusId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+
+                pipeline.Add(
+                  new BsonDocument("$match",
+                  new BsonDocument("Status._id", new ObjectId(transactionalItemStatusId))
+                  )
+               );
+
+
+
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
+
+
+                var resultCount = _TransactionalItemsCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+
+                if (count <= 0)
+                {
+                    var result = _transactionalItemStatus.DeleteOne(s => s.Id == transactionalItemStatusId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count  {count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Delete an TransactionalItemType not associated with TransactionalItems
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="transactionalItemTypeId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteTransactionalItemTypeById(string userId, string ipAddress, string squadId, string? transactionalItemTypeId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+
+                pipeline.Add(
+                  new BsonDocument("$match",
+                  new BsonDocument("TotalPriceItemTypeBasedOn._id", new ObjectId(transactionalItemTypeId))
+                  )
+               );
+
+
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
+
+
+                var resultCount = _TransactionalItemsCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+
+                if (count <= 0)
+                {
+                    var result = _transactionalItemType.DeleteOne(s => s.Id == transactionalItemTypeId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count  {count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+        }
+
+         /// <summary>
+        /// Delete an assemblyType not associated with TransactionalItems
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="assemblyTypeId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteAssemblyTypeById(string userId, string ipAddress, string squadId, string? assemblyTypeId)
+        {
+            try
+            {
+                var pipeline = new List<BsonDocument>();
+
+
+                pipeline.Add(
+                  new BsonDocument("$match",
+                  new BsonDocument("AssemblyRecipeItems._id", new ObjectId(assemblyTypeId))
+                  )
+               );
+                              
+                pipeline.Add(
+                    new BsonDocument("$group", new BsonDocument(
+                        "_id", new BsonDocument(
+                           "count", new BsonDocument(
+                               "$sum", 1
+                               )
+                            )))
+                    );
+
+
+                var resultCount = _TransactionalItemsCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+
+                if (count <= 0)
+                {
+                    var result = _assemblyType.DeleteOne(s => s.Id == assemblyTypeId);
+                    return (true, result.IsAcknowledged, null);
+                }
+                else
+                {
+                    return (true, false, ($"Count  {count}"));
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+        }
+
     }
 }

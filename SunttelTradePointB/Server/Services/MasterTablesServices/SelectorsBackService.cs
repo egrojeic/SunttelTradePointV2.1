@@ -829,7 +829,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 string strNameFiler = filterString == null ? "" : filterString;
 
                 var pipeline = new List<BsonDocument>();
-
+                if (strNameFiler.Length>0 && strNameFiler.ToLower() !="all") { 
                 pipeline.Add(
                     new BsonDocument(
                         "$match",
@@ -840,7 +840,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                             )
                     )
                 );
-
+                }
                 List<AtomConcept> results = await _assemblyTypes.Aggregate<AtomConcept>(pipeline).ToListAsync();
 
                 return (true, results, null);

@@ -32,6 +32,7 @@
     }
 </style>
 
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
 
 <PageTitleComponent Title=" Label Style" IconName="palette.png"
                     Description="Here you can add label style">
@@ -52,8 +53,6 @@ else
 {
     @if (@labelStyles != null)
     {
-
-
         <RadzenDataGrid AllowFiltering="true"
                 AllowColumnResize="true"
                 AllowAlternatingRows="true"
@@ -78,7 +77,18 @@ else
                 <RadzenDataGridColumn TItem="LabelStyle" Property="@nameof(LabelStyle.PDFReportName)" Title="@GetName( "PDFReportName", new LabelStyle())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
                 <RadzenDataGridColumn TItem="LabelStyle" Property="@nameof(LabelStyle.Purpose)" Title="@GetName( "Purpose", new LabelStyle())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
                  <RadzenDataGridColumn TItem="LabelStyle" Property="Notes" Title="@GetName( "Notes", new AtomConcept())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                <RadzenDataGridColumn TItem="LabelStyle" Property="Id" Title="@GetName( "Id", new LabelStyle())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                <RadzenDataGridColumn TItem="LabelStyle" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
+                    <Template Context="data">
+
+                        <Confirm Id="@data.Id" TextValue="@($"¿ Confirm delete ?")"
+                         IdSelect="@IdDelete"
+                         ConfirmIdAction='ConfirmDelete'
+                         CancelAction="CancelDelete"
+                         SelectIdAction="SelectDelete"></Confirm>
+
+                    </Template>
+                </RadzenDataGridColumn>
+                 <RadzenDataGridColumn TItem="LabelStyle" Property="Id" Title="@GetName( "Id", new LabelStyle())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
             </Columns>
         </RadzenDataGrid>
         <div class="container-total">
@@ -104,6 +114,9 @@ else
  
     SfGrid<Box>? referDataGrid;
 
+    bool viewMsg = false;
+    string msg = "";
+    string IdDelete = "";
     bool isLoading = false;
 
 
@@ -159,7 +172,39 @@ else
 
     #endregion Grid
 
+    #region Confirm
 
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await transactItemsService.DeleteLabelStyleById(Id);
+        if (result) { LoadData(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
+
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
+    }
 
    
 

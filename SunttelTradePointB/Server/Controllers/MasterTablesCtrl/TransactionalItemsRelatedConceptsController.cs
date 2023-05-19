@@ -30,7 +30,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         {
             _logger = logger;
             config = _config;
-            _transactionalItemsRelatedConcepts  = transactionalItemsRelatedConcepts;
+            _transactionalItemsRelatedConcepts = transactionalItemsRelatedConcepts;
         }
 
 
@@ -174,7 +174,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         [ActionName("GetTransactionalStatusById")]
         public async Task<IActionResult> GetTransactionalStatusById(string userId, string ipAddress, string statusId)
         {
-            var response = await _transactionalItemsRelatedConcepts.GetTransactionalStatusById(userId,ipAddress, statusId);
+            var response = await _transactionalItemsRelatedConcepts.GetTransactionalStatusById(userId, ipAddress, statusId);
             if (response.IsSuccess)
             {
                 return Ok(response.transactionalItemStatuses);
@@ -198,7 +198,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         public async Task<IActionResult> GetTransactionalItemGroups(string userId, string ipAddress, string filterCondition)
         {
             var response = await _transactionalItemsRelatedConcepts.GetTransactionalItemGroups(userId, ipAddress, filterCondition);
-            if(response.IsSuccess)
+            if (response.IsSuccess)
             {
                 return Ok(response.transactionalItemGroups);
             }
@@ -221,7 +221,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         public async Task<IActionResult> GetTransactionalItemGroup(string userId, string ipAddress, string transactionalItemGroupId)
         {
             var response = await _transactionalItemsRelatedConcepts.GetTransactionalItemGroup(userId, ipAddress, transactionalItemGroupId);
-            if(response.IsSuccess)
+            if (response.IsSuccess)
             {
                 return Ok(response.transactionalItemGroup);
             }
@@ -313,7 +313,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         public async Task<IActionResult> SaveBox(string userId, string ipAddress, Box box)
         {
             var response = await _transactionalItemsRelatedConcepts.SaveBox(userId, ipAddress, box);
-            if(response.IsSuccess)
+            if (response.IsSuccess)
             {
                 return Ok(response.box);
             }
@@ -429,7 +429,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         public async Task<IActionResult> SaveTransactionalItemProcessStep(string userId, string ipAddress, string transactionalItemTypeId, TransactionalItemProcessStep transactionalItemProcessStep)
         {
             var response = await _transactionalItemsRelatedConcepts.SaveTransactionalItemProcessStep(userId, ipAddress, transactionalItemTypeId, transactionalItemProcessStep);
-            if(response.IsSuccess)
+            if (response.IsSuccess)
             {
                 return Ok(response.transactionalItemProcessStep);
             }
@@ -625,6 +625,325 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
                 return NotFound(response.ErrorDescription);
             }
         }
-       
+
+
+
+        /// <summary>
+        /// Delete a ConceptGroup if not associated with a TransactionalItem
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="conceptGroupId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteConceptGroupById")]
+        public async Task<IActionResult> DeleteConceptGroupById(string userId, string ipAddress, string conceptGroupId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _transactionalItemsRelatedConcepts.DeleteConceptGroupById(userId, ipAddress, squadId, conceptGroupId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound("in use");
+                    }
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Delete a Box if not associated with a TransactionalItem
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="boxId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteBoxById")]
+        public async Task<IActionResult> DeleteBoxById(string userId, string ipAddress, string boxId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _transactionalItemsRelatedConcepts.DeleteBoxById(userId, ipAddress, squadId, boxId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound("in use");
+                    }
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Delete a LabelStyle if not associated with a TransactionalItem
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="boxId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteLabelStyleById")]
+        public async Task<IActionResult> DeleteLabelStyleById(string userId, string ipAddress, string boxId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _transactionalItemsRelatedConcepts.DeleteLabelStyleById(userId, ipAddress, squadId, boxId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound("in use");
+                    }
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Delete a LabelPaper if not associated with a TransactionalItem
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="labelPaperId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteLabelPaperById")]
+        public async Task<IActionResult> DeleteLabelPaperById(string userId, string ipAddress, string labelPaperId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _transactionalItemsRelatedConcepts.DeleteLabelPaperById(userId, ipAddress, squadId, labelPaperId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound("in use");
+                    }
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Delete a SeasonBusiness if not associated with a TransactionalItem
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="seasonBusinessId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteSeasonBusinessById")]
+        public async Task<IActionResult> DeleteSeasonBusinessById(string userId, string ipAddress, string seasonBusinessId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _transactionalItemsRelatedConcepts.DeleteSeasonBusinessById(userId, ipAddress, squadId, seasonBusinessId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound("in use");
+                    }
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Delete a TransactionalItemStatus if not associated with a TransactionalItem
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemStatusId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteTransactionalItemStatusById")]
+        public async Task<IActionResult> DeleteTransactionalItemStatusById(string userId, string ipAddress, string transactionalItemStatusId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _transactionalItemsRelatedConcepts.DeleteTransactionalItemStatusById(userId, ipAddress, squadId, transactionalItemStatusId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound("in use");
+                    }
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Delete a TransactionalItemType if not associated with a TransactionalItem
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemTypeId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteTransactionalItemTypeById")]
+        public async Task<IActionResult> DeleteTransactionalItemTypeById(string userId, string ipAddress, string transactionalItemTypeId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _transactionalItemsRelatedConcepts.DeleteTransactionalItemTypeById(userId, ipAddress, squadId, transactionalItemTypeId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound("in use");
+                    }
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        } 
+        
+        
+        /// <summary>
+        /// Delete a TransactionalItemType if not associated with a TransactionalItem
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="transactionalItemTypeId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteAssemblyTypeById")]
+        public async Task<IActionResult> DeleteAssemblyTypeById(string userId, string ipAddress, string assemblyTypeId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _transactionalItemsRelatedConcepts.DeleteAssemblyTypeById(userId, ipAddress, squadId, assemblyTypeId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound("in use");
+                    }
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
     }
 }

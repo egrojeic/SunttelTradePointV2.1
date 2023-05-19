@@ -30,6 +30,7 @@
         font-weight: bold;
     }
 </style>
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
 
 <PageTitleComponent Title="Seasons" IconName="seasons.png"
                     Description="Commercial Seasons">
@@ -78,6 +79,19 @@ else
                 <RadzenDataGridColumn TItem="SeasonBusiness" Property="StartDate" Title="@GetName("StartDate", new SeasonBusiness())" FormatString="{0:yyyy-MM-dd}" Filterable="false"></RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="SeasonBusiness" Property="EndDate" Title="@GetName("EndDate", new SeasonBusiness())" FormatString="{0:yyyy-MM-dd}" Filterable="false"></RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="SeasonBusiness" Property="Notes" Title="@GetName("Notes", new AtomConcept())"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SeasonBusiness" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
+                    <Template Context="data">
+
+                        <Confirm Id="@data.Id" TextValue="@($"¿ Confirm delete ?")"
+                         IdSelect="@IdDelete"
+                         ConfirmIdAction='ConfirmDelete'
+                         CancelAction="CancelDelete"
+                         SelectIdAction="SelectDelete"></Confirm>
+
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SeasonBusiness" Property="Id" Title="@GetName("Id", new SeasonBusiness())" Width="50px"></RadzenDataGridColumn>
+
             </Columns>
         </RadzenDataGrid>
         <div class="container-total">
@@ -101,12 +115,12 @@ else
     SfGrid<SeasonBusiness>? referDataGrid;
     List<SeasonBusiness> seasonBusiness = new List<SeasonBusiness>();
 
+    bool viewMsg = false;
+    string msg = "";
+    string IdDelete = "";
     bool isLoading = false;
-    List<ContextMenuItemModel> contextMenuItemModel = new List<ContextMenuItemModel>()
-            {
-        new ContextMenuItemModel { Text = "Edit", Target = ".e-content", Id = "copywithheader", IconCss="images/TransactionalTypes.png" }
-            };
 
+   
     public string? conceptFilter
     {
         get { return _filterItems; }
@@ -165,5 +179,39 @@ else
         itemSeasonBusiness = args.RowInfo.RowData;
         transactItemsService.SeasonBusinessSelectedItems = itemSeasonBusiness;
 
+    }
+
+    #region Confirm
+
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await transactItemsService.DeleteSeasonBusinessById(Id);
+        if (result) { LoadData(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
+
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
     }
 }

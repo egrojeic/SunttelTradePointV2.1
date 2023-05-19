@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
+using SunttelTradePointB.Server.Interfaces.QualityBkServices;
 using SunttelTradePointB.Shared.Common;
 
 namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
@@ -267,7 +268,202 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         }
 
 
-       
+        /// <summary>
+        /// Delete a EntityType if not associated with a Entity
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="entityTypeId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteEntityTypeById")]
+        public async Task<IActionResult> DeleteEntityTypeById(string userId, string ipAddress, string entityTypeId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _entitiesRelatedConcepts.DeleteEntityTypeById(userId, ipAddress, squadId, entityTypeId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound("in use");
+                    }
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Delete a EntityType if not associated with a Entity
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="entityGroupId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteEntityGroupById")]
+        public async Task<IActionResult> DeleteEntityGroupById(string userId, string ipAddress, string entityGroupId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _entitiesRelatedConcepts.DeleteEntityGroupById(userId, ipAddress, squadId, entityGroupId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound("in use");
+                    }
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Delete a EntityType if not associated with a Entity
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="entityRoleId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteEntityRoleById")]
+        public async Task<IActionResult> DeleteEntityRoleById(string userId, string ipAddress, string entityRoleId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _entitiesRelatedConcepts.DeleteEntityRoleById(userId, ipAddress, squadId, entityRoleId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound("in use");
+                    }
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Delete a EntityType if not associated with a Entity
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="palletTypeId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeletePalletTypeById")]
+        public async Task<IActionResult> DeletePalletTypeById(string userId, string ipAddress, string palletTypeId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _entitiesRelatedConcepts.DeletePalletTypeById(userId, ipAddress, squadId, palletTypeId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound("in use");
+                    }
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Delete a EntityType if not associated with a Entity
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="identificationTypeId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteIdentificationTypeById")]
+        public async Task<IActionResult> DeleteIdentificationTypeById(string userId, string ipAddress, string identificationTypeId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _entitiesRelatedConcepts.DeleteIdentificationTypeById(userId, ipAddress, squadId, identificationTypeId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound("in use");
+                    }
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
     }
 }

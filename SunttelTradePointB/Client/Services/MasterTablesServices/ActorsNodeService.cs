@@ -115,7 +115,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                     ipAddress = "127.0.0.0";
 
                 var response = await Gethttp($"/api/EntityNodesMaintenance/GetEntityDetailsAddressList?userId={userId}&ipAdress={ipAddress}&EntityId={entityActorId}");
-                var list =  await response.Content.ReadFromJsonAsync<List<Address>>(); 
+                var list = await response.Content.ReadFromJsonAsync<List<Address>>();
                 return list;
             }
             catch (Exception ex)
@@ -146,7 +146,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
                 var response = await Gethttp($"/api/EntityNodesMaintenance/GetEntityNodes?userId={userId}&ipAdress={ipAddress}&filterName={nameToFind}");
                 entityNodesList = await response.Content.ReadFromJsonAsync<List<EntityActor>>();
-               
+
                 return entityNodesList;
 
                 //if (entityNodesList != null)
@@ -182,7 +182,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 var response = await Gethttp($"api/EntityNodesMaintenance/GetEntityDetails{entityDetailsSection.ToString()}?filterName={patternToFind}");
                 var list = await response.Content.ReadFromJsonAsync<List<Concept>>();
 
-              
+
                 return list;
 
                 //if (entityNodesList != null)
@@ -213,7 +213,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
                 var response = await Gethttp($"/api/EntityNodesMaintenance/GetEntityDetailsIdentifiersList?userId={userId}&ipAdress={ipAddress}&EntityId={entityId}");
                 var list = await response.Content.ReadFromJsonAsync<List<IdentificationEntity>>();
-              
+
                 return list;
             }
             catch (Exception ex)
@@ -234,7 +234,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
                 var response = await Gethttp($"/api/EntityNodesMaintenance/GetEntityDetailsPhoneDirectory?userId={userId}&ipAdress={ipAddress}&EntityId={entityActorId}");
                 var list = await response.Content.ReadFromJsonAsync<List<PhoneNumber>>();
-              
+
                 return list;
 
                 //if (entityNodesList != null)
@@ -260,7 +260,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
                 var response = await Gethttp($"/api/EntityNodesMaintenance/GetEntityActorById?userId={userId}&ipAdress={ipAddress}&entityActorId={entityActorId}");
                 var item = await response.Content.ReadFromJsonAsync<EntityActor>();
-              
+
                 return item;
 
             }
@@ -282,7 +282,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
                 var response = await Gethttp($"/api/ConceptsSelector/GetSelectorListEntityGroups?filterCondition={filterCondition}");
                 var item = await response.Content.ReadFromJsonAsync<List<ConceptGroup>>();
-               
+
                 return item;
             }
             catch (Exception ex)
@@ -303,7 +303,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
                 var response = await Gethttp($"/api/EntityNodesMaintenance/GetEntityGroup?userId={userId}&ipAdress={ipAddress}&entityGroupId={groupId}");
                 var list = await response.Content.ReadFromJsonAsync<EntityGroup>();
-               
+
                 return list;
             }
             catch (Exception ex)
@@ -324,7 +324,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
                 var response = await Gethttp($"/api/EntityNodesMaintenance/GetEntityDetailsIdentifiersList?userId={userId}&ipAdress={ipAddress}&EntityId={entityActorId}");
                 var list = await response.Content.ReadFromJsonAsync<List<IdentificationType>>();
-               
+
                 return list;
             }
             catch (Exception ex)
@@ -340,7 +340,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             {
                 var response = await Gethttp($"/api/ConceptsSelector/GetSelectorListIdentificationTypes?filterName={filter}");
                 var list = await response.Content.ReadFromJsonAsync<List<IdentificationType>>();
-                              
+
                 return list;
             }
             catch (Exception ex)
@@ -361,7 +361,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
                 var response = await Gethttp($"/api/EntityActorsRelatedConcepts/GetIdentificationType?userId={userId}&ipAdress={ipAddress}&identicationTypeId={identificationId}");
                 var item = await response.Content.ReadFromJsonAsync<AtomConcept>();
-              
+
                 return item;
             }
             catch (Exception ex)
@@ -382,7 +382,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
                 var response = await Gethttp($"/api/EntityNodesMaintenance/GetEntityGroups?userId={userId}&ipAdress={ipAddress}&filterCondition={filterGroup}");
                 var list = await response.Content.ReadFromJsonAsync<List<EntityGroup>>();
-               
+
                 return list;
             }
             catch (Exception ex)
@@ -398,7 +398,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             {
                 var response = await Gethttp($"/api/ConceptsSelector/GetSelectorListEntityRoles?filterCondition={filterGroup}");
                 var list = await response.Content.ReadFromJsonAsync<List<EntityRole>>();
-               
+
                 return list;
             }
             catch (Exception ex)
@@ -419,7 +419,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
                 var response = await Gethttp($"/api/EntityActorsRelatedConcepts/GetEntityRole?userId={userId}&ipAdress={ipAddress}&entityRoleId={roleId}");
                 var list = await response.Content.ReadFromJsonAsync<EntityRole>();
-                           
+
                 return list;
             }
             catch (Exception ex)
@@ -436,7 +436,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
                 var response = await Gethttp("/api/ConceptsSelector/GetSelectorElectronicAddressEntities");
                 var list = await response.Content.ReadFromJsonAsync<List<AtomConcept>>();
-               
+
                 return list;
             }
             catch (Exception ex)
@@ -458,7 +458,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 var response = await Gethttp($"/api/EntityNodesMaintenance/GetEntityDetailsAddressList?userId={userId}&ipAdress={ipAddress}&EntityId={entityId}");
                 var list = await response.Content.ReadFromJsonAsync<List<Address>>();
 
-             
+
                 return list;
             }
             catch (Exception ex)
@@ -501,7 +501,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
                 var response = await Gethttp($"/api/EntityNodesMaintenance/GetShippingSetup?userId={userId}&ipAdress={ipAddress}&entityActorId={shippingId}");
                 var list = await response.Content.ReadFromJsonAsync<List<ShippingInfo>>();
-                              
+
                 return list;
             }
             catch (Exception ex)
@@ -522,7 +522,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
                 var response = await Gethttp($"/api/EntityNodesMaintenance/GetCommercialConditiosOfEntity?userId={userId}&ipAdress={ipAddress}&entityActorId={commercialConditionId}");
                 var list = await response.Content.ReadFromJsonAsync<List<EntitiesCommercialRelationShip>>();
-              
+
                 return list;
             }
             catch (Exception ex)
@@ -540,7 +540,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             {
                 var response = await Gethttp("/api/ConceptsSelector/GetSelectorEntitiyRelationshipTypes");
                 var list = await response.Content.ReadFromJsonAsync<List<EntitiyRelationshipType>>();
-             
+
                 return list;
             }
             catch (Exception ex)
@@ -558,7 +558,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             {
                 var response = await Gethttp($"/api/EntityNodesMaintenance/GetElectronicAddresses?userId={userId}&ipAdress={ipAddress}&entityActorId={entityActorId}");
                 var list = await response.Content.ReadFromJsonAsync<List<ElectronicAddress>>();
-               
+
                 return list;
             }
             catch (Exception ex)
@@ -577,7 +577,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
                 var response = await Gethttp($"/api/EntityNodesMaintenance/GetEntitiesCommercialRelationShipById?userId={userId}&ipAdress={ipAddress}&entitiesCommercialRelationShipId={entityActorId}");
                 var item = await response.Content.ReadFromJsonAsync<EntitiesCommercialRelationShip>();
-               
+
                 return item;
             }
             catch (Exception ex)
@@ -596,7 +596,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 var response = await Gethttp("/api/ConceptsSelector/GetSelectorListPalletTypes");
                 var list = await response.Content.ReadFromJsonAsync<List<PalletType>>();
 
-             
+
                 return list;
             }
             catch (Exception ex)
@@ -634,7 +634,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 var response = await Gethttp($"/api/ConceptsSelector/GetSelectorListEntityTypes?filterName={filter}");
                 var list = await response.Content.ReadFromJsonAsync<List<EntityType>>();
 
-               
+
                 return list;
             }
             catch (Exception ex)
@@ -654,7 +654,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 var response = await Gethttp($"/api/EntityActorsRelatedConcepts/GetEntityType?userId={userId}&ipAdress={ipAddress}&entityTypeId={entityTypeId}");
                 var item = await response.Content.ReadFromJsonAsync<AtomConcept>();
 
-              
+
                 return item;
             }
             catch (Exception ex)
@@ -670,7 +670,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             {
                 var response = await Gethttp($"/api/ConceptsSelector/GetSelectorListPalletTypes?filterName={filter}");
                 var list = await response.Content.ReadFromJsonAsync<List<PalletType>>();
-              
+
                 return list;
             }
             catch (Exception ex)
@@ -689,7 +689,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             {
                 var response = await Gethttp($"api/CommunicationsManagement/GetChannelCommunicationsGroupById?userId={userId}&ipAdress={ipAddress}&channelCommunicationsGroupId={channelCommunicationsGroupId}");
                 var list = await response.Content.ReadFromJsonAsync<ChannelCommunicationsGroup>();
-                             
+
                 return list;
             }
             catch (Exception ex)
@@ -706,8 +706,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             try
             {
                 var response = await Gethttp($"api/CommunicationsManagement/GetChannelCommunicationsGroups?userId={userId}&ipAdress={ipAddress}");
-                var list = await response.Content.ReadFromJsonAsync<List<ChannelCommunicationsGroup>>();            
-             
+                var list = await response.Content.ReadFromJsonAsync<List<ChannelCommunicationsGroup>>();
+
                 return list;
             }
             catch (Exception ex)
@@ -727,7 +727,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
                 var response = await Gethttp($"/api/EntityActorsRelatedConcepts/GetPalletType?userId={userId}&ipAdress={ipAddress}&palletTypeId={palletTypeId}");
                 var item = await response.Content.ReadFromJsonAsync<PalletType>();
-              
+
                 return item;
             }
             catch (Exception ex)
@@ -1061,8 +1061,102 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 return null;
             }
         }
-            
-       
+
+
+
+        public async Task<bool> DeleteEntityTypeById(string entityTypeId)
+        {
+            var userId = UIClientGlobalVariables.UserId;
+            var ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+
+                var response = await Deletehttp($"/api/EntityActorsRelatedConcepts/DeleteEntityTypeById?userId={userId}&ipAddress={ipAddress}&entityTypeId={entityTypeId}");
+                bool item = response.IsSuccessStatusCode;
+
+                return item;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteEntityGroupById(string entityGroupId)
+        {
+            var userId = UIClientGlobalVariables.UserId;
+            var ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+                var response = await Deletehttp($"/api/EntityActorsRelatedConcepts/DeleteEntityGroupById?userId={userId}&ipAddress={ipAddress}&entityGroupId={entityGroupId}");
+                bool item = response.IsSuccessStatusCode;
+
+                return item;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+        }
+        public async Task<bool> DeleteIdentificationTypeById(string identificationTypeId)
+        {
+            var userId = UIClientGlobalVariables.UserId;
+            var ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+                var response = await Deletehttp($"/api/EntityActorsRelatedConcepts/DeleteIdentificationTypeById?userId={userId}&ipAddress={ipAddress}&identificationTypeId={identificationTypeId}");
+                bool item = response.IsSuccessStatusCode;
+
+                return item;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+        }
+
+
+        public async Task<bool> DeleteEntityRoleById(string entityRoleId)
+        {
+            var userId = UIClientGlobalVariables.UserId;
+            var ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+                var response = await Deletehttp($"/api/EntityActorsRelatedConcepts/DeleteEntityRoleById?userId={userId}&ipAddress={ipAddress}&entityRoleId={entityRoleId}");
+                bool item = response.IsSuccessStatusCode;
+
+                return item;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+        }
+
+          public async Task<bool> DeletePalletTypeById(string palletTypeId)
+        {
+            var userId = UIClientGlobalVariables.UserId;
+            var ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+                var response = await Deletehttp($"/api/EntityActorsRelatedConcepts/DeletePalletTypeById?userId={userId}&ipAddress={ipAddress}&palletTypeId={palletTypeId}");
+                bool item = response.IsSuccessStatusCode;
+
+                return item;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+        }
+
+
+
 
         public async Task<HttpResponseMessage> Gethttp(string Url)
         {
@@ -1070,7 +1164,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             try
             {
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
-                if(UIClientGlobalVariables.ActiveSquad != null)
+                if (UIClientGlobalVariables.ActiveSquad != null)
                     request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad!.IDSquads.ToString());
 
 
@@ -1093,6 +1187,33 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-      
+        private async Task<HttpResponseMessage> Deletehttp(string Url)
+        {
+
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Delete, Url);
+                if (UIClientGlobalVariables.ActiveSquad != null)
+                    request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad!.IDSquads.ToString());
+
+
+                var response = await _httpClient.SendAsync(request);
+                System.Diagnostics.Debug.WriteLine(response.IsSuccessStatusCode);
+                if (response.IsSuccessStatusCode)
+                {
+                    return response;
+                }
+                else { return null; }
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                System.Diagnostics.Debug.WriteLine(errMessage);
+
+            }
+            return null;
+
+        }
     }
 }

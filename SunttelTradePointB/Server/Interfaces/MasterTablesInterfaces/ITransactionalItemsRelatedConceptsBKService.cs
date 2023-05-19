@@ -251,5 +251,89 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         Task<(bool IsSuccess, TransactionalItemStatus? transactionalItemStatuses, string? ErrorDescription)> GetTransactionalStatusById(string userId, string ipAddress, string statusId);
+
+
+        /// <summary>
+        /// Delete an ConceptGroup not associated with TransactionalItems
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="conceptGroupId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteConceptGroupById(string userId, string ipAddress, string squadId, string? conceptGroupId);
+
+
+        /// <summary>
+        /// Delete an Box not associated with TransactionalItems
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="boxId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteBoxById(string userId, string ipAddress, string squadId, string? boxId);
+
+        /// <summary>
+        /// Delete an LabelStyle not associated with TransactionalItems
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="labelStyleId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteLabelStyleById(string userId, string ipAddress, string squadId, string? labelStyleId);
+
+        /// <summary>
+        /// Delete an LabelPaper not associated with TransactionalItems
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="labelPaperId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteLabelPaperById(string userId, string ipAddress, string squadId, string? labelPaperId);
+
+
+        /// <summary>
+        /// Delete an SeasonBusiness not associated with TransactionalItems
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="seasonBusinessId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteSeasonBusinessById(string userId, string ipAddress, string squadId, string? seasonBusinessId);
+
+        /// Delete an TransactionalItemStatus not associated with TransactionalItems
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="transactionalItemStatusId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteTransactionalItemStatusById(string userId, string ipAddress, string squadId, string? transactionalItemStatusId);
+
+
+        /// <summary>
+        /// Delete an TransactionalItemType not associated with TransactionalItems
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="transactionalItemTypeId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteTransactionalItemTypeById(string userId, string ipAddress, string squadId, string? transactionalItemTypeId);
+
+          /// <summary>
+        /// Delete an assemblyType not associated with TransactionalItems
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="assemblyTypeId"></param>       
+        /// <returns></returns>
+       Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteAssemblyTypeById(string userId, string ipAddress, string squadId, string? assemblyTypeId);
+
     }
 }

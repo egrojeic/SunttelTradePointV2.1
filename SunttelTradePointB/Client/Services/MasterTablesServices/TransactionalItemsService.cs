@@ -198,15 +198,15 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             }
         }
 
-         public async Task<AssemblyType> GetAssemblyTypeByID(string assemblyTypeId)
-        {          
+        public async Task<AssemblyType> GetAssemblyTypeByID(string assemblyTypeId)
+        {
             try
             {
                 var responseMessage = await Gethttp($"/api/TransactionalItemsRelatedConcepts/GetAssemblyTypeByID?userId={UIClientGlobalVariables.UserId}&ipAddress={UIClientGlobalVariables.PublicIpAddress}&assemblyTypeId={assemblyTypeId}");
                 var item = await responseMessage.Content.ReadFromJsonAsync<AssemblyType>();
 
 
-                return item ;
+                return item;
 
             }
             catch (Exception ex)
@@ -1467,23 +1467,180 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         }
 
 
-
-        Task<TransactionalItemStatus> ITransactionalItems.GetSelectorListPackingMaterials(string? filterString)
+        public async Task<bool> DeleteConceptGroupById(string? conceptGroupId)
         {
-            throw new NotImplementedException();
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            try
+            {
+                var responseMessage = await Deletehttp($"/api/TransactionalItemsRelatedConcepts/DeleteConceptGroupById?userId={userId}&ipAddress={ipAddress}&conceptGroupId={conceptGroupId}");
+                var result = responseMessage.IsSuccessStatusCode;
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+
+                return false;
+
+            }
+
         }
 
+        public async Task<bool> DeleteBoxById(string? boxId)
+        {
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
 
-        public async Task<HttpResponseMessage> Gethttp(string Url)
+            try
+            {
+                var responseMessage = await Deletehttp($"/api/TransactionalItemsRelatedConcepts/DeleteBoxById?userId={userId}&ipAddress={ipAddress}&boxId={boxId}");
+                bool result = responseMessage.IsSuccessStatusCode;
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+
+            }
+
+        }
+
+        public async Task<bool> DeleteLabelStyleById(string? labelStyleId)
+        {
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            try
+            {
+                var responseMessage = await Deletehttp($"/api/TransactionalItemsRelatedConcepts/DeleteLabelStyleById?userId={userId}&ipAddress={ipAddress}&boxId={labelStyleId}");
+                bool result = responseMessage.IsSuccessStatusCode;
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+
+            }
+
+        }
+
+        public async Task<bool> DeleteLabelPaperById(string? labelPaperId)
+        {
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            try
+            {
+                var responseMessage = await Deletehttp($"/api/TransactionalItemsRelatedConcepts/DeleteLabelPaperById?userId={userId}&ipAddress={ipAddress}&labelPaperId={labelPaperId}");
+                bool result = responseMessage.IsSuccessStatusCode;
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+
+            }
+
+        }
+
+        public async Task<bool> DeleteSeasonBusinessById(string? seasonBusinessId)
+        {
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            try
+            {
+                var responseMessage = await Deletehttp($"/api/TransactionalItemsRelatedConcepts/DeleteSeasonBusinessById?userId={userId}&ipAddress={ipAddress}&seasonBusinessId={seasonBusinessId}");
+                bool result = responseMessage.IsSuccessStatusCode;
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+
+            }
+        }
+
+        public async Task<bool> DeleteTransactionalItemStatusById(string? transactionalItemStatusId)
+        {
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            try
+            {
+                var responseMessage = await Deletehttp($"/api/TransactionalItemsRelatedConcepts/DeleteTransactionalItemStatusById?userId={userId}&ipAddress={ipAddress}&transactionalItemStatusId={transactionalItemStatusId}");
+                bool result = responseMessage.IsSuccessStatusCode;
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+
+            }
+        }
+        public async Task<bool> DeleteTransactionalItemTypeById(string? transactionalItemTypeId)
+        {
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            try
+            {
+                var responseMessage = await Deletehttp($"/api/TransactionalItemsRelatedConcepts/DeleteTransactionalItemTypeById?userId={userId}&ipAddress={ipAddress}&transactionalItemTypeId={transactionalItemTypeId}");
+                bool result = responseMessage.IsSuccessStatusCode;
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+
+            }
+        }
+
+        public async Task<bool> DeleteAssemblyTypeById(string? assemblyTypeId)
+        {
+            string userId = UIClientGlobalVariables.UserId;
+            string ipAddress = UIClientGlobalVariables.PublicIpAddress;
+
+            try
+            {
+                var responseMessage = await Deletehttp($"/api/TransactionalItemsRelatedConcepts/DeleteAssemblyTypeById?userId={userId}&ipAddress={ipAddress}&assemblyTypeId={assemblyTypeId}");
+                bool result = responseMessage.IsSuccessStatusCode;
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+
+            }
+        }
+
+        private async Task<HttpResponseMessage> Gethttp(string Url)
         {
 
             try
             {
-                 var IDSquads = UIClientGlobalVariables.ActiveSquad;
+                var IDSquads = UIClientGlobalVariables.ActiveSquad;
 
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
-               
-               if(IDSquads!=null) request.Headers.Add("SquadId", IDSquads.ToString());
+
+                if (IDSquads != null) request.Headers.Add("SquadId", IDSquads.ToString());
 
 
                 var response = await _httpClient.SendAsync(request);
@@ -1504,7 +1661,33 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             return null;
 
         }
+        private async Task<HttpResponseMessage> Deletehttp(string Url)
+        {
+            try
+            {
+                var IDSquads = UIClientGlobalVariables.ActiveSquad;
+                var request = new HttpRequestMessage(HttpMethod.Delete, Url);
 
+                if (IDSquads != null) request.Headers.Add("SquadId", IDSquads.ToString());
+
+                var response = await _httpClient.SendAsync(request);
+                System.Diagnostics.Debug.WriteLine(response.IsSuccessStatusCode);
+                if (response.IsSuccessStatusCode)
+                {
+                    return response;
+                }
+                else { return null; }
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                System.Diagnostics.Debug.WriteLine(errMessage);
+
+            }
+            return null;
+
+        }
 
     }
 
