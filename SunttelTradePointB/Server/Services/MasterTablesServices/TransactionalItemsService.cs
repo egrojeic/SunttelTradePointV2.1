@@ -511,12 +511,12 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     {
                         var images = new List<TransactItemImage>();
                         images.Add(transactItemImage);
-                      
+
                         var updateWithoutList = Builders<TransactionalItem>.Update.Set(x => x.PathImages, images);
                         await _TransactionalItemsCollection.UpdateOneAsync(filter, updateWithoutList);
                     }
                     else
-                    {                                   
+                    {
                         var update = Builders<TransactionalItem>.Update.AddToSet(x => x.PathImages, transactItemImage);
                         await _TransactionalItemsCollection.UpdateOneAsync(filter, update);
                     }
@@ -1287,7 +1287,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 TransactionalItem result = resultPrev.Select(d => BsonSerializer.Deserialize<TransactionalItem>(d)).ToList()[0];
                 // obtengo lista de productsPackingSpecs
                 List<PackingSpecs> listProductsPackingSpecs = result.ProductPackingSpecs;
-                if(listProductsPackingSpecs != null)
+                if (listProductsPackingSpecs != null)
                 {
                     foreach (var i in listProductsPackingSpecs)
                     {
@@ -1296,7 +1296,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                             resultFinal = i;
                             return (true, resultFinal, null);
                         }
-                        
+
                     }
                     return (false, null, "The item does not have Packing Specs Id");
                 }
@@ -1371,7 +1371,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="transactionalItemId"></param>
         /// <param name="transactionalItemTagId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, TransactionalItemTag? transactionalItemTagResponse, string? ErrorDescription)>  GetTransactionalItemTagById(string userId, string ipAdress, string transactionalItemId, string transactionalItemTagId)
+        public async Task<(bool IsSuccess, TransactionalItemTag? transactionalItemTagResponse, string? ErrorDescription)> GetTransactionalItemTagById(string userId, string ipAdress, string transactionalItemId, string transactionalItemTagId)
         {
             try
             {
@@ -1435,7 +1435,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 var resultPrev = await _TransactionalItemsGroupsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
                 // deserializo transactional items //
                 ConceptGroup result = resultPrev.Select(d => BsonSerializer.Deserialize<ConceptGroup>(d)).ToList()[0];
-                
+
                 return (true, result, null);
             }
             catch (Exception e)
@@ -1479,7 +1479,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     {
                         return (false, null, "The item does not have Status Id");
                     }
-                  
+
                 }
                 else
                 {
@@ -1528,7 +1528,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 // deserializo transactional items //
                 ProductModel result = resultPrev.Select(d => BsonSerializer.Deserialize<ProductModel>(d)).ToList()[0];
                 // obtengo lista de productsPackingSpecs
-               
+
 
                 return (true, result, null);
             }
@@ -1594,7 +1594,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 var pipeline = new List<BsonDocument>();
 
-                if (!(strNameFiler.ToLower() == "all" || strNameFiler.ToLower() == "todos" || strNameFiler.ToLower() == ""))
+                if (!(strNameFiler.ToLower() != "all" || strNameFiler.ToLower() != "todos" || strNameFiler.ToLower() != ""))
                 {
                     pipeline.Add(
                     new BsonDocument{
@@ -1610,11 +1610,14 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         }}
                     }
                 );
+
+
                 }
 
-                pipeline.Add(
-                    new BsonDocument("$match", new BsonDocument("ProductPackingSpecs.Customer._id", new ObjectId(customerId)))
-                );
+
+                    pipeline.Add(
+                 new BsonDocument("$match", new BsonDocument("Customer._id", new ObjectId(customerId)))
+                 );
 
                 pipeline.Add(
                     new BsonDocument{
@@ -1634,7 +1637,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 var resultado = new List<AddItemCommercialDocument>();
 
-                foreach ( var item in results ) 
+                foreach (var item in results)
                 {
                     resultado.Add(new AddItemCommercialDocument
                     {

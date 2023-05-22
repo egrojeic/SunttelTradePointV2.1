@@ -76,6 +76,7 @@
                         </InputTextSelector3>
                         <div><label class="info-text-size">@GetName( "Quantity",new MaterialRecipeItem())</label></div>
                         <div><input type="number" @bind="materialRecipeItem.Quantity" class="form-control border-color info-text-size" required /></div>
+                       
                         <div></div>
                         <div class="flex-horizontal-end">
                             <button type="button" @onclick='()=>OpenAdd("Material")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
@@ -494,6 +495,7 @@
                                                     EventSearcherValueAndId="EventSearcherValueAndId"
                                                     EventIdSelectionAndId="SelectionMade"
                                                     caption="@(ModelRecipe != null ? ModelRecipe?.Name : "")"
+                                                    style="left:-90px;"
                                                     Items="GetModelView">
                                 </InputTextSelector3>
 
@@ -516,6 +518,7 @@
                                                     EventSearcherValueAndId="EventSearcherValueAndId"
                                                     EventIdSelectionAndId="SelectionMade"
                                                     EventClosed="ClosedInputText"
+                                                    style="left:-90px;"
                                                     Items="GetBoxToSaleView">
 
                                 </InputTextSelector3>
@@ -573,6 +576,7 @@
                                                     EventClosed="ClosedInputText"
                                                     EventSearcherValueAndId="EventSearcherValueAndId"
                                                     EventIdSelectionAndId="SelectionMade"
+                                                    style="left:-90px;"
                                                     Items="assemblyTypes">
 
                                 </InputTextSelector3>
@@ -616,6 +620,7 @@
                                                     caption="@(BoxLabelStyle != null ? BoxLabelStyle.Name : "")"
                                                     EventSearcherValueAndId="EventSearcherValueAndId"
                                                     EventIdSelectionAndId="SelectionMade"
+                                                    style="left:-90px;"
                                                     EventClosed="ClosedInputText"
                                                     Items="BoxLabelStylesView">
 
@@ -635,6 +640,7 @@
                                                     caption="@(InnerProductLabelStyleByDeafult != null ? InnerProductLabelStyleByDeafult.Name : "")"
                                                     EventSearcherValueAndId="EventSearcherValueAndId"
                                                     EventIdSelectionAndId="SelectionMade"
+                                                    style="left:-90px;"
                                                     EventClosed="ClosedInputText"
                                                     Items="InnerProductLabelStyleByDeafultsView">
 
@@ -914,7 +920,11 @@
 
     InputTextSelector? ReferInputTextSelector;
 
-
+    protected override void OnParametersSet()
+    {
+        InitializedAsync();
+        StateHasChanged();
+    }
 
     protected override void OnInitialized()
     {
@@ -1011,17 +1021,13 @@
             #endregion Tag 2
 
             #region Tag 3
-
-
             #endregion Tag 3
 
+            var result = await transactionalService.SaveProductPackingSpec(transactionalItemId, _PackingSpecs);
 
-
-
-            var resul = await transactionalService.SaveProductPackingSpec(transactionalItemId, _PackingSpecs);
-
-            if (resul)
+            if (result!=null)
             {
+                _PackingSpecs = result;
                 Msg("Saved");
 
             }
@@ -1109,6 +1115,7 @@
                 materialRecipeItem = new();
                 MaterialConcept = new();
                 Msg("Added");
+                if (GridlistOfMaterials != null) GridlistOfMaterials.Reload();
             }
             else
             {

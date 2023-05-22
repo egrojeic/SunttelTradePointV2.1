@@ -330,7 +330,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <param name="transactionalItemId"></param>
         /// <param name="packingSpecs"></param>   
         /// <returns></returns>
-        Task<bool> SaveProductPackingSpec(string? transactionalItemId, PackingSpecs? packingSpecs);
+        Task<PackingSpecs> SaveProductPackingSpec(string? transactionalItemId, PackingSpecs? packingSpecs);
 
         /// save a Tag
         /// </summary>

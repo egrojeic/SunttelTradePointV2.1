@@ -40,7 +40,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <RadzenDataGrid TItem="UserEntity" Data="@users" PageSize="10" ColumnWidth="150px">
+            <RadzenDataGrid TItem="UserEntity" Data="@users" PageSize="50" ColumnWidth="150px">
                 <Columns>
                     <RadzenDataGridColumn TItem="UserEntity" Property="Name" Title="Username" />
                     <RadzenDataGridColumn TItem="UserEntity" Property="Email" Title="Email" />
@@ -74,7 +74,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <RadzenDataGrid TItem="UserRole" Data="@roles" PageSize="10" ColumnWidth="150px">
+            <RadzenDataGrid TItem="UserRole" Data="@roles" PageSize="50" ColumnWidth="150px">
                 <Columns>
                     <RadzenDataGridColumn TItem="UserRole" Property="Name" Title="Username" />
                     <RadzenDataGridColumn TItem="UserRole" Title="Options">

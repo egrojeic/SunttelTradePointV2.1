@@ -1089,7 +1089,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-        public async Task<bool> SaveProductPackingSpec(string transactionalItemId, PackingSpecs packingSpecs)
+        public async Task<PackingSpecs> SaveProductPackingSpec(string transactionalItemId, PackingSpecs packingSpecs)
         {
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
@@ -1099,13 +1099,13 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             try
             {
                 var resul = await _httpClient.PostAsJsonAsync<PackingSpecs>($"api/TransactionalItems/SaveProductPackingSpecs?userId={userId}&ipAddress={ipAddress}&transactionalItemId={transactionalItemId}", packingSpecs);
-                return resul.IsSuccessStatusCode;
+                return await resul.Content.ReadFromJsonAsync<PackingSpecs>();
             }
             catch (Exception ex)
             {
                 string errMessage = ex.Message;
 
-                return false;
+                return null;
 
             }
 
