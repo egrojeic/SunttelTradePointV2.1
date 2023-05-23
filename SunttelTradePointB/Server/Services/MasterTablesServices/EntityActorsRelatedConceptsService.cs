@@ -337,10 +337,10 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 pipeline.Add(
                   new BsonDocument("$match",
-                  new BsonDocument("EntityType._id", new ObjectId(creditTypeId))
+                  new BsonDocument("TypeOfConcept._id", new ObjectId(creditTypeId))
                   )
                );
-             
+         
                 pipeline.Add(
                     new BsonDocument("$group", new BsonDocument(
                         "_id", new BsonDocument(
