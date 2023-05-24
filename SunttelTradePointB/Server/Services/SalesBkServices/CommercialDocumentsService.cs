@@ -992,7 +992,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     salesDocumentItemsDetails.SquadId = ObjectId.GenerateNewId().ToString();
                 }
 
-                 if (salesDocumentItemsDetails.Id == null)
+                if (salesDocumentItemsDetails.Id == null)
                 {
                     salesDocumentItemsDetails.Id = ObjectId.GenerateNewId().ToString();
                 }
@@ -1337,5 +1337,33 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
             }
         }
 
+
+
+        /// <summary>
+        /// Delete an Sale Detail 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="commercialDocumentTypeId"></param>       
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteSaleDetailById(string userId, string ipAddress, string squadId, string saleId, string? detailId)
+        {
+            try
+            {
+                var result = _CommercialDocumentDetailImports.DeleteOne(s => s.Id == detailId);
+                return (true, result.IsAcknowledged, null);
+
+            }
+            catch (Exception e)
+            {
+                return (false, false, e.Message);
+            }
+
+
+        }
+
+
     }
+
 }

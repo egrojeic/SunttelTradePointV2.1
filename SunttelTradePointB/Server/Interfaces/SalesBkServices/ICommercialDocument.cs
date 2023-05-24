@@ -295,5 +295,16 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <returns></returns>
         Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteShippingStatusById(string userId, string ipAddress, string squadId, string? shippingStatusId);
 
+
+        /// <summary>
+        /// Delete an Sale Detail 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="commercialDocumentTypeId"></param>       
+        /// <returns></returns>
+        Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteSaleDetailById(string userId, string ipAddress, string squadId, string saleId, string? detailId);
+
     }
 }

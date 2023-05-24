@@ -116,5 +116,13 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// <returns></returns>
         Task<bool> DeleteCommercialDocumentTypeById(string commercialDocumentTypeId);
 
+         /// <summary>
+        /// Delete a SaleDetail
+        /// </summary>  
+        /// <param name="saleId"></param>     
+        /// <param name="detailId"></param>     
+        /// <returns></returns>
+        Task<bool> DeleteSaleDetailById(string saleId, string detailId);
+
     }
 }

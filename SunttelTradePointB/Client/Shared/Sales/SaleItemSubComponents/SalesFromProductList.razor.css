@@ -1,25 +1,32 @@
 ﻿.btn-grid {
-    height:40px;
-    width:45px;
-    border-radius:5px;
+    height: 40px;
+    width: 45px;
+    border-radius: 5px;
 }
+
 .btn-grid-color {
     background-color: #00ccff;
-    color:white;
-    width:80px;
+    color: white;
+    width: 80px;
 }
 
-.control-btn{
-    width:100px;
 
+.control-btn {
+    width: auto;
+    right: 0px;
 }
+
     .control-btn button {
-        background-color: #00ccff;
-        border-radius:5px;
+        padding:0px;
+        color: #00ccff;
+        border: none;
+        border-radius: 5px;
+        font-size:17px;
+        background-color:transparent;
     }
 
-    .control-btn .cancel {
-        background-color: black;
-        border-radius: 5px;
-        color:white;
+    .control-btn .cancel {       
+       border:none;
+        color: black;
     }
+

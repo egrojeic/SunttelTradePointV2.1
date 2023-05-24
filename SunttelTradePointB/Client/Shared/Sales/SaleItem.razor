@@ -11,6 +11,8 @@
 @using System.Reflection
 @using Syncfusion.Blazor.Navigations
 @using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents
+@using SunttelTradePointB.Client.Services.SalesServices
+
 @inject NavigationManager Navigation
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
 @inject GeographicPlacesService geoPlaces
@@ -38,15 +40,15 @@
     }
 </style>
 
-<MessageSaveComponent isVisible="isVisible" message="@alertMsg">
-</MessageSaveComponent>
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
+
+
 <PageTitleComponent Title="@namePage"
                     Description="@($"Here you can add {@namePage}")" IconName="@icoLogo">
 </PageTitleComponent>
 @if (onInitialized)
 {
     <form>
-
 
         <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
             <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
@@ -204,7 +206,7 @@
             <div>
                 <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size">
 
-                    @if (commercialDocument.Carrier !=null && carrierList != null && carrierList.Count() > 0)
+                    @if (commercialDocument.Carrier != null && carrierList != null && carrierList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
                     }
@@ -284,13 +286,15 @@
 
         <hr />
 
-        <SfTab Height="250px" CssClass="tab-adaptive " HeaderPlacement="HeaderPosition.Left">
+
+
+        <SfTab @oncontextmenu:preventDefault="true" Height="250px" CssClass="tab-adaptive " HeaderPlacement="HeaderPosition.Left">
             <TabAnimationSettings>
                 <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
                 <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
             </TabAnimationSettings>
-            <TabItems>
 
+            <TabItems>
                 <TabItem>
                     <ChildContent>
                         <TabHeader Text="@GetName("Items",new CommercialDocument())"></TabHeader>
@@ -327,7 +331,7 @@
 }
 else
 {
-    <WaitingProcessIndicator loadingTopic="Loading..."></WaitingProcessIndicator>
+    <WaitingProcessIndicator loadingTopic="."></WaitingProcessIndicator>
 }
 
 
@@ -337,20 +341,22 @@ else
     [Parameter]
     public string filter { get; set; }
     [Parameter]
-    public  string page { get; set; }
+    public string page { get; set; }
 
     TextToSpeech textToSpeech;
 
 
-    string alertMsg = "";
+    string msg = "";
     string SearcherValue = "";
     string namePage = "";
     string backPage = "";
     string icoLogo = "";
     bool menuVisible = false;
-    bool isVisible = false;
+    bool viewMsg = false;
     bool isASale = false;
     bool onInitialized = false;
+    private bool timerDetailStatus = true;
+
     public CommercialDocument commercialDocument = new();
     // public SalesDocumentItemsDetails items = new();
 
@@ -376,7 +382,6 @@ else
 
 
     MessageSaveComponent? referAlert;
-    string msg = "";
     bool isLoading = false;
 
     protected override void OnParametersSet()
@@ -387,6 +392,7 @@ else
 
     protected override async void OnInitialized()
     {
+
         onInitialized = false;
         ValidateUri();
         isLoading = true;
@@ -404,6 +410,7 @@ else
         LoadCommercialDocument();
         isLoading = false;
         onInitialized = true;
+        TimerDetail();
         StateHasChanged();
     }
 
@@ -543,16 +550,16 @@ else
 
     public void alert(string _msg, int? status = 0)
     {
-        isVisible = true;
-        alertMsg = _msg;
+        viewMsg = true;
+        msg = _msg;
 
         StateHasChanged();
     }
 
     public void alert(string _msg)
     {
-        isVisible = true;
-        alertMsg = _msg;
+        viewMsg = true;
+        msg = _msg;
 
         StateHasChanged();
     }
@@ -720,5 +727,52 @@ else
         StateHasChanged();
     }
 
+
+    private async void TimerDetail()
+    {
+        if (timerDetailStatus)
+        {
+            timerDetailStatus = false;
+            await Task.Delay(TimeSpan.FromSeconds(2));
+            var result = await GetLocalStorage();
+            if (result != null && result != "false")
+            {
+                var detailList = await DocumentServices.GetCommercialDocumentDetails(commercialDocumentId);
+                commercialDocument.Items = detailList;                
+                StateHasChanged();
+                await SaveTrimere();
+            }
+            timerDetailStatus = true;
+            TimerDetail();
+        }
+    }
+
+    public async void LoadDetail()
+    {
+        commercialDocument.Items = await DocumentServices.GetCommercialDocumentDetails(commercialDocumentId);
+    }
+
+    public async Task<string> GetLocalStorage()
+    {
+        try
+        {
+            return await Js.InvokeAsync<string>("localStorage.getItem", "timer");
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public async Task SaveTrimere()
+    {
+        try
+        {
+            await Js.InvokeVoidAsync("localStorage.setItem", "timer", "false");
+        }
+        catch
+        {
+        }
+    }
 
 }

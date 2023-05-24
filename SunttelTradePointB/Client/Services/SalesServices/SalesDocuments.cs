@@ -11,6 +11,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
     {
         private readonly HttpClient _httpClient;
         private string basepath = "/api/Sales/Name?userId=*Id&ipAddress=*Ip";
+
         public SalesDocuments(HttpClient httpClient)
         {
             _httpClient = httpClient;
@@ -85,7 +86,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         public async Task<SalesDocumentItemsDetails> SaveCommercialDocumentDetail(SalesDocumentItemsDetails salesDocumentItemsDetails)
         {
             try
-            {
+            {               
                 salesDocumentItemsDetails.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<SalesDocumentItemsDetails>($"/api/Sales/SaveCommercialDocumentDetail?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}", salesDocumentItemsDetails);
                 return await responseMessage.Content.ReadFromJsonAsync<SalesDocumentItemsDetails>();
@@ -237,6 +238,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
+
                 // page, perPage, filterName
                 string path = basepath.Replace("Name", "GetCommercialDocumentDetails");
                 var responseMessage = await Gethttp($"{path}&page={page}&perPage={perPage}&commercialDocumentId={commercialDocumentId}");
@@ -249,6 +251,8 @@ namespace SunttelTradePointB.Client.Services.SalesServices
                 return null;
             }
         }
+
+
 
         public async Task<List<AddItemCommercialDocument>> GetCommercialProductList(string commercialDocumentId, string customerId, string filter, int? page = 1, int? perPage = 10)
         {
@@ -532,6 +536,23 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             {
                 string path = basepath.Replace("Name", "DeleteCommercialDocumentTypeById");
                 var responseMessage = await Deletehttp($"{path}&commercialDocumentTypeId={commercialDocumentTypeId}");
+                var result = responseMessage.IsSuccessStatusCode;
+                return result;
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteSaleDetailById(string saleId, string detailId)
+        {
+            try
+            {
+                string path = basepath.Replace("Name", "DeleteSaleDetailById");
+                var responseMessage = await Deletehttp($"{path}&saleId={saleId}&detailId={detailId}");
                 var result = responseMessage.IsSuccessStatusCode;
                 return result;
 

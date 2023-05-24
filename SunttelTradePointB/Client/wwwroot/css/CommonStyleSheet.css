@@ -1,11 +1,11 @@
 ﻿
-.label-style{
-    font-size:12px;
+.label-style {
+    font-size: 12px;
 }
 
-.color-black{
-
+.color-black {
 }
+
 .color-white {
     color: white;
 }
@@ -25,8 +25,7 @@
     border-radius: 5px;
     border-color: #ced4da;
     font-size: 12px;
-    text-align:start;
-    
+    text-align: start;
 }
 
 .input-style {
@@ -40,8 +39,8 @@
 }
 
 
-.row-color{
-    background-color:red;
+.row-color {
+    background-color: red;
 }
 
 .CardList {
@@ -69,7 +68,6 @@
         padding-left: 10px;
         cursor: pointer;
         border-radius: 10px;
-        
     }
 
         .CardList li:nth-child(odd) {
@@ -119,7 +117,6 @@
     width: 278px;
     max-width: 278px;
     height: 55px;
-   
 }
 
     .component-input select {
@@ -148,7 +145,7 @@
         background-color: #00cbfe;
         border-color: transparent;
         border-radius: 0px 10px 1px 0px;
-        padding-top:0px;
+        padding-top: 0px;
         color: white;
         height: 27px;
         width: 35px;
@@ -202,7 +199,7 @@
     box-shadow: 0px 0px 0.1px 1px #ced4da;
     border-radius: 4px;
     border-color: #dee2e6;
-    background-color:white;
+    background-color: white;
     min-width: 100px;
     width: auto;
     height: auto;
@@ -213,23 +210,22 @@
         background-color: #00ccff;
         border-radius: 4px;
         border-color: transparent;
-        height:30px;
-        overflow:hidden;
-    }        
+        height: 30px;
+        overflow: hidden;
+    }
 
-        .item-edit label {
-            font-size: 12px;
-        }
+    .item-edit label {
+        font-size: 12px;
+    }
 
 .grid-columns-4 {
     margin-top: 20px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-gap: 10px;  
+    grid-gap: 10px;
     align-items: center;
     margin-right: 28px;
     padding: 10px;
-  
 }
 
 .box-shadow-mode {
@@ -329,7 +325,7 @@
     align-items: center;
     align-content: center;
     min-height: 860px;
-    width:100%;
+    width: 100%;
     padding-bottom: 50px;
     overflow: hidden;
 }
@@ -422,7 +418,7 @@
     grid-row-gap: 0px;
     align-items: start;
     margin-top: 20px;
-    width:100%;
+    width: 100%;
 }
 
 .container-menu-g {
@@ -473,53 +469,54 @@
 
 
 .nav-link-style {
-    background-color: #00ccff;        
+    background-color: #00ccff;
     border-radius: 10px;
-    height:30px;
+    height: 30px;
     border: none;
     margin-left: 10px;
     font-size: 12px;
-    padding:7px 10px 0px 5px;
-    color:white;
+    padding: 7px 10px 0px 5px;
+    color: white;
 }
+
     .nav-link-style a {
         color: white;
-        text-decoration: none;      
+        text-decoration: none;
     }
-.position-input{
-    position:absolute;    
-    left:-15px;
+
+.position-input {
+    position: absolute;
+    left: -15px;
 }
 
-.width-form{
-    width:800px;
+.width-form {
+    width: 800px;
 }
 
-.Text-grid{
-    font-size:3px;
-  
+.Text-grid {
+    font-size: 3px;
+}
+
+.grid-width {
+    max-width: 20px;
+}
+
+
+.p-mode-text {
+    height: 30px;
+    margin-top: 2px;
+    padding-left: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 2px gray;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+}
+
+    .p-mode-text p {
+        margin: 0px;
     }
-.grid-width{
-   max-width:20px;  
-}
-
-
-.p-mode-text{
-  height:30px;
-  margin-top:2px;
-  padding-left:10px;
-  border-radius:5px;
-  box-shadow:0px 0px 2px gray;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:start;
-}
-
-.p-mode-text p{
-    margin:0px;
-    
-}
 
 .container-total {
     width: 100%;
@@ -548,51 +545,38 @@
             margin-left: 5px;
         }
 
-.container-alert-delete {
-    background-color: #e8e9ec;
-    padding: 5px;
-    padding-left: 5px;
-    padding-right: 5px;
-    border-radius: 5px;
+.container-alert-delete {    
+    padding: 0px;
     width: auto;
-    bottom: 50%;
-    right: 40%;   
     white-space: break-spaces;
 }
-    .container-alert-delete label{
-        margin-bottom:2px;
-        word-break:break-word;
+
+    .container-alert-delete label {
+        margin-bottom: 0px;
+        word-break: break-word;
     }
 
     .container-alert-delete .item-btn {
         display: flex;
         justify-content: space-between;
+        align-items: baseline;
+        font-size: 15px;
+        height: 24px;
     }
 
-    .container-alert-delete .img-delete {
-        background-color: black;
-        color: white;
-        padding-top:4px;
+    .container-alert-delete .img-delete {        
+        color: black;
         border-radius: 5px;
-        font-size:19px;
-        width:45px;
-        height:35px;
+        font-size: 15px;
        
-
     }
 
 
 
     .container-alert-delete .cancel {
-        background-color: #00ccff;
-        color: black;
+        margin-bottom: 30px;
+        color: #00ccff;
         border-radius: 5px;
-        padding-top: 4px;
-        border-radius: 5px;
-        font-size: 19px;
-        width: 45px;
-        height: 35px;
+        font-size: 17px;
+       
     }
-
-        
-

@@ -16,7 +16,24 @@
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
     }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
 </style>
+
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
 
 
 
@@ -53,7 +70,7 @@
     @if (isLoading)
     {
 
-        <WaitingProcessIndicator loadingTopic="Characteristic Items"></WaitingProcessIndicator>
+        <WaitingProcessIndicator loadingTopic="Items"></WaitingProcessIndicator>
 
     }
     else
@@ -62,11 +79,11 @@
         {
             <RadzenDataGrid @ref="grid" AllowFiltering="true"
                     AllowColumnResize="true"
-                    AllowAlternatingRows="true"
+                  
                     FilterMode="FilterMode.Advanced"
                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                     AllowSorting="true"
-                    AllowPaging="true"
+                   
                     PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                     ShowPagingSummary="true"
                     Data="@items"
@@ -74,9 +91,19 @@
                     ColumnWidth="100px"
                     PageNumbersCount="100"
                     PageSize="50"
+                   
                     CellContextMenu="@ShowContextMenuWithContent">
 
                 <Columns>
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Sortable="false" Filterable="false" Width="50px" TextAlign="Radzen.TextAlign.Center" Frozen="true" >
+                        <Template Context="data">
+                            <Confirm Id="@data.Id" 
+                             IdSelect="@IdDelete"
+                             ConfirmIdAction='ConfirmDelete'
+                             CancelAction="CancelDelete"
+                             SelectIdAction="SelectDelete"></Confirm>
+                        </Template>
+                    </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName("TransactionalItem", new SalesDocumentItemsDetails())" Width="200px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.ProductPackingSpecs.Code" Title="@GetName("TransactionalItemSpecs", new SalesDocumentItemsDetails())" Width="200px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Qty" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="80px" />
@@ -103,7 +130,7 @@
                     </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PullDate" Title="@GetName("PullDate", new SalesDocumentItemsDetails())" Filterable="false" FormatString="{0:yyyy-MM-dd}" TextAlign="TextAlign.Center" Width="100px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="FormatedPullDate" Title="@GetName("FormatedPullDate", new SalesDocumentItemsDetails())" FormatString="{0:yyyy-MM-dd}" TextAlign="TextAlign.Center" Filterable="false" Width="200px" />
-
+                  
                 </Columns>
             </RadzenDataGrid>
             <div class="container-total">
@@ -146,14 +173,23 @@
     bool isVisible = false;
     MessageSaveComponent? referAlert;
     string msg = "";
+    string IdDelete = "";
+    bool viewMsg = false;
     bool isLoading = false;
 
 
     protected async override void OnInitialized()
     {
-        // items = await DocumentServices.GetCommercialDocumentDetails(commercialDocumentId,1,400);
         StateHasChanged();
     }
+
+    public async void LoadData()
+    {
+        items = await DocumentServices.GetCommercialDocumentDetails(commercialDocumentId,1,400);
+       // Reaload.InvokeAsync(null);
+        StateHasChanged();
+    }
+
 
     protected override void OnParametersSet()
     {
@@ -183,13 +219,12 @@
         StateHasChanged();
     }
 
-
     #region Grid
 
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-        <RadzenMenuItem Text="Reload" Value=args.Data Icon="edit"></RadzenMenuItem>
+        <RadzenMenuItem Text="Reload" Value=args.Data Icon=""></RadzenMenuItem>
         </RadzenMenu>
     );
 
@@ -198,22 +233,19 @@
         SalesDocumentItemsDetails argObj = (SalesDocumentItemsDetails)args.Value;
         if (args.Text == "Reload")
         {
-            if (grid != null) grid.Reload();
-            Reaload.InvokeAsync(null);
+            LoadData();
+            StateHasChanged();
         }
         else
         {
             if (argObj != null)
             {
-                Js.InvokeAsync<object>("open", $"SalesFromProductList/{commercialDocumentId}/{argObj.TransactionalItem.Id}/{(isASales ? buyerId : "false")}", "_blank");
+                Js.InvokeAsync<object>("open", $"SalesFromProductList/{commercialDocumentId}/{argObj.Id}/{(isASales ? buyerId : "false")}", "_blank");
             }
         }
     }
 
     #endregion Grid
-
-
-
 
     #region Load
 
@@ -230,6 +262,41 @@
         if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
     }
+
+    #region Confirm
+
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await DocumentServices.DeleteSaleDetailById(commercialDocumentId,Id);
+        if (result) { LoadData();  }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
+
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
+    }
+
 
     public void NavigationTo(string name)
     {

@@ -3,7 +3,9 @@
 @page "/SalesFromProductList/{commercialDocumentId}/{idItem}/{BuyerId}"
 
 @using SunttelTradePointB.Shared.Sales;
+@using SunttelTradePointB.Client.Services.SalesServices
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject IJSRuntime Js
 @inject ContextMenuService ContextMenuService
 @inject TransactionalItemsService transactItemsService;
 @inject NavigationManager Navigation
@@ -27,15 +29,14 @@
         background-color: #1bc7b7;
         font-weight: bold;
     }
+    
 </style>
 
-
-    <MessageSaveComponent isVisible="AlertOpen" message="@msg">
-    </MessageSaveComponent>
+<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
 
 
 
-<PageTitleComponent Title="Sale item" IconName="commercialActivities.png"
+<PageTitleComponent Title="At item" IconName="commercialActivities.png"
                     Description="With this tool you can create and edit item Sales">
 </PageTitleComponent>
 
@@ -77,10 +78,19 @@
                     PageSize="50"
                     CellContextMenu="@ShowContextMenuWithContent"
                     AllowRowSelectOnRowClick="true"
-                    CellDoubleClick="OnCellDoubleClick"
-                    >
-
+                    CellDoubleClick="OnCellDoubleClick">
                 <Columns>
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Width="50px" Title="@("")" TextAlign="TextAlign.Center" Filterable="false" Sortable="false" Frozen="true" >
+                        <Template Context="data">
+                            @if (detailItemTem != null && data.Id == detailItemTem.Id )
+                            {
+                                <div class="control-btn">
+                                    <button @onclick='()=>SaveEdit(data)'><span class="e-menu-icon fa-solid fa-floppy-disk"></span></button>
+                                    <button class="cancel" @onclick='()=>CancelEdit(data)'><i class="bi bi-x-circle-fill"></i></button>
+                                </div>
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName("TransactionalItem", new SalesDocumentItemsDetails())" Width="250px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Qty" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Filterable="false" Sortable=false Width="80px">
                         <EditTemplate Context="itemEdit">
@@ -116,16 +126,7 @@
                     </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PullDate" Title="@GetName("PullDate", new SalesDocumentItemsDetails())" FormatString="{0:yyyy-MM-dd}" Filterable="false" Width="100px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="FormatedPullDate" Title="@GetName("FormatedPullDate", new SalesDocumentItemsDetails())" FormatString="{0:yyyy-MM-dd}" Filterable="false" Width="100px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Width="80px" TextAlign="TextAlign.Center">
-                        <Template Context="data">
-                            @if (detailItemTem!=null && data.Id==detailItemTem.Id ) {
-                                <div class="control-btn">
-                                    <button @onclick='()=>SaveEdit(data)'><span class="e-menu-icon fa-solid fa-floppy-disk"></span></button>
-                                    <button class="cancel" @onclick='()=>CancelEdit(data)'><i class="bi bi-x-circle-fill"></i></button>
-                                </div>
-                            }
-                        </Template>
-                    </RadzenDataGridColumn>
+                   
 
                 </Columns>
             </RadzenDataGrid>
@@ -155,13 +156,14 @@
     public double subTotal { get; set; }
 
     public List<SalesDocumentItemsDetails> items { get; set; } = new();
-
+    SaleItem sale = new SaleItem();
     SalesDocumentItemsDetails detailItemTem = new();
     RadzenDataGrid<SalesDocumentItemsDetails> GridItem;
     public SalesDocumentItemsDetails Item { get; set; } = new();
     bool isLoading = false;
     string EditId = "";
-    bool AlertOpen = false;
+    string IdDelete = "";
+    bool viewMsg = false;
     string msg = "";
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
 
@@ -193,9 +195,14 @@
             var list = await DocumentServices.GetCommercialProductList(commercialDocumentId, BuyerId, (_filterItems != null ? _filterItems : "all"), 1, 100);
             if (idItem != null)
             {
-                list = list.Where(s => s.TransactionalItem.Id == idItem).ToList();
+                items = await DocumentServices.GetCommercialDocumentDetails(commercialDocumentId);
+
+                items = items.Where(s => s.Id == idItem).ToList();
             }
-            listItemByListProduct(list);
+            else
+            {
+                listItemByListProduct(list);
+            }
         }
         isLoading = false;
         StateHasChanged();
@@ -204,19 +211,22 @@
 
     public async void SaveItem(SalesDocumentItemsDetails item)
     {
+        Alert(false, "...");
         var data = items.Where(s => s.Id == item.Id).FirstOrDefault();
-        var g = GridItem;
+
 
         if (data != null)
         {
-            data.Id = null;
             if (data.UnitPrice > 0 && data.Qty > 0)
             {
                 subTotal += (data.UnitPrice * data.Qty);
+                data.ChargeableQty = data.Qty;
+                data.Id = null;
                 var result = await DocumentServices.SaveCommercialDocumentDetail(data);
                 if (result != null && result.Id != null)
                 {
                     Alert(true, "Saved");
+                    await SaveTrimere();
                     StateHasChanged();
                 }
                 else
@@ -224,10 +234,7 @@
                     Alert(true, "No saved");
                 }
             }
-            else
-            {
-                Alert(true, "No saved");
-            }
+           
             StateHasChanged();
         }
         else
@@ -235,7 +242,7 @@
             Alert(true, "No saved");
         }
 
-
+        data.Id = Guid.NewGuid().ToString();
     }
 
     public bool ValidationData(SalesDocumentItemsDetails item)
@@ -268,7 +275,7 @@
     }
 
     public SalesDocumentItemsDetails ConvetToSalesDocumentItemsDetails(AddItemCommercialDocument item)
-    {
+    {       
         var detail = new SalesDocumentItemsDetails
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -276,10 +283,9 @@
                     PullDate = item.PullDate = item.PullDate != DateTime.MinValue ? item.PullDate : DateTime.Today,
                     FormatedPullDate = item.FormatedPullDate = item.FormatedPullDate != null ? item.FormatedPullDate : "",
                     UnitPrice = item.UnitPrice,
-                    TaxableUnitPrice = item.TaxableUnitPrice = item.TaxableUnitPrice != null ? item.TaxableUnitPrice : 0
-                                ,
+                    TaxableUnitPrice = item.TaxableUnitPrice = item.TaxableUnitPrice != null ? item.TaxableUnitPrice : 0                                                ,
                     IdCommercialDocument = commercialDocumentId,
-                    OriginalPrice = item.UnitPrice,
+                    ChargeableQty = item.UnitPrice
 
                 };
 
@@ -328,17 +334,28 @@
 
     void OnCellDoubleClick(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> arg)
     {
+        Alert(false,"");
         SalesDocumentItemsDetails argObj = (SalesDocumentItemsDetails)arg.Data;
         EditId = argObj.Id;
-        if(detailItemTem!=null && detailItemTem.Id !=null ) SaveEdit(detailItemTem);
-       // if (detailItemTem != null && detailItemTem.Id != null &&  !arg.CtrlKey) CancelEdit(detailItemTem.Id);
-        detailItemTem = argObj;
-        GridItem.EditRow(argObj);
+        if (detailItemTem != null && detailItemTem.Id == argObj.Id)
+        { CancelEdit(detailItemTem.Id);
+           detailItemTem = null;
+        }
+        else 
+        {
+            if (detailItemTem != null && detailItemTem.Id != null) SaveEdit(detailItemTem);
+            detailItemTem = argObj;
+            foreach (var item in items)
+            {
+                GridItem.UpdateRow(item);
+            }
+            GridItem.EditRow(argObj);
+        }
+        StateHasChanged();
     }
 
     public async void SaveEdit(SalesDocumentItemsDetails data)
-    {
-        // var data = items.Where(s => s.Id == Id).FirstOrDefault();
+    {        
         if (data != null)
         {
             await GridItem.UpdateRow(data);
@@ -380,9 +397,10 @@
         return Name;
     }
 
+
     public void Alert(bool visible, string _msg)
     {
-        AlertOpen = false;
+        viewMsg = visible;
         msg = _msg;
         StateHasChanged();
     }
@@ -393,9 +411,57 @@
         {
             if (detailItemTem.Id != null)
             {
-              //  SaveEdit(detailItemTem);
+                //  SaveEdit(detailItemTem);
             }
 
+        }
+    }
+
+
+
+
+    #region Confirm
+
+    public async void ConfirmDelete(string Id)
+    {
+        Alert("...", false);
+        bool result = await transactItemsService.DeleteBoxById(Id);
+        if (result) { LoadData(); }
+        else
+        {
+            Alert("Not deleted", true);
+        }
+        CancelDelete();
+        StateHasChanged();
+    }
+
+    public void SelectDelete(string Id)
+    {
+        IdDelete = Id;
+        StateHasChanged();
+    }
+
+    public void CancelDelete()
+    {
+        IdDelete = "";
+        StateHasChanged();
+    }
+    #endregion Confirm
+
+    public void Alert(string _msg, bool visible)
+    {
+        viewMsg = visible;
+        msg = _msg;
+    }
+
+    public async Task SaveTrimere()
+    {
+        try
+        {
+            await Js.InvokeVoidAsync("localStorage.setItem", "timer", "true");
+        }
+        catch
+        {
         }
     }
 

@@ -759,5 +759,48 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         }
 
 
+
+          /// <summary>
+        /// Delete a CommercialDocumentType if not associated with a Quality
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="commercialDocumentTypeId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteSaleDetailById")]
+        public async Task<IActionResult> DeleteSaleDetailById(string userId, string ipAddress, string saleId, string detailId)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _commercialDocument.DeleteSaleDetailById(userId, ipAddress, squadId,  saleId,  detailId);
+                if (response.IsSuccess)
+                {
+                    if (response.iCanRemoveIt)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound("Does not exist");
+                    }
+                }
+                else
+                {
+                    return NotFound(response.ErrorDescription);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        
+
+
+
     }
 }
