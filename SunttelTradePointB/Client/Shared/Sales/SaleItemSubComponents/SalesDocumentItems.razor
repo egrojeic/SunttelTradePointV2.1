@@ -60,7 +60,7 @@
     {
         @if (items != null)
         {
-            <RadzenDataGrid AllowFiltering="true"
+            <RadzenDataGrid @ref="grid" AllowFiltering="true"
                     AllowColumnResize="true"
                     AllowAlternatingRows="true"
                     FilterMode="FilterMode.Advanced"
@@ -95,7 +95,7 @@
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ScannedBoxes" Title="@GetName("ScannedBoxes", new SalesDocumentItemsDetails())" Filterable="false" TextAlign="TextAlign.Right" Sortable="false" Width="90px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Title="@GetName("ProcurementPtje", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="80px">
                         <Template Context="data">
-                            @{                               
+                            @{
 
                                 <input type="checkbox" checked="@(data.ProcurementPtje)" disabled />
                             }
@@ -106,6 +106,14 @@
 
                 </Columns>
             </RadzenDataGrid>
+            <div class="container-total">
+                <div class="item">
+                    <label>
+                        @($"Records: {items.Count}")
+                    </label>
+                </div>
+
+            </div>
         }
     }
 
@@ -123,9 +131,15 @@
     [Parameter]
     public string buyerId { get; set; }
     [Parameter]
+    public bool isASales { get; set; }
+    [Parameter]
     public string commercialDocumentId { get; set; }
     [Parameter]
-    public EventCallback<string> alert{ get; set; }
+    public EventCallback<string> alert { get; set; }
+    [Parameter]
+    public EventCallback Reaload { get; set; }
+
+    RadzenDataGrid<SalesDocumentItemsDetails> grid;
 
     string page = "";
     bool menuVisible = false;
@@ -137,7 +151,7 @@
 
     protected async override void OnInitialized()
     {
-       // items = await DocumentServices.GetCommercialDocumentDetails(commercialDocumentId,1,400);
+        // items = await DocumentServices.GetCommercialDocumentDetails(commercialDocumentId,1,400);
         StateHasChanged();
     }
 
@@ -151,7 +165,7 @@
     {
         if (commercialDocumentId != null)
         {
-            Js.InvokeAsync<object>("open", $"{name}/{commercialDocumentId}/{buyerId}", "_blank");
+            Js.InvokeAsync<object>("open", $"{name}/{commercialDocumentId}/{(isASales ? buyerId : "false")}", "_blank");
         }
         else
         {
@@ -162,7 +176,7 @@
 
     }
 
-   
+
     public void CloseMenu(bool mode)
     {
         menuVisible = mode;
@@ -175,16 +189,24 @@
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
+        <RadzenMenuItem Text="Reload" Value=args.Data Icon="edit"></RadzenMenuItem>
+        </RadzenMenu>
     );
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
         SalesDocumentItemsDetails argObj = (SalesDocumentItemsDetails)args.Value;
-
-        if (argObj != null)
+        if (args.Text == "Reload")
         {
-            Js.InvokeAsync<object>("open", $"SalesFromProductList/{commercialDocumentId}/{argObj.Id}/{buyerId}", "_blank");
+            if (grid != null) grid.Reload();
+            Reaload.InvokeAsync(null);
+        }
+        else
+        {
+            if (argObj != null)
+            {
+                Js.InvokeAsync<object>("open", $"SalesFromProductList/{commercialDocumentId}/{argObj.TransactionalItem.Id}/{(isASales ? buyerId : "false")}", "_blank");
+            }
         }
     }
 

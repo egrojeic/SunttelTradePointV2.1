@@ -1,5 +1,6 @@
 @page "/SaleItem/{page}"
 @page "/PurchasesItem/{page}"
+@page "/PurchasesItem/{page}/{commercialDocumentId}"
 @page "/PurchasesItem/{page}/{commercialDocumentId}/{filter}"
 @page "/SaleItem/{page}/{commercialDocumentId}"
 @page "/SaleItem/{page}/{commercialDocumentId}/{filter}"
@@ -203,7 +204,7 @@
             <div>
                 <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size">
 
-                    @if (carrierList != null && carrierList.Count() > 0)
+                    @if (commercialDocument.Carrier !=null && carrierList != null && carrierList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
                     }
@@ -225,7 +226,7 @@
             <div>
                 <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size">
 
-                    @if (vendorWarehouseList != null && vendorWarehouseList.Count() > 0)
+                    @if (commercialDocument.VendorWarehouse != null && vendorWarehouseList != null && vendorWarehouseList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
                     }
@@ -244,7 +245,7 @@
             <div>
                 <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size ">
 
-                    @if (buyerWarehouseList != null && buyerWarehouseList.Count() > 0)
+                    @if (commercialDocument.BuyerWarehouse != null && buyerWarehouseList != null && buyerWarehouseList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
                     }
@@ -298,7 +299,7 @@
                         <div class="container-item">
                             @if (commercialDocument.Items != null)
                             {
-                                <SalesDocumentItems items="@commercialDocument.Items" alert="alert" buyerId="@commercialDocument.Buyer.Id" commercialDocumentId="@commercialDocument.Id"></SalesDocumentItems>
+                                <SalesDocumentItems Reaload="Reload" isASales="isASale" items="@commercialDocument.Items" alert="alert" buyerId="@commercialDocument.Buyer.Id" commercialDocumentId="@commercialDocument.Id"></SalesDocumentItems>
                             }
                         </div>
                     </ContentTemplate>
@@ -402,11 +403,9 @@ else
         carrierList = await DocumentServices.GetCarrierList();
         LoadCommercialDocument();
         isLoading = false;
-         onInitialized = true;
+        onInitialized = true;
         StateHasChanged();
     }
-
-
 
     public async void ItemSelected(MenuEventArgs e)
     {
@@ -439,7 +438,6 @@ else
 
     }
 
-
     public void SelectItemVendorWarehous(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
         commercialDocument.VendorWarehouse = vendorWarehouseList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
@@ -454,14 +452,12 @@ else
     public void SelectItemBusinessLineDoc(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
         commercialDocument.BusinessLineDoc = businessLineDocList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
-
     }
 
     public void SelectItemDocumentType(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
         commercialDocument.DocumentType = documentTypeList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
     }
-
 
     public string GetDeliveryAddress(Address address)
     {
@@ -474,7 +470,6 @@ else
         }
         return _address;
     }
-
 
     public async void EventSearcherValueAndId((string value, string IdControl) arg)
     {
@@ -503,7 +498,6 @@ else
 
         StateHasChanged();
     }
-
 
     public void EventIdSelectionAndId(CommercialDocumentType item)
     {
@@ -540,7 +534,6 @@ else
             commercialDocument.Season = item;
         }
     }
-
 
     public void EventIdSelectionMenuItem(string name)
     {
@@ -599,7 +592,6 @@ else
         if (commercialDocument.BusinessLineDoc.Id == null) msg = "required fields";
         return msg;
     }
-
 
     #region Load
 
@@ -668,6 +660,7 @@ else
     {
         Navigation.NavigateTo($"{name}");
     }
+
     public void EventChange(string item)
     {
         string value = "";
@@ -718,8 +711,12 @@ else
                 namePage = "Sale";
                 icoLogo = "commercialDocument.png";
             }
-
         }
+        StateHasChanged();
+    }
+
+    public void Reload()
+    {
         StateHasChanged();
     }
 

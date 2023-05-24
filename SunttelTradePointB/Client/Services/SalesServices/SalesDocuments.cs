@@ -16,7 +16,6 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             _httpClient = httpClient;
         }
 
-
         public async Task<CommercialDocument> SaveCommercialDocument(CommercialDocument commercialDocument)
         {
             try
@@ -35,7 +34,6 @@ namespace SunttelTradePointB.Client.Services.SalesServices
                 return null;
             }
         }
-
 
         public async Task<ShippingStatus> SaveShippingStatus(ShippingStatus shippingStatus)
         {
@@ -256,7 +254,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-                string path = $"api/TransactionalItems/GetProductsByCustomerId?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&customerId={customerId}&nameLike={filter}&page={page}&perPage={perPage}";
+                string path = $"/api/TransactionalItems/GetProductsByCustomerId?userId=*Id&ipAdress=*Ip&customerId={customerId}&nameLike={filter}&page={page}&perPage={perPage}";
                 var responseMessage = await Gethttp(path);
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<AddItemCommercialDocument>>();
                 return list != null ? list : new List<AddItemCommercialDocument>();

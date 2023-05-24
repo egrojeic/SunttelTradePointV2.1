@@ -60,7 +60,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             //_TransactionalItemsQualityCollection = mongoDatabase.GetCollection<TransactionalItemQualityPair>("TransactionalItems");
             //_TransactionalItemsTagsCollection = mongoDatabase.GetCollection<TransactionalItemTag>("TransactionalItems");
             _TransactionalItemsGroupsCollection = mongoDatabase.GetCollection<ConceptGroup>("TransactionalItemsGroups");
-
+            
 
         }
         /// <summary>
@@ -1594,7 +1594,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 var pipeline = new List<BsonDocument>();
 
-                if (!(strNameFiler.ToLower() != "all" || strNameFiler.ToLower() != "todos" || strNameFiler.ToLower() != ""))
+                if ((strNameFiler.ToLower() != "all" && strNameFiler.ToLower() != ""))
                 {
                     pipeline.Add(
                     new BsonDocument{
@@ -1614,10 +1614,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 }
 
-
+                if (customerId != "false") { 
                     pipeline.Add(
-                 new BsonDocument("$match", new BsonDocument("Customer._id", new ObjectId(customerId)))
+                 new BsonDocument("$match", new BsonDocument("ProductPackingSpecs.Customer._id", new ObjectId(customerId)))
                  );
+                }
 
                 pipeline.Add(
                     new BsonDocument{
@@ -1634,15 +1635,14 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 //List<AddItemCommercialDocument> results = await _TransactionalItemsCollection.Aggregate<AddItemCommercialDocument>(pipeline).ToListAsync();
 
                 List<TransactionalItem> results = await _TransactionalItemsCollection.Aggregate<TransactionalItem>(pipeline).ToListAsync();
-
+              
                 var resultado = new List<AddItemCommercialDocument>();
 
                 foreach (var item in results)
                 {
                     resultado.Add(new AddItemCommercialDocument
                     {
-                        TransactionalItem = item
-
+                        TransactionalItem = item    
                     });
                 }
 

@@ -30,11 +30,9 @@
 </style>
 
 
-@if (@AlertOpen)
-{
     <MessageSaveComponent isVisible="AlertOpen" message="@msg">
     </MessageSaveComponent>
-}
+
 
 
 <PageTitleComponent Title="Sale item" IconName="commercialActivities.png"
@@ -45,9 +43,13 @@
     <button type="button" @onclick='()=>SetNavigateTo($"SaleItem/1/{commercialDocumentId}")' class="general-menu-button"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i> </button>
 
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
+    @if (subTotal > 0)
+    {
+        <h5 style="color:white;">@($"sub total " + subTotal.ToString("N2"))</h5>
+    }
 </div>
 
-<div class="tableContainer">
+<div class="tableContainer" @onkeypress="OnKeyDown">
 
     @if (isLoading)
     {
@@ -75,32 +77,36 @@
                     PageSize="50"
                     CellContextMenu="@ShowContextMenuWithContent"
                     AllowRowSelectOnRowClick="true"
-                    CellDoubleClick="OnCellDoubleClick">
+                    CellDoubleClick="OnCellDoubleClick"
+                    >
 
                 <Columns>
-                   
-                    <RadzenDataGridColumn  TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName("TransactionalItem", new SalesDocumentItemsDetails())" Width="250px" />
-
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Qty" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Filterable="false" Sortable=false Width="100px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableQty" Title="@GetName("ChargeableQty", new SalesDocumentItemsDetails())" Filterable="false" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableUnits.Name" Title="@GetName("ChargeableUnits", new SalesDocumentItemsDetails())" Filterable="false" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitPrice" Title="@GetName("UnitPrice", new SalesDocumentItemsDetails())" FormatString="{0:N2}" Filterable="false" Width="120px">
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName("TransactionalItem", new SalesDocumentItemsDetails())" Width="250px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Qty" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Filterable="false" Sortable=false Width="80px">
                         <EditTemplate Context="itemEdit">
-                            <RadzenNumeric @bind-Value="itemEdit.UnitPrice" />
+                            <RadzenNumeric @bind-Value="itemEdit.Qty" type="text" />
                         </EditTemplate>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxableUnitPrice" Title="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())"  FormatString="{0:N2}" Filterable="false" Width="120px">
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitPrice" Title="@GetName("UnitPrice", new SalesDocumentItemsDetails())" FormatString="{0:N2}" Filterable="false" Width="120px">
                         <EditTemplate Context="itemEdit">
-                            <RadzenNumeric @bind-Value="itemEdit.UnitPrice" />
+                            <RadzenNumeric @bind-Value="itemEdit.UnitPrice" type="text" />
                         </EditTemplate>
-                    </RadzenDataGridColumn><RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitCost" Title="@GetName("UnitCost", new SalesDocumentItemsDetails())" Filterable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="120px" />
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableQty" Title="@GetName("ChargeableQty", new SalesDocumentItemsDetails())" Filterable="false" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableUnits.Name" Title="@GetName("ChargeableUnits", new SalesDocumentItemsDetails())" Filterable="false" Width="120px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxableUnitPrice" Title="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())" FormatString="{0:N2}" Filterable="false" Width="120px">
+                        <EditTemplate Context="itemEdit">
+                            <RadzenNumeric @bind-Value="itemEdit.UnitPrice" Disabled />
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitCost" Title="@GetName("UnitCost", new SalesDocumentItemsDetails())" Filterable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxRate" Title="@GetName("TaxRate", new SalesDocumentItemsDetails())" Filterable="false" Width="80px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxValue" Title="@GetName("TaxValue", new SalesDocumentItemsDetails())" Filterable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="100px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Total" Title="@GetName("Total", new SalesDocumentItemsDetails())" Filterable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PurchaseSpecs" Title="@GetName("PurchaseSpecs", new SalesDocumentItemsDetails())" Filterable="false" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Provider" Title="@GetName("Provider", new SalesDocumentItemsDetails())" Filterable="false" Width="120px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="OriginalPrice" Title="@GetName("OriginalPrice", new SalesDocumentItemsDetails())" Filterable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="120px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ProcurementPtje" Title="@GetName("ProcurementPtje", new SalesDocumentItemsDetails())" TextAlign="TextAlign.Right"  Width="100px">
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ProcurementPtje" Title="@GetName("ProcurementPtje", new SalesDocumentItemsDetails())" TextAlign="TextAlign.Right" Width="100px">
                         <Template>
                             @{
                                 var MarkedForQCInspection = context.GetType().GetProperty(nameof(SalesDocumentItemsDetails.ProcurementPtje))?.GetValue(context);
@@ -110,9 +116,27 @@
                     </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PullDate" Title="@GetName("PullDate", new SalesDocumentItemsDetails())" FormatString="{0:yyyy-MM-dd}" Filterable="false" Width="100px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="FormatedPullDate" Title="@GetName("FormatedPullDate", new SalesDocumentItemsDetails())" FormatString="{0:yyyy-MM-dd}" Filterable="false" Width="100px" />
-                    
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Width="80px" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            @if (detailItemTem!=null && data.Id==detailItemTem.Id ) {
+                                <div class="control-btn">
+                                    <button @onclick='()=>SaveEdit(data)'><span class="e-menu-icon fa-solid fa-floppy-disk"></span></button>
+                                    <button class="cancel" @onclick='()=>CancelEdit(data)'><i class="bi bi-x-circle-fill"></i></button>
+                                </div>
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+
                 </Columns>
             </RadzenDataGrid>
+            <div class="container-total">
+                <div class="item">
+                    <label>
+                        @($"Records: {items.Count}")
+                    </label>
+                </div>
+
+            </div>
         }
     }
 
@@ -123,20 +147,21 @@
     [Parameter]
     public string _filterItems { get; set; }
     [Parameter]
-    public string commercialDocumentId { get; set; } 
+    public string commercialDocumentId { get; set; }
     [Parameter]
     public string idItem { get; set; }
     [Parameter]
     public string BuyerId { get; set; }
+    public double subTotal { get; set; }
 
     public List<SalesDocumentItemsDetails> items { get; set; } = new();
 
-
+    SalesDocumentItemsDetails detailItemTem = new();
     RadzenDataGrid<SalesDocumentItemsDetails> GridItem;
     public SalesDocumentItemsDetails Item { get; set; } = new();
     bool isLoading = false;
     string EditId = "";
-    bool AlertOpen=false;
+    bool AlertOpen = false;
     string msg = "";
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
 
@@ -162,7 +187,8 @@
     private async Task LoadData()
     {
         isLoading = true;
-        if (BuyerId != null && commercialDocumentId !=null)
+        if (BuyerId == "false") _filterItems = "all";
+        if (BuyerId != null && commercialDocumentId != null && true)
         {
             var list = await DocumentServices.GetCommercialProductList(commercialDocumentId, BuyerId, (_filterItems != null ? _filterItems : "all"), 1, 100);
             if (idItem != null)
@@ -171,23 +197,32 @@
             }
             listItemByListProduct(list);
         }
-       
         isLoading = false;
         StateHasChanged();
 
     }
 
-
-
-    public async void  SaveItem(string Id)
+    public async void SaveItem(SalesDocumentItemsDetails item)
     {
-        var data = items.Where(s => s.Id == Id).FirstOrDefault();
+        var data = items.Where(s => s.Id == item.Id).FirstOrDefault();
+        var g = GridItem;
 
-        if(data!=null){
-            var result = await DocumentServices.SaveCommercialDocumentDetail(data);
-            if (result !=null && result.Id !=null)
+        if (data != null)
+        {
+            data.Id = null;
+            if (data.UnitPrice > 0 && data.Qty > 0)
             {
-                Alert(true, "Saved");
+                subTotal += (data.UnitPrice * data.Qty);
+                var result = await DocumentServices.SaveCommercialDocumentDetail(data);
+                if (result != null && result.Id != null)
+                {
+                    Alert(true, "Saved");
+                    StateHasChanged();
+                }
+                else
+                {
+                    Alert(true, "No saved");
+                }
             }
             else
             {
@@ -199,8 +234,13 @@
         {
             Alert(true, "No saved");
         }
-       
-       
+
+
+    }
+
+    public bool ValidationData(SalesDocumentItemsDetails item)
+    {
+        return false;
     }
 
     public async void listItemByListProduct(List<AddItemCommercialDocument> itemCommercialDocument)
@@ -216,7 +256,7 @@
                     items.Add(ConvetToSalesDocumentItemsDetails(detail));
                     foreach (var itemEdit in items)
                     {
-                        GridItem.EditRow(itemEdit);
+                        //if(itemEdit!=null) GridItem.EditRow(itemEdit);
                     }
 
                 }
@@ -229,30 +269,30 @@
 
     public SalesDocumentItemsDetails ConvetToSalesDocumentItemsDetails(AddItemCommercialDocument item)
     {
-
-
         var detail = new SalesDocumentItemsDetails
                 {
+                    Id = Guid.NewGuid().ToString(),
                     TransactionalItem = item.TransactionalItem = item.TransactionalItem != null ? item.TransactionalItem : new(),
                     PullDate = item.PullDate = item.PullDate != DateTime.MinValue ? item.PullDate : DateTime.Today,
                     FormatedPullDate = item.FormatedPullDate = item.FormatedPullDate != null ? item.FormatedPullDate : "",
                     UnitPrice = item.UnitPrice,
                     TaxableUnitPrice = item.TaxableUnitPrice = item.TaxableUnitPrice != null ? item.TaxableUnitPrice : 0
+                                ,
+                    IdCommercialDocument = commercialDocumentId,
+                    OriginalPrice = item.UnitPrice,
 
                 };
 
 
         return detail;
 
-
     }
 
-    #region grid 
+    #region grid
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-        <RadzenMenuItem Text="Delete" Value=args.Data Icon="delete"></RadzenMenuItem>
-      
+
         </RadzenMenu>
     );
 
@@ -266,9 +306,8 @@
             await GridItem.EditRow(argObj);
         }
 
-
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
-        {          
+        {
             ContextMenuService.Close();
         }
     }
@@ -276,29 +315,58 @@
     #endregion grid
 
 
-    void  OnCellDoubleClick(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> arg)
+    void OnCellClick(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> arg)
     {
         SalesDocumentItemsDetails argObj = (SalesDocumentItemsDetails)arg.Data;
         EditId = argObj.Id;
+        if (detailItemTem != null && detailItemTem.Id != null) CancelEdit(detailItemTem.Id);
+        detailItemTem = argObj;
         GridItem.EditRow(argObj);
-
     }
 
 
 
-    async Task EditRow(SalesDocumentItemsDetails order)
+    void OnCellDoubleClick(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> arg)
     {
-        Item = order;
+        SalesDocumentItemsDetails argObj = (SalesDocumentItemsDetails)arg.Data;
+        EditId = argObj.Id;
+        if(detailItemTem!=null && detailItemTem.Id !=null ) SaveEdit(detailItemTem);
+       // if (detailItemTem != null && detailItemTem.Id != null &&  !arg.CtrlKey) CancelEdit(detailItemTem.Id);
+        detailItemTem = argObj;
+        GridItem.EditRow(argObj);
     }
 
-    public async void SaveEdit( string Id)
+    public async void SaveEdit(SalesDocumentItemsDetails data)
     {
-        var data = items.Where(s => s.Id == Id).FirstOrDefault();
-        if(data!=null){
+        // var data = items.Where(s => s.Id == Id).FirstOrDefault();
+        if (data != null)
+        {
             await GridItem.UpdateRow(data);
+            if (detailItemTem.Id != null) SaveItem(data);
             EditId = "";
             StateHasChanged();
         }
+    }
+
+    public async void CancelEdit(string itemId)
+    {
+        var data = items.Where(s => s.Id == itemId).FirstOrDefault();
+        if (data != null)
+        {
+            GridItem.CancelEditRow(data);
+            EditId = "";
+            detailItemTem = null;
+            StateHasChanged();
+        }
+    }
+
+    public async void CancelEdit(SalesDocumentItemsDetails argObj)
+    {
+        GridItem.CancelEditRow(argObj);
+        EditId = "";
+        detailItemTem = new();
+        StateHasChanged();
+
     }
 
     public void SetNavigateTo(string name)
@@ -312,13 +380,23 @@
         return Name;
     }
 
-    public void Alert(bool visible, string msg)
+    public void Alert(bool visible, string _msg)
     {
         AlertOpen = false;
-        msg = msg;
+        msg = _msg;
+        StateHasChanged();
     }
 
+    private void OnKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            if (detailItemTem.Id != null)
+            {
+              //  SaveEdit(detailItemTem);
+            }
 
-  
+        }
+    }
 
 }

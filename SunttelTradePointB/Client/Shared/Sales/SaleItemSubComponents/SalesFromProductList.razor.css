@@ -9,3 +9,17 @@
     width:80px;
 }
 
+.control-btn{
+    width:100px;
+
+}
+    .control-btn button {
+        background-color: #00ccff;
+        border-radius:5px;
+    }
+
+    .control-btn .cancel {
+        background-color: black;
+        border-radius: 5px;
+        color:white;
+    }

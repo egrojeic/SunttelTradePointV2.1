@@ -82,6 +82,7 @@
 
     protected async override void OnInitialized()
     {
+        Load();
         InitializedUICommonFunctions();
         var parameters = await transactionalService.GetTransactionalItemDetailsQualityParameters(transactionalItemId);
         if (parameters != null)
@@ -105,6 +106,7 @@
 
             }
         }
+        Load();
         StateHasChanged();
     }
 
@@ -190,8 +192,8 @@
 
     protected void EventIdSelectionAndId(TransactionalItemQuality item)
     {
-       if(transactionalItemQualityPair.TransactionalItemQuality==null)
-       transactionalItemQualityPair.TransactionalItemQuality = new();
+        if(transactionalItemQualityPair.TransactionalItemQuality==null)
+            transactionalItemQualityPair.TransactionalItemQuality = new();
 
         transactionalItemQualityPair.TransactionalItemQuality = item;
         StateHasChanged();
@@ -207,7 +209,7 @@
         {
             Navigation.NavigateTo($"/{Page}");
         }       
-       
+
     }
 
     public string GetName(string Name, Object Obj)
@@ -222,4 +224,10 @@
         msg = _msg;
         status = _status;
     }
+
+    public void Load()
+    {
+        if (transactionalItemQualityPair == null) transactionalItemQualityPair = new();
+    }
+
 }

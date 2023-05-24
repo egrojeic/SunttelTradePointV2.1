@@ -175,10 +175,9 @@
                             }
                             else
                             {
-                                if (TransactionalItemTagList != null)
+                                if (TransactionalItemTagList != null && TransactionalItemTagList.Count>0)
                                 {
-                                    <RadzenDataGrid AllowFiltering="true"
-                                            AllowColumnResize="true"
+                                    <RadzenDataGrid @ref="gridTag" AllowColumnResize="true"
                                             AllowAlternatingRows="true"
                                             FilterMode="FilterMode.Advanced"
                                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
@@ -187,17 +186,16 @@
                                             AllowPaging="true"
                                             PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                                             ShowPagingSummary="true"
-                                            Data="@TransactionalItemTagList"
-                                            TItem="TransactionalItemTag"
                                             ColumnWidth="300px"
                                             SelectionMode="DataGridSelectionMode.Single"
                                             LogicalFilterOperator="LogicalFilterOperator.Or"
-                                            CellContextMenu="@ShowContextMenuWithContent"
-                                            PageNumbersCount="100">
+                                            CellContextMenu="@ShowContextMenuTransactionalItemTag"
+                                            Data="@TransactionalItemTagList"
+                                            TItem="TransactionalItemTag">
 
                                         <Columns>
-                                            <RadzenDataGridColumn TItem="TransactionalItemTag" Property="TransactionalItemTag.Key" Title="@GetName("Key", new TransactionalItemTag())" Frozen="false" Width="80px" />
-                                            <RadzenDataGridColumn TItem="TransactionalItemTag" Property="TransactionalItemTag.Value" Filterable="true" Title="@GetName("Value", new TransactionalItemTag())" Frozen="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                            <RadzenDataGridColumn TItem="TransactionalItemTag" Property="Key" Title="@GetName("Key", new TransactionalItemTag())" Sortable="false" Width="80px" />
+                                            <RadzenDataGridColumn TItem="TransactionalItemTag" Property="Value" Filterable="true" Title="@GetName("Value", new TransactionalItemTag())" Sortable="false" Width="180px" TextAlign="Radzen.TextAlign.Center" />
 
 
                                         </Columns>
@@ -244,7 +242,7 @@
 
     SfListView<TransactionalItemTag>? referTagList;
     SfTab? referTag;
-
+    RadzenDataGrid<TransactionalItemTag> gridTag;
 
     bool isLoading = false;
 
@@ -349,15 +347,14 @@
 
 
 
-    private void Addtag()
+    private async void Addtag()
     {
         TransactionalItemTagList.Add(TransactionalItemTag);
         TransactionalItemTag = new TransactionalItemTag();
         OpenAlert("Added", 1);
-        referTag.RefreshAsync();
+        if (gridTag != null) await gridTag.Reload();
         StateHasChanged();
     }
-
 
     public async Task Closed(string Element)
     {
@@ -388,7 +385,7 @@
 
     #region Grid
 
-    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<TransactionalItemTag> args) => ContextMenuService.Open(args, ds =>
+    void ShowContextMenuTransactionalItemTag(DataGridCellMouseEventArgs<TransactionalItemTag> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
@@ -407,7 +404,7 @@
 
     public string GetName(string Name, Object Obj)
     {
-        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        Name = UICommonFunctions.GetDisplayName(Obj, Name) != null ? UICommonFunctions.GetDisplayName(Obj, Name) : Name;
         return Name;
     }
 

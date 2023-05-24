@@ -531,6 +531,7 @@
                                                     EventSearcherValueAndId="EventSearcherValueAndId"
                                                     EventIdSelectionAndId="SelectionMade"
                                                     EventClosed="ClosedInputText"
+                                                    style="left:-90px;"
                                                     Items="GetBoxToBuyView">
 
                                 </InputTextSelector3>
@@ -660,7 +661,7 @@
                                     </label>
                                 </div>
                                 <div style="position:relative;">
-                                    <select class="form-control info-text-size" @bind="labelInstruction.UPCDateCodeBasedOn" placeholder="Edit value">
+                                    <select class=" info-text-size" @bind="labelInstruction.UPCDateCodeBasedOn" placeholder="Edit value">
                                         <option value="@DatesReferenceType.ProductionDate">@DatesReferenceType.ProductionDate.ToString()</option>
                                         <option value="@DatesReferenceType.BuyDate">@DatesReferenceType.BuyDate.ToString()</option>
                                         <option value="@DatesReferenceType.NotDefined">@DatesReferenceType.NotDefined.ToString()</option>
@@ -669,7 +670,7 @@
                                     </select>
                                 </div>
                                 <div><label class="info-text-size"> @GetName("UPCDateCodeDaysAfterReferenceDate", new LabelInstruction()) </label></div>
-                                <div><input @bind="labelInstruction.UPCDateCodeFormat" type="number" class="form-control border-color info-text-size" required /></div>
+                                <div><input @bind="labelInstruction.UPCDateCodeDaysAfterReferenceDate" type="number" class="form-control border-color info-text-size" required /></div>
                                 <div><label class="info-text-size"> @GetName("OriginCountryLegend", new LabelInstruction()) </label></div>
                                 <div><input @bind="labelInstruction.OriginCountryLegend" class="form-control border-color info-text-size" required /></div>
                                 <div><label class="info-text-size"> @GetName("SKU", new LabelInstruction()) </label></div>

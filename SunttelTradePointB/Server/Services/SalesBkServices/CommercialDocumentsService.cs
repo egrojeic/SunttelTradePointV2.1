@@ -992,6 +992,11 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     salesDocumentItemsDetails.SquadId = ObjectId.GenerateNewId().ToString();
                 }
 
+                 if (salesDocumentItemsDetails.Id == null)
+                {
+                    salesDocumentItemsDetails.Id = ObjectId.GenerateNewId().ToString();
+                }
+
                 var filter = Builders<SalesDocumentItemsDetails>.Filter.Eq("_id", new ObjectId(salesDocumentItemsDetails.Id));
 
                 var updateOptions = new ReplaceOptions { IsUpsert = true };

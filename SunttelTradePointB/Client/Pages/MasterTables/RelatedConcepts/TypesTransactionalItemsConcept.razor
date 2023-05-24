@@ -1,5 +1,6 @@
 ﻿@page "/TypesTransactionalItemsConcept/{Page}/{filterItems}/{transactionalItemTypeId}"
-@page "/TypesTransactionalItemsConcept/{Page}/{transactionalItemTypeId}/"
+@page "/TypesTransactionalItemsConcept/{Page}/{transactionalItemTypeId}"
+@page "/TypesTransactionalItemsConcept/{Page}"
 @using SunttelTradePointB.Shared.Common
 @using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents
 @using SunttelTradePointB.Client.Shared.Menus
@@ -975,7 +976,7 @@
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<RecipeModifier> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClickRecipeModifier">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
     void OnMenuItemClickRecipeModifier(MenuItemEventArgs args)
@@ -1337,7 +1338,7 @@
 
     public string GetName(string Name, Object Obj)
     {
-        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        Name = UICommonFunctions.GetDisplayName(Obj, Name)!=null ? UICommonFunctions.GetDisplayName(Obj, Name):Name;
         return Name;
     }
 
@@ -1367,9 +1368,6 @@
         if (value == "control") Navigation.NavigateTo($"/{Page}/{filterItems}");
     }
 
-
-
-
     private void Msg(bool mode)
     {
         msg = mode ? "Saved" : "No saved";
@@ -1381,6 +1379,10 @@
         viewMsg = true;
     }
 
+    public void Load()
+    {
+        
+    }
 
     //public class PossibleValues
     //{
