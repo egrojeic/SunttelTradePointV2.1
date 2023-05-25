@@ -205,11 +205,7 @@
             <div><label class="info-text-size">@GetName("Carrier",new CommercialDocument())</label></div>
             <div>
                 <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size">
-
-                    @if (commercialDocument.Carrier != null && carrierList != null && carrierList.Count() > 0)
-                    {
-                        <option value="0" selected>Select</option>
-                    }
+                                      
                     @foreach (var item in carrierList)
                     {
                         <option value="@item.Id">@item.Name</option>
@@ -217,6 +213,10 @@
                     @if (commercialDocument.Carrier != null)
                     {
                         <option value="@commercialDocument.Carrier.Id" selected>@commercialDocument.Carrier.Name</option>
+                    }
+                    else if ( carrierList != null && carrierList.Count() > 0)
+                    {
+                         <option value="0" selected>Select</option>
                     }
                 </select>
             </div>
@@ -280,7 +280,6 @@
                     }
                 </select>
             </div>
-
 
         </div>
 
@@ -379,7 +378,6 @@ else
     public List<Address> addressList = new();
 
     #endregion Input3
-
 
     MessageSaveComponent? referAlert;
     bool isLoading = false;
@@ -638,6 +636,7 @@ else
         if (commercialDocument.Items == null) commercialDocument.Items = new();
         if (commercialDocument.ShipDate == DateTime.MinValue) commercialDocument.ShipDate = DateTime.Today;
         if (commercialDocument.ArrivalDate == DateTime.MinValue) commercialDocument.ArrivalDate = DateTime.Today;
+        if (commercialDocument.DeliveryDate == DateTime.MinValue) commercialDocument.DeliveryDate = DateTime.Today;
 
         if (businessLineDocList == null) businessLineDocList = new();
         if (documentTypeList == null) documentTypeList = new();

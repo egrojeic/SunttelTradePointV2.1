@@ -999,6 +999,8 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
                 var filter = Builders<SalesDocumentItemsDetails>.Filter.Eq("_id", new ObjectId(salesDocumentItemsDetails.Id));
 
+
+
                 var updateOptions = new ReplaceOptions { IsUpsert = true };
 
                 var result = await _CommercialDocumentDetailImports.ReplaceOneAsync(filter, salesDocumentItemsDetails, updateOptions);

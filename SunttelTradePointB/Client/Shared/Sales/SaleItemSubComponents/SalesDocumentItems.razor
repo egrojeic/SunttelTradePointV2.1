@@ -31,6 +31,10 @@
         background-color: #1bc7b7;
         font-weight: bold;
     }
+
+    .e-contextmenu-wrapper.e-sfcontextmenu, .e-contextmenu-container.e-sfcontextmenu {
+       position: absolute; 
+    }
 </style>
 
 <MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
@@ -38,9 +42,21 @@
 
 
 <div>
-    <div class="detailsTitleContainer">
-        <h3 class="subTitleDetailForm ">@GetName("Items",new CommercialDocument())</h3>
-        <img @onclick="()=>CloseMenu(true)" class="img-menu" src="/images/menu.png">
+    <div class="detailsTitleContainer">      
+        <SfSplitButton Content="Items" IconCss="e-menu-icon fa-sharp fa-solid fa-circle-plus" style="background:none;" CssClass="splitButtonsStyle color">
+            <SplitButtonEvents ItemSelected="EventIdSelectionMenuItem">
+                </SplitButtonEvents>
+                <DropDownMenuItems>   
+                    <DropDownMenuItem Text="Add from product list" Id="SalesFromProductList" IconCss="e-menu-icon fa-sharp fa-solid fa-circle-plus"></DropDownMenuItem>
+                    <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Reload" IconCss="fa-solid fa-eject" ></DropDownMenuItem>
+                </DropDownMenuItems>
+            </SfSplitButton>
+
+      
+
+
+        @*<img @onclick="()=>CloseMenu(true)" class="img-menu" src="/images/menu.png">
         <div class="menu-item" style="display:@(menuVisible?"flex":"none");">
             <button type="button" class="exit-btn" @onclick="()=>CloseMenu(false)">
                 <i class="fa-regular fa-circle-xmark"></i>
@@ -55,7 +71,7 @@
                 <button type="button" @onclick='()=>EventIdSelectionMenuItem("SalesFromInventroy")'>
                     <i class="fa-sharp fa-solid fa-circle-plus"></i>
                 </button>
-                <b @onclick='()=>EventIdSelectionMenuItem("inventory")' class="subTitleDetailForm">From Inventroy</b>
+                <b  class="subTitleDetailForm">From Inventroy</b>
             </div>
             <div class="item">
                 <button type="button" @onclick='()=>EventIdSelectionMenuItem("SalesFromProductionOrder")'>
@@ -63,7 +79,7 @@
                 </button>
                 <b @onclick='()=>EventIdSelectionMenuItem("Product")' class="subTitleDetailForm">From Production Order </b>
             </div>
-        </div>
+        </div>*@
 
     </div>
 
@@ -79,11 +95,9 @@
         {
             <RadzenDataGrid @ref="grid" AllowFiltering="true"
                     AllowColumnResize="true"
-                  
                     FilterMode="FilterMode.Advanced"
                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                     AllowSorting="true"
-                   
                     PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                     ShowPagingSummary="true"
                     Data="@items"
@@ -91,25 +105,33 @@
                     ColumnWidth="100px"
                     PageNumbersCount="100"
                     PageSize="50"
-                   
-                    CellContextMenu="@ShowContextMenuWithContent">
+                    CellContextMenu="@ShowContextMenuWithContent"
+                    CellDoubleClick="OnCellDoubleClick">
 
                 <Columns>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Sortable="false" Filterable="false" Width="50px" TextAlign="Radzen.TextAlign.Center" Frozen="true" >
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Sortable="false" Filterable="false" Width="50px" TextAlign="Radzen.TextAlign.Center" Frozen="true">
                         <Template Context="data">
-                            <Confirm Id="@data.Id" 
+                            <Confirm Id="@data.Id"
                              IdSelect="@IdDelete"
                              ConfirmIdAction='ConfirmDelete'
                              CancelAction="CancelDelete"
                              SelectIdAction="SelectDelete"></Confirm>
+
                         </Template>
                     </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName("TransactionalItem", new SalesDocumentItemsDetails())" Width="200px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.ProductPackingSpecs.Code" Title="@GetName("TransactionalItemSpecs", new SalesDocumentItemsDetails())" Width="200px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Qty" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="80px" />
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Qty" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="80px">
+                        <EditTemplate Context="itemEdit">
+                            <RadzenNumeric @bind-Value="itemEdit.Qty" type="number" />
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableQty" Title="@GetName("ChargeableQty", new SalesDocumentItemsDetails())" Filterable="false" TextAlign="TextAlign.Right" Sortable="false" Width="80px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableUnits.Name" Title="@GetName("ChargeableUnits.Name", new SalesDocumentItemsDetails())" TextAlign="TextAlign.Center" Filterable="false" Sortable="false" Width="100px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitPrice" Title="@GetName("UnitPrice", new SalesDocumentItemsDetails())" Filterable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Sortable="false" Width="90px">
+                        <EditTemplate Context="itemEdit">
+                            <RadzenNumeric @bind-Value="itemEdit.UnitPrice" type="number" />
+                        </EditTemplate>
                     </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxableUnitPrice" Title="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())" Filterable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Sortable="false" Width="90px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitCost" Title="@GetName("UnitCost", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="90px" />
@@ -130,7 +152,7 @@
                     </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PullDate" Title="@GetName("PullDate", new SalesDocumentItemsDetails())" Filterable="false" FormatString="{0:yyyy-MM-dd}" TextAlign="TextAlign.Center" Width="100px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="FormatedPullDate" Title="@GetName("FormatedPullDate", new SalesDocumentItemsDetails())" FormatString="{0:yyyy-MM-dd}" TextAlign="TextAlign.Center" Filterable="false" Width="200px" />
-                  
+
                 </Columns>
             </RadzenDataGrid>
             <div class="container-total">
@@ -185,8 +207,8 @@
 
     public async void LoadData()
     {
-        items = await DocumentServices.GetCommercialDocumentDetails(commercialDocumentId,1,400);
-       // Reaload.InvokeAsync(null);
+        items = await DocumentServices.GetCommercialDocumentDetails(commercialDocumentId, 1, 400);
+        // Reaload.InvokeAsync(null);
         StateHasChanged();
     }
 
@@ -197,8 +219,9 @@
         StateHasChanged();
     }
 
-    public void EventIdSelectionMenuItem(string name)
+    public void EventIdSelectionMenuItem(MenuEventArgs  arg)
     {
+        string name = arg.Item.Id;
         if (commercialDocumentId != null)
         {
             Js.InvokeAsync<object>("open", $"{name}/{commercialDocumentId}/{(isASales ? buyerId : "false")}", "_blank");
@@ -225,7 +248,7 @@
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
         <RadzenMenuItem Text="Reload" Value=args.Data Icon=""></RadzenMenuItem>
-        </RadzenMenu>
+    </RadzenMenu>
     );
 
     void OnMenuItemClick(MenuItemEventArgs args)
@@ -240,10 +263,25 @@
         {
             if (argObj != null)
             {
-                Js.InvokeAsync<object>("open", $"SalesFromProductList/{commercialDocumentId}/{argObj.Id}/{(isASales ? buyerId : "false")}", "_blank");
+                grid.EditRow(argObj);
+                //Js.InvokeAsync<object>("open", $"SalesFromProductList/{commercialDocumentId}/{argObj.Id}/{(isASales ? buyerId : "false")}", "_blank");
             }
         }
     }
+
+    public void EditCellGrid(string idItem)
+    {
+        var item = items.Where(s => s.Id == idItem).FirstOrDefault();
+        grid.EditRow(item);
+    }
+
+    void OnCellDoubleClick(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> arg)
+    {
+        SalesDocumentItemsDetails argObj = (SalesDocumentItemsDetails)arg.Data;
+        grid.UpdateRow(argObj);
+        StateHasChanged();
+    }
+
 
     #endregion Grid
 
@@ -268,8 +306,8 @@
     public async void ConfirmDelete(string Id)
     {
         Alert("...", false);
-        bool result = await DocumentServices.DeleteSaleDetailById(commercialDocumentId,Id);
-        if (result) { LoadData();  }
+        bool result = await DocumentServices.DeleteSaleDetailById(commercialDocumentId, Id);
+        if (result) { LoadData(); }
         else
         {
             Alert("Not deleted", true);
