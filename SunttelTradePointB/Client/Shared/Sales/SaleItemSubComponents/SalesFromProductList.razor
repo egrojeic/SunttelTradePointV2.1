@@ -40,7 +40,7 @@
                     Description="With this tool you can create and edit item Sales">
 </PageTitleComponent>
 
-<div class="panelMenuContainer">
+<div class="panelMenuContainer" onkeypress="OnKey" tabindex="0">
     <button type="button" @onclick='()=>SetNavigateTo($"SaleItem/1/{commercialDocumentId}")' class="general-menu-button"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i> </button>
 
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>

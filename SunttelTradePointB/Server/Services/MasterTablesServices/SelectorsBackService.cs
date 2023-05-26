@@ -6,6 +6,7 @@ using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Client.Shared.EntityShareComponents.RelatedConcepts;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
 using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.SquadsMgr;
 using Syncfusion.PdfExport;
 using System.Data.Entity.Core.Metadata.Edm;
 using System.Drawing;
@@ -21,6 +22,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
     {
 
         IMongoCollection<AtomConcept> _entities;
+        IMongoCollection<EntityActor> _entitiesActor;
         IMongoCollection<AtomConcept> _addresses;
         IMongoCollection<AtomConcept> _entityComercialGroups;
         IMongoCollection<AtomConcept> _entityRoles;
@@ -50,6 +52,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             string DataBaseName = config["DatabaseMongo"];
 
             var mongoDatabase = mongoClient.GetDatabase(DataBaseName);
+            _entitiesActor = mongoDatabase.GetCollection<EntityActor>("EntityNodes");
             _entities = mongoDatabase.GetCollection<AtomConcept>("EntityNodes");
             _addresses = mongoDatabase.GetCollection<AtomConcept>("EntityNodes");
             _entityComercialGroups = mongoDatabase.GetCollection<AtomConcept>("EntityGroups");
@@ -97,47 +100,22 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 };
 
                 string strNameFilter = filterString == null ? "" : filterString;
+
                 string strRoleName = roleIndex == null ? "" : roleDict[roleIndex ?? 0];
 
-                //if(strRoleName.Length > 0)
-                //{
-                //    strNameFilter = "ALL";
-                //}
+                var rolId = _entitiesActor.Find(s => s.DefaultEntityRole.Name.ToLower() == strRoleName.ToLower()).FirstOrDefault();
+
+                string Id = rolId != null ? rolId.DefaultEntityRole.Id : ObjectId.Empty.ToString();
 
                 var pipe = new List<BsonDocument>();
-
-                if (strNameFilter.ToUpper() != "ALL" && strNameFilter.ToUpper() != "TODOS")
-                {
-
-                    pipe.Add(
-                        new BsonDocument
-                        {
-                            { "$match",
-                                new BsonDocument{
-                                    { "$text", new BsonDocument {
-                                            { "$search", strNameFilter },
-                                            { "$language", "english" },
-                                            { "$caseSensitive", false },
-                                            { "$diacriticSensitive", false}
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    );
-                }
 
                 if (strRoleName != "")
                 {
                     pipe.Add(
                         new BsonDocument(
                         "$match",
-                          new BsonDocument(
-                                 "DefaultEntityRole.Name",
-                                    new BsonDocument(
-                                        "$regex", new BsonRegularExpression($"/{strRoleName}/i"))
+                          new BsonDocument("DefaultEntityRole._id", new ObjectId(Id))
                                 )
-                        )
                     );
                 }
 
@@ -159,6 +137,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 );
 
                 List<AtomConcept> results = await _entities.Aggregate<AtomConcept>(pipe).ToListAsync();
+
+                if (strNameFilter.ToLower() != "all")
+                    results = results.Where(n => n.Name.ToLower().Contains(strNameFilter.ToLower())).ToList();
+                else
+                    results = results.Where(n => n.Id!=null).ToList();
 
                 return (true, results, null);
             }
@@ -252,7 +235,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                                { "Name", new BsonRegularExpression($"/{filterString}/i")
                                     }
                                }
-                            }   
+                            }
                         }
                     );
                 }
@@ -829,17 +812,18 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 string strNameFiler = filterString == null ? "" : filterString;
 
                 var pipeline = new List<BsonDocument>();
-                if (strNameFiler.Length>0 && strNameFiler.ToLower() !="all") { 
-                pipeline.Add(
-                    new BsonDocument(
-                        "$match",
-                          new BsonDocument(
-                                 "Name",
-                                    new BsonDocument(
-                                        "$regex", new BsonRegularExpression($"/{strNameFiler}/i"))
-                            )
-                    )
-                );
+                if (strNameFiler.Length > 0 && strNameFiler.ToLower() != "all")
+                {
+                    pipeline.Add(
+                        new BsonDocument(
+                            "$match",
+                              new BsonDocument(
+                                     "Name",
+                                        new BsonDocument(
+                                            "$regex", new BsonRegularExpression($"/{strNameFiler}/i"))
+                                )
+                        )
+                    );
                 }
                 List<AtomConcept> results = await _assemblyTypes.Aggregate<AtomConcept>(pipeline).ToListAsync();
 
@@ -930,7 +914,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         {
                             { "$match",
                                 new BsonDocument{
-                                    { "DefaultEntityRole.EntityRoleClassifier.Name", new BsonRegularExpression("ORGANIZATION", "i") },
+                                    { "Groups.GroupClassificationCriteria.Name", new BsonRegularExpression("ORGANIZATION", "i") },
                                     { "SquadId", squadId}
                                 }
                             }
@@ -965,7 +949,16 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     }
                 );
 
-                List<AtomConcept> results = await _entities.Aggregate<AtomConcept>(pipe).ToListAsync();
+                //List<Concept> results = await _entities.Aggregate<Concept>(pipe).ToListAsync();
+                var results = new List<AtomConcept>();
+
+                if (strNameFilter.ToLower() == "all")
+                    results = _entities.Find(e => e.Id != null && e.SquadId == squadId).ToList();
+
+                if (!(strNameFilter.ToLower() == "all"))
+                    results = _entities.Find(e => e.Name.ToLower().Contains(strNameFilter.ToLower())).ToList();
+
+                if (isASale) results = results.Where(e => e.SquadId.ToLower() == squadId.ToLower()).ToList();
 
                 return (true, results, null);
             }
@@ -1058,8 +1051,16 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     }
                 );
 
+                List<AtomConcept> results = new();
+                if (strNameFilter.ToLower() == "all")
+                    results = _entities.Find(e => e.Id != null && e.SquadId == squadId).ToList();
 
-                List<AtomConcept> results = await _entities.Aggregate<AtomConcept>(pipe).ToListAsync();
+                if (!(strNameFilter.ToLower() == "all"))
+                    results = _entities.Find(e => e.Name.ToLower().Contains(strNameFilter.ToLower())).ToList();
+
+                if (!isASale) results = results.Where(e => e.SquadId.ToLower() == squadId.ToLower()).ToList();
+
+                // List<AtomConcept> results = await _entities.Aggregate<AtomConcept>(pipe).ToListAsync();
 
                 return (true, results, null);
             }
@@ -1105,6 +1106,8 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 List<AtomConcept> results = await _entities.Aggregate<AtomConcept>(pipe).ToListAsync();
 
+
+
                 return (true, results, null);
             }
             catch (Exception e)
@@ -1146,6 +1149,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         }
                     );
                 }
+
 
                 List<AtomConcept> results = await _entities.Aggregate<AtomConcept>(pipe).ToListAsync();
 

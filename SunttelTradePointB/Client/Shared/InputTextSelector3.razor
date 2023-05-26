@@ -18,11 +18,11 @@
 
                 <select @onchange="OnSelectedItemChanged"
                         style="display:@(Items!=null && Items.Count>0 && modeSearcher ?"block":"none");
-                    background-color:white; color:black;  border-color:gray; ">
+                    background-color:white; color:black;  border-color:gray; " >
 
                     <option value=""> select </option>
                     @{
-                        if (Items != null)
+                        if (Items != null )
                         {
                             foreach (var item in Items)
                             {
@@ -43,30 +43,32 @@
 </div>
 
 
-    @code {
+@code {
 
-        [Parameter]
-        public EventCallback<(string, string)> EventSearcherValueAndId { get; set; }
-        [Parameter]
-        public EventCallback<TItem> EventIdSelectionAndId { get; set; }
-        [Parameter]
-        public EventCallback EventClosed { get; set; }
-        [Parameter]
-        public string Id { get; set; }
-        [Parameter]
-        public bool Visible { get; set; } = false;
-        [Parameter]
-        public string style { get; set; }
-        [Parameter]
-        public string styleCaption { get; set; }
-        [Parameter]
-        public string caption { get; set; }
-        [Parameter]
-        public bool captionOff { get; set; } = false;
-        [Parameter]
-        public List<TItem> Items { get; set; }
-        [Parameter]
-        public string ClassContainer { get; set; }
+    [Parameter]
+    public EventCallback<(string, string)> EventSearcherValueAndId { get; set; }
+    [Parameter]
+    public EventCallback<TItem> EventIdSelectionAndId { get; set; }
+    [Parameter]
+    public EventCallback EventClosed { get; set; }
+    [Parameter]
+    public string Id { get; set; }
+    [Parameter]
+    public bool Visible { get; set; } = false;
+    [Parameter]
+    public string style { get; set; }
+    [Parameter]
+    public string styleCaption { get; set; }
+    [Parameter]
+    public string caption { get; set; }
+    [Parameter]
+    public bool captionOff { get; set; } = false;
+    [Parameter]
+    public List<TItem> Items { get; set; }
+    [Parameter]
+    public string ClassContainer { get; set; }
+    [Parameter]
+    public bool Disable { get; set; } = true;
 
     public string selectionId { get; set; }
     public string? inputSearcherValue { get; set; }
@@ -98,6 +100,7 @@
 
     public async void SearcherValue()
     {
+        Items = null;
         modeSearcher = true;
         ViewPopupCount = true;
         SearcherCountOff();

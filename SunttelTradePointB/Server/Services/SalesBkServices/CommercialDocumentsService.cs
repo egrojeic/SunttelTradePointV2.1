@@ -614,8 +614,8 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
             try
             {
                 var pipeline = new List<BsonDocument>();
-
-                if (!string.IsNullOrEmpty(filterString) && !filterString.ToLower().Equals("all") && !filterString.ToLower().Equals("todos")) // se agregó verificación de si strNameFiler está vacío
+                if(filterString==null)filterString ="all";
+                if ( !(filterString.ToLower() == "all") ) // se agregó verificación de si strNameFiler está vacío
                 {
                     pipeline.Add(
                         new BsonDocument {

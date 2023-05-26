@@ -41,9 +41,9 @@
 
 
 
-<div>
+<div onkeypress="OnKey" tabindex="0">
     <div class="detailsTitleContainer">      
-        <SfSplitButton Content="Items" IconCss="e-menu-icon fa-sharp fa-solid fa-circle-plus" style="background:none;" CssClass="splitButtonsStyle color">
+        <SfSplitButton Content="Item" IconCss="e-menu-icon fa-sharp fa-solid fa-circle-plus" style="background:none;" CssClass="splitButtonsStyle color">
             <SplitButtonEvents ItemSelected="EventIdSelectionMenuItem">
                 </SplitButtonEvents>
                 <DropDownMenuItems>   
@@ -51,11 +51,7 @@
                     <DropDownMenuItem Separator="true"></DropDownMenuItem>
                     <DropDownMenuItem Text="Reload" IconCss="fa-solid fa-eject" ></DropDownMenuItem>
                 </DropDownMenuItems>
-            </SfSplitButton>
-
-      
-
-
+            </SfSplitButton>   
         @*<img @onclick="()=>CloseMenu(true)" class="img-menu" src="/images/menu.png">
         <div class="menu-item" style="display:@(menuVisible?"flex":"none");">
             <button type="button" class="exit-btn" @onclick="()=>CloseMenu(false)">
@@ -196,9 +192,11 @@
     MessageSaveComponent? referAlert;
     string msg = "";
     string IdDelete = "";
+    string idCellItem = "";
     bool viewMsg = false;
     bool isLoading = false;
 
+   DotNetObjectReference<SalesDocumentItems> _reference;
 
     protected async override void OnInitialized()
     {
@@ -211,11 +209,18 @@
         // Reaload.InvokeAsync(null);
         StateHasChanged();
     }
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _reference = DotNetObjectReference.Create(this);
+            await Js.InvokeVoidAsync("LoadReference", _reference);
 
+        }
+    }
 
     protected override void OnParametersSet()
     {
-        var r = page;
         StateHasChanged();
     }
 
@@ -235,7 +240,6 @@
 
     }
 
-
     public void CloseMenu(bool mode)
     {
         menuVisible = mode;
@@ -248,7 +252,7 @@
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
         <RadzenMenuItem Text="Reload" Value=args.Data Icon=""></RadzenMenuItem>
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
     void OnMenuItemClick(MenuItemEventArgs args)
@@ -272,13 +276,22 @@
     public void EditCellGrid(string idItem)
     {
         var item = items.Where(s => s.Id == idItem).FirstOrDefault();
+        idCellItem = idCellItem;
         grid.EditRow(item);
     }
 
     void OnCellDoubleClick(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> arg)
     {
         SalesDocumentItemsDetails argObj = (SalesDocumentItemsDetails)arg.Data;
-        grid.UpdateRow(argObj);
+        EditCellGrid(argObj.Id);
+    }
+
+    [JSInvokable]
+    public async void SaveEditCell()
+    {
+        var item = items.Where(s => s.Id == idCellItem).FirstOrDefault();
+        var result = await DocumentServices.SaveCommercialDocumentDetail(item);
+        if (result != null && result.Id != null) grid.UpdateRow(item);
         StateHasChanged();
     }
 
