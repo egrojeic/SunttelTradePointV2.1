@@ -36,7 +36,7 @@
        position: absolute; 
     }
 </style>
-
+<EventControl EventEnter="SaveEditCell"></EventControl>
 <MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
 
 
@@ -196,7 +196,7 @@
     bool viewMsg = false;
     bool isLoading = false;
 
-   DotNetObjectReference<SalesDocumentItems> _reference;
+   
 
     protected async override void OnInitialized()
     {
@@ -209,15 +209,7 @@
         // Reaload.InvokeAsync(null);
         StateHasChanged();
     }
-    protected async override Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            _reference = DotNetObjectReference.Create(this);
-            await Js.InvokeVoidAsync("LoadReference", _reference);
-
-        }
-    }
+   
 
     protected override void OnParametersSet()
     {
@@ -283,7 +275,8 @@
     void OnCellDoubleClick(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> arg)
     {
         SalesDocumentItemsDetails argObj = (SalesDocumentItemsDetails)arg.Data;
-        EditCellGrid(argObj.Id);
+        //EditCellGrid(argObj.Id);
+        SaveEditCell();
     }
 
     [JSInvokable]

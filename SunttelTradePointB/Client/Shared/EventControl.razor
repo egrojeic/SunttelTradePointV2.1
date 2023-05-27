@@ -1,0 +1,23 @@
+﻿@inject IJSRuntime Js
+
+@code {
+    [Parameter]
+    public EventCallback EventEnter{ get; set; }
+
+    DotNetObjectReference<EventControl> _reference;
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _reference = DotNetObjectReference.Create(this);
+            await Js.InvokeVoidAsync("LoadReferenceGeneral", _reference);
+        }
+    }
+
+    [JSInvokable]
+    public void SetEventEnter()
+    {
+        EventEnter.InvokeAsync(null);
+    }
+
+}
