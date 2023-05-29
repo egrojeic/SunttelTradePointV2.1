@@ -1,0 +1,144 @@
+﻿@page "/EditUser"
+@*@inject IRepository repositoryk*@
+@inject SweetAlertService sweetAlertService
+@inject NavigationManager navigationManager
+@*@inject ILoginService loginService*@
+
+@if (user is null)
+{
+    <div class="spinner" />
+}
+else
+{
+    <EditForm Model="user">
+        <DataAnnotationsValidator />
+
+        <div class="card">
+            <div class="card-header">
+                <span>
+                    <i class="oi oi-person" /> Editar Usuario
+                    <a class="btn btn-sm btn-secondary float-end" href="/changePassword"><i class="oi oi-key" /> Cambiar Contraseña</a>
+                    <button class="btn btn-sm btn-primary float-end mx-2" type="submit"><i class="oi oi-check" /> Guardar Cambios</button>
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <label>Nombres:</label>
+                            <div>
+                                <InputText class="form-control" @bind-Value="@user.FirstName" />
+                                <ValidationMessage For="@(() => user.FirstName)" />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>Apellidos:</label>
+                            <div>
+                                <InputText class="form-control" @bind-Value="@user.LastName" />
+                                <ValidationMessage For="@(() => user.LastName)" />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>Documento:</label>
+                            <div>
+                                <InputText class="form-control" @bind-Value="@user.Document" />
+                                <ValidationMessage For="@(() => user.Document)" />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>Teléfono:</label>
+                            <div>
+                                <InputText class="form-control" @bind-Value="@user.PhoneNumber" />
+                                <ValidationMessage For="@(() => user.PhoneNumber)" />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>Dirección:</label>
+                            <div>
+                                <InputText class="form-control" @bind-Value="@user.Address" />
+                                <ValidationMessage For="@(() => user.Address)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="mb-3">
+                            <InputImg Label="Foto" ImageSelected="ImageSelected" ImageURL="@imageUrl" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+}
+
+@code {
+    private User user = new User();
+    private string? imageUrl;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUserAsyc();
+
+        if (!string.IsNullOrEmpty(user!.Photo))
+        {
+            imageUrl = user.Photo;
+            user.Photo = null;
+        }
+
+    }
+
+    private async Task LoadUserAsyc()
+    {
+        //var responseHTTP = await repository.Get<User>($"/api/accounts");
+        //if (responseHTTP.Error)
+        //{
+        //    if (responseHTTP.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+        //    {
+        //        navigationManager.NavigateTo("/");
+        //        return;
+        //    }
+        //    var messageError = await responseHTTP.GetErrorMessageAsync();
+        //    await sweetAlertService.FireAsync("Error", messageError, SweetAlertIcon.Error);
+        //    return;
+        //}
+        //user = responseHTTP.Response;
+    }
+
+    private void ImageSelected(string imagenBase64)
+    {
+        user!.Photo = imagenBase64;
+        imageUrl = null;
+    }
+
+    public class User
+    {
+        public string Document { get; set; } = null!;
+
+        public string FirstName { get; set; } = null!;
+
+        public string LastName { get; set; } = null!;
+
+        public string Address { get; set; } = null!;
+
+        public string? Photo { get; set; }
+
+        public City? City { get; set; }
+
+        public int CityId { get; set; }
+
+        public string FullName => $"{FirstName} {LastName}";
+
+        public string? PhoneNumber { get; set; }
+    }
+
+    public class City
+    {
+        public int Id { get; set; }
+
+        public string Name { get; set; } = null!;
+
+        public int StateId { get; set; }
+
+        public ICollection<User>? Users { get; set; }
+    }
+}

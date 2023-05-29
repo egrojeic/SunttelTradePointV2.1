@@ -1,3 +1,4 @@
+
 article {
     background-color: #f8f9f9 !important;
     display: flex;
@@ -11,11 +12,28 @@ article {
     flex-direction: column;
 }
 
+#itemLink {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+.noti {
+    z-index: 999;
+    position: fixed;
+    width: 420px;
+    background: #b0ff00;
+    right: 40px;
+    max-height: 350px;
+    overflow-y: auto;
+}
+
 .user {
     display: flex !important;
     flex-direction: row !important;
     align-items: center !important;
     margin-left: 1.5rem !important;
+    cursor: pointer
 }
 
 .myBody {
@@ -30,7 +48,13 @@ main {
     flex: 1;
 }
 
-.btn-link{
+
+.options i {
+    cursor: pointer;
+    font-size: 1.4rem;
+}
+
+.btn-link {
     margin-left: 1rem !important;
     margin-right: 1rem !important;
 }

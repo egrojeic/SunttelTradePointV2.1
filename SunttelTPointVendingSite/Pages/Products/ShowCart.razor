@@ -62,8 +62,18 @@
                     </td>
 
                     <td>
-                        <a href="/Orders/ModifyTemporalSale/1" class="btn btn-warning"><i class="oi oi-pencil" /> Editar</a>
-                        <button class="btn btn-danger" @onclick=@(() => Delete(1))><i class="oi oi-trash" /> Borrar</button>
+                        <div class="quantity-control">
+                            <div class="mb-2">
+                                <button class="btn" type="button">
+                                    <i class="oi oi-minus"></i>
+                                </button>
+                                <span class="mx-2">1</span>
+                                <button class="btn" type="button">
+                                    <i class="oi oi-plus"></i>
+                                </button>
+                            </div>
+                            <button class="btn btn-danger" @onclick=@(() => Delete(1))><i class="oi oi-trash" /> Borrar</button>
+                        </div>
                     </td>
                 </tr>
             </tbody>
@@ -73,7 +83,10 @@
                 <h3>Quantity: <strong>@($"{sumQuantity:N2}")</strong></h3>
             </div>
             <div class="col-3">
-                <h3>Price: <strong>@($"{sumValue:C2}")</strong></h3>
+                <h3>Price: <strong>@($"{sumValue:N2}")</strong></h3>
+            </div>
+            <div class="col-3">
+                <h3>Tax: <strong>3.000</strong></h3>
             </div>
         </div>
         <div class="d-grid gap-2 mt-2">
