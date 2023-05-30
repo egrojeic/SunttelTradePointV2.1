@@ -13,7 +13,7 @@ else
     <buton @onclick='()=>SelectIdAction.InvokeAsync(Id)' class="img-delete"><i class="bi bi-trash-fill"></i></buton>
 }
 
-@if(EditEnable)
+@if (EditEnable)
 {
     @if (GetVisibleEdit(Id))
     {
@@ -34,7 +34,7 @@ else
     [Parameter]
     public string IdEdit { get; set; }
     [Parameter]
-    public string TextValue { get; set; }
+    public string TextValue { get; set; } 
     [Parameter]
     public bool EditEnable { get; set; }
     [Parameter]
@@ -47,7 +47,6 @@ else
     public EventCallback<string> EditAction { get; set; }
     [Parameter]
     public EventCallback<string> SavedAction { get; set; }
-
 
     protected override void OnInitialized()
     {
@@ -79,7 +78,7 @@ else
         }
     }
 
-     public bool GetVisibleEdit(string _Id)
+    public bool GetVisibleEdit(string _Id)
     {
         if (this.IdEdit == _Id)
         {
