@@ -113,7 +113,9 @@
                              CancelAction="CancelDelete"
                              SelectIdAction="SelectDelete"
                              EditEnable=true
-                             EditAction="EventEdit"></Confirm>
+                             IdEdit="@idCellItem"
+                             SavedAction="SaveEditCell"
+                            EditAction="EditCellGrid"></Confirm>
 
                         </Template>
                     </RadzenDataGridColumn>
@@ -279,12 +281,13 @@
     {
         var item = items.Where(s => s.Id == id).FirstOrDefault();
         grid.EditRow(item);
+        idCellItem = item.Id;
     }
 
     public void EditCellGrid(string idItem)
     {
         var item = items.Where(s => s.Id == idItem).FirstOrDefault();
-        idCellItem = idCellItem;
+        idCellItem = item.Id;
         grid.EditRow(item);
     }
 
@@ -300,7 +303,7 @@
     {
         var item = items.Where(s => s.Id == idCellItem).FirstOrDefault();
         var result = await DocumentServices.SaveCommercialDocumentDetail(item);
-        if (result != null && result.Id != null) grid.UpdateRow(item);
+        if (result != null && result.Id != null){ grid.UpdateRow(item);idCellItem = "";}
         StateHasChanged();
     }
 
