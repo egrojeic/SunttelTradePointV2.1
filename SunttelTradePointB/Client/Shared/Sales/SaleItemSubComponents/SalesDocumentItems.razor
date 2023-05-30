@@ -33,48 +33,48 @@
     }
 
     .e-contextmenu-wrapper.e-sfcontextmenu, .e-contextmenu-container.e-sfcontextmenu {
-        position: absolute;
+       position: absolute; 
     }
 </style>
-@*<EventControl EventEnter="SaveEditCell"></EventControl>*@
+
 <MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
 
 
 
-<div onkeypress="OnKey" tabindex="0">
-    <div class="detailsTitleContainer">
+<div >
+    <div class="detailsTitleContainer">      
         <SfSplitButton Content="Item" IconCss="e-menu-icon fa-sharp fa-solid fa-circle-plus" style="background:none;" CssClass="splitButtonsStyle color">
             <SplitButtonEvents ItemSelected="EventIdSelectionMenuItem">
-            </SplitButtonEvents>
-            <DropDownMenuItems>
-                <DropDownMenuItem Text="Add from product list" Id="SalesFromProductList" IconCss="e-menu-icon fa-sharp fa-solid fa-circle-plus"></DropDownMenuItem>
-                <DropDownMenuItem Separator="true"></DropDownMenuItem>
-                <DropDownMenuItem Text="Reload" IconCss="fa-solid fa-eject"></DropDownMenuItem>
-            </DropDownMenuItems>
-        </SfSplitButton>
+                </SplitButtonEvents>
+                <DropDownMenuItems>   
+                    <DropDownMenuItem Text="Add from product list" Id="SalesFromProductList" IconCss="e-menu-icon fa-sharp fa-solid fa-circle-plus"></DropDownMenuItem>
+                    <DropDownMenuItem Separator="true"></DropDownMenuItem>
+                    <DropDownMenuItem Text="Reload" IconCss="fa-solid fa-eject" ></DropDownMenuItem>
+                </DropDownMenuItems>
+            </SfSplitButton>   
         @*<img @onclick="()=>CloseMenu(true)" class="img-menu" src="/images/menu.png">
         <div class="menu-item" style="display:@(menuVisible?"flex":"none");">
-        <button type="button" class="exit-btn" @onclick="()=>CloseMenu(false)">
-        <i class="fa-regular fa-circle-xmark"></i>
-        </button>
-        <div class="item">
-        <button type="button" @onclick='()=>EventIdSelectionMenuItem("SalesFromProductList")'>
-        <i class="fa-sharp fa-solid fa-circle-plus"></i>
-        </button>
-        <b @onclick='()=>EventIdSelectionMenuItem("SalesDocumentItems")' class="subTitleDetailForm">From product list</b>
-        </div>
-        <div class="item">
-        <button type="button" @onclick='()=>EventIdSelectionMenuItem("SalesFromInventroy")'>
-        <i class="fa-sharp fa-solid fa-circle-plus"></i>
-        </button>
-        <b  class="subTitleDetailForm">From Inventroy</b>
-        </div>
-        <div class="item">
-        <button type="button" @onclick='()=>EventIdSelectionMenuItem("SalesFromProductionOrder")'>
-        <i class="fa-sharp fa-solid fa-circle-plus"></i>
-        </button>
-        <b @onclick='()=>EventIdSelectionMenuItem("Product")' class="subTitleDetailForm">From Production Order </b>
-        </div>
+            <button type="button" class="exit-btn" @onclick="()=>CloseMenu(false)">
+                <i class="fa-regular fa-circle-xmark"></i>
+            </button>
+            <div class="item">
+                <button type="button" @onclick='()=>EventIdSelectionMenuItem("SalesFromProductList")'>
+                    <i class="fa-sharp fa-solid fa-circle-plus"></i>
+                </button>
+                <b @onclick='()=>EventIdSelectionMenuItem("SalesDocumentItems")' class="subTitleDetailForm">From product list</b>
+            </div>
+            <div class="item">
+                <button type="button" @onclick='()=>EventIdSelectionMenuItem("SalesFromInventroy")'>
+                    <i class="fa-sharp fa-solid fa-circle-plus"></i>
+                </button>
+                <b  class="subTitleDetailForm">From Inventroy</b>
+            </div>
+            <div class="item">
+                <button type="button" @onclick='()=>EventIdSelectionMenuItem("SalesFromProductionOrder")'>
+                    <i class="fa-sharp fa-solid fa-circle-plus"></i>
+                </button>
+                <b @onclick='()=>EventIdSelectionMenuItem("Product")' class="subTitleDetailForm">From Production Order </b>
+            </div>
         </div>*@
 
     </div>
@@ -105,17 +105,15 @@
                     CellDoubleClick="OnCellDoubleClick">
 
                 <Columns>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Sortable="false" Filterable="false" Width="50px" TextAlign="Radzen.TextAlign.Center" Frozen="true">
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Sortable="false" Filterable="false" Width="100px" TextAlign="Radzen.TextAlign.Center" Frozen="true">
                         <Template Context="data">
                             <Confirm Id="@data.Id"
                              IdSelect="@IdDelete"
-                             IdEdit="@idCellItem"
                              ConfirmIdAction='ConfirmDelete'
                              CancelAction="CancelDelete"
                              SelectIdAction="SelectDelete"
-                             EditEnable="true"
-                             EditAction="EditCellGrid"
-                             SavedAction="SaveEditCell"></Confirm>
+                             btnEditEnable=true
+                             EventEdit="EventEdit"></Confirm>
 
                         </Template>
                     </RadzenDataGridColumn>
@@ -200,7 +198,7 @@
     bool viewMsg = false;
     bool isLoading = false;
 
-
+   DotNetObjectReference<SalesDocumentItems> _reference;
 
     protected async override void OnInitialized()
     {
@@ -213,14 +211,22 @@
         // Reaload.InvokeAsync(null);
         StateHasChanged();
     }
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _reference = DotNetObjectReference.Create(this);
+            await Js.InvokeVoidAsync("LoadReference", _reference);
 
+        }
+    }
 
     protected override void OnParametersSet()
     {
         StateHasChanged();
     }
 
-    public void EventIdSelectionMenuItem(MenuEventArgs arg)
+    public void EventIdSelectionMenuItem(MenuEventArgs  arg)
     {
         string name = arg.Item.Id;
         if (commercialDocumentId != null)
@@ -247,8 +253,8 @@
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-
-    </RadzenMenu>
+        <RadzenMenuItem Text="Reload" Value=args.Data Icon=""></RadzenMenuItem>
+        </RadzenMenu>
     );
 
     void OnMenuItemClick(MenuItemEventArgs args)
@@ -269,32 +275,36 @@
         }
     }
 
+    public void EventEdit(string id)
+    {
+        var item = items.Where(s => s.Id == id).FirstOrDefault();
+        grid.EditRow(item);
+    }
+
     public void EditCellGrid(string idItem)
     {
         var item = items.Where(s => s.Id == idItem).FirstOrDefault();
-        idCellItem = item.Id;
+        idCellItem = idCellItem;
         grid.EditRow(item);
     }
 
     void OnCellDoubleClick(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> arg)
     {
-        SalesDocumentItemsDetails argObj = (SalesDocumentItemsDetails)arg.Data;       
-        SaveEditCell(argObj.Id);
+        SalesDocumentItemsDetails argObj = (SalesDocumentItemsDetails)arg.Data;
+        //EditCellGrid(argObj.Id);
+        SaveEditCell();
     }
 
-  
-
-    public async void SaveEditCell(string Id)
+    [JSInvokable]
+    public async void SaveEditCell()
     {
-        var item = items.Where(s => s.Id == Id).FirstOrDefault();
+        var item = items.Where(s => s.Id == idCellItem).FirstOrDefault();
         var result = await DocumentServices.SaveCommercialDocumentDetail(item);
-        if (result != null && result.Id != null)
-        {
-            idCellItem = "";
-            grid.UpdateRow(item);
-        }
+        if (result != null && result.Id != null) grid.UpdateRow(item);
         StateHasChanged();
     }
+
+
     #endregion Grid
 
     #region Load
