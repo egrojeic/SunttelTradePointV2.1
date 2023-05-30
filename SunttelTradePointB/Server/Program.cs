@@ -166,6 +166,13 @@ else
     app.UseHsts();
 }
 
+app.UseCors(builder =>
+{
+    builder.WithOrigins("https://localhost:7249") // Reemplaza esto con el origen de tu aplicación
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+});
+
 app.UseHttpsRedirection();
 
 app.UseBlazorFrameworkFiles();

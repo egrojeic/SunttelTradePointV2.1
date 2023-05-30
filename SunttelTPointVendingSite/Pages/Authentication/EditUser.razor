@@ -1,12 +1,15 @@
 ﻿@page "/EditUser"
-@*@inject IRepository repositoryk*@
 @inject SweetAlertService sweetAlertService
 @inject NavigationManager navigationManager
 @*@inject ILoginService loginService*@
+@inject IRepository Repository
 
-@if (user is null)
+@using System.ComponentModel.DataAnnotations
+
+
+@if (loading)
 {
-    <div class="spinner" />
+    <Loading></Loading>
 }
 else
 {
@@ -16,44 +19,44 @@ else
         <div class="card">
             <div class="card-header">
                 <span>
-                    <i class="oi oi-person" /> Editar Usuario
-                    <a class="btn btn-sm btn-secondary float-end" href="/changePassword"><i class="oi oi-key" /> Cambiar Contraseña</a>
-                    <button class="btn btn-sm btn-primary float-end mx-2" type="submit"><i class="oi oi-check" /> Guardar Cambios</button>
+                    <i class="oi oi-person" /> Edit User
+                    <a class="btn btn-sm btn-secondary float-end" href="/changePassword"><i class="oi oi-key" /> Change Password</a>
+                    <button class="btn btn-sm btn-primary float-end mx-2" type="submit"><i class="oi oi-check" /> Save</button>
                 </span>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-6">
                         <div class="mb-3">
-                            <label>Nombres:</label>
+                            <label>Name:</label>
                             <div>
                                 <InputText class="form-control" @bind-Value="@user.FirstName" />
                                 <ValidationMessage For="@(() => user.FirstName)" />
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label>Apellidos:</label>
+                            <label>Last Name:</label>
                             <div>
                                 <InputText class="form-control" @bind-Value="@user.LastName" />
                                 <ValidationMessage For="@(() => user.LastName)" />
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label>Documento:</label>
+                            <label>ID:</label>
                             <div>
                                 <InputText class="form-control" @bind-Value="@user.Document" />
                                 <ValidationMessage For="@(() => user.Document)" />
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label>Teléfono:</label>
+                            <label>Phone:</label>
                             <div>
                                 <InputText class="form-control" @bind-Value="@user.PhoneNumber" />
                                 <ValidationMessage For="@(() => user.PhoneNumber)" />
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label>Dirección:</label>
+                            <label>Address:</label>
                             <div>
                                 <InputText class="form-control" @bind-Value="@user.Address" />
                                 <ValidationMessage For="@(() => user.Address)" />
@@ -62,8 +65,48 @@ else
                     </div>
                     <div class="col-6">
                         <div class="mb-3">
-                            <InputImg Label="Foto" ImageSelected="ImageSelected" ImageURL="@imageUrl" />
+                            <label>Country:</label>
+                            <select class="form-select" @onchange="CountryChangedAsync">
+                                <option value="0">-- Select a Country --</option>
+                                @if (countries.Any())
+                                {
+                                    @foreach (var country in countries)
+                                    {
+                                        <option value="@country.Id">@country.Name</option>
+                                    }
+                                }
+                            </select>
                         </div>
+                        <div class="mb-3">
+                            <label>State:</label>
+                            <select class="form-select" @onchange="StateHasChangedAsync">
+                                <option value="0">-- Select a State --</option>
+                                @if (states.Any())
+                                {
+                                    @foreach (var state in states)
+                                    {
+                                        <option value="@state.Id">@state.Name</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>City:</label>
+                            <select class="form-select" @onchange="CitiesHasChangedAsync">
+                                <option value="0">-- Select a City --</option>
+                                @if (states.Any())
+                                {
+                                    @foreach (var city in cities)
+                                    {
+                                        <option value="@city.Id">@city.Name</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <InputImg Label="Picture" ImageSelected="ImageSelected" ImageURL="@imageUrl" />
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -74,10 +117,17 @@ else
 @code {
     private User user = new User();
     private string? imageUrl;
+    private bool loading = false;
+
+    List<Country> countries = new List<Country>();
+    List<GeoRegion> states = new List<GeoRegion>();
+    List<City> cities = new List<City>();
 
     protected override async Task OnInitializedAsync()
     {
         await LoadUserAsyc();
+
+        GetCountries();
 
         if (!string.IsNullOrEmpty(user!.Photo))
         {
@@ -89,7 +139,11 @@ else
 
     private async Task LoadUserAsyc()
     {
+        // loading = true;
+
         //var responseHTTP = await repository.Get<User>($"/api/accounts");
+
+        // loading = false;
         //if (responseHTTP.Error)
         //{
         //    if (responseHTTP.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -131,14 +185,93 @@ else
         public string? PhoneNumber { get; set; }
     }
 
-    public class City
+    private async Task GetCountries()
     {
-        public int Id { get; set; }
+        var responseHttp = await Repository.Get<List<Country>>($"api/GeographicPlaces/GetCountries");
 
-        public string Name { get; set; } = null!;
+        if (responseHttp.Error)
+        {
+            if (responseHttp.HttpResponseMessage.StatusCode != HttpStatusCode.NotFound)
+            {
+                var message = await responseHttp.GetErrorMessageAsync();
+                await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+                return;
+            }
+        }
+        else
+        {
+            if (responseHttp.Response is not null && responseHttp.Response.Any())
+            {
+                countries = responseHttp.Response;
+            }
+        }
 
-        public int StateId { get; set; }
+        StateHasChanged();
+    }
 
-        public ICollection<User>? Users { get; set; }
+    private async Task CountryChangedAsync(ChangeEventArgs e)
+    {
+        var selectedCountry = e.Value!.ToString();
+        await LoadStatesAsync(selectedCountry!);
+    }
+
+    private async Task LoadStatesAsync(string countryId)
+    {
+        var responseHttp = await Repository.Get<List<GeoRegion>>($"api/GeographicPlaces/GetRegions?countryId={countryId}");
+
+        if (responseHttp.Error)
+        {
+            if (responseHttp.HttpResponseMessage.StatusCode != HttpStatusCode.NotFound)
+            {
+                var message = await responseHttp.GetErrorMessageAsync();
+                await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+                return;
+            }
+        }
+        else
+        {
+            if (responseHttp.Response is not null && responseHttp.Response.Any())
+            {
+                states = responseHttp.Response;
+            }
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task StateHasChangedAsync(ChangeEventArgs e)
+    {
+        var selectedState = e.Value!.ToString();
+        await LoadCitiesAsync(selectedState!);
+    }
+
+    private async Task LoadCitiesAsync(string stateId)
+    {
+        var responseHttp = await Repository.Get<List<City>>($"api/GeographicPlaces/GetCities?regionId={stateId}");
+
+        if (responseHttp.Error)
+        {
+            if (responseHttp.HttpResponseMessage.StatusCode != HttpStatusCode.NotFound)
+            {
+                var message = await responseHttp.GetErrorMessageAsync();
+                await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+                return;
+            }
+        }
+        else
+        {
+            if (responseHttp.Response is not null && responseHttp.Response.Any())
+            {
+                cities = responseHttp.Response;
+            }
+        }
+
+        StateHasChanged();
+    }
+
+    private void CitiesHasChangedAsync(ChangeEventArgs e)
+    {
+        var selectedCity = e.Value!.ToString();
+        user.City = cities.Find(x => x.Id == selectedCity);
     }
 }
