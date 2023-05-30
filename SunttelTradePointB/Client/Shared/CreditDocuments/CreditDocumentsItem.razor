@@ -42,6 +42,10 @@
                 <DropDownMenuItem Separator="true"></DropDownMenuItem>
                 <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
                 <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                @if (creditDocumentsItemId != null)
+                {
+                    <DropDownMenuItem Text="Print" IconCss="e-menu-icon e-menu-icon fa-solid fa-print"></DropDownMenuItem>
+                }
                 <DropDownMenuItem Separator="true"></DropDownMenuItem>
                 <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
             </DropDownMenuItems>
@@ -130,7 +134,7 @@
     public string filter { get; set; }
     [Parameter]
     public string page { get; set; } = "";
-
+    public string hostPrint { get; set; } = "https://localhost:7166/";
 
     TextToSpeech textToSpeech;
     string namePage = "";
@@ -196,10 +200,11 @@
     public async void ItemSelected(MenuEventArgs e)
     {
         string msg = Validate();
+        string tile = e.Item != null ? e.Item.Text : "";
         if (msg == "")
         {
             StateHasChanged();
-            string tile = e.Item != null ? e.Item.Text : "";
+          
             if (tile == "Save")
             {
                 LoadDocument();
@@ -219,6 +224,16 @@
         else
         {
             alert("Saved", 1);
+        }
+
+
+        if (tile == "Print")
+        {
+            string name = "PurchasesCredit";
+            if (isASale) name = "Credit";
+
+            Js.InvokeAsync<object>("open", $"{hostPrint}CreditReport/{name}?creditId={creditDocumentsItemId}", "_blank");
+
         }
 
         StateHasChanged();

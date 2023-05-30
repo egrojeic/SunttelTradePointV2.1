@@ -99,13 +99,13 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
 
 
 
-        public async Task<List<CreditDocument>> GetCreditDocumentList(DateTime startDate, DateTime endDate, string? filter = null, int? page = 1, int? perPage = 10)
+        public async Task<List<CreditDocument>> GetCreditDocumentList(DateTime startDate, DateTime endDate, bool isAsale,string? filter = null, int? page = 1, int? perPage = 10)
         {
             try
             {
                 string path = $"{pathApi}";
                 path = path.Replace("*Name", "GetCreditDocuments");
-                var responseMessage = await Gethttp($"{path}&startDate={startDate.ToString("yyyy-MM-dd")}&endDate={endDate.ToString("yyyy-MM-dd")}&filter={filter}&page={page}&perPage={perPage}");
+                var responseMessage = await Gethttp($"{path}&startDate={startDate.ToString("yyyy-MM-dd")}&endDate={endDate.ToString("yyyy-MM-dd")}&filter={filter}&isAsale={isAsale}&page={page}&perPage={perPage}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<CreditDocument>>();
                 return list != null ? list : new List<CreditDocument>();
             }

@@ -187,7 +187,7 @@
         isLoading = true;
         if (vendor != null || true)
         {
-            CreditDocumentList = await CreditDocumentServices.GetCreditDocumentList(startingDate, endDate, (filter != null ? filter : "all"), 1, 10);
+            CreditDocumentList = await CreditDocumentServices.GetCreditDocumentList(startingDate, endDate, isASale, (filter != null ? filter : "all"), 10);
         }
         isLoading = false;
         StateHasChanged();

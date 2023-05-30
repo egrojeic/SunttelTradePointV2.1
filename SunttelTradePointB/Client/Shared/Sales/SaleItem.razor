@@ -509,7 +509,7 @@ else
             string name = "Purchases";
             if (isASale) name = "Sale";
 
-            Js.InvokeAsync<object>("open", $"{hostPrint}SaleReport/Sale?commercialDocumentId={commercialDocumentId}", "_blank");
+            Js.InvokeAsync<object>("open", $"{hostPrint}SaleReport/{name}?commercialDocumentId={commercialDocumentId}", "_blank");
           
         }
 

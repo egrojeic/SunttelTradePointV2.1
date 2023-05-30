@@ -54,6 +54,10 @@
                 <DropDownMenuItem Separator="true"></DropDownMenuItem>
                 <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
                 <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                @if (transactionalItemId != null)
+                {
+                    <DropDownMenuItem Text="Print" IconCss="e-menu-icon e-menu-icon fa-solid fa-print"></DropDownMenuItem>
+                }
                 <DropDownMenuItem Separator="true"></DropDownMenuItem>
                 <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
             </DropDownMenuItems>
@@ -178,7 +182,7 @@
         </div>
         <div class="workArea">
             @{
-                if (currentItem != null && currentItem.Id!=null)
+                if (currentItem != null && currentItem.Id != null)
                 {
                     @switch (verticalMenuOptionSelected)
                     {
@@ -229,6 +233,7 @@
     public string filter { get; set; }
     [Parameter]
     public string transactionalItemId { get; set; }
+    public string hostPrint { get; set; } = "https://localhost:7166/";
 
     public string msg = "";
     public string backgroundColor = "";
@@ -263,7 +268,7 @@
     protected override async void OnInitialized()
     {
         if (transactionalItemId != null)
-        {            
+        {
             currentItem = await transactionalService.GetTransactionalItemById(transactionalItemId);
             LoadObj();
             if (currentItem != null)
@@ -326,7 +331,7 @@
     public void AddGroup(List<ConceptGroup> conceptGroups)
     {
         if (currentItem.Groups == null) currentItem.Groups = new();
-        currentItem.Groups = conceptGroups;       
+        currentItem.Groups = conceptGroups;
         OpenAlert("Added", 0);
         StateHasChanged();
     }
@@ -387,6 +392,14 @@
             Navigation.NavigateTo("/SeasonBusinessCard");
         }
 
+        if (tile == "Print")
+        {
+            string name = "Item";          
+
+            Js.InvokeAsync<object>("open", $"{hostPrint}TransactionalItemReport/{name}?transactionalItemId={transactionalItemId}", "_blank");
+
+        }
+
         if (referAlert != null) referAlert.Load();
         StateHasChanged();
 
@@ -395,7 +408,7 @@
     public async void ItemSelected_1(MenuEventArgs e)
     {
         string tile = e.Item != null ? e.Item.Id : "";
-        if (e.Item!=null)
+        if (e.Item != null)
         {
             Js.InvokeAsync<object>("open", e.Item.Id, "_blank");
         }

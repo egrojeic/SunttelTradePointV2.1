@@ -34,14 +34,15 @@ namespace SunttelTradePointB.Server.Controllers.CreditBack
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="filter"></param>
+        /// <param name="isAsale"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetCreditDocuments")]
-        public async Task<IActionResult> GetCreditDocuments(string userId, string ipAddress, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null)
+        public async Task<IActionResult> GetCreditDocuments(string userId, string ipAddress, DateTime startDate, DateTime endDate,bool isAsale, int? page = 1, int? perPage = 10, string? filter = null)
         {
             var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
-            var response = await _credit.GetCreditDocuments(userId, ipAddress, squadId, startDate, endDate, page, perPage, filter);
+            var response = await _credit.GetCreditDocuments(userId, ipAddress, squadId, startDate, endDate,isAsale, page, perPage, filter);
 
             if (response.IsSuccess)
             {

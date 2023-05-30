@@ -19,9 +19,10 @@ namespace SunttelTradePointB.Server.Interfaces.CreditBkServices
         /// <param name="endDate"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
-        /// <param name="filterName"></param>
+        /// <param name="filter"></param>
+        /// <param name="isASale"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<CreditDocument>? CreditDocumentsList, string? ErrorDescription)> GetCreditDocuments(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null);
+        Task<(bool IsSuccess, List<CreditDocument>? CreditDocumentsList, string? ErrorDescription)> GetCreditDocuments(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate,bool isASale, int? page = 1, int? perPage = 10, string? filter = null);
 
         /// <summary>
         /// Retrieves a credit comercial having the specified id
