@@ -17,6 +17,7 @@
 @inject NavigationManager Navigation
 @inject SunttelTradePointB.Client.Services.CreditDocumentServices.CreditDocumentServices CreditDocumentServices
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject SunttelTradePointB.Client.Services.MasterTablesServices.ActorsNodeService actor
 @inject GeographicPlacesService geoPlaces
 @inject ActorsNodeService actorsNodeServive
 @inject IJSRuntime Js
@@ -181,9 +182,10 @@
         if (creditDocumentsItemId != null)
         {
             creditDocument = await CreditDocumentServices.GetCreditDocumentById(creditDocumentsItemId);
-
+            if (creditDocument.Buyer != null) creditDocument.Buyer = await actor.GetEntityActor(creditDocument.Buyer.Id);
         }
-        creditTypeList = await CreditDocumentServices.GetCreditTypes((filter != null ? filter : "all"), 1, 20);
+        creditTypeList = await CreditDocumentServices.GetCreditTypes(isASale,(filter != null ? filter : "all"), 1, 20);
+
         LoadDocument();
         isLoading = false;
         StateHasChanged();
@@ -204,7 +206,7 @@
         if (msg == "")
         {
             StateHasChanged();
-          
+
             if (tile == "Save")
             {
                 LoadDocument();
@@ -223,7 +225,7 @@
         }
         else
         {
-            alert("Saved", 1);
+            alert("No Saved", 1);
         }
 
 
@@ -231,8 +233,8 @@
         {
             string name = "PurchasesCredit";
             if (isASale) name = "Credit";
-
-            Js.InvokeAsync<object>("open", $"{hostPrint}CreditReport/{name}?creditId={creditDocumentsItemId}", "_blank");
+            string skinImage = creditDocument.Buyer != null && creditDocument.Buyer.SkinImageName!=null ? creditDocument.Buyer.SkinImageName : "";
+            Js.InvokeAsync<object>("open", $"{hostPrint}CreditReport/{name}?creditId={creditDocumentsItemId}&skinImage={skinImage}", "_blank");
 
         }
 
@@ -244,7 +246,8 @@
 
     public async void SelectItem(ChangeEventArgs arg)
     {
-
+        creditDocument.CreditDocumentType = creditTypeList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+        StateHasChanged();
 
     }
 
@@ -256,12 +259,7 @@
         if (SearcherValue == "Vendor")
         {
             vendorList = await DocumentServices.GetCommercialVendorList(arg.value, creditDocument.CreditDocumentType.IsASale, 1, 20);
-
-        }
-        else
-        {
-            alert("require credit document type");
-        }
+        }       
 
         if (SearcherValue == "Buyer")
         {

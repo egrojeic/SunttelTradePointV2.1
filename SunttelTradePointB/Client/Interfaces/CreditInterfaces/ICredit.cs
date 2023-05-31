@@ -63,8 +63,9 @@ namespace SunttelTradePointB.Client.Interfaces.ICreditInterfaces
         /// <param name="filter"></param>           
         /// <param name="page"></param>           
         /// <param name="perPage"></param>         
+        /// <param name="isASale"></param>         
         /// <returns></returns>
-        Task<List<CreditType>> GetCreditTypes(string? filter = null, int? page = 1, int? perPage = 10);
+        Task<List<CreditType>> GetCreditTypes(bool? isAsale=null ,string? filter = null, int? page = 1, int? perPage = 10);
 
         /// <summary>
         /// Retrives a item with CreditType meeting search criteria

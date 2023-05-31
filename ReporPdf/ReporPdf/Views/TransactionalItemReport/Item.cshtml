@@ -1,4 +1,4 @@
-﻿@model SunttelTradePointB.Shared.Common.TransactionalItem
+﻿@model SunttelTPointReporPdf.Model.TransactionalItemModel
 @{
     ViewData["Title"] = "Item";
 }
@@ -27,7 +27,7 @@
     <table class="header " style="border:none;" border="0">
         <tr>
             <td class="td-1" style="border:none;">
-                <img src="/icon-192.png" />
+                <img src="@Model.skinImage" />
             </td>
             <td class="td-2" style="border:none;">
                 <table class="table-header">
@@ -44,7 +44,7 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td>@Model.Name</td>
+                        <td>@Model.item.Name</td>
                         <td></td>
                     </tr>
                     <tr>
@@ -76,7 +76,7 @@
                 <div>
                     <b></b>
                 </div>
-                <img alt="QR"  style="height:90%; width:98%;" src="@ViewBag.Qr" />
+                <img alt="QR"  style="height:90%; width:98%;" src="@Model.qr" />
                
             </td>
         </tr>
@@ -88,9 +88,9 @@
                 Images of Materials Used
             </td>
         </tr>
-        @if (Model.ProductPackingSpecs != null)
+        @if (Model.item.ProductPackingSpecs != null)
         {
-            @foreach (var item in Model.ProductPackingSpecs)
+            @foreach (var item in Model.item.ProductPackingSpecs)
             {
                 @if (item.ListOfMaterials != null)
                 {
@@ -156,9 +156,9 @@
             <td class="td-1">Parameter</td>
             <td>Value</td>
         </tr>
-        @if (Model.QualityParameters != null)
+        @if (Model.item !=null && Model.item.QualityParameters != null)
         {
-            @foreach (var item in Model.QualityParameters)
+            @foreach (var item in Model.item.QualityParameters)
             {
                 <tr>
                     <td>
@@ -230,9 +230,9 @@
     <div class="title-assembly">
         <b>PRODUCT RECIPE</b>
     </div>
-    @if (Model.ProductPackingSpecs != null)
+    @if (Model.item.ProductPackingSpecs != null)
     {
-        @foreach (var item in Model.ProductPackingSpecs)
+        @foreach (var item in Model.item.ProductPackingSpecs)
         {
             <table>
 

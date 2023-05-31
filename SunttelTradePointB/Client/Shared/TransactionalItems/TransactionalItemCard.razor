@@ -394,9 +394,9 @@
 
         if (tile == "Print")
         {
-            string name = "Item";          
-
-            Js.InvokeAsync<object>("open", $"{hostPrint}TransactionalItemReport/{name}?transactionalItemId={transactionalItemId}", "_blank");
+            string name = "Item";
+            string skinImage = UIClientGlobalVariables.ActiveSquad != null ? UIClientGlobalVariables.ActiveSquad.SkinImage : "";
+            Js.InvokeAsync<object>("open", $"{hostPrint}TransactionalItemReport/{name}?transactionalItemId={transactionalItemId}&SkinImage={skinImage}", "_blank");
 
         }
 

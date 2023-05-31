@@ -7,6 +7,7 @@ using SunttelTradePointB.Shared.Common;
 using SunttelTPointReporPdf.Interfaces.IPayment;
 using SunttelTPointReporPdf.Interfaces.IPayment;
 using SunttelTradePointB.Shared.Accounting;
+using SunttelTradePointB.Client;
 
 namespace SunttelTPointReporPdf.Controllers
 {
@@ -20,10 +21,13 @@ namespace SunttelTPointReporPdf.Controllers
             _Payment = payment;
         }
 
-        public ActionResult Payment(string paymentId)
+        public ActionResult Payment(string paymentId, string skinImage)
         {
             Task<(bool IsSuccess, Payment? Payment, string? ErrorDescription)>? reult = _Payment.GetPayment(paymentId);
             Payment? model = reult.Result.Payment;
+
+              if(skinImage!=null && skinImage.Trim()!="")  ViewBag.SquadsImages = $"{UIClientGlobalVariables.pathSquadsImages}/{skinImage}";
+            else ViewBag.SquadsImages = "/ActorIco.png";
 
             return new ViewAsPdf("Payment", model)
             {

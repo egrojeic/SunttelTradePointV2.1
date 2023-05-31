@@ -11,6 +11,8 @@ using QRCoder;
 using System;
 using System.Drawing;
 using Microsoft.Extensions.Hosting;
+using SunttelTradePointB.Client;
+using SunttelTPointReporPdf.Model;
 
 namespace SunttelTPointReporPdf.Controllers
 {
@@ -24,10 +26,12 @@ namespace SunttelTPointReporPdf.Controllers
             _TransactionalItem = transactionalItem;
         }
 
-        public ActionResult Item(string transactionalItemId)
+        public ActionResult Item(string transactionalItemId, string skinImage)
         {
+            TransactionalItemModel item = new TransactionalItemModel();
+
             Task<(bool IsSuccess, TransactionalItem? transactionalItem, string? ErrorDescription)>? reult = _TransactionalItem.GetTransactionalItem(transactionalItemId);
-            TransactionalItem? model = reult.Result.transactionalItem;
+            item.item = reult.Result.transactionalItem;
 
             #region Qr         
             string qrString = $"https://localhost:7186/TransactionalItemCard/all/{transactionalItemId}";
@@ -35,23 +39,21 @@ namespace SunttelTPointReporPdf.Controllers
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrString, QRCodeGenerator.ECCLevel.Q);
             QRCode qrCode = new QRCode(qrCodeData);
-            Bitmap qrCodeImage = qrCode.GetGraphic(20);
-
-            string rootpath = AppDomain.CurrentDomain.BaseDirectory;
-
-            var strHostFolder = "https://localhost:7166/uploads/icon-192.png";
-            //            qrCodeImage.Save();
+            Bitmap qrCodeImage = qrCode.GetGraphic(20);          
 
             ImageConverter converter = new ImageConverter();
             byte[] QRbyte = (byte[])converter.ConvertTo(qrCodeImage, typeof(byte[]));
             var img = $"data:img/png;base64,{Convert.ToBase64String(QRbyte)}";
 
-            ViewBag.Qr = img;
+            item.qr = img;            
+            if (skinImage != null && skinImage.Trim() != "")item.skinImage = $"{UIClientGlobalVariables.pathSquadsImages}/{skinImage}";
+            else item.skinImage = "/ActorIco.png";
+
             #endregion Qr
 
-            return View(model);
+           // return View(item);
             //   if (model==null) {return NotFound("Does not exist"); }
-            return new ViewAsPdf("Item", model)
+            return new ViewAsPdf("Item", item)
             {
                 //PageSize = Rotativa.AspNetCore.Options.Size.,
                 // FileName = $"{model.Buyer.Name}.pdf"

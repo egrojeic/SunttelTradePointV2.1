@@ -63,27 +63,27 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
                 string filterString = filter == null ? "" : filter;
                 var skip = (page - 1) * perPage;
                 var pipeline = new List<BsonDocument>();
-                if (filterString.Length > 0)
+                if (filterString!="all")
                 {
 
 
-                    if (filterString.ToLower() != "all")
-                    {
-                        pipeline.Add(
-                            new BsonDocument {
-                                { "$match",
-                                    new BsonDocument{
-                                        { "SquadId", squadId },
-                                        { "CreditDate", new BsonDocument{
-                                            { "$gte", startDate },
-                                            { "$lte", endDate }
-                                        }
-                                        }
-                                    }
-                                }
-                            }
-                        );
-                    }
+                    //if (filterString.ToLower() != "all")
+                    //{
+                    //    pipeline.Add(
+                    //        new BsonDocument {
+                    //            { "$match",
+                    //                new BsonDocument{
+                    //                    { "SquadId", squadId },
+                    //                    { "CreditDate", new BsonDocument{
+                    //                        { "$gte", startDate },
+                    //                        { "$lte", endDate }
+                    //                    }
+                    //                    }
+                    //                }
+                    //            }
+                    //        }
+                    //    );
+                    //}
 
                     pipeline.Add(
                   new BsonDocument{

@@ -10,6 +10,8 @@ using SunttelTradePointB.Shared.Accounting;
 using SunttelTPointReporPdf.Services.CreditServices;
 using SunttelTPointReporPdf.Interfaces.CreditReport;
 using Microsoft.Extensions.DependencyInjection;
+using SunttelTPointReporPdf.Interfaces.IActor;
+using SunttelTPointReporPdf.Services.Actor;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("AdminConnection");
@@ -21,6 +23,7 @@ builder.Services.AddTransient<ISale, SaleServices>();
 builder.Services.AddTransient<IPayment, PaymentServices>();
 builder.Services.AddTransient<ITransactionalItem , TransactionalItemServices>();
 builder.Services.AddTransient<ICreditDocument, CreditServices>();
+builder.Services.AddTransient<IActor, EntityNodesServicescs>();
 
 #endregion Services
 

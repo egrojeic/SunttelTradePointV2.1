@@ -196,8 +196,24 @@ table {
 
 
 /* Sales */
-#table-sales-img{
-    border:1px solid white;
+
+
+
+@font-face {
+    font-family:code;
+    src: url("/fonts/code.ttf")
+}
+
+.code {
+    width: 500px;
+    height:40PX;
+    padding:10PX;    
+    font-family: code;
+}
+
+
+#table-sales-img {
+    border: 1px solid white;
 }
 
 #table-sales-img td{

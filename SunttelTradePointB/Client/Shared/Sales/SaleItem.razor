@@ -15,6 +15,7 @@
 
 @inject NavigationManager Navigation
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject SunttelTradePointB.Client.Services.MasterTablesServices.ActorsNodeService actor
 @inject GeographicPlacesService geoPlaces
 @inject ActorsNodeService actorsNodeServive
 @inject IJSRuntime Js
@@ -461,6 +462,7 @@ else
         {
             commercialDocument = await DocumentServices.GetItemCommercialDocumentById(commercialDocumentId);
             commercialDocument.Items = await DocumentServices.GetCommercialDocumentDetails(commercialDocumentId);
+            if (commercialDocument.Buyer != null) commercialDocument.Buyer = await actor.GetEntityActor(commercialDocument.Buyer.Id);
             LoadBuyerAndVendor();
 
         }
@@ -508,9 +510,9 @@ else
         {
             string name = "Purchases";
             if (isASale) name = "Sale";
+            string skinImage = commercialDocument.Buyer != null && commercialDocument.Buyer.SkinImageName != null ? commercialDocument.Buyer.SkinImageName : "";
+            Js.InvokeAsync<object>("open", $"{hostPrint}SaleReport/{name}?commercialDocumentId={commercialDocumentId}&skinImage={skinImage}", "_blank");
 
-            Js.InvokeAsync<object>("open", $"{hostPrint}SaleReport/{name}?commercialDocumentId={commercialDocumentId}", "_blank");
-          
         }
 
         StateHasChanged();
