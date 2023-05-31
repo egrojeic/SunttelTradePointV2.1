@@ -41,7 +41,7 @@ namespace SunttelTPointReporPdf.Controllers
                 Model.SaleDetail = Sale.Result.detail;
 
             }
-            skinImage = $"{UIClientGlobalVariables.PathEntityImages}/{skinImage}";
+            Model.skinImage = $"{UIClientGlobalVariables.PathEntityImages}/{skinImage}";
          
            
             return new ViewAsPdf("Credit", Model)
@@ -64,8 +64,8 @@ namespace SunttelTPointReporPdf.Controllers
 
             }
 
-            if(skinImage!=null && skinImage.Trim()!="")  ViewBag.SquadsImages = $"{UIClientGlobalVariables.PathEntityImages}/{skinImage}";
-            else ViewBag.SquadsImages = "/ActorIco.png";
+            if(skinImage!=null && skinImage.Trim()!="")  Model.skinImage = $"{UIClientGlobalVariables.PathEntityImages}/{skinImage}";
+            else Model.skinImage = "/ActorIco.png";
 
             return new ViewAsPdf("PurchasesCredit", Model)
             {

@@ -7,5 +7,6 @@ namespace SunttelTPointReporPdf.Model
     {
         public List<SalesDocumentItemsDetails> SaleDetail { get; set; }
         public CreditDocument CreditDocument { get; set; }
+        public string skinImage { get; set; }
     }
 }

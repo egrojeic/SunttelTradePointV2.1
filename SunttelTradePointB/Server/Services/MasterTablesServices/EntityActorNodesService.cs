@@ -116,8 +116,8 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
 
                 EntityActor result = resultPrev.Select(d => BsonSerializer.Deserialize<EntityActor>(d)).ToList()[0];
-               
-              
+
+
 
                 return (true, result, null);
             }
@@ -145,7 +145,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 var pipeline = new List<BsonDocument>();
 
-                if(strNameFiler.ToLower() != "all")
+                if (strNameFiler.ToLower() != "all")
                 {
                     pipeline.Add(
                     new BsonDocument(
@@ -158,7 +158,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     )
                 );
                 }
-                
+
 
                 pipeline.Add(
                     new BsonDocument
@@ -229,15 +229,15 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 int limit = 50;
 
                 pipeline.Add(
-                    new BsonDocument("$skip", (page-1)*limit)
+                    new BsonDocument("$skip", (page - 1) * limit)
                 );
 
                 pipeline.Add(
                     new BsonDocument("$limit", limit)
-                    );                
+                    );
                 List<EntityActor> results = await _entityActorsCollection.Aggregate<EntityActor>(pipeline).ToListAsync();
 
-               //var results = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                //var results = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
 
                 return (true, results, null);
             }
@@ -295,6 +295,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     new BsonDocument("$match", new BsonDocument("_id", new ObjectId(entityActorId)))
                 );
 
+                
                 pipeline.Add(
                     new BsonDocument("$project", new BsonDocument(){
                         { $"{detailsArrayListName}", 1},
@@ -302,69 +303,36 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     })
                 );
 
-                pipeline.Add(
-                    new BsonDocument("$unwind", $"${detailsArrayListName}")
-                );
+              
+                EntityActor? result = await  _entityActorsCollection.Aggregate<EntityActor>(pipeline).FirstOrDefaultAsync();
 
-                pipeline.Add(
-                    new BsonDocument(
-                       "$replaceRoot",
-                            new BsonDocument("newRoot", $"${detailsArrayListName}"))
-                );
-
-
-                if (detailsArrayListName == "AddressList")
+                if (result != null)
                 {
-                    pipeline.Add(
-                        new BsonDocument {
-                            { "$lookup",
-                                new BsonDocument {
-                                    { "from", "GeographicCities" },
-                                    { "localField", "CityAddressRef" },
-                                    { "foreignField", "_id" },
-                                    { "as", "CityAddress" }
-                                }
-                            }
-                        }
-                    );
+                    switch (entityDetailsSection)
+                    {
+                        case EntityDetailsSection.AddressList:                        
+                            return (true, result.AddressList.Cast<T>().ToList(), null);
 
-                    pipeline.Add(
-                        new BsonDocument { { "$unwind", "$CityAddress" } }
-                    );
+                        case EntityDetailsSection.IdentifiersList:
+                            detailsArrayListName = "Identifications";                           
+                            return (true,result.Identifications.Cast<T>().ToList(), null);
+
+                        case EntityDetailsSection.ElectronicAddressLis:
+                            detailsArrayListName = "ElectronicAddresses";                        
+                            return (true, result.ElectronicAddresses.Cast<T>().ToList(), null);
+
+                        case EntityDetailsSection.ComercialConditions:
+                            detailsArrayListName = "EntitiesCommercialRelationShip";                         
+                            return (true, result.EntitiesRelationShips.Cast<T>().ToList(), null);
+
+                        case EntityDetailsSection.PhoneDirectory:
+                            detailsArrayListName = "PhoneNumbers";                          
+                            return (true, result.PhoneNumbers.Cast<T>().ToList(), null);
+                        default:
+                            return (false, null, "Option Not Found");
+                    }
                 }
-                var result = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
-
-
-                switch (entityDetailsSection)
-                {
-                    case EntityDetailsSection.AddressList:
-                        var listDocs = result.Select(d => BsonSerializer.Deserialize<Address>(d)).ToList();
-                        return (true, listDocs.Cast<T>().ToList(), null);
-
-                    case EntityDetailsSection.IdentifiersList:
-                        detailsArrayListName = "Identifications";
-                        var listDocs2 = result.Select(d => BsonSerializer.Deserialize<IdentificationEntity>(d)).ToList();
-                        return (true, listDocs2.Cast<T>().ToList(), null);
-
-                    case EntityDetailsSection.ElectronicAddressLis:
-                        detailsArrayListName = "ElectronicAddresses";
-                        var listDocs3 = result.Select(d => BsonSerializer.Deserialize<ElectronicAddress>(d)).ToList();
-                        return (true, listDocs3.Cast<T>().ToList(), null);
-
-                    case EntityDetailsSection.ComercialConditions:
-                        detailsArrayListName = "EntitiesCommercialRelationShip";
-                        var listDocs4 = result.Select(d => BsonSerializer.Deserialize<EntitiesCommercialRelationShip>(d)).ToList();
-                        return (true, listDocs4.Cast<T>().ToList(), null);
-
-                    case EntityDetailsSection.PhoneDirectory:
-                        detailsArrayListName = "PhoneNumbers";
-                        var listDocs5 = result.Select(d => BsonSerializer.Deserialize<PhoneNumber>(d)).ToList();
-                        return (true, listDocs5.Cast<T>().ToList(), null);
-                    default:
-                        return (false, null, "Option Not Found");
-                }
-
-
+                 return (false, null, "Option Not Found");
             }
             catch (Exception e)
             {
@@ -532,7 +500,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 var filterPrev = Builders<EntityActor>.Filter.Eq(x => x.Id, entityActorId);
                 var resultPrev = await _entityActorsCollection.Find(filterPrev).FirstOrDefaultAsync();
 
-                if (resultPrev != null && resultPrev.PhoneNumbers != null  && resultPrev.PhoneNumbers.Any(x => x.Id == phoneNumber.Id))
+                if (resultPrev != null && resultPrev.PhoneNumbers != null && resultPrev.PhoneNumbers.Any(x => x.Id == phoneNumber.Id))
                 {
                     //Update Element
                     var filter = Builders<EntityActor>.Filter.And(
@@ -621,7 +589,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 string filter = filterCondition == null ? "" : filterCondition;
                 var skip = (page - 1) * perPage;
 
-                if (filter.Length > 0 && filter!="all")
+                if (filter.Length > 0 && filter != "all")
                 {
                     var pipeline = new List<BsonDocument>();
 
@@ -710,7 +678,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
-                if(entityGroup.Id == null)
+                if (entityGroup.Id == null)
                 {
                     entityGroup.Id = ObjectId.GenerateNewId().ToString();
                 }
@@ -740,7 +708,8 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         {
             try
             {
-                if (electronicAddress.Id == null) {
+                if (electronicAddress.Id == null)
+                {
                     electronicAddress.Id = ObjectId.GenerateNewId().ToString();
                 }
 
@@ -1161,15 +1130,15 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             // update the matching documents in the collection
             var entityActorResponse = await _entityActorsCollection.Find(filter).FirstOrDefaultAsync();
 
-            if(entityActorResponse != null)
+            if (entityActorResponse != null)
             {
                 return (true, (entityActorResponse.Id, entityActorResponse.SkinImageName), null);
             }
             else
             {
-                return (false, (null,null), "Entity NOT Found");
+                return (false, (null, null), "Entity NOT Found");
             }
-            
+
         }
 
         /// <summary>
@@ -1180,7 +1149,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="squadId"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public  async Task<(bool IsSuccess, List<EntityActor>? ActorsNodesList, string? ErrorDescription)> SaveEntitiesCSV(string userId, string ipAddress, string squadId, IFormFile file)
+        public async Task<(bool IsSuccess, List<EntityActor>? ActorsNodesList, string? ErrorDescription)> SaveEntitiesCSV(string userId, string ipAddress, string squadId, IFormFile file)
         {
             try
             {
@@ -1201,7 +1170,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     List<EntityActor> results = _mapper.Map<List<EntityActor>>(records);
 
                     var Entity = await SaveEntities(userId, ipAddress, results);
-                    
+
                     return (true, results, null);
 
                 }

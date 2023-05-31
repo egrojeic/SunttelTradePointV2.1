@@ -24,7 +24,7 @@
 
 @if (Model != null)
 {
-    <table class="header " style="border:none;" border="0">
+    <table class="header " style="border:1px solid white;" border="0">
         <tr>
             <td class="td-1" style="border:none;">
                 <img src="@Model.skinImage" />
@@ -76,7 +76,7 @@
                 <div>
                     <b></b>
                 </div>
-                <img alt="QR"  style="height:90%; width:98%;" src="@Model.qr" />
+                <img alt="QR" class="qr" style=" width: 150px; height: 150px;"  src="@Model.qr" />
                
             </td>
         </tr>

@@ -165,7 +165,6 @@
 
             <div><label class="info-text-size">@GetName("Vendor",new CommercialDocument())</label></div>
             <div class="Vendor">
-
                 <InputTextSelector3 styleCaption="min-width: 25vw;" TItem="Concept"
                                 Id="Vendor"
                                 caption="@(commercialDocument.Vendor !=null ? commercialDocument.Vendor?.Name:"" )"
@@ -173,9 +172,7 @@
                                 EventIdSelectionAndId="EventIdSelectionAndId"
                                 EventSearcherValueAndId="EventSearcherValueAndId"
                                 Disable="GetTypeStatus()">
-
                 </InputTextSelector3>
-
             </div>
 
             <div><label class="info-text-size">@GetName("Buyer",new CommercialDocument())</label></div>
@@ -206,8 +203,7 @@
 
             </div>
             <div><label class="info-text-size">@GetName("DeliveryAddress",new CommercialDocument())</label></div>
-            <div>
-
+            <div class="Edit-control">
                 <select @onchange="SelectItemDeliveryAddress" class="select-style info-text-size">
 
 
@@ -224,12 +220,14 @@
                         <option value="@commercialDocument.DeliveryAddress.Id" selected>@commercialDocument.DeliveryAddress.Name</option>
                     }
                 </select>
-
+                @if (commercialDocument.Buyer != null)
+                {
+                    <button type="button" @onclick='()=>EditActorMode(commercialDocument.Buyer.Id)'><i class="bi bi-pencil-square"></i></button>
+                }
             </div>
 
             <div><label class="info-text-size">@GetName("Season",new CommercialDocument())</label></div>
             <div>
-
                 <select @onchange="SelectItemBusinessLineDoc" class="select-style info-text-size">
 
                     @if (seasonList != null)
@@ -461,8 +459,9 @@ else
         if (commercialDocumentId != null)
         {
             commercialDocument = await DocumentServices.GetItemCommercialDocumentById(commercialDocumentId);
+            if (commercialDocument.Items == null) commercialDocument.Items = new();
             commercialDocument.Items = await DocumentServices.GetCommercialDocumentDetails(commercialDocumentId);
-            if (commercialDocument.Buyer != null) commercialDocument.Buyer = await actor.GetEntityActor(commercialDocument.Buyer.Id);
+            // if (commercialDocument.Buyer != null) commercialDocument.Buyer = await actor.GetEntityActor(commercialDocument.Buyer.Id);
             LoadBuyerAndVendor();
 
         }
@@ -591,7 +590,9 @@ else
         {
             buyerList = new();
             buyerList = await DocumentServices.GetCommercialBuyerList(arg.value, commercialDocument.DocumentType.IsASale);
+
         }
+
         if (SearcherValue == "Season")
         {
 
@@ -612,7 +613,7 @@ else
         {
             vendorWarehouseList = await DocumentServices.GetCommercialVendorWarehouseList(commercialDocument.Vendor.Id);
         }
-
+        StateHasChanged();
     }
 
     public void EventIdSelectionAndId(CommercialDocumentType item)
@@ -635,6 +636,9 @@ else
         if (SearcherValue == "Buyer")
         {
             commercialDocument.Buyer = item;
+            commercialDocument.DeliveryAddress = new Address();
+            addressList = new List<Address>();
+
             LoadBuyerAndVendor();
 
         }
@@ -700,11 +704,13 @@ else
     {
         string msg = "";
         if (commercialDocument == null) msg = "required fields";
-        if (commercialDocument.DocumentType.Id == null) msg = "required fields";
-        if (commercialDocument.Vendor.Id == null) msg = "required fields";
-        if (commercialDocument.Buyer.Id == null) msg = "required fields";
-        if (commercialDocument.SalesPerson.Id == null) msg = "required fields";
-        if (commercialDocument.BusinessLineDoc.Id == null) msg = "required fields";
+        if (commercialDocument.DocumentType.Id == null) msg = "required fields DocumentType";
+        if (commercialDocument.Vendor.Id == null) msg = "required fields Vendor";
+        if (commercialDocument.Buyer.Id == null) msg = "required fields Buyer";
+        if (commercialDocument.SalesPerson.Id == null) msg = "required fields Sales Person";
+        if (commercialDocument.BusinessLineDoc.Id == null) msg = "required fields Business LineDoc ";
+        if (commercialDocument.BuyerWarehouse.Id == null) msg = "required fields Buyer Warehouse";
+        if (commercialDocument.DeliveryAddress.Id == null) msg = "required fields Delivery Address";
         return msg;
     }
 
@@ -894,6 +900,14 @@ else
         return commercialDocument.DocumentType != null ? true : false;
         StateHasChanged();
 
+    }
+
+
+    public void EditActorMode(string id)
+    {
+
+       if(id!="") Js.InvokeAsync<object>("open", $"/Actors/{id}", "_blank");
+        CloseMenu(false);
     }
 
 }
