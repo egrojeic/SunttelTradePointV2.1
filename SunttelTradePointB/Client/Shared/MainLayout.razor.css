@@ -7,3 +7,174 @@
     padding: 0;
     background-color: white;
 }
+
+#tradePointInfoSup {
+    background-color: black;
+    margin: 5px;
+    margin-right: 20px;
+    padding: 5px;
+    border-radius: 30px;
+}
+
+.margin {
+    margin-left: 50px;
+}
+
+.main {
+    flex: 2;
+    padding: 10px;
+    overflow: auto;
+}
+
+.sidebar {
+    max-width: 220px;
+    flex: 1;
+    height: 100%;
+}
+
+.sidebar-on {
+    max-width: 0px;
+    overflow: hidden;
+    flex: 1;
+    overflow: hidden;
+    height: 100%;
+}
+
+
+
+.btn-menu-close {
+    height: 40px;
+    position: fixed;
+    top: 55px;
+    border-radius: 5px;
+    z-index: 1;
+    cursor: pointer;
+    filter: opacity(0.5);
+}
+
+    .btn-menu-close:hover {
+        filter: drop-shadow(0px 0px 2px white);
+        filter: opacity(1);
+    }
+
+.btn-menu-width-open {
+    left: 180px;
+}
+
+.btn-menu-width-close {
+    top: 10px;
+    margin-left: 5px;
+}
+
+#squadName {
+    color: #36cc00;
+}
+
+#currentDate {
+    color: whitesmoke;
+}
+
+#tradePintLogo {
+    width: 60px;
+}
+
+#SunttelBrand {
+    color: #00CCFF;
+}
+
+#currentWeek {
+    color: #E2E2E2;
+}
+
+#helloUser {
+    color: #E2E2E2;
+}
+
+.top-row {
+    background-image: linear-gradient(0deg, #202124 0%, #202124 100%);
+    justify-content: flex-end;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr;
+    box-shadow: 5px 3px 8px 3px #888888;
+}
+
+    .top-row h1 {
+        color: red;
+        font-size: 1.2em;
+    }
+
+    .top-row ::deep a, .top-row ::deep .btn-link {
+        white-space: nowrap;
+        margin-left: 1.5rem;
+        text-decoration: none;
+    }
+
+        .top-row ::deep a:hover, .top-row ::deep .btn-link:hover {
+            text-decoration: underline;
+        }
+
+        .top-row ::deep a:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+@media (max-width: 640.98px) {
+    .top-row:not(.auth) {
+        display: none;
+    }
+
+    .top-row.auth {
+        justify-content: space-between;
+    }
+
+    .top-row ::deep a, .top-row ::deep .btn-link {
+        margin-left: 0;
+    }
+}
+
+@media (min-width: 641px) {
+    .page {
+        flex-direction: row;
+    }
+
+    .sidebar {
+        width: 250px;
+        height: 100vh;
+        position: sticky;
+        top: 0;
+    }
+
+    .top-row {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+        .top-row.auth ::deep a:first-child {
+            flex: 1;
+            text-align: right;
+            width: 0;
+        }
+
+    .top-row, article {
+        padding-left: 2rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
+
+.btn-floating {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    /* border-radius: 50%; */
+}
+
+.bot {
+    color: white;
+    background-color: #00CCFF !important;
+    margin-right: 1rem;
+}
