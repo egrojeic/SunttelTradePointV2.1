@@ -137,3 +137,15 @@
    
     padding-top: 5px;
 }
+
+.Edit-control {
+    display: flex;
+}
+
+.Edit-control button {
+   width:auto;
+   font-size:13px;
+   padding:0px;
+   background:no-repeat;
+   border:none;
+}

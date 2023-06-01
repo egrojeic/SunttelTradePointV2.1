@@ -99,13 +99,13 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
 
 
 
-        public async Task<List<CreditDocument>> GetCreditDocumentList(DateTime startDate, DateTime endDate, string? filter = null, int? page = 1, int? perPage = 10)
+        public async Task<List<CreditDocument>> GetCreditDocumentList(DateTime startDate, DateTime endDate, bool isAsale,string? filter = null, int? page = 1, int? perPage = 10)
         {
             try
             {
                 string path = $"{pathApi}";
                 path = path.Replace("*Name", "GetCreditDocuments");
-                var responseMessage = await Gethttp($"{path}&startDate={startDate.ToString("yyyy-MM-dd")}&endDate={endDate.ToString("yyyy-MM-dd")}&filter={filter}&page={page}&perPage={perPage}");
+                var responseMessage = await Gethttp($"{path}&startDate={startDate.ToString("yyyy-MM-dd")}&endDate={endDate.ToString("yyyy-MM-dd")}&filter={filter}&isAsale={isAsale}&page={page}&perPage={perPage}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<CreditDocument>>();
                 return list != null ? list : new List<CreditDocument>();
             }
@@ -134,7 +134,7 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
         }
 
 
-        public async Task<List<CreditType>> GetCreditTypes(string? filter = null, int? page = 1, int? perPage = 10)
+        public async Task<List<CreditType>> GetCreditTypes(bool? isASale = null,string? filter = null, int? page = 1, int? perPage = 10)
         {
             try
             {
@@ -142,6 +142,7 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
                 path = path.Replace("*Name", "GetCreditTypes");
                 var responseMessage = await Gethttp($"{path}&filter={filter}&page={page}&perPage={perPage}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<CreditType>>();
+                if(list!=null && isASale!=null)list = list.Where(s=>s.IsASale == isASale).ToList();
                 return list != null ? list : new List<CreditType>();
             }
             catch (Exception ex)

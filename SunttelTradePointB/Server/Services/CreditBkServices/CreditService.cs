@@ -54,35 +54,42 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="filter"></param>
+        /// <param name="isAsale"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<CreditDocument>? CreditDocumentsList, string? ErrorDescription)> GetCreditDocuments(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null)
+        public async Task<(bool IsSuccess, List<CreditDocument>? CreditDocumentsList, string? ErrorDescription)> GetCreditDocuments(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, bool isAsale, int? page = 1, int? perPage = 10, string? filter = null)
         {
             try
             {
                 string filterString = filter == null ? "" : filter;
                 var skip = (page - 1) * perPage;
-
-                if (filterString.Length > 0)
+                var pipeline = new List<BsonDocument>();
+                if (filterString!="all")
                 {
-                    var pipeline = new List<BsonDocument>();
 
-                    if (filterString.ToLower() != "all")
-                    {
-                        pipeline.Add(
-                            new BsonDocument {
-                                { "$match",
-                                    new BsonDocument{
-                                        { "SquadId", squadId },
-                                        { "CreditDate", new BsonDocument{
-                                            { "$gte", startDate },
-                                            { "$lte", endDate }
-                                        }
-                                        }
-                                    }
-                                }
-                            }
-                        );
-                    }
+
+                    //if (filterString.ToLower() != "all")
+                    //{
+                    //    pipeline.Add(
+                    //        new BsonDocument {
+                    //            { "$match",
+                    //                new BsonDocument{
+                    //                    { "SquadId", squadId },
+                    //                    { "CreditDate", new BsonDocument{
+                    //                        { "$gte", startDate },
+                    //                        { "$lte", endDate }
+                    //                    }
+                    //                    }
+                    //                }
+                    //            }
+                    //        }
+                    //    );
+                    //}
+
+                    pipeline.Add(
+                  new BsonDocument{
+                        {"$match",  new BsonDocument{ {  "CreditDocumentType.IsASale",isAsale} } }
+                  }
+                  );
 
                     pipeline.Add(
                     new BsonDocument{
@@ -97,11 +104,19 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
                     );
 
                     List<CreditDocument> results = await _CreditDocumentCollection.Aggregate<CreditDocument>(pipeline).ToListAsync();
+
                     return (true, results, null);
                 }
                 else
                 {
-                    var creditDocuments = await _CreditDocumentCollection.Find<CreditDocument>(new BsonDocument()).ToListAsync();
+
+                    pipeline.Add(
+                new BsonDocument{
+                        {"$match",  new BsonDocument{ {  "CreditDocumentType.IsASale",isAsale} } }
+                      }
+                     );
+
+                    List<CreditDocument> creditDocuments = await _CreditDocumentCollection.Aggregate<CreditDocument>(pipeline).ToListAsync();
 
                     if (creditDocuments == null || creditDocuments.Count == 0)
                     {
@@ -253,8 +268,8 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
             try
             {
                 var pipeline = new List<BsonDocument>();
-               
-                
+
+
                 pipeline.Add(
                   new BsonDocument("$match",
                   new BsonDocument("CreditDocumentType._id", new ObjectId(creditTypeId))
@@ -271,8 +286,8 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
                     );
 
 
-               var resultCount = _CreditDocumentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
-               int count = resultCount!=null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+                var resultCount = _CreditDocumentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
 
 
                 if (count <= 0)
@@ -451,8 +466,8 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
 
 
                 var resultCount = _CreditDocumentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
-               int count = resultCount!=null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
-              
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
                 if (count <= 0)
                 {
                     var result = _CreditStatusCollection.DeleteOne(s => s.Id == creditStatusid);
@@ -651,7 +666,7 @@ namespace SunttelTradePointB.Server.Services.CreditBkServices
 
 
                 var resultCount = _CreditDocumentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
-                int count = resultCount!=null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
 
                 if (count <= 0)
                 {

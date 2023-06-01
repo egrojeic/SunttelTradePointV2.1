@@ -1,0 +1,119 @@
+﻿@model SunttelTPointReporPdf.Model.ModelCreditSale
+@{
+    ViewData["Title"] = "Credit";
+}
+
+@if (Model != null && Model.CreditDocument!=null)
+{
+    <table class="header-credit">
+        <tr class="tr-1">
+            <td class="td-1"><img src="@Model.skinImage" /></td>
+            <td class="td-2">CREDIT SALES DOCUMENT</td>
+        </tr>
+    </table>
+
+    <table class="table-1">
+        <tr>
+            <td class="td-1" colspan="8">
+                DOCUMENT INFORMATION
+            </td>
+        </tr>
+        <tr>
+            <td>Credit Number</td>
+            <td></td>
+            <td>Date</td>
+            <td>@(Model.CreditDocument.CreditDate.ToString("yyyy-MM-dd"))</td>
+            <td>Customer</td>
+            <td>@(Model.CreditDocument.Buyer != null ? Model.CreditDocument.Buyer.Name : "")</td>
+            <td>Print Date</td>
+            <td></td>
+        </tr>
+        <tr>
+        <tr>
+            <td colspan="8">
+                Invoice #
+            </td>
+        </tr>
+    </table>
+
+    <table class="table-2">
+        <tr>
+            <td class="td-1" colspan="9">
+                DOCUMENT DETAILS
+            </td>
+        </tr>
+        <tr>
+            <td class="td-2">Farm</td>
+            <td class="td-3">Flower</td>
+            <td class="td-4">Pack</td>
+            <td class="td-5">Box</td>
+            <td class="td-6">Reason</td>
+            <td class="td-7">
+                n Qty. To
+                Credit
+            </td>
+            <td class="td-8">Unit Price</td>
+            <td class="td-9">
+                Additional
+                Value To
+                Credit
+            </td>
+            <td class="td-10">
+                Subtotal
+            </td>
+        </tr>
+        @if (Model.SaleDetail != null)
+        {
+            @foreach (var item in Model.SaleDetail)
+            {
+                <tr>
+                    <td></td>
+                    <td>@item.TransactionalItem.Name</td>
+                    <td></td>
+                    <td align="right">@(item.TransactionalItemSpecs != null && item.TransactionalItemSpecs.PackingBoxToBuy != null ? item.TransactionalItemSpecs.PackingBoxToBuy : "")</td>
+                    <td>@(Model.CreditDocument.CreditDocumentReason != null && Model.CreditDocument.CreditDocumentReason.Name!=null? Model.CreditDocument.CreditDocumentReason.Name:"")</td>
+                    <td align="right">
+                        @item.Qty
+                    </td>
+                    <td align="right">@item.UnitPrice.ToString("N2")</td>
+                    <td>
+                    </td>
+                    <td>
+                        @item.Total.ToString("N2")
+                    </td>
+                </tr>
+            }
+        }
+        @if (Model.SaleDetail != null)
+        {
+            <tr>
+                <td rowspan="3" colspan="7"></td>
+                <td>
+                    Sub Total:
+                </td>
+                <td>
+                    @Model.SaleDetail.Sum(s=>s.Total).ToString("N2")
+                </td>
+            </tr>
+            <tr>
+
+                <td>
+                    Freight Total:
+                </td>
+                <td>
+                </td>
+            </tr>
+            <tr>
+
+                <td>
+                    Grand Total:
+                </td>
+                <td>
+                    @(Model.SaleDetail.Sum(s => s.Total).ToString("N2"))
+                </td>
+            </tr>
+        }
+
+    </table>
+
+}

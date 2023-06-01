@@ -144,7 +144,7 @@
     public async void LoadData()
     {
         isLoading = true;
-        creditTypeList = await CreditDocumentServices.GetCreditTypes((filter != null ? filter : "all"), 1, 20);
+        creditTypeList = await CreditDocumentServices.GetCreditTypes(null,(filter != null ? filter : "all"), 1, 20);
         isLoading = false;
         StateHasChanged();
     }

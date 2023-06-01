@@ -1,0 +1,298 @@
+﻿@model SunttelTPointReporPdf.Model.TransactionalItemModel
+@{
+    ViewData["Title"] = "Item";
+}
+
+<script src="~/js/QR.js"></script>
+<script>
+    let qr = document.getElementById("qr");
+    console.log(qr);
+
+    new QRious({
+        element: document.querySelector("#codigo"),
+        value: '@(@ViewBag.Qr)',
+        size: 250,
+        backgroundAlpha: 0,
+        foreground: "black", // Color del QR
+        level: "H", // Puede ser L,M,Q y H (L es el de menor nivel, H el mayor)
+    });
+
+
+
+</script>
+
+
+@if (Model != null)
+{
+    <table class="header " style="border:1px solid white;" border="0">
+        <tr>
+            <td class="td-1" style="border:none;">
+                <img src="@Model.skinImage" />
+            </td>
+            <td class="td-2" style="border:none;">
+                <table class="table-header">
+                    <tr>
+                        <td class="td-1">PO #</td>
+                        <td class="td-2">Cust. PO </td>
+                        <td class="td-3">Customer</td>
+                        <td class="td-4">Box </td>
+                        <td class="td-5">Pack </td>
+                        <td class="td-6">Pack Multiplier</td>
+                    </tr>
+                    <tr>
+                        <td><b></b></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>@Model.item.Name</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Case UPC
+                        </td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>Season</td>
+                        <td colspan="5"></td>
+                    </tr>
+                    <tr>
+                        <td>Product</td>
+                        <td colspan="6"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Grade
+                        </td>
+                        <td colspan="5"></td>
+                    </tr>
+                </table>
+            </td>
+            <td class="td-item-3" align="center" style="border:none;">
+                <p>
+                    Subtitutions
+                </p>
+                <div>
+                    <b></b>
+                </div>
+                <img alt="QR" class="qr" style=" width: 150px; height: 150px;"  src="@Model.qr" />
+               
+            </td>
+        </tr>
+    </table>
+    <br />
+    <table class="tabla-img">
+        <tr class="tr-1">
+            <td class="td-1" colspan="3">
+                Images of Materials Used
+            </td>
+        </tr>
+        @if (Model.item.ProductPackingSpecs != null)
+        {
+            @foreach (var item in Model.item.ProductPackingSpecs)
+            {
+                @if (item.ListOfMaterials != null)
+                {
+                    @foreach (var material in item.ListOfMaterials)
+                    {
+                        <tr>
+                            <td class="td-2">@material.Material.Name</td>
+                            <td class="td-3">@material.Material.Name</td>
+                            <td class="td-4"></td>
+                        </tr>
+                    }
+                }
+
+            }
+
+        }
+    </table>
+
+    <div class="title-assembly">
+        <b>Assembly Instructions</b>
+    </div>
+
+    <table class="table-assembly-instructions">
+        <tr>
+            <td class="td-1">Tipo Ensamble</td>
+            <td class="td-2"></td>
+            <td class="td-3">Posición Manga</td>
+            <td class="td-4"></td>
+            <td class="td-5">Tamaño Ramo</td>
+            <td class="td-6"></td>
+        </tr>
+        <tr>
+            <td class="td-1">TTipo De Banda Elástica</td>
+            <td class="td-2"></td>
+            <td class="td-3">Posición de la banda Elástica</td>
+            <td class="td-4"></td>
+            <td class="td-5">Punto de Corte</td>
+            <td class="td-6"></td>
+        </tr>
+        <tr>
+            <td class="td-1">TTipo De Banda Elástica</td>
+            <td colspan="5" class="td-2"></td>
+
+        </tr>
+    </table>
+
+
+    <table class="table-instructions">
+        <tr class="tr-1">
+            <td colspan="6"> Other Assembly Instructions</td>
+        </tr>
+        <tr>
+            <td>Parametro</td>
+            <td>Valor</td>
+        </tr>
+    </table>
+
+    <table class="table-quality-parameters">
+        <tr class="tr-1">
+            <td colspan="2"> Quality Parameters</td>
+        </tr>
+        <tr>
+            <td class="td-1">Parameter</td>
+            <td>Value</td>
+        </tr>
+        @if (Model.item !=null && Model.item.QualityParameters != null)
+        {
+            @foreach (var item in Model.item.QualityParameters)
+            {
+                <tr>
+                    <td>
+                        @(
+                            item.TransactionalItemQuality != null ? item.TransactionalItemQuality.Name : ""
+                            )
+                    </td>
+                    <td>
+                        @(
+                            item.Value != null ? item.Value : ""
+                            )
+                    </td>
+                </tr>
+            }
+
+        }
+
+    </table>
+
+    <div class="title-assembly">
+        <b>Recipe Notes</b>
+    </div>
+    <div class="notes">
+        <p>NOTA:</p>
+        <p></p>
+    </div>
+
+    <div class="title-assembly">
+        <b>
+            UPC Specifications
+        </b>
+    </div>
+
+    <table class="table-specifications">
+        <tr>
+            <td>Etiqueta UPC </td>
+            <td></td>
+            <td>Pull Date</td>
+            <td></td>
+            <td>Numero UPC</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Descripción UPC  </td>
+            <td colspan="3"></td>
+            <td>Precio UPC </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Comentarios UPC </td>
+            <td colspan="5"></td>
+        </tr>
+    </table>
+
+    <table class="qty-table">
+        <tr>
+            <td class="td-1">
+                HardGoods X Box
+            </td>
+            <td class="td-2">
+                Qty.
+            </td>
+            <td class="td-3">
+                Image
+            </td>
+        </tr>
+    </table>
+
+    <div class="title-assembly">
+        <b>PRODUCT RECIPE</b>
+    </div>
+    @if (Model.item.ProductPackingSpecs != null)
+    {
+        @foreach (var item in Model.item.ProductPackingSpecs)
+        {
+            <table>
+
+                <tr>
+                    <td colspan="7">
+                        @(
+                            item.ModelRecipe != null ? item.ModelRecipe.Name : ""
+                            )
+                    </td>
+                </tr>
+                <tr><td colspan="7">Assembly Type Bunch = </td></tr>
+                <tr>
+                    <td colspan="5">Flower Recipe</td>
+                    <td>UPC</td>
+                    <td>
+                        Product Image
+                    </td>
+                </tr>
+                <tr>
+                    <td>Flower</td>
+                    <td>Category</td>
+                    <td>Color</td>
+                    <td>Length</td>
+                    <td>Stems</td>
+                    <td rowspan="6"></td>
+                    <td rowspan="6"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        Total Stems
+                    </td>
+                </tr>
+
+            </table>
+        }
+    }
+
+    <table class="relate-img">
+        <tr class="tr-1">
+            <td>
+                Related Images
+            </td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+        </tr>
+    </table>
+}
+
+

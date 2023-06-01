@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33627.172
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SunttelTradePointB.Shared", "..\..\TRABAJO 2023\prueba\SunttelTradePointV2.1\SunttelTradePointB\Shared\SunttelTradePointB.Shared.csproj", "{2CB9650B-337C-428B-8890-A99095618C68}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SunttelTPointReporPdf", "ReporPdf\SunttelTPointReporPdf.csproj", "{179CB1B4-3A4E-4BF9-9450-D0555FE93BA3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2CB9650B-337C-428B-8890-A99095618C68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CB9650B-337C-428B-8890-A99095618C68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CB9650B-337C-428B-8890-A99095618C68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CB9650B-337C-428B-8890-A99095618C68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{179CB1B4-3A4E-4BF9-9450-D0555FE93BA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{179CB1B4-3A4E-4BF9-9450-D0555FE93BA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{179CB1B4-3A4E-4BF9-9450-D0555FE93BA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{179CB1B4-3A4E-4BF9-9450-D0555FE93BA3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4C093D1D-7528-4706-8A2F-A98DA4F1B492}
+	EndGlobalSection
+EndGlobal

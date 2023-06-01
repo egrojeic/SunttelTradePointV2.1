@@ -58,7 +58,6 @@
         </InputTextSelector3>
     </div>
 
-
     <RangeDatesInput @bind-StartDate="@startingDate"
                      @bind-EndDate="endDate"
                      StartDateName="From"
@@ -187,7 +186,7 @@
         isLoading = true;
         if (vendor != null || true)
         {
-            CreditDocumentList = await CreditDocumentServices.GetCreditDocumentList(startingDate, endDate, (filter != null ? filter : "all"), 1, 10);
+            CreditDocumentList = await CreditDocumentServices.GetCreditDocumentList(startingDate, endDate, isASale, (filter != null ? filter : "all"), 10);
         }
         isLoading = false;
         StateHasChanged();
@@ -207,7 +206,7 @@
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
         <RadzenMenuItem Text="Delete" Value=args.Data Icon="delete"></RadzenMenuItem>
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
 
@@ -266,14 +265,18 @@
             var statusList = CreditDocumentList.GroupBy(s => s.CreditDocumentStatus).ToList();
             var CreditValueTotal = CreditDocumentList.Sum(s => s.CreditValue);
             result = GetName("CreditValue", new CreditDocument()) + " : " + CreditValueTotal + "   ,";
-            foreach (var item in statusList)
+            try
             {
-                if (!result.ToLower().Contains(item.FirstOrDefault().CreditDocumentStatus.Name.ToLower()))
+                foreach (var item in statusList)
                 {
-                    int counStatus = CreditDocumentList.Where(s => s.CreditDocumentStatus.Id == item.FirstOrDefault().CreditDocumentStatus.Id).Count();
-                    result += item.FirstOrDefault().CreditDocumentStatus.Name + " : " + counStatus + "  ,  ";
-                };
+                    if (!result.ToLower().Contains(item.FirstOrDefault().CreditDocumentStatus.Name.ToLower()))
+                    {
+                        int counStatus = CreditDocumentList.Where(s => s.CreditDocumentStatus.Id == item.FirstOrDefault().CreditDocumentStatus.Id).Count();
+                        result += item.FirstOrDefault().CreditDocumentStatus.Name + " : " + counStatus + "  ,  ";
+                    };
+                }
             }
+            catch { }
         }
 
         return result; //value.ToString("N2", format);

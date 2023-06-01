@@ -1,9 +1,9 @@
 @page "/SalesPaymentsItem/{page}"
-@page "/SalesPaymentsItem/{page}/{PaymentItemId}"
-@page "/SalesPaymentsItem/{page}/{PaymentItemId}/{filter}"
+@page "/SalesPaymentsItem/{page}/{paymentItemId}"
+@page "/SalesPaymentsItem/{page}/{paymentItemId}/{filter}"
 @page "/PurchasesPaymentsItem/{page}"
-@page "/PurchasesPaymentsItem/{page}/{PaymentItemId}"
-@page "/PurchasesPaymentsItem/{page}/{PaymentItemId}/{filter}"
+@page "/PurchasesPaymentsItem/{page}/{paymentItemId}"
+@page "/PurchasesPaymentsItem/{page}/{paymentItemId}/{filter}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
@@ -62,6 +62,10 @@
                 <DropDownMenuItem Separator="true"></DropDownMenuItem>
                 <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
                 <DropDownMenuItem Text="Save as..." IconCss="e-icons e-save-as"></DropDownMenuItem>
+                @if (paymentItemId != null)
+                {
+                    <DropDownMenuItem Text="Print" IconCss="e-menu-icon e-menu-icon fa-solid fa-print"></DropDownMenuItem>
+                }
                 <DropDownMenuItem Separator="true"></DropDownMenuItem>
                 <DropDownMenuItem Text="Inactivate..." IconCss="fa-solid fa-eject" style="color: red;"></DropDownMenuItem>
             </DropDownMenuItems>
@@ -350,7 +354,7 @@
     [Parameter]
     public string paymentItemId { get; set; }
     [Parameter]
-    public string  page { get; set; }
+    public string page { get; set; }
     [Parameter]
     public string filter { get; set; }
     public Payment payment { get; set; }
@@ -370,7 +374,7 @@
     public List<AppliedPayment> appliedPaymentList { get; set; }
     public List<Concept> PayerList { get; set; }
     public List<Concept> ReceiverList { get; set; }
-
+    public string hostPrint { get; set; } = "https://localhost:7166/";
     #endregion List
 
     string namePage = "";
@@ -416,10 +420,11 @@
     public async void ItemSelected(MenuEventArgs e)
     {
         string msg = Validate();
+        string tile = e.Item != null ? e.Item.Text : "";
         if (msg == "")
         {
             StateHasChanged();
-            string tile = e.Item != null ? e.Item.Text : "";
+
             if (tile == "Save")
             {
                 Load();
@@ -440,6 +445,16 @@
         else
         {
             alert("Saved", 1);
+        }
+
+
+        if (tile == "Print")
+        {
+            string name = "PurchasesPayment";
+            if (isASale) name = "Payment";
+            string skinImage = "";//payment.ReturnInfo. != null && PaymentServices.Buyer.SkinImageName != null ? PaymentServices.Buyer.SkinImageName : "";
+            Js.InvokeAsync<object>("open", $"{hostPrint}PaymentReport/{name}?paymentItemId={paymentItemId}&skinImage={skinImage}", "_blank");
+
         }
 
         StateHasChanged();
@@ -512,7 +527,7 @@
     @<RadzenMenu Click="OnMenuItemClickAppliedPayment">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
-      );
+          );
 
     void OnMenuItemClickAppliedPayment(MenuItemEventArgs args)
     {

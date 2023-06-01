@@ -1,0 +1,258 @@
+﻿@model SunttelTPointReporPdf.Model.SaleModel
+@{
+    ViewData["Title"] = "Purchases";
+}
+
+@if (Model!=null)
+{
+    
+<table id="table-sales-img" border="0">
+    <tr>
+    <td class="td-1">
+       <img src="@ViewBag.SquadsImages" />
+    </td>
+    <td class="td-2" ><h3><b>Invoice</b></h3></td>
+    <td class="td-3" ><h3><b>@Model.Invoice</b></h3></td>
+    <td class="td-4" ><h3><b>Date</b></h3></td>
+    <td class="td-5" ><h3><b>@Model.Date</b></h3></td>
+    </tr>
+</table>
+
+<table class="table-qb"  border="0">
+    <tr>
+        <td class="td-1"> <b>@Model.SquadName</b> </td>
+        <td></td>
+    </tr>
+     <tr>
+        <td>@Model.SquadAddress</td>
+        <td rowspan="2" align="center"></td>
+    </tr>
+     <tr>
+        <td>
+        @(Model.SquadTollFree!="" && Model.SquadTollFree!=null ?$"TOLL FREE:{Model.SquadTollFree}":"" )
+        @(Model.SquadPhone!="" && Model.SquadTollFree!=null ?$"PHONE:{Model.SquadTollFree}":"" )
+        </td>       
+    </tr>
+</table>
+
+<table class="table-bill-ship" border="0">
+    <tr class="tr-1">
+        <td class="td-1">
+            <b>BILL to:</b>
+        </td>
+         <td class="td-2">
+            <b>SHIP to:</b>
+        </td>
+    </tr>
+      <tr >
+        <td class="tr-1">
+         @(Model.BillName!=null ? Model.BillName:"")
+        </td>
+         <td class="tr-2">
+            @(Model.ShipName!=null ? Model.ShipName:"")
+        </td>
+    </tr>
+       <tr >
+        <td class="tr-1">
+            @(Model.BillAddressAndPhone!=null ? Model.BillAddressAndPhone:"")
+        </td>
+         <td class="tr-2">
+        @(Model.ShipAddressAndPhone!=null ? Model.ShipAddressAndPhone:"")
+        </td>
+    </tr>
+  
+       <tr >
+        <td class="tr-1">
+         @(Model.BillCity!=null ? Model.BillCity:"")
+        </td>
+         <td class="tr-2">
+           @(Model.ShipCity!=null ? Model.ShipCity:"")
+        </td>
+    </tr>
+</table>
+
+
+<table class="table-sale-1" border="0">
+    <tbody>
+        <tr class="tr-1">
+            <td class="td-1">
+                Customer #  
+            </td>
+            <td class="td-2">
+                @(Model.BillCity!=null ? Model.CustomerNumber:"")
+            </td>          
+            <td  class="td-3" >
+                Salesman
+            </td>
+            <td  class="td-4" >
+                 @(Model.SalesMan!=null ? Model.SalesMan:"")
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Customer P.O
+            </td>
+            <td>
+                 @(Model.CustomerPO!=null ? Model.CustomerPO:"")
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="table-sale-2">
+    <tr class="tr-1">
+        <td class="td-1">
+            Salesrep
+        </td>
+        <td class="td-2">
+            Shipped by
+        </td>
+        <td class="td-3">
+            Airwaybill
+        </td>
+        <td class="td-4">
+            FOB
+        </td>
+        <td class="td-5">
+            Payment Term
+        </td>
+    </tr>
+    <tr>
+        <td>
+            EVAN KERKHOVEN
+        </td>
+        <td>
+            South Florida Transit
+        </td>
+        <td></td>
+        <td></td>
+        <td>
+            COD
+        </td>
+    </tr>
+</table>
+
+<table class="table-sale-3">
+    <tr class="tr-1">
+        <td class="td-1">
+            Farm/Sku
+        </td>
+        <td class="td-2" >
+            Item # / Flower
+        </td>
+        <td class="td-3">
+            Category
+        </td>
+        <td class="td-4" >
+            Grade
+        </td>
+        <td class="td-5">
+            Pack
+        </td>
+        <td>
+            Color
+        </td class="td-6">
+        <td>
+            Qty
+        </td>
+        <td class="td-7">
+            Price
+        </td>
+        <td class="td-8">
+            Ext. Price
+        </td>
+    </tr>
+    @if (@Model.SalesItems != null)
+    {
+        @foreach (var detail in @Model.SalesItems)
+        {
+     
+        <tr>
+        <td>@(detail.Provider!=null && detail.Provider.Name !=null ? detail.Provider.Name:"")</td>
+        <td>@(detail.TransactionalItem!=null && detail.TransactionalItem.Name!=null ? detail.TransactionalItem.Name:"")</td>
+        <td></td>
+        <td></td>
+        <td>@(detail.TransactionalItemSpecs!=null ? detail.TransactionalItemSpecs.PackLayersToSale:"")</td>
+        <td></td>
+        <td align="right" >@detail.Qty.ToString("N2")</td>
+        <td align="right" >@detail.UnitPrice.ToString("N2")</td>
+        <td align="right" >@detail.Total.ToString("N2")</td>
+    </tr>
+           
+        }
+    }
+    
+   
+</table>
+
+<table  class="table-sale-4">
+     <tr class="tr-3">
+        <td valign="top" class="general-td-1">
+            <table class="table-sale-5">
+                <tr>
+                    <td class="td-1">
+                        <b>TotalCubes= </b>
+                    </td>
+                    <td class="td-2" > 
+                       <b> Total FBE =</b>
+                    </td>
+                    <td class="td-3">
+                        0.00                       
+                    </td>
+                </tr>
+                 <tr>
+                    <td  class="td-1" >
+                        QB : 
+                    </td>
+                    <td  class="td-2"> 
+                        <b>TOTAL  =</b>
+                    </td>
+                    <td class="td-3">
+                        0.00                       
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td >
+            <table class="table-sale-6">
+                <tr >
+                    <td class="td-1">SUB - TOTAL: </td>
+                     <td class="td-1-1" align="right"><b>@Model.SubTotal.ToString("N2")</b></td>
+                </tr>
+                <tr  >
+                    <td class="td-2" >Fuel-surcharge : </td>
+                     <td class="td-2" align="right"><b>0</b></td>
+                </tr>
+                <tr >
+                    <td class="td-3">Farm Duty: </td>
+                     <td class="td-3" align="right"><b>0</b></td>
+                </tr>
+                <tr >
+                    <td class="td-4">Sales Tax: </td>
+                    <td class="td-4" align="right"><b>@Model.SaleTax.ToString("N2")</b></td>
+                </tr>
+                <tr >
+                    <td class="td-5">Total Invoice : $ </td>
+                     <td class="td-5" align="right"><b>@Model.TotalInvoice.ToString("N2")</b></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<br />
+<p>
+    TERMS.- A service charge of 1.5% per month (18% per annum, or maximum allowed by law) will be charged to all past due accounts.
+CREDITS.´All quality problems must be reported by phone within 24 hours of receipt of flowers. No adjustments will be made without timely telephone notice followed by written
+request with designated control number and box identification number. Please examine your flowers carefully upon receipt. We are not responsible for carrier related problems.
+COLLECTIONS.´In the event it shall become necessary to collect the herein above described sum or any part thereof the purchaser agrees to pay the costs therefore including
+reasonable attorney¶s fees. All legal action or disputes shall be governed by Florida law and venue shall be exclusively in Dade County, Florida.
+ACCEPTANCE OF THIS SHIPMENT CONSTITUTES AGREEMENT TO ALL OF THE ABOVE TERMS AND CONDITIONS OF SALE.
+
+</p>
+
+
+}
