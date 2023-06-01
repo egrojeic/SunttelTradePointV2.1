@@ -21,7 +21,6 @@ namespace SunttelTPointVendingSite.Repositories
             {
                 var userInfo = await GetCurrentUser();
 
-
                 if (userInfo.IsAuthenticated)
                 {
                     var claims = new[]

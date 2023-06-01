@@ -1,185 +1,22 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    @*   <div class="sidebar">
-    <NavMenu />
-    </div>*@
+        <div class="page h-100">
+            @*   <div class="sidebar">
+            <NavMenu />
+            </div>*@
 
-    <main>
-        <div class="top-row px-4">
-            <a href="/">
-                <img src="/Images/Logo.png" width="60" />
-            </a>
-            <div class="d-inline-block btn-link">
-                <i class="oi oi-map-marker me-1"></i>
-                <span>Colombia</span>
-            </div>
-            <AuthLinks />
+            <main>
+                <AuthLinks />
+                <article>
+                    <div class="myBody">
+                        @Body
+                    </div>
+                </article>
+            </main>
         </div>
-        <div class="top-row px-4">
-            <img src="/Images/Logo.png" width="60" class="" />
-            <div class="d-inline-block btn-link">
-                <i class="oi oi-map-marker me-1"></i>
-                <span>Colombia</span>
-            </div>
-
-
-            @*<div class="input-group ubi">
-            <input type="text" class="form-control" placeholder="What are you looking for?" aria-label="Recipient's username" aria-describedby="button-addon2">
-            <button class="btn btn-outline-secondary" type="button" id="button-addon2">Search</button>
-            </div>
-            *@
-
-            <div class="input-group">
-                <span class="input-group-text" id="basic-addon1">
-                    <i class="oi oi-magnifying-glass"></i>
-                </span>
-                <input type="text" class="form-control" placeholder="What are you looking for?" aria-label="Username" aria-describedby="basic-addon1">
-                <button class="btn btn-outline-secondary" type="button" id="button-addon2">Search</button>
-            </div>
-
-            <a href="/ShowCart" type="button" class="btn btn-primary mx-4">
-                <i class="oi oi-cart" />
-            </a>
-
-            <div class="d-flex mx-4 options">
-                <i class="mx-3 oi oi-heart">
-                    @* <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
-                    <span class="visually-hidden">New alerts</span>
-                    </span>*@
-                </i>
-                <i class="mx-3 oi oi-bell" @onclick="ToggleNotificationsMenu">
-                    <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
-                        <span class="visually-hidden">New alerts</span>
-                    </span>
-                </i>
-                <i class="mx-3 oi oi-comment-square">
-                    @*<span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
-                    <span class="visually-hidden">New alerts</span>
-                    </span>*@
-                </i>
-            </div>
-
-            <div class="user ms-4" @onclick="ToggleUserMenu">
-                <img src="/Images/tattoo.jpg" width="40" height="40" style="border-radius:50%" class="me-1" />
-                @if (UserArrow)
-                {
-                    <i class="oi oi-chevron-top"></i>
-                }
-                else
-                {
-                    <i class="oi oi-chevron-bottom"></i>
-                }
-            </div>
-        </div>
-
-        @if (showNotificationsMenu)
-        {
-            <div class="noti">
-                <div class="list-group">
-                    <a href="#" class="list-group-item list-group-item-action" aria-current="true">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">List group item heading</h5>
-                            <small>3 days ago</small>
-                        </div>
-                        <p class="mb-1">Some placeholder content in a paragraph.</p>
-                        <small>And some small print.</small>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">List group item heading</h5>
-                            <small class="text-muted">3 days ago</small>
-                        </div>
-                        <p class="mb-1">Some placeholder content in a paragraph.</p>
-                        <small class="text-muted">And some muted small print.</small>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">List group item heading</h5>
-                            <small class="text-muted">3 days ago</small>
-                        </div>
-                        <p class="mb-1">Some placeholder content in a paragraph.</p>
-                        <small class="text-muted">And some muted small print.</small>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">List group item heading</h5>
-                            <small class="text-muted">3 days ago</small>
-                        </div>
-                        <p class="mb-1">Some placeholder content in a paragraph.</p>
-                        <small class="text-muted">And some muted small print.</small>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">List group item heading</h5>
-                            <small class="text-muted">3 days ago</small>
-                        </div>
-                        <p class="mb-1">Some placeholder content in a paragraph.</p>
-                        <small class="text-muted">And some muted small print.</small>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">List group item heading</h5>
-                            <small class="text-muted">3 days ago</small>
-                        </div>
-                        <p class="mb-1">Some placeholder content in a paragraph.</p>
-                        <small class="text-muted">And some muted small print.</small>
-                    </a>
-                </div>
-            </div>
-        }
-
-        @if (showUserMenu)
-        {
-            <div class="noti">
-                <!-- Contenido del menú -->
-                <ul class="list-group">
-                    <a class="list-group-item" href="/EditUser" id="itemLink" @onclick="ToggleUserMenu">
-                        Profile
-                    </a>
-                    <li class="list-group-item">Log out </li>
-                </ul>
-            </div>
-        }
-
-        <div class="top-row2 px-4">
-            <span class="btn btn-light"> Categories </span>
-            <span class="btn btn-light"> Offers </span>
-            <span class="btn btn-light"> Record </span>
-            <span class="btn btn-light"> Supermarket </span>
-            <span class="btn btn-light"> Fashion </span>
-            <span class="btn btn-light"> Sell </span>
-            <span class="btn btn-light">Help </span>
-        </div>
-
-        <article>
-            <div class="myBody">
-                @Body
-            </div>
-        </article>
-    </main>
-</div>
-
-
 
 @code {
-    bool showNotificationsMenu = false;
-    bool showUserMenu = false;
-    bool UserArrow = false;
-
-    void ToggleNotificationsMenu()
-    {
-        showUserMenu = false;
-        UserArrow = false;
-        showNotificationsMenu = !showNotificationsMenu;
-    }
-
-    void ToggleUserMenu()
-    {
-        showNotificationsMenu = false;
-        showUserMenu = !showUserMenu;
-        UserArrow = !UserArrow;
-    }
+    
 
 
 }

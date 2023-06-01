@@ -1,30 +1,160 @@
-﻿@*<AuthorizeView>
-    <Authorized>
-        Hola, <a href="EditUser" class="nav-link btn btn-link">@context.User.Identity!.Name</a>
+﻿@using System.Security.Claims;
+@inject CustomStateProvider authStateProvider
+@inject NavigationManager navigationManager
 
-         @if (!string.IsNullOrEmpty(photoUser))
+<div class="top-row px-4">
+    <a href="/">
+        <img src="/Images/Logo.png" width="60" />
+    </a>
+    <div class="d-inline-block btn-link text-white" @onclick="Change">
+        <i class="oi oi-map-marker me-1"></i>
+        <span>Colombia</span>
+    </div>
+    <div class="input-group">
+        <span class="input-group-text" id="basic-addon1">
+            <i class="oi oi-magnifying-glass"></i>
+        </span>
+        <input type="text" class="form-control" placeholder="What are you looking for?" aria-label="Recipient's username" aria-describedby="button-addon2">
+        <button class="btn btn-secondary" type="button" id="button-addon2">Search</button>
+    </div>
+
+    @if (showMenu)
+    {
+        <a href="/ShowCart" type="button" class="btn btn-primary mx-4">
+            <i class="oi oi-cart" />
+        </a>
+
+        <div class="d-flex mx-4 options text-white">
+            <i class="mx-3 oi oi-heart">
+
+            </i>
+            <i class="mx-3 oi oi-bell" @onclick="ToggleNotificationsMenu">
+                <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
+                    <span class="visually-hidden">New alerts</span>
+                </span>
+            </i>
+            <i class="mx-3 oi oi-comment-square">
+            </i>
+        </div>
+
+        <div class="user ms-4" @onclick="ToggleUserMenu">
+            <img src="/Images/tattoo.jpg" width="40" height="40" style="border-radius:50%" class="me-1" />
+            @if (UserArrow)
             {
-                <div class="mx-2">
-                    <img src="@photoUser" width="50" height="50" style="border-radius:50%" />
-                </div>
-
+                <i class="oi oi-chevron-top text-white"></i>
             }
-        <a href="Logout" class="nav-link btn btn-link">Cerrar Sesión</a>
-    </Authorized>
-    <NotAuthorized>
-    </NotAuthorized>
-</AuthorizeView>*@
+            else
+            {
+                <i class="oi oi-chevron-bottom text-white"></i>
+            }
+        </div>
+    }
+    else
+    {
 
-<div class="input-group ubi">
-    <input type="text" class="form-control" placeholder="What are you looking for?" aria-label="Recipient's username" aria-describedby="button-addon2">
-    <button class="btn btn-outline-secondary" type="button" id="button-addon2">Search</button>
+        <a href="Register" class="btn btn-primary" style="text-decoration: none;">Register</a>
+        <a href="Login" class="btn btn-primary" style="text-decoration: none;">Sign In</a>
+    }
 </div>
 
-<a href="Register" class="btn btn-primary" style="text-decoration: none;">Register</a>
-<a href="Login" class="btn btn-primary" style="text-decoration: none;">Sign In</a>
+@if (showNotificationsMenu)
+{
+    <div class="noti">
+        <div class="list-group">
+            <a href="#" class="list-group-item list-group-item-action" aria-current="true">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">List group item heading</h5>
+                    <small>3 days ago</small>
+                </div>
+                <p class="mb-1">Some placeholder content in a paragraph.</p>
+                <small>And some small print.</small>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">List group item heading</h5>
+                    <small class="text-muted">3 days ago</small>
+                </div>
+                <p class="mb-1">Some placeholder content in a paragraph.</p>
+                <small class="text-muted">And some muted small print.</small>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">List group item heading</h5>
+                    <small class="text-muted">3 days ago</small>
+                </div>
+                <p class="mb-1">Some placeholder content in a paragraph.</p>
+                <small class="text-muted">And some muted small print.</small>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">List group item heading</h5>
+                    <small class="text-muted">3 days ago</small>
+                </div>
+                <p class="mb-1">Some placeholder content in a paragraph.</p>
+                <small class="text-muted">And some muted small print.</small>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">List group item heading</h5>
+                    <small class="text-muted">3 days ago</small>
+                </div>
+                <p class="mb-1">Some placeholder content in a paragraph.</p>
+                <small class="text-muted">And some muted small print.</small>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">List group item heading</h5>
+                    <small class="text-muted">3 days ago</small>
+                </div>
+                <p class="mb-1">Some placeholder content in a paragraph.</p>
+                <small class="text-muted">And some muted small print.</small>
+            </a>
+        </div>
+    </div>
+}
+
+@if (showUserMenu)
+{
+    <div class="noti">
+        <!-- Contenido del menú -->
+        <ul class="list-group">
+            <a class="list-group-item" href="/EditUser" id="itemLink" @onclick="ToggleUserMenu">
+                Profile
+            </a>
+            <li class="list-group-item">Log out </li>
+        </ul>
+    </div>
+}
+
+<div class="top-row2 px-4">
+    <span class="btn btn-light"> Categories </span>
+    <span class="btn btn-light"> Offers </span>
+    <span class="btn btn-light"> Record </span>
+    <span class="btn btn-light"> Supermarket </span>
+    <span class="btn btn-light"> Fashion </span>
+    <span class="btn btn-light"> Sell </span>
+    <span class="btn btn-light">Help </span>
+</div>
 
 @code {
     private string? photoUser;
+    bool showNotificationsMenu = false;
+    bool showUserMenu = false;
+    bool UserArrow = false;
+
+    void ToggleNotificationsMenu()
+    {
+        showUserMenu = false;
+        UserArrow = false;
+        showNotificationsMenu = !showNotificationsMenu;
+    }
+
+    void ToggleUserMenu()
+    {
+        showNotificationsMenu = false;
+        showUserMenu = !showUserMenu;
+        UserArrow = !UserArrow;
+    }
 
     //protected async override Task OnParametersSetAsync()
     //{
@@ -36,4 +166,38 @@
     //        photoUser = photoClaim.Value;
     //    }
     //}
+
+    [CascadingParameter]
+    Task<AuthenticationState> AuthenticationState { get; set; }
+    private bool showMenu = false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var authState = await authStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (!(await AuthenticationState).User.Identity.IsAuthenticated)
+        {
+
+            //navigationManager.NavigateTo("/login");
+        }
+        else
+        {
+
+            if (UIClientGlobalVariables.UserId == null || UIClientGlobalVariables.UserId == "")
+            {
+                UIClientGlobalVariables.UserName = user.Identity.Name;
+                UIClientGlobalVariables.UserId = user.FindFirst(ClaimTypes.NameIdentifier).Value;
+            }
+
+        }
+
+    }
+
+    private void Change()
+    {
+        showMenu = !showMenu;
+    }
+
+
 }
