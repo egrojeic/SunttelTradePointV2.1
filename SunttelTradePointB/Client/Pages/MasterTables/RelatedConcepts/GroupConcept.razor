@@ -101,12 +101,12 @@
                 </svg>
                 @*<img class="img-style" src="/images/save-2.png" @onclick='()=>AddItem("Groups")' />*@
             </div>
-            @if (childrenGroups == null) childrenGroups = new();
+           
 
-
-            @if (conceptGroup == null) conceptGroup = new();
-            <RadzenDataGrid AllowFiltering="true"
-                            AllowColumnResize="true"
+            @if (conceptGroup.ChildrenGroups != null && conceptGroup.ChildrenGroups.Count>0)
+            {
+                <RadzenDataGrid AllowFiltering="true"
+                AllowColumnResize="true"
                             AllowAlternatingRows="true"
                             FilterMode="FilterMode.Advanced"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
@@ -114,7 +114,7 @@
                             AllowPaging="true"
                             PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                             ShowPagingSummary="true"
-                            Data="@childrenGroups"
+                                Data="@conceptGroup.ChildrenGroups"
                             TItem="ConceptGroup"
                             ColumnWidth="300px"
                             SelectionMode="DataGridSelectionMode.Single"
@@ -124,12 +124,12 @@
                             PageSize="50">
 
                 <Columns>
-                    <RadzenDataGridColumn TItem="ConceptGroup" Property="Name" Title="@GetName("TransactionalItemCharacteristic", new ConceptGroup())" Width="80px" />
-                    <RadzenDataGridColumn TItem="ConceptGroup" Property="Code" Title="@GetName("Value", new ConceptGroup())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                    <RadzenDataGridColumn TItem="ConceptGroup" Property="GroupClassificationCriteria" Title="@GetName("GroupClassificationCriteria", new ConceptGroup())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-
+                    <RadzenDataGridColumn TItem="ConceptGroup" Property="Name" Title="@GetName("Name", new ConceptGroup())" Width="80px" />
+                    <RadzenDataGridColumn TItem="ConceptGroup" Property="Code" Title="@GetName("Code", new ConceptGroup())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                   
                 </Columns>
             </RadzenDataGrid>
+            }
 
            
 
@@ -144,7 +144,7 @@
     [Parameter]
     public string filterItems { get; set; } = "";
     public ConceptGroup conceptGroup = new();
-    public List<ConceptGroup> childrenGroups = new();
+    //public List<ConceptGroup> childrenGroups = new();
     public ConceptGroup childrenGroup = new();
     public bool dataGridView = true;
 
@@ -165,7 +165,7 @@
 
             conceptGroup = await transactionalService.GetGroupsById(conceptGroupId);
 
-            if(conceptGroup!=null) childrenGroups = conceptGroup.ChildrenGroups;
+           // if(conceptGroup!=null) childrenGroups = conceptGroup.ChildrenGroups;
             StateHasChanged();
         }
 
@@ -188,26 +188,25 @@
     {
         if (childrenGroup.Name != null)
         {
-            if (childrenGroup.GroupClassificationCriteria != null)
-            {
-                if (conceptGroup.ChildrenGroups == null) conceptGroup.ChildrenGroups = new();
-                conceptGroup.ChildrenGroups.Add(childrenGroup);
-                childrenGroup = new();
-                Msg("Added");
-            }
+
+            if (conceptGroup.ChildrenGroups == null) conceptGroup.ChildrenGroups = new();
+            conceptGroup.ChildrenGroups.Add(childrenGroup);
+            childrenGroup = new();
+            Msg("Added");
+
 
         }
-        
+        StateHasChanged();
     }
 
     public void DeleteChildrenGroups(string value)
     {
-        if (childrenGroups != null)
+        if (conceptGroup.ChildrenGroups != null)
         {
-            var remove = childrenGroups.Where(r => r.Name.Trim() == value.Trim()).FirstOrDefault();
+            var remove = conceptGroup.ChildrenGroups.Where(r => r.Name.Trim() == value.Trim()).FirstOrDefault();
             if (remove != null)
             {
-                childrenGroups.Remove(remove);
+                conceptGroup.ChildrenGroups.Remove(remove);
                 Msg("Deleted");
             }
 
@@ -269,7 +268,7 @@
             if (resul)
             {
                 conceptGroup = new();
-                childrenGroups = new();               
+                conceptGroup.ChildrenGroups = new();
             }
             Msg(resul);
 

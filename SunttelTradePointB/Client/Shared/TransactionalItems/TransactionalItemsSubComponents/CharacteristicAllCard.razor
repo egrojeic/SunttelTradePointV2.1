@@ -56,7 +56,7 @@
                 </div>
                 <div>  <label class="info-text-size"> @GetName("Value", new TransactionalItemCharacteristicPair()) </label></div>
                 <div>
-                    <select @bind="characteristic.Value" class="form-control info-text-size">
+                    <select @bind="characteristic.Value" class="select-style">
                         @foreach (var item in GetPosibleValues(characteristic.TransactionalItemCharacteristic.Id))
                         {
                             <option value="@item.Name">@item.Name</option>

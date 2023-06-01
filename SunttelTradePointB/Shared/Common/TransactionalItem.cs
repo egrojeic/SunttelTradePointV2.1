@@ -251,6 +251,10 @@ namespace SunttelTradePointB.Shared.Common
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         public string Name { get; set; }
+        public override string ToString()
+        {
+            return Name;
+        }
 
         [DisplayName("Possible Values")]
         public List<TransactionalItemCharacteristic> PossibleValues { get; set; }

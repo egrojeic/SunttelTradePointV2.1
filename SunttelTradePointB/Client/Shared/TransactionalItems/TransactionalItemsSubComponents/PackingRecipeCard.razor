@@ -46,7 +46,7 @@
         @if (@pageView == "ListOfMaterials")
         {
             <PageTitleComponent Title="@GetName( "Material", new MaterialRecipeItem())" IconName="material.png"
-                            Description="@($"Here you can add {GetName( "Material", new MaterialRecipeItem()).ToLower()}")">
+                                Description="@($"Here you can add {GetName( "Material", new MaterialRecipeItem()).ToLower()}")">
             </PageTitleComponent>
             <div class="panelMenuContainer">
                 <div class="flex-horizontal-start">
@@ -66,17 +66,17 @@
                         </div>
 
                         <InputTextSelector3 TItem="Concept"
-                                        Id="Material"
-                                        caption="@(MaterialConcept != null ? MaterialConcept.Name : "")"
-                                        EventSearcherValueAndId="EventSearcherValueAndId"
-                                        EventIdSelectionAndId="SelectionMade"
-                                        EventClosed="ClosedInputText"
-                                        Items="MaterialsConcept">
+                                            Id="Material"
+                                            caption="@(MaterialConcept != null ? MaterialConcept.Name : "")"
+                                            EventSearcherValueAndId="EventSearcherValueAndId"
+                                            EventIdSelectionAndId="SelectionMade"
+                                            EventClosed="ClosedInputText"
+                                            Items="MaterialsConcept">
 
                         </InputTextSelector3>
                         <div><label class="info-text-size">@GetName( "Quantity",new MaterialRecipeItem())</label></div>
                         <div><input type="number" @bind="materialRecipeItem.Quantity" class="form-control border-color info-text-size" required /></div>
-                       
+
                         <div></div>
                         <div class="flex-horizontal-end">
                             <button type="button" @onclick='()=>OpenAdd("Material")' class="size-btn color-btn margin-left"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
@@ -92,7 +92,7 @@
         @if (@pageView == "Material")
         {
             <PageTitleComponent Title="@GetName( "Material", new MaterialRecipeItem())" IconName="material.png"
-                            Description="@($"Here you can create {GetName( "Material", new MaterialRecipeItem()).ToLower()}")">
+                                Description="@($"Here you can create {GetName( "Material", new MaterialRecipeItem()).ToLower()}")">
             </PageTitleComponent>
 
 
@@ -130,13 +130,13 @@
                                 <div class="conten-chip margin-left-control">
                                     <div class="position-input">
                                         <InputTextSelector3 TItem="TransactItemImage"
-                                                        Id="SkinImageName"
-                                                        EventSearcherValueAndId="EventSearcherValueAndId"
-                                                        EventIdSelectionAndId="SelectionMade"
-                                                        EventClosed="ClosedInputText"
-                                                        Items="transactItemImages"
-                                                        captionOff="true"
-                                                        Visible="imgVisible">
+                                                            Id="SkinImageName"
+                                                            EventSearcherValueAndId="EventSearcherValueAndId"
+                                                            EventIdSelectionAndId="SelectionMade"
+                                                            EventClosed="ClosedInputText"
+                                                            Items="transactItemImages"
+                                                            captionOff="true"
+                                                            Visible="imgVisible">
 
                                         </InputTextSelector3>
                                     </div>
@@ -174,7 +174,7 @@
         @if (@pageView == "AssemblyRecipeItems")
         {
             <PageTitleComponent Title="@GetName("AssemblyRecipeItems", new PackingSpecs())" IconName="assemblyRecipe.png"
-                            Description="@($"Here you can add {GetName("AssemblyRecipeItems", new PackingSpecs())}")">
+                                Description="@($"Here you can add {GetName("AssemblyRecipeItems", new PackingSpecs())}")">
             </PageTitleComponent>
 
             <div class="container-menu-g">
@@ -209,12 +209,12 @@
                 </div>
 
                 <InputTextSelector3 TItem="Concept"
-                                Id="ItemComponent"
-                                caption="@(itemComponent != null ? itemComponent.Name : "")"
-                                EventSearcherValueAndId="EventSearcherValueAndId"
-                                EventIdSelectionAndId="SelectionMade"
-                                EventClosed="ClosedInputText"
-                                Items="itemComponents">
+                                    Id="ItemComponent"
+                                    caption="@(itemComponent != null ? itemComponent.Name : "")"
+                                    EventSearcherValueAndId="EventSearcherValueAndId"
+                                    EventIdSelectionAndId="SelectionMade"
+                                    EventClosed="ClosedInputText"
+                                    Items="itemComponents">
 
                 </InputTextSelector3>
                 <div>
@@ -224,12 +224,12 @@
                 </div>
 
                 <InputTextSelector3 TItem="ProductRecipeQualityModifier"
-                                Id="RecipeQualityModifier"
-                                caption="@(recipeQualityModifier != null ? recipeQualityModifier.Name : "")"
-                                EventSearcherValueAndId="EventSearcherValueAndId"
-                                EventIdSelectionAndId="SelectionMade"
-                                EventClosed="ClosedInputText"
-                                Items="recipeQualityModifiers">
+                                    Id="RecipeQualityModifier"
+                                    caption="@(recipeQualityModifier != null ? recipeQualityModifier.Name : "")"
+                                    EventSearcherValueAndId="EventSearcherValueAndId"
+                                    EventIdSelectionAndId="SelectionMade"
+                                    EventClosed="ClosedInputText"
+                                    Items="recipeQualityModifiers">
 
                 </InputTextSelector3>
 
@@ -263,22 +263,22 @@
                                 @if (materialsRecipeItemsAssembly != null)
                                 {
                                     <RadzenDataGrid AllowFiltering="true"
-                                            AllowColumnResize="true"
-                                            AllowAlternatingRows="true"
-                                            FilterMode="FilterMode.Advanced"
-                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                            AllowSorting="true"
-                                            PageSize="50"
-                                            AllowPaging="true"
-                                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                                            ShowPagingSummary="true"
-                                            Data="@materialsRecipeItemsAssembly"
-                                            TItem="MaterialRecipeItem"
-                                            ColumnWidth="300px"
-                                            SelectionMode="DataGridSelectionMode.Single"
-                                            LogicalFilterOperator="LogicalFilterOperator.Or"
-                                            CellContextMenu="@ShowContextMenuWithContent"
-                                            PageNumbersCount="100">
+                                                    AllowColumnResize="true"
+                                                    AllowAlternatingRows="true"
+                                                    FilterMode="FilterMode.Advanced"
+                                                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                                    AllowSorting="true"
+                                                    PageSize="50"
+                                                    AllowPaging="true"
+                                                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                                    ShowPagingSummary="true"
+                                                    Data="@materialsRecipeItemsAssembly"
+                                                    TItem="MaterialRecipeItem"
+                                                    ColumnWidth="300px"
+                                                    SelectionMode="DataGridSelectionMode.Single"
+                                                    LogicalFilterOperator="LogicalFilterOperator.Or"
+                                                    CellContextMenu="@ShowContextMenuWithContent"
+                                                    PageNumbersCount="100">
 
                                         <Columns>
                                             <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="Name" Title="@GetName( "Name", new AtomConcept())" Frozen="false" Width="80px" />
@@ -360,7 +360,7 @@
         @if (@pageView == "ListOfMaterialsAssembly")
         {
             <PageTitleComponent Title="@GetName( "MaterialRecipeItem", new PackRecipeItem())" IconName="material.png"
-                            Description="@($"Here you can add {GetName( "MaterialRecipeItem", new PackRecipeItem()).ToLower()}")">
+                                Description="@($"Here you can add {GetName( "MaterialRecipeItem", new PackRecipeItem()).ToLower()}")">
             </PageTitleComponent>
 
             <div class="flex-horizontal-center">
@@ -369,12 +369,12 @@
                     <div>
 
                         <InputTextSelector3 TItem="Concept"
-                                        Id="ListOfMaterials"
-                                        caption="@(conceptMaterialAssembly != null ? conceptMaterialAssembly.Name : "")"
-                                        EventSearcherValueAndId="EventSearcherValueAndId"
-                                        EventIdSelectionAndId="SelectionMade"
-                                        EventClosed="ClosedInputText"
-                                        Items="ConceptMaterialsAssembly">
+                                            Id="ListOfMaterials"
+                                            caption="@(conceptMaterialAssembly != null ? conceptMaterialAssembly.Name : "")"
+                                            EventSearcherValueAndId="EventSearcherValueAndId"
+                                            EventIdSelectionAndId="SelectionMade"
+                                            EventClosed="ClosedInputText"
+                                            Items="ConceptMaterialsAssembly">
 
                         </InputTextSelector3>
 
@@ -399,7 +399,7 @@
         @if (@pageView == "ComponentItemRecipeAssembly")
         {
             <PageTitleComponent Title="@GetName( "ComponentItemRecipe", new PackRecipeItem())" IconName="assemblyRecipe.png"
-                            Description="@($"Here you can add {GetName( "ComponentItemRecipe", new MaterialRecipeItem())}")">
+                                Description="@($"Here you can add {GetName( "ComponentItemRecipe", new MaterialRecipeItem())}")">
             </PageTitleComponent>
 
             <div class="flex-horizontal-center">
@@ -705,21 +705,21 @@
                         @if (listOfMaterials != null)
                         {
                             <RadzenDataGrid @ref="GridlistOfMaterials" AllowFiltering="true"
-                                        AllowColumnResize="true"
-                                        AllowAlternatingRows="true"
-                                        FilterMode="FilterMode.Advanced"
-                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                        AllowSorting="true"
-                                        PageSize="50"
-                                        AllowPaging="true"
-                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                                        ShowPagingSummary="true"
-                                        Data="@listOfMaterials"
-                                        TItem="MaterialRecipeItem"
-                                        SelectionMode="DataGridSelectionMode.Single"
-                                        LogicalFilterOperator="LogicalFilterOperator.Or"
-                                        CellContextMenu="@ShowContextMenuWithContent"
-                                        PageNumbersCount="100">
+                                            AllowColumnResize="true"
+                                            AllowAlternatingRows="true"
+                                            FilterMode="FilterMode.Advanced"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                            AllowSorting="true"
+                                            PageSize="50"
+                                            AllowPaging="true"
+                                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                            ShowPagingSummary="true"
+                                            Data="@listOfMaterials"
+                                            TItem="MaterialRecipeItem"
+                                            SelectionMode="DataGridSelectionMode.Single"
+                                            LogicalFilterOperator="LogicalFilterOperator.Or"
+                                            CellContextMenu="@ShowContextMenuWithContent"
+                                            PageNumbersCount="100">
 
                                 <Columns>
                                     <RadzenDataGridColumn TItem="MaterialRecipeItem" Property="Material.Code" Title="@GetName("Code",new AtomConcept())" Frozen="false" Width="80px" />
@@ -765,21 +765,21 @@
                         @if (assemblyRecipeItems != null)
                         {
                             <RadzenDataGrid AllowFiltering="true"
-                                        AllowColumnResize="true"
-                                        AllowAlternatingRows="true"
-                                        FilterMode="FilterMode.Advanced"
-                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                        AllowSorting="true"
-                                        PageSize="50"
-                                        AllowPaging="true"
-                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                                        ShowPagingSummary="true"
-                                        Data="@assemblyRecipeItems"
-                                        TItem="PackRecipeItem"
-                                        SelectionMode="DataGridSelectionMode.Single"
-                                        LogicalFilterOperator="LogicalFilterOperator.Or"
-                                        CellContextMenu="@ShowContextMenuWithContent"
-                                        PageNumbersCount="100">
+                                            AllowColumnResize="true"
+                                            AllowAlternatingRows="true"
+                                            FilterMode="FilterMode.Advanced"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                            AllowSorting="true"
+                                            PageSize="50"
+                                            AllowPaging="true"
+                                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                            ShowPagingSummary="true"
+                                            Data="@assemblyRecipeItems"
+                                            TItem="PackRecipeItem"
+                                            SelectionMode="DataGridSelectionMode.Single"
+                                            LogicalFilterOperator="LogicalFilterOperator.Or"
+                                            CellContextMenu="@ShowContextMenuWithContent"
+                                            PageNumbersCount="100">
 
                                 <Columns>
                                     <RadzenDataGridColumn TItem="PackRecipeItem" Property="ItemComponent.Name" Title="@GetName( "ComponentItemRecipe",new PackRecipeItem())" Frozen="false" Width="80px" />
@@ -1026,7 +1026,7 @@
 
             var result = await transactionalService.SaveProductPackingSpec(transactionalItemId, _PackingSpecs);
 
-            if (result!=null)
+            if (result != null)
             {
                 _PackingSpecs = result;
                 Msg("Saved");
@@ -1189,35 +1189,38 @@
         if (arg.selectionId == "Customer")
         {
             ListConcept = await transactionalService.GetSelectorListEntityActors(arg.value, "MassMarket");
-
+            if (ListConcept != null) ListConcept = ListConcept.Take(100).ToList();
         }
         if (arg.selectionId == "Model")
         {
             if (SetModels == null) SetModels = new();
             SetModels = await transactionalService.GetSelectorListEntityProductModel(transactionalItemId);
             GetModelView = SetModels;
-            if (!arg.value.ToLower().Contains("all") && !arg.value.ToLower().Contains("todo")) GetModelView = SetModels.Where(s => s.Name.ToLower().Contains(arg.value.ToLower())).ToList();
+            if (!arg.value.ToLower().Contains("all") && !arg.value.ToLower().Contains("todo")) GetModelView = SetModels.Where(s => s.Name.ToLower().Contains(arg.value.ToLower())).ToList().Take(100).ToList();
 
         }
         if (arg.selectionId == "Season")
         {
             GetSeasonView = await transactionalService.GetSelectorListSeasonBusiness(arg.value);
-
+            if (GetSeasonView != null) GetSeasonView = GetSeasonView.Take(100).ToList();
         }
         if (arg.selectionId == "PackingBoxToSale")
         {
             GetBoxToSaleView = await transactionalService.GetSelectorListBoxes(arg.value);
+            if (GetBoxToSaleView != null) GetBoxToSaleView = GetBoxToSaleView.Take(100).ToList();
 
         }
         if (arg.selectionId == "PackingBoxToBuy")
         {
             if (SetBox == null) SetBox = new();
             GetBoxToBuyView = await transactionalService.GetBoxTable(arg.value);
+            if (GetBoxToBuyView != null) GetBoxToBuyView = GetBoxToBuyView.Take(100).ToList();
 
         }
         if (arg.selectionId == "UPCDateCodeBasedOn")
         {
             UPCDateCodeBasedOnsView = UPCDateCodeBasedOnsView.Where(s => s.Name.ToLower().Contains(arg.value.ToLower())).ToList();
+            if (UPCDateCodeBasedOnsView != null) UPCDateCodeBasedOnsView = UPCDateCodeBasedOnsView.Take(100).ToList();
 
         }
         if (arg.selectionId == "ItemAssemblyType")
@@ -1225,13 +1228,14 @@
             if (assemblyTypes == null) assemblyTypes = new();
 
             assemblyTypes = await transactionalService.GetSelectorListAssemblyTypes(arg.value);
+            if (assemblyTypes != null) assemblyTypes = assemblyTypes.Take(100).ToList();
 
         }
         if (arg.selectionId == "ListOfMaterials")
         {
             if (ConceptMaterialsAssembly == null) ConceptMaterialsAssembly = new();
             ConceptMaterialsAssembly = await transactionalService.GetSelectorListPackingMaterials(arg.value);
-
+            if (ConceptMaterialsAssembly != null) ConceptMaterialsAssembly = ConceptMaterialsAssembly.Take(100).ToList();
         }
 
         if (arg.selectionId == "RecipeQualityModifier")
@@ -1281,26 +1285,30 @@
         {
             if (totalPriceItemTypeBasedOns == null) totalPriceItemTypeBasedOns = new();
             totalPriceItemTypeBasedOns = await transactionalService.GetTransactionalItemTypes(arg.value);
+            if (totalPriceItemTypeBasedOns != null) totalPriceItemTypeBasedOns = totalPriceItemTypeBasedOns.Take(100).ToList();
 
         }
         if (arg.selectionId == "PalletLabelStyle")
         {
             palletLabelStylesView = await transactionalService.GetLabelStyles(arg.value);
+            if (palletLabelStylesView != null) palletLabelStylesView = palletLabelStylesView.Take(100).ToList();
 
         }
         if (arg.selectionId == "BoxLabelStyle")
         {
             BoxLabelStylesView = await transactionalService.GetLabelStyles(arg.value);
+            if (BoxLabelStylesView != null) BoxLabelStylesView = BoxLabelStylesView.Take(100).ToList();
 
         }
         if (arg.selectionId == "InnerProductLabelStyleByDeafult")
         {
             InnerProductLabelStyleByDeafultsView = await transactionalService.GetLabelStyles(arg.value);
-
+            if (InnerProductLabelStyleByDeafultsView != null) InnerProductLabelStyleByDeafultsView = InnerProductLabelStyleByDeafultsView.Take(100).ToList();
         }
         if (arg.selectionId == "Material")
         {
             MaterialsConcept = await transactionalService.GetSelectorListPackingMaterials(arg.value);
+            if (MaterialsConcept != null) MaterialsConcept = MaterialsConcept.Take(100).ToList();
 
         }
         if (arg.selectionId == "ItemComponent")
@@ -1329,7 +1337,7 @@
                         });
 
             }
-
+            if (itemComponents != null) itemComponents = itemComponents.Take(100).ToList();
         }
 
         StateHasChanged();
@@ -1606,7 +1614,7 @@
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
-    );
+        );
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {

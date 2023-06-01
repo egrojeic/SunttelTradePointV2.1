@@ -1039,19 +1039,18 @@
 
         if (tile == "Save")
         {
-
             transactionalItemType.TransactionalItemProcesses = transactionalItemProcessSteps;
             transactionalItemType.TransactionalItemTypeCharacteristics = transactionalItemTypeCharacteristics;
             transactionalItemType.QualityParameters = transactionalItemQualitys;
             transactionalItemType.Groups = childrenGroups;
             transactionalItemType.InRecipeModifiers = inRecipeModifiers;
 
-            var resul = await transactionalService.SaveTransactionalItemType(transactionalItemType);
+            var result = await transactionalService.SaveTransactionalItemType(transactionalItemType);
 
-            if (resul)
+            if (result!=null && result.Id!=null)
             {
                 requiereSave = false;
-                Msg(resul);
+                Msg(result!=null);
 
             }
             else

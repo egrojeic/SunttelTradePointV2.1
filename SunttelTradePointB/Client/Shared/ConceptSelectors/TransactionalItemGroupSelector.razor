@@ -31,6 +31,7 @@
                                     captionOff="true"
                                     EventSearcherValueAndId="EventSearcherValueAndId"
                                     EventIdSelectionAndId="SelectionMade"
+                                    EventClosed="EventClosed"
                                     Id="Group"
                                     Items="GroupsQuery">
 
@@ -50,6 +51,8 @@
     [Parameter]
     public EventCallback<List<ConceptGroup>> EventAddGroups { get; set; }
     [Parameter]
+    public EventCallback EventChanged { get; set; }
+    [Parameter]
     public List<ConceptGroup>? Groups { get; set; }
     public List<ConceptGroup>? GroupsQuery { get; set; }
     public List<ConceptGroup>? GroupsSearcher { get; set; }
@@ -57,7 +60,9 @@
     public string SearcherValueMode = "";
     public string GroupsDescription = "";
     public int ParamCountResul = 0;
-    public bool ViewSelect = false, PopupViewAddGroup = false;
+    public bool ViewSelect = false;
+    [Parameter]
+    public bool PopupViewAddGroup { get; set; } = false;
     InputTextSelector? ReferInputTextSelector;
     SfChip? referChip;
 
@@ -141,6 +146,7 @@
     public void EventClosed()
     {
         PopupViewAddGroup = false;
+        EventChanged.InvokeAsync(null);
         StateHasChanged();
     }
 

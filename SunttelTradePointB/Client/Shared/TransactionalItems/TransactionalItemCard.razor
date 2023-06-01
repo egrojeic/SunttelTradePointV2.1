@@ -129,7 +129,7 @@
             </div>
 
             <div class="lineFormGroup">
-                <TransactionalItemGroupSelector @ref="referGroup" Groups="@currentItem.Groups" EventAddGroups="AddGroup"></TransactionalItemGroupSelector>
+                <TransactionalItemGroupSelector PopupViewAddGroup="@PopupViewAddGroup" @ref="referGroup" Groups="@currentItem.Groups" EventAddGroups="AddGroup" EventChanged="OnParametersSet"></TransactionalItemGroupSelector>
             </div>
         </div>
         <div>
@@ -241,6 +241,7 @@
     public bool AlertOpen = false;
     bool modeStatus = false;
     bool requiereSave = false;
+    bool PopupViewAddGroup = false;
     Alert? referAlert;
 
     InputTextSelector2a<ConceptType> conceptType;
@@ -333,6 +334,7 @@
         if (currentItem.Groups == null) currentItem.Groups = new();
         currentItem.Groups = conceptGroups;
         OpenAlert("Added", 0);
+        PopupViewAddGroup = false;
         StateHasChanged();
     }
 
