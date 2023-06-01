@@ -461,7 +461,7 @@ else
             commercialDocument = await DocumentServices.GetItemCommercialDocumentById(commercialDocumentId);
             if (commercialDocument.Items == null) commercialDocument.Items = new();
             commercialDocument.Items = await DocumentServices.GetCommercialDocumentDetails(commercialDocumentId);
-            // if (commercialDocument.Buyer != null) commercialDocument.Buyer = await actor.GetEntityActor(commercialDocument.Buyer.Id);
+            if (commercialDocument.Buyer != null) commercialDocument.Buyer = await actor.GetEntityActor(commercialDocument.Buyer.Id);
             LoadBuyerAndVendor();
 
         }
