@@ -45,7 +45,7 @@
 @if (isLoading)
 {
 
-    <WaitingProcessIndicator loadingTopic="Characteristic Items"></WaitingProcessIndicator>
+    <WaitingProcessIndicator loadingTopic=" Packing Recipe"></WaitingProcessIndicator>
 
 }
 else
@@ -992,6 +992,7 @@ else
             }
         }
         isLoading = false;
+        StateHasChanged();
     }
 
 

@@ -5,13 +5,13 @@
 <div class="@ClassContainer" style="position:relative;">
     <div class="item-edit" style="display:@(!captionOff?"flex":"none"); @styleCaption">
         <label>@(caption)</label>
-        <img @onclick='SetViewElemnt' class="color-btn" src="/images//ico-plus.png">
+        <img tabindex="@Tabindex" @onclick='SetViewElemnt' class="color-btn" src="/images//ico-plus.png">
        @* <button type="button" ><i class="fa-sharp fa-solid fa-circle-plus"></i></button>*@
     </div>
     <div class="position-input">
         <div class="component-input" style=" display:@(Visible?"block":"none");  @style   ">
             <div style=" flex-direction:row; display:@(Items==null || Items.Count<=0 || !modeSearcher?"flex":"none"); ">
-                <input @bind="inputSearcherValue" class="form-control" autocomplete="on" />
+                <input tabindex="@Tabindex" @bind="inputSearcherValue" class="form-control" autocomplete="on" />
                 <img id="btn-img" src="images/search.svg" @onclick="SearcherValue" />
             </div>
             <div id="div-Popup">
@@ -69,6 +69,8 @@
     public string ClassContainer { get; set; }
     [Parameter]
     public bool Disable { get; set; } = true;
+    [Parameter]
+    public string Tabindex { get; set; } 
 
     public string selectionId { get; set; }
     public string? inputSearcherValue { get; set; }

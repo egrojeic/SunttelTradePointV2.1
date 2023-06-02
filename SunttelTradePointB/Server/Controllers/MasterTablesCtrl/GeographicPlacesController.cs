@@ -164,7 +164,9 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         [ActionName("GetWarehouses")]
         public async Task<IActionResult> GetWarehouses(string entityId, string ipAdress, string? nameLike = null)
         {
-            var response = await _geographicPlaces.GetWarehouses(entityId, ipAdress, nameLike);
+             var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
+            var response = await _geographicPlaces.GetWarehouses(entityId, ipAdress,squadId, nameLike);
 
             if (response.IsSuccess)
             {
@@ -188,7 +190,9 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         [ActionName("GetWarehouse")]
         public async Task<IActionResult> GetWarehouse(string entityId, string ipAdress, string warehouseId)
         {
-            var response = await _geographicPlaces.GetWarehouse(entityId, ipAdress, warehouseId);
+             var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _geographicPlaces.GetWarehouse(entityId, ipAdress,squadId, warehouseId);
 
             if (response.IsSuccess)
             {

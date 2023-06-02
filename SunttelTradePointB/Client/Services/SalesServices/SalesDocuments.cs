@@ -277,7 +277,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-                var responseMessage = await Gethttp($"/api/GeographicPlaces/GetWarehouses?&entityId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&entityId={entityId}&nameLike={nameLike}");
+                var responseMessage = await Gethttp($"/api/GeographicPlaces/GetWarehouses?&entityId={entityId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&entityId={entityId}&nameLike={nameLike}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Warehouse>>();
                 List<BasicConcept> conceptLis = new();
                 if (list != null)

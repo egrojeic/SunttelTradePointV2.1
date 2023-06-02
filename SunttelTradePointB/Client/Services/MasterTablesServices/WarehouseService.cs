@@ -43,8 +43,8 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             {
                 if (ipAddress == "")
                     ipAddress = "127.0.0.0";
-                var listWarehouse = await _httpClient.GetFromJsonAsync<List<Warehouse>>($"/api/GeographicPlaces/GetWarehouses?entityId={userId}&ipAdress={ipAddress}&nameLike={filterWarehouse}");
-                return listWarehouse;
+                HttpResponseMessage? listWarehouse = await Gethttp($"/api/GeographicPlaces/GetWarehouses?entityId={userId}&ipAdress={ipAddress}&nameLike={filterWarehouse}");
+                return await listWarehouse.Content.ReadFromJsonAsync<List<Warehouse>>();
             }
             catch (Exception ex)
             {
@@ -74,6 +74,44 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 string errMessage = ex.Message;
                 return false;
             }
+        }
+
+
+          public async Task<HttpResponseMessage> Gethttp(string Url)
+        {
+            try
+            {
+
+                var SquadId = UIClientGlobalVariables.ActiveSquad;
+                var ReplaceIdUser = UIClientGlobalVariables.UserId;
+                var ReplacePublicIpAddress = UIClientGlobalVariables.PublicIpAddress;
+                if (ReplacePublicIpAddress == "") ReplacePublicIpAddress = "000";
+                if (ReplaceIdUser == "") ReplaceIdUser = "000";
+
+                Url = Url.Replace("*Id", ReplaceIdUser ?? "000");
+                Url = Url.Replace("*Ip", ReplacePublicIpAddress ?? "000");
+
+                var request = new HttpRequestMessage(HttpMethod.Get, Url);
+
+                if (SquadId != null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString().ToUpper());
+                if (SquadId == null) request.Headers.Add("SquadId", "0000000000");
+                var response = await _httpClient.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return response;
+                }
+                else { return null; }
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+
+            }
+
+
         }
 
     }

@@ -42,8 +42,7 @@
                     PageNumbersCount="100"
                     PageSize="50">
 
-            <Columns>
-                <RadzenDataGridColumn TItem="ShippingInfo" Property="Sender.Name" Title="@GetName("Sender", new ShippingInfo())" Width="180px" />
+            <Columns>               
                 <RadzenDataGridColumn TItem="ShippingInfo" Property="Carrier.Name" Title="@GetName("Carrier", new ShippingInfo())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
                 <RadzenDataGridColumn TItem="ShippingInfo" Property="DeliveryAddress.Name" Title="@GetName("DeliveryAddress", new ShippingInfo())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
                 <RadzenDataGridColumn TItem="ShippingInfo" Property="CutOff24Hour" Title="@GetName("CutOff24Hour", new ShippingInfo())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
@@ -51,8 +50,7 @@
                 <RadzenDataGridColumn TItem="ShippingInfo" Property="DelayTimeDays" Title="@GetName("DelayTimeDays", new ShippingInfo())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
                 <RadzenDataGridColumn TItem="ShippingInfo" Property="PalletTypeShipping.Name" Title="@GetName("PalletTypeShipping", new ShippingInfo())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
                 <RadzenDataGridColumn TItem="ShippingInfo"   Title="Days" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                   
-             
+                                
             </Columns>
         </RadzenDataGrid>
         

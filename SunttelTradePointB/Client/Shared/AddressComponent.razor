@@ -18,7 +18,7 @@
     <div class="col">
         @if (countryList == null) countryList = new();
         <div>
-            <InputTextSelector3 TItem="Country"
+            <InputTextSelector3 Tabindex="10"  TItem="Country"
                                 Id="Conutry"
                                 caption="@(country1 != null ? (country1?.Name != null ? country1?.Name : "") : "")"
                                 EventClosed="ClosedInput"
@@ -38,7 +38,7 @@
     <div class="col">
         @if (regionsList == null) regionsList = new();
         <div>
-            <InputTextSelector3 TItem="GeoRegion"
+            <InputTextSelector3 Tabindex="12" TItem="GeoRegion"
                                 Id="Geo"
                                 caption="@(geo != null ? (geo?.Name != null ? geo?.Name : "") : "")"
                                 EventClosed="ClosedInput"
@@ -58,7 +58,7 @@
         <div>
 
 
-            <InputTextSelector3 TItem="City"
+            <InputTextSelector3 Tabindex="13" TItem="City"
                                 Id="City"
                                 caption="@(city != null ? (city?.Name != null ? city?.Name : "") : "")"
                                 Items="citiesList"
@@ -88,7 +88,7 @@
 <div class="form-group row py-2">
     <label class="control-label col-md-12 info-text-size">@lblZipCode*: </label>
     <div class="col">
-        <input id="zipCode" type="text" class="form-control info-text-size" @bind-value="@address.ZipCode" required />
+        <input tabindex="14" id="zipCode" type="text" class="form-control info-text-size" @bind-value="@address.ZipCode" required />
     </div>
 </div>
 

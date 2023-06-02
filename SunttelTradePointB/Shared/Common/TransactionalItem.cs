@@ -347,10 +347,10 @@ namespace SunttelTradePointB.Shared.Common
         public double PackPerBoxLayer { get; set; }
 
         [DisplayName("Number of Box to sale Layers")]
-        public int PackLayersToSale { get; set; }
+        public int PackLayersToSale { get; set; } = 1;
 
         [DisplayName("Number of Box to buy Layers")]
-        public int PackLayersToBuy { get; set; }
+        public int PackLayersToBuy { get; set; } = 1;
 
         [DisplayName("Sale Box Pack")]
         public Box PackingBoxToSale { get; set; }
@@ -482,7 +482,7 @@ namespace SunttelTradePointB.Shared.Common
 
         [DisplayName("Pallets Equivalent")]
         public double FullBoxEquivalent { get; set; }
-        
+
 
     }
 

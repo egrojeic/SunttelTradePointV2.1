@@ -239,6 +239,12 @@ namespace SunttelTradePointB.Shared.Common
         [BsonIgnoreIfNull]
         public EntityRole? EntityRoleClassifier { get; set; }
 
+        public bool IsUser { get; set;}
+        public bool IsCompany { get; set;}
+        public bool IsCustomer { get; set;}
+        public bool IsProvider { get; set;}
+       
+
         public override string ToString()
         {
             return GetInnerName(this);
@@ -274,10 +280,6 @@ namespace SunttelTradePointB.Shared.Common
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
-
-        [DisplayName("Sender")]
-        public AtomConcept Sender { get; set; }
-
 
         [DisplayName("Carrier")]
         public AtomConcept Carrier { get; set; }
@@ -327,7 +329,7 @@ namespace SunttelTradePointB.Shared.Common
         [DisplayName("Credit Limit (Days)")]
         public int LimitCreditDays { get; set; }
 
-        [DisplayName("Credit Amount (Days)")]
+        [DisplayName("Credit Limit Amount ")]
         public double LimitCreditAmount { get; set; }
 
         [DisplayName("Relationship type")]

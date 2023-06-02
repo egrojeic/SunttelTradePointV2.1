@@ -30,161 +30,157 @@
 <div class="control-section">
     <div class="row">
         <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
-            <SfCard>
-                <CardHeader Title="@($"{Mode} a  warehouse")" />
-                <CardContent>
-                    <form onsubmit="event.preventDefault();">
+            <b>@($"{Mode} a  warehouse")</b>
+
+            <form onsubmit="event.preventDefault();">
+                <div class="form-group row">
+                    <div class="form-group row">
+                        <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "Name")</label>
+                        <div class="col">
+                            <input type="text" class="form-control info-text-size" @bind-value="warehouse.Name" required tabindex="1" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row py-2">
+                    <div class="form-group row">
+                        <div class="col">
+                            <div class="position:relative;">
+                                <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "WareHouseParent"): </label>
+
+                                <InputTextSelector3 Tabindex="2" TItem="Warehouse"
+                                                    Id="WareHouseParent"
+                                                    caption="@(warehouse.InventoryTransactionalItemType != null ? warehouse.InventoryTransactionalItemType?.Name : "")"
+                                                    Items="warehouseList"
+                                                    EventSearcherValueAndId="EventSearcherValueAndId"
+                                                    EventIdSelectionAndId="SelectionMade">
+
+                                </InputTextSelector3>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="PRUEBA">
+                    <div class="form-group row py-2">
                         <div class="form-group row">
+                            <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "AssociatedEntity"): </label>
+
+                            <InputTextSelector3 Tabindex="3" TItem="EntityActor"
+                                                Id="AssociatedEntity"
+                                                caption="@(warehouse.AssociatedEntity != null ? warehouse.AssociatedEntity?.Name : "")"
+                                                Items="wareHouseParentListApi"
+                                                EventSearcherValueAndId="EventSearcherValueAndId"
+                                                EventIdSelectionAndId="SelectionMade">
+                            </InputTextSelector3>
+
+                        </div>
+                    </div>
+                    <div class="grid-columns-2">
+                        <div class="form-group row py-2">
                             <div class="form-group row">
-                                <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "Name")</label>
+                                <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsExternal"): </label>
                                 <div class="col">
-                                    <input type="text" class="form-control info-text-size" @bind-value="warehouse.Name" required />
+                                    <SfSwitch tabindex="4" @bind-Checked="warehouse.IsExternal"></SfSwitch>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row py-2">
+                            <div class="form-group row">
+                                <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsTransformationFacility"): </label>
+                                <div class="col">
+                                    <SfSwitch tabindex="5" @bind-Checked="warehouse.IsTransformationFacility"></SfSwitch>
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group row py-2">
                             <div class="form-group row">
+                                <label class="control-label col-md-12 info-text-sizeUICommonFunctions.GetDisplayName(new Warehouse(), " ScanSimulated"): </label>
                                 <div class="col">
-                                    <div class="position:relative;">
-                                        <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "WareHouseParent"): </label>
-
-                                        <InputTextSelector3 TItem="Warehouse"
-                                                            Id="WareHouseParent"
-                                                            caption="@(warehouse.InventoryTransactionalItemType != null ? warehouse.InventoryTransactionalItemType?.Name : "")"
-                                                            Items="warehouseList"
-                                                            EventSearcherValueAndId="EventSearcherValueAndId"
-                                                            EventIdSelectionAndId="SelectionMade">
-
-                                        </InputTextSelector3>
-                                    </div>
-
+                                    <SfSwitch tabindex="6" @bind-Checked="warehouse.ScanSimulated"></SfSwitch>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="PRUEBA">
-                            <div class="form-group row py-2">
-                                <div class="form-group row">
-                                    <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "AssociatedEntity"): </label>
+                        <div class="form-group row py-2">
+                            <div class="form-group row">
+                                <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsInventoryControlled"): </label>
+                                <div class="col">
+                                    <SfSwitch tabindex="7" @bind-Checked="warehouse.IsInventoryControlled"></SfSwitch>
+                                </div>
+                            </div>
+                        </div>
 
-                                    <InputTextSelector3 TItem="EntityActor"
-                                                        Id="AssociatedEntity"
-                                                        caption="@(warehouse.AssociatedEntity != null ? warehouse.AssociatedEntity?.Name : "")"
-                                                        Items="wareHouseParentListApi"
+                        <div class="form-group row py-2">
+                            <div class="form-group row">
+                                <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsActive"): </label>
+                                <div class="col">
+                                    <SfSwitch tabindex="8" @bind-Checked="warehouse.IsActive"></SfSwitch>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+
+
+
+                    <div class="form-group row">
+                        <div class="form-group row">
+
+                            <div class="col">
+                                <div class="position:relative;">
+                                    <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "InventoryTransactionalItemType"): </label>
+
+                                    <InputTextSelector3 Tabindex="9" TItem="TransactionalItemType"
+                                                        Id="InventoryTransactionalItemType"
+                                                        caption="@(warehouse.InventoryTransactionalItemType != null ? warehouse.InventoryTransactionalItemType?.Name : "")"
+                                                        Items="itemType"
                                                         EventSearcherValueAndId="EventSearcherValueAndId"
                                                         EventIdSelectionAndId="SelectionMade">
                                     </InputTextSelector3>
-
-                                </div>
-                            </div>
-                            <div class="grid-columns-2">
-                                <div class="form-group row py-2">
-                                    <div class="form-group row">
-                                        <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsExternal"): </label>
-                                        <div class="col">
-                                            <SfSwitch @bind-Checked="warehouse.IsExternal"></SfSwitch>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group row py-2">
-                                    <div class="form-group row">
-                                        <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsTransformationFacility"): </label>
-                                        <div class="col">
-                                            <SfSwitch @bind-Checked="warehouse.IsTransformationFacility"></SfSwitch>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row py-2">
-                                    <div class="form-group row">
-                                        <label class="control-label col-md-12 info-text-sizeUICommonFunctions.GetDisplayName(new Warehouse(), "ScanSimulated"): </label>
-                                        <div class="col">
-                                            <SfSwitch @bind-Checked="warehouse.ScanSimulated"></SfSwitch>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row py-2">
-                                    <div class="form-group row">
-                                        <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsInventoryControlled"): </label>
-                                        <div class="col">
-                                            <SfSwitch @bind-Checked="warehouse.IsInventoryControlled"></SfSwitch>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row py-2">
-                                    <div class="form-group row">
-                                        <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "IsActive"): </label>
-                                        <div class="col">
-                                            <SfSwitch @bind-Checked="warehouse.IsActive"></SfSwitch>
-                                        </div>
-                                    </div>
                                 </div>
 
                             </div>
-
-
-
-
-
-
-                            <div class="form-group row">
-                                <div class="form-group row">
-
-                                    <div class="col">
-                                        <div class="position:relative;">
-                                            <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "InventoryTransactionalItemType"): </label>
-
-                                            <InputTextSelector3 TItem="TransactionalItemType"
-                                                                Id="InventoryTransactionalItemType"
-                                                                caption="@(warehouse.InventoryTransactionalItemType != null ? warehouse.InventoryTransactionalItemType?.Name : "")"
-                                                                Items="itemType"
-                                                                EventSearcherValueAndId="EventSearcherValueAndId"
-                                                                EventIdSelectionAndId="SelectionMade">
-                                            </InputTextSelector3>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group row py-2">
-                                <div class="form-group row">
-                                    <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "WarehouseAddress") </label>
-                                    <div class="col">
-                                        <AddressComponent oldAddress="warehouse.WarehouseAddress"></AddressComponent>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <div class="form-group row">
-                                    <div class="position:relative;">
-                                        <label class="control-label col-md-12 info-text-size ">@UICommonFunctions.GetDisplayName(new Warehouse(), "ContactPerson"): </label>
-
-                                        <InputTextSelector3 TItem="EntityActor"
-                                                            Id="Contact"
-                                                            caption="@(warehouse.ContactPerson != null ? warehouse.ContactPerson?.Name : "")"
-                                                            Items="ContactList"
-                                                            EventSearcherValueAndId="EventSearcherValueAndId"
-                                                            EventIdSelectionAndId="SelectionMade">
-
-                                        </InputTextSelector3>
-                                    </div>
-                                </div>
-                            </div>
-
-
                         </div>
+                    </div>
 
-                    </form>
+                    <div class="form-group row py-2">
+                        <div class="form-group row">
+                            <label class="control-label col-md-12 info-text-size">@UICommonFunctions.GetDisplayName(new Warehouse(), "WarehouseAddress") </label>
+                            <div class="col">
+                                <AddressComponent oldAddress="warehouse.WarehouseAddress"></AddressComponent>
+                            </div>
+                        </div>
+                    </div>
 
-                </CardContent>
-            </SfCard>
+                    <div class="form-group row">
+                        <div class="form-group row">
+                            <div class="position:relative;">
+                                <label class="control-label col-md-12 info-text-size ">@UICommonFunctions.GetDisplayName(new Warehouse(), "ContactPerson"): </label>
+
+                                <InputTextSelector3  Tabindex="15" TItem="EntityActor"
+                                                    Id="Contact"
+                                                    caption="@(warehouse.ContactPerson != null ? warehouse.ContactPerson?.Name : "")"
+                                                    Items="ContactList"
+                                                    EventSearcherValueAndId="EventSearcherValueAndId"
+                                                    EventIdSelectionAndId="SelectionMade">
+
+                                </InputTextSelector3>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </form>
             <div class="py-2">
-                <button type="submit" class="size-btn color-btn" style="float:right" @onclick="Save"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                <button tabindex="16" type="submit" class="size-btn color-btn" style="float:right" @onclick="Save"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
                 <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
             </div>
         </div>
@@ -317,11 +313,11 @@
 
     public void SelectionMade(EntityActor arg)
     {
-        if (SearcherValueMode == "Contact")
+        if (SearcherValueMode == "AssociatedEntity")
         {
             warehouse.AssociatedEntity = arg;
         }
-        else
+        if (SearcherValueMode == "Contact")
         {
             warehouse.ContactPerson = arg;
         }

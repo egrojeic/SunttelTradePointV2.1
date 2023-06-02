@@ -69,7 +69,8 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 List<Country> countriesList = await _CountryCollection.Aggregate<Country>(pipeline).ToListAsync<Country>();
                 return (true, countriesList, null);
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 return (false, null, e.Message);
             }
         }
@@ -92,8 +93,8 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 string strCountryIdFiler = countryId == null ? "000000000000000000000000" : countryId;
 
                 ;
-                List<GeoRegion> regionsList = await _RegionCollection.Find(c => (strNameFiler.Length == 0 || (strNameFiler.Length > 0 && c.Name.Contains(strNameFiler))) 
-                    & (strCountryFiler.Length ==0 || (strCountryFiler.Length> 0 & c.CountryRegion.CodeIso3 == strCountryFiler))
+                List<GeoRegion> regionsList = await _RegionCollection.Find(c => (strNameFiler.Length == 0 || (strNameFiler.Length > 0 && c.Name.Contains(strNameFiler)))
+                    & (strCountryFiler.Length == 0 || (strCountryFiler.Length > 0 & c.CountryRegion.CodeIso3 == strCountryFiler))
                     & (strCountryIdFiler == "000000000000000000000000" || (strCountryIdFiler != "000000000000000000000000" & (c.CountryRegion.Id == strCountryIdFiler)))
 
                     ).ToListAsync();
@@ -108,13 +109,13 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
 
 
-       /// <summary>
-       /// Get the list of cities
-       /// </summary>
-       /// <param name="nameLike"></param>
-       /// <param name="countryIso3"></param>
-       /// <param name="RegionId"></param>
-       /// <returns></returns>
+        /// <summary>
+        /// Get the list of cities
+        /// </summary>
+        /// <param name="nameLike"></param>
+        /// <param name="countryIso3"></param>
+        /// <param name="RegionId"></param>
+        /// <returns></returns>
         public async Task<(bool IsSuccess, List<City>? CityList, string? ErrorDescription)> GetCities(string? nameLike = "", string? countryIso3 = "", string? RegionId = null)
         {
 
@@ -124,9 +125,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 string strCountryFiler = countryIso3 == null ? "" : countryIso3;
                 string strRegionFiler = RegionId == null ? "000000000000000000000000" : RegionId;
 
-                
+
                 List<City> cityList = await _CityCollection.Find(c => (strNameFiler.Length == 0 || (strNameFiler.Length > 0 && c.Name.Contains(strNameFiler)))
-                    & (strCountryFiler.Length == 0 || (strCountryFiler.Length >0 & c.RegionCity.CountryRegion.CodeIso3 == strCountryFiler))
+                    & (strCountryFiler.Length == 0 || (strCountryFiler.Length > 0 & c.RegionCity.CountryRegion.CodeIso3 == strCountryFiler))
                     & (strRegionFiler == "000000000000000000000000" || (strRegionFiler != "000000000000000000000000" & (c.RegionCity.Id == strRegionFiler)))
 
                     ).ToListAsync();
@@ -146,16 +147,31 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="entityId"></param>
         /// <param name="ipAdress"></param>
         /// <param name="nameLike"></param>
+        /// <param name="squadId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<Warehouse>? warehouses, string? ErrorDescription)> GetWarehouses(string entityId, string ipAdress, string? nameLike = null)
+        public async Task<(bool IsSuccess, List<Warehouse>? warehouses, string? ErrorDescription)> GetWarehouses(string entityId, string ipAdress, string squadId, string? nameLike = null)
         {
             try
             {
-                string filter = nameLike == null ? "" : nameLike;
 
-                if (filter.Length > 0)
+                try { 
+                    var id = new ObjectId(entityId);    
+                    
+                    } catch {entityId = null; }
+                string filter = nameLike == null ? "" : nameLike;
+                var pipeline = new List<BsonDocument>();
+
+                // pipeline.Add(
+                //    new BsonDocument(
+                //        "$match", new BsonDocument(
+                //           "SquadId", $"/{squadId}/i")
+                //        )
+
+                //);
+
+
+                if (filter.ToLower() != "all")
                 {
-                    var pipeline = new List<BsonDocument>();
 
                     pipeline.Add(
                         new BsonDocument(
@@ -165,20 +181,33 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         )
                     );
 
+
+                    if (entityId != null)
+                    {
+                        pipeline.Add(
+                        new BsonDocument(
+                            "$match", new BsonDocument(
+                               "AssociatedEntity._id", new ObjectId(entityId))
+                            )
+                        );
+                    }
+
                     List<Warehouse> results = await _WarehouseCollection.Aggregate<Warehouse>(pipeline).ToListAsync();
-                    return (true, results, null);
+                    return (true, results.Where(f=>f.Name.ToLower().Contains(filter.ToLower())).ToList(), null);
                 }
                 else
                 {
-                    var warehouses = await _WarehouseCollection.Find<Warehouse>(new BsonDocument()).ToListAsync();
 
-                    if (warehouses == null || warehouses.Count == 0)
+
+                    List<Warehouse> results = await _WarehouseCollection.Aggregate<Warehouse>(pipeline).ToListAsync();
+
+                    if (results == null || results.Count == 0)
                     {
                         return (false, null, "Unpopulated Warehaouses");
                     }
                     else
                     {
-                        return (true, warehouses, null);
+                        return (true, results, null);
                     }
                 }
             }
@@ -195,12 +224,13 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="ipAdress"></param>
         /// <param name="warehouseId"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, Warehouse? warehouse, string? ErrorDescription)> GetWarehouse(string entityId, string ipAdress, string warehouseId)
+        public async Task<(bool IsSuccess, Warehouse? warehouse, string? ErrorDescription)> GetWarehouse(string entityId, string ipAdress, string squadId, string warehouseId)
         {
             try
             {
                 var filterWarehouse = Builders<Warehouse>.Filter.Eq(x => x.Id, warehouseId);
                 var resultWarehouse = await _WarehouseCollection.Find(filterWarehouse).FirstOrDefaultAsync();
+
 
                 if (resultWarehouse == null)
                 {
@@ -257,11 +287,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
             string ipAddressFormated = "";
 
-            var ip1= ipAddress.Split(".")[0].PadLeft(3,'0');
+            var ip1 = ipAddress.Split(".")[0].PadLeft(3, '0');
             var ip2 = ipAddress.Split(".")[1].PadLeft(3, '0');
             var ip3 = ipAddress.Split(".")[2].PadLeft(3, '0');
-           
-            ipAddressFormated = ip1+ ip2+ ip3;
+
+            ipAddressFormated = ip1 + ip2 + ip3;
 
             var filter = Builders<Country>.Filter.Eq("IPAddresses", ipAddressFormated);
             var projection = Builders<Country>.Projection.Exclude(d => d.IPAddresses);
@@ -272,11 +302,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 return (true, result, null);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return (false, null, e.Message);
             }
-            
+
         }
     }
 }

@@ -54,8 +54,9 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="ipAdress"></param>
         /// <param name="entityActorId"></param>
         /// <param name="entityDetailsSection"></param>
+        /// <param name="squadId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<T>? EntityRelatedList, string? ErrorDescription)> GetEntityDetailsOf<T>(string userId, string ipAdress, string entityActorId, EntityDetailsSection entityDetailsSection);
+        Task<(bool IsSuccess, List<T>? EntityRelatedList, string? ErrorDescription)> GetEntityDetailsOf<T>(string userId, string ipAdress,string squadId, string entityActorId, EntityDetailsSection entityDetailsSection);
 
 
         /// <summary>

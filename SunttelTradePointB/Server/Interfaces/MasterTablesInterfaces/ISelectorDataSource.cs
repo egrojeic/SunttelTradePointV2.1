@@ -15,8 +15,9 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// </summary>
         /// <param name="filterString"></param>
         /// <param name="roleName"></param>
+        /// <param name="squadId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<AtomConcept>? EntityActorList, string? ErrorDescription)> GetSelectorListEntityActor(string? filterString, BasicRolesFilter? roleName = null);
+        Task<(bool IsSuccess, List<AtomConcept>? EntityActorList, string? ErrorDescription)> GetSelectorListEntityActor(string? filterString,string squadId, BasicRolesFilter? roleName = null);
      
         /// <summary>
         /// Retrives the different address of an Entity

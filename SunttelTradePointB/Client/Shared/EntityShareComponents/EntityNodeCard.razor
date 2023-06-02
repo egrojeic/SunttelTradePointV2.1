@@ -114,7 +114,15 @@
                         <label>@lblSquarUser*</label>
                     </div>
                     <div>
-                        <input type="text" class="form-control" id="sunttelUserId" @bind-value="EntityNode.SunttelUserId" />
+                        <InputTextSelector3 TItem="string"
+                                            EventSearcherValueAndId="EventSearcherValueAndId"
+                                            EventIdSelectionAndId="SelectionMade"
+                                            caption="@(EntityNode.SunttelUserId != null ? EntityNode.SunttelUserId : "")"
+                                            Items="userNameList"
+                                            Id="UserName">
+                        </InputTextSelector3>
+
+                    @*    <input type="text" class="form-control" id="sunttelUserId" @bind-value="" />*@
                     </div>
                     <div>
                         <label>@lblInvoicingAddress*</label>
@@ -136,16 +144,14 @@
                     <div>
                         <label>@lblRole*</label>
                     </div>
-                   
-                        <InputTextSelector3 TItem="EntityRole"
+
+                    <InputTextSelector3 TItem="EntityRole"
                                         EventSearcherValueAndId="EventSearcherValueAndId"
                                         EventIdSelectionAndId="SelectionMade"
                                         caption="@(role != null ? role.Name : "")"
                                         Items="entityRoles"
                                         Id="Roles">
-
-                        </InputTextSelector3>
-                 
+                    </InputTextSelector3>
 
 
                 </div>
@@ -204,14 +210,14 @@
                                 </ChipItems>
                             </SfChip>
                             <InputTextSelector3 TItem="ConceptGroup"
-                                            EventSearcherValueAndId="EventSearcherValueAndId"
-                                            EventIdSelectionAndId="SelectionMade"
-                                            EventClosed="EventClosed"
-                                            style="left:-30px;"
-                                            Items="ListGroups"
-                                            captionOff="true"
-                                            Visible="PopupViewGroups"
-                                            Id="Group">
+                                                EventSearcherValueAndId="EventSearcherValueAndId"
+                                                EventIdSelectionAndId="SelectionMade"
+                                                EventClosed="EventClosed"
+                                                style="left:-30px;"
+                                                Items="ListGroups"
+                                                captionOff="true"
+                                                Visible="PopupViewGroups"
+                                                Id="Group">
 
                             </InputTextSelector3>
                         </div>
@@ -281,7 +287,8 @@
     .e-split-btn-wrapper .e-split-btn {
         z-index: 0;
     }
-    .e-split-btn-wrapper .e-dropdown-btn{
+
+    .e-split-btn-wrapper .e-dropdown-btn {
         z-index: 0;
     }
 </style>
@@ -323,6 +330,7 @@
 
     List<ConceptGroup>? ListGroups = new List<ConceptGroup>();
     List<ConceptGroup>? FilterListGroups = new List<ConceptGroup>();
+    List<string>? userNameList = new List<string>();
 
 
     //display
@@ -354,6 +362,7 @@
     public string StyleClassItem(int item)
     {
         return (verticalMenuOptionSelected == item ? "menu-item selected" : "menu-item");
+       
     }
 
     protected override async Task OnInitializedAsync()
@@ -404,7 +413,7 @@
         }
 
 
-
+        Load();
         await Refresh();
     }
 
@@ -455,7 +464,6 @@
 
     public void SetViewElement(string Element)
     {
-
         SearchValueMode = Element;
         if (Element == "Group" && !PopupViewGroups) { PopupViewGroups = true; }
         if (Element == "Roles" && !PopupViewRoles) { PopupViewRoles = true; }
@@ -471,6 +479,10 @@
             ListGroups = await actorsNodeServive.GetEntityGroups(arg.value);
         }
         if (SearchValueMode == "Roles")
+        {
+            entityRoles = await actorsNodeServive.GetListEntityRoles(arg.value);
+        }        
+        if (SearchValueMode == "UserName")
         {
             entityRoles = await actorsNodeServive.GetListEntityRoles(arg.value);
 
@@ -492,10 +504,16 @@
     {
         if (SearchValueMode == "Group")
         {
-            var item =  FilterListGroups.FindLast(s => s.Name.ToLower() == arg.Name.ToLower());
-            if(item == null)FilterListGroups.Add(arg);
-        } 
+            var item = FilterListGroups.FindLast(s => s.Name.ToLower() == arg.Name.ToLower());
+            if (item == null) FilterListGroups.Add(arg);
+        }
 
+        StateHasChanged();
+    }
+
+    public void SelectionMade(string arg)
+    {
+       var item =  userNameList.FindLast(s => s.ToLower() == arg.ToLower());
         StateHasChanged();
     }
 
@@ -620,5 +638,18 @@
     {
         PopupViewGroups = false;
         StateHasChanged();
+    }
+
+    public void Load()
+    {
+        if (EntityNode == null) EntityNode = new();
+        if (EntityNode.DefaultEntityRole == null) EntityNode.DefaultEntityRole = new();
+    }
+
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name) != null ? UICommonFunctions.GetDisplayName(Obj, Name) : Name;
+        return Name;
     }
 }

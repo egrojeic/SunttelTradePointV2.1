@@ -12,7 +12,7 @@
     <div class="row">
         <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
             <SfCard>
-                <CardHeader Title="Add a new group" />
+                <CardHeader Title="Add a new rol" />
                 <CardContent>
                     <form onsubmit="event.preventDefault();">
                         <div class="form-group row">
@@ -31,15 +31,34 @@
                                     <input id="name" type="text" class="form-control" @bind-value="@entityRole.Name" required />
                                 </SfTooltip>
                             </div>
+                        </div>          
+
+                        <div>
+                            <label>@GetName(nameof(EntityRole.IsCompany), new EntityRole()): </label>
+                            <input type="checkbox" @bind="entityRole.IsCompany">
+                        </div>
+                        <div>
+                            <label>@GetName(nameof(EntityRole.IsCustomer), new EntityRole()): </label>
+                            <input type="checkbox" @bind="entityRole.IsCustomer">
+                        </div>
+                        <div>
+                            <label>@GetName(nameof(EntityRole.IsUser), new EntityRole()): </label>
+                            <input type="checkbox" @bind="entityRole.IsUser">
+                        </div>
+                        <div>
+                            <label>@GetName(nameof(EntityRole.IsProvider), new EntityRole()): </label>
+                            <input type="checkbox" @bind="entityRole.IsProvider">
                         </div>
 
-                        <MessageSaveComponent message="@message" isVisible="visible"></MessageSaveComponent>
 
                         <div class="py-2">
                             <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveRole(roleId, entityRole))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
                             <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
                         </div>
 
+
+
+                        <MessageSaveComponent message="@message" isVisible="visible"></MessageSaveComponent>
                     </form>
 
                 </CardContent>
@@ -67,7 +86,7 @@
 
     private async Task GetRoleById(string roleId)
     {
-        if(roleId != null)
+        if (roleId != null)
         {
             entityRole = await actorsNodeServive.GetRoleById(roleId);
         }
@@ -95,6 +114,12 @@
     private void GoBack()
     {
         navigationManager.NavigateTo($"/EntityRoles/");
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        Name = UICommonFunctions.GetDisplayName(Obj, Name) != null ? UICommonFunctions.GetDisplayName(Obj, Name) : Name;
+        return Name;
     }
 
 }

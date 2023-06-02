@@ -1,4 +1,5 @@
 ﻿using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.SquadsMgr;
 
 namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
 {
@@ -53,8 +54,9 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="entityId"></param>
         /// <param name="ipAdress"></param>
         /// <param name="nameLike"></param>
+        /// <param name="squadId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<Warehouse>?  warehouses, string? ErrorDescription)> GetWarehouses(string entityId, string ipAdress, string? nameLike = null);
+        Task<(bool IsSuccess, List<Warehouse>?  warehouses, string? ErrorDescription)> GetWarehouses(string entityId, string ipAdress,string squadId, string? nameLike = null);
 
         /// <summary>
         ///  Retrieves a perticular warehouse
@@ -63,7 +65,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="ipAdress"></param>
         /// <param name="warehouseId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, Warehouse? warehouse, string? ErrorDescription)> GetWarehouse(string entityId, string ipAdress, string warehouseId);
+        Task<(bool IsSuccess, Warehouse? warehouse, string? ErrorDescription)> GetWarehouse(string entityId, string ipAdress,string squadId, string warehouseId);
 
         /// <summary>
         /// Insert/ Updates a Warehouse
