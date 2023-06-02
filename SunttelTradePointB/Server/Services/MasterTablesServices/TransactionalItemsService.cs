@@ -91,7 +91,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         { "$match",  new BsonDocument {
                             { "$text",
                                 new BsonDocument {
-                                    { "$search",strNameFiler },
+                                    { "$search",$"{strNameFiler}/i" },
                                     { "$language","english" },
                                     { "$caseSensitive",false },
                                     { "$diacriticSensitive",false }

@@ -3,6 +3,7 @@
 @page "/TypesTransactionalItemsConcept/{Page}"
 @using SunttelTradePointB.Shared.Common
 @using SunttelTradePointB.Client.Shared.TransactionalItems.TransactionalItemsSubComponents
+@using SunttelTradePointB.Client.Pages.MasterTables.RelatedConcepts.TypesTransactionalItems
 @using SunttelTradePointB.Client.Shared.Menus
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.Navigations
@@ -35,10 +36,10 @@
         background-color: #1bc7b7;
         font-weight: bold;
     }
+
     .e-tab-header .e-toolbar-item .e-tab-text {
         text-transform: none;
         font-size: 5px;
-        color: red;
     }
 </style>
 
@@ -53,7 +54,7 @@
     @if (pageView == "ChildrenGroups")
     {
         <PageTitleComponent Title=" Children Groups" IconName="group.png"
-                        Description="Here you can add types of Children Groups">
+                            Description="Here you can add types of Children Groups">
         </PageTitleComponent>
         <div class="flex-horizontal-center">
             <div class="grid-columns-2 box-shadow-mode width-page1">
@@ -83,7 +84,7 @@
     @if (pageView == "TransactionalItemProcessesGeneral")
     {
         <PageTitleComponent Title=" Processes General"
-                        Description="Here you can add processes general" IconName="processes.png">
+                            Description="Here you can add processes general" IconName="processes.png">
         </PageTitleComponent>
 
         <div class="container-menu-g">
@@ -105,6 +106,7 @@
                 </SfSplitButton>
 
             </nav>
+            }
         </div>
 
         <div class="grid-columns-header ">
@@ -118,12 +120,46 @@
             <div><input type="number" @bind-value="transactionalItemProcessStep.Order" class="form-control" placeholder="Edit value" /></div>
             <div><label>@GetName( "HolidayDayCost", new TransactionalItemProcessStep())</label></div>
             <div><input type="number" @bind-value="transactionalItemProcessStep.HolidayDayCost" class="form-control" placeholder="Edit value" /></div>
-            <div><label>@GetName( "Name", new ChargeableUnitsType())</label></div>
-            <div><input type="text" @bind-value="typeOfComponentsToCharge.Name" class="form-control" placeholder="Edit value" /></div>
-            <div><label>@GetName( "Name", new BasicConcept())</label></div>
-            <div><input type="text" @bind-value="processType.Name" class="form-control" placeholder="Edit value" /></div>
-        </div>
+            <div><label>@GetName( nameof(TransactionalItemProcessStep.TypeOfComponentsToCharge), new TransactionalItemProcessStep())</label></div>
+                 
+            <div>
+                <select @onchange="SelecTypeOfComponentsToCharge" class="select-style info-text-size">
 
+                    @if (typeOfComponentsToChargeList != null && typeOfComponentsToChargeList.Count() > 0)
+                    {
+                        @foreach (var item in typeOfComponentsToChargeList)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                        <option value="0" selected>Select</option>
+                    }
+                    @if (typeOfComponentsToCharge != null && typeOfComponentsToCharge.Name != null)
+                    {
+                        <option value="@typeOfComponentsToCharge.Id" selected>@typeOfComponentsToCharge.Name</option>
+                    }
+                </select>
+            </div>
+            <div><label>@GetName( "processType", new BasicConcept())</label></div>
+            <div>
+                <select @onchange="SelecProcessType" class="select-style info-text-size">
+
+                    @if (processTypeList != null && processTypeList.Count() > 0)
+                    {
+
+                        @foreach (var item in processTypeList)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+
+                        <option value="0" selected>Select</option>
+                    }
+                    @if (processType != null && processType.Name != null)
+                    {
+                        <option value="@processType.Id" selected>@processType.Name</option>
+                    }
+                </select>
+            </div>
+        </div>
 
         <SfTab Height="300px" HeaderPlacement="HeaderPosition.Left">
             <TabAnimationSettings>
@@ -144,26 +180,26 @@
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                 </svg>
                             </div>
-                            @if (transactionalItemProcessTags == null) transactionalItemProcessTags = new();
+                            @if (transactionalItemProcessTags != null && transactionalItemProcessTags.Count>0) {
 
 
                             <RadzenDataGrid AllowFiltering="true"
-                                        AllowColumnResize="true"
-                                        AllowAlternatingRows="true"
-                                        FilterMode="FilterMode.Advanced"
-                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                        AllowSorting="true"
-                                        AllowPaging="true"
-                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                                        ShowPagingSummary="true"
-                                        Data="@transactionalItemProcessTags"
-                                        TItem="TransactionalItemTag"
-                                        ColumnWidth="300px"
-                                        SelectionMode="DataGridSelectionMode.Single"
-                                        LogicalFilterOperator="LogicalFilterOperator.Or"
-                                        CellContextMenu="@ShowContextMenuWithContent"
-                                        PageNumbersCount="100"
-                                        PageSize="50">
+                                            AllowColumnResize="true"
+                                            AllowAlternatingRows="true"
+                                            FilterMode="FilterMode.Advanced"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                            AllowSorting="true"
+                                            AllowPaging="true"
+                                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                            ShowPagingSummary="true"
+                                            Data="@transactionalItemProcessTags"
+                                            TItem="TransactionalItemTag"
+                                            ColumnWidth="300px"
+                                            SelectionMode="DataGridSelectionMode.Single"
+                                            LogicalFilterOperator="LogicalFilterOperator.Or"
+                                            CellContextMenu="@ShowContextMenuWithContent"
+                                            PageNumbersCount="100"
+                                            PageSize="50">
 
                                 <Columns>
                                     <RadzenDataGridColumn TItem="TransactionalItemTag" Property="Key" Title="@GetName("Key", new ConceptGroup())" Width="80px" />
@@ -171,6 +207,7 @@
 
                                 </Columns>
                             </RadzenDataGrid>
+                            }
                         </div>
                     </ContentTemplate>
                 </TabItem>
@@ -189,32 +226,34 @@
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                 </svg>
                             </div>
-                            @if (costExceptionsByQuantitys == null) costExceptionsByQuantitys = new();
+                            @if (costExceptionsByQuantitys != null && costExceptionsByQuantitys.Count > 0)
+                            {
 
-                            <RadzenDataGrid AllowFiltering="true"
-                                        AllowColumnResize="true"
-                                        AllowAlternatingRows="true"
-                                        FilterMode="FilterMode.Advanced"
-                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                        AllowSorting="true"
-                                        AllowPaging="true"
-                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                                        ShowPagingSummary="true"
-                                        Data="@costExceptionsByQuantitys"
-                                        TItem="CostExceptionByQuantity"
-                                        ColumnWidth="300px"
-                                        SelectionMode="DataGridSelectionMode.Single"
-                                        LogicalFilterOperator="LogicalFilterOperator.Or"
-                                        CellContextMenu="@ShowContextMenuWithContent"
-                                        PageNumbersCount="100"
-                                        PageSize="50">
+                                <RadzenDataGrid AllowFiltering="true"
+                                AllowColumnResize="true"
+                                AllowAlternatingRows="true"
+                                FilterMode="FilterMode.Advanced"
+                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                AllowSorting="true"
+                                AllowPaging="true"
+                                PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                ShowPagingSummary="true"
+                                Data="@costExceptionsByQuantitys"
+                                TItem="CostExceptionByQuantity"
+                                ColumnWidth="300px"
+                                SelectionMode="DataGridSelectionMode.Single"
+                                LogicalFilterOperator="LogicalFilterOperator.Or"
+                                CellContextMenu="@ShowContextMenuWithContent"
+                                PageNumbersCount="100"
+                                PageSize="50">
 
-                                <Columns>
-                                    <RadzenDataGridColumn TItem="CostExceptionByQuantity" Property="MinimumQty" Title="@GetName("MinimumQty", new ConceptGroup())" TextAlign="Radzen.TextAlign.Right" Width="80px" />
-                                    <RadzenDataGridColumn TItem="CostExceptionByQuantity" Property="MaximumQty" Title="@GetName("MaximumQty", new ConceptGroup())" Width="180px" TextAlign="Radzen.TextAlign.Right" />
+                                    <Columns>
+                                        <RadzenDataGridColumn TItem="CostExceptionByQuantity" Property="MinimumQty" Title="@GetName("MinimumQty", new ConceptGroup())" TextAlign="Radzen.TextAlign.Right" Width="80px" />
+                                        <RadzenDataGridColumn TItem="CostExceptionByQuantity" Property="MaximumQty" Title="@GetName("MaximumQty", new ConceptGroup())" Width="180px" TextAlign="Radzen.TextAlign.Right" />
 
-                                </Columns>
-                            </RadzenDataGrid>
+                                    </Columns>
+                                </RadzenDataGrid>
+                            }
 
 
                         </div>
@@ -223,13 +262,13 @@
             </TabItems>
         </SfTab>
 
-
     }
+
 
     @if (pageView == "TransactionalItemProcessestags")
     {
         <PageTitleComponent Title="Children Tag "
-                        Description="Here you can add children tag" IconName="tag.png">
+                            Description="Here you can add children tag" IconName="tag.png">
         </PageTitleComponent>
 
         <div class="flex-horizontal-center">
@@ -253,7 +292,7 @@
     @if (pageView == "CostExceptionsByQuantityProcessStep")
     {
         <PageTitleComponent Title="@GetName( "CostExceptionsByQuantity", new TransactionalItemProcessStep())"
-                        Description="@($"Here you can add {@GetName( "CostExceptionsByQuantity", new TransactionalItemProcessStep())}")" IconName="Costs.png">
+                            Description="@($"Here you can add {@GetName( "CostExceptionsByQuantity", new TransactionalItemProcessStep())}")" IconName="Costs.png">
         </PageTitleComponent>
 
         <div class="flex-horizontal-center">
@@ -277,7 +316,7 @@
     @if (pageView == "TransactionalItemTypeCharacteristics")
     {
         <PageTitleComponent Title="@GetName( "TransactionalItemTypeCharacteristics", new TransactionalItemType())"
-                        Description="@("Here you can add "+@GetName( "TransactionalItemTypeCharacteristics", new TransactionalItemType()) )" IconName="characteristics.png">
+                            Description="@("Here you can add "+@GetName( "TransactionalItemTypeCharacteristics", new TransactionalItemType()) )" IconName="characteristics.png">
         </PageTitleComponent>
 
         <div class="container-menu-g">
@@ -313,22 +352,22 @@
 
 
         <RadzenDataGrid AllowFiltering="true"
-                    AllowColumnResize="true"
-                    AllowAlternatingRows="true"
-                    FilterMode="FilterMode.Advanced"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    AllowSorting="true"
-                    AllowPaging="true"
-                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    Data="@possibleValues"
-                    TItem="TransactionalItemCharacteristic"
-                    ColumnWidth="300px"
-                    SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"
-                    CellContextMenu="@ShowContextMenuWithContent"
-                    PageNumbersCount="100"
-                    PageSize="50">
+                        AllowColumnResize="true"
+                        AllowAlternatingRows="true"
+                        FilterMode="FilterMode.Advanced"
+                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        AllowSorting="true"
+                        AllowPaging="true"
+                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                        ShowPagingSummary="true"
+                        Data="@possibleValues"
+                        TItem="TransactionalItemCharacteristic"
+                        ColumnWidth="300px"
+                        SelectionMode="DataGridSelectionMode.Single"
+                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                        CellContextMenu="@ShowContextMenuWithContent"
+                        PageNumbersCount="100"
+                        PageSize="50">
 
             <Columns>
                 <RadzenDataGridColumn TItem="TransactionalItemCharacteristic" Property="Name" Title="@GetName("Name", new ProductRecipeQualityModifier())" Width="200px" />
@@ -349,7 +388,7 @@
     @if (pageView == "PossibleValues")
     {
         <PageTitleComponent Title="@GetName( "PossibleValues", new TransactionalItemTypeCharacteristic())"
-                        Description="@("Here you can add "+@GetName( "PossibleValues", new TransactionalItemTypeCharacteristic()) )" IconName="characteristics.png">
+                            Description="@("Here you can add "+@GetName( "PossibleValues", new TransactionalItemTypeCharacteristic()) )" IconName="characteristics.png">
         </PageTitleComponent>
         <div class="flex-horizontal-center ">
 
@@ -375,7 +414,7 @@
     @if (pageView == "QualityParameters")
     {
         <PageTitleComponent Title="Quality Parameters "
-                        Description="Here you can add quality parameters" IconName="QualityParameters.png">
+                            Description="Here you can add quality parameters" IconName="QualityParameters.png">
         </PageTitleComponent>
         <div class="flex-horizontal-center ">
             <div class="grid-columns-2 box-shadow-mode">
@@ -402,7 +441,7 @@
     @if (pageView == "InRecipeModifiers")
     {
         <PageTitleComponent Title="@GetName("InRecipeModifiers", new TransactionalItemType())"
-                        Description="@($"Here you can add {GetName("InRecipeModifiers", new TransactionalItemType()).ToLower()}")" IconName="recipeQualityModifiers.png">
+                            Description="@($"Here you can add {GetName("InRecipeModifiers", new TransactionalItemType()).ToLower()}")" IconName="recipeQualityModifiers.png">
         </PageTitleComponent>
         <div class="container-menu-g">
             <nav>
@@ -441,22 +480,22 @@
 
 
             <RadzenDataGrid AllowFiltering="true"
-                        AllowColumnResize="true"
-                        AllowAlternatingRows="true"
-                        FilterMode="FilterMode.Advanced"
-                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                        AllowSorting="true"
-                        AllowPaging="true"
-                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                        ShowPagingSummary="true"
-                        Data="@recipePossibleModifierValues"
-                        TItem="ProductRecipeQualityModifier"
-                        ColumnWidth="300px"
-                        SelectionMode="DataGridSelectionMode.Single"
-                        LogicalFilterOperator="LogicalFilterOperator.Or"
-                        CellContextMenu="@ShowContextMenuWithContent"
-                        PageNumbersCount="100"
-                        PageSize="50">
+                            AllowColumnResize="true"
+                            AllowAlternatingRows="true"
+                            FilterMode="FilterMode.Advanced"
+                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            AllowSorting="true"
+                            AllowPaging="true"
+                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                            ShowPagingSummary="true"
+                            Data="@recipePossibleModifierValues"
+                            TItem="ProductRecipeQualityModifier"
+                            ColumnWidth="300px"
+                            SelectionMode="DataGridSelectionMode.Single"
+                            LogicalFilterOperator="LogicalFilterOperator.Or"
+                            CellContextMenu="@ShowContextMenuWithContent"
+                            PageNumbersCount="100"
+                            PageSize="50">
 
                 <Columns>
                     <RadzenDataGridColumn TItem="ProductRecipeQualityModifier" Property="Name" Title="@GetName("Name", new ProductRecipeQualityModifier())" Width="80px" />
@@ -472,7 +511,7 @@
     @if (pageView == "RecipePossibleModifierValues")
     {
         <PageTitleComponent Title="@GetName("RecipePossibleModifierValues", new RecipeModifier())"
-                        Description="Here you can add quality parameters">
+                            Description="Here you can add quality parameters">
         </PageTitleComponent>
         <div class="flex-horizontal-center ">
             <div class="grid-columns-2 box-shadow-mode">
@@ -488,9 +527,9 @@
         </div>
     }
 
+
+
 </div>
-
-
 <div class="flex-verical-start position-relative" style="display:@(modeEdit?"flex":"none");">
     @if (@viewMsg)
     {
@@ -550,46 +589,46 @@
         <TabItems>
             <TabItem>
                 <ChildContent>
-                    <TabHeader Text="@GetName( "ChildrenGroups", new ConceptGroup())"></TabHeader>
+                    <TabHeader Text="@GetName( "Groups", new ConceptGroup())"></TabHeader>
                 </ChildContent>
                 <ContentTemplate>
                     <div class="flex-horizontal-center">
 
                         <div class="detailsTitleContainer">
-                            <h3 class="subTitleDetailForm">@GetName( "ChildrenGroups", new ConceptGroup())</h3>
+                            <h3 class="subTitleDetailForm">@GetName( "Groups", new ConceptGroup())</h3>
                             <svg @onclick='()=>ClosedAdd("ChildrenGroups")' title="Add new tag" style="margin-left:20px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle add-btn-style" viewBox="0 0 16 16">
                                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                                 <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                             </svg>
                         </div>
 
-                        @if (gridColumnListConceptGroup == null) gridColumnListConceptGroup = new();
+                        @if (childrenGroups != null && childrenGroups.Count > 0)
+                        {
+                            <RadzenDataGrid AllowFiltering="true"
+                                            AllowColumnResize="true"
+                                            AllowAlternatingRows="true"
+                                            FilterMode="FilterMode.Advanced"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                            AllowSorting="true"
+                                            AllowPaging="true"
+                                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                            ShowPagingSummary="true"
+                                            Data="@childrenGroups"
+                                            TItem="ConceptGroup"
+                                            ColumnWidth="300px"
+                                            SelectionMode="DataGridSelectionMode.Single"
+                                            LogicalFilterOperator="LogicalFilterOperator.Or"
+                                            CellContextMenu="@ShowContextMenuWithContent"
+                                            PageNumbersCount="100"
+                                            PageSize="50">
 
-                        <RadzenDataGrid AllowFiltering="true"
-                                        AllowColumnResize="true"
-                                        AllowAlternatingRows="true"
-                                        FilterMode="FilterMode.Advanced"
-                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                        AllowSorting="true"
-                                        AllowPaging="true"
-                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                                        ShowPagingSummary="true"
-                                        Data="@childrenGroups"
-                                        TItem="ConceptGroup"
-                                        ColumnWidth="300px"
-                                        SelectionMode="DataGridSelectionMode.Single"
-                                        LogicalFilterOperator="LogicalFilterOperator.Or"
-                                        CellContextMenu="@ShowContextMenuWithContent"
-                                        PageNumbersCount="100"
-                                        PageSize="50">
+                                <Columns>
+                                    <RadzenDataGridColumn TItem="ConceptGroup" Property="Name" Title="@GetName("Name", new ConceptGroup())" Width="80px" />
+                                    <RadzenDataGridColumn TItem="ConceptGroup" Property="Code" Title="@GetName("Code", new ConceptGroup())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
 
-                            <Columns>
-                                <RadzenDataGridColumn TItem="ConceptGroup" Property="Name" Title="@GetName("Name", new ConceptGroup())" Width="80px" />
-                                <RadzenDataGridColumn TItem="ConceptGroup" Property="Code" Title="@GetName("Code", new ConceptGroup())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                <RadzenDataGridColumn TItem="ConceptGroup" Property="GroupClassificationCriteria" Title="@GetName("GroupClassificationCriteria", new ConceptGroup())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-
-                            </Columns>
-                        </RadzenDataGrid>
+                                </Columns>
+                            </RadzenDataGrid>
+                        }
 
 
                     </div>
@@ -609,34 +648,35 @@
                             </svg>
                         </div>
 
-                        @if (transactionalItemProcessSteps == null) { transactionalItemProcessSteps = new List<TransactionalItemProcessStep>(); }
+                        @if (transactionalItemProcessSteps != null && transactionalItemProcessSteps.Count > 0)
+                        {
 
-                        <RadzenDataGrid AllowFiltering="true"
-                                        AllowColumnResize="true"
-                                        AllowAlternatingRows="true"
-                                        FilterMode="FilterMode.Advanced"
-                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                        AllowSorting="true"
-                                        AllowPaging="true"
-                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                                        ShowPagingSummary="true"
-                                        Data="@transactionalItemProcessSteps"
-                                        TItem="TransactionalItemProcessStep"
-                                        ColumnWidth="300px"
-                                        SelectionMode="DataGridSelectionMode.Single"
-                                        LogicalFilterOperator="LogicalFilterOperator.Or"
-                                        CellContextMenu="@ShowContextMenuWithContent"
-                                        PageNumbersCount="100"
-                                        PageSize="50">
+                            <RadzenDataGrid AllowFiltering="true"
+                                            AllowColumnResize="true"
+                                            AllowAlternatingRows="true"
+                                            FilterMode="FilterMode.Advanced"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                            AllowSorting="true"
+                                            AllowPaging="true"
+                                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                            ShowPagingSummary="true"
+                                            Data="@transactionalItemProcessSteps"
+                                            TItem="TransactionalItemProcessStep"
+                                            ColumnWidth="300px"
+                                            SelectionMode="DataGridSelectionMode.Single"
+                                            LogicalFilterOperator="LogicalFilterOperator.Or"
+                                            CellContextMenu="@ShowContextMenuWithContent"
+                                            PageNumbersCount="100"
+                                            PageSize="50">
 
-                            <Columns>
-                                <RadzenDataGridColumn TItem="TransactionalItemProcessStep" Property="Name" Title="@GetName("Name", new TransactionalItemProcessStep())" Width="80px" />
-                                <RadzenDataGridColumn TItem="TransactionalItemProcessStep" Property="GeneralInstructions" Title="@GetName("GeneralInstructions", new TransactionalItemProcessStep())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                <RadzenDataGridColumn TItem="TransactionalItemProcessStep" Property="Cost" Title="@GetName("Cost", new TransactionalItemProcessStep())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                <RadzenDataGridColumn TItem="TransactionalItemProcessStep" Property="Order" Title="@GetName("Order", new TransactionalItemProcessStep())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                            </Columns>
-                        </RadzenDataGrid>
-
+                                <Columns>
+                                    <RadzenDataGridColumn TItem="TransactionalItemProcessStep" Property="Name" Title="@GetName("Name", new TransactionalItemProcessStep())" Width="80px" />
+                                    <RadzenDataGridColumn TItem="TransactionalItemProcessStep" Property="GeneralInstructions" Title="@GetName("GeneralInstructions", new TransactionalItemProcessStep())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                    <RadzenDataGridColumn TItem="TransactionalItemProcessStep" Property="Cost" Title="@GetName("Cost", new TransactionalItemProcessStep())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                    <RadzenDataGridColumn TItem="TransactionalItemProcessStep" Property="Order" Title="@GetName("Order", new TransactionalItemProcessStep())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+                                </Columns>
+                            </RadzenDataGrid>
+                        }
 
                     </div>
                 </ContentTemplate>
@@ -656,32 +696,32 @@
                                 <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                             </svg>
                         </div>
-                        @if (transactionalItemTypeCharacteristics == null) transactionalItemTypeCharacteristics = new();
+                        @if (transactionalItemTypeCharacteristics != null && transactionalItemTypeCharacteristics.Count > 0)
+                        {
+                            <RadzenDataGrid AllowFiltering="true"
+                                            AllowColumnResize="true"
+                                            AllowAlternatingRows="true"
+                                            FilterMode="FilterMode.Advanced"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                            AllowSorting="true"
+                                            AllowPaging="true"
+                                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                            ShowPagingSummary="true"
+                                            Data="@transactionalItemTypeCharacteristics"
+                                            TItem="TransactionalItemTypeCharacteristic"
+                                            ColumnWidth="300px"
+                                            SelectionMode="DataGridSelectionMode.Single"
+                                            LogicalFilterOperator="LogicalFilterOperator.Or"
+                                            CellContextMenu="@ShowContextMenuWithContent"
+                                            PageNumbersCount="100"
+                                            PageSize="50">
 
-                        <RadzenDataGrid AllowFiltering="true"
-                                        AllowColumnResize="true"
-                                        AllowAlternatingRows="true"
-                                        FilterMode="FilterMode.Advanced"
-                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                        AllowSorting="true"
-                                        AllowPaging="true"
-                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                                        ShowPagingSummary="true"
-                                        Data="@transactionalItemTypeCharacteristics"
-                                        TItem="TransactionalItemTypeCharacteristic"
-                                        ColumnWidth="300px"
-                                        SelectionMode="DataGridSelectionMode.Single"
-                                        LogicalFilterOperator="LogicalFilterOperator.Or"
-                                        CellContextMenu="@ShowContextMenuWithContent"
-                                        PageNumbersCount="100"
-                                        PageSize="50">
+                                <Columns>
+                                    <RadzenDataGridColumn TItem="TransactionalItemTypeCharacteristic" Property="Name" Title="@GetName("Name", new TransactionalItemProcessStep())" Width="80px" />
 
-                            <Columns>
-                                <RadzenDataGridColumn TItem="TransactionalItemTypeCharacteristic" Property="Name" Title="@GetName("Name", new TransactionalItemProcessStep())" Width="80px" />
-
-                            </Columns>
-                        </RadzenDataGrid>
-
+                                </Columns>
+                            </RadzenDataGrid>
+                        }
                     </div>
                 </ContentTemplate>
             </TabItem>
@@ -700,32 +740,12 @@
                             </svg>
                         </div>
 
-                        @if (transactionalItemQualitys == null) transactionalItemQualitys = new();
-
-                        <RadzenDataGrid AllowFiltering="true"
-                                        AllowColumnResize="true"
-                                        AllowAlternatingRows="true"
-                                        FilterMode="FilterMode.Advanced"
-                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                        AllowSorting="true"
-                                        AllowPaging="true"
-                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                                        ShowPagingSummary="true"
-                                        Data="@transactionalItemQualitys"
-                                        TItem="TransactionalItemQuality"
-                                        ColumnWidth="300px"
-                                        SelectionMode="DataGridSelectionMode.Single"
-                                        LogicalFilterOperator="LogicalFilterOperator.Or"
-                                        PageNumbersCount="100"
-                                        PageSize="50">
-
-                            <Columns>
-                                <RadzenDataGridColumn TItem="TransactionalItemQuality" Property="Name" Title="@GetName("Name", new AtomConcept())" Width="80px" />
-                                <RadzenDataGridColumn TItem="TransactionalItemQuality" Property="Code" Title="@GetName("Code", new AtomConcept())" Width="80px" />
-                                <RadzenDataGridColumn TItem="TransactionalItemQuality" Property="Note" Title="@GetName("Note", new AtomConcept())" Width="80px" />
-                                <RadzenDataGridColumn TItem="TransactionalItemQuality" Property="DefaultValue" Title="@GetName("DefaultValue", new AtomConcept())" Width="80px" />
-                            </Columns>
-                        </RadzenDataGrid>
+                        @if (transactionalItemQualitys != null && transactionalItemQualitys.Count > 0)
+                       {
+                            <_QualityParameters transactionalItemQualityList ="transactionalItemQualitys">
+                           </_QualityParameters>
+                         
+                        }
                     </div>
 
                 </ContentTemplate>
@@ -745,29 +765,31 @@
                         </div>
 
 
-                        @if (inRecipeModifiers == null) inRecipeModifiers = new();
+                        @if (inRecipeModifiers != null && inRecipeModifiers.Count > 0)
+                        {
 
-                        <RadzenDataGrid AllowFiltering="true"
-                                        AllowColumnResize="true"
-                                        AllowAlternatingRows="true"
-                                        FilterMode="FilterMode.Advanced"
-                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                        AllowSorting="true"
-                                        AllowPaging="true"
-                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                                        ShowPagingSummary="true"
-                                        Data="@inRecipeModifiers"
-                                        TItem="RecipeModifier"
-                                        ColumnWidth="300px"
-                                        SelectionMode="DataGridSelectionMode.Single"
-                                        LogicalFilterOperator="LogicalFilterOperator.Or"
-                                        PageNumbersCount="100"
-                                        PageSize="50">
+                            <RadzenDataGrid AllowFiltering="true"
+                                            AllowColumnResize="true"
+                                            AllowAlternatingRows="true"
+                                            FilterMode="FilterMode.Advanced"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                            AllowSorting="true"
+                                            AllowPaging="true"
+                                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                            ShowPagingSummary="true"
+                                            Data="@inRecipeModifiers"
+                                            TItem="RecipeModifier"
+                                            ColumnWidth="300px"
+                                            SelectionMode="DataGridSelectionMode.Single"
+                                            LogicalFilterOperator="LogicalFilterOperator.Or"
+                                            PageNumbersCount="100"
+                                            PageSize="50">
 
-                            <Columns>
-                                <RadzenDataGridColumn TItem="RecipeModifier" Property="Name" Title="@GetName("Name", new AtomConcept())" Width="80px" />
-                            </Columns>
-                        </RadzenDataGrid>
+                                <Columns>
+                                    <RadzenDataGridColumn TItem="RecipeModifier" Property="Name" Title="@GetName("Name", new AtomConcept())" Width="80px" />
+                                </Columns>
+                            </RadzenDataGrid>
+                        }
                     </div>
                 </ContentTemplate>
             </TabItem>
@@ -787,6 +809,10 @@
     public string filterItems { get; set; } = "";
 
     bool requiereSave = false;
+
+
+
+
     public TransactionalItemType transactionalItemType = new();
     public List<ConceptGroup> childrenGroups = new();
     public ConceptGroup childrenGroup = new();
@@ -813,19 +839,32 @@
 
 
 
-    public List<GridColumn> gridColumnListConceptGroup = new();
+    // public List<GridColumn> gridColumnListConceptGroup = new();
 
     public bool isLoading = false, dataGridView = true, modeEdit = true, viewMsg = false;
     //public List<PossibleValues> possibleValuesModel = new();
     public List<TransactionalItemCharacteristic> possibleValues = new();
     public TransactionalItemCharacteristic possibleValue = new();
+
+
+    #region List
+    public List<BasicConcept> processTypeList = new();
+     public List<ChargeableUnitsType> typeOfComponentsToChargeList = new();
+    #endregion List
+
+    #region ref
+    RadzenDataGrid<TransactionalItemQuality> _transactionalItemQuality;
+    #endregion ref
+
+
     string msg = "";
     string pageView = "";
 
-    protected override void OnParametersSet()
-    {
-        StateHasChanged();
-    }
+    //protected override void OnParametersSet()
+    //{
+       
+    //    StateHasChanged();
+    //}
 
     protected async override void OnInitialized()
     {
@@ -872,7 +911,7 @@
     @<RadzenMenu Click="OnMenuItemClick2">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
-        );
+    );
 
     void OnMenuItemClick2(MenuItemEventArgs args)
     {
@@ -911,7 +950,7 @@
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
-           );
+    );
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
@@ -923,7 +962,7 @@
     @<RadzenMenu Click="OnMenuItemClickTag">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
-           );
+    );
 
     void OnMenuItemClickTag(MenuItemEventArgs args)
     {
@@ -950,7 +989,7 @@
     @<RadzenMenu Click="OnMenuItemClickModifier">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
-       );
+    );
 
     void OnMenuItemClickModifier(MenuItemEventArgs args)
     {
@@ -964,7 +1003,7 @@
     @<RadzenMenu Click="OnMenuItemClickCharacteristic">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
-      );
+    );
 
     void OnMenuItemClickCharacteristic(MenuItemEventArgs args)
     {
@@ -1000,19 +1039,18 @@
 
         if (tile == "Save")
         {
-
             transactionalItemType.TransactionalItemProcesses = transactionalItemProcessSteps;
             transactionalItemType.TransactionalItemTypeCharacteristics = transactionalItemTypeCharacteristics;
             transactionalItemType.QualityParameters = transactionalItemQualitys;
             transactionalItemType.Groups = childrenGroups;
             transactionalItemType.InRecipeModifiers = inRecipeModifiers;
 
-            var resul = await transactionalService.SaveTransactionalItemType(transactionalItemType);
+            var result = await transactionalService.SaveTransactionalItemType(transactionalItemType);
 
-            if (resul)
+            if (result!=null && result.Id!=null)
             {
                 requiereSave = false;
-                Msg(resul);
+                Msg(result!=null);
 
             }
             else
@@ -1197,6 +1235,7 @@
             {
                 if (transactionalItemQualitys == null) transactionalItemQualitys = new();
                 transactionalItemQualitys.Add(transactionalItemQuality);
+               
                 transactionalItemQuality = new();
                 Msg("Added");
             }
@@ -1207,7 +1246,7 @@
 
             }
 
-
+            
 
         }
 
@@ -1250,7 +1289,7 @@
 
         }
 
-
+        StateHasChanged();
 
     }
 
@@ -1298,8 +1337,7 @@
     {
         if (childrenGroup.Name != null)
         {
-            if (childrenGroup.GroupClassificationCriteria != null)
-            {
+           
                 if (childrenGroup.Id == null)
                 {
                     childrenGroups.Add(childrenGroup);
@@ -1314,9 +1352,9 @@
                 }
 
 
-            }
 
         }
+        StateHasChanged();
 
     }
 
@@ -1338,7 +1376,7 @@
 
     public string GetName(string Name, Object Obj)
     {
-        Name = UICommonFunctions.GetDisplayName(Obj, Name)!=null ? UICommonFunctions.GetDisplayName(Obj, Name):Name;
+        Name = UICommonFunctions.GetDisplayName(Obj, Name) != null ? UICommonFunctions.GetDisplayName(Obj, Name) : Name;
         return Name;
     }
 
@@ -1361,6 +1399,8 @@
         pageView = value;
         modeEdit = false;
         viewMsg = false;
+
+
     }
 
     public void Closed(string value)
@@ -1381,16 +1421,23 @@
 
     public void Load()
     {
-        
+
     }
 
-    //public class PossibleValues
-    //{
-    //    public string Id { get; set; }
-    //    public string Name { get; set; }
-    //    public bool IsEnabled { get; set; }
-    //    public string AdditionalDescription { get; set; }
-    //}
+
+    #region select
+    public void SelecProcessType(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    {
+        processType = processTypeList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+        StateHasChanged();
+    } 
+    
+    public void SelecTypeOfComponentsToCharge(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    {
+        typeOfComponentsToCharge = typeOfComponentsToChargeList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+        StateHasChanged();
+    }
+    #endregion select
 
     public class TransactionalItemQualityPairModel
     {
@@ -1401,5 +1448,4 @@
         public string DefaulValue { get; set; }
         public string Id { get; set; }
     }
-
 }

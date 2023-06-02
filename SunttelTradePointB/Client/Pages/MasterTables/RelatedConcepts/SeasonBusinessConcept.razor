@@ -22,7 +22,7 @@
         <div><input type="text" @bind-value="seasonBusiness.Name" class="form-control info-text-size" placeholder="Edit value" /></div>
         <div><label class="info-text-size" >@GetName( "Code", new AtomConcept())</label></div>
         <div><input type="text" @bind-value="seasonBusiness.Code" class="form-control info-text-size" placeholder="Edit value" /></div>
-        <div><label class="info-text-size" >@GetName( "Code", new AtomConcept())</label></div>
+        <div><label class="info-text-size">@GetName( "FlagSundayShipping", new SeasonBusiness())</label></div>
         <div>
             <SfSwitch @bind-Checked="seasonBusiness.FlagSundayShipping"></SfSwitch>
         </div>

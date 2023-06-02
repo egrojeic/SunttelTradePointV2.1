@@ -198,7 +198,6 @@
                                                 {
                                                     <ChipItem Text="@Group?.Name" LeadingIconCss="anne"></ChipItem>
                                                 }
-
                                             }
                                         }
                                     }
@@ -207,6 +206,8 @@
                             <InputTextSelector3 TItem="ConceptGroup"
                                             EventSearcherValueAndId="EventSearcherValueAndId"
                                             EventIdSelectionAndId="SelectionMade"
+                                            EventClosed="EventClosed"
+                                            style="left:-30px;"
                                             Items="ListGroups"
                                             captionOff="true"
                                             Visible="PopupViewGroups"
@@ -491,7 +492,8 @@
     {
         if (SearchValueMode == "Group")
         {
-           FilterListGroups.Add(arg);
+            var item =  FilterListGroups.FindLast(s => s.Name.ToLower() == arg.Name.ToLower());
+            if(item == null)FilterListGroups.Add(arg);
         } 
 
         StateHasChanged();
@@ -501,13 +503,13 @@
     {
         if (SearchValueMode == "Roles")
         {
-          role = arg;
+            role = arg;
         }
 
         StateHasChanged();
     }
 
-   
+
 
     public async void ItemSelected(MenuEventArgs menuEventArgs)
     {
@@ -614,5 +616,9 @@
         navigationManager.NavigateTo($"/Actors/{Id}/Image");
     }
 
-
+    public void EventClosed()
+    {
+        PopupViewGroups = false;
+        StateHasChanged();
+    }
 }

@@ -384,7 +384,7 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// </summary>
         /// <param name="transactionalItemType"></param>   
         /// <returns></returns>
-        Task<bool> SaveTransactionalItemType(TransactionalItemType transactionalItemType);
+        Task<TransactionalItemType> SaveTransactionalItemType(TransactionalItemType transactionalItemType);
 
         /// Save Transactional Item Group
         /// </summary>       

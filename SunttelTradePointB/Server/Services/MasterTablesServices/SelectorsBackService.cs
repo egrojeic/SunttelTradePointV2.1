@@ -96,16 +96,12 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     { BasicRolesFilter.Company, "Company" },
                     { BasicRolesFilter.User, "User" },
                     { BasicRolesFilter.Employee, "Employee" },
-                    { BasicRolesFilter.SalesPerson, "SalesPerson" }
+                    { BasicRolesFilter.SalesPerson, "Salesperson" }
                 };
 
                 string strNameFilter = filterString == null ? "" : filterString;
 
                 string strRoleName = roleIndex == null ? "" : roleDict[roleIndex ?? 0];
-
-                var rolId = _entitiesActor.Find(s => s.DefaultEntityRole.Name.ToLower() == strRoleName.ToLower()).FirstOrDefault();
-
-                string Id = rolId != null ? rolId.DefaultEntityRole.Id : ObjectId.Empty.ToString();
 
                 var pipe = new List<BsonDocument>();
 
@@ -114,16 +110,29 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     pipe.Add(
                         new BsonDocument(
                         "$match",
-                          new BsonDocument("DefaultEntityRole._id", new ObjectId(Id))
+                          new BsonDocument("DefaultEntityRole.Name", new ObjectId(strRoleName))
                                 )
                     );
                 }
+                else
+                {
+                            pipe.Add(
+                        new BsonDocument(
+                            "$match",
+                              new BsonDocument(
+                                     "Name",
+                                        new BsonDocument(
+                                            "$regex", new BsonRegularExpression($"/{strNameFilter}/i"))
+                                )
+                        )
+                    );
 
-                pipe.Add(
-                    new BsonDocument(
-                        "$match", new BsonDocument("Status.IsEnabledForTransactions", true)
-                    )
-                );
+                }
+                //pipe.Add(
+                //    new BsonDocument(
+                //        "$match", new BsonDocument("Status.IsEnabledForTransactions", true)
+                //    )
+                //);
 
                 pipe.Add(
                     new BsonDocument {
@@ -141,7 +150,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 if (strNameFilter.ToLower() != "all")
                     results = results.Where(n => n.Name.ToLower().Contains(strNameFilter.ToLower())).ToList();
                 else
-                    results = results.Where(n => n.Id!=null).ToList();
+                    results = results.Where(n => n.Id != null).ToList();
 
                 return (true, results, null);
             }

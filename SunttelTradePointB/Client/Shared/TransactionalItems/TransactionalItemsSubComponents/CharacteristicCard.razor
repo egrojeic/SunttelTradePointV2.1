@@ -38,7 +38,7 @@
             </div>
             <div><label class="info-text-size"> @GetName("Value", new TransactionalItemCharacteristicPair()) </label></div>
             <div>
-                <select @bind="transactionalItemCharacteristicPair.Value" class="form-control info-text-size">
+                <select @bind="transactionalItemCharacteristicPair.Value" class="select-style">
 
                     <option value="0" selected>Select</option>
                     @foreach (var item in possibleValues)
@@ -93,10 +93,10 @@
     protected async override void OnInitialized()
     {
         transactionalItemCharacteristicPairs = await transactionalService.GetCharacteristic(transactionalItemId);
-        if (transactionalItemCharacteristicPairs != null)
+        if (transactionalItemCharacteristicPairs != null && characteristicPairId!=null)
         {
             transactionalItemCharacteristicPair = transactionalItemCharacteristicPairs.Where(s => s.Id == characteristicPairId).FirstOrDefault();
-            transactionalItemTypeCharacteristic = transactionalItemCharacteristicPair.TransactionalItemCharacteristic;
+            if (transactionalItemCharacteristicPair.TransactionalItemCharacteristic!=null) transactionalItemTypeCharacteristic = transactionalItemCharacteristicPair.TransactionalItemCharacteristic;
         }
 
 

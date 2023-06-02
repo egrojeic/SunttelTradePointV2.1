@@ -9,7 +9,7 @@
        @* <button type="button" ><i class="fa-sharp fa-solid fa-circle-plus"></i></button>*@
     </div>
     <div class="position-input">
-        <div class="component-input" style=" @style display:@(Visible?"block":"none");   ">
+        <div class="component-input" style=" display:@(Visible?"block":"none");  @style   ">
             <div style=" flex-direction:row; display:@(Items==null || Items.Count<=0 || !modeSearcher?"flex":"none"); ">
                 <input @bind="inputSearcherValue" class="form-control" autocomplete="on" />
                 <img id="btn-img" src="images/search.svg" @onclick="SearcherValue" />
@@ -90,6 +90,8 @@
         }
     }
 
+  
+
     private async Task OnSelectedItemChanged(ChangeEventArgs e)
     {
         var value = (string)e.Value;
@@ -107,7 +109,7 @@
         if (inputSearcherValue != null && inputSearcherValue != "")
         {
             await EventSearcherValueAndId.InvokeAsync((inputSearcherValue, Id));
-          
+
         }
         else
         {
@@ -176,7 +178,7 @@
     {
         if (SelectedObj != null)
         {
-            EventIdSelectionAndId.InvokeAsync(SelectedObj);
+            EventIdSelectionAndId.InvokeAsync(SelectedObj);          
             Items = new List<TItem>();
             Visible = false;
             modeSearcher = false;

@@ -1,0 +1,42 @@
+﻿<RadzenDataGrid  AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="true"
+                FilterMode="FilterMode.Advanced"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                AllowSorting="true"
+                AllowPaging="true"
+                PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                ShowPagingSummary="true"
+                Data="@transactionalItemQualityList"
+                TItem="TransactionalItemQuality"
+                ColumnWidth="300px"
+                SelectionMode="DataGridSelectionMode.Single"
+                LogicalFilterOperator="LogicalFilterOperator.Or"
+                PageNumbersCount="100"
+                PageSize="50">
+
+    <Columns>
+        <RadzenDataGridColumn TItem="TransactionalItemQuality" Property="Name" Title="@GetName("Name", new AtomConcept())" Width="80px" />
+        <RadzenDataGridColumn TItem="TransactionalItemQuality" Property="Code" Title="@GetName("Code", new AtomConcept())" Width="80px" />
+        <RadzenDataGridColumn TItem="TransactionalItemQuality" Property="Note" Title="@GetName("Note", new AtomConcept())" Width="80px" />
+        <RadzenDataGridColumn TItem="TransactionalItemQuality" Property="DefaultValue" Title="@GetName("DefaultValue", new AtomConcept())" Width="80px" />
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    [Parameter]
+    public List<TransactionalItemQuality> transactionalItemQualityList { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        StateHasChanged();
+        base.OnParametersSet();
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+}

@@ -1270,7 +1270,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             try
             {
-                var resul = await _httpClient.PostAsJsonAsync<SeasonBusiness>($"api/TransactionalItemsRelatedConcepts/SaveSeason?userId={userId}&ipAddress={ipAddress}", seasonBusiness);
+                var resul = await _httpClient.PostAsJsonAsync<SeasonBusiness>($"/api/TransactionalItemsRelatedConcepts/SaveSeason?userId={userId}&ipAddress={ipAddress}", seasonBusiness);
                 return resul.IsSuccessStatusCode;
             }
             catch (Exception ex)
@@ -1320,7 +1320,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         }
 
-        public async Task<bool> SaveTransactionalItemType(TransactionalItemType transactionalItemType)
+        public async Task<TransactionalItemType> SaveTransactionalItemType(TransactionalItemType transactionalItemType)
         {
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
@@ -1330,12 +1330,12 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             try
             {
                 var resul = await _httpClient.PostAsJsonAsync<TransactionalItemType>($"api/TransactionalItemsRelatedConcepts/SaveTransactionalItemType?userId={userId}&ipAddress={ipAddress}", transactionalItemType);
-                return resul.IsSuccessStatusCode;
+                return  await resul.Content.ReadFromJsonAsync<TransactionalItemType>();
             }
             catch (Exception ex)
             {
                 string errMessage = ex.Message;
-                return false;
+                return null;
             }
 
         }
