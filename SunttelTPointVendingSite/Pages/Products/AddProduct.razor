@@ -1,0 +1,105 @@
+﻿@page "/AddProduct"
+@using SunttelTradePointB.Shared.ecommerce;
+@inject IRepository repository
+@inject SweetAlertService sweetAlertService
+
+@if (loading)
+{
+    <Loading></Loading>
+}
+else
+{
+    <EditForm Model="product" OnValidSubmit="SaveProduct">
+        <DataAnnotationsValidator />
+
+        <div class="card">
+            <div class="card-header">
+                <span>
+                    <i class="oi oi-person" /> Add new product
+                    <button class="btn btn-sm btn-primary float-end mx-2" type="submit"><i class="oi oi-check" /> Save</button>
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label>Name:</label>
+                            <div>
+                                <InputText class="form-control" @bind-Value="@product.Name" />
+                                <ValidationMessage For="@(() => product.Name)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label>Description:</label>
+                            <div>
+                                <InputText class="form-control" @bind-Value="@product.Description" />
+                                <ValidationMessage For="@(() => product.Description)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label>Price:</label>
+                            <div>
+                                <InputNumber class="form-control" @bind-Value="@product.ReferenceCost" />
+                                <ValidationMessage For="@(() => product.ReferenceCost)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+
+                        <div class="mb-3">
+                            <InputImg Label="Picture" ImageSelected="ImageSelected" ImageURL="@imageUrl" />
+                        </div>
+
+                    </div>
+                </div>
+                @if (showApiResponse)
+                {
+                    <ApiResponses></ApiResponses>
+                }
+            </div>
+        </div>
+    </EditForm>
+}
+
+@code {
+    public Product product = new Product();
+    public string imageUrl = string.Empty;
+    public bool loading = false;
+    public bool showApiResponse = false;
+
+    private void ImageSelected(string imagenBase64)
+    {
+        var image = new TransactItemImage()
+            {
+                Name = imagenBase64,
+                PathImage = imagenBase64
+            };
+
+        product.PathImages.Add(image);
+    }
+
+    private async Task SaveProduct()
+    {
+        loading = true;
+        var responseHttp = await repository.Post<Product>("api/Ecommerce/AddProduct", product);
+        loading = false;
+
+        if (responseHttp.Error)
+        {
+            if (responseHttp.HttpResponseMessage.StatusCode != HttpStatusCode.NotFound)
+            {
+                var message = await responseHttp.GetErrorMessageAsync();
+                await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+            }
+        }
+        else
+        {
+            showApiResponse = true;
+            StateHasChanged();
+        }
+    }
+}

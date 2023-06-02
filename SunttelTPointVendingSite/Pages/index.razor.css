@@ -41,3 +41,9 @@ ul{
     font-size: 13px;
     margin-bottom: 20px;
 }
+
+#card-img {
+   height: 228px;
+   width: 228px;
+   object-fit: contain
+}

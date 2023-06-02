@@ -1,0 +1,20 @@
+﻿
+<div class="container">
+    @if (Error)
+    {
+        <div class="alert alert-danger" role="alert">
+            @Message
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-success" role="alert">
+            @Message
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public string Message { get; set; } = "Operation executed successfully";
+    [Parameter] public bool Error { get; set; } = false;
+}

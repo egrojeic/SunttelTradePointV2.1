@@ -68,7 +68,6 @@
 	  <Folder Include="Controllers\ProductionCtrl\" />
 	  <Folder Include="Controllers\QualityControlCtrl\" />
 	  <Folder Include="Interfaces\AccountingInterfaces\" />
-	  <Folder Include="Interfaces\ECommerceInterfaces\" />
 	  <Folder Include="Interfaces\EDIInterfaceInterfaces\" />
 	  <Folder Include="Interfaces\InventoryInterfaces\" />
 	  <Folder Include="Interfaces\MarketingInterfaces\" />
@@ -80,7 +79,6 @@
 	  <Folder Include="Services\InventoryServices\" />
 	  <Folder Include="Services\AccountingServices\" />
 	  <Folder Include="Services\EDIInterfaceServices\" />
-	  <Folder Include="Services\ECommerceServices\" />
 	  <Folder Include="Services\MarketingServices\" />
 	  <Folder Include="Services\QualityControlServices\" />
 	  <Folder Include="Services\ProcurementServices\" />

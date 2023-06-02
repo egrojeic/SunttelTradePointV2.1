@@ -37,6 +37,8 @@ using SunttelTradePointB.Server.Services.QualityBkServices;
 using SunttelTradePointB.Server.Interfaces.StandingOrderBkServices;
 using SunttelTradePointB.Server.Services.StandingOrderBkServices;
 using Microsoft.IdentityModel.Tokens;
+using SunttelTradePointB.Server.Interfaces.EcommerceInterfaces;
+using SunttelTradePointB.Server.Services.EcommerceServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -114,6 +116,7 @@ builder.Services.AddTransient<ITransactionalItemsRelatedConceptsBKService, Trans
 builder.Services.AddTransient<IEntitiesRelatedConcepts, EntityActorsRelatedConceptsService>();
 builder.Services.AddTransient<IMessagesValet, MessageValet>();
 builder.Services.AddTransient<IInventory, InventoryService>();
+builder.Services.AddTransient<IEcommerce, EcommerceService>();
 builder.Services.AddTransient<IPayment, PaymentService>();
 builder.Services.AddTransient<ICredit, CreditService>();
 builder.Services.AddTransient<IQuality, QualityService>();

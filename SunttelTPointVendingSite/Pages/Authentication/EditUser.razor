@@ -4,9 +4,6 @@
 @*@inject ILoginService loginService*@
 @inject IRepository Repository
 
-@using System.ComponentModel.DataAnnotations
-
-
 @if (loading)
 {
     <Loading></Loading>
@@ -204,7 +201,7 @@ else
             {
                 countries = responseHttp.Response;
             }
-        }
+        }   
 
         StateHasChanged();
     }
