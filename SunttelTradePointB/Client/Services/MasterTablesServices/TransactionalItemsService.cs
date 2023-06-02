@@ -1036,6 +1036,10 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
                 {
                     list = list.Where(s => s.Name.ToLower().Contains(nameLike)).ToList();
                 }
+                else if(list!=null)
+                {
+                     list = list.Where(f=>f.Name.ToLower().Contains(nameLike.ToLower())).ToList();
+                }
                 return list != null ? list : new List<LabelPaper>();
             }
             catch (Exception ex)

@@ -176,7 +176,7 @@
             </div>
 
             <div><label class="info-text-size">@GetName("Buyer",new CommercialDocument())</label></div>
-            <div class="Buyer">
+            <div  class="Buyer Edit-control">
 
                 <InputTextSelector3 styleCaption="min-width: 25vw;" TItem="Concept"
                                 Id="Buyer"
@@ -187,6 +187,10 @@
                                 Disable="GetTypeStatus()">
 
                 </InputTextSelector3>
+                @if (commercialDocument.Buyer != null)
+                {
+                    <button type="button" @onclick='()=>EditActorMode(commercialDocument.Buyer.Id)'><i class="bi bi-pencil-square"></i></button>
+                }
 
             </div>
 
@@ -203,9 +207,8 @@
 
             </div>
             <div><label class="info-text-size">@GetName("DeliveryAddress",new CommercialDocument())</label></div>
-            <div class="Edit-control">
+            <div >
                 <select @onchange="SelectItemDeliveryAddress" class="select-style info-text-size">
-
 
                     @if (addressList != null && addressList.Count() > 0)
                     {
@@ -219,11 +222,7 @@
                     {
                         <option value="@commercialDocument.DeliveryAddress.Id" selected>@commercialDocument.DeliveryAddress.Name</option>
                     }
-                </select>
-                @if (commercialDocument.Buyer != null)
-                {
-                    <button type="button" @onclick='()=>EditActorMode(commercialDocument.Buyer.Id)'><i class="bi bi-pencil-square"></i></button>
-                }
+                </select>               
             </div>
 
             <div><label class="info-text-size">@GetName("Season",new CommercialDocument())</label></div>
