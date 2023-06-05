@@ -1,0 +1,135 @@
+﻿@page "/SalesOrders"
+
+@inject NavigationManager navigation
+
+<PageTitleComponent Title="Sale Orders" IconName="commercialDocument.png"
+                    Description="@("Farm Control")">
+</PageTitleComponent>
+
+<div class="ordernav">
+    <ul class="nav nav-underline">
+        <li class="nav-item">
+            <a class="nav-link" aria-current="page" @onclick="() => ChangeTab(1)">All</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" @onclick="() => ChangeTab(2)">Canceled</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" @onclick="() => ChangeTab(3)">Confirmed</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" @onclick="() => ChangeTab(4)">Pending Orders</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" @onclick="() => ChangeTab(5)">Shipped</a>
+        </li>
+    </ul>
+    <div>
+        <i class="mx-3 oi oi-comment-square" id="iconNav" @onclick="NavigateToChat">
+        </i>
+        <i class="mx-3 oi oi-bell" id="iconNav" @onclick="ToggleNotificationsMenu">
+            <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
+                <span class="visually-hidden">New alerts</span>
+            </span>
+        </i>
+    </div>
+    @if (showNotificationsMenu)
+    {
+        <div class="noti">
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action" aria-current="true">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">List group item heading</h5>
+                        <small>3 days ago</small>
+                    </div>
+                    <p class="mb-1">Some placeholder content in a paragraph.</p>
+                    <small>And some small print.</small>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">List group item heading</h5>
+                        <small class="text-muted">3 days ago</small>
+                    </div>
+                    <p class="mb-1">Some placeholder content in a paragraph.</p>
+                    <small class="text-muted">And some muted small print.</small>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">List group item heading</h5>
+                        <small class="text-muted">3 days ago</small>
+                    </div>
+                    <p class="mb-1">Some placeholder content in a paragraph.</p>
+                    <small class="text-muted">And some muted small print.</small>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">List group item heading</h5>
+                        <small class="text-muted">3 days ago</small>
+                    </div>
+                    <p class="mb-1">Some placeholder content in a paragraph.</p>
+                    <small class="text-muted">And some muted small print.</small>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">List group item heading</h5>
+                        <small class="text-muted">3 days ago</small>
+                    </div>
+                    <p class="mb-1">Some placeholder content in a paragraph.</p>
+                    <small class="text-muted">And some muted small print.</small>
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">List group item heading</h5>
+                        <small class="text-muted">3 days ago</small>
+                    </div>
+                    <p class="mb-1">Some placeholder content in a paragraph.</p>
+                    <small class="text-muted">And some muted small print.</small>
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="container">
+    @if (page == 1)
+    {
+        <All></All>
+    }
+    else if (page == 2)
+    {
+        <Cancelled></Cancelled>
+    }
+    else if (page == 3)
+    {
+        <Confirmed></Confirmed>
+    }
+    else if (page == 4)
+    {
+        <PendingOrders></PendingOrders>
+    }
+    else if (page == 5)
+    {
+        <Shipped></Shipped>
+    }
+</div>
+
+
+@code {
+    bool showNotificationsMenu = false;
+    public int page = 1;
+
+    public void ChangeTab(int _page)
+    {
+        page = _page;
+    }
+
+    void ToggleNotificationsMenu()
+    {
+        showNotificationsMenu = !showNotificationsMenu;
+    }
+
+    public void NavigateToChat()
+    {
+        navigation.NavigateTo("/ChatGeneral");
+    }
+}

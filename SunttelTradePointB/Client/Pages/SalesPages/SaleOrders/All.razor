@@ -1,0 +1,113 @@
+﻿@inject ContextMenuService ContextMenuService
+@inject NavigationManager navigationManager
+@using SunttelTradePointB.Shared.Sales;
+
+<div class="panelMenuContainer">
+
+<RangeDatesInput @bind-StartDate="@startingDate" @bind-EndDate="@endDate"
+                 EventSearchAll="EventSearchAll"></RangeDatesInput>
+</div>
+
+<RadzenDataGrid AllowFiltering="true"
+                AllowColumnResize="true"
+                AllowAlternatingRows="true"
+                FilterMode="FilterMode.Advanced"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                AllowSorting="true"
+                PageSize="10"
+                ColumnWidth="100%"
+                AllowPaging="true"
+                PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                ShowPagingSummary="true"
+                SelectionMode="DataGridSelectionMode.Single"
+                LogicalFilterOperator="LogicalFilterOperator.Or"
+                Data="purchaseItemDetails"
+                CellContextMenu="@ShowContextMenuWithContent"
+                TItem="PurchaseItemDetails">
+    <Columns>
+        <RadzenDataGridColumn TItem="PurchaseItemDetails" Property="Id" Title="@GetName("Id",new PurchaseItemDetails())" Filterable="false" Width="50px" />
+        <RadzenDataGridColumn TItem="PurchaseItemDetails" Property="Provider.Name" Title="Provider" Filterable="false" Width="50px" />
+        <RadzenDataGridColumn TItem="PurchaseItemDetails" Property="AssignedQty" Title="@GetName("AssignedQty",new PurchaseItemDetails())" Filterable="false" Width="50px" />
+        <RadzenDataGridColumn TItem="PurchaseItemDetails" Property="ConfirmedQty" Title="@GetName("ConfirmedQty",new PurchaseItemDetails())" Filterable="false" Width="50px" />
+        <RadzenDataGridColumn TItem="PurchaseItemDetails" Property="ExpectedCost" Title="@GetName("ExpectedCost",new PurchaseItemDetails())" Filterable="false" Width="50px" />
+        <RadzenDataGridColumn TItem="PurchaseItemDetails" Property="ConfirmedCost" Title="@GetName("ConfirmedCost",new PurchaseItemDetails())" Filterable="false" Width="50px" />
+        <RadzenDataGridColumn TItem="PurchaseItemDetails" Property="ProviderShipDate" Title="@GetName("ProviderShipDate",new PurchaseItemDetails())" Filterable="false" Width="50px" />
+    </Columns>
+</RadzenDataGrid>
+
+
+@code {
+    public List<PurchaseItemDetails> purchaseItemDetails = new List<PurchaseItemDetails>();
+    DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
+
+    public void EventSearchAll(string value)
+    {
+
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        // Crear y agregar objetos a la lista
+        PurchaseItemDetails item1 = new PurchaseItemDetails()
+            {
+                Id = "1",
+                SalesDocumentItemsDetailsId = "100",
+                PurchaseDocumentItemsDetailsId = "200",
+                Provider = new BasicConcept()
+                {
+                    Id = "2",
+                    Name = "Provider 2"
+                },
+                AssignedQty = 10,
+                ConfirmedQty = 0,
+                ExpectedCost = 50.0,
+                ConfirmedCost = 40.0,
+                ProviderShipDate = DateTime.Now,
+                ISRejectedByProvider = false,
+                CancelationInfo = new CancelationTrack()
+            };
+
+        purchaseItemDetails.Add(item1);
+
+        PurchaseItemDetails item2 = new PurchaseItemDetails()
+            {
+                Id = "2",
+                SalesDocumentItemsDetailsId = "101",
+                PurchaseDocumentItemsDetailsId = "201",
+                Provider = new BasicConcept()
+                {
+                    Id = "1",
+                    Name = "Provider 1"
+                },
+                AssignedQty = 5,
+                ConfirmedQty = 5,
+                ExpectedCost = 20.0,
+                ConfirmedCost = 15.0,
+                ProviderShipDate = DateTime.Now.AddDays(1),
+                ISRejectedByProvider = true,
+                CancelationInfo = new CancelationTrack()
+            };
+        purchaseItemDetails.Add(item2);
+
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+    void ShowContextMenuWithContent(DataGridCellMouseEventArgs<PurchaseItemDetails> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        PurchaseItemDetails argObj = (PurchaseItemDetails)args.Value;
+        navigationManager.NavigateTo($"/SaleOrderDetail/{argObj.Id}");
+    }
+
+}

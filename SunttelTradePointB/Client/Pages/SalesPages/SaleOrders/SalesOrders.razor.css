@@ -1,0 +1,33 @@
+﻿ul {
+    color: black;
+}
+
+a {
+    cursor: pointer;
+    color: black;
+}
+
+#iconNav{
+    cursor: pointer;
+}
+
+.ordernav {
+    display: flex;
+    width: 100%;
+    margin-bottom: 30px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background: #e8e9ec;
+}
+
+.noti {
+    z-index: 999;
+    position: fixed;
+    width: 420px;
+    right: 10px;
+    max-height: 350px;
+    top: 189px;
+    overflow-y: auto;
+    border: 1px solid lightgray;
+}

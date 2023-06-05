@@ -1,0 +1,74 @@
+﻿@page "/SaleOrderDetail/{SaleOrderId}"
+@using SunttelTradePointB.Shared.Sales;
+
+<PageTitleComponent Title="Sale Order Detail" IconName="commercialDocument.png"
+                    Description="@("Farm Control Detail")">
+</PageTitleComponent>
+
+@if (loading)
+{
+    <div class="load-container">
+        <img src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif" />
+    </div>
+}
+else
+{
+    <div class="container">
+        <EditForm Model="purchaseItemDetails">
+            <DataAnnotationsValidator />
+
+            <div class="card">
+                <div class="card-header">
+                    <span>
+                        <i class="oioi-bullhorn" /> Confirm Quantity
+                        <button class="btn btn-sm btn-primary float-end mx-2" type="submit"><i class="oi oi-check" /> Confirm</button>
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">Assigned Quantity</label>
+                                <input type="text" value="3" class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">Confirm Quantity</label>
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">Expected Cost</label>
+                                <input type="text" value="31000" class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">Confirm Cost</label>
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </EditForm>
+    </div>
+}
+
+
+@code {
+    [Parameter] public string SaleOrderId { get; set; } = string.Empty;
+    public bool loading = false;
+    PurchaseItemDetails purchaseItemDetails = new PurchaseItemDetails();
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        //Consultar SaleOrderId
+    }
+}
