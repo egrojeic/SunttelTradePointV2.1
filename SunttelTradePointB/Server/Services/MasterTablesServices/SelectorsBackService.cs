@@ -21,7 +21,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
     public class SelectorsBackService : ISelectorDataSource
     {
 
-        IMongoCollection<AtomConcept> _entities;
+        IMongoCollection<EntityActor> _entities;
         IMongoCollection<EntityActor> _entitiesActor;
         IMongoCollection<AtomConcept> _addresses;
         IMongoCollection<AtomConcept> _entityComercialGroups;
@@ -53,7 +53,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
             var mongoDatabase = mongoClient.GetDatabase(DataBaseName);
             _entitiesActor = mongoDatabase.GetCollection<EntityActor>("EntityNodes");
-            _entities = mongoDatabase.GetCollection<AtomConcept>("EntityNodes");
+            _entities = mongoDatabase.GetCollection<EntityActor>("EntityNodes");
             _addresses = mongoDatabase.GetCollection<AtomConcept>("EntityNodes");
             _entityComercialGroups = mongoDatabase.GetCollection<AtomConcept>("EntityGroups");
             _entityRoles = mongoDatabase.GetCollection<AtomConcept>("Roles");
@@ -289,7 +289,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="perPage"></param>
         /// <param name="filterString"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<AtomConcept>? EntityRolesList, string? ErrorDescription)> GetSelectorListEntityRoles(string? filterString, int? page = 1, int? perPage = 10)
+        public async Task<(bool IsSuccess, List<EntityRole>? EntityRolesList, string? ErrorDescription)> GetSelectorListEntityRoles(string? filterString, int? page = 1, int? perPage = 10)
         {
             try
             {
@@ -310,44 +310,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         }
 
                     );
-                }
+                }             
 
-                //pipeline.Add(
-                //    new BsonDocument(
-                //        "$match",
-                //          new BsonDocument(
-                //                 "Name",
-                //                    new BsonDocument(
-                //                        "$regex", new BsonRegularExpression($"/{strNameFiler}/i"))
-                //            )
-                //    )
-                //);
-
-                pipeline.Add(
-                    new BsonDocument {
-                        { "$project",
-                            new BsonDocument {
-                                { "Code", 1 },
-                                { "Name", 1 },
-                                { nameof(EntityRole.EntityRoleClassifier), 1 }
-                            }
-                        }
-                    }
-                );
-
-                //pipeline.Add(
-                //    new BsonDocument{
-                //        {"$skip",  skip}
-                //        }
-                //    );
-
-                //pipeline.Add(
-                //    new BsonDocument{
-                //        {"$limit",  perPage}
-                //    }
-                //);
-
-                List<AtomConcept> results = await _entityRoles.Aggregate<AtomConcept>(pipeline).ToListAsync();
+                List<EntityRole> results = await _entityRoles.Aggregate<EntityRole>(pipeline).ToListAsync();
 
                 return (true, results, null);
             }
@@ -887,7 +852,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<AtomConcept>? VendorsList, string? ErrorDescription)> GetVendors(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null)
+        public async Task<(bool IsSuccess, List<EntityActor>? VendorsList, string? ErrorDescription)> GetVendors(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null)
         {
             try
             {
@@ -916,7 +881,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         }
                     );
                 }
-
+               
                 if (isASale)
                 {
                     //Es venta
@@ -925,8 +890,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         {
                             { "$match",
                                 new BsonDocument{
-                                    { "EntityActor.DefaultEntityRole.IsCompany", true },
-                                    { "SquadId", $"/{squadId}"}
+                                    { "DefaultEntityRole.IsCompany", true }
                                 }
                             }
                         }
@@ -960,16 +924,16 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     }
                 );
 
-                List<AtomConcept> results = await _entities.Aggregate<AtomConcept>(pipe).ToListAsync();
+                List<EntityActor> results = await _entities.Aggregate<EntityActor>(pipe).ToListAsync();
                 //var results = new List<AtomConcept>();
 
                 if (strNameFilter.ToLower() == "all")
-                    results = _entities.Find(e => e.Id != null && e.SquadId.ToLower() == squadId.ToLower()).ToList().Take(200).ToList();
+                    results = results.Where(e => e.Id != null && e.SquadId.ToLower() == squadId.ToLower()).ToList();
 
                 if (!(strNameFilter.ToLower() == "all"))
-                    results = _entities.Find(e =>e.SquadId.ToLower() == squadId.ToLower()  &&  e.Name.ToLower().Contains(strNameFilter.ToLower())).ToList();
+                    results = results.Where(e =>e.SquadId.ToLower() == squadId.ToLower()  &&  e.Name.ToLower().Contains(strNameFilter.ToLower())).ToList();
 
-                if (isASale) results = results.Where(e => e.SquadId.ToLower() == squadId.ToLower()).ToList();
+
 
                 return (true, results, null);
             }
@@ -991,7 +955,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<AtomConcept>? BuyersList, string? ErrorDescription)> GetBuyers(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null)
+        public async Task<(bool IsSuccess, List<EntityActor>? BuyersList, string? ErrorDescription)> GetBuyers(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null)
         {
             try
             {
@@ -1062,7 +1026,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     }
                 );
 
-                List<AtomConcept> results = new();
+                List<EntityActor> results = new();
                 if (strNameFilter.ToLower() == "all")
                     results = _entities.Find(e => e.Id != null && e.SquadId == squadId).ToList();
 
