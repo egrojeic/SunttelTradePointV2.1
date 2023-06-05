@@ -1,0 +1,23 @@
+﻿.delete-image {
+    position: relative;
+    top: -105px;
+    right: 17px;
+    background: white;
+    border-radius: 50%;
+    font-size: 25px;
+}
+
+.image-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 10px;
+}
+
+.image {
+    margin: 15px;
+}
+
+    .image i {
+        cursor: pointer;
+    }

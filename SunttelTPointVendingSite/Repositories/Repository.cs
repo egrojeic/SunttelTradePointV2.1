@@ -72,6 +72,12 @@ namespace SunttelTPointVendingSite.Repositories
             return new HttpResponseWrapper<object>(null, !responseHttp.IsSuccessStatusCode, responseHttp);
         }
 
+        public async Task<HttpResponseWrapper<object>> SendImagesAsync(string url, MultipartFormDataContent content)
+        {
+            var responseHttp = await _httpClient.PostAsync(url, content);
+            return new HttpResponseWrapper<object>(null, !responseHttp.IsSuccessStatusCode, responseHttp);
+        }
+
         public async Task<HttpResponseWrapper<TResponse>> Post<T, TResponse>(string url, T model)
         {
             var messageJSON = JsonSerializer.Serialize(model);

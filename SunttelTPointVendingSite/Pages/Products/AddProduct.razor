@@ -9,7 +9,8 @@
 }
 else
 {
-    <EditForm Model="product" OnValidSubmit="SaveProduct">
+
+    <EditForm Model="product" OnValidSubmit="SendImages">
         <DataAnnotationsValidator />
 
         <div class="card">
@@ -20,6 +21,11 @@ else
                 </span>
             </div>
             <div class="card-body">
+
+                @if (showApiResponse)
+                {
+                    <ApiResponses></ApiResponses>
+                }
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="mb-3">
@@ -48,19 +54,35 @@ else
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    @*<div class="col-lg-6">
 
-                        <div class="mb-3">
-                            <InputImg Label="Picture" ImageSelected="ImageSelected" ImageURL="@imageUrl" />
-                        </div>
-
-                    </div>
+                <div class="mb-3">
+                <InputImg Label="Picture" ImageSelected="ImageSelected" ImageURL="@imageUrl" />
                 </div>
-                @if (showApiResponse)
-                {
-                    <ApiResponses></ApiResponses>
-                }
+
+                </div>*@
+                </div>
+               
             </div>
+
+            <div class="container mb-2">
+                <h3>Image Uploader</h3>
+
+                <InputFile type="file" multiple OnChange="OnFileSelected" />
+            </div>
+
+            @if (uploadedImages != null && uploadedImages.Count > 0)
+            {
+                <div class="image-container">
+                    @foreach (var image in uploadedImages)
+                    {
+                        <div class="image">
+                            <img src="@image.base64" alt="Uploaded Image" width="228" height="228" />
+                            <i class="oi oi-circle-x text-danger delete-image"></i>
+                        </div>
+                    }
+                </div>
+            }
         </div>
     </EditForm>
 }
@@ -70,6 +92,67 @@ else
     public string imageUrl = string.Empty;
     public bool loading = false;
     public bool showApiResponse = false;
+    public List<ProductImage> uploadedImages = new List<ProductImage>();
+    private List<IBrowserFile> selectedFiles = new List<IBrowserFile>();
+
+    private async Task OnFileSelected(InputFileChangeEventArgs e)
+    {
+        selectedFiles.Clear();
+        selectedFiles.AddRange(e.GetMultipleFiles());
+
+        foreach (var file in selectedFiles)
+        {
+            var imageBytes = new byte[file.Size];
+            await file.OpenReadStream().ReadAsync(imageBytes);
+            var imageBase64 = Convert.ToBase64String(imageBytes);
+            var img = new ProductImage()
+                {
+                    base64 = $"data:{file.ContentType};base64,{imageBase64}",
+                    file = file
+                };
+            uploadedImages.Add(img);
+        }
+        StateHasChanged();
+    }
+
+    public async Task SendImages()
+    {
+        try
+        {
+            if (!uploadedImages.Any())
+            {
+                await sweetAlertService.FireAsync("Error", "Save at least one image", SweetAlertIcon.Error);
+                return;
+            }
+
+            var formData = new MultipartFormDataContent();
+
+            foreach (var img in uploadedImages)
+            {
+                formData.Add(new StreamContent(img.file.OpenReadStream()), "files", img.file.Name);
+            }
+
+            var responseHttp = await repository.SendImagesAsync("api/Ecommerce/UploadProductImages", formData);
+
+
+            if (responseHttp.Error)
+            {
+                if (responseHttp.HttpResponseMessage.StatusCode != HttpStatusCode.NotFound)
+                {
+                    var message = await responseHttp.GetErrorMessageAsync();
+                    await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+                }
+            }
+            else
+            {
+                await SaveProduct();
+            }
+        }
+        catch (Exception ex)
+        {
+            await sweetAlertService.FireAsync("Error", ex.Message, SweetAlertIcon.Error);
+        }
+    }
 
     private void ImageSelected(string imagenBase64)
     {
@@ -84,6 +167,12 @@ else
 
     private async Task SaveProduct()
     {
+        product.PathImages = uploadedImages.Select(x => new TransactItemImage()
+            {   
+                Name = x.file.Name,
+                PathImage = x.file.Name
+            }).ToList();
+
         loading = true;
         var responseHttp = await repository.Post<Product>("api/Ecommerce/AddProduct", product);
         loading = false;
@@ -101,5 +190,13 @@ else
             showApiResponse = true;
             StateHasChanged();
         }
+    }
+
+    public class ProductImage
+    {
+        public string Id { get; set; }
+        public string base64 { get; set; }
+
+        public IBrowserFile file;
     }
 }

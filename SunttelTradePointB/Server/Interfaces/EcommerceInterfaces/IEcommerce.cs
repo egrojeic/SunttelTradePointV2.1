@@ -14,5 +14,12 @@ namespace SunttelTradePointB.Server.Interfaces.EcommerceInterfaces
         /// <param name="product"></param>
         /// <returns></returns>
        Task<ServiceResponse<Product>> AddProduct(Product product);
+
+        /// <summary>
+        /// Get All Products
+        /// </summary>
+        /// <param></param>
+        /// <returns></returns>
+        Task<ServiceResponse<List<Product>>> GetProducts();
     }
 }

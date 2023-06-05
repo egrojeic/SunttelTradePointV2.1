@@ -2,7 +2,8 @@
 using SunttelTradePointB.Server.Interfaces.EcommerceInterfaces;
 using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.ecommerce;
-using SunttelTradePointB.Shared.InvetoryModels;
+using MongoDB.Bson;
+using System.Runtime.Serialization;
 
 namespace SunttelTradePointB.Server.Services.EcommerceServices
 {
@@ -39,6 +40,11 @@ namespace SunttelTradePointB.Server.Services.EcommerceServices
             ServiceResponse<Product> resp = new ServiceResponse<Product>();
             try
             {
+                foreach (var image in product.PathImages)
+                {
+                    image.Id = ObjectId.GenerateNewId().ToString();
+                }
+
                 await _EcommerceCollection.InsertOneAsync(product);
             }
             catch (Exception ex)
@@ -48,5 +54,35 @@ namespace SunttelTradePointB.Server.Services.EcommerceServices
             }
             return resp;
         }
+
+
+        /// <summary>
+        /// Get All Products
+        /// </summary>
+        /// <param></param>
+        /// <returns></returns>
+        public async Task<ServiceResponse<List<Product>>> GetProducts()
+        {
+            ServiceResponse<List<Product>> resp = new ServiceResponse<List<Product>>();
+            try
+            {
+                var filter = Builders<Product>.Filter.Empty; // Empty filter to retrieve all documents
+                var products = await _EcommerceCollection.FindAsync(filter);
+
+                resp.Entity = await products.ToListAsync();
+                resp.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                resp.IsSuccess = false;
+                resp.ErrorDescription = ex.Message;
+            }
+            return resp;
+        }
+
+
+
+
+
     }
 }

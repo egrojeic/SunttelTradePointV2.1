@@ -15,6 +15,8 @@
         Task<HttpResponseWrapper<TResponse>> Put<T, TResponse>(string url, T model);
 
         Task<HttpResponseWrapper<T>> Get<T>(string url, string SquadId = "");
+
+        Task<HttpResponseWrapper<object>> SendImagesAsync(string url, MultipartFormDataContent content);
     }
 
 }

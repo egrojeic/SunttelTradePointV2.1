@@ -9,6 +9,7 @@ main {
     margin-top: 2rem;
     border-radius: 5px;
     border: 1px solid lightgray;
+    margin-bottom: 50px;
 }
 
 article {
@@ -16,7 +17,7 @@ article {
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 80vh;
+    min-height: 80vh;
 }
 
 .page {
