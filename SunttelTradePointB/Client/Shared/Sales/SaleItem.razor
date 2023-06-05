@@ -223,7 +223,7 @@
 
             <div><label class="info-text-size">@GetName("Season",new CommercialDocument())</label></div>
             <div>
-                <select @onchange="SelectItemBusinessLineDoc" class="select-style info-text-size" tabindex="11">
+                <select @onchange="SelectSeason" class="select-style info-text-size" tabindex="11">
 
                     @if (seasonList != null && GetTypeStatus())
                     {
@@ -520,9 +520,7 @@ else
 
     public void SelectItemCarrie(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
-
         commercialDocument.Carrier = carrierList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
-
     }
 
     public void SelectItemVendorWarehous(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
@@ -557,6 +555,13 @@ else
     {
 
         commercialDocument.BusinessLineDoc = businessLineDocList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+
+    }
+
+    public void SelectSeason(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    {
+
+        commercialDocument.Season = seasonList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
 
     }
 
@@ -718,6 +723,7 @@ else
         if (commercialDocument.Vendor == null || commercialDocument.Vendor.Id == null) msg = "required fields Vendor";
         if (commercialDocument.Buyer == null || commercialDocument.Buyer.Id == null) msg = "required fields Buyer";
         if (commercialDocument.SalesPerson == null || commercialDocument.SalesPerson.Id == null) msg = "required fields Sales Person";
+        if (commercialDocument.Season == null || commercialDocument.Season.Id == null) msg = "required fields Sales Person";
         if (commercialDocument.BusinessLineDoc == null || commercialDocument.BusinessLineDoc.Id == null) msg = "required fields Business LineDoc ";
         if (commercialDocument.BuyerWarehouse == null || commercialDocument.BuyerWarehouse.Id == null) msg = "required fields Buyer Warehouse";
         if (commercialDocument.DeliveryAddress == null || commercialDocument.DeliveryAddress.Id == null) msg = "required fields Delivery Address";
