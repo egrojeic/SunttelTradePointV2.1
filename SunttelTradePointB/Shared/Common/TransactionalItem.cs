@@ -94,6 +94,8 @@ namespace SunttelTradePointB.Shared.Common
         [DisplayName("Image Name")]
         public string PathImage { get; set; }
 
+        [DisplayName("Is main Image")]
+        public bool IsMainImage { get; set; }
         public override string ToString()
         {
             return Name;
@@ -347,10 +349,10 @@ namespace SunttelTradePointB.Shared.Common
         public double PackPerBoxLayer { get; set; }
 
         [DisplayName("Number of Box to sale Layers")]
-        public int PackLayersToSale { get; set; }
+        public int PackLayersToSale { get; set; } = 1;
 
         [DisplayName("Number of Box to buy Layers")]
-        public int PackLayersToBuy { get; set; }
+        public int PackLayersToBuy { get; set; } = 1;
 
         [DisplayName("Sale Box Pack")]
         public Box PackingBoxToSale { get; set; }
@@ -482,7 +484,7 @@ namespace SunttelTradePointB.Shared.Common
 
         [DisplayName("Pallets Equivalent")]
         public double FullBoxEquivalent { get; set; }
-        
+
 
     }
 

@@ -70,10 +70,12 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetEntityDetailsAddressList")]
-        public async Task<IActionResult> GetEntityDetailsAddressList(string userId, string ipAdress, string EntityId) {
+        public async Task<IActionResult> GetEntityDetailsAddressList(string userId, string ipAdress, string EntityId)
+        {
 
-           
-            var response = await _entityNodes.GetEntityDetailsOf<Address>(userId, ipAdress, EntityId,  EntityDetailsSection.AddressList);
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _entityNodes.GetEntityDetailsOf<Address>(userId, ipAdress, squadId, EntityId, EntityDetailsSection.AddressList);
 
             if (response.IsSuccess)
             {
@@ -96,7 +98,9 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         [ActionName("GetEntityDetailsPhoneDirectory")]
         public async Task<IActionResult> GetEntityDetailsPhoneDirectory(string userId, string ipAdress, string EntityId)
         {
-            var response = await _entityNodes.GetEntityDetailsOf<PhoneNumber>(userId, ipAdress, EntityId,  EntityDetailsSection.PhoneDirectory);
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _entityNodes.GetEntityDetailsOf<PhoneNumber>(userId, ipAdress, squadId, EntityId, EntityDetailsSection.PhoneDirectory);
 
             if (response.IsSuccess)
             {
@@ -117,7 +121,9 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         [ActionName("GetEntityDetailsIdentifiersList")]
         public async Task<IActionResult> GetEntityDetailsIdentifiersList(string userId, string ipAdress, string EntityId)
         {
-            var response = await _entityNodes.GetEntityDetailsOf<IdentificationEntity>(userId, ipAdress, EntityId, EntityDetailsSection.IdentifiersList);
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _entityNodes.GetEntityDetailsOf<IdentificationEntity>(userId, ipAdress, squadId, EntityId, EntityDetailsSection.IdentifiersList);
 
             if (response.IsSuccess)
             {
@@ -182,7 +188,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         {
             var response = await _entityNodes.GetEntityGroup(userId, ipAdress, entityGroupId);
 
-            if(response.IsSuccess)
+            if (response.IsSuccess)
             {
                 return Ok(response.entityGroup);
             }
@@ -232,7 +238,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         {
             var result = await _entityNodes.GetElectronicAddresses(userId, ipAdress, entityActorId);
 
-            if(result.IsSuccess)
+            if (result.IsSuccess)
             {
                 return Ok(result.electronicAddresses);
             }
@@ -304,7 +310,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         {
             var result = await _entityNodes.GetElectronicAddressById(userId, ipAdress, electronicAddressId);
 
-            if(result.IsSuccess)
+            if (result.IsSuccess)
             {
                 return Ok(result.electronicAddress);
             }
@@ -328,7 +334,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         {
             var result = await _entityNodes.GetShippingSetupById(userId, ipAdress, shippingInfoId);
 
-            if(result.IsSuccess)
+            if (result.IsSuccess)
             {
                 return Ok(result.shippingInfo);
             }
@@ -352,7 +358,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         {
             var result = await _entityNodes.GetEntitiesCommercialRelationShipById(userId, ipAdress, entitiesCommercialRelationShipId);
 
-            if(result.IsSuccess)
+            if (result.IsSuccess)
             {
                 return Ok(result.entitiesCommercialRelationShip);
             }
@@ -486,7 +492,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         {
             var response = await _entityNodes.SaveEntityGroup(userId, ipAdress, entityGroup);
 
-            if(response.IsSuccess)
+            if (response.IsSuccess)
             {
                 return Ok(response.entityGroup);
             }
@@ -511,7 +517,7 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         {
             var response = await _entityNodes.SaveElectronicAddress(userId, ipAdress, entityActorId, electronicAddress);
 
-            if(response.IsSuccess)
+            if (response.IsSuccess)
             {
                 return Ok(response.electronicAddress);
             }

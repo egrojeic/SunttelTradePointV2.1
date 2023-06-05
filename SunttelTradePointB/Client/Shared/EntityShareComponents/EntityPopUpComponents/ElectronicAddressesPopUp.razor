@@ -11,41 +11,52 @@
 <div class="control-section">
     <div class="row">
         <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
-           
-                    <form onsubmit="event.preventDefault();">
-                        <div class="form-group row">
-                            <div class="form-group row">
-                                <label class="control-label col-md-12 info-text-size">@lblAddresKey*: </label>
-                                <div class="col">
-                                    <input type="text" class="form-control info-text-size" @bind-value="electronicAddress.AddressKey" required />
-                                </div>
-                            </div>
+
+            <form onsubmit="event.preventDefault();">
+                <div class="form-group row">
+                    <div class="form-group row">
+                        <label class="control-label col-md-12 info-text-size">@lblAddresKey*: </label>
+                        <div class="col">
+                            <input type="text" class="form-control info-text-size" @bind-value="electronicAddress.AddressKey" required />
                         </div>
+                    </div>
+                </div>
 
-                        <div class="form-group row py-2">
-                            <div class="form-group row">
-                                <label class="control-label col-md-12 info-text-size">@lblEmitter*: </label>
+                <div class="form-group row py-2">
+                    <div class="form-group row">
+                        <label class="control-label col-md-12 info-text-size">@lblEmitter*: </label>
+                        <div>
+                            <select @onchange="SelectIteEmitter" class="select-style info-text-size" tabindex="1" autofocus>
 
-                                <InputTextSelector3 TItem="AtomConcept"
-                                                    Id="Electronic"
-                                                    caption="@(electronic != null ? electronic.Name : "")"
-                                                    EventSearcherValueAndId="EventSearcherValueAndId"
-                                                    EventIdSelectionAndId="SelectionMade"                                                
-                                                    Items="electronicAddressesList">
-                                </InputTextSelector3>
+                                @if (electronicAddressesList != null && electronicAddressesList.Count() > 0)
+                                {
+                                    <option value="0" selected>Select</option>
 
-                            </div>
+                                    @foreach (var item in electronicAddressesList)
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+                                }
+                                @if (electronic != null && electronic.Name != null )
+                                {
+                                    <option value="@electronic.Id" selected>@electronic.Name</option>
+                                }
+                            </select>
                         </div>
+                      
 
-                        <MessageSaveComponent message="Electronic Address Saved" isVisible="visible"></MessageSaveComponent>
+                    </div>
+                </div>
 
-                        <div class="py-2">
-                            <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveElectronicAddress(Id, electronicAddress))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
-                            <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
-                        </div>
-                    </form>
+                <MessageSaveComponent message="Electronic Address Saved" isVisible="visible"></MessageSaveComponent>
 
-                
+                <div class="py-2">
+                    <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveElectronicAddress(Id, electronicAddress))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                    <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
+                </div>
+            </form>
+
+
         </div>
     </div>
 </div>
@@ -113,6 +124,12 @@
                 StateHasChanged();
             }
         }
+    }
+
+    public void SelectIteEmitter(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    {
+        electronic = electronicAddressesList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+        StateHasChanged();
     }
 
 

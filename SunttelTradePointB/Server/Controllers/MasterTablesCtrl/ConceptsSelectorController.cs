@@ -42,8 +42,10 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         [ActionName("GetSelectorListEntityActor")]
         public async Task<IActionResult> GetSelectorListEntityActor(string? filterString = null, BasicRolesFilter? roleIndex = null)
         {
+                var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
 
-            var response = await _selectorDatasource.GetSelectorListEntityActor(filterString, roleIndex);
+            var response = await _selectorDatasource.GetSelectorListEntityActor(filterString,squadId, roleIndex);
 
             if (response.IsSuccess)
             {
@@ -380,6 +382,8 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         [ActionName("GetSelectorListAssemblyTypes")]
         public async Task<IActionResult> GetSelectorListAssemblyTypes(string filterString)
         {
+              var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
             var response = await _selectorDatasource.GetSelectorListAssemblyTypes(filterString);
 
             if (response.IsSuccess)
@@ -475,8 +479,9 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         [ActionName("GetCarriers")]
         public async Task<IActionResult> GetCarriers(string filterString)
         {
-
-            var response = await _selectorDatasource.GetSelectorListEntityActor(filterString, BasicRolesFilter.Carrier);
+              var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _selectorDatasource.GetSelectorListEntityActor(filterString,squadId, BasicRolesFilter.Carrier);
 
             if (response.IsSuccess)
             {
@@ -495,8 +500,9 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         [ActionName("GetSalesPersons")]
         public async Task<IActionResult> GetSalesPersons(string filterString)
         {
-
-            var response = await _selectorDatasource.GetSelectorListEntityActor(filterString, BasicRolesFilter.SalesPerson);
+              var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            var response = await _selectorDatasource.GetSelectorListEntityActor(filterString,squadId, BasicRolesFilter.SalesPerson);
 
             if (response.IsSuccess)
             {

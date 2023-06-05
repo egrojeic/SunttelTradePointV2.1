@@ -31,11 +31,7 @@
 
 <MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
 
-@if (@viewMsg)
-{
-    <MessageSaveComponent isVisible="viewMsg" message="@msg">
-    </MessageSaveComponent>
-}
+
 <PageTitleComponent Title="@GetName("ItemAssemblyType", new PackingSpecs())" IconName="assemblyType.png"
                     Description="Here you can add tags">
 </PageTitleComponent>
@@ -47,11 +43,11 @@
 {
     <div class="flex-horizontal-center">
         <div class="grid-mode-row">
-            <div><label class="info-text-size">@GetName("Name", new AtomConcept())</label></div>
+            <div><label class="info-text-size">@GetName(nameof(AssemblyType.Name), new AssemblyType())</label></div>
             <div> <input @bind-value="itemAssemblyType.Name" class="form-control info-text-size" placeholder="Edit key" /></div>
-            <div> <label class="info-text-size">@GetName("Code", new AtomConcept())</label></div>
+            <div> <label class="info-text-size">@GetName(nameof(AssemblyType.Code), new AssemblyType())</label></div>
             <div> <input @bind-value="itemAssemblyType.Code" class="form-control info-text-size" placeholder="Edit value" /></div>
-            <div> <label class="info-text-size">@GetName("Notes", new AtomConcept())</label></div>
+            <div> <label class="info-text-size">@GetName(nameof(AssemblyType.Notes), new AssemblyType())</label></div>
             <div> <input @bind-value="itemAssemblyType.Notes" class="form-control info-text-size" placeholder="Edit value" /></div>
             <div></div>
             <div class="flex-horizontal-end">
@@ -148,7 +144,7 @@
     bool viewMsg = false;
     string msg = "";
     string IdDelete = "";
-        int status = 0;
+    int status = 0;
     string transactionalItemId = "";
     bool isLoading = false;
 
@@ -168,9 +164,13 @@
         var r = modePage;
         _filterItems = "all";
         LoadData();
-        if (itemAssemblyTypeId == null)
+        if (itemAssemblyTypeId != null)
         {
             itemAssemblyType = await transactionalService.GetAssemblyTypeByID(itemAssemblyTypeId);
+        }
+        else
+        {
+            itemAssemblyType = new();
         }
         transactionalService.Page = "ItemAssemblyType";
         StateHasChanged();
@@ -238,7 +238,7 @@
 
     public string GetName(string Name, Object Obj)
     {
-        Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        Name = UICommonFunctions.GetDisplayName(Obj, Name)!=null?  UICommonFunctions.GetDisplayName(Obj, Name):Name;
         return Name;
     }
 

@@ -52,33 +52,38 @@
 
 
             <RadzenDataGrid AllowFiltering="true"
-                    AllowColumnResize="true"
-                    AllowAlternatingRows="true"
-                    FilterMode="FilterMode.Advanced"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    AllowSorting="true"
-                    PageSize="50"
-                    ColumnWidth="100%"
-                    AllowPaging="true"
-                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"
-                    CellContextMenu="@ShowContextMenuCommercialDocument"
-                    Data="entityRolesList"
-                    TItem="EntityRole">
+                            AllowColumnResize="true"
+                            AllowAlternatingRows="true"
+                            FilterMode="FilterMode.Advanced"
+                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            AllowSorting="true"
+                            PageSize="50"
+                            ColumnWidth="100%"
+                            AllowPaging="true"
+                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                            ShowPagingSummary="true"
+                            SelectionMode="DataGridSelectionMode.Single"
+                            LogicalFilterOperator="LogicalFilterOperator.Or"
+                            CellContextMenu="@ShowContextMenuCommercialDocument"
+                            Data="entityRolesList"
+                            TItem="EntityRole">
                 <Columns>
                     <RadzenDataGridColumn TItem="EntityRole" Property="Code" Title="@GetName("Code",new EntityRole())" Filterable="false" Width="150px" />
                     <RadzenDataGridColumn TItem="EntityRole" Property="Name" Title="@GetName("Name",new EntityRole())" Filterable="false" Width="150px" />
+                    <RadzenDataGridColumn TItem="EntityRole" Title="@GetName("EntityRoleClassifier",new EntityRole())" Filterable="false" Width="150px">
+                        <Template Context="data">
+                            @GetRol(data)
+                        </Template>
+                    </RadzenDataGridColumn>
 
                     <RadzenDataGridColumn TItem="EntityRole" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="100px" TextAlign="Radzen.TextAlign.Center">
                         <Template Context="data">
 
                             <Confirm Id="@data.Id" TextValue="@($"¿ Confirm delete ?")"
-                             IdSelect="@IdDelete"
-                             ConfirmIdAction='ConfirmDelete'
-                             CancelAction="CancelDelete"
-                             SelectIdAction="SelectDelete"></Confirm>
+                                     IdSelect="@IdDelete"
+                                     ConfirmIdAction='ConfirmDelete'
+                                     CancelAction="CancelDelete"
+                                     SelectIdAction="SelectDelete"></Confirm>
 
                         </Template>
                     </RadzenDataGridColumn>
@@ -199,6 +204,17 @@
     {
         if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name;
+    }
+
+    public string GetRol(EntityRole data)
+    {
+        string rol = "";
+        if (data.IsUser) rol = "Is User";
+        if (data.IsCompany) rol = "Is Company";
+        if (data.IsProvider) rol = "Is Provider";
+        if (data.IsCustomer) rol = "Is Customer";
+        return rol;
+
     }
 
 }

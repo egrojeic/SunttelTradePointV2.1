@@ -13,41 +13,52 @@
 <div class="control-section">
     <div class="row">
         <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6 container">
-           
-                    <form onsubmit="event.preventDefault();">
-                        <div class="form-group row">
-                            <div class="form-group row">
-                                <label class="control-label col-md-12 info-text-size">@lblCode*: </label>
-                                <div class="col">
-                                    <input type="number" class="form-control info-text-size" @bind-value="identificationEntity.Code" required />
-                                </div>
+
+            <form onsubmit="event.preventDefault();">
+                <div class="form-group row">
+                    <div class="form-group row">
+                        <label class="control-label col-md-12 info-text-size">@lblCode*: </label>
+                        <div class="col">
+                            <input type="number" class="form-control info-text-size" @bind-value="identificationEntity.Code" required />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row py-2">
+                    <div class="form-group row">
+                        <label class="control-label col-md-12 info-text-size">@lblEntityIssuer*: </label>
+                        <div class="col">
+                            <div>
+                                <select @onchange="SelectIteIdentification" class="select-style info-text-size" tabindex="1" autofocus>
+
+                                    @if (identificationTypesList != null && identificationTypesList.Count() > 0)
+                                    {
+                                        <option value="0" selected>Select</option>
+
+                                        @foreach (var item in identificationTypesList)
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }
+                                    }
+                                    @if (identificationType != null && identificationType.Name != null)
+                                    {
+                                        <option value="@identificationType.Id" selected>@identificationType.Name</option>
+                                    }
+                                </select>
                             </div>
+
                         </div>
+                    </div>
+                </div>
 
-                        <div class="form-group row py-2">
-                            <div class="form-group row">
-                                <label class="control-label col-md-12 info-text-size">@lblEntityIssuer*: </label>
-                                <div class="col">                                   
-                                    <InputTextSelector3 TItem="IdentificationType"
-                                                        Id="Identification"
-                                                        EventSearcherValueAndId="EventSearcherValueAndId"
-                                                        EventIdSelectionAndId="SelectionMade"
-                                                        Items="identificationTypesList"
-                                                        caption="@(identificationType != null ? identificationType.Name : "")">
+                <MessageSaveComponent message="Identification Saved" isVisible="visible"></MessageSaveComponent>
 
-                                    </InputTextSelector3>
-                                </div>
-                            </div>
-                        </div>
+                <div class="py-2">
+                    <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveIdentification(Id, identificationEntity))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
+                    <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
+                </div>
+            </form>
 
-                        <MessageSaveComponent message="Identification Saved" isVisible="visible"></MessageSaveComponent>
-
-                        <div class="py-2">
-                            <button type="submit" class="size-btn color-btn" style="float:right" @onclick="(() => SaveIdentification(Id, identificationEntity))"><i class="fa-regular fa-floppy-disk color-hover"></i></button>
-                            <button type="button" class="btn" style="float:right" @onclick="GoBack"><i class="fa-sharp fa-solid fa-circle-arrow-left"></i></button>
-                        </div>
-                    </form>
-         
         </div>
     </div>
 </div>
@@ -83,6 +94,7 @@
     {
         lblCode = UICommonFunctions.GetDisplayName(new IdentificationEntity(), "Code");
         //lblEntityIssuer = UICommonFunctions.GetDisplayName(new IdentificationType(), "Identification type");
+        identificationTypesList = await actorsNodeServive.GetIdentificationTypes();
         await GetEntityIdentifierList(Id);
         GetIdentificationsType();
     }
@@ -123,25 +135,15 @@
         StateHasChanged();
     }
 
-    protected async void EventSearcherValueAndId((string value, string IdControl) arg)
-    {
-        SearchValueMode = arg.IdControl;
-        if (SearchValueMode == "Identification")
-        {
-            identificationTypesList = await actorsNodeServive.GetIdentificationTypes();
-            if (!arg.value.ToLower().Contains("all") && !arg.value.ToLower().Contains("todo"))
-            {
-                identificationTypesList = identificationTypesList.Where(s => s.Name.ToLower().Contains(arg.value.ToLower())).ToList();
-            }
-            if (identificationTypesList != null)
-            {
-                ParamCountResul = identificationTypesList.Count();
-            }
 
-        }
-        if (ParamCountResul > 0) { ViewSelect = true; } else { ViewSelect = false; }
-        await Refresh();
+
+    public void SelectIteIdentification(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    {
+        identificationType = identificationTypesList.FindLast(s => s.Id == arg.Value.ToString());
+        StateHasChanged();
     }
+
+  
 
     public void SelectionMade(IdentificationType arg)
     {

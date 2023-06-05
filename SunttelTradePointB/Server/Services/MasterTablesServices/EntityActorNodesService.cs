@@ -259,7 +259,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="entityActorId"></param>
         /// <param name="entityDetailsSection"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<T>? EntityRelatedList, string? ErrorDescription)> GetEntityDetailsOf<T>(string userId, string ipAdress, string entityActorId, EntityDetailsSection entityDetailsSection)
+        public async Task<(bool IsSuccess, List<T>? EntityRelatedList, string? ErrorDescription)> GetEntityDetailsOf<T>(string userId, string ipAdress,string squadId, string entityActorId, EntityDetailsSection entityDetailsSection)
         {
             string detailsArrayListName = "";
 
@@ -294,6 +294,10 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 pipeline.Add(
                     new BsonDocument("$match", new BsonDocument("_id", new ObjectId(entityActorId)))
                 );
+
+                //  pipeline.Add(
+                //    new BsonDocument("$match", new BsonDocument("SquadId",  $"/{squadId}/i"))
+                //);
 
                 
                 pipeline.Add(
@@ -1181,5 +1185,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 return (false, null, e.Message);
             }
         }
+
+      
     }
 }
