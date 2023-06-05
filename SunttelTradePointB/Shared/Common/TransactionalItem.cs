@@ -94,6 +94,8 @@ namespace SunttelTradePointB.Shared.Common
         [DisplayName("Image Name")]
         public string PathImage { get; set; }
 
+        [DisplayName("Is main Image")]
+        public bool IsMainImage { get; set; }
         public override string ToString()
         {
             return Name;

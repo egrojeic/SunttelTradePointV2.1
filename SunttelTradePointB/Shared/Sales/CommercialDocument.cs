@@ -317,20 +317,22 @@ namespace SunttelTradePointB.Shared.Sales
         public BasicConcept Provider { get; set; }
 
         [DisplayName("Assigned Qty")]
-        public int AssignedQty { get; set; }
+        public double AssignedQty { get; set; }
 
         [DisplayName("Confirmed Qty")]
-        public int ConfirmedQty { get; set; }
+        public double ConfirmedQty { get; set; }
 
         [DisplayName("Expected Cost")]
-        public int ExpectedCost { get; set; }
+        public double ExpectedCost { get; set; }
 
         [DisplayName("Confirmed Cost")]
-        public int ConfirmedCost { get; set; }
+        public double ConfirmedCost { get; set; }
 
         [DisplayName("Ship Date")]
-        public int ProviderShipDate { get; set; }
+        public DateTime ProviderShipDate { get; set; }
 
+        [DisplayName("Rejected by Provider")]
+        public bool ISRejectedByProvider { get; set; }
 
         public CancelationTrack CancelationInfo { get; set; }
 
