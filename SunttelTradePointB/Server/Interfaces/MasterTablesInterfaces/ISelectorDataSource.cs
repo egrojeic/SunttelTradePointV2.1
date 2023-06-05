@@ -43,7 +43,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="perPage"></param>
         /// <param name="filterString"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<AtomConcept>? EntityRolesList, string? ErrorDescription)> GetSelectorListEntityRoles(string? filterString, int? page = 1, int? perPage = 10);
+        Task<(bool IsSuccess, List<EntityRole>? EntityRolesList, string? ErrorDescription)> GetSelectorListEntityRoles(string? filterString, int? page = 1, int? perPage = 10);
 
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="squadId"></param>
         /// <param name="filterString"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<AtomConcept>? VendorsList, string? ErrorDescription)> GetVendors(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null);
+        Task<(bool IsSuccess, List<EntityActor>? VendorsList, string? ErrorDescription)> GetVendors(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null);
 
         /// <summary>
         /// Retrieves the list of Entity/Nodes/Actors filtered by the optional parameter or/and by role
@@ -176,7 +176,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="perPage"></param>
         /// <param name="filterString"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<AtomConcept>? BuyersList, string? ErrorDescription)> GetBuyers(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null);
+        Task<(bool IsSuccess, List<EntityActor>? BuyersList, string? ErrorDescription)> GetBuyers(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null);
 
     }
 }

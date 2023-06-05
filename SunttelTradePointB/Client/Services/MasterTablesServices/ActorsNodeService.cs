@@ -746,6 +746,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             EntityActorId = EntityActorId != null ? EntityActorId : "";
             var userId = UIClientGlobalVariables.UserId;
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            entityActor.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
             try
             {
                 userId = userId == "" ? "UX" : userId;
