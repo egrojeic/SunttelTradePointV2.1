@@ -9,3 +9,7 @@
 .width:hover {
     color: white;
 }
+
+.item-name{
+    text-align:center;
+}

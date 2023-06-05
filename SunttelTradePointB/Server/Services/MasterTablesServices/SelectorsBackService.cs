@@ -298,7 +298,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 var pipeline = new List<BsonDocument>();
 
-                if (!string.IsNullOrEmpty(filterString) && !filterString.ToLower().Equals("all") && !filterString.ToLower().Equals("todos")) // se agregó verificación de si strNameFiler está vacío
+                if (!string.IsNullOrEmpty(filterString) && filterString.ToLower() !="all" && !filterString.ToLower().Equals("todos")) // se agregó verificación de si strNameFiler está vacío
                 {
                     pipeline.Add(
                         new BsonDocument {
@@ -328,7 +328,8 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         { "$project",
                             new BsonDocument {
                                 { "Code", 1 },
-                                { "Name", 1 }
+                                { "Name", 1 },
+                                { nameof(EntityRole.EntityRoleClassifier), 1 }
                             }
                         }
                     }
@@ -924,7 +925,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         {
                             { "$match",
                                 new BsonDocument{
-                                    { "Groups.GroupClassificationCriteria.Name", new BsonRegularExpression("ORGANIZATION", "i") },
+                                    { "EntityActor.DefaultEntityRole.IsCompany", true },
                                     { "SquadId", $"/{squadId}"}
                                 }
                             }
@@ -959,14 +960,14 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     }
                 );
 
-               // List<Concept> results = await _entities.Aggregate<Concept>(pipe).ToListAsync();
-                var results = new List<AtomConcept>();
+                List<AtomConcept> results = await _entities.Aggregate<AtomConcept>(pipe).ToListAsync();
+                //var results = new List<AtomConcept>();
 
                 if (strNameFilter.ToLower() == "all")
                     results = _entities.Find(e => e.Id != null && e.SquadId.ToLower() == squadId.ToLower()).ToList().Take(200).ToList();
 
                 if (!(strNameFilter.ToLower() == "all"))
-                    results = _entities.Find(e =>e.SquadId.ToLower() == squadId.ToLower() &&  e.Name.ToLower().Contains(strNameFilter.ToLower())).ToList();
+                    results = _entities.Find(e =>e.SquadId.ToLower() == squadId.ToLower()  &&  e.Name.ToLower().Contains(strNameFilter.ToLower())).ToList();
 
                 if (isASale) results = results.Where(e => e.SquadId.ToLower() == squadId.ToLower()).ToList();
 

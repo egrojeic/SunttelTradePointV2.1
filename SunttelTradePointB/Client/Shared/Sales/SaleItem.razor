@@ -496,13 +496,13 @@ else
                 }
                 else
                 {
-                    alert("required fields", 1);
+                    alert("No saved", 1);
                 }
             }
         }
         else
         {
-            alert("No Saved", 1);
+            alert(msg, 1);
         }
 
         if (tile == "Print")
@@ -727,6 +727,7 @@ else
         if (commercialDocument.BusinessLineDoc == null || commercialDocument.BusinessLineDoc.Id == null) msg = "required fields Business LineDoc ";
         if (commercialDocument.BuyerWarehouse == null || commercialDocument.BuyerWarehouse.Id == null) msg = "required fields Buyer Warehouse";
         if (commercialDocument.DeliveryAddress == null || commercialDocument.DeliveryAddress.Id == null) msg = "required fields Delivery Address";
+        if (commercialDocument.Carrier == null || commercialDocument.Carrier.Id == null) msg = "required fields Carrier";
         return msg;
     }
 

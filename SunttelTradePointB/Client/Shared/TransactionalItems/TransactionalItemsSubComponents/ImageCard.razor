@@ -39,6 +39,13 @@
                                 </label>
                                 <InputFile id="file-input" @ref="inputFile" OnChange="@LoadFiles" class="btn color-btn" style="color:transparent;width:180px; border-radius:0px 0px 10px 10px; display:none;" />
                             </div>
+                            <div>
+                                <p class="item-name">
+                                    @GetName(nameof(TransactItemImage.IsMainImage),new TransactItemImage()): 
+                                    <input class="item-input" type="checkbox" @bind-value="transactItemImage.IsMainImage" />
+                                </p>
+
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -47,6 +54,7 @@
                         <textarea style="width:350px; height:150px; resize: none;" cols="13" placeholder="Edit description" @bind="transactItemImage.Name">
                         </textarea>
                     </td>
+
                 </tr>
                 <tr><td><br /><br /></td></tr>
                 <tr>
@@ -79,7 +87,7 @@
     string imgId = "";
     public bool PopupViewDialog = false;
     string urlImageStorage = "";
- 
+
 
     public MultipartFormDataContent fileUpload { get; set; }
     public enum UploadingFileType
@@ -139,8 +147,8 @@
                 var resul = await transactionalService.SaveImage(transactionalItemId, transactItemImage);
                 transactItemImage = new TransactItemImage();
 
-                if ( resul)
-                {                  
+                if (resul)
+                {
                     Msg("Saved");
                 }
                 else
@@ -216,7 +224,7 @@
 
     public string GetName(string Name, Object Obj)
     {
-        if (UICommonFunctions.GetDisplayName(Obj, Name) != null)Name =  UICommonFunctions.GetDisplayName(Obj, Name);
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
         return Name != null ? Name : Name;
     }
 
