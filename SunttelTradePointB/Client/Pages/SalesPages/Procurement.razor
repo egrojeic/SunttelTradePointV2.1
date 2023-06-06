@@ -1,0 +1,408 @@
+﻿@page "/Procurement"
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+@using SunttelTradePointB.Shared.Sales;
+@using SunttelTradePointB.Client.Shared.Sales.Procurement;
+@using System.Globalization;
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject ContextMenuService ContextMenuService
+@inject NavigationManager Navigation
+
+
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
+</style>
+
+
+<MessageSaveComponent isVisible="@visibleMsg" message="@msg">
+</MessageSaveComponent>
+
+
+
+
+@if (page == "Edit-1")
+{
+    <PageTitleComponent Title="Add provider" IconName="purchaseSpec.png"
+                        Description="@("Add provider")">
+    </PageTitleComponent>
+
+    <div class="panelMenuContainer scroll-vertical">
+        <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
+
+        <SfSplitButton tabindex="16" Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+            <SplitButtonEvents ItemSelected="ItemSelected">
+            </SplitButtonEvents>
+            <DropDownMenuItems>             
+                <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>              
+            </DropDownMenuItems>
+        </SfSplitButton>
+    </div>
+    <div class="div-provider">
+        <div><label class="info-text-size">@GetName("Provider",new PurchaseItemDetails())</label></div>
+        <div>
+            <InputTextSelector3 Tabindex="1" styleCaption="width:180px; " style="left:auto;" TItem="AtomConcept"
+                                Id="Provider"
+                                caption="@(purchaseSpec.Provider !=null ? purchaseSpec.Provider?.Name:"" )"
+                                Items="providerList"
+                                EventIdSelectionAndId="EventIdSelectionAndId"
+                                EventSearcherValueAndId="EventSearcherValueAndId">
+            </InputTextSelector3>
+        </div>
+
+        <div><label class="info-text-size">@GetName("ProviderShipDate",new PurchaseItemDetails())</label></div>
+        <input type="date" @bind-value="purchaseSpec.ProviderShipDate" class="input-style">
+
+        <div><label class="info-text-size">@GetName("AssignedQty",new PurchaseItemDetails())</label></div>
+        <input type="number" @bind-value="purchaseSpec.AssignedQty" class="input-style">
+    </div>
+}
+
+@if (page == "list")
+{
+    <PageTitleComponent Title="Procurement" IconName="purchaseSpec.png"
+                        Description="@( @namePage)">
+    </PageTitleComponent>
+
+    <div class="panelMenuContainer">
+       @* <ProcurementMenu namePage="@backPage"></ProcurementMenu>*@
+        <RangeDatesInput  EndDateName="To" @bind-StartDate="@startingDate" @bind-EndDate="@endDate"
+                         EventSearchAll="EventSearchAll"></RangeDatesInput>
+        <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
+    </div>
+ 
+    <SfTab @oncontextmenu:preventDefault="true" Height="250px" CssClass="tab-adaptive " HeaderPlacement="HeaderPosition.Left">
+        <TabAnimationSettings>
+            <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
+            <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
+        </TabAnimationSettings>
+        <TabItems>
+            <TabItem>
+                <ChildContent>
+                    <TabHeader Text="@GetName("Pending Procurement",new SalesDocumentItemsDetails())"></TabHeader>
+                </ChildContent>
+                <ContentTemplate>
+                    <div name="PendingProcurement">
+
+
+                        <div class="tableContainer">
+
+
+                            @if (isLoading)
+                            {
+
+                                <WaitingProcessIndicator loadingTopic="Items"></WaitingProcessIndicator>
+                            }
+
+                            else
+                            {
+                                if (procurementDetailList != null)
+                                {
+                                    <RadzenDataGrid AllowFiltering="true"
+                                                    AllowColumnResize="true"
+                                                    AllowAlternatingRows="true"
+                                                    FilterMode="FilterMode.Advanced"
+                                                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                                    AllowSorting="true"
+                                                    PageSize="50"
+                                                    AllowPaging="true"
+                                                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                                    ShowPagingSummary="true"
+                                                    Data="@procurementDetailList"
+                                                    TItem="SalesDocumentItemsDetails"
+                                                    ColumnWidth="100%"
+                                                    SelectionMode="DataGridSelectionMode.Single"
+                                                    LogicalFilterOperator="LogicalFilterOperator.Or">
+                                        <Columns>
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Sortable="false" Filterable="false" Width="100px" TextAlign="Radzen.TextAlign.Center" Frozen="true">
+                                                <Template Context="data">
+                                                    <Confirm Id="@data.Id"
+                                                             EditEnable=true
+                                                             IdEdit="@idDetailEdit"
+                                                             SavedAction="SaveItem"
+                                                             EditAction="EditItem"></Confirm>
+
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Title="Status" Width="148px">
+                                                <Template Context="data">
+                                                    <div class="@(idDetailEdit ==data.Id? "active-cell":"")">
+                                                        Pending Procurement
+                                                    </div>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName(nameof(SalesDocumentItemsDetails.TransactionalItem), new SalesDocumentItemsDetails())" Width="148px" />
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="@nameof(SalesDocumentItemsDetails.Qty)" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Width="148px" />
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="@nameof(SalesDocumentItemsDetails.Total)" Title="@GetName("Total", new SalesDocumentItemsDetails())" Width="148px" />
+
+                                        </Columns>
+                                    </RadzenDataGrid>
+                                    <div class="container-total">
+                                        <div class="item">
+                                            @(
+                                                $"Records: {procurementDetailList.Count}"
+                                                )
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </ContentTemplate>
+            </TabItem>
+
+            <TabItem>
+                <ChildContent>
+                    <TabHeader Text="@GetName("Pednding Provider",new SalesDocumentItemsDetails())"></TabHeader>
+                </ChildContent>
+                <ContentTemplate>
+                    <PedndingProvider ProcurementDetailList="procurementDetailList"></PedndingProvider>
+                </ContentTemplate>
+            </TabItem>
+        </TabItems>
+    </SfTab>
+}
+@code {
+
+    [Parameter]
+    public string _filterItems { get; set; }
+    [Parameter]
+    public string page { get; set; } = "list";
+    List<SalesDocumentItemsDetails>? procurementDetailList { get; set; }
+    public PurchaseItemDetails purchaseSpec { get; set; }
+
+    #region var
+    RadzenDataGrid<SalesDocumentItemsDetails>? grid;
+    public List<AtomConcept> providerList { get; set; }
+    public bool isLoading { get; set; }
+    public bool visibleMsg { get; set; }
+    public bool isSale { get; set; }
+    public string docsFilter { get; set; }
+    public string msg { get; set; }
+    public string namePage { get; set; } = "";
+    public string icoLogo { get; set; } = "";
+    public string backPage { get; set; } = "";
+    public string active { get; set; } = "";
+    string idDetailEdit = "";
+    DateTime startingDate { get; set; } = DateTime.Now;
+    DateTime endDate { get; set; } = DateTime.Now;
+    #endregion var
+
+
+
+    protected override void OnInitialized()
+    {
+        Load();
+        LoadData();
+        Load();
+        base.OnInitialized();
+    }
+
+    public async void LoadData()
+    {
+
+        var list = await DocumentServices.GetProcurementList();
+        Calculate(list);
+        StateHasChanged();
+    }
+
+    public void EventSearchAll()
+    {
+        LoadData();
+    }
+
+    #region compute values
+    public void Calculate(List<SalesDocumentItemsDetails>? list)
+    {
+        isLoading = true;
+        if (list != null)
+        {
+            foreach (var item in list)
+            {
+                AddPendingProcurement(item);
+            }
+        }
+        StateHasChanged();
+        isLoading = false;
+    }
+
+    private bool AddPendingProcurement(SalesDocumentItemsDetails details)
+    {
+        if (procurementDetailList == null) procurementDetailList = new();
+        //if (details.Provider != null) return false;
+        //if (details.InventoryItemId != null) return false;
+        var exist = procurementDetailList.Where(s => s.IdCommercialDocument == details.IdCommercialDocument).FirstOrDefault();
+
+        if (details.PurchaseSpecs != null)
+        {
+            foreach (var detail in details.PurchaseSpecs)
+            {
+                var countExist = exist != null ? exist.PurchaseSpecs.Where(s => s.Id == detail.Id).Sum(s => s.AssignedQty) : 0;
+                var countItem = detail.AssignedQty;
+                if (countExist < countItem)
+                {
+                    var edit = details.PurchaseSpecs.Where(s => s.Id == detail.Id).FirstOrDefault();
+                    edit.ConfirmedQty = (countItem - countExist);
+                    procurementDetailList.Add(details);
+                }
+
+            }
+        }
+        else
+        {
+            procurementDetailList.Add(details);
+        }
+
+        return true;
+    }
+
+    #endregion compute values
+
+
+    public async void ItemSelected(MenuEventArgs e)
+    {
+
+        string title = e.Item != null ? e.Item.Text : "";
+        if (title == "Save" && idDetailEdit != "")
+        {
+            SaveItem();
+        }
+        else
+        {
+            alert(true, "No saved");
+        }
+    }
+
+    public async void Save(SalesDocumentItemsDetails item)
+    {
+        alert(false, "...");
+        var result = await DocumentServices.SaveCommercialDocumentDetail(item);
+        if (result != null && result.Id != null)
+        {
+            alert(true, "Saved");
+            idDetailEdit = "";
+            StateHasChanged();
+        }
+        else
+        {
+            alert(true, "No saved");
+        }
+
+        StateHasChanged();
+    }
+
+    public void SaveItem(string? id = null)
+    {
+        if (id != null) idDetailEdit = id;
+
+        if (procurementDetailList != null)
+        {
+            var item = procurementDetailList.FindLast(s => s.Id == idDetailEdit);
+            if (item != null)
+            {
+                if (item.PurchaseSpecs == null) item.PurchaseSpecs = new();
+                item.PurchaseSpecs.Add(purchaseSpec);
+                Save(item);
+            }
+
+        }
+    }
+
+    public void EditItem(string? id = null)
+    {
+        if (id != null) idDetailEdit = id;
+        if (idDetailEdit != "") Page("Edit-1");
+    }
+
+    public void Page(string name)
+    {
+        page = name;
+        StateHasChanged();
+    }
+
+    public async void EventSearcherValueAndId((string value, string IdControl) arg)
+    {
+
+        if (arg.IdControl == "Provider")
+        {
+            providerList = new();
+            providerList = await DocumentServices.GetProviderList(arg.value, true, 1, 100);
+
+        }
+        StateHasChanged();
+    }
+
+    public void EventIdSelectionAndId(AtomConcept item)
+    {
+        if (item != null)
+        {
+            purchaseSpec.Provider = new BasicConcept()
+                    {
+                        Id = item.Id,
+                        SquadId = item.SquadId,
+                        Name = item.Name
+                    };
+        }
+    }
+
+
+    public string GetName(string Name, Object Obj)
+    {
+
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+
+        return Name;
+    }
+
+    public void alert(bool visible, string _msg)
+    {
+        visibleMsg = visible;
+        this.msg = _msg;
+        StateHasChanged();
+    }
+
+
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> args) => ContextMenuService.Open(args, ds =>
+    @<RadzenMenu Click="OnMenuItemClick">
+        <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+    </RadzenMenu>
+    );
+
+    void OnMenuItemClick(MenuItemEventArgs args)
+    {
+        SalesDocumentItemsDetails argObj = (SalesDocumentItemsDetails)args.Value;
+        idDetailEdit = argObj.Id;
+        StateHasChanged();
+    }
+
+    public void Home()
+    {
+        Page("list");
+    }
+
+
+    public void Load()
+    {
+        if (providerList == null) providerList = new();
+        if (purchaseSpec == null) purchaseSpec = new();
+        if (procurementDetailList == null) procurementDetailList = new();
+        if (purchaseSpec.ProviderShipDate == DateTime.MinValue) purchaseSpec.ProviderShipDate = DateTime.Now;
+    }
+}

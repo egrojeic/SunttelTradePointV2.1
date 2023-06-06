@@ -28,7 +28,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         IMongoCollection<ShippingStatus> _ShippingStatusCollection;
         IMongoCollection<CommercialDocument> _CommercialDocumentCollection;
         IMongoCollection<CommercialDocumentType> _CommercialDocumentType;
-        IMongoCollection<SalesDocumentItemsDetails> _CommercialDocumentDetailImports;
+        IMongoCollection<SalesDocumentItemsDetails> _CommercialDocumentDetail;
         IMongoCollection<FinanceStatus> _FinanceStatusCollection;
 
 
@@ -48,7 +48,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
             _CommercialDocumentCollection = mongoDatabase.GetCollection<CommercialDocument>("CommercialDocuments");
             _CommercialDocumentType = mongoDatabase.GetCollection<CommercialDocumentType>("CommercialDocumentTypes");
             _FinanceStatusCollection = mongoDatabase.GetCollection<FinanceStatus>("FinanceStatus");
-            _CommercialDocumentDetailImports = mongoDatabase.GetCollection<SalesDocumentItemsDetails>("CommercialDocumentsDetails");
+            _CommercialDocumentDetail = mongoDatabase.GetCollection<SalesDocumentItemsDetails>("CommercialDocumentsDetails");
         }
 
 
@@ -263,7 +263,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     new BsonDocument("$match", new BsonDocument("IdCommercialDocument", new ObjectId(commercialDocumentId)))
                 );
 
-                List<SalesDocumentItemsDetails> resultDetails = await _CommercialDocumentDetailImports.Aggregate<SalesDocumentItemsDetails>(pipelineDetails).ToListAsync();
+                List<SalesDocumentItemsDetails> resultDetails = await _CommercialDocumentDetail.Aggregate<SalesDocumentItemsDetails>(pipelineDetails).ToListAsync();
 
                 foreach (SalesDocumentItemsDetails item in resultDetails)
                 {
@@ -614,8 +614,8 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
             try
             {
                 var pipeline = new List<BsonDocument>();
-                if(filterString==null)filterString ="all";
-                if ( !(filterString.ToLower() == "all") ) // se agregó verificación de si strNameFiler está vacío
+                if (filterString == null) filterString = "all";
+                if (!(filterString.ToLower() == "all")) // se agregó verificación de si strNameFiler está vacío
                 {
                     pipeline.Add(
                         new BsonDocument {
@@ -997,13 +997,25 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     salesDocumentItemsDetails.Id = ObjectId.GenerateNewId().ToString();
                 }
 
+                if (salesDocumentItemsDetails.PurchaseSpecs!=null)
+                {
+                    foreach (var item in salesDocumentItemsDetails.PurchaseSpecs)
+                    {
+                        if (item.Id == null)
+                        {
+                            item.Id = ObjectId.GenerateNewId().ToString();
+                        }
+                    }
+                }
+
+
                 var filter = Builders<SalesDocumentItemsDetails>.Filter.Eq("_id", new ObjectId(salesDocumentItemsDetails.Id));
 
 
 
                 var updateOptions = new ReplaceOptions { IsUpsert = true };
 
-                var result = await _CommercialDocumentDetailImports.ReplaceOneAsync(filter, salesDocumentItemsDetails, updateOptions);
+                var result = await _CommercialDocumentDetail.ReplaceOneAsync(filter, salesDocumentItemsDetails, updateOptions);
 
                 return (true, salesDocumentItemsDetails, null);
             }
@@ -1052,7 +1064,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     }
                 );
 
-                List<SalesDocumentItemsDetails> results = await _CommercialDocumentDetailImports.Aggregate<SalesDocumentItemsDetails>(pipeline).ToListAsync();
+                List<SalesDocumentItemsDetails> results = await _CommercialDocumentDetail.Aggregate<SalesDocumentItemsDetails>(pipeline).ToListAsync();
 
                 //var results = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
 
@@ -1063,6 +1075,56 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 return (false, null, e.Message);
             }
         }
+
+        /// <summary>
+        ///  Retrives a list of SalesDocumentItemsDetails filter for Procurement
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>              
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<SalesDocumentItemsDetails>? GetProcurementList, string? ErrorDescription)> GetProcurementList(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10)
+        {
+            try
+            {
+                var skip = (page - 1) * perPage;
+
+                var pipeline = new List<BsonDocument>();
+
+
+                //pipeline.Add(
+                //    new BsonDocument("$match", new BsonDocument("IdCommercialDocument", new ObjectId(commercialDocumentId)))
+                //);
+
+                pipeline.Add(
+                    new BsonDocument{
+                        {"$skip",  skip}
+                    }
+                );
+
+                pipeline.Add(
+                    new BsonDocument{
+                        {"$limit",  perPage}
+                    }
+                );
+
+                List<SalesDocumentItemsDetails> results = await _CommercialDocumentDetail.Aggregate<SalesDocumentItemsDetails>(pipeline).ToListAsync();
+
+                //var results = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+                return (true, results, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+
+
+
 
         /// <summary>
         /// Retrieves an object of a transactional Item by id
@@ -1082,7 +1144,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     new BsonDocument("$match", new BsonDocument("_id", new ObjectId(commercialDocumentDetailId)))
                 );
 
-                var resultPrev = await _CommercialDocumentDetailImports.Aggregate<BsonDocument>(pipeline).ToListAsync();
+                var resultPrev = await _CommercialDocumentDetail.Aggregate<BsonDocument>(pipeline).ToListAsync();
 
 
                 SalesDocumentItemsDetails result = resultPrev.Select(d => BsonSerializer.Deserialize<SalesDocumentItemsDetails>(d)).ToList()[0];
@@ -1353,7 +1415,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         {
             try
             {
-                var result = _CommercialDocumentDetailImports.DeleteOne(s => s.Id == detailId);
+                var result = _CommercialDocumentDetail.DeleteOne(s => s.Id == detailId);
                 return (true, result.IsAcknowledged, null);
 
             }
@@ -1364,7 +1426,6 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
 
         }
-
 
     }
 

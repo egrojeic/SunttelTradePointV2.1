@@ -86,7 +86,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         public async Task<SalesDocumentItemsDetails> SaveCommercialDocumentDetail(SalesDocumentItemsDetails salesDocumentItemsDetails)
         {
             try
-            {               
+            {
                 salesDocumentItemsDetails.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<SalesDocumentItemsDetails>($"/api/Sales/SaveCommercialDocumentDetail?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}", salesDocumentItemsDetails);
                 return await responseMessage.Content.ReadFromJsonAsync<SalesDocumentItemsDetails>();
@@ -196,6 +196,22 @@ namespace SunttelTradePointB.Client.Services.SalesServices
                 var responseMessage = await Gethttp($"{path}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
                 return list != null ? list : new List<Concept>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+
+        public async Task<List<AtomConcept>> GetProviderList(string filterString, bool IsASale, int? page = 1, int? perPage = 10)
+        {
+            try
+            {
+                var response = await Gethttp($"/api/ConceptsSelector/GetSelectorListEntityActor?filterString={filterString}&roleIndex=1");
+                var list = await response.Content.ReadFromJsonAsync<List<AtomConcept>>();
+                return list;
             }
             catch (Exception ex)
             {
@@ -493,6 +509,26 @@ namespace SunttelTradePointB.Client.Services.SalesServices
                 return null;
             }
         }
+
+
+
+        public async Task<List<SalesDocumentItemsDetails>> GetProcurementList()
+        {
+
+            try
+            {
+                string path = basepath.Replace("Name", newValue: "GetProcurementList");
+                var responseMessage = await Gethttp($"{path}");
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<SalesDocumentItemsDetails>>();
+                return list;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
 
 
 

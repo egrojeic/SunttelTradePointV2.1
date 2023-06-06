@@ -648,6 +648,40 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
                 return NotFound(response.ErrorDescription);
         }
 
+
+        
+        /// <summary>
+        /// Retrives a list of Transactional Items matching a search criteria
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="commercialDocumentId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetProcurementList")]
+        public async Task<IActionResult> GetProcurementList(
+            string userId,
+            string ipAddress,           
+            int? page = 1,
+            int? perPage = 10)
+        {
+
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; 
+
+            var response = await _commercialDocument.GetProcurementList(userId, ipAddress,  squadId, page, perPage);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.GetProcurementList);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
         /// <summary>
         /// Retrieves an object of a transactional Item by id
         /// </summary>

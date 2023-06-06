@@ -49,12 +49,12 @@
 </PageTitleComponent>
 @if (onInitialized)
 {
-    <form   >
+    <form>
 
         <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
             <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
 
-            <SfSplitButton  tabindex="16" Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
+            <SfSplitButton tabindex="16" Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
                 <SplitButtonEvents ItemSelected="ItemSelected">
                 </SplitButtonEvents>
                 <DropDownMenuItems>
@@ -104,7 +104,7 @@
 
             <div><label class="info-text-size">@GetName("DocumentType",new CommercialDocument())</label></div>
             <div>
-                <select  @onchange="SelectItemDocumentType" class="select-style info-text-size" tabindex="1" autofocus>
+                <select @onchange="SelectItemDocumentType" class="select-style info-text-size" tabindex="1" autofocus>
 
                     @if (documentTypeList != null && documentTypeList.Count() > 0)
                     {
@@ -401,7 +401,7 @@ else
 
     public string hostPrint { get; set; } = "https://localhost:7166/";
 
-    TextToSpeech textToSpeech; 
+    TextToSpeech textToSpeech;
 
     string msg = "";
     string SearcherValue = "";
@@ -461,6 +461,11 @@ else
             if (commercialDocument.Buyer != null) commercialDocument.Buyer = await actor.GetEntityActor(commercialDocument.Buyer.Id);
             if (commercialDocument.Buyer != null) LoadBuyerAndVendor("Buyer");
             if (commercialDocument.Vendor != null) LoadBuyerAndVendor("Vendor");
+            commercialDocument.FinanceSummary = new FinanceSalesDocumentSummary()
+                {
+                    TotalAmount = commercialDocument.Items.Sum(s => s.Total),
+                    TotalTaxes = commercialDocument.Items.Sum(s => s.TaxValue)
+                };
 
         }
 
@@ -471,6 +476,10 @@ else
         LoadCommercialDocument();
         isLoading = false;
         onInitialized = true;
+
+
+
+
         TimerDetail();
         StateHasChanged();
     }
