@@ -1,5 +1,7 @@
 ﻿@inject ContextMenuService ContextMenuService
 @inject NavigationManager navigationManager
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+
 @using SunttelTradePointB.Shared.Sales;
 
 @using Syncfusion.Blazor.Grids
@@ -12,11 +14,17 @@
                      EventSearchAll="EventSearchAll"></RangeDatesInput>
 </div>
 
+@if (isLoading)
+{
+
+    <WaitingProcessIndicator loadingTopic="Transactional Items"></WaitingProcessIndicator>
+
+}
 
 <div class="col-lg-12 control-section">
     <div class="content-wrapper">
         <div class="row">
-            <SfGrid DataSource="@purchaseItemDetails" Toolbar="@(new List<string>() {  "Edit", "Update", "Cancel" })" AllowPaging="true">
+            <SfGrid @ref="DataGrid" DataSource="@purchaseItemDetails" Toolbar="@(new List<string>() {  "Edit", "Update", "Cancel" })" AllowPaging="true">
                 <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true"></GridEditSettings>
                 <GridEvents OnActionBegin="ActionBegin" OnActionComplete="ActionComplete" TValue="PurchaseItemDetails"></GridEvents>
                 <GridColumns>
@@ -24,17 +32,17 @@
                         <Template>
                             @{
                                 var purchase = (context as PurchaseItemDetails);
-                                <button class="btn btn-danger btn-sm" @onclick="() => CancelRequest(purchase)" title="Cancel Request" >
+                                <button class="btn btn-danger btn-sm" @onclick="() => CancelRequest(purchase)" title="Cancel Request">
                                     <i class="oi oi-circle-x"></i>
                                 </button>
                             }
                         </Template>
                     </GridColumn>
-                    <GridColumn Field=@nameof(PurchaseItemDetails.Id) HeaderText="@GetName("Id",new PurchaseItemDetails())" IsPrimaryKey="true" ValidationRules="@(new ValidationRules{ Required=true})" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50" ></GridColumn>
+                    <GridColumn Field=@nameof(PurchaseItemDetails.Id) HeaderText="@GetName("Id",new PurchaseItemDetails())" IsPrimaryKey="true" ValidationRules="@(new ValidationRules{ Required=true})" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
                     <GridColumn AllowEditing="false" Field=@nameof(PurchaseItemDetails.AssignedQty) HeaderText="@GetName("AssignedQty",new PurchaseItemDetails())" ValidationRules="@(new ValidationRules{ Required=true, Number=true})" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
-                    <GridColumn Field=@nameof(PurchaseItemDetails.ConfirmedQty) HeaderText="@GetName("ConfirmedQty",new PurchaseItemDetails())" ValidationRules="@(new ValidationRules{ Required=true, Range = new object[]{1, 1000}})" EditType="EditType.NumericEdit" Format="C2" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
+                    <GridColumn Field=@nameof(PurchaseItemDetails.ConfirmedQty) HeaderText="@GetName("ConfirmedQty",new PurchaseItemDetails())" ValidationRules="@(new ValidationRules{ Required=true, Range = new object[]{0, 1000}})" EditType="EditType.NumericEdit" Format="C2" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
                     <GridColumn AllowEditing="false" Field=@nameof(PurchaseItemDetails.ExpectedCost) HeaderText="@GetName("ExpectedCost",new PurchaseItemDetails())" ValidationRules="@(new ValidationRules{ Required=true, Number=true})" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
-                    <GridColumn Field=@nameof(PurchaseItemDetails.ConfirmedCost) HeaderText="@GetName("ConfirmedCost",new PurchaseItemDetails())" ValidationRules="@(new ValidationRules{ Required=true, Range = new object[]{1, 1000}})" EditType="EditType.NumericEdit" Format="C2" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
+                    <GridColumn Field=@nameof(PurchaseItemDetails.ConfirmedCost) HeaderText="@GetName("ConfirmedCost",new PurchaseItemDetails())" ValidationRules="@(new ValidationRules{ Required=true, Range = new object[]{0, 1000}})" EditType="EditType.NumericEdit" Format="C2" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
                     <GridColumn Field=@nameof(PurchaseItemDetails.ProviderShipDate) HeaderText="@GetName("ProviderShipDate",new PurchaseItemDetails())" AllowEditing="false" Width="50"></GridColumn>
                 </GridColumns>
             </SfGrid>
@@ -46,77 +54,38 @@
 @code {
     public List<PurchaseItemDetails> purchaseItemDetails = new List<PurchaseItemDetails>();
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
+    SfGrid<PurchaseItemDetails> DataGrid;
+    public bool isLoading = false;
 
     public void EventSearchAll(string value)
     {
 
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
-        // Crear y agregar objetos a la lista
-        PurchaseItemDetails item1 = new PurchaseItemDetails()
-                {
-                    Id = "1",
-                    SalesDocumentItemsDetailsId = "100",
-                    PurchaseDocumentItemsDetailsId = "200",
-                    Provider = new BasicConcept()
-                    {
-                        Id = "2",
-                        Name = "Provider 2"
-                    },
-                    AssignedQty = 10,
-                    ConfirmedQty = 0,
-                    ExpectedCost = 50.0,
-                    ConfirmedCost = 40.0,
-                    ProviderShipDate = DateTime.Now,
-                    ISRejectedByProvider = false,
-                    CancelationInfo = new CancelationTrack()
-                };
+        await base.OnInitializedAsync();
+        await GetDocumentDetails();
+    }
 
-        purchaseItemDetails.Add(item1);
+    private async Task GetDocumentDetails()
+    {
+        isLoading = true;
+        List<SalesDocumentItemsDetails> sales = await DocumentServices.GetProcurementDetails();
 
-        PurchaseItemDetails item2 = new PurchaseItemDetails()
-                {
-                    Id = "2",
-                    SalesDocumentItemsDetailsId = "101",
-                    PurchaseDocumentItemsDetailsId = "201",
-                    Provider = new BasicConcept()
-                    {
-                        Id = "1",
-                        Name = "Provider 1"
-                    },
-                    AssignedQty = 5,
-                    ConfirmedQty = 0,
-                    ExpectedCost = 20.0,
-                    ConfirmedCost = 0,
-                    ProviderShipDate = DateTime.Now.AddDays(1),
-                    ISRejectedByProvider = true,
-                    CancelationInfo = new CancelationTrack()
-                };
-        purchaseItemDetails.Add(item2);
+        foreach (var sale in sales)
+        {
+            if (sale.PurchaseSpecs != null && sale.PurchaseSpecs.Any())
+            {
+                var userid = UIClientGlobalVariables.UserId;
+                //var purchases = sale.PurchaseSpecs.Where(x => x.Id == UIClientGlobalVariables.UserId).ToList();
+                var purchases = sale.PurchaseSpecs;
+                purchaseItemDetails.AddRange(purchases);
+            }
+        }
 
-        PurchaseItemDetails item3 = new PurchaseItemDetails()
-                {
-                    Id = "3",
-                    SalesDocumentItemsDetailsId = "101",
-                    PurchaseDocumentItemsDetailsId = "201",
-                    Provider = new BasicConcept()
-                    {
-                        Id = "1",
-                        Name = "Provider 1"
-                    },
-                    AssignedQty = 55,
-                    ConfirmedQty = 0,
-                    ExpectedCost = 20.0,
-                    ConfirmedCost = 0,
-                    ProviderShipDate = DateTime.Now.AddDays(1),
-                    ISRejectedByProvider = true,
-                    CancelationInfo = new CancelationTrack()
-                };
-        purchaseItemDetails.Add(item3);
-
+        isLoading = false;
+        await DataGrid.Refresh();
     }
 
     public string GetName(string Name, Object Obj)
