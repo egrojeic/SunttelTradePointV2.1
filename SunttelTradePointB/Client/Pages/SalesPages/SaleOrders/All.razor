@@ -28,7 +28,7 @@
         <RadzenDataGridColumn TItem="PurchaseItemDetails" Property="Id" Title="@GetName("Id",new PurchaseItemDetails())" Filterable="false" Width="50px" />
         <RadzenDataGridColumn TItem="PurchaseItemDetails" Property="Provider.Name" Title="Provider" Filterable="false" Width="50px" />
         <RadzenDataGridColumn TItem="PurchaseItemDetails" Property="AssignedQty" Title="@GetName("AssignedQty",new PurchaseItemDetails())" Filterable="false" Width="50px" />
-        <RadzenDataGridColumn TItem="PurchaseItemDetails" Property="ConfirmedQty" Title="@GetName("ConfirmedQty",new PurchaseItemDetails())" Filterable="false" Width="50px" />
+        <RadzenDataGridColumn TItem="PurchaseItemDetails" Property="ConfirmedQty" Title="@GetName("ConfirmedQty",new PurchaseItemDetails())" Filterable="false" Width="50px"></RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="PurchaseItemDetails" Property="ExpectedCost" Title="@GetName("ExpectedCost",new PurchaseItemDetails())" Filterable="false" Width="50px" />
         <RadzenDataGridColumn TItem="PurchaseItemDetails" Property="ConfirmedCost" Title="@GetName("ConfirmedCost",new PurchaseItemDetails())" Filterable="false" Width="50px" />
         <RadzenDataGridColumn TItem="PurchaseItemDetails" Property="ProviderShipDate" Title="@GetName("ProviderShipDate",new PurchaseItemDetails())" Filterable="false" Width="50px" />
@@ -36,10 +36,12 @@
 </RadzenDataGrid>
 
 
+
+
 @code {
     public List<PurchaseItemDetails> purchaseItemDetails = new List<PurchaseItemDetails>();
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
-
+    
     public void EventSearchAll(string value)
     {
 
@@ -81,14 +83,34 @@
                     Name = "Provider 1"
                 },
                 AssignedQty = 5,
-                ConfirmedQty = 5,
+                ConfirmedQty = 0,
                 ExpectedCost = 20.0,
-                ConfirmedCost = 15.0,
+                ConfirmedCost = 0,
                 ProviderShipDate = DateTime.Now.AddDays(1),
                 ISRejectedByProvider = true,
                 CancelationInfo = new CancelationTrack()
             };
         purchaseItemDetails.Add(item2);
+
+        PurchaseItemDetails item3 = new PurchaseItemDetails()
+                {
+                    Id = "3",
+                    SalesDocumentItemsDetailsId = "101",
+                    PurchaseDocumentItemsDetailsId = "201",
+                    Provider = new BasicConcept()
+                    {
+                        Id = "1",
+                        Name = "Provider 1"
+                    },
+                    AssignedQty = 55,
+                    ConfirmedQty = 0,
+                    ExpectedCost = 20.0,
+                    ConfirmedCost = 0,
+                    ProviderShipDate = DateTime.Now.AddDays(1),
+                    ISRejectedByProvider = true,
+                    CancelationInfo = new CancelationTrack()
+                };
+        purchaseItemDetails.Add(item3);
 
     }
 
