@@ -28,10 +28,10 @@
        list = new();
         if (summary != null)
         {
-            list.Add(($"{GetName("TotalAmount", new FinanceSalesDocumentSummary())}", summary.TotalAmount.ToString()));
-            list.Add(($"{GetName("TotalCosts", new FinanceSalesDocumentSummary())}", summary.TotalCosts.ToString()));
-            list.Add(($"{GetName("TotalTaxes", new FinanceSalesDocumentSummary())}", summary.TotalTaxes.ToString()));
-            list.Add(($"{GetName("TotalDiscounts", new FinanceSalesDocumentSummary())}", summary.TotalDiscounts.ToString()));
+            list.Add(($"{GetName("TotalAmount", new FinanceSalesDocumentSummary())}", summary.TotalAmount.ToString("N2")));
+            list.Add(($"{GetName("TotalCosts", new FinanceSalesDocumentSummary())}", summary.TotalCosts.ToString("N2")));
+            list.Add(($"{GetName("TotalTaxes", new FinanceSalesDocumentSummary())}", summary.TotalTaxes.ToString("N2")));
+            list.Add(($"{GetName("TotalDiscounts", new FinanceSalesDocumentSummary())}", summary.TotalDiscounts.ToString("N2")));
         }
     }
 
@@ -40,10 +40,10 @@
          list = new();
         if (summary != null)
         {
-            list.Add(($"{GetName("TotalAmount", new FinanceSalesDocumentSummary())}", summary.TotalAmount.ToString()));
-            list.Add(($"{GetName("TotalCosts", new FinanceSalesDocumentSummary())}", summary.TotalCosts.ToString()));
-            list.Add(($"{GetName("TotalTaxes", new FinanceSalesDocumentSummary())}", summary.TotalTaxes.ToString()));
-            list.Add(($"{GetName("TotalDiscounts", new FinanceSalesDocumentSummary())}", summary.TotalDiscounts.ToString()));
+            list.Add(($"{GetName("TotalAmount", new FinanceSalesDocumentSummary())}", summary.TotalAmount.ToString("N2")));
+            list.Add(($"{GetName("TotalCosts", new FinanceSalesDocumentSummary())}", summary.TotalCosts.ToString("N2")));
+            list.Add(($"{GetName("TotalTaxes", new FinanceSalesDocumentSummary())}", summary.TotalTaxes.ToString("N2")));
+            list.Add(($"{GetName("TotalDiscounts", new FinanceSalesDocumentSummary())}", summary.TotalDiscounts.ToString("N2")));
         }
     }
 

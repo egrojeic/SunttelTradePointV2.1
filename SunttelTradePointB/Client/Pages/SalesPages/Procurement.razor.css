@@ -1,0 +1,12 @@
+﻿.div-provider {
+    display: flex;
+    justify-content:start;
+    column-gap:10px;
+}
+    .div-provider input{
+        max-width:200px;
+    }
+
+    .active-cell {
+        background-color: green;
+    }

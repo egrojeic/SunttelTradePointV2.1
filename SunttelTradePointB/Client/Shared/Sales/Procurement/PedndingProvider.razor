@@ -1,0 +1,150 @@
+@using SunttelTradePointB.Shared.Sales;
+@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+@using System.Reflection
+@using Syncfusion.Blazor.Navigations
+@using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents
+@using SunttelTradePointB.Client.Services.SalesServices
+
+@inject NavigationManager Navigation
+@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject SunttelTradePointB.Client.Services.MasterTablesServices.ActorsNodeService actor
+@inject GeographicPlacesService geoPlaces
+@inject ActorsNodeService actorsNodeServive
+@inject IJSRuntime Js
+
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
+</style>
+
+
+
+@if (isLoading)
+{
+    <WaitingProcessIndicator loadingTopic="Items"></WaitingProcessIndicator>
+}
+else
+{
+    if (procurementDetailList != null)
+    {
+        <div class="vertical">
+        <RadzenDataGrid AllowFiltering="true"
+                        AllowColumnResize="true"
+                        AllowAlternatingRows="true"
+                        FilterMode="FilterMode.Advanced"
+                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        AllowSorting="true"
+                        PageSize="50"
+                        AllowPaging="true"
+                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                        ShowPagingSummary="true"
+                        Data="@procurementDetailList"
+                        TItem="SalesDocumentItemsDetails"
+                        ColumnWidth="100%"
+                        SelectionMode="DataGridSelectionMode.Single"
+                        LogicalFilterOperator="LogicalFilterOperator.Or">
+            <Columns>
+                <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName(nameof(SalesDocumentItemsDetails.TransactionalItem), new SalesDocumentItemsDetails())" Width="148px" />
+                <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="@nameof(SalesDocumentItemsDetails.Qty)" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Width="148px" />
+                <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="@nameof(SalesDocumentItemsDetails.Total)" Title="@GetName("Total", new SalesDocumentItemsDetails())" Width="148px" />
+
+            </Columns>
+        </RadzenDataGrid>
+        <div class="container-total">
+            <div class="item">
+                @($"Records: {procurementDetailList.Count}")
+            </div>
+        </div>
+        </div>
+    }
+}
+
+
+
+@code {
+    #region Parameter
+    [Parameter]
+    public List<SalesDocumentItemsDetails> ProcurementDetailList { get; set; }
+    public List<SalesDocumentItemsDetails> procurementDetailList { get; set; }
+    #endregion Parameter
+
+
+    #region var
+    bool viewMsg = false;
+    bool isLoading = false;
+    string msg = "";
+    #endregion var
+
+
+    protected override void OnInitialized()
+    {
+        Calculate();
+        base.OnInitialized();
+    }
+
+    public void Calculate()
+    {
+        isLoading = true;
+        if (ProcurementDetailList != null)
+        {
+            foreach (var item in ProcurementDetailList)
+            {
+                AddPedndingProvider(item);
+            }
+        }
+        StateHasChanged();
+        isLoading = false;
+    }
+
+
+    private bool AddPedndingProvider(SalesDocumentItemsDetails details)
+    {      
+        if (procurementDetailList == null) procurementDetailList = new();      
+        //if (details.InventoryItemId != null) return false;
+       // var exist = procurementDetailList.FindLast(s => s.IdCommercialDocument == details.Id);
+        if (details.PurchaseSpecs != null)
+        {
+            foreach (var detail in details.PurchaseSpecs)
+            {
+                //var countExist = exist !=null ? exist.PurchaseSpecs.Where(s => s.Id == detail.Id).Sum(s => s.AssignedQty):0;
+                var countItem = detail.AssignedQty;
+
+                if (detail.AssignedQty > 0 && detail.ISRejectedByProvider == false)
+                {
+                    var edit = details.PurchaseSpecs.Where(s => s.Id == detail.Id).FirstOrDefault();
+                    edit.ConfirmedQty = countItem;
+                    procurementDetailList.Add(details);
+                }
+
+            }
+        }
+
+        return true;
+    }
+
+    public string GetName(string Name, Object Obj)
+    {
+        if (UICommonFunctions.GetDisplayName(Obj, Name) != null) Name = UICommonFunctions.GetDisplayName(Obj, Name);
+        return Name;
+    }
+
+
+}

@@ -91,11 +91,11 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 Dictionary<BasicRolesFilter, string> roleDict = new Dictionary<BasicRolesFilter, string>
                 {
                     { 0, "" },
-                    { BasicRolesFilter.Provider, "Provider" },
-                    { BasicRolesFilter.Customer, "Customer" },
+                    { BasicRolesFilter.Provider, "IsProvider" },
+                    { BasicRolesFilter.Customer, "IsCustomer" },
                     { BasicRolesFilter.Carrier, "Carrier" },
-                    { BasicRolesFilter.Company, "Company" },
-                    { BasicRolesFilter.User, "User" },
+                    { BasicRolesFilter.Company, "IsCompany" },
+                    { BasicRolesFilter.User, "IsUser" },
                     { BasicRolesFilter.Employee, "Employee" },
                     { BasicRolesFilter.SalesPerson, "Salesperson" }
                 };
@@ -125,7 +125,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 pipe.Add(
                        new BsonDocument(
                        "$match",
-                         new BsonDocument("DefaultEntityRole.Name", strRoleName)
+                         new BsonDocument($"DefaultEntityRole.{strRoleName}", true)
                                )
                    );
 
