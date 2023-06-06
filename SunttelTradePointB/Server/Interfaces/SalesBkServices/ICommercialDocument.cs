@@ -218,7 +218,7 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
 
 
         /// <summary>
-        ///  Retrives a list of SalesDocumentItemsDetails filter for Procurement
+        ///  Retrives a list of CommercialDocument filter for Procurement
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>      
@@ -226,7 +226,7 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <param name="page"></param>
         /// <param name="perPage"></param>              
         /// <returns></returns>
-        Task<(bool IsSuccess, List<SalesDocumentItemsDetails>? GetProcurementList, string? ErrorDescription)> GetProcurementList(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10);
+        Task<(bool IsSuccess, List<CommercialDocument>? GetProcurementList, string? ErrorDescription)> GetProcurementList(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10);
 
         /// <summary>
         /// Retrieves an object of a transactional Item by id

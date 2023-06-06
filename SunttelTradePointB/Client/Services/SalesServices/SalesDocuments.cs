@@ -512,14 +512,14 @@ namespace SunttelTradePointB.Client.Services.SalesServices
 
 
 
-        public async Task<List<SalesDocumentItemsDetails>> GetProcurementList()
+        public async Task<List<CommercialDocument>> GetProcurementList()
         {
 
             try
             {
                 string path = basepath.Replace("Name", newValue: "GetProcurementList");
                 var responseMessage = await Gethttp($"{path}");
-                var list = await responseMessage.Content.ReadFromJsonAsync<List<SalesDocumentItemsDetails>>();
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocument>>();
                 return list;
             }
             catch (Exception ex)

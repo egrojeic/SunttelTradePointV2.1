@@ -14,6 +14,7 @@ using SunttelTradePointB.Shared.DataViews.Profiles;
 using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.Sales;
 using System.Globalization;
+using SunttelTradePointB.Shared.SquadsMgr;
 
 namespace SunttelTradePointB.Server.Services.SalesBkServices
 {
@@ -1077,7 +1078,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         }
 
         /// <summary>
-        ///  Retrives a list of SalesDocumentItemsDetails filter for Procurement
+        ///  Retrives a list of CommercialDocument filter for Procurement
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
@@ -1085,18 +1086,20 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         /// <param name="page"></param>
         /// <param name="perPage"></param>              
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<SalesDocumentItemsDetails>? GetProcurementList, string? ErrorDescription)> GetProcurementList(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10)
+        public async Task<(bool IsSuccess, List<CommercialDocument>? GetProcurementList, string? ErrorDescription)> GetProcurementList(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10)
         {
             try
             {
-                var skip = (page - 1) * perPage;
+                var skip = page * perPage;
 
                 var pipeline = new List<BsonDocument>();
-
-
                 //pipeline.Add(
-                //    new BsonDocument("$match", new BsonDocument("IdCommercialDocument", new ObjectId(commercialDocumentId)))
+                //    new BsonDocument("$match", new BsonDocument("SquadId", $"/{squadId}/i"))
                 //);
+
+                // pipeline.Add(
+                //    new BsonDocument("project", new BsonDocument( { "Name"}))
+                //);                              
 
                 pipeline.Add(
                     new BsonDocument{
@@ -1110,17 +1113,23 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     }
                 );
 
-                List<SalesDocumentItemsDetails> results = await _CommercialDocumentDetail.Aggregate<SalesDocumentItemsDetails>(pipeline).ToListAsync();
+                 List<CommercialDocument> salesList = await _SalesDocumentsCollection.Aggregate<CommercialDocument>(pipeline).ToListAsync();    
+                
+                 if(salesList!=null) salesList = salesList.Where(s=>s.SquadId.ToLower() == squadId.ToLower()).ToList();
+               
 
-                //var results = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
-
-                return (true, results, null);
+                return (true, salesList, null);
             }
             catch (Exception e)
             {
                 return (false, null, e.Message);
             }
         }
+
+
+
+
+
 
 
 

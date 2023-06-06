@@ -50,8 +50,8 @@
         <SfSplitButton tabindex="16" Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
             <SplitButtonEvents ItemSelected="ItemSelected">
             </SplitButtonEvents>
-            <DropDownMenuItems>             
-                <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>              
+            <DropDownMenuItems>
+                <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
             </DropDownMenuItems>
         </SfSplitButton>
     </div>
@@ -82,12 +82,12 @@
     </PageTitleComponent>
 
     <div class="panelMenuContainer">
-       @* <ProcurementMenu namePage="@backPage"></ProcurementMenu>*@
-        <RangeDatesInput  EndDateName="To" @bind-StartDate="@startingDate" @bind-EndDate="@endDate"
+        @* <ProcurementMenu namePage="@backPage"></ProcurementMenu>*@
+        <RangeDatesInput EndDateName="To" @bind-StartDate="@startingDate" @bind-EndDate="@endDate"
                          EventSearchAll="EventSearchAll"></RangeDatesInput>
         <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
     </div>
- 
+
     <SfTab @oncontextmenu:preventDefault="true" Height="250px" CssClass="tab-adaptive " HeaderPlacement="HeaderPosition.Left">
         <TabAnimationSettings>
             <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
@@ -219,13 +219,32 @@
     {
 
         var list = await DocumentServices.GetProcurementList();
-        Calculate(list);
+        var detailLis = GetDetail(list);
+
+
+        Calculate(detailLis);
         StateHasChanged();
     }
 
     public void EventSearchAll()
     {
         LoadData();
+    }
+
+    public List<SalesDocumentItemsDetails> GetDetail(List<CommercialDocument> list)
+    {
+        var detail = new List<SalesDocumentItemsDetails>();
+        if (list != null)
+        {
+            foreach (var item in list)
+            {
+                if (item.Items != null)
+                {
+                    detail.AddRange(item.Items);
+                }
+            }
+        }
+        return detail;
     }
 
     #region compute values

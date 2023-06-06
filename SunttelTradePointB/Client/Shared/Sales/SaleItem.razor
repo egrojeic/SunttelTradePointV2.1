@@ -878,8 +878,7 @@ else
             var result = await GetLocalStorage();
             if (result != null && result != "false")
             {
-                var detailList = await DocumentServices.GetCommercialDocumentDetails(commercialDocumentId);
-                commercialDocument.Items = detailList;
+                LoadDetail();
                 StateHasChanged();
                 await SaveTrimere();
             }
@@ -887,6 +886,8 @@ else
             TimerDetail();
         }
     }
+
+   
 
     public async void LoadDetail()
     {
