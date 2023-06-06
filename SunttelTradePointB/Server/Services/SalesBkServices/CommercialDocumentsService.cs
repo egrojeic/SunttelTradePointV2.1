@@ -1093,9 +1093,9 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 var skip = page * perPage;
 
                 var pipeline = new List<BsonDocument>();
-                //pipeline.Add(
-                //    new BsonDocument("$match", new BsonDocument("SquadId", $"/{squadId}/i"))
-                //); 
+                pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("SquadId", squadId.ToLower()))
+                ); 
 
                 //pipeline.Add(
                 //    new BsonDocument("$ne", new BsonDocument( "Items", null ))
@@ -1164,21 +1164,42 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
                 var pipeline = new List<BsonDocument>();
 
+                   pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("SquadId", $"{squadId.ToLower()}"))
+                );
+
+                //pipeline.Add(
+                //    new BsonDocument{
+                //        {"$skip",  skip}
+                //    }
+                //);
+
+                //pipeline.Add(
+                //    new BsonDocument{
+                //        {"$limit",  perPage}
+                //    }
+                //);
+
+
                 pipeline.Add(
-                    new BsonDocument{
-                        {"$skip",  skip}
+                    new BsonDocument {
+                        { "$project",
+                            new BsonDocument {
+                                { "Code", 1 },
+                                { "Id", 1 },
+                                { nameof(SalesDocumentItemsDetails.SquadId), 1 },
+                                { nameof(SalesDocumentItemsDetails.PurchaseSpecs), 1 },
+                             
+                            }
+                        }
                     }
                 );
 
-                pipeline.Add(
-                    new BsonDocument{
-                        {"$limit",  perPage}
-                    }
-                );
 
                 List<SalesDocumentItemsDetails> results = await _CommercialDocumentDetail.Aggregate<SalesDocumentItemsDetails>(pipeline).ToListAsync();
 
-                //var results = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+               
+                results = results.Where(s=>s.SquadId.ToLower() == squadId.ToLower()).ToList();
 
                 return (true, results, null);
             }

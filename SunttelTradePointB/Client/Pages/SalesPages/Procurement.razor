@@ -5,6 +5,13 @@
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Client.Shared.Sales.Procurement;
 @using System.Globalization;
+@using System.Reflection;
+
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Charts
+@using Syncfusion.Blazor.Data
+@using Syncfusion.Blazor.Navigations
+
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
@@ -40,39 +47,7 @@
 
 @if (page == "Edit-1")
 {
-    <PageTitleComponent Title="Add provider" IconName="purchaseSpec.png"
-                        Description="@("Add provider")">
-    </PageTitleComponent>
 
-    <div class="panelMenuContainer scroll-vertical">
-        <button @onclick="Home" class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-
-        <SfSplitButton tabindex="16" Content="File" IconCss="fa-solid fa-folder-closed" CssClass="splitButtonsStyle">
-            <SplitButtonEvents ItemSelected="ItemSelected">
-            </SplitButtonEvents>
-            <DropDownMenuItems>
-                <DropDownMenuItem Text="Save" IconCss="fa-solid fa-floppy-disk"></DropDownMenuItem>
-            </DropDownMenuItems>
-        </SfSplitButton>
-    </div>
-    <div class="div-provider">
-        <div><label class="info-text-size">@GetName("Provider",new PurchaseItemDetails())</label></div>
-        <div>
-            <InputTextSelector3 Tabindex="1" styleCaption="width:180px; " style="left:auto;" TItem="AtomConcept"
-                                Id="Provider"
-                                caption="@(purchaseSpec.Provider !=null ? purchaseSpec.Provider?.Name:"" )"
-                                Items="providerList"
-                                EventIdSelectionAndId="EventIdSelectionAndId"
-                                EventSearcherValueAndId="EventSearcherValueAndId">
-            </InputTextSelector3>
-        </div>
-
-        <div><label class="info-text-size">@GetName("ProviderShipDate",new PurchaseItemDetails())</label></div>
-        <input type="date" @bind-value="purchaseSpec.ProviderShipDate" class="input-style">
-
-        <div><label class="info-text-size">@GetName("AssignedQty",new PurchaseItemDetails())</label></div>
-        <input type="number" @bind-value="purchaseSpec.AssignedQty" class="input-style">
-    </div>
 }
 
 @if (page == "list")
@@ -88,7 +63,7 @@
         <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
     </div>
 
-    <SfTab @oncontextmenu:preventDefault="true" Height="250px" CssClass="tab-adaptive " HeaderPlacement="HeaderPosition.Left">
+    <SfTab @oncontextmenu:preventDefault="true" Height="250px" CssClass="tab-adaptive " HeaderPlacement="HeaderPosition.Top">
         <TabAnimationSettings>
             <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
             <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
@@ -99,6 +74,10 @@
                     <TabHeader Text="@GetName("Pending Procurement",new SalesDocumentItemsDetails())"></TabHeader>
                 </ChildContent>
                 <ContentTemplate>
+
+
+
+
                     <div name="PendingProcurement">
 
 
@@ -115,7 +94,151 @@
                             {
                                 if (procurementDetailList != null)
                                 {
-                                    <RadzenDataGrid AllowFiltering="true"
+
+
+                                    <SfGrid DataSource="@procurementDetailList" TValue="SalesDocumentItemsDetails">
+                                        <GridTemplates>
+                                            <DetailTemplate>
+                                                <SfTab Height="250px" CssClass="tab-adaptive " HeaderPlacement="HeaderPosition.Top">
+                                                    <TabAnimationSettings>
+                                                        <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
+                                                        <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
+                                                    </TabAnimationSettings>
+                                                    <TabItems>
+                                                        <TabItem>                                                           
+                                                            <ContentTemplate>                                                            
+                                                                <div class="div-provider">
+                                                                    <br/>
+                                                                    <div><label class="info-text-size">@GetName("Provider",new PurchaseItemDetails())</label></div>
+                                                                    <div>
+                                                                        <InputTextSelector3 Tabindex="1" styleCaption="width:180px; " style="left:auto;" TItem="AtomConcept"
+                                                                                            Id="Provider"
+                                                                                            caption="@(purchaseSpec.Provider !=null ? purchaseSpec.Provider?.Name:"" )"
+                                                                                            Items="providerList"
+                                                                                            EventIdSelectionAndId="EventIdSelectionAndId"
+                                                                                            EventSearcherValueAndId="EventSearcherValueAndId">
+                                                                        </InputTextSelector3>
+                                                                    </div>
+
+                                                                    <div><label class="info-text-size">@GetName("ProviderShipDate",new PurchaseItemDetails())</label></div>
+                                                                    <input type="date" @bind-value="purchaseSpec.ProviderShipDate" class="input-style">
+
+                                                                    <div><label class="info-text-size">@GetName("AssignedQty",new PurchaseItemDetails())</label></div>
+                                                                    <input type="number" @bind-value="purchaseSpec.AssignedQty" class="input-style">
+                                                                </div>
+                                                            </ContentTemplate>
+                                                        </TabItem>
+                                                    </TabItems>
+                                                </SfTab>
+
+                                            </DetailTemplate>
+                                        </GridTemplates>
+                                        <GridColumns>
+                                            <GridColumn HeaderText="Warehouse" Width="110">
+                                                <Template>
+                                                    @{
+                                                        var data = (context as SalesDocumentItemsDetails);
+                                                        @GetSaleItem(data.IdCommercialDocument,nameof(CommercialDocument.BuyerWarehouse))
+                                                    }
+                                                </Template>
+                                            </GridColumn>
+
+                                            <GridColumn HeaderText="@GetName("DocumentNumber", new CommercialDocument())" Width="110">
+                                                <Template>
+                                                    @{
+                                                        var data = (context as SalesDocumentItemsDetails);
+                                                        @GetSaleItem(data.IdCommercialDocument,nameof(CommercialDocument.DocumentNumber))
+                                                    }
+                                                </Template>
+                                            </GridColumn>
+
+                                            <GridColumn HeaderText="@GetName("DocumentType", new CommercialDocument())" Width="110">
+                                                <Template>
+                                                    @{
+                                                        var data = (context as SalesDocumentItemsDetails);
+                                                        @GetSaleItem(data.IdCommercialDocument,nameof(CommercialDocument.DocumentType))
+                                                    }
+                                                </Template>
+                                            </GridColumn>
+
+                                            <GridColumn HeaderText="@GetName("Customer", new CommercialDocument())" Width="110">
+                                                <Template>
+                                                    @{
+                                                        var data = (context as SalesDocumentItemsDetails);
+                                                        @GetSaleItem(data.IdCommercialDocument,nameof(CommercialDocument.Buyer))
+                                                    }
+                                                </Template>
+                                            </GridColumn>
+                                            <GridColumn HeaderText="@GetName("Customer#", new CommercialDocument())" Width="110">
+                                                <Template>
+                                                    @{
+                                                        var data = (context as SalesDocumentItemsDetails);
+                                                        @GetSaleItem(data.IdCommercialDocument,"Customer#")
+                                                    }
+                                                </Template>
+                                            </GridColumn>
+                                            <GridColumn HeaderText="@GetName("Customer Group", new CommercialDocument())" Width="110">
+                                                <Template>
+                                                    @{
+                                                        var data = (context as SalesDocumentItemsDetails);
+                                                        @GetSaleItem(data.IdCommercialDocument,"Customer Group")
+                                                    }
+                                                </Template>
+                                            </GridColumn>
+                                            <GridColumn HeaderText="@GetName("Farm cost", new CommercialDocument())" Width="110">
+                                                <Template>
+                                                    @{
+                                                        var data = (context as SalesDocumentItemsDetails);
+                                                        @GetSaleItem(data.IdCommercialDocument,"Farm cost")
+                                                    }
+                                                </Template>
+                                            </GridColumn>
+
+                                       
+                                        
+                                        <GridColumn HeaderText="@GetName("Box", new CommercialDocument())" Width="110">
+                                            <Template>
+                                                @{
+                                                    var data = (context as SalesDocumentItemsDetails);
+                                                    @data.Qty
+                                                }
+                                            </Template>
+                                        </GridColumn>
+
+                                            <GridColumn HeaderText="@GetName("Pack", new CommercialDocument())" Width="110">
+                                                <Template>
+                                                    @{
+                                                        var data = (context as SalesDocumentItemsDetails);
+                                                        @data.Qty
+                                                    }
+                                                </Template>
+                                            </GridColumn>
+
+                                            <GridColumn HeaderText="@GetName("UnitPrice", new CommercialDocument())" Width="110">
+                                                <Template>
+                                                    @{
+                                                        var data = (context as SalesDocumentItemsDetails);
+                                                        @data.UnitPrice
+                                                    }
+                                                </Template>
+                                            </GridColumn>
+
+                                              <GridColumn HeaderText="@GetName("UnitPrice", new CommercialDocument())" Width="110">
+                                                <Template>
+                                                    @{
+                                                        var data = (context as SalesDocumentItemsDetails);
+                                                        @GetSaleItem(data.IdCommercialDocument,nameof(CommercialDocument.ShipDate))
+                                                    }
+                                                </Template>
+                                            </GridColumn>
+
+
+                                        </GridColumns>
+                                    </SfGrid>
+
+
+
+                       @*             <RadzenDataGrid AllowFiltering="true"
                                                     AllowColumnResize="true"
                                                     AllowAlternatingRows="true"
                                                     FilterMode="FilterMode.Advanced"
@@ -142,18 +265,89 @@
                                                 </Template>
                                             </RadzenDataGridColumn>
                                             <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Title="Status" Width="148px">
+                                                <SfTab Height="250px" CssClass="tab-adaptive " HeaderPlacement="HeaderPosition.Top">
+                                                    <TabAnimationSettings>
+                                                        <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
+                                                        <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
+                                                    </TabAnimationSettings>
+                                                    <TabItems>
+                                                        <TabItem>
+                                                            <ChildContent>
+                                                                <TabHeader Text="@GetName("Pending Procurement",new SalesDocumentItemsDetails())"></TabHeader>
+                                                            </ChildContent>
+                                                            <ContentTemplate>
+
+                                                            </ContentTemplate>
+                                                        </TabItem>
+                                                    </TabItems>
+                                                </SfTab>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Title="Warehouse" Width="148px">
                                                 <Template Context="data">
-                                                    <div class="@(idDetailEdit ==(data.Id!=null ? data.Id:"")? "active-cell":"")">
-                                                        Pending Procurement
-                                                    </div>
+                                                    @GetSaleItem(data.IdCommercialDocument,nameof(CommercialDocument.BuyerWarehouse))
                                                 </Template>
                                             </RadzenDataGridColumn>
-                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName(nameof(SalesDocumentItemsDetails.TransactionalItem), new SalesDocumentItemsDetails())" Width="148px" />
-                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="@nameof(SalesDocumentItemsDetails.Qty)" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Width="148px" />
-                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="@nameof(SalesDocumentItemsDetails.Total)" Title="@GetName("Total", new SalesDocumentItemsDetails())" Width="148px" />
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Title="@GetName("DocumentNumber", new CommercialDocument())" Width="148px">
+                                                <Template Context="data">
+                                                    @GetSaleItem(data.IdCommercialDocument,nameof(CommercialDocument.DocumentNumber))
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Title="@GetName("DocumentType", new CommercialDocument())" Width="148px">
+                                                <Template Context="data">
+                                                    @GetSaleItem(data.IdCommercialDocument,nameof(CommercialDocument.DocumentType))
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Title="Customer" Width="148px">
+                                                <Template Context="data">
+                                                    @GetSaleItem(data.IdCommercialDocument,"Customer")
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Title="Customer #" Width="148px">
+                                                <Template Context="data">
+                                                    @GetSaleItem(data.IdCommercialDocument,"Customer#")
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Title="Customer Group" Width="148px">
+                                                <Template Context="data">
+                                                    @GetSaleItem(data.IdCommercialDocument,"Customer Group")
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Title="@GetName("TransactionalItem", new CommercialDocument())" Width="148px">
+                                                <Template Context="data">
+                                                    @(data.TransactionalItem != null ? data.TransactionalItem.Name : "")
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Title="Farm cost" Width="148px" TextAlign="Radzen.TextAlign.Right">
+                                                <Template Context="data">
+                                                    @data.UnitCost
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Title="Box" Width="148px" TextAlign="Radzen.TextAlign.Right">
+                                                <Template Context="data">
+                                                    @data.Qty
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Title="Pack" Width="148px" TextAlign="Radzen.TextAlign.Right">
+                                                <Template Context="data">
+                                                    @data.Qty
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Title="Shell Price" Width="148px" FormatString="{0:N2}" TextAlign="Radzen.TextAlign.Right">
+                                                <Template Context="data">
+                                                    @data.UnitPrice
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Title="Miami Date" FormatString="{0:d}" Width="148px">
+                                                <Template Context="data">
+                                                    @GetSaleItem(data.IdCommercialDocument,nameof(CommercialDocument.ShipDate))
+                                                </Template>
+                                            </RadzenDataGridColumn>
+
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="@nameof(SalesDocumentItemsDetails.Qty)" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Width="148px" TextAlign="Radzen.TextAlign.Right" />
+                                            <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="@nameof(SalesDocumentItemsDetails.Total)" Title="@GetName("Total", new SalesDocumentItemsDetails())" Width="148px" FormatString="{0:N2}" TextAlign="Radzen.TextAlign.Right" />
 
                                         </Columns>
-                                    </RadzenDataGrid>
+                                    </RadzenDataGrid>*@
                                     <div class="container-total">
                                         <div class="item">
                                             @(
@@ -189,8 +383,10 @@
     public PurchaseItemDetails purchaseSpec { get; set; }
 
     #region var
+    List<SalesDocumentItemsDetails>? detail { get; set; }
     RadzenDataGrid<SalesDocumentItemsDetails>? grid;
     public List<AtomConcept> providerList { get; set; }
+    public List<CommercialDocument> salesList { get; set; }
     public bool isLoading { get; set; }
     public bool visibleMsg { get; set; }
     public bool isSale { get; set; }
@@ -218,10 +414,10 @@
     public async void LoadData()
     {
 
-        var list = await DocumentServices.GetProcurementList();
-        var detail = await DocumentServices.GetProcurementDetails();
-   
-        
+        salesList = await DocumentServices.GetProcurementList();
+        detail = await DocumentServices.GetProcurementDetails();
+
+
 
         Calculate(detail);
 
@@ -242,17 +438,37 @@
         {
             foreach (var item in list)
             {
-                item.Items = await DocumentServices.GetCommercialDocumentDetails(item.Id,1,100);
+                item.Items = await DocumentServices.GetCommercialDocumentDetails(item.Id, 1, 100);
                 if (item.Items != null)
                 {
-                    
+
                     detail.AddRange(item.Items);
                 }
             }
         }
 
         Calculate(detail);
-       
+
+    }
+
+    public string GetSaleItem(string id, string name)
+    {
+        string result = "";
+        if (salesList != null)
+        {
+            var item = salesList.Where(s => s.Id == id).FirstOrDefault();
+
+            if (item != null)
+            {
+                if (name == "DocumentNumber") result = item.DocumentNumber != null ? item.DocumentNumber.ToString() : "";
+                if (name == "BuyerWarehouse") result = item.BuyerWarehouse != null ? item.BuyerWarehouse.Name : "";
+                if (name == "DocumentType") result = item.DocumentType != null ? item.DocumentType.Name : "";
+                if (name == "Customer Group") result = item.Buyer != null && item.Buyer.Groups.FirstOrDefault() != null ? item.Buyer.Groups.FirstOrDefault().Name : "";
+                if (name == "ShipDate") result = item.ShipDate.ToString("MM/yyyy/dd");
+                if (name == "Customer") result = item.Buyer != null ? item.Buyer.Name.ToString() : "";
+            }
+        }
+        return result;
     }
 
     #region compute values
@@ -275,13 +491,13 @@
         if (procurementDetailList == null) procurementDetailList = new();
         //if (details.Provider != null) return false;
         //if (details.InventoryItemId != null) return false;
-        var exist = procurementDetailList.Where(s => s.IdCommercialDocument == details.IdCommercialDocument).FirstOrDefault();
 
-        if (details.PurchaseSpecs != null)
+
+        if (details.PurchaseSpecs != null && false)
         {
             foreach (var detail in details.PurchaseSpecs)
             {
-                var countExist = exist != null ? exist.PurchaseSpecs.Where(s => s.Id == detail.Id).Sum(s => s.AssignedQty) : 0;
+                var countExist = details.Qty;
                 var countItem = detail.AssignedQty;
                 if (countExist < countItem)
                 {
