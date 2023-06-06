@@ -143,7 +143,7 @@
                                             </RadzenDataGridColumn>
                                             <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Title="Status" Width="148px">
                                                 <Template Context="data">
-                                                    <div class="@(idDetailEdit ==data.Id? "active-cell":"")">
+                                                    <div class="@(idDetailEdit ==(data.Id!=null ? data.Id:"")? "active-cell":"")">
                                                         Pending Procurement
                                                     </div>
                                                 </Template>
@@ -219,10 +219,14 @@
     {
 
         var list = await DocumentServices.GetProcurementList();
-        var detailLis = GetDetail(list);
+        var detail = await DocumentServices.GetProcurementDetails();
+   
+        
+
+        Calculate(detail);
 
 
-        Calculate(detailLis);
+
         StateHasChanged();
     }
 
@@ -231,20 +235,24 @@
         LoadData();
     }
 
-    public List<SalesDocumentItemsDetails> GetDetail(List<CommercialDocument> list)
+    public async void GetDetail(List<CommercialDocument> list)
     {
         var detail = new List<SalesDocumentItemsDetails>();
         if (list != null)
         {
             foreach (var item in list)
             {
+                item.Items = await DocumentServices.GetCommercialDocumentDetails(item.Id,1,100);
                 if (item.Items != null)
                 {
+                    
                     detail.AddRange(item.Items);
                 }
             }
         }
-        return detail;
+
+        Calculate(detail);
+       
     }
 
     #region compute values

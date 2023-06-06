@@ -99,8 +99,6 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         }
 
 
-
-
         public async Task<List<CommercialDocument>> GetCommercialDocumentList(DateTime startDate, DateTime endDate, string documentTypeId, string filter, Concept vendor, bool isSales)
         {
             CultureInfo culture = new CultureInfo("en-US");
@@ -580,6 +578,22 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             {
                 string errMessage = ex.Message;
                 return false;
+            }
+        }
+        public async Task<List<SalesDocumentItemsDetails>> GetProcurementDetails()
+        {
+            try
+            {
+                string path = basepath.Replace("Name", "GetProcurementDetails");
+                var responseMessage = await Gethttp($"{path}");
+                var result  = await responseMessage.Content.ReadFromJsonAsync<List<SalesDocumentItemsDetails>>();
+                return result;
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
             }
         }
 

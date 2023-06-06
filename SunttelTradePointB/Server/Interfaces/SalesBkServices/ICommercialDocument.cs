@@ -117,6 +117,21 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <returns></returns>
         Task<(bool IsSuccess, FinanceStatus? financeStatus, string? ErrorDescription)> GetFiananceStatusById(string userId, string ipAddress, string financeStatusId);
 
+        
+        /// <summary>
+        ///  Retrives a list of SalesDocumentItemsDetails, services
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="groupName"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<SalesDocumentItemsDetails>? GetProcurementDetails, string? ErrorDescription)> GetProcurementDetails(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10);
+
+
         /// <summary>
         /// Insert/ Updates a Transactional Type of the corresponding id
         /// </summary>

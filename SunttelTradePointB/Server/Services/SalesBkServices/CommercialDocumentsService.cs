@@ -998,7 +998,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     salesDocumentItemsDetails.Id = ObjectId.GenerateNewId().ToString();
                 }
 
-                if (salesDocumentItemsDetails.PurchaseSpecs!=null)
+                if (salesDocumentItemsDetails.PurchaseSpecs != null)
                 {
                     foreach (var item in salesDocumentItemsDetails.PurchaseSpecs)
                     {
@@ -1095,11 +1095,30 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 var pipeline = new List<BsonDocument>();
                 //pipeline.Add(
                 //    new BsonDocument("$match", new BsonDocument("SquadId", $"/{squadId}/i"))
+                //); 
+
+                //pipeline.Add(
+                //    new BsonDocument("$ne", new BsonDocument( "Items", null ))
                 //);
 
-                // pipeline.Add(
-                //    new BsonDocument("project", new BsonDocument( { "Name"}))
-                //);                              
+                pipeline.Add(
+                    new BsonDocument {
+                        { "$project",
+                            new BsonDocument {
+                                { "Code", 1 },
+                                { "Id", 1 },
+                                { "DocumentType", 1 },
+                                { "DocumentNumber", 1 },
+                                { "PO", 1 },
+                                { "ShipDate", 1 },
+                                { "Buyer", 1 },
+                                { "Items", 1 },
+                                { "SquadId", 1 }
+                            }
+                        }
+                    }
+                );
+
 
                 pipeline.Add(
                     new BsonDocument{
@@ -1113,10 +1132,11 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     }
                 );
 
-                 List<CommercialDocument> salesList = await _SalesDocumentsCollection.Aggregate<CommercialDocument>(pipeline).ToListAsync();    
-                
-                 if(salesList!=null) salesList = salesList.Where(s=>s.SquadId.ToLower() == squadId.ToLower()).ToList();
-               
+                List<CommercialDocument> salesList = await _SalesDocumentsCollection.Aggregate<CommercialDocument>(pipeline).ToListAsync();
+
+
+                if (salesList != null) salesList = salesList.Where(s => s.SquadId.ToLower() == squadId.ToLower()).ToList();
+
 
                 return (true, salesList, null);
             }
@@ -1127,7 +1147,46 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         }
 
 
+        /// <summary>
+        ///  Retrives a list of SalesDocumentItemsDetails, services
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<SalesDocumentItemsDetails>? GetProcurementDetails, string? ErrorDescription)> GetProcurementDetails(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10)
+        {
+            try
+            {
+                var skip = (page - 1) * perPage;
 
+                var pipeline = new List<BsonDocument>();
+
+                pipeline.Add(
+                    new BsonDocument{
+                        {"$skip",  skip}
+                    }
+                );
+
+                pipeline.Add(
+                    new BsonDocument{
+                        {"$limit",  perPage}
+                    }
+                );
+
+                List<SalesDocumentItemsDetails> results = await _CommercialDocumentDetail.Aggregate<SalesDocumentItemsDetails>(pipeline).ToListAsync();
+
+                //var results = await _entityActorsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+                return (true, results, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
 
 
 

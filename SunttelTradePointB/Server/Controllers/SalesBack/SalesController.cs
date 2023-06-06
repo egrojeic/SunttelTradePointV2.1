@@ -402,7 +402,7 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         }
 
 
-         /// <summary>
+        /// <summary>
         /// Delete a BusinessLine if not associated with a Quality
         /// </summary>
         /// <param name="userId"></param>
@@ -549,7 +549,7 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
                 return NotFound(response.ErrorDescription);
         }
 
-         /// <summary>
+        /// <summary>
         /// Delete a BusinessLine if not associated with a Quality
         /// </summary>
         /// <param name="userId"></param>
@@ -649,7 +649,40 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         }
 
 
-        
+        /// <summary>
+        /// Retrives a list of Transactional Items matching a search criteria
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="commercialDocumentId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetProcurementDetails")]
+        public async Task<IActionResult> GetProcurementDetails(
+            string userId,
+            string ipAddress,
+            int? page = 1,
+            int? perPage = 10)
+        {
+
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+
+            var response = await _commercialDocument.GetProcurementDetails(userId, ipAddress, squadId, page, perPage);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.GetProcurementDetails);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
+
+
         /// <summary>
         /// Retrives a list of Transactional Items matching a search criteria
         /// </summary>
@@ -664,15 +697,15 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         [ActionName("GetProcurementList")]
         public async Task<IActionResult> GetProcurementList(
             string userId,
-            string ipAddress,           
+            string ipAddress,
             int? page = 1,
             int? perPage = 10)
         {
 
             var customHeaderValue = Request.Headers["SquadId"];
-            var squadId = customHeaderValue.ToString() ?? ""; 
+            var squadId = customHeaderValue.ToString() ?? "";
 
-            var response = await _commercialDocument.GetProcurementList(userId, ipAddress,  squadId, page, perPage);
+            var response = await _commercialDocument.GetProcurementList(userId, ipAddress, squadId, page, perPage);
 
             if (response.IsSuccess)
             {
@@ -794,7 +827,7 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
 
 
 
-          /// <summary>
+        /// <summary>
         /// Delete a CommercialDocumentType if not associated with a Quality
         /// </summary>
         /// <param name="userId"></param>
@@ -809,7 +842,7 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
             {
                 var customHeaderValue = Request.Headers["SquadId"];
                 var squadId = customHeaderValue.ToString() ?? "";
-                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _commercialDocument.DeleteSaleDetailById(userId, ipAddress, squadId,  saleId,  detailId);
+                (bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription) response = await _commercialDocument.DeleteSaleDetailById(userId, ipAddress, squadId, saleId, detailId);
                 if (response.IsSuccess)
                 {
                     if (response.iCanRemoveIt)
@@ -832,7 +865,7 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
                 return BadRequest(e.Message);
             }
         }
-        
+
 
 
 
