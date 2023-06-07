@@ -36,6 +36,25 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
+        public async Task<SalesDocumentItemsDetails> UpdateSalesDocumentItemsDetails(SalesDocumentItemsDetails salesDocumentItemsDetails)
+        {
+            try
+            {
+                string path = basepath.Replace("Name", "UpdateSalesDocumentItemsDetails");
+                path = path.Replace("*Id", UIClientGlobalVariables.UserId ?? "00");
+                path = path.Replace("*Ip", UIClientGlobalVariables.PublicIpAddress ?? "00");
+                salesDocumentItemsDetails.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                var responseMessage = await _httpClient.PostAsJsonAsync<SalesDocumentItemsDetails>($"{path}", salesDocumentItemsDetails);
+                return await responseMessage.Content.ReadFromJsonAsync<SalesDocumentItemsDetails>();
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
         public async Task<ShippingStatus> SaveShippingStatus(ShippingStatus shippingStatus)
         {
             try

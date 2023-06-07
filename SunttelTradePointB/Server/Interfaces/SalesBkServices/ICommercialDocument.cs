@@ -333,5 +333,15 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <returns></returns>
         Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteSaleDetailById(string userId, string ipAddress, string squadId, string saleId, string? detailId);
 
+        /// <summary>
+        ///  Update a PurchaseSpect of a CommercialDocumentDetail
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="purchaseItem"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, PurchaseItemDetails saleDocumentDetail, string? ErrorDescription)> EditCommercialDocumentDetail(string userId, string ipAddress, string squadId, PurchaseItemDetails purchaseItem);
+
     }
 }

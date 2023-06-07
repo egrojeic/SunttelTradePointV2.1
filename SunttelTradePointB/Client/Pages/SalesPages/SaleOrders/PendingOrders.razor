@@ -40,9 +40,9 @@
                     </GridColumn>
                     <GridColumn Field=@nameof(PurchaseItemDetails.Id) HeaderText="@GetName("Id",new PurchaseItemDetails())" IsPrimaryKey="true" ValidationRules="@(new ValidationRules{ Required=true})" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
                     <GridColumn AllowEditing="false" Field=@nameof(PurchaseItemDetails.AssignedQty) HeaderText="@GetName("AssignedQty",new PurchaseItemDetails())" ValidationRules="@(new ValidationRules{ Required=true, Number=true})" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
-                    <GridColumn Field=@nameof(PurchaseItemDetails.ConfirmedQty) HeaderText="@GetName("ConfirmedQty",new PurchaseItemDetails())" ValidationRules="@(new ValidationRules{ Required=true, Range = new object[]{0, 1000}})" EditType="EditType.NumericEdit" Format="C2" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
+                    <GridColumn Field=@nameof(PurchaseItemDetails.ConfirmedQty) HeaderText="@GetName("ConfirmedQty",new PurchaseItemDetails())" ValidationRules="@(new ValidationRules{ Required=true, Range = new object[]{0, 10000}})" EditType="EditType.NumericEdit" Format="C2" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
                     <GridColumn AllowEditing="false" Field=@nameof(PurchaseItemDetails.ExpectedCost) HeaderText="@GetName("ExpectedCost",new PurchaseItemDetails())" ValidationRules="@(new ValidationRules{ Required=true, Number=true})" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
-                    <GridColumn Field=@nameof(PurchaseItemDetails.ConfirmedCost) HeaderText="@GetName("ConfirmedCost",new PurchaseItemDetails())" ValidationRules="@(new ValidationRules{ Required=true, Range = new object[]{0, 1000}})" EditType="EditType.NumericEdit" Format="C2" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
+                    <GridColumn Field=@nameof(PurchaseItemDetails.ConfirmedCost) HeaderText="@GetName("ConfirmedCost",new PurchaseItemDetails())" ValidationRules="@(new ValidationRules{ Required=true, Range = new object[]{0, 10000}})" EditType="EditType.NumericEdit" Format="C2" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
                     <GridColumn Field=@nameof(PurchaseItemDetails.ProviderShipDate) HeaderText="@GetName("ProviderShipDate",new PurchaseItemDetails())" AllowEditing="false" Width="50"></GridColumn>
                 </GridColumns>
             </SfGrid>
@@ -56,6 +56,7 @@
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
     SfGrid<PurchaseItemDetails> DataGrid;
     public bool isLoading = false;
+    List<SalesDocumentItemsDetails> sales = new List<SalesDocumentItemsDetails>();
 
     public void EventSearchAll(string value)
     {
@@ -71,7 +72,7 @@
     private async Task GetDocumentDetails()
     {
         isLoading = true;
-        List<SalesDocumentItemsDetails> sales = await DocumentServices.GetProcurementDetails();
+        sales = await DocumentServices.GetProcurementDetails();
 
         foreach (var sale in sales)
         {
@@ -96,56 +97,59 @@
 
     public void ActionBegin(ActionEventArgs<PurchaseItemDetails> args)
     {
-        if (args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
-        {
-            // Triggers before editing operation starts
-        }
-        else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
-        {
-            // Triggers before add operation starts
-        }
-        else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Cancel)
-        {
-            // Triggers before cancel operation starts
-        }
-        else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
-        {
-            // Triggers before save operation starts
-        }
-        else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
-        {
-            // Triggers before delete operation starts
-        }
+
     }
 
-    public void ActionComplete(ActionEventArgs<PurchaseItemDetails> args)
+    public async Task ActionComplete(ActionEventArgs<PurchaseItemDetails> args)
     {
-        if (args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
+        try
         {
-            // Triggers once editing operation completes
-        }
-        else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
-        {
-            // Triggers once add operation completes
-        }
-        else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Cancel)
-        {
-            // Triggers once cancel operation completes
-        }
-        else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
-        {
-            // Triggers once save operation completes
+            if (args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
+            {
+                // Triggers once editing operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
+            {
+                // Triggers once add operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Cancel)
+            {
+                // Triggers once cancel operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+            {
+                PurchaseItemDetails purchase = args.Data;
 
-            // This is the action that I need
+                foreach (var sale in sales)
+                {
+                    if (sale.PurchaseSpecs != null && sale.PurchaseSpecs.Any()){
+                        var index = sale.PurchaseSpecs.FindIndex(x => x.Id == purchase.Id);
+                        if (index != -1) sale.PurchaseSpecs[index] = purchase;
+                    }
+                    await EditPurchase(sale);
+                    break;
+                }
+
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+            {
+                // Triggers once delete operation completes
+            }
         }
-        else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+        catch (Exception ex)
         {
-            // Triggers once delete operation completes
+            Console.WriteLine(ex.Message);
         }
+
     }
 
     public void CancelRequest(PurchaseItemDetails e)
     {
         Console.WriteLine(e.ToString());
+    }
+
+    private async Task EditPurchase(SalesDocumentItemsDetails sale)
+    {
+        var resp = await DocumentServices.UpdateSalesDocumentItemsDetails(sale);
     }
 }

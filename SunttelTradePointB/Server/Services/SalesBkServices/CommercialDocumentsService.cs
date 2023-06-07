@@ -1095,7 +1095,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 var pipeline = new List<BsonDocument>();
                 pipeline.Add(
                     new BsonDocument("$match", new BsonDocument("SquadId", squadId.ToLower()))
-                ); 
+                );
 
                 //pipeline.Add(
                 //    new BsonDocument("$ne", new BsonDocument( "Items", null ))
@@ -1164,9 +1164,9 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
                 var pipeline = new List<BsonDocument>();
 
-                   pipeline.Add(
-                    new BsonDocument("$match", new BsonDocument("SquadId", $"{squadId.ToLower()}"))
-                );
+                pipeline.Add(
+                 new BsonDocument("$match", new BsonDocument("SquadId", $"{squadId.ToLower()}"))
+             );
 
                 //pipeline.Add(
                 //    new BsonDocument{
@@ -1189,7 +1189,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                                 { "Id", 1 },
                                 { nameof(SalesDocumentItemsDetails.SquadId), 1 },
                                 { nameof(SalesDocumentItemsDetails.PurchaseSpecs), 1 },
-                             
+
                             }
                         }
                     }
@@ -1197,9 +1197,6 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
 
                 List<SalesDocumentItemsDetails> results = await _CommercialDocumentDetail.Aggregate<SalesDocumentItemsDetails>(pipeline).ToListAsync();
-
-               
-                results = results.Where(s=>s.SquadId.ToLower() == squadId.ToLower()).ToList();
 
                 return (true, results, null);
             }
@@ -1209,10 +1206,34 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
             }
         }
 
+        /// <summary>
+        ///  Update a PurchaseSpect of a CommercialDocumentDetail
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="purchaseItem"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, PurchaseItemDetails saleDocumentDetail, string? ErrorDescription)> EditCommercialDocumentDetail(string userId, string ipAddress, string squadId, PurchaseItemDetails purchaseItem)
+        {
+            try
+            {
+                var filter = Builders<SalesDocumentItemsDetails>.Filter.Eq("PurchaseSpecs._id", new ObjectId(purchaseItem.Id));
+                var update = Builders<SalesDocumentItemsDetails>.Update
+                    .Set("PurchaseSpecs.$.AssignedQty", purchaseItem.AssignedQty)
+                    .Set("PurchaseSpecs.$.ConfirmedQty", purchaseItem.ConfirmedQty)
+                    .Set("PurchaseSpecs.$.ConfirmedCost", purchaseItem.ConfirmedCost)
+                    .Set("PurchaseSpecs.$.ExpectedCost", purchaseItem.ExpectedCost);
 
+                await _CommercialDocumentDetail.UpdateOneAsync(filter, update);
 
-
-
+                return (true, purchaseItem, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
 
 
         /// <summary>

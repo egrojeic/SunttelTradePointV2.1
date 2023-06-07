@@ -124,5 +124,11 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// <returns></returns>
         Task<bool> DeleteSaleDetailById(string saleId, string detailId);
 
+        /// <summary>
+        /// Update the PurchaseItemDetails into a SalesDocumentItemsDetails
+        /// </summary>
+        /// <param name="salesDocumentItemsDetails"></param>
+        /// <returns></returns>
+        Task<SalesDocumentItemsDetails> UpdateSalesDocumentItemsDetails(SalesDocumentItemsDetails salesDocumentItemsDetails);
     }
 }

@@ -866,7 +866,41 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
             }
         }
 
+        /// <summary>
+        /// Update the PurchaseItemDetails into a SalesDocumentItemsDetails
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="salesDocumentItemsDetails"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("UpdateSalesDocumentItemsDetails")]
+        public async Task<IActionResult> UpdateSalesDocumentItemsDetails(string userId, string ipAddress, [FromBody] SalesDocumentItemsDetails salesDocumentItemsDetails)
+        {
+            try
+            {
+                var customHeaderValue = Request.Headers["SquadId"];
+                var squadId = customHeaderValue.ToString() ?? "";
 
+                if(salesDocumentItemsDetails.PurchaseSpecs != null && salesDocumentItemsDetails.PurchaseSpecs.Any()) {
+                    foreach (var sale in salesDocumentItemsDetails.PurchaseSpecs)
+                    {
+                        var response = await _commercialDocument.EditCommercialDocumentDetail(userId, ipAddress, squadId, sale);
+                        if (!response.IsSuccess)
+                        {
+                            return BadRequest(response.ErrorDescription);
+                        }
+                    }
+                }
+                
+                return(Ok(salesDocumentItemsDetails));
+              
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
 
     }
