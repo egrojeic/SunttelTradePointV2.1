@@ -15,6 +15,7 @@ using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.Sales;
 using System.Globalization;
 using SunttelTradePointB.Shared.SquadsMgr;
+using Amazon.Runtime.Documents;
 
 namespace SunttelTradePointB.Server.Services.SalesBkServices
 {
@@ -1101,24 +1102,52 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 //    new BsonDocument("$ne", new BsonDocument( "Items", null ))
                 //);
 
+               
+
+                // pipeline.Add(
+                //    new BsonDocument{
+                //        { "$match",
+                //            new BsonDocument{                               
+                //                { "ShipDate", new BsonDocument{
+                //                    { "$gte", startDate },
+                //                    { "$lte", endDate }
+                //                } }
+                //            }
+                //        }
+                //    }
+                //);
+
                 pipeline.Add(
                     new BsonDocument {
-                        { "$project",
+                        { "$lookup",
                             new BsonDocument {
-                                { "Code", 1 },
-                                { "Id", 1 },
-                                { "DocumentType", 1 },
-                                { "DocumentNumber", 1 },
-                                { "PO", 1 },
-                                { "ShipDate", 1 },
-                                { "Buyer", 1 },
-                                { "Items", 1 },
-                                { "SquadId", 1 }
+                                { "from",  "CommercialDocumentsDetails" },
+                                { "foreignField", "IdCommercialDocument" },
+                                { "localField", "_id" },
+                                { "as", "Items" }
                             }
                         }
                     }
                 );
 
+                //// pipeline.Add(
+                ////    new BsonDocument {
+                ////        { "$project",
+                ////            new BsonDocument {
+                ////                { "Code", 1 },
+                ////                { "_id", 1 },
+                ////                { "DocumentType", 1 },
+                ////                { "DocumentNumber", 1 },
+                ////                { "PO", 1 },
+                ////                { "ShipDate", 1 },
+                ////                { "Items", 0 },
+                ////                { "Buyer", 1 },
+                ////                { "SquadId", 1 },
+                ////                { "foreignField", 1 }
+                ////            }
+                ////        }
+                ////    }
+                ////);
 
                 pipeline.Add(
                     new BsonDocument{
@@ -1132,10 +1161,11 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     }
                 );
 
-                List<CommercialDocument> salesList = await _SalesDocumentsCollection.Aggregate<CommercialDocument>(pipeline).ToListAsync();
+
+                List<CommercialDocument> salesList = await _CommercialDocumentCollection.Aggregate<CommercialDocument>(pipeline).ToListAsync();
 
 
-                if (salesList != null) salesList = salesList.Where(s => s.SquadId.ToLower() == squadId.ToLower()).ToList();
+               // if (salesList != null) salesList = salesList.Where(s => s.SquadId.ToLower() == squadId.ToLower()).ToList();
 
 
                 return (true, salesList, null);
@@ -1164,9 +1194,9 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
                 var pipeline = new List<BsonDocument>();
 
-                pipeline.Add(
-                 new BsonDocument("$match", new BsonDocument("SquadId", $"{squadId.ToLower()}"))
-             );
+                   pipeline.Add(
+                    new BsonDocument("$match", new BsonDocument("SquadId", $"{squadId.ToLower()}"))
+                );
 
                 //pipeline.Add(
                 //    new BsonDocument{
@@ -1189,6 +1219,11 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                                 { "Id", 1 },
                                 { nameof(SalesDocumentItemsDetails.SquadId), 1 },
                                 { nameof(SalesDocumentItemsDetails.PurchaseSpecs), 1 },
+                                { nameof(SalesDocumentItemsDetails.IdCommercialDocument), 1 },
+                                { nameof(SalesDocumentItemsDetails.Qty), 1 },
+                                { nameof(SalesDocumentItemsDetails.UnitCost), 1 },
+                                { nameof(SalesDocumentItemsDetails.UnitPrice), 1 },
+                               
 
                             }
                         }
@@ -1198,6 +1233,9 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
                 List<SalesDocumentItemsDetails> results = await _CommercialDocumentDetail.Aggregate<SalesDocumentItemsDetails>(pipeline).ToListAsync();
 
+               
+                results = results.Where(s=>s.SquadId.ToLower() == squadId.ToLower()).ToList();
+
                 return (true, results, null);
             }
             catch (Exception e)
@@ -1206,34 +1244,10 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
             }
         }
 
-        /// <summary>
-        ///  Update a PurchaseSpect of a CommercialDocumentDetail
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="ipAddress"></param>
-        /// <param name="squadId"></param>
-        /// <param name="purchaseItem"></param>
-        /// <returns></returns>
-        public async Task<(bool IsSuccess, PurchaseItemDetails saleDocumentDetail, string? ErrorDescription)> EditCommercialDocumentDetail(string userId, string ipAddress, string squadId, PurchaseItemDetails purchaseItem)
-        {
-            try
-            {
-                var filter = Builders<SalesDocumentItemsDetails>.Filter.Eq("PurchaseSpecs._id", new ObjectId(purchaseItem.Id));
-                var update = Builders<SalesDocumentItemsDetails>.Update
-                    .Set("PurchaseSpecs.$.AssignedQty", purchaseItem.AssignedQty)
-                    .Set("PurchaseSpecs.$.ConfirmedQty", purchaseItem.ConfirmedQty)
-                    .Set("PurchaseSpecs.$.ConfirmedCost", purchaseItem.ConfirmedCost)
-                    .Set("PurchaseSpecs.$.ExpectedCost", purchaseItem.ExpectedCost);
 
-                await _CommercialDocumentDetail.UpdateOneAsync(filter, update);
 
-                return (true, purchaseItem, null);
-            }
-            catch (Exception e)
-            {
-                return (false, null, e.Message);
-            }
-        }
+
+
 
 
         /// <summary>

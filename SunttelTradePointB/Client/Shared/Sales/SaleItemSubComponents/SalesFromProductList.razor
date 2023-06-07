@@ -29,7 +29,6 @@
         background-color: #1bc7b7;
         font-weight: bold;
     }
-    
 </style>
 
 <MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
@@ -40,7 +39,7 @@
                     Description="With this tool you can create and edit item Sales">
 </PageTitleComponent>
 
-<div class="panelMenuContainer"  tabindex="0">
+<div class="panelMenuContainer" tabindex="0">
     <button type="button" @onclick='()=>SetNavigateTo($"SaleItem/1/{commercialDocumentId}")' class="general-menu-button"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i> </button>
 
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
@@ -50,7 +49,7 @@
     }
 </div>
 
-<div class="tableContainer" >
+<div class="tableContainer">
 
     @if (isLoading)
     {
@@ -63,26 +62,26 @@
         @if (items != null)
         {
             <RadzenDataGrid @ref="GridItem" AllowFiltering="true"
-                    AllowColumnResize="true"
-                    AllowAlternatingRows="true"
-                    FilterMode="FilterMode.Advanced"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    AllowSorting="true"
-                    AllowPaging="true"
-                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    Data="@items"
-                    TItem="SalesDocumentItemsDetails"
-                    ColumnWidth="300px"
-                    PageNumbersCount="100"
-                    PageSize="50"
-                    CellContextMenu="@ShowContextMenuWithContent"
-                    AllowRowSelectOnRowClick="true"
-                    CellDoubleClick="OnCellDoubleClick">
+                            AllowColumnResize="true"
+                            AllowAlternatingRows="true"
+                            FilterMode="FilterMode.Advanced"
+                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            AllowSorting="true"
+                            AllowPaging="true"
+                            PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                            ShowPagingSummary="true"
+                            Data="@items"
+                            TItem="SalesDocumentItemsDetails"
+                            ColumnWidth="300px"
+                            PageNumbersCount="100"
+                            PageSize="50"
+                            CellContextMenu="@ShowContextMenuWithContent"
+                            AllowRowSelectOnRowClick="true"
+                            CellDoubleClick="OnCellDoubleClick">
                 <Columns>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Width="50px" Title="@("")" TextAlign="TextAlign.Center" Filterable="false" Sortable="false" Frozen="true" >
+                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Width="50px" Title="@("")" TextAlign="TextAlign.Center" Filterable="false" Sortable="false" Frozen="true">
                         <Template Context="data">
-                            @if (detailItemTem != null && data.Id == detailItemTem.Id )
+                            @if (detailItemTem != null && data.Id == detailItemTem.Id)
                             {
                                 <div class="control-btn">
                                     <button @onclick='()=>SaveEdit(data)'><span class="e-menu-icon fa-solid fa-floppy-disk"></span></button>
@@ -126,7 +125,7 @@
                     </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PullDate" Title="@GetName("PullDate", new SalesDocumentItemsDetails())" FormatString="{0:yyyy-MM-dd}" Filterable="false" Width="100px" />
                     <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="FormatedPullDate" Title="@GetName("FormatedPullDate", new SalesDocumentItemsDetails())" FormatString="{0:yyyy-MM-dd}" Filterable="false" Width="100px" />
-                   
+
 
                 </Columns>
             </RadzenDataGrid>
@@ -234,7 +233,7 @@
                     Alert(true, "No saved");
                 }
             }
-           
+
             StateHasChanged();
         }
         else
@@ -275,7 +274,7 @@
     }
 
     public SalesDocumentItemsDetails ConvetToSalesDocumentItemsDetails(AddItemCommercialDocument item)
-    {       
+    {
         var detail = new SalesDocumentItemsDetails
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -283,7 +282,7 @@
                     PullDate = item.PullDate = item.PullDate != DateTime.MinValue ? item.PullDate : DateTime.Today,
                     FormatedPullDate = item.FormatedPullDate = item.FormatedPullDate != null ? item.FormatedPullDate : "",
                     UnitPrice = item.UnitPrice,
-                    TaxableUnitPrice = item.TaxableUnitPrice = item.TaxableUnitPrice != null ? item.TaxableUnitPrice : 0                                                ,
+                    TaxableUnitPrice = item.TaxableUnitPrice = item.TaxableUnitPrice != null ? item.TaxableUnitPrice : 0,
                     IdCommercialDocument = commercialDocumentId,
                     ChargeableQty = item.UnitPrice
 
@@ -299,7 +298,7 @@
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
 
-        </RadzenMenu>
+    </RadzenMenu>
     );
 
     public async void OnMenuItemClick(MenuItemEventArgs args)
@@ -334,14 +333,15 @@
 
     void OnCellDoubleClick(DataGridCellMouseEventArgs<SalesDocumentItemsDetails> arg)
     {
-        Alert(false,"");
+        Alert(false, "");
         SalesDocumentItemsDetails argObj = (SalesDocumentItemsDetails)arg.Data;
         EditId = argObj.Id;
         if (detailItemTem != null && detailItemTem.Id == argObj.Id)
-        { CancelEdit(detailItemTem.Id);
-           detailItemTem = null;
+        {
+            CancelEdit(detailItemTem.Id);
+            detailItemTem = null;
         }
-        else 
+        else
         {
             if (detailItemTem != null && detailItemTem.Id != null) SaveEdit(detailItemTem);
             detailItemTem = argObj;
@@ -355,7 +355,7 @@
     }
 
     public async void SaveEdit(SalesDocumentItemsDetails data)
-    {        
+    {
         if (data != null)
         {
             await GridItem.UpdateRow(data);

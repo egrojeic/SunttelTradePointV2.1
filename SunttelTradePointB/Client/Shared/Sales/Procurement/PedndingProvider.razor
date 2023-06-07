@@ -1,17 +1,20 @@
-@using SunttelTradePointB.Shared.Sales;
-@using SunttelTradePointB.Shared.Common
+@using Syncfusion.Blazor.Navigations
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.SplitButtons
-@using System.Reflection
-@using Syncfusion.Blazor.Navigations
-@using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents
-@using SunttelTradePointB.Client.Services.SalesServices
+@using SunttelTradePointB.Shared.Sales;
+@using SunttelTradePointB.Client.Shared.Sales.Procurement;
+@using System.Globalization;
+@using System.Reflection;
 
-@inject NavigationManager Navigation
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Charts
+@using Syncfusion.Blazor.Data
+@using Syncfusion.Blazor.Navigations
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
-@inject SunttelTradePointB.Client.Services.MasterTablesServices.ActorsNodeService actor
-@inject GeographicPlacesService geoPlaces
-@inject ActorsNodeService actorsNodeServive
+@inject ContextMenuService ContextMenuService
+@inject NavigationManager Navigation
+
 @inject IJSRuntime Js
 
 <style>
@@ -37,55 +40,205 @@
 
 
 
-@if (isLoading)
-{
-    <WaitingProcessIndicator loadingTopic="Items"></WaitingProcessIndicator>
-}
-else
-{
-    if (procurementDetailList != null)
-    {
-        <div class="vertical">
-        <RadzenDataGrid AllowFiltering="true"
-                        AllowColumnResize="true"
-                        AllowAlternatingRows="true"
-                        FilterMode="FilterMode.Advanced"
-                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                        AllowSorting="true"
-                        PageSize="50"
-                        AllowPaging="true"
-                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                        ShowPagingSummary="true"
-                        Data="@procurementDetailList"
-                        TItem="SalesDocumentItemsDetails"
-                        ColumnWidth="100%"
-                        SelectionMode="DataGridSelectionMode.Single"
-                        LogicalFilterOperator="LogicalFilterOperator.Or">
-            <Columns>
-                <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName(nameof(SalesDocumentItemsDetails.TransactionalItem), new SalesDocumentItemsDetails())" Width="148px" />
-                <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="@nameof(SalesDocumentItemsDetails.Qty)" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Width="148px" />
-                <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="@nameof(SalesDocumentItemsDetails.Total)" Title="@GetName("Total", new SalesDocumentItemsDetails())" Width="148px" />
+    <div name="PendingProcurement">
 
-            </Columns>
-        </RadzenDataGrid>
-        <div class="container-total">
-            <div class="item">
-                @($"Records: {procurementDetailList.Count}")
-            </div>
-        </div>
-        </div>
+        <div class="tableContainer">
+
+            @if (isLoading)
+            {
+
+                <WaitingProcessIndicator loadingTopic="Items"></WaitingProcessIndicator>
+            }
+
+            else
+            {
+                if (procurementDetailList != null)
+                {
+
+
+                <SfGrid DataSource="@procurementDetailList" TValue="SalesDocumentItemsDetails" >
+
+                    <GridTemplates>
+                            <DetailTemplate>
+                                @{
+                                    var item = (context as SalesDocumentItemsDetails);
+                                    var purchaseSpecs = (context as PurchaseItemDetails);
+                                }
+                                <div>
+                                    <SfTab Height="250px" CssClass="tab-adaptive " HeaderPlacement="HeaderPosition.Top">
+                                        <TabAnimationSettings>
+                                            <TabAnimationPrevious Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationPrevious>
+                                            <TabAnimationNext Effect=Syncfusion.Blazor.AnimationEffect.None></TabAnimationNext>
+                                        </TabAnimationSettings>
+                                        <TabItems>
+                                            <TabItem>
+                                                <ContentTemplate>
+                                                    @* Query="@(Syncfusion.Blazor.Data.Query.Where(nameof(SalesDocumentItemsDetails.IdCommercialDocument), "equal", item.SalesDocumentItemsDetailsId, true))"*@
+                                                    <SfGrid @ref="gridSpecs" DataSource="item.PurchaseSpecs" TValue="PurchaseItemDetails">
+                                                       
+
+                                                        <GridColumns>
+                                                            <GridColumn HeaderText="Provider" EditType="EditType.DropDownEdit" Width="100">
+                                                                <EditTemplate Context="list">
+                                                                    <select class="select-style">
+                                                                        @foreach (var provider in providerList)
+                                                                        {
+                                                                            <option>@provider.Name</option>
+                                                                        }
+                                                                    </select>
+                                                                </EditTemplate>
+                                                            </GridColumn>
+                                                            <GridColumn Field="AssignedQty" HeaderText="ProviderQty" Width="110">
+                                                            </GridColumn>
+                                                            <GridColumn Field=@nameof(PurchaseItemDetails.ProviderShipDate) HeaderText="ProviderQty" Type="ColumnType.Date" Width="110">
+                                                            </GridColumn>
+
+                                                        </GridColumns>
+
+                                                    </SfGrid>
+
+
+
+                                                </ContentTemplate>
+                                            </TabItem>
+                                        </TabItems>
+                                    </SfTab>
+                                </div>
+                            </DetailTemplate>
+                        </GridTemplates>
+                        <GridColumns>
+                            <GridColumn HeaderText="Warehouse" Width="110">
+                                <Template>
+                                    @{
+                                        var data = (context as SalesDocumentItemsDetails);
+                                        GetSaleItem(data.IdCommercialDocument, nameof(CommercialDocument.BuyerWarehouse));
+
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn HeaderText="@GetName("DocumentNumber", new CommercialDocument())" Width="110">
+                                <Template>
+                                    @{
+                                        var data = (context as SalesDocumentItemsDetails);
+                                        @GetSaleItem(data.IdCommercialDocument,nameof(CommercialDocument.DocumentNumber))
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn HeaderText="@GetName("DocumentType", new CommercialDocument())" Width="110">
+                                <Template>
+                                    @{
+                                        var data = (context as SalesDocumentItemsDetails);
+                                        @GetSaleItem(data.IdCommercialDocument,nameof(CommercialDocument.DocumentType))
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn HeaderText="@GetName("Customer", new CommercialDocument())" Width="110">
+                                <Template>
+                                    @{
+                                        var data = (context as SalesDocumentItemsDetails);
+                                        @GetSaleItem(data.IdCommercialDocument,nameof(CommercialDocument.Buyer))
+                                    }
+                                </Template>
+                            </GridColumn>
+                            <GridColumn HeaderText="@GetName("Customer#", new CommercialDocument())" Width="80">
+                                <Template>
+                                    @{
+                                        var data = (context as SalesDocumentItemsDetails);
+                                        @GetSaleItem(data.IdCommercialDocument,"Customer#")
+                                    }
+                                </Template>
+                            </GridColumn>
+                            <GridColumn HeaderText="@GetName("Customer Group", new CommercialDocument())" Width="110">
+                                <Template>
+                                    @{
+                                        var data = (context as SalesDocumentItemsDetails);
+                                        @GetSaleItem(data.IdCommercialDocument,"Customer Group")
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn HeaderText="@GetName("Qty", new CommercialDocument())" Width="110">
+                                <Template>
+                                    @{
+                                        var data = (context as SalesDocumentItemsDetails);
+                                        @GetCountQty(data.Id, data.IdCommercialDocument)
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn HeaderText="@GetName("Farm cost", new CommercialDocument())" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="110">
+                                <Template>
+                                    @{
+                                        var data = (context as SalesDocumentItemsDetails);
+                                        @GetSaleItem(data.IdCommercialDocument,"Farm cost")
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn HeaderText="@GetName("Box", new CommercialDocument())" Width="110">
+                                <Template>
+
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn HeaderText="@GetName("Pack", new CommercialDocument())" Width="110">
+                                <Template>
+                                    @{
+                                        var data = (context as SalesDocumentItemsDetails);
+                                        @data.Qty
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn HeaderText="@GetName("UnitPrice", new CommercialDocument())" Width="110">
+                                <Template>
+                                    @{
+                                        var data = (context as SalesDocumentItemsDetails);
+                                        @data.UnitPrice
+                                    }
+                                </Template>
+                            </GridColumn>
+
+                            <GridColumn HeaderText="@GetName("ShipDate", new CommercialDocument())" Width="110">
+                                <Template>
+                                    @{
+                                        var data = (context as SalesDocumentItemsDetails);
+                                        @GetSaleItem(data.IdCommercialDocument,nameof(CommercialDocument.ShipDate))
+                                    }
+                                </Template>
+                            </GridColumn>
+
+
+                        </GridColumns>
+                    </SfGrid>
+
+                    <div class="container-total">
+                        <div class="item">
+                            @(
+                                $"Records: {procurementDetailList.Count}"
+                                )
+                        </div>
+                    </div>
+                }
     }
-}
+        </div>
+    </div>
+
 
 
 
 @code {
     #region Parameter
-    [Parameter]
-    public List<SalesDocumentItemsDetails> ProcurementDetailList { get; set; }
+    [Parameter]  
+    public List<CommercialDocument> salesList { get; set; }
     public List<SalesDocumentItemsDetails> procurementDetailList { get; set; }
+    public List<AtomConcept> providerList { get; set; }
+    
     #endregion Parameter
-
+    SfGrid<PurchaseItemDetails> gridSpecs;
 
     #region var
     bool viewMsg = false;
@@ -94,51 +247,94 @@ else
     #endregion var
 
 
-    protected override void OnInitialized()
+    protected async override void OnInitialized()
     {
+        providerList = await DocumentServices.GetProviderList("all", true, 1, 100);
         Calculate();
         base.OnInitialized();
+        
     }
 
+    #region compute values
     public void Calculate()
     {
-        isLoading = true;
-        if (ProcurementDetailList != null)
+        List<SalesDocumentItemsDetails>? list = new();
+        foreach (var item in salesList)
         {
-            foreach (var item in ProcurementDetailList)
+            if (item.Items != null) list.AddRange(item.Items);
+        }
+              procurementDetailList = new();
+        isLoading = true;
+        if (list != null)
+        {
+            foreach (var item in list)
             {
-                AddPedndingProvider(item);
+                AddPendingProcurement(item);
             }
         }
-        StateHasChanged();
+        
         isLoading = false;
+        StateHasChanged();
     }
 
+    private bool AddPendingProcurement(SalesDocumentItemsDetails details)
+    {
 
-    private bool AddPedndingProvider(SalesDocumentItemsDetails details)
-    {      
-        if (procurementDetailList == null) procurementDetailList = new();      
-        //if (details.InventoryItemId != null) return false;
-       // var exist = procurementDetailList.FindLast(s => s.IdCommercialDocument == details.Id);
-        if (details.PurchaseSpecs != null)
+
+        double count = GetCountQty(details.Id, details.IdCommercialDocument);
+
+        if (details.Qty > 0 && count <=0)
         {
-            foreach (var detail in details.PurchaseSpecs)
+            if (details.PurchaseSpecs != null)
             {
-                //var countExist = exist !=null ? exist.PurchaseSpecs.Where(s => s.Id == detail.Id).Sum(s => s.AssignedQty):0;
-                var countItem = detail.AssignedQty;
-
-                if (detail.AssignedQty > 0 && detail.ISRejectedByProvider == false)
-                {
-                    var edit = details.PurchaseSpecs.Where(s => s.Id == detail.Id).FirstOrDefault();
-                    edit.ConfirmedQty = countItem;
-                    procurementDetailList.Add(details);
-                }
-
+                procurementDetailList.Add(details);
             }
+            
         }
-
         return true;
     }
+
+
+    public double GetCountQty(string detailId, string saleId)
+    {
+        double count = 0;
+        var sale = salesList.Where(s => s.Id == saleId).FirstOrDefault();
+        if (sale != null && sale.Items != null)
+        {
+            var detail = sale.Items.Where(s => s.Id == detailId).FirstOrDefault();
+            if (detail != null && detail.PurchaseSpecs != null)
+            {
+                count = detail.PurchaseSpecs.Where(w => w.ISRejectedByProvider == false).Sum(s => s.AssignedQty);
+                count = detail.Qty - count;
+            }
+
+        }
+        return count;
+    }
+
+    #endregion compute values
+
+
+    public string GetSaleItem(string id, string name)
+    {
+        string result = "";
+        if (salesList != null)
+        {
+            var item = salesList.Where(s => s.Id == id).FirstOrDefault();
+
+            if (item != null)
+            {
+                if (name == "DocumentNumber") result = item.DocumentNumber != null ? item.DocumentNumber.ToString() : "";
+                if (name == "BuyerWarehouse") result = item.BuyerWarehouse != null ? item.BuyerWarehouse.Name : "";
+                if (name == "DocumentType") result = item.DocumentType != null ? item.DocumentType.Name : "";
+                if (name == "Customer Group") result = item.Buyer != null && item.Buyer.Groups.FirstOrDefault() != null ? item.Buyer.Groups.FirstOrDefault().Name : "";
+                if (name == "ShipDate") result = item.ShipDate.ToString("MM/yyyy/dd");
+                if (name == "Buyer") result = item.Buyer != null ? item.Buyer.Name.ToString() : "";
+            }
+        }
+        return result;
+    }
+
 
     public string GetName(string Name, Object Obj)
     {

@@ -106,7 +106,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 var pipe = new List<BsonDocument>();
 
-                if (!strNameFilter.ToLower().Contains("all"))
+                if (strNameFilter.ToLower() !="all")
                 {
                     pipe.Add(
                 new BsonDocument(
@@ -139,6 +139,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     new BsonDocument {
                         { "$project",
                             new BsonDocument{
+                                { "_id", 1 },
                                 { "Code", 1 },
                                 { "Name", 1 }
                             }
