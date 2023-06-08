@@ -1103,7 +1103,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 //    new BsonDocument("$ne", new BsonDocument( "Items", null ))
                 //);
 
-               
+
 
                 // pipeline.Add(
                 //    new BsonDocument{
@@ -1166,7 +1166,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 List<CommercialDocument> salesList = await _CommercialDocumentCollection.Aggregate<CommercialDocument>(pipeline).ToListAsync();
 
 
-               // if (salesList != null) salesList = salesList.Where(s => s.SquadId.ToLower() == squadId.ToLower()).ToList();
+                // if (salesList != null) salesList = salesList.Where(s => s.SquadId.ToLower() == squadId.ToLower()).ToList();
 
 
                 return (true, salesList, null);
@@ -1195,9 +1195,9 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
                 var pipeline = new List<BsonDocument>();
 
-                   pipeline.Add(
-                    new BsonDocument("$match", new BsonDocument("SquadId", $"{squadId.ToLower()}"))
-                );
+                pipeline.Add(
+                 new BsonDocument("$match", new BsonDocument("SquadId", $"{squadId.ToLower()}"))
+             );
 
                 //pipeline.Add(
                 //    new BsonDocument{
@@ -1224,7 +1224,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                                 { nameof(SalesDocumentItemsDetails.Qty), 1 },
                                 { nameof(SalesDocumentItemsDetails.UnitCost), 1 },
                                 { nameof(SalesDocumentItemsDetails.UnitPrice), 1 },
-                               
+
 
                             }
                         }
@@ -1234,8 +1234,8 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
                 List<SalesDocumentItemsDetails> results = await _CommercialDocumentDetail.Aggregate<SalesDocumentItemsDetails>(pipeline).ToListAsync();
 
-               
-                results = results.Where(s=>s.SquadId.ToLower() == squadId.ToLower()).ToList();
+
+                results = results.Where(s => s.SquadId.ToLower() == squadId.ToLower()).ToList();
 
                 return (true, results, null);
             }
@@ -1264,6 +1264,14 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     .Set("PurchaseSpecs.$.ConfirmedCost", purchaseItem.ConfirmedCost)
                     .Set("PurchaseSpecs.$.ExpectedCost", purchaseItem.ExpectedCost);
 
+                await _CommercialDocumentDetail.UpdateOneAsync(filter, update);
+                return (true, purchaseItem, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
 
 
 
@@ -1568,6 +1576,63 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
         }
 
+        /// <summary>
+        ///  Retrives a list of CommercialDocumentDetailsDTO
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="EntityId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <returns></returns>
+        public Task<(bool IsSuccess, List<CommercialDocumentDetailsDTO>? GetProcurementDetails, string? ErrorDescription)> GetSaleOrders(string userId, string ipAddress, string squadId, string EntityId, int? page = 1, int? perPage = 10)
+        {
+            try
+            {
+                var skip = (page - 1) * perPage;
+
+                var pipeline = new[]
+                {
+                    new BsonDocument("$unwind", "$PurchaseSpecs"),
+                    new BsonDocument("$match", new BsonDocument("PurchaseSpecs.Provider._id", ObjectId.Parse(EntityId))),
+                    new BsonDocument("$lookup", new BsonDocument
+                    {
+                        {"from", "CommercialDocuments"},
+                        {"localField", "IdCommercialDocument"},
+                        {"foreignField", "_id"},
+                        {"as", "Header"}
+                    }),
+                    new BsonDocument("$unwind", "$Header"),
+                    new BsonDocument("$project", new BsonDocument
+                    {
+                        {"_id", 1},
+                        {"IdCommercialDocument", 1},
+                        {"PurchaseSpecs", 1},
+                        {"TransactionalItem", 1},
+                        {"Header.Buyer", 1},
+                        {"Header.PO", 1}
+                    }),
+                    new BsonDocument("$skip", skip),
+                    new BsonDocument("$limit", perPage)
+                };
+
+                var aggregation = _CommercialDocumentDetail.Aggregate<CommercialDocumentDetailsDTO>(pipeline);
+
+                List<CommercialDocumentDetailsDTO> result = aggregation.ToList();
+
+                return Task.FromResult((
+                                    IsSuccess: true,
+                                    GetProcurementDetails: result,
+                                    ErrorDescription: (string?)null
+                                ));
+            }
+            catch (Exception ex)
+            {
+                return Task.FromException<(bool IsSuccess, List<CommercialDocumentDetailsDTO>? GetProcurementDetails, string? ErrorDescription)>(ex);
+            }
+
+        }
     }
 
 }

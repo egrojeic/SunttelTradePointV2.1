@@ -91,10 +91,7 @@
     {
         isLoading = true;
         var EntityId = UIClientGlobalVariables.EntityUserId;
-        var range = await DocumentServices.GetSalesOrders(EntityId);
-        sales.AddRange(range);
-        sales.AddRange(range);
-        sales.AddRange(range);
+        sales = await DocumentServices.GetSalesOrders(EntityId);
         isLoading = false;
         await DataGrid.Refresh();
     }
