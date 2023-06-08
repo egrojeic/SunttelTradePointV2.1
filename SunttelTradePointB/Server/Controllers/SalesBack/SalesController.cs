@@ -7,6 +7,7 @@ using SunttelTradePointB.Server.Interfaces.SalesBkServices;
 using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.Sales;
+using SunttelTradePointB.Shared.Sales.SalesDTO;
 using SunttelTradePointB.Shared.SquadsMgr;
 using ZstdSharp.Unsafe;
 
@@ -682,6 +683,38 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         }
 
 
+        /// <summary>
+        /// Retrives a list of CommercialDocumentDetailsDTO
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="EntityId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetSaleOrders")]
+        public async Task<IActionResult> GetSaleOrders(
+            string userId,
+            string ipAddress,
+            string EntityId,
+            int? page = 1,
+            int? perPage = 10)
+        {
+
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+
+            var response = await _commercialDocument.GetSaleOrders(userId, ipAddress, squadId, EntityId, page, perPage);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.GetProcurementDetails);
+            }
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
 
         /// <summary>
         /// Retrives a list of Transactional Items matching a search criteria
@@ -871,30 +904,29 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
-        /// <param name="salesDocumentItemsDetails"></param>
+        /// <param name="saleDTO"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("UpdateSalesDocumentItemsDetails")]
-        public async Task<IActionResult> UpdateSalesDocumentItemsDetails(string userId, string ipAddress, [FromBody] SalesDocumentItemsDetails salesDocumentItemsDetails)
+        public async Task<IActionResult> UpdateSalesDocumentItemsDetails(string userId, string ipAddress, [FromBody] CommercialDocumentDetailsDTO saleDTO)
         {
             try
             {
                 var customHeaderValue = Request.Headers["SquadId"];
                 var squadId = customHeaderValue.ToString() ?? "";
 
-                if(salesDocumentItemsDetails.PurchaseSpecs != null && salesDocumentItemsDetails.PurchaseSpecs.Any()) {
-                    foreach (var sale in salesDocumentItemsDetails.PurchaseSpecs)
-                    {
-                        var response = await _commercialDocument.EditCommercialDocumentDetail(userId, ipAddress, squadId, sale);
-                        if (!response.IsSuccess)
-                        {
-                            return BadRequest(response.ErrorDescription);
-                        }
-                    }
+                var response = await _commercialDocument.EditCommercialDocumentDetail(userId, ipAddress, squadId,
+                    saleDTO.PurchaseSpecs);
+
+                if (response.IsSuccess)
+                {
+                    return Ok(response.saleDocumentDetail);
                 }
-                
-                return(Ok(salesDocumentItemsDetails));
-              
+                else
+                {
+                    return BadRequest(response.ErrorDescription);
+                }
+
             }
             catch (Exception e)
             {

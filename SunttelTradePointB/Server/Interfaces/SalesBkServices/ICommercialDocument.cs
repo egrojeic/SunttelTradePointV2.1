@@ -2,6 +2,7 @@
 using SunttelTradePointB.Shared.DataViews.BI;
 using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.Sales;
+using SunttelTradePointB.Shared.Sales.SalesDTO;
 
 namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
 {
@@ -117,7 +118,7 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <returns></returns>
         Task<(bool IsSuccess, FinanceStatus? financeStatus, string? ErrorDescription)> GetFiananceStatusById(string userId, string ipAddress, string financeStatusId);
 
-        
+
         /// <summary>
         ///  Retrives a list of SalesDocumentItemsDetails, services
         /// </summary>
@@ -343,5 +344,16 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <returns></returns>
         Task<(bool IsSuccess, PurchaseItemDetails saleDocumentDetail, string? ErrorDescription)> EditCommercialDocumentDetail(string userId, string ipAddress, string squadId, PurchaseItemDetails purchaseItem);
 
+        /// <summary>
+        ///  Retrives a list of CommercialDocumentDetailsDTO, services
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="EntityId"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<CommercialDocumentDetailsDTO>? GetProcurementDetails, string? ErrorDescription)> GetSaleOrders(string userId, string ipAddress, string squadId, string EntityId, int? page = 1, int? perPage = 10);
     }
 }

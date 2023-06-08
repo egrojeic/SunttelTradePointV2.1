@@ -15,6 +15,7 @@ using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.Sales;
 using System.Globalization;
 using SunttelTradePointB.Shared.SquadsMgr;
+using SunttelTradePointB.Shared.Sales.SalesDTO;
 
 namespace SunttelTradePointB.Server.Services.SalesBkServices
 {
@@ -1197,6 +1198,58 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
 
                 List<SalesDocumentItemsDetails> results = await _CommercialDocumentDetail.Aggregate<SalesDocumentItemsDetails>(pipeline).ToListAsync();
+
+                return (true, results, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+
+        /// <summary>
+        ///  Retrives a list of CommercialDocumentDetailsDTO, services
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="EntityId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<CommercialDocumentDetailsDTO>? GetProcurementDetails, string? ErrorDescription)> GetSaleOrders(string userId, string ipAddress, string squadId, string EntityId, int? page = 1, int? perPage = 10)
+        {
+            try
+            {
+                var skip = (page - 1) * perPage;
+
+                var pipeline = new[]
+                {
+                    new BsonDocument("$unwind", "$PurchaseSpecs"),
+                    new BsonDocument("$match", new BsonDocument("PurchaseSpecs.Provider._id", ObjectId.Parse(EntityId))),
+                    new BsonDocument("$lookup", new BsonDocument
+                    {
+                        {"from", "CommercialDocuments"},
+                        {"localField", "IdCommercialDocument"},
+                        {"foreignField", "_id"},
+                        {"as", "Header"}
+                    }),
+                    new BsonDocument("$unwind", "$Header"),
+                    new BsonDocument("$project", new BsonDocument
+                    {
+                        {"_id", 1},
+                        {"IdCommercialDocument", 1},
+                        {"PurchaseSpecs", 1},
+                        {"TransactionalItem", 1},
+                        {"Header.Buyer", 1},
+                        {"Header.PO", 1}
+                    }),
+                    new BsonDocument("$skip", skip),
+                    new BsonDocument("$limit", perPage)
+                };
+
+                List<CommercialDocumentDetailsDTO> results = await _CommercialDocumentDetail.Aggregate<CommercialDocumentDetailsDTO>(pipeline).ToListAsync();
 
                 return (true, results, null);
             }

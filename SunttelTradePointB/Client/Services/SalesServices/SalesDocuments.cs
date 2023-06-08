@@ -1,6 +1,8 @@
-﻿using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
+﻿using MongoDB.Bson.Serialization.IdGenerators;
+using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.Sales;
+using SunttelTradePointB.Shared.Sales.SalesDTO;
 using System.Globalization;
 using System.Net;
 using System.Net.Http.Json;
@@ -36,15 +38,14 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<SalesDocumentItemsDetails> UpdateSalesDocumentItemsDetails(SalesDocumentItemsDetails salesDocumentItemsDetails)
+        public async Task<SalesDocumentItemsDetails> UpdateSalesDocumentItemsDetails(CommercialDocumentDetailsDTO salesDocumentItemsDetails)
         {
             try
             {
                 string path = basepath.Replace("Name", "UpdateSalesDocumentItemsDetails");
                 path = path.Replace("*Id", UIClientGlobalVariables.UserId ?? "00");
                 path = path.Replace("*Ip", UIClientGlobalVariables.PublicIpAddress ?? "00");
-                salesDocumentItemsDetails.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
-                var responseMessage = await _httpClient.PostAsJsonAsync<SalesDocumentItemsDetails>($"{path}", salesDocumentItemsDetails);
+                var responseMessage = await _httpClient.PostAsJsonAsync<CommercialDocumentDetailsDTO>($"{path}", salesDocumentItemsDetails);
                 return await responseMessage.Content.ReadFromJsonAsync<SalesDocumentItemsDetails>();
 
             }
@@ -606,6 +607,23 @@ namespace SunttelTradePointB.Client.Services.SalesServices
                 string path = basepath.Replace("Name", "GetProcurementDetails");
                 var responseMessage = await Gethttp($"{path}");
                 var result  = await responseMessage.Content.ReadFromJsonAsync<List<SalesDocumentItemsDetails>>();
+                return result;
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<List<CommercialDocumentDetailsDTO>> GetSalesOrders(string EntityId)
+        {
+            try
+            {
+                string path = basepath.Replace("Name", "GetSaleOrders");
+                var responseMessage = await Gethttp($"{path}&EntityId={EntityId}");
+                var result = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocumentDetailsDTO>>();
                 return result;
 
             }

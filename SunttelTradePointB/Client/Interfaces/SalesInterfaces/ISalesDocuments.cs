@@ -1,5 +1,6 @@
 ﻿using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.Sales;
+using SunttelTradePointB.Shared.Sales.SalesDTO;
 
 namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
 {
@@ -129,6 +130,13 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// </summary>
         /// <param name="salesDocumentItemsDetails"></param>
         /// <returns></returns>
-        Task<SalesDocumentItemsDetails> UpdateSalesDocumentItemsDetails(SalesDocumentItemsDetails salesDocumentItemsDetails);
+        Task<SalesDocumentItemsDetails> UpdateSalesDocumentItemsDetails(CommercialDocumentDetailsDTO salesDocumentItemsDetails);
+
+        /// <summary>
+        /// Retrives a listo of CommercialDocumentDetailsDTO
+        /// </summary>
+        /// <param name="EntityId"></param>
+        /// <returns></returns>
+        Task<List<CommercialDocumentDetailsDTO>> GetSalesOrders(string EntityId);
     }
 }

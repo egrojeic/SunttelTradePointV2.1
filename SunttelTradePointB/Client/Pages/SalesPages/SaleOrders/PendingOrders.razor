@@ -4,14 +4,19 @@
 
 @using SunttelTradePointB.Shared.Sales;
 
+@using SunttelTradePointB.Shared.Sales.SalesDTO;
 @using Syncfusion.Blazor.Grids
 @using Syncfusion.Blazor.DropDowns
+@using System.Dynamic
+@using System.Globalization
 
 
 <div class="panelMenuContainer">
 
     <RangeDatesInput @bind-StartDate="@startingDate" @bind-EndDate="@endDate"
-                     EventSearchAll="EventSearchAll"></RangeDatesInput>
+                     disableBtn="true"></RangeDatesInput>
+
+    <SearchComponent @bind-FilterTextSet="@filter"></SearchComponent>
 </div>
 
 @if (isLoading)
@@ -24,26 +29,30 @@
 <div class="col-lg-12 control-section">
     <div class="content-wrapper">
         <div class="row">
-            <SfGrid @ref="DataGrid" DataSource="@purchaseItemDetails" Toolbar="@(new List<string>() {  "Edit", "Update", "Cancel" })" AllowPaging="true">
+            <SfGrid @ref="DataGrid" DataSource="@sales" Toolbar="@(new List<string>() {  "Edit", "Update", "Cancel" })" AllowPaging="true">
                 <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true"></GridEditSettings>
-                <GridEvents OnActionBegin="ActionBegin" OnActionComplete="ActionComplete" TValue="PurchaseItemDetails"></GridEvents>
+                <GridEvents OnActionBegin="ActionBegin" OnActionComplete="ActionComplete" TValue="CommercialDocumentDetailsDTO"></GridEvents>
+                <GridPageSettings PageSize="10"></GridPageSettings>
                 <GridColumns>
                     <GridColumn HeaderText="Options" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Center" Width="40">
                         <Template>
                             @{
-                                var purchase = (context as PurchaseItemDetails);
+                                var purchase = (context as CommercialDocumentDetailsDTO);
                                 <button class="btn btn-danger btn-sm" @onclick="() => CancelRequest(purchase)" title="Cancel Request">
                                     <i class="oi oi-circle-x"></i>
                                 </button>
                             }
                         </Template>
                     </GridColumn>
-                    <GridColumn Field=@nameof(PurchaseItemDetails.Id) HeaderText="@GetName("Id",new PurchaseItemDetails())" IsPrimaryKey="true" ValidationRules="@(new ValidationRules{ Required=true})" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
-                    <GridColumn AllowEditing="false" Field=@nameof(PurchaseItemDetails.AssignedQty) HeaderText="@GetName("AssignedQty",new PurchaseItemDetails())" ValidationRules="@(new ValidationRules{ Required=true, Number=true})" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
-                    <GridColumn Field=@nameof(PurchaseItemDetails.ConfirmedQty) HeaderText="@GetName("ConfirmedQty",new PurchaseItemDetails())" ValidationRules="@(new ValidationRules{ Required=true, Range = new object[]{0, 10000}})" EditType="EditType.NumericEdit" Format="C2" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
-                    <GridColumn AllowEditing="false" Field=@nameof(PurchaseItemDetails.ExpectedCost) HeaderText="@GetName("ExpectedCost",new PurchaseItemDetails())" ValidationRules="@(new ValidationRules{ Required=true, Number=true})" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
-                    <GridColumn Field=@nameof(PurchaseItemDetails.ConfirmedCost) HeaderText="@GetName("ConfirmedCost",new PurchaseItemDetails())" ValidationRules="@(new ValidationRules{ Required=true, Range = new object[]{0, 10000}})" EditType="EditType.NumericEdit" Format="C2" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
-                    <GridColumn Field=@nameof(PurchaseItemDetails.ProviderShipDate) HeaderText="@GetName("ProviderShipDate",new PurchaseItemDetails())" AllowEditing="false" Width="50"></GridColumn>
+                    <GridColumn Visible="false" Field=@nameof(CommercialDocumentDetailsDTO._id) HeaderText="@GetName("Id",new CommercialDocumentDetailsDTO())" IsPrimaryKey="true" ValidationRules="@(new ValidationRules{ Required=true})" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
+                    <GridColumn AllowEditing="false" Field="Header.Buyer.Name" HeaderText="Buyer" Width="50"></GridColumn>
+                    <GridColumn AllowEditing="false" Field="Header.PO" HeaderText="PO" Width="50"></GridColumn>
+                    <GridColumn AllowEditing="false" Field="@nameof(CommercialDocumentDetailsDTO.TransactionalItem)" HeaderText="@GetName("TransactionalItem",new CommercialDocumentDetailsDTO())" Width="50"></GridColumn>
+                    <GridColumn AllowEditing="false" Field="PurchaseSpecs.AssignedQty" HeaderText="@GetName("AssignedQty",new CommercialDocument())" ValidationRules="@(new ValidationRules{ Required=true, Number=true})" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
+                    <GridColumn Field="PurchaseSpecs.ConfirmedQty" HeaderText="@GetName("ConfirmedQty",new PurchaseItemDetails())" ValidationRules="@(new ValidationRules{ Required=true, Range = new object[]{0, 10000}})" EditType="EditType.NumericEdit" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
+                    <GridColumn AllowEditing="false" Field="PurchaseSpecs.ExpectedCost" HeaderText="@GetName("ExpectedCost",new PurchaseItemDetails())" ValidationRules="@(new ValidationRules{ Required=true, Number=true})" Format="C2" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
+                    <GridColumn Field="PurchaseSpecs.ConfirmedCost" HeaderText="@GetName("ConfirmedCost",new PurchaseItemDetails())" ValidationRules="@(new ValidationRules{ Required=true, Range = new object[]{0, 10000}})" EditType="EditType.NumericEdit" Format="C2" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
+                    <GridColumn Field="PurchaseSpecs.ProviderShipDate" HeaderText="@GetName("ProviderShipDate",new PurchaseItemDetails())" AllowEditing="false" Width="50" Format="yyyy/MM/dd"></GridColumn>
                 </GridColumns>
             </SfGrid>
         </div>
@@ -52,19 +61,28 @@
 
 
 @code {
-    public List<PurchaseItemDetails> purchaseItemDetails = new List<PurchaseItemDetails>();
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
-    SfGrid<PurchaseItemDetails> DataGrid;
+    SfGrid<CommercialDocumentDetailsDTO> DataGrid;
+    public string _filterItems { get; set; }
     public bool isLoading = false;
-    List<SalesDocumentItemsDetails> sales = new List<SalesDocumentItemsDetails>();
-
-    public void EventSearchAll(string value)
+    public List<CommercialDocumentDetailsDTO> sales = new List<CommercialDocumentDetailsDTO>();
+    string filter
     {
-
+        get
+        {
+            return _filterItems;
+        }
+        set
+        {
+            _filterItems = value;
+            GetDocumentDetails();
+        }
     }
 
     protected override async Task OnInitializedAsync()
     {
+        CultureInfo.CurrentCulture = new CultureInfo("en-US");
+        CultureInfo.CurrentUICulture = new CultureInfo("en-US");
         await base.OnInitializedAsync();
         await GetDocumentDetails();
     }
@@ -72,19 +90,11 @@
     private async Task GetDocumentDetails()
     {
         isLoading = true;
-        sales = await DocumentServices.GetProcurementDetails();
-
-        foreach (var sale in sales)
-        {
-            if (sale.PurchaseSpecs != null && sale.PurchaseSpecs.Any())
-            {
-                var userid = UIClientGlobalVariables.UserId;
-                //var purchases = sale.PurchaseSpecs.Where(x => x.Id == UIClientGlobalVariables.UserId).ToList();
-                var purchases = sale.PurchaseSpecs;
-                purchaseItemDetails.AddRange(purchases);
-            }
-        }
-
+        var EntityId = UIClientGlobalVariables.EntityUserId;
+        var range = await DocumentServices.GetSalesOrders(EntityId);
+        sales.AddRange(range);
+        sales.AddRange(range);
+        sales.AddRange(range);
         isLoading = false;
         await DataGrid.Refresh();
     }
@@ -95,12 +105,12 @@
         return Name;
     }
 
-    public void ActionBegin(ActionEventArgs<PurchaseItemDetails> args)
+    public void ActionBegin(ActionEventArgs<CommercialDocumentDetailsDTO> args)
     {
 
     }
 
-    public async Task ActionComplete(ActionEventArgs<PurchaseItemDetails> args)
+    public async Task ActionComplete(ActionEventArgs<CommercialDocumentDetailsDTO> args)
     {
         try
         {
@@ -118,17 +128,8 @@
             }
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
             {
-                PurchaseItemDetails purchase = args.Data;
-
-                foreach (var sale in sales)
-                {
-                    if (sale.PurchaseSpecs != null && sale.PurchaseSpecs.Any()){
-                        var index = sale.PurchaseSpecs.FindIndex(x => x.Id == purchase.Id);
-                        if (index != -1) sale.PurchaseSpecs[index] = purchase;
-                    }
-                    await EditPurchase(sale);
-                    break;
-                }
+                CommercialDocumentDetailsDTO sale = args.Data;
+                await EditPurchase(sale);
 
             }
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
@@ -143,12 +144,12 @@
 
     }
 
-    public void CancelRequest(PurchaseItemDetails e)
+    public void CancelRequest(CommercialDocumentDetailsDTO e)
     {
         Console.WriteLine(e.ToString());
     }
 
-    private async Task EditPurchase(SalesDocumentItemsDetails sale)
+    private async Task EditPurchase(CommercialDocumentDetailsDTO sale)
     {
         var resp = await DocumentServices.UpdateSalesDocumentItemsDetails(sale);
     }

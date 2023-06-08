@@ -1,0 +1,12 @@
+﻿
+<div class="panelMenuContainer">
+
+    <RangeDatesInput @bind-StartDate="@startingDate" @bind-EndDate="@endDate"
+                     disableBtn="true"></RangeDatesInput>
+
+
+</div>
+
+@code {
+    DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
+}
