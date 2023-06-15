@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -275,11 +276,33 @@ namespace SunttelTradePointB.Shared.Common
 
     }
 
+    public class Sender
+    {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
+
+        [BsonIgnoreIfNull]
+        public string LegacyId { get; set; }
+
+        [BsonIgnoreIfNull]
+        [DisplayName("Sender Code")]
+        public string Code {get; set; }
+
+        [BsonIgnoreIfNull]
+        [DisplayName("Sender Name")]
+        public string Name { get; set; }
+    }
+
     public class ShippingInfo
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
+
+        [BsonIgnoreIfNull]
+        [DisplayName("Sender")]
+        public Sender Sender { get; set; }
 
         [DisplayName("Carrier")]
         public AtomConcept Carrier { get; set; }

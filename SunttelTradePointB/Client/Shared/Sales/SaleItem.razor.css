@@ -150,3 +150,9 @@
    background:no-repeat;
    border:none;
 }
+
+.inline-items {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}

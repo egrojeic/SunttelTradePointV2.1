@@ -125,7 +125,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 pipe.Add(
                        new BsonDocument(
                        "$match",
-                         new BsonDocument($"DefaultEntityRole.{strRoleName}", true)
+                         new BsonDocument($"DefaultEntityRole.Name", strRoleName)
                                )
                    );
 
@@ -951,7 +951,6 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
         /// <param name="filterString"></param>
-        /// <param name="DocumentTypeId"></param>
         /// <param name="squadId"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
@@ -1027,16 +1026,16 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     }
                 );
 
-                List<EntityActor> results = new();
-                if (strNameFilter.ToLower() == "all")
-                    results = _entities.Find(e => e.Id != null && e.SquadId == squadId).ToList();
+                //List<EntityActor> results = new();
+                //if (strNameFilter.ToLower() == "all")
+                //    results = _entities.Find(e => e.Id != null && e.SquadId == squadId).ToList();
 
-                if (!(strNameFilter.ToLower() == "all"))
-                    results = _entities.Find(e => e.Name.ToLower().Contains(strNameFilter.ToLower())).ToList();
+                //if (!(strNameFilter.ToLower() == "all"))
+                //    results = _entities.Find(e => e.Name.ToLower().Contains(strNameFilter.ToLower())).ToList();
 
-                if (!isASale) results = results.Where(e =>e.SquadId !=null &&  e.SquadId.ToLower() == squadId.ToLower()).ToList();
+                //if (!isASale) results = results.Where(e =>e.SquadId !=null &&  e.SquadId.ToLower() == squadId.ToLower()).ToList();
 
-                // List<AtomConcept> results = await _entities.Aggregate<AtomConcept>(pipe).ToListAsync();
+                List<EntityActor> results = await _entities.Aggregate<EntityActor>(pipe).ToListAsync();
 
                 return (true, results, null);
             }
