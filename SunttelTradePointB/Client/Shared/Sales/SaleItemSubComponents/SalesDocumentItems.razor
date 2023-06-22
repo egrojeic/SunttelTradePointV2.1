@@ -2,6 +2,7 @@
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Grids;
 @using Syncfusion.Blazor.SplitButtons
 @using System.Reflection
 @using Syncfusion.Blazor.Navigations
@@ -13,7 +14,7 @@
 @inject ContextMenuService ContextMenuService
 @inject IJSRuntime Js
 
-<style>
+@*<style>
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
         font-size: 12px;
     }
@@ -36,7 +37,7 @@
     .e-contextmenu-wrapper.e-sfcontextmenu, .e-contextmenu-container.e-sfcontextmenu {
        position: absolute; 
     }
-</style>
+</style>*@
 
 <MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
 
@@ -88,7 +89,31 @@
     {
         @if (items != null)
         {
-            <RadzenDataGrid @ref="grid" AllowFiltering="true"
+               <div class="col-lg-12 control-section">
+    <div class="content-wrapper">
+        <div class="row">
+                        <SfGrid @ref="DataGrid" DataSource="@items" Toolbar="@(new List<string>() {  "Edit", "Update", "Cancel" })" AllowPaging="true">
+                <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true"></GridEditSettings>
+                            <GridEvents OnActionComplete="ActionComplete" TValue="SalesDocumentItemsDetails"></GridEvents>
+                <GridPageSettings PageSize="10"></GridPageSettings>
+                <GridColumns>
+                    <GridColumn Visible="false" Field=@nameof(SalesDocumentItemsDetails.Id) IsPrimaryKey="true" ValidationRules="@(new ValidationRules{ Required=true})"></GridColumn>
+                    <GridColumn AllowEditing="false" Field="TransactionalItem.Name" HeaderText="TransactionalItem" Width="50"></GridColumn>
+                    <GridColumn Field="@nameof(SalesDocumentItemsDetails.Qty)" HeaderText="@GetName("Qty", new SalesDocumentItemsDetails())" ValidationRules="@(new ValidationRules{ Required=true, Range = new object[]{0, 10000}})" EditType="EditType.NumericEdit" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
+                    <GridColumn AllowEditing="true" Field="@nameof(SalesDocumentItemsDetails.UnitPrice)" HeaderText="@GetName("UnitPrice", new SalesDocumentItemsDetails())" Width="50" ValidationRules="@(new ValidationRules{ Required=true, Range = new object[]{0, 10000}})" EditType="EditType.NumericEdit" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right"></GridColumn>
+                    <GridColumn AllowEditing="false" Field="@nameof(SalesDocumentItemsDetails.ChargeableQty)" HeaderText="@GetName("ChargeableQty", new SalesDocumentItemsDetails())" Width="50"></GridColumn>
+                    <GridColumn AllowEditing="false" Field="@nameof(SalesDocumentItemsDetails.UnitCost)" HeaderText="@GetName("UnitCost", new SalesDocumentItemsDetails())" Width="50"></GridColumn>
+                    <GridColumn AllowEditing="false" Field="ChargeableUnits.Name" HeaderText="@GetName("ChargeableUnits.Name", new SalesDocumentItemsDetails())" Width="50"></GridColumn>
+                    <GridColumn AllowEditing="false" Field="@nameof(SalesDocumentItemsDetails.TaxableUnitPrice)" HeaderText="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())" ValidationRules="@(new ValidationRules{ Required=true, Number=true})" Format="C2" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
+                    <GridColumn AllowEditing="false" Field="TaxRate" HeaderText="@GetName("TaxRate", new SalesDocumentItemsDetails())" Format="C2" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
+                    <GridColumn AllowEditing="false" Field="Total" HeaderText="@GetName("Total", new SalesDocumentItemsDetails())" Format="C2" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
+                    <GridColumn Field="@nameof(SalesDocumentItemsDetails.PullDate)" HeaderText="@GetName("PullDate", new SalesDocumentItemsDetails())" AllowEditing="false" Width="50" Format="yyyy/MM/dd"></GridColumn>
+                </GridColumns>
+            </SfGrid>
+        </div>
+    </div>
+</div>
+           @* <RadzenDataGrid @ref="grid" AllowFiltering="true"
                     AllowColumnResize="true"
                     FilterMode="FilterMode.Advanced"
                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
@@ -161,7 +186,7 @@
                     </label>
                 </div>
 
-            </div>
+            </div>*@
         }
     }
 
@@ -188,6 +213,7 @@
     public EventCallback Reaload { get; set; }
 
     RadzenDataGrid<SalesDocumentItemsDetails> grid;
+    SfGrid<SalesDocumentItemsDetails> DataGrid;
 
     string page = "";
     bool menuVisible = false;
@@ -199,7 +225,7 @@
     bool viewMsg = false;
     bool isLoading = false;
 
-   DotNetObjectReference<SalesDocumentItems> _reference;
+    DotNetObjectReference<SalesDocumentItems> _reference;
 
     protected async override void OnInitialized()
     {
@@ -232,11 +258,16 @@
         string name = arg.Item.Id;
         if (commercialDocumentId != null)
         {
+            if(buyerId is null)
+            {
+                alert.InvokeAsync("Select a Buyer first");
+                return;
+            }
             Js.InvokeAsync<object>("open", $"{name}/{commercialDocumentId}/{(isASales ? buyerId : "false")}", "_blank");
         }
         else
         {
-            alert.InvokeAsync("required fields");
+            alert.InvokeAsync("required fields");   
         }
         StateHasChanged();
         CloseMenu(false);
@@ -363,6 +394,41 @@
     public void NavigationTo(string name)
     {
         Navigation.NavigateTo(name);
+    }
+
+    
+    public async Task ActionComplete(ActionEventArgs<SalesDocumentItemsDetails> args)
+    {
+        try
+        {
+            if (args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
+            {
+                // Triggers once editing operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
+            {
+                // Triggers once add operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Cancel)
+            {
+                // Triggers once cancel operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+            {
+                SalesDocumentItemsDetails sale = args.Data;
+                await DocumentServices.SaveCommercialDocumentDetail(sale);
+
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+            {
+                // Triggers once delete operation completes
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
     }
 
 }
