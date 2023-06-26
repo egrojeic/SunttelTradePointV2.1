@@ -288,14 +288,14 @@ namespace SunttelTradePointB.Client.Services.SalesServices
 
 
 
-        public async Task<List<AddItemCommercialDocument>> GetCommercialProductList(string commercialDocumentId, string customerId, string filter, int? page = 1, int? perPage = 10)
+        public async Task<List<SalesDocumentItemsDetails>> GetCommercialProductList(string commercialDocumentId, string customerId, string filter, bool paginate = true, int? page = 1, int? perPage = 10)
         {
             try
             {
-                string path = $"/api/TransactionalItems/GetProductsByCustomerId?userId=*Id&ipAdress=*Ip&customerId={customerId}&nameLike={filter}&page={page}&perPage={perPage}";
+                string path = $"/api/TransactionalItems/GetProductsByCustomerId?userId=*Id&ipAdress=*Ip&customerId={customerId}&paginate={paginate}&nameLike={filter}&page={page}&perPage={perPage}";
                 var responseMessage = await Gethttp(path);
-                var list = await responseMessage.Content.ReadFromJsonAsync<List<AddItemCommercialDocument>>();
-                return list != null ? list : new List<AddItemCommercialDocument>();
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<SalesDocumentItemsDetails>>();
+                return list != null ? list : new List<SalesDocumentItemsDetails>();
             }
             catch (Exception ex)
             {
@@ -384,12 +384,12 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<List<Concept>> GetCommercialBuyerList(string filter, bool IsASale, int? page = 1, int? perPage = 10)
+        public async Task<List<Concept>> GetCommercialBuyerList(string filter, bool IsASale, int? page = 1, int? perPage = 10, bool paginate = true)
         {
             try
             {
 
-                string path = $"/api/ConceptsSelector/GetBuyers?isASale={IsASale}&userId=*Id&ipAddress=*Ip&page={page}&perPage={perPage}&filterString={filter}";
+                string path = $"/api/ConceptsSelector/GetBuyers?isASale={IsASale}&userId=*Id&ipAddress=*Ip&page={page}&perPage={perPage}&filterString={filter}&paginate={paginate}";
                 var responseMessage = await Gethttp($"{path}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
                 return list != null ? list : new List<Concept>();

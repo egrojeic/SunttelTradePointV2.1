@@ -1,6 +1,7 @@
 ﻿@inject ContextMenuService ContextMenuService
 @inject NavigationManager navigationManager
 @inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject IJSRuntime js;
 
 @using SunttelTradePointB.Shared.Sales;
 
@@ -31,8 +32,8 @@
         <div class="row">
             <SfGrid @ref="DataGrid" DataSource="@sales" Toolbar="@(new List<string>() {  "Edit", "Update", "Cancel" })" AllowPaging="true">
                 <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true"></GridEditSettings>
-                <GridEvents OnActionBegin="ActionBegin" OnActionComplete="ActionComplete" TValue="CommercialDocumentDetailsDTO"></GridEvents>
-                <GridPageSettings PageSize="10"></GridPageSettings>
+                <GridEvents OnLoad="Load" OnActionBegin="ActionBegin" OnActionComplete="ActionComplete" TValue="CommercialDocumentDetailsDTO"></GridEvents>
+                <GridPageSettings PageSize="@PageSize" PageSizes="@(new string[] { "5", "10", "15", "20", "50", "All" })"></GridPageSettings>
                 <GridColumns>
                     <GridColumn HeaderText="Options" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Center" Width="40">
                         <Template>
@@ -65,6 +66,8 @@
     SfGrid<CommercialDocumentDetailsDTO> DataGrid;
     public string _filterItems { get; set; }
     public bool isLoading = false;
+    public int GridHeight;
+    public int PageSize { get; set; } = 2;
     public List<CommercialDocumentDetailsDTO> sales = new List<CommercialDocumentDetailsDTO>();
     string filter
     {
@@ -77,6 +80,17 @@
             _filterItems = value;
             GetDocumentDetails();
         }
+    }
+
+    public void Load(object args)
+    {
+        var RowHeight = 37; //height of the each row
+        Int32.TryParse(this.DataGrid.Height, out GridHeight); //datagrid height
+        var PageSize = (this.DataGrid.PageSettings as GridPageSettings).PageSize; //initial page size
+        decimal PageResize = ((GridHeight) - (PageSize * RowHeight)) / RowHeight; //new page size is obtained here
+#pragma warning disable BL0005
+        (this.DataGrid.PageSettings as GridPageSettings).PageSize = PageSize + (int)Math.Round(PageResize);
+#pragma warning restore BL0005
     }
 
     protected override async Task OnInitializedAsync()
@@ -125,8 +139,7 @@
             }
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
             {
-                CommercialDocumentDetailsDTO sale = args.Data;
-                await EditPurchase(sale);
+                await EditPurchase(args.Data);
 
             }
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
@@ -141,13 +154,24 @@
 
     }
 
-    public void CancelRequest(CommercialDocumentDetailsDTO e)
+    public async void CancelRequest(CommercialDocumentDetailsDTO e)
     {
-        Console.WriteLine(e.ToString());
+        e.PurchaseSpecs.ConfirmedCost = 0;
+        e.PurchaseSpecs.ConfirmedQty= 0;
+        e.PurchaseSpecs.ISRejectedByProvider = true;
+        string saleId = await EditPurchase(e);
+        if(saleId != null){
+            sales.Remove(e);
+            await DataGrid.Refresh();
+        } else
+        {
+            await js.InvokeVoidAsync("alert", "Error updating item");
+        }
     }
 
-    private async Task EditPurchase(CommercialDocumentDetailsDTO sale)
+    private async Task<string> EditPurchase(CommercialDocumentDetailsDTO sale)
     {
         var resp = await DocumentServices.UpdateSalesDocumentItemsDetails(sale);
+        return resp.Id;
     }
 }

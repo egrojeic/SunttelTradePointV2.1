@@ -351,8 +351,9 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="nameLike"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
+        /// <param name="paginate"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<AddItemCommercialDocument>? AddItemCommercialDocumentResponse, string? ErrorDescription)> GetProductsByCustomerId(string userId, string ipAdress, string squadId, string customerId, string? nameLike = null, int? page = 1, int? perPage = 10);
+        Task<(bool IsSuccess, List<SalesDocumentItemsDetails>? AddItemCommercialDocumentResponse, string? ErrorDescription)> GetProductsByCustomerId(string userId, string ipAdress, string squadId, string customerId, string? nameLike = null,bool paginate = true, int? page = 1, int? perPage = 10);
 
         /// <summary>
         /// Upload file csv a transactional items

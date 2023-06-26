@@ -175,8 +175,9 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="filterString"></param>
+        /// <param name="paginate"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<EntityActor>? BuyersList, string? ErrorDescription)> GetBuyers(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null);
+        Task<(bool IsSuccess, List<EntityActor>? BuyersList, string? ErrorDescription)> GetBuyers(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null, bool paginate = true);
 
     }
 }

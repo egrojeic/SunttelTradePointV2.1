@@ -191,7 +191,7 @@
         if (BuyerId == "false") _filterItems = "all";
         if (BuyerId != null && commercialDocumentId != null && true)
         {
-            var list = await DocumentServices.GetCommercialProductList(commercialDocumentId, BuyerId, (_filterItems != null ? _filterItems : "all"), 1, 100);
+            var list = await DocumentServices.GetCommercialProductList(commercialDocumentId, BuyerId, (_filterItems != null ? _filterItems : "all"),true, 1, 100);
             if (idItem != null)
             {
                 items = await DocumentServices.GetCommercialDocumentDetails(commercialDocumentId);
@@ -200,7 +200,7 @@
             }
             else
             {
-                listItemByListProduct(list);
+                //listItemByListProduct(list);
             }
         }
         isLoading = false;

@@ -133,10 +133,17 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         Task<SalesDocumentItemsDetails> UpdateSalesDocumentItemsDetails(CommercialDocumentDetailsDTO salesDocumentItemsDetails);
 
         /// <summary>
-        /// Retrives a listo of CommercialDocumentDetailsDTO
+        /// Retrives a list of CommercialDocumentDetailsDTO
         /// </summary>
         /// <param name="EntityId"></param>
         /// <returns></returns>
         Task<List<CommercialDocumentDetailsDTO>> GetSalesOrders(string EntityId);
+
+        /// <summary>
+        /// Retrives a list of Buyers
+        /// </summary>
+        /// <param name="IsASale"></param>
+        /// <returns></returns>
+        Task<List<Concept>> GetCommercialBuyerList(string filter, bool IsASale, int? page = 1, int? perPage = 10, bool paginate = true);
     }
 }

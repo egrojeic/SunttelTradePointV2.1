@@ -1,8 +1,9 @@
-
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.DropDowns
 @using Syncfusion.Blazor.Grids;
+@using Syncfusion.Blazor.Inputs;
 @using Syncfusion.Blazor.SplitButtons
 @using System.Reflection
 @using Syncfusion.Blazor.Navigations
@@ -35,49 +36,49 @@
     }
 
     .e-contextmenu-wrapper.e-sfcontextmenu, .e-contextmenu-container.e-sfcontextmenu {
-       position: absolute; 
+       position: absolute;
     }
 </style>*@
 
 <MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
 
-<div >
-    <div class="detailsTitleContainer">      
-        <SfSplitButton Content="Item" IconCss="e-menu-icon fa-sharp fa-solid fa-circle-plus" style="background:none;" CssClass="splitButtonsStyle color">
-            <SplitButtonEvents ItemSelected="EventIdSelectionMenuItem">
-                </SplitButtonEvents>
-                <DropDownMenuItems>   
-                    <DropDownMenuItem Text="Add from product list" Id="SalesFromProductList" IconCss="e-menu-icon fa-sharp fa-solid fa-circle-plus"></DropDownMenuItem>
-                    <DropDownMenuItem Separator="true"></DropDownMenuItem>
-                    <DropDownMenuItem Text="Reload" IconCss="fa-solid fa-eject" ></DropDownMenuItem>
-                </DropDownMenuItems>
-            </SfSplitButton>   
-        @*<img @onclick="()=>CloseMenu(true)" class="img-menu" src="/images/menu.png">
-        <div class="menu-item" style="display:@(menuVisible?"flex":"none");">
-            <button type="button" class="exit-btn" @onclick="()=>CloseMenu(false)">
-                <i class="fa-regular fa-circle-xmark"></i>
-            </button>
-            <div class="item">
-                <button type="button" @onclick='()=>EventIdSelectionMenuItem("SalesFromProductList")'>
-                    <i class="fa-sharp fa-solid fa-circle-plus"></i>
-                </button>
-                <b @onclick='()=>EventIdSelectionMenuItem("SalesDocumentItems")' class="subTitleDetailForm">From product list</b>
-            </div>
-            <div class="item">
-                <button type="button" @onclick='()=>EventIdSelectionMenuItem("SalesFromInventroy")'>
-                    <i class="fa-sharp fa-solid fa-circle-plus"></i>
-                </button>
-                <b  class="subTitleDetailForm">From Inventroy</b>
-            </div>
-            <div class="item">
-                <button type="button" @onclick='()=>EventIdSelectionMenuItem("SalesFromProductionOrder")'>
-                    <i class="fa-sharp fa-solid fa-circle-plus"></i>
-                </button>
-                <b @onclick='()=>EventIdSelectionMenuItem("Product")' class="subTitleDetailForm">From Production Order </b>
-            </div>
-        </div>*@
-
+<div>
+    @* <div class="detailsTitleContainer">
+    <SfSplitButton Content="Item" IconCss="e-menu-icon fa-sharp fa-solid fa-circle-plus" style="background:none;" CssClass="splitButtonsStyle color">
+    <SplitButtonEvents ItemSelected="EventIdSelectionMenuItem">
+    </SplitButtonEvents>
+    <DropDownMenuItems>
+    <DropDownMenuItem Text="Add from product list" Id="SalesFromProductList" IconCss="e-menu-icon fa-sharp fa-solid fa-circle-plus"></DropDownMenuItem>
+    <DropDownMenuItem Separator="true"></DropDownMenuItem>
+    <DropDownMenuItem Text="Reload" IconCss="fa-solid fa-eject"></DropDownMenuItem>
+    </DropDownMenuItems>
+    </SfSplitButton>*@
+    @*<img @onclick="()=>CloseMenu(true)" class="img-menu" src="/images/menu.png">
+    <div class="menu-item" style="display:@(menuVisible?"flex":"none");">
+    <button type="button" class="exit-btn" @onclick="()=>CloseMenu(false)">
+    <i class="fa-regular fa-circle-xmark"></i>
+    </button>
+    <div class="item">
+    <button type="button" @onclick='()=>EventIdSelectionMenuItem("SalesFromProductList")'>
+    <i class="fa-sharp fa-solid fa-circle-plus"></i>
+    </button>
+    <b @onclick='()=>EventIdSelectionMenuItem("SalesDocumentItems")' class="subTitleDetailForm">From product list</b>
     </div>
+    <div class="item">
+    <button type="button" @onclick='()=>EventIdSelectionMenuItem("SalesFromInventroy")'>
+    <i class="fa-sharp fa-solid fa-circle-plus"></i>
+    </button>
+    <b  class="subTitleDetailForm">From Inventroy</b>
+    </div>
+    <div class="item">
+    <button type="button" @onclick='()=>EventIdSelectionMenuItem("SalesFromProductionOrder")'>
+    <i class="fa-sharp fa-solid fa-circle-plus"></i>
+    </button>
+    <b @onclick='()=>EventIdSelectionMenuItem("Product")' class="subTitleDetailForm">From Production Order </b>
+    </div>
+    </div>
+
+    </div>*@
 
     @if (isLoading)
     {
@@ -89,104 +90,114 @@
     {
         @if (items != null)
         {
-               <div class="col-lg-12 control-section">
-    <div class="content-wrapper">
-        <div class="row">
-                        <SfGrid @ref="DataGrid" DataSource="@items" Toolbar="@(new List<string>() {  "Edit", "Update", "Cancel" })" AllowPaging="true">
-                <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true"></GridEditSettings>
-                            <GridEvents OnActionComplete="ActionComplete" TValue="SalesDocumentItemsDetails"></GridEvents>
-                <GridPageSettings PageSize="10"></GridPageSettings>
-                <GridColumns>
-                    <GridColumn Visible="false" Field=@nameof(SalesDocumentItemsDetails.Id) IsPrimaryKey="true" ValidationRules="@(new ValidationRules{ Required=true})"></GridColumn>
-                    <GridColumn AllowEditing="false" Field="TransactionalItem.Name" HeaderText="TransactionalItem" Width="50"></GridColumn>
-                    <GridColumn Field="@nameof(SalesDocumentItemsDetails.Qty)" HeaderText="@GetName("Qty", new SalesDocumentItemsDetails())" ValidationRules="@(new ValidationRules{ Required=true, Range = new object[]{0, 10000}})" EditType="EditType.NumericEdit" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
-                    <GridColumn AllowEditing="true" Field="@nameof(SalesDocumentItemsDetails.UnitPrice)" HeaderText="@GetName("UnitPrice", new SalesDocumentItemsDetails())" Width="50" ValidationRules="@(new ValidationRules{ Required=true, Range = new object[]{0, 10000}})" EditType="EditType.NumericEdit" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right"></GridColumn>
-                    <GridColumn AllowEditing="false" Field="@nameof(SalesDocumentItemsDetails.ChargeableQty)" HeaderText="@GetName("ChargeableQty", new SalesDocumentItemsDetails())" Width="50"></GridColumn>
-                    <GridColumn AllowEditing="false" Field="@nameof(SalesDocumentItemsDetails.UnitCost)" HeaderText="@GetName("UnitCost", new SalesDocumentItemsDetails())" Width="50"></GridColumn>
-                    <GridColumn AllowEditing="false" Field="ChargeableUnits.Name" HeaderText="@GetName("ChargeableUnits.Name", new SalesDocumentItemsDetails())" Width="50"></GridColumn>
-                    <GridColumn AllowEditing="false" Field="@nameof(SalesDocumentItemsDetails.TaxableUnitPrice)" HeaderText="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())" ValidationRules="@(new ValidationRules{ Required=true, Number=true})" Format="C2" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
-                    <GridColumn AllowEditing="false" Field="TaxRate" HeaderText="@GetName("TaxRate", new SalesDocumentItemsDetails())" Format="C2" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
-                    <GridColumn AllowEditing="false" Field="Total" HeaderText="@GetName("Total", new SalesDocumentItemsDetails())" Format="C2" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
-                    <GridColumn Field="@nameof(SalesDocumentItemsDetails.PullDate)" HeaderText="@GetName("PullDate", new SalesDocumentItemsDetails())" AllowEditing="false" Width="50" Format="yyyy/MM/dd"></GridColumn>
-                </GridColumns>
-            </SfGrid>
-        </div>
-    </div>
-</div>
-           @* <RadzenDataGrid @ref="grid" AllowFiltering="true"
-                    AllowColumnResize="true"
-                    FilterMode="FilterMode.Advanced"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    AllowSorting="true"
-                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    Data="@items"
-                    TItem="SalesDocumentItemsDetails"
-                    ColumnWidth="100px"
-                    PageNumbersCount="100"
-                    PageSize="50"
-                    CellContextMenu="@ShowContextMenuWithContent"
-                    CellDoubleClick="OnCellDoubleClick">
+            <div class="col-lg-12 control-section">
+                <div class="content-wrapper">
+                    <div class="row" style="padding-left: 15px">
+                        <SfGrid @ref="DataGrid" DataSource="@items" Toolbar="@tableOptions" AllowPaging="true" AllowResizing="true">
+                            <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true">
+                            </GridEditSettings>
+                            <GridEvents OnActionBegin="ActionBegin" OnActionComplete="ActionComplete" TValue="SalesDocumentItemsDetails"></GridEvents>
+                            <GridPageSettings PageSize="10"></GridPageSettings>
+                            <GridColumns>
+                                <GridColumn Visible="false" Field=@nameof(SalesDocumentItemsDetails.Id) IsPrimaryKey="true" ValidationRules="@(new ValidationRules{ Required=true})"></GridColumn>
+                                <GridColumn AllowEditing="false" Field="TransactionalItem.Name" HeaderText="TransactionalItem" Width="100" ValidationRules="@(new ValidationRules{ Required=true})">
+                                    <EditTemplate>
+                                        <SfAutoComplete TItem="SalesDocumentItemsDetails" TValue="string" @bind-Value="@((context as SalesDocumentItemsDetails).TransactionalItem.Name)" DataSource="@BuyerItems">
+                                            <AutoCompleteFieldSettings Value="TransactionalItem.Name"></AutoCompleteFieldSettings>
+                                        </SfAutoComplete>
+                                    </EditTemplate>
+                                </GridColumn>
+                                <GridColumn EditorSettings="@NumericParams" Field="@nameof(SalesDocumentItemsDetails.Qty)" HeaderText="@GetName("Qty", new SalesDocumentItemsDetails())" ValidationRules="@(new ValidationRules{ Required=true })" EditType="EditType.NumericEdit" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="40"></GridColumn>
+                                <GridColumn EditorSettings="@NumericParams" AllowEditing="true" Field="@nameof(SalesDocumentItemsDetails.UnitPrice)" HeaderText="@GetName("UnitPrice", new SalesDocumentItemsDetails())" ValidationRules="@(new ValidationRules{ Required=true, Number = true})" EditType="EditType.NumericEdit" Width="40" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right"></GridColumn>
+                                <GridColumn EditorSettings="@NumericParams" AllowEditing="false" Field="@nameof(SalesDocumentItemsDetails.ChargeableQty)" HeaderText="@GetName("ChargeableQty", new SalesDocumentItemsDetails())" Width="50" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right"></GridColumn>
+                                <GridColumn EditorSettings="@NumericParams" AllowEditing="false" Field="@nameof(SalesDocumentItemsDetails.UnitCost)" HeaderText="@GetName("UnitCost", new SalesDocumentItemsDetails())" Width="50" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Format="C2"></GridColumn>
+                                <GridColumn EditorSettings="@NumericParams" AllowEditing="false" Field="@nameof(SalesDocumentItemsDetails.OriginalPrice)" HeaderText="@GetName("OriginalPrice", new SalesDocumentItemsDetails())" Width="50" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Format="C2"></GridColumn>
+                                <GridColumn AllowEditing="false" Field="ChargeableUnits.Name" HeaderText="@GetName("ChargeableUnits.Name", new SalesDocumentItemsDetails())" Width="50"></GridColumn>
+                                <GridColumn EditorSettings="@NumericParams" AllowEditing="false" Field="@nameof(SalesDocumentItemsDetails.TaxableUnitPrice)" HeaderText="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())" ValidationRules="@(new ValidationRules{ Required=true, Number=true})" Format="C2" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="50"></GridColumn>
+                                <GridColumn EditorSettings="@NumericParams" AllowEditing="false" Field="TaxRate" HeaderText="@GetName("TaxRate", new SalesDocumentItemsDetails())" Format="p1" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="40"></GridColumn>
+                                <GridColumn EditorSettings="@NumericParams" AllowEditing="false" Field="TaxValue" HeaderText="@GetName("TaxValue", new SalesDocumentItemsDetails())" Format="C2" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="30"></GridColumn>
+                                <GridColumn EditorSettings="@NumericParams" AllowEditing="false" Field="Total" HeaderText="@GetName("Total", new SalesDocumentItemsDetails())" Format="C2" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="45"></GridColumn>
+                                <GridColumn Field="@nameof(SalesDocumentItemsDetails.PullDate)" HeaderText="@GetName("PullDate", new SalesDocumentItemsDetails())" AllowEditing="false" Width="50" Format="yyyy/MM/dd"></GridColumn>
 
-                <Columns>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Sortable="false" Filterable="false" Width="100px" TextAlign="Radzen.TextAlign.Center" Frozen="true">
-                        <Template Context="data">
-                            <Confirm Id="@data.Id"
-                             IdSelect="@IdDelete"
-                             ConfirmIdAction='ConfirmDelete'
-                             CancelAction="CancelDelete"
-                             SelectIdAction="SelectDelete"
-                             EditEnable=true
-                             IdEdit="@idCellItem"
-                             SavedAction="SaveEditCell"
-                            EditAction="EditCellGrid"></Confirm>
-
-                        </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName("TransactionalItem", new SalesDocumentItemsDetails())" Width="200px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.ProductPackingSpecs.Code" Title="@GetName("TransactionalItemSpecs", new SalesDocumentItemsDetails())" Width="200px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Qty" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="80px">
-                        <EditTemplate Context="itemEdit">
-                            <RadzenNumeric @bind-Value="itemEdit.Qty" type="number" />
-                        </EditTemplate>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableQty" Title="@GetName("ChargeableQty", new SalesDocumentItemsDetails())" Filterable="false" TextAlign="TextAlign.Right" Sortable="false" Width="80px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableUnits.Name" Title="@GetName("ChargeableUnits.Name", new SalesDocumentItemsDetails())" TextAlign="TextAlign.Center" Filterable="false" Sortable="false" Width="100px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitPrice" Title="@GetName("UnitPrice", new SalesDocumentItemsDetails())" Filterable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Sortable="false" Width="90px">
-                        <EditTemplate Context="itemEdit">
-                            <RadzenNumeric @bind-Value="itemEdit.UnitPrice" type="number" />
-                        </EditTemplate>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxableUnitPrice" Title="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())" Filterable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Sortable="false" Width="90px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitCost" Title="@GetName("UnitCost", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="90px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxRate" Title="@GetName("TaxRate", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="90px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxValue" Title="@GetName("TaxValue", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="80px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Total" Title="@GetName("Total", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="80px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PurchaseSpecs" Title="@GetName("PurchaseSpecs", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" Width="90px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Provider" Title="@GetName("Provider", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" Width="90px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="OriginalPrice" Title="@GetName("OriginalPrice", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="90px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ScannedBoxes" Title="@GetName("ScannedBoxes", new SalesDocumentItemsDetails())" Filterable="false" TextAlign="TextAlign.Right" Sortable="false" Width="90px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Title="@GetName("ProcurementPtje", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="80px">
-                        <Template Context="data">
-                            @{
-
-                                <input type="checkbox" checked="@(data.ProcurementPtje)" disabled />
-                            }
-                        </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PullDate" Title="@GetName("PullDate", new SalesDocumentItemsDetails())" Filterable="false" FormatString="{0:yyyy-MM-dd}" TextAlign="TextAlign.Center" Width="100px" />
-                    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="FormatedPullDate" Title="@GetName("FormatedPullDate", new SalesDocumentItemsDetails())" FormatString="{0:yyyy-MM-dd}" TextAlign="TextAlign.Center" Filterable="false" Width="200px" />
-
-                </Columns>
-            </RadzenDataGrid>
-            <div class="container-total">
-                <div class="item">
-                    <label>
-                        @($"Records: {items.Count}")
-                    </label>
+                            </GridColumns>
+                        </SfGrid>
+                    </div>
                 </div>
+            </div>
+            @* <RadzenDataGrid @ref="grid" AllowFiltering="true"
+    AllowColumnResize="true"
+    FilterMode="FilterMode.Advanced"
+    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+    AllowSorting="true"
+    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+    ShowPagingSummary="true"
+    Data="@items"
+    TItem="SalesDocumentItemsDetails"
+    ColumnWidth="100px"
+    PageNumbersCount="100"
+    PageSize="50"
+    CellContextMenu="@ShowContextMenuWithContent"
+    CellDoubleClick="OnCellDoubleClick">
 
-            </div>*@
+    <Columns>
+    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Sortable="false" Filterable="false" Width="100px" TextAlign="Radzen.TextAlign.Center" Frozen="true">
+    <Template Context="data">
+    <Confirm Id="@data.Id"
+    IdSelect="@IdDelete"
+    ConfirmIdAction='ConfirmDelete'
+    CancelAction="CancelDelete"
+    SelectIdAction="SelectDelete"
+    EditEnable=true
+    IdEdit="@idCellItem"
+    SavedAction="SaveEditCell"
+    EditAction="EditCellGrid"></Confirm>
+
+    </Template>
+    </RadzenDataGridColumn>
+    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.Name" Title="@GetName("TransactionalItem", new SalesDocumentItemsDetails())" Width="200px" />
+    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TransactionalItem.ProductPackingSpecs.Code" Title="@GetName("TransactionalItemSpecs", new SalesDocumentItemsDetails())" Width="200px" />
+    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Qty" Title="@GetName("Qty", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="80px">
+    <EditTemplate Context="itemEdit">
+    <RadzenNumeric @bind-Value="itemEdit.Qty" type="number" />
+    </EditTemplate>
+    </RadzenDataGridColumn>
+    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableQty" Title="@GetName("ChargeableQty", new SalesDocumentItemsDetails())" Filterable="false" TextAlign="TextAlign.Right" Sortable="false" Width="80px" />
+    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ChargeableUnits.Name" Title="@GetName("ChargeableUnits.Name", new SalesDocumentItemsDetails())" TextAlign="TextAlign.Center" Filterable="false" Sortable="false" Width="100px" />
+    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitPrice" Title="@GetName("UnitPrice", new SalesDocumentItemsDetails())" Filterable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Sortable="false" Width="90px">
+    <EditTemplate Context="itemEdit">
+    <RadzenNumeric @bind-Value="itemEdit.UnitPrice" type="number" />
+    </EditTemplate>
+    </RadzenDataGridColumn>
+    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxableUnitPrice" Title="@GetName("TaxableUnitPrice", new SalesDocumentItemsDetails())" Filterable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Sortable="false" Width="90px" />
+    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="UnitCost" Title="@GetName("UnitCost", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="90px" />
+    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxRate" Title="@GetName("TaxRate", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="90px" />
+    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="TaxValue" Title="@GetName("TaxValue", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="80px" />
+    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Total" Title="@GetName("Total", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="80px" />
+    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PurchaseSpecs" Title="@GetName("PurchaseSpecs", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" Width="90px" />
+    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="Provider" Title="@GetName("Provider", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" Width="90px" />
+    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="OriginalPrice" Title="@GetName("OriginalPrice", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" FormatString="{0:N2}" Width="90px" />
+    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="ScannedBoxes" Title="@GetName("ScannedBoxes", new SalesDocumentItemsDetails())" Filterable="false" TextAlign="TextAlign.Right" Sortable="false" Width="90px" />
+    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Title="@GetName("ProcurementPtje", new SalesDocumentItemsDetails())" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="80px">
+    <Template Context="data">
+    @{
+
+    <input type="checkbox" checked="@(data.ProcurementPtje)" disabled />
+    }
+    </Template>
+    </RadzenDataGridColumn>
+    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="PullDate" Title="@GetName("PullDate", new SalesDocumentItemsDetails())" Filterable="false" FormatString="{0:yyyy-MM-dd}" TextAlign="TextAlign.Center" Width="100px" />
+    <RadzenDataGridColumn TItem="SalesDocumentItemsDetails" Property="FormatedPullDate" Title="@GetName("FormatedPullDate", new SalesDocumentItemsDetails())" FormatString="{0:yyyy-MM-dd}" TextAlign="TextAlign.Center" Filterable="false" Width="200px" />
+
+    </Columns>
+    </RadzenDataGrid>
+    <div class="container-total">
+    <div class="item">
+    <label>
+    @($"Records: {items.Count}")
+    </label>
+    </div>
+
+    </div>*@
         }
     }
 
@@ -199,8 +210,19 @@
 
 
 @code {
+
+
+    public IEditorSettings NumericParams = new NumericEditCellParams
+            {
+                Params = new NumericTextBoxModel<object>() { ShowClearButton = false, ShowSpinButton = false }
+            };
+
     [Parameter]
     public List<SalesDocumentItemsDetails> items { get; set; } = new();
+
+    [Parameter]
+    public List<SalesDocumentItemsDetails> BuyerItems { get; set; } = new();
+
     [Parameter]
     public string buyerId { get; set; }
     [Parameter]
@@ -211,6 +233,11 @@
     public EventCallback<string> alert { get; set; }
     [Parameter]
     public EventCallback Reaload { get; set; }
+
+    public List<string> tableOptions = new List<string>()
+                    {
+         "Edit", "Update", "Cancel", "Add", "Delete"
+                    };
 
     RadzenDataGrid<SalesDocumentItemsDetails> grid;
     SfGrid<SalesDocumentItemsDetails> DataGrid;
@@ -227,9 +254,12 @@
 
     DotNetObjectReference<SalesDocumentItems> _reference;
 
-    protected async override void OnInitialized()
+
+    protected override async Task OnInitializedAsync()
     {
-        StateHasChanged();
+        CultureInfo.CurrentCulture = new CultureInfo("en-US");
+        CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+        await base.OnInitializedAsync();
     }
 
     public async void LoadData()
@@ -253,12 +283,12 @@
         StateHasChanged();
     }
 
-    public void EventIdSelectionMenuItem(MenuEventArgs  arg)
+    public void EventIdSelectionMenuItem(MenuEventArgs arg)
     {
         string name = arg.Item.Id;
         if (commercialDocumentId != null)
         {
-            if(buyerId is null)
+            if (buyerId is null)
             {
                 alert.InvokeAsync("Select a Buyer first");
                 return;
@@ -267,7 +297,7 @@
         }
         else
         {
-            alert.InvokeAsync("required fields");   
+            alert.InvokeAsync("required fields");
         }
         StateHasChanged();
         CloseMenu(false);
@@ -328,12 +358,12 @@
         SaveEditCell();
     }
 
-    
+
     public async void SaveEditCell()
     {
         var item = items.Where(s => s.Id == idCellItem).FirstOrDefault();
         var result = await DocumentServices.SaveCommercialDocumentDetail(item);
-        if (result != null && result.Id != null){ grid.UpdateRow(item);idCellItem = "";}
+        if (result != null && result.Id != null) { grid.UpdateRow(item); idCellItem = ""; }
         StateHasChanged();
     }
 
@@ -396,7 +426,7 @@
         Navigation.NavigateTo(name);
     }
 
-    
+
     public async Task ActionComplete(ActionEventArgs<SalesDocumentItemsDetails> args)
     {
         try
@@ -417,6 +447,49 @@
             {
                 SalesDocumentItemsDetails sale = args.Data;
                 await DocumentServices.SaveCommercialDocumentDetail(sale);
+
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+            {
+                // Triggers once delete operation completes
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+    }
+
+
+    public async Task ActionBegin(ActionEventArgs<SalesDocumentItemsDetails> args)
+    {
+        try
+        {
+            if (args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
+            {
+                // Triggers once editing operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
+            {
+                if(buyerId is null)
+                {
+                    args.Cancel = true;
+                    await alert.InvokeAsync("Select a Buyer first");
+                    return;
+                } else if (!BuyerItems.Any())
+                {
+                    args.Cancel = true;
+                    await alert.InvokeAsync("Buyer Don't have items to add");
+                    return;
+                }
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Cancel)
+            {
+                // Triggers once cancel operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+            {
 
             }
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)

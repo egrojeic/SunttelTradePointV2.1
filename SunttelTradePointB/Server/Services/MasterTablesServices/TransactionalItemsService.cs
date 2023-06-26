@@ -1582,8 +1582,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="nameLike"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
+        /// <param name="paginate"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<AddItemCommercialDocument>? AddItemCommercialDocumentResponse, string? ErrorDescription)> GetProductsByCustomerId(string userId, string ipAdress, string squadId, string customerId, string? nameLike = null, int? page = 1, int? perPage = 10)
+        public async Task<(bool IsSuccess, List<SalesDocumentItemsDetails>? AddItemCommercialDocumentResponse, string? ErrorDescription)> GetProductsByCustomerId(string userId, string ipAdress, string squadId, string customerId, string? nameLike = null,bool paginate = true, int? page = 1, int? perPage = 10)
         {
             try
             {
@@ -1619,28 +1620,32 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                  new BsonDocument("$match", new BsonDocument("ProductPackingSpecs.Customer._id", new ObjectId(customerId)))
                  );
                 }
-               
-                pipeline.Add(
-                    new BsonDocument{
-                        {"$skip",  skip}
-                    }
-                );
 
-                pipeline.Add(
-                    new BsonDocument{
+                if (paginate)
+                {
+                    pipeline.Add(
+                        new BsonDocument{
+                        {"$skip",  skip}
+                        }
+                    );
+
+                    pipeline.Add(
+                        new BsonDocument{
                         {"$limit",  perPage}
-                    }
-                );
+                        }
+                    );
+                }
+              
 
                 //List<AddItemCommercialDocument> results = await _TransactionalItemsCollection.Aggregate<AddItemCommercialDocument>(pipeline).ToListAsync();
 
                 List<TransactionalItem> results = await _TransactionalItemsCollection.Aggregate<TransactionalItem>(pipeline).ToListAsync();
               
-                var resultado = new List<AddItemCommercialDocument>();
+                var resultado = new List<SalesDocumentItemsDetails>();
 
                 foreach (var item in results)
                 {
-                    resultado.Add(new AddItemCommercialDocument
+                    resultado.Add(new SalesDocumentItemsDetails
                     {
                         TransactionalItem = item    
                     });

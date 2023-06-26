@@ -359,7 +359,7 @@
                         <div class="container-item">
                             @if (commercialDocument.Items != null)
                             {
-                                <SalesDocumentItems Reaload="Reload" isASales="isASale" items="@commercialDocument.Items" alert="alert" buyerId="@commercialDocument.Buyer.Id" commercialDocumentId="@commercialDocument.Id"></SalesDocumentItems>
+                                <SalesDocumentItems Reaload="Reload" isASales="isASale" BuyerItems="@BuyerItems" items="@commercialDocument.Items" alert="alert" buyerId="@commercialDocument.Buyer.Id" commercialDocumentId="@commercialDocument.Id"></SalesDocumentItems>
                             }
                         </div>
                     </ContentTemplate>
@@ -413,6 +413,7 @@ else
     bool isASale = false;
     bool onInitialized = false;
     private bool timerDetailStatus = true;
+    public List<SalesDocumentItemsDetails> BuyerItems = new List<SalesDocumentItemsDetails>();
 
     public CommercialDocument commercialDocument = new();
     // public SalesDocumentItemsDetails items = new();
@@ -434,7 +435,7 @@ else
     public List<BasicConcept> vendorWarehouseList = new();
     public List<BasicConcept> buyerWarehouseList = new();
     public List<Address> addressList = new();
-
+    
     #endregion Input3
 
     MessageSaveComponent? referAlert;
@@ -615,8 +616,7 @@ else
         if (SearcherValue == "Buyer")
         {
             buyerList = new();
-            buyerList = await DocumentServices.GetCommercialBuyerList(arg.value, commercialDocument.DocumentType.IsASale);
-
+            buyerList = await DocumentServices.GetCommercialBuyerList(arg.value, commercialDocument.DocumentType.IsASale, 0, 0, false);
         }
 
         if (SearcherValue == "Season")
@@ -665,7 +665,7 @@ else
             commercialDocument.DeliveryAddress = new Address();
             addressList = new List<Address>();
             LoadBuyerAndVendor("Buyer");
-
+            await LoadBuyerItems();
         }
         LoadCommercialDocument();
         StateHasChanged();
@@ -946,6 +946,17 @@ else
             viewMsg = true;
             msg = "Select a Buyer first";
         }
+
+    }
+
+    private async Task LoadBuyerItems()
+    {
+        if (commercialDocument.Buyer != null && commercialDocument.Buyer.Id != null)
+        {
+            BuyerItems = await DocumentServices.GetCommercialProductList(commercialDocumentId, commercialDocument.Buyer.Id, "all", false);
+        }
+        isLoading = false;
+        StateHasChanged();
 
     }
 

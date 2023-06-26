@@ -954,8 +954,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="squadId"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
+        /// <param name="paginate"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<EntityActor>? BuyersList, string? ErrorDescription)> GetBuyers(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null)
+        public async Task<(bool IsSuccess, List<EntityActor>? BuyersList, string? ErrorDescription)> GetBuyers(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null, bool paginate = true)
         {
             try
             {
@@ -1014,17 +1015,21 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     );
                 }
 
-                pipe.Add(
+                if (paginate)
+                {
+                    pipe.Add(
                     new BsonDocument{
                         {"$skip",  skip}
                     }
                 );
 
-                pipe.Add(
-                    new BsonDocument{
+                    pipe.Add(
+                        new BsonDocument{
                         {"$limit",  perPage}
-                    }
-                );
+                        }
+                    );
+
+                }
 
                 //List<EntityActor> results = new();
                 //if (strNameFilter.ToLower() == "all")

@@ -1262,7 +1262,8 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     .Set("PurchaseSpecs.$.AssignedQty", purchaseItem.AssignedQty)
                     .Set("PurchaseSpecs.$.ConfirmedQty", purchaseItem.ConfirmedQty)
                     .Set("PurchaseSpecs.$.ConfirmedCost", purchaseItem.ConfirmedCost)
-                    .Set("PurchaseSpecs.$.ExpectedCost", purchaseItem.ExpectedCost);
+                    .Set("PurchaseSpecs.$.ExpectedCost", purchaseItem.ExpectedCost)
+                    .Set("PurchaseSpecs.$.ISRejectedByProvider", purchaseItem.ISRejectedByProvider);
 
                 await _CommercialDocumentDetail.UpdateOneAsync(filter, update);
                 return (true, purchaseItem, null);
