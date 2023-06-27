@@ -19,6 +19,7 @@
   <ItemGroup>
     <Folder Include="CommercialTransactions\" />
     <Folder Include="InventoryTransactions\" />
+    <Folder Include="DTOs\" />
     <Folder Include="ProductionTransactions\" />
   </ItemGroup>
 </Project>

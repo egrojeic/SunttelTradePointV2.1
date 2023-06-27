@@ -446,6 +446,7 @@
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
             {
                 SalesDocumentItemsDetails sale = args.Data;
+                sale.IdCommercialDocument = commercialDocumentId;
                 await DocumentServices.SaveCommercialDocumentDetail(sale);
 
             }
