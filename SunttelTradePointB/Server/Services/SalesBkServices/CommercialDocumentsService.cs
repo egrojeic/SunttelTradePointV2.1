@@ -17,6 +17,7 @@ using System.Globalization;
 using SunttelTradePointB.Shared.SquadsMgr;
 using Amazon.Runtime.Documents;
 using SunttelTradePointB.Shared.Sales.SalesDTO;
+using SunttelTradePointB.Shared.Sales.CommercialDocumentDTO;
 
 namespace SunttelTradePointB.Server.Services.SalesBkServices
 {
@@ -64,7 +65,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         /// <param name="commercialDocumentId"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, CommercialDocument? CommercialDocument, string? ErrorDescription)> GetCommercialDocumentById(string userId, string ipAdress, string squadId, string commercialDocumentId)
+        public async Task<(bool IsSuccess, CommercialDocumentDTO? CommercialDocument, string? ErrorDescription)> GetCommercialDocumentById(string userId, string ipAdress, string squadId, string commercialDocumentId)
         {
             try
             {
@@ -77,7 +78,9 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 var resultPrev = await _CommercialDocumentCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
                 CommercialDocument result = resultPrev.Select(d => BsonSerializer.Deserialize<CommercialDocument>(d)).ToList()[0];
 
-                return (true, result, null);
+                CommercialDocumentDTO CommercialDocument = _mapper.Map<CommercialDocumentDTO>(result);
+
+                return (true, CommercialDocument, null);
             }
             catch (Exception ex)
             {
@@ -93,20 +96,22 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, CommercialDocument? commercialDocument, string? ErrorDescription)> SaveCommercialDocument(string userId, string ipAddress, CommercialDocument commercialDocument)
+        public async Task<(bool IsSuccess, CommercialDocumentDTO? commercialDocument, string? ErrorDescription)> SaveCommercialDocument(string userId, string ipAddress, CommercialDocumentDTO commercialDocumentDTO)
         {
             try
             {
-                if (commercialDocument.Id == null)
+                if (commercialDocumentDTO.Id == null)
                 {
-                    commercialDocument.Id = ObjectId.GenerateNewId().ToString();
+                    commercialDocumentDTO.Id = ObjectId.GenerateNewId().ToString();
                 }
+
+                CommercialDocument commercialDocument = _mapper.Map<CommercialDocument>(commercialDocumentDTO);
 
                 var filterCommercialDocument = Builders<CommercialDocument>.Filter.Eq("_id", new ObjectId(commercialDocument.Id));
                 var updateCommercialDocument = new ReplaceOptions { IsUpsert = true };
                 var resultCommercialDocument = await _CommercialDocumentCollection.ReplaceOneAsync(filterCommercialDocument, commercialDocument, updateCommercialDocument);
 
-                return (true, commercialDocument, null);
+                return (true, commercialDocumentDTO, null);
             }
             catch (Exception e)
             {
@@ -131,7 +136,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         /// <param name="perPage"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<(bool IsSuccess, List<CommercialDocument>? CommercialDocuments, string? ErrorDescription)> GetCommercialDocumentsByDateSpan(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, string documentTypeId, string? vendorName, string? filter = null, int? page = 1, int? perPage = 10)
+        public async Task<(bool IsSuccess, List<CommercialDocumentDTO>? CommercialDocuments, string? ErrorDescription)> GetCommercialDocumentsByDateSpan(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, string documentTypeId, string? vendorName, string? filter = null, int? page = 1, int? perPage = 10)
         {
             try
             {
@@ -237,7 +242,9 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
                 List<CommercialDocument> results = await _SalesDocumentsCollection.Aggregate<CommercialDocument>(pipeline).ToListAsync();
 
-                return (true, results, null);
+               List<CommercialDocumentDTO> CommercialDocuments = _mapper.Map<List<CommercialDocumentDTO>>(results);
+
+                return (true, CommercialDocuments, null);
             }
             catch (Exception e)
             {
@@ -1538,7 +1545,9 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                     // 
                     foreach (var result in results)
                     {
-                        var Entity = await SaveCommercialDocument(userId, ipAddress, result);
+                        CommercialDocumentDTO commercialDocumentDTO = _mapper.Map<CommercialDocumentDTO>(result);
+
+                        var Entity = await SaveCommercialDocument(userId, ipAddress, commercialDocumentDTO);
                     }
                     return (true, results, null);
 
@@ -1634,6 +1643,40 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
             }
 
         }
+
+        /// <summary>
+        /// Update CommercialDocument by fieldName = fieldValue
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="commercialDocumentId"></param>
+        /// <param name="fieldName"></param>
+        /// <param name="fieldValue"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, string? ErrorDescription)> UpdateCommercialDocumentField(string userId, string ipAddress, string squadId, string commercialDocumentId, string fieldName, object fieldValue)
+        {
+            try
+            {
+                var filterCommercialDocument = Builders<CommercialDocument>.Filter.Eq("_id", new ObjectId(commercialDocumentId));
+                var updateCommercialDocument = Builders<CommercialDocument>.Update.Set(fieldName, fieldValue);
+                var resultCommercialDocument = await _CommercialDocumentCollection.UpdateOneAsync(filterCommercialDocument, updateCommercialDocument);
+
+                if (resultCommercialDocument.ModifiedCount > 0)
+                {
+                    return (true, null);
+                }
+                else
+                {
+                    return (false, "No se encontró ningún documento con el ID especificado.");
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, e.Message);
+            }
+        }
+
     }
 
 }

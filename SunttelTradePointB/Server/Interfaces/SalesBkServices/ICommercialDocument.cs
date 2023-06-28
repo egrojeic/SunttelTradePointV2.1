@@ -2,6 +2,7 @@
 using SunttelTradePointB.Shared.DataViews.BI;
 using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.Sales;
+using SunttelTradePointB.Shared.Sales.CommercialDocumentDTO;
 using SunttelTradePointB.Shared.Sales.SalesDTO;
 
 namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
@@ -21,7 +22,7 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <param name="squadId"></param>
         /// <param name="documentId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, CommercialDocument? CommercialDocument, string? ErrorDescription)> GetCommercialDocumentById(string userId, string ipAdress, string squadId, string documentId);
+        Task<(bool IsSuccess, CommercialDocumentDTO? CommercialDocument, string? ErrorDescription)> GetCommercialDocumentById(string userId, string ipAdress, string squadId, string documentId);
 
         /// <summary>
         /// Insert/ Updates a Transactional Type of the corresponding id
@@ -30,7 +31,7 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <param name="userId"></param>
         /// <param name="ipAddress"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, CommercialDocument? commercialDocument, string? ErrorDescription)> SaveCommercialDocument(string userId, string ipAddress, CommercialDocument commercialDocument);
+        Task<(bool IsSuccess, CommercialDocumentDTO? commercialDocument, string? ErrorDescription)> SaveCommercialDocument(string userId, string ipAddress, CommercialDocumentDTO commercialDocument);
 
         /// <summary>
         /// Retrieves a list of the documents having the specified type and date span
@@ -46,7 +47,7 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<CommercialDocument>? CommercialDocuments, string? ErrorDescription)> GetCommercialDocumentsByDateSpan(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, string documentTypeId, string? vendorName, string? filter = null, int? page = 1, int? perPage = 10);
+        Task<(bool IsSuccess, List<CommercialDocumentDTO>? CommercialDocuments, string? ErrorDescription)> GetCommercialDocumentsByDateSpan(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, string documentTypeId, string? vendorName, string? filter = null, int? page = 1, int? perPage = 10);
 
         /// <summary>
         /// Retrieves a document having the specified id
@@ -355,5 +356,17 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <param name="EntityId"></param>
         /// <returns></returns>
         Task<(bool IsSuccess, List<CommercialDocumentDetailsDTO>? GetProcurementDetails, string? ErrorDescription)> GetSaleOrders(string userId, string ipAddress, string squadId, string EntityId, int? page = 1, int? perPage = 10);
+
+        /// <summary>
+        /// Update CommercialDocument by fieldName = fieldValue
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="squadId"></param>
+        /// <param name="commercialDocumentId"></param>
+        /// <param name="fieldName"></param>
+        /// <param name="fieldValue"></param>
+        /// <returns></returns>
+        public Task<(bool IsSuccess, string? ErrorDescription)> UpdateCommercialDocumentField(string userId, string ipAddress, string squadId,string commercialDocumentId, string fieldName, object fieldValue);
     }
 }

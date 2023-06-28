@@ -98,6 +98,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+//var config = new MapperConfiguration(c => c.AddProfile<MappingProfile>());
+//var mapper = config.CreateMapper();
+//mapper.ConfigurationProvider.AssertConfigurationIsValid();
+//builder.Services.AddSingleton(mapper)
 
 builder.Services.AddTransient<ISquadBack, SquadService>();
 builder.Services.AddTransient<ISerDasFileEDI, SerDasFileEDI>();

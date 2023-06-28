@@ -4,6 +4,7 @@
 
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
+@using SunttelTradePointB.Shared.Sales.CommercialDocumentDTO;
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.SplitButtons
 @using System.Reflection
@@ -314,7 +315,7 @@
     bool menuVisible = false;
     bool isVisible = false;
     bool isASale = true;
-    public CommercialDocument commercialDocument = new();
+    public CommercialDocumentDTO commercialDocument = new();
     // public SalesDocumentItemsDetails items = new();
 
     #region Status
@@ -330,7 +331,7 @@
     public List<Concept> carrierList = new();
     public List<Concept> buyerList = new();
     public List<SeasonBusiness> seasonList = new();
-    public List<CommercialDocument> originDocument = new();
+    public List<CommercialDocumentDTO> originDocument = new();
     public List<BasicConcept> vendorWarehouseList = new();
     public List<BasicConcept> buyerWarehouseList = new();
     public List<Address> addressList = new();

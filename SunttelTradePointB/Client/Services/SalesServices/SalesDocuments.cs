@@ -2,6 +2,7 @@
 using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.Sales;
+using SunttelTradePointB.Shared.Sales.CommercialDocumentDTO;
 using SunttelTradePointB.Shared.Sales.SalesDTO;
 using System.Globalization;
 using System.Net;
@@ -19,7 +20,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             _httpClient = httpClient;
         }
 
-        public async Task<CommercialDocument> SaveCommercialDocument(CommercialDocument commercialDocument)
+        public async Task<CommercialDocumentDTO> SaveCommercialDocument(CommercialDocumentDTO commercialDocument)
         {
             try
             {
@@ -27,14 +28,33 @@ namespace SunttelTradePointB.Client.Services.SalesServices
                 path = path.Replace("*Id", UIClientGlobalVariables.UserId ?? "00");
                 path = path.Replace("*Ip", UIClientGlobalVariables.PublicIpAddress ?? "00");
                 commercialDocument.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
-                var responseMessage = await _httpClient.PostAsJsonAsync<CommercialDocument>($"{path}", commercialDocument);
-                return await responseMessage.Content.ReadFromJsonAsync<CommercialDocument>();
+                var responseMessage = await _httpClient.PostAsJsonAsync<CommercialDocumentDTO>($"{path}", commercialDocument);
+                return await responseMessage.Content.ReadFromJsonAsync<CommercialDocumentDTO>();
 
             }
             catch (Exception ex)
             {
                 string errMessage = ex.Message;
                 return null;
+            }
+        }
+
+        public async Task<bool> UpdateDocumentType(CommercialDocumentDTO commercialDocument)
+        {
+            try
+            {
+                string path = basepath.Replace("Name", "UpdateDocumentType");
+                path = path.Replace("*Id", UIClientGlobalVariables.UserId ?? "00");
+                path = path.Replace("*Ip", UIClientGlobalVariables.PublicIpAddress ?? "00");
+                commercialDocument.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                var responseMessage = await _httpClient.PostAsJsonAsync($"{path}", commercialDocument);
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return false;
             }
         }
 
@@ -119,7 +139,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         }
 
 
-        public async Task<List<CommercialDocument>> GetCommercialDocumentList(DateTime startDate, DateTime endDate, string documentTypeId, string filter, Concept vendor, bool isSales)
+        public async Task<List<CommercialDocumentDTO>> GetCommercialDocumentList(DateTime startDate, DateTime endDate, string documentTypeId, string filter, Concept vendor, bool isSales)
         {
             CultureInfo culture = new CultureInfo("en-US");
             try
@@ -127,8 +147,8 @@ namespace SunttelTradePointB.Client.Services.SalesServices
                 string nameVendor = vendor != null ? vendor.Name : "";
                 string path = basepath.Replace("Name", newValue: "GetCommercialDocumentsByDateSpan");
                 var responseMessage = await Gethttp($"{path}&startDate={startDate.ToString("yyyy-MM-dd")}&endDate={endDate.ToString("yyyy-MM-dd")}&documentTypeId={documentTypeId}&filter={filter}&vendorName={nameVendor}");
-                var list = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocument>>();
-                return list != null ? list : new List<CommercialDocument>();
+                var list = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocumentDTO>>();
+                return list != null ? list : new List<CommercialDocumentDTO>();
             }
             catch (Exception ex)
             {
@@ -473,14 +493,14 @@ namespace SunttelTradePointB.Client.Services.SalesServices
 
 
 
-        public async Task<CommercialDocument> GetItemCommercialDocumentById(string commercialDocumentId)
+        public async Task<CommercialDocumentDTO> GetItemCommercialDocumentById(string commercialDocumentId)
         {
             try
             {
 
                 var responseMessage = await Gethttp($"/api/Sales/GetCommercialDocumentById?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}&documentId={commercialDocumentId}");
-                var list = await responseMessage.Content.ReadFromJsonAsync<CommercialDocument>();
-                return list != null ? list : new CommercialDocument();
+                var list = await responseMessage.Content.ReadFromJsonAsync<CommercialDocumentDTO>();
+                return list != null ? list : new CommercialDocumentDTO();
             }
             catch (Exception ex)
             {

@@ -6,6 +6,7 @@
 @page "/SaleItem/{page}/{commercialDocumentId}/{filter}"
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
+@using SunttelTradePointB.Shared.Sales.CommercialDocumentDTO;
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.SplitButtons
 @using System.Reflection
@@ -287,13 +288,6 @@
 
             </div>
 
-            @*<div><label class="info-text-size">@GetName("TrackingNumber",new CommercialDocument())</label></div>
-        <div>
-
-        <InputTextDisable Tabindex="13" Enable="@GetTypeStatus()" TypeInt="false" @bind-ValueString="commercialDocument.TrackingNumber"></InputTextDisable>
-
-        </div>*@
-
             <div><label class="info-text-size">@GetName("VendorWarehouse",new CommercialDocument())</label></div>
             <div>
 
@@ -443,7 +437,7 @@ else
     private bool timerDetailStatus = true;
     public List<SalesDocumentItemsDetails> BuyerItems = new List<SalesDocumentItemsDetails>();
 
-    public CommercialDocument commercialDocument = new();
+    public CommercialDocumentDTO commercialDocument = new();
     // public SalesDocumentItemsDetails items = new();
 
     #region Status
@@ -624,8 +618,13 @@ else
     {
         if (!arg.Value.ToString().Equals("0"))
             commercialDocument.DocumentType = documentTypeList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
-        SaveCommercialDocument();
+        UpdateDocumentType();
         StateHasChanged();
+    }
+
+    private async Task UpdateDocumentType()
+    {
+        var updated = await DocumentServices.UpdateDocumentType(commercialDocument);
     }
 
     public string GetDeliveryAddress(Address address)

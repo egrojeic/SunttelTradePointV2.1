@@ -7,6 +7,7 @@ using SunttelTradePointB.Server.Interfaces.SalesBkServices;
 using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.Sales;
+using SunttelTradePointB.Shared.Sales.CommercialDocumentDTO;
 using SunttelTradePointB.Shared.Sales.SalesDTO;
 using SunttelTradePointB.Shared.SquadsMgr;
 using ZstdSharp.Unsafe;
@@ -66,7 +67,7 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveCommercialDocument")]
-        public async Task<IActionResult> SaveCommercialDocument(string userId, string ipAddress, [FromBody] CommercialDocument commercialDocument)
+        public async Task<IActionResult> SaveCommercialDocument(string userId, string ipAddress, [FromBody] CommercialDocumentDTO commercialDocument)
         {
             var response = await _commercialDocument.SaveCommercialDocument(userId, ipAddress, commercialDocument);
 
@@ -77,6 +78,32 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
             else
             {
                 return NotFound(response.ErrorDescription);
+            }
+        }
+
+        /// <summary>
+        /// Insert / Update a Commercial Document
+        /// </summary>
+        /// <param name="commercialDocument"></param>
+        /// <param name="userId"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("UpdateDocumentType")]
+        public async Task<IActionResult> UpdateDocumentType(string userId, string ipAddress, [FromBody] CommercialDocumentDTO commercialDocument)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+
+            var response = await _commercialDocument.UpdateCommercialDocumentField(userId, ipAddress, squadId, commercialDocument.Id, nameof(CommercialDocumentDTO.DocumentType), commercialDocument.DocumentType);
+
+            if (response.IsSuccess)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest(response.ErrorDescription);
             }
         }
 
@@ -100,6 +127,7 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         {
             var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+            if (string.IsNullOrEmpty(documentTypeId)) throw new Exception("Document Type not found");
             var response = await _commercialDocument.GetCommercialDocumentsByDateSpan(userId, ipAddress, squadId, startDate, endDate, documentTypeId, vendorName, filter, page, perPage);
 
             if (response.IsSuccess)
@@ -107,7 +135,7 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
                 return Ok(response.CommercialDocuments);
             }
             else
-                return NotFound(response.ErrorDescription);
+                return BadRequest(response.ErrorDescription);
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.Sales;
+using SunttelTradePointB.Shared.Sales.CommercialDocumentDTO;
 using SunttelTradePointB.Shared.Sales.SalesDTO;
 
 namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
@@ -12,7 +13,7 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// </summary>
         /// <param name="commercialDocument"></param>
         /// <returns></returns>
-        Task<CommercialDocument> SaveCommercialDocument(CommercialDocument commercialDocument);
+        Task<CommercialDocumentDTO> SaveCommercialDocument(CommercialDocumentDTO commercialDocument);
 
         /// <summary>
         /// Save a commercialDocumentType item
@@ -51,14 +52,14 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// <param name="documentTypeId"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
-        Task<List<CommercialDocument>> GetCommercialDocumentList(DateTime startDate, DateTime endDate, string documentTypeId, string filter, Concept vendor, bool isSale);
+        Task<List<CommercialDocumentDTO>> GetCommercialDocumentList(DateTime startDate, DateTime endDate, string documentTypeId, string filter, Concept vendor, bool isSale);
 
         /// <summary>
         /// Retrives a item with commercialDocument items meeting search criteria
         /// </summary>
         /// <param name="commercialDocumentId"></param>      
         /// <returns></returns>
-        Task<CommercialDocument> GetItemCommercialDocumentById(string commercialDocumentId);
+        Task<CommercialDocumentDTO> GetItemCommercialDocumentById(string commercialDocumentId);
 
         /// <summary>
         /// Retrives a item with CommercialDocumentType items
@@ -145,5 +146,19 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// <param name="IsASale"></param>
         /// <returns></returns>
         Task<List<Concept>> GetCommercialBuyerList(string filter, bool IsASale, int? page = 1, int? perPage = 10, bool paginate = true);
+
+        /// <summary>
+        ///  Retrives a list of Commercial Business Lines
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        Task<List<BusinessLine>> GetCommercialBusinessLines(string filter);
+
+        /// <summary>
+        /// Update Docuemnt Type of a Commercial Document
+        /// </summary>
+        /// <param name="commercialDocument"></param>
+        /// <returns></returns>
+        public Task<bool> UpdateDocumentType(CommercialDocumentDTO commercialDocument);
     }
 }

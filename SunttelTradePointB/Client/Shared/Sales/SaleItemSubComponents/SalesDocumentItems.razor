@@ -100,9 +100,11 @@
                             <GridPageSettings PageSize="10"></GridPageSettings>
                             <GridColumns>
                                 <GridColumn Visible="false" Field=@nameof(SalesDocumentItemsDetails.Id) IsPrimaryKey="true" ValidationRules="@(new ValidationRules{ Required=true})"></GridColumn>
+                                <GridColumn Visible="false" Field="TransactionalItem.Id"></GridColumn>
                                 <GridColumn AllowEditing="false" Field="TransactionalItem.Name" HeaderText="TransactionalItem" Width="100" ValidationRules="@(new ValidationRules{ Required=true})">
                                     <EditTemplate>
                                         <SfAutoComplete TItem="SalesDocumentItemsDetails" TValue="string" @bind-Value="@((context as SalesDocumentItemsDetails).TransactionalItem.Name)" DataSource="@BuyerItems">
+                                            <AutoCompleteEvents TItem="SalesDocumentItemsDetails" TValue="string" OnValueSelect="@OnValueSelecthandler"></AutoCompleteEvents>
                                             <AutoCompleteFieldSettings Value="TransactionalItem.Name"></AutoCompleteFieldSettings>
                                         </SfAutoComplete>
                                     </EditTemplate>
@@ -203,14 +205,7 @@
 
 </div>
 
-
-
-
-
-
-
 @code {
-
 
     public IEditorSettings NumericParams = new NumericEditCellParams
             {
@@ -503,6 +498,16 @@
             Console.WriteLine(ex.Message);
         }
 
+    }
+
+    private void OnValueSelecthandler(SelectEventArgs<SalesDocumentItemsDetails> args)
+    {
+        var index = items.FindIndex(x => x.TransactionalItem.Id == args.ItemData.TransactionalItem.Id);
+        if (index != -1)
+        {
+            args.Cancel = true;
+            alert.InvokeAsync("This item has already been selected");
+        } 
     }
 
 }
