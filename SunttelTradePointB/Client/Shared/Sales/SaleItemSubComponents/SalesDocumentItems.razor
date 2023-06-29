@@ -448,8 +448,7 @@
             }
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
             {
-                 SalesDocumentItemsDetails sale = args.Data;
-
+                await DocumentServices.DeleteCommercialDocumentDetail(args.Data);
             }
         }
         catch (Exception ex)

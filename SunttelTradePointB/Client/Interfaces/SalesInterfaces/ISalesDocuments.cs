@@ -83,7 +83,7 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// <param name="page"></param>     
         /// <param name="perPage"></param>     
         /// <returns></returns>
-        Task<List<Concept>> GetCommercialVendorList(string filter, bool IsASale, int? page = 1, int? perPage = 10);
+        Task<List<Concept>> GetCommercialVendorList(string filter, bool IsASale, int? page = 1, int? perPage = 10, bool paginate = true);
 
 
         /// <summary>
@@ -127,8 +127,10 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// Retrives a list of CommercialDocumentDetailsDTO
         /// </summary>
         /// <param name="EntityId"></param>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
         /// <returns></returns>
-        Task<List<CommercialDocumentDetailsDTO>> GetSalesOrders(string EntityId);
+        Task<CommercialDocumentDetailsResult> GetSalesOrders(string EntityId, int page = 1, int perPage = 10);
 
         /// <summary>
         /// Retrives a list of Buyers
@@ -250,5 +252,12 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// </summary>
         /// <returns></returns>
         public Task<List<CommercialDocument>> GetProcurementList();
+
+        /// <summary>
+        /// Delete a commercial documetn detail
+        /// </summary>
+        /// <param name="salesDocumentItemsDetails"></param>
+        /// <returns></returns>
+        public Task<SalesDocumentItemsDetails> DeleteCommercialDocumentDetail(SalesDocumentItemsDetails salesDocumentItemsDetails);
     }
 }

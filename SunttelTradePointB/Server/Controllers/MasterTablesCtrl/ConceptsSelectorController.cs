@@ -425,15 +425,16 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="filterString"></param>
+        /// <param name="paginate"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetVendors")]
-        public async Task<IActionResult> GetVendors(bool isASale, string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filterString = null)
+        public async Task<IActionResult> GetVendors(bool isASale, string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filterString = null, bool paginate = true)
         {
             var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
 
-            var response = await _selectorDatasource.GetVendors(isASale, userId, ipAddress, squadId, page, perPage, filterString);
+            var response = await _selectorDatasource.GetVendors(isASale, userId, ipAddress, squadId, page, perPage, filterString, paginate);
 
             if (response.IsSuccess)
             {

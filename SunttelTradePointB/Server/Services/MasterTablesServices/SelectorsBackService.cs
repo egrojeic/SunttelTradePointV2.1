@@ -106,7 +106,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 var pipe = new List<BsonDocument>();
 
-                if (strNameFilter.ToLower() !="all")
+                if (strNameFilter.ToLower() != "all")
                 {
                     pipe.Add(
                 new BsonDocument(
@@ -299,7 +299,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 var pipeline = new List<BsonDocument>();
 
-                if (!string.IsNullOrEmpty(filterString) && filterString.ToLower() !="all" && !filterString.ToLower().Equals("todos")) // se agregó verificación de si strNameFiler está vacío
+                if (!string.IsNullOrEmpty(filterString) && filterString.ToLower() != "all" && !filterString.ToLower().Equals("todos")) // se agregó verificación de si strNameFiler está vacío
                 {
                     pipeline.Add(
                         new BsonDocument {
@@ -311,7 +311,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         }
 
                     );
-                }             
+                }
 
                 List<EntityRole> results = await _entityRoles.Aggregate<EntityRole>(pipeline).ToListAsync();
 
@@ -852,8 +852,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="squadId"></param>
         /// <param name="page"></param>
         /// <param name="perPage"></param>
+        /// <param name="paginate"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<EntityActor>? VendorsList, string? ErrorDescription)> GetVendors(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null)
+        public async Task<(bool IsSuccess, List<EntityActor>? VendorsList, string? ErrorDescription)> GetVendors(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null, bool paginate = true)
         {
             try
             {
@@ -882,7 +883,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                         }
                     );
                 }
-               
+
                 if (isASale)
                 {
                     //Es venta
@@ -913,17 +914,20 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
 
                 }
 
-                pipe.Add(
+                if (paginate)
+                {
+                    pipe.Add(
                     new BsonDocument{
                         {"$skip",  skip}
                     }
                 );
 
-                pipe.Add(
+                    pipe.Add(
                     new BsonDocument{
                         {"$limit",  perPage}
-                    }
-                );
+                        }
+                    );
+                }
 
                 List<EntityActor> results = await _entities.Aggregate<EntityActor>(pipe).ToListAsync();
                 //var results = new List<AtomConcept>();
@@ -932,7 +936,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     results = results.Where(e => e.Id != null && e.SquadId.ToLower() == squadId.ToLower()).ToList();
 
                 if (!(strNameFilter.ToLower() == "all"))
-                    results = results.Where(e =>e.SquadId.ToLower() == squadId.ToLower()  &&  e.Name.ToLower().Contains(strNameFilter.ToLower())).ToList();
+                    results = results.Where(e => e.SquadId.ToLower() == squadId.ToLower() && e.Name.ToLower().Contains(strNameFilter.ToLower())).ToList();
 
 
 
@@ -1141,6 +1145,6 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
         }
 
-     
+
     }
 }

@@ -137,6 +137,21 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
+        public async Task<SalesDocumentItemsDetails> DeleteCommercialDocumentDetail(SalesDocumentItemsDetails salesDocumentItemsDetails)
+        {
+            try
+            {
+                salesDocumentItemsDetails.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                var responseMessage = await _httpClient.PostAsJsonAsync<SalesDocumentItemsDetails>($"/api/Sales/DeleteCommercialDocumentDetail?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}", salesDocumentItemsDetails);
+                return await responseMessage.Content.ReadFromJsonAsync<SalesDocumentItemsDetails>();
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
 
         public async Task<List<CommercialDocumentDTO>> GetCommercialDocumentList(DateTime startDate, DateTime endDate, string documentTypeId, string filter, Concept vendor, bool isSales)
         {
@@ -224,12 +239,12 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<List<Concept>> GetCommercialVendorList(string filter, bool IsASale, int? page = 1, int? perPage = 10)
+        public async Task<List<Concept>> GetCommercialVendorList(string filter, bool IsASale, int? page = 1, int? perPage = 10, bool paginate = true)
         {
             try
             {
 
-                string path = $"/api/ConceptsSelector/GetVendors?isASale={IsASale}&userId=*Id&ipAddress=*Ip&page={page}&perPage={perPage}&filterString={filter}";
+                string path = $"/api/ConceptsSelector/GetVendors?isASale={IsASale}&userId=*Id&ipAddress=*Ip&page={page}&perPage={perPage}&filterString={filter}&paginate={paginate}";
                 var responseMessage = await Gethttp($"{path}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
                 return list != null ? list : new List<Concept>();
@@ -634,13 +649,13 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<List<CommercialDocumentDetailsDTO>> GetSalesOrders(string EntityId)
+        public async Task<CommercialDocumentDetailsResult> GetSalesOrders(string EntityId, int page = 1, int perPage = 10)
         {
             try
             {
                 string path = basepath.Replace("Name", "GetSaleOrders");
-                var responseMessage = await Gethttp($"{path}&EntityId={EntityId}");
-                var result = await responseMessage.Content.ReadFromJsonAsync<List<CommercialDocumentDetailsDTO>>();
+                var responseMessage = await Gethttp($"{path}&EntityId={EntityId}&page={page}&perPage={perPage}");
+                var result = await responseMessage.Content.ReadFromJsonAsync<CommercialDocumentDetailsResult>();
                 return result;
 
             }

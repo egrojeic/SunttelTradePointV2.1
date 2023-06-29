@@ -355,7 +355,7 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <param name="perPage"></param>
         /// <param name="EntityId"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<CommercialDocumentDetailsDTO>? GetProcurementDetails, string? ErrorDescription)> GetSaleOrders(string userId, string ipAddress, string squadId, string EntityId, int? page = 1, int? perPage = 10);
+        Task<(bool IsSuccess, CommercialDocumentDetailsResult? GetProcurementDetails, string? ErrorDescription)> GetSaleOrders(string userId, string ipAddress, string squadId, string EntityId, int? page = 1, int? perPage = 10);
 
         /// <summary>
         /// Update CommercialDocument by fieldName = fieldValue
@@ -368,5 +368,12 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <param name="fieldValue"></param>
         /// <returns></returns>
         public Task<(bool IsSuccess, string? ErrorDescription)> UpdateCommercialDocumentField(string userId, string ipAddress, string squadId,string commercialDocumentId, string fieldName, object fieldValue);
+
+        /// <summary>
+        /// Deletes a Commercial Document Detail by its ID.
+        /// </summary>
+        /// <param name="documentId">The ID of the document to delete.</param>
+        /// <returns>A tuple indicating the success status of the deletion, the deleted document (if any), and an error description (if any).</returns>
+        public Task<(bool IsSuccess, string? ErrorDescription)> DeleteCommercialDocumentDetail(string userId, string ipAdress, string squadId, string documentId);
     }
 }

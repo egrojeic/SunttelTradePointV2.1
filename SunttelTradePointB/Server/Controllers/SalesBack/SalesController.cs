@@ -644,6 +644,29 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
                 return NotFound(response.ErrorDescription);
         }
 
+        
+        /// <summary>
+        /// Delete commercial document
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="salesDocumentItemsDetails"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("DeleteCommercialDocumentDetail")]
+        public async Task<IActionResult> DeleteCommercialDocumentDetail(string userId, string ipAdress, [FromBody] SalesDocumentItemsDetails salesDocumentItemsDetails)
+        {
+            var customHeaderValue = Request.Headers["SquadId"];
+            var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
+
+            var response = await _commercialDocument.DeleteCommercialDocumentDetail(userId, ipAdress, squadId, salesDocumentItemsDetails.Id);
+
+            if (response.IsSuccess)
+                return Ok();
+            else
+                return NotFound(response.ErrorDescription);
+        }
+
         /// <summary>
         /// Retrives a list of Transactional Items matching a search criteria
         /// </summary>

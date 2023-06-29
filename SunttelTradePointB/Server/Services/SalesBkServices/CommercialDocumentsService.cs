@@ -242,7 +242,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
                 List<CommercialDocument> results = await _SalesDocumentsCollection.Aggregate<CommercialDocument>(pipeline).ToListAsync();
 
-               List<CommercialDocumentDTO> CommercialDocuments = _mapper.Map<List<CommercialDocumentDTO>>(results);
+                List<CommercialDocumentDTO> CommercialDocuments = _mapper.Map<List<CommercialDocumentDTO>>(results);
 
                 return (true, CommercialDocuments, null);
             }
@@ -1037,6 +1037,35 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         }
 
         /// <summary>
+        /// Deletes a Commercial Document Detail by its ID.
+        /// </summary>
+        /// <param name="documentId">The ID of the document to delete.</param>
+        /// <returns>A tuple indicating the success status of the deletion, the deleted document (if any), and an error description (if any).</returns>
+        public async Task<(bool IsSuccess, string? ErrorDescription)> DeleteCommercialDocumentDetail(string userId, string ipAdress, string squadId, string documentId)
+        {
+            try
+            {
+                var filter = Builders<SalesDocumentItemsDetails>.Filter.Eq("_id", new ObjectId(documentId));
+
+                var result = await _CommercialDocumentDetail.DeleteOneAsync(filter);
+
+                if (result.DeletedCount > 0)
+                {
+                    return (true, null);
+                }
+                else
+                {
+                    return (false, "Document not found");
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, e.Message);
+            }
+        }
+
+
+        /// <summary>
         ///  Retrives a list of PRoducts, services, and all Transactional Items based on a search criteria
         /// </summary>
         /// <param name="userId"></param>
@@ -1596,12 +1625,14 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <returns></returns>
-        public Task<(bool IsSuccess, List<CommercialDocumentDetailsDTO>? GetProcurementDetails, string? ErrorDescription)> GetSaleOrders(string userId, string ipAddress, string squadId, string EntityId, int? page = 1, int? perPage = 10)
+        public Task<(bool IsSuccess, CommercialDocumentDetailsResult? GetProcurementDetails, string? ErrorDescription)> GetSaleOrders(string userId, string ipAddress, string squadId, string EntityId, int? page = 1, int? perPage = 10)
         {
             try
             {
+                if (page == 0) page++;
                 var skip = (page - 1) * perPage;
 
+                // Pipe results
                 var pipeline = new[]
                 {
                     new BsonDocument("$unwind", "$PurchaseSpecs"),
@@ -1629,17 +1660,42 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
                 var aggregation = _CommercialDocumentDetail.Aggregate<CommercialDocumentDetailsDTO>(pipeline);
 
-                List<CommercialDocumentDetailsDTO> result = aggregation.ToList();
+                //Pipe Count
+                var countPipeline = new[]
+                {
+                    new BsonDocument("$unwind", "$PurchaseSpecs"),
+                    new BsonDocument("$match", new BsonDocument("PurchaseSpecs.Provider._id", ObjectId.Parse(EntityId))),
+                    new BsonDocument("$lookup", new BsonDocument
+                    {
+                        {"from", "CommercialDocuments"},
+                        {"localField", "IdCommercialDocument"},
+                        {"foreignField", "_id"},
+                        {"as", "Header"}
+                    }),
+                    new BsonDocument("$unwind", "$Header"),
+                    new BsonDocument("$count", "totalCount")
+                };
+
+                var countAggregation = _CommercialDocumentDetail.Aggregate<BsonDocument>(countPipeline);
+                var countResult = countAggregation.FirstOrDefault();
+                var totalCount = countResult?["totalCount"].AsInt32 ?? 0;
+
+
+                CommercialDocumentDetailsResult response = new CommercialDocumentDetailsResult()
+                {
+                    results = aggregation.ToList(),
+                    Count = totalCount
+                };
 
                 return Task.FromResult((
                                     IsSuccess: true,
-                                    GetProcurementDetails: result,
+                                    GetProcurementDetails: response,
                                     ErrorDescription: (string?)null
                                 ));
             }
             catch (Exception ex)
             {
-                return Task.FromException<(bool IsSuccess, List<CommercialDocumentDetailsDTO>? GetProcurementDetails, string? ErrorDescription)>(ex);
+                return Task.FromException<(bool IsSuccess, CommercialDocumentDetailsResult? GetProcurementDetails, string? ErrorDescription)>(ex);
             }
 
         }

@@ -4,9 +4,11 @@
 @inject IJSRuntime js;
 
 @using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
+@using SunttelTradePointB.Client.Services.SalesServices;
 @using SunttelTradePointB.Shared.Sales;
 
 @using SunttelTradePointB.Shared.Sales.SalesDTO;
+@using Syncfusion.Blazor.Data
 @using Syncfusion.Blazor.Grids
 @using Syncfusion.Blazor.DropDowns
 @using System.Dynamic
@@ -31,10 +33,11 @@
 <div class="col-lg-12 control-section">
     <div class="content-wrapper">
         <div class="row">
-            <SfGrid @ref="DataGrid" DataSource="@sales" Toolbar="@(new List<string>() {  "Edit", "Update", "Cancel" })" AllowPaging="true">
+            <SfGrid @ref="DataGrid" TValue="CommercialDocumentDetailsDTO" Toolbar="@(new List<string>() {  "Edit", "Update", "Cancel" })" AllowPaging="true" Query="@Query"> 
+                <SfDataManager Adaptor="Adaptors.CustomAdaptor" AdaptorInstance="@typeof(CommercialDocumentDetailsAdaptor)"></SfDataManager>
                 <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true"></GridEditSettings>
-                <GridEvents OnLoad="Load" OnActionBegin="ActionBegin" OnActionComplete="ActionComplete" TValue="CommercialDocumentDetailsDTO"></GridEvents>
-                <GridPageSettings PageSize="@PageSize" PageSizes="@(new string[] { "5", "10", "15", "20", "50", "All" })"></GridPageSettings>
+                <GridEvents OnActionBegin="ActionBegin" OnActionComplete="ActionComplete" TValue="CommercialDocumentDetailsDTO"></GridEvents>
+                <GridPageSettings PageSize="@PageSize" PageSizes="@pagerDropdown"></GridPageSettings>
                 <GridColumns>
                     <GridColumn HeaderText="Options" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Center" Width="40">
                         <Template>
@@ -63,8 +66,12 @@
 
 
 @code {
+    public string[] pagerDropdown { get; set; } = new string[] { "5", "10", "15", "20", "50", "All" };
+
+    public Syncfusion.Blazor.Data.Query Query = new Syncfusion.Blazor.Data.Query().AddParams("EntityId", UIClientGlobalVariables.EntityUserId);
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
     SfGrid<CommercialDocumentDetailsDTO> DataGrid;
+    public string EntityId { get; set; } = string.Empty;
     public string _filterItems { get; set; }
     public bool isLoading = false;
     public int GridHeight;
@@ -83,30 +90,19 @@
         }
     }
 
-    public void Load(object args)
-    {
-        var RowHeight = 37; //height of the each row
-        Int32.TryParse(this.DataGrid.Height, out GridHeight); //datagrid height
-        var PageSize = (this.DataGrid.PageSettings as GridPageSettings).PageSize; //initial page size
-        decimal PageResize = ((GridHeight) - (PageSize * RowHeight)) / RowHeight; //new page size is obtained here
-#pragma warning disable BL0005
-        (this.DataGrid.PageSettings as GridPageSettings).PageSize = PageSize + (int)Math.Round(PageResize);
-#pragma warning restore BL0005
-    }
-
     protected override async Task OnInitializedAsync()
     {
         CultureInfo.CurrentCulture = new CultureInfo("en-US");
         CultureInfo.CurrentUICulture = new CultureInfo("en-US");
         await base.OnInitializedAsync();
-        await GetDocumentDetails();
+        //await GetDocumentDetails();
     }
 
     private async Task GetDocumentDetails()
     {
         isLoading = true;
-        var EntityId = UIClientGlobalVariables.EntityUserId;
-        sales = await DocumentServices.GetSalesOrders(EntityId);
+        EntityId = UIClientGlobalVariables.EntityUserId;
+        //var sale = await DocumentServices.GetSalesOrders(EntityId);
         isLoading = false;
         await DataGrid.Refresh();
     }

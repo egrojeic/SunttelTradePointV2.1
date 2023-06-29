@@ -31,4 +31,11 @@ namespace SunttelTradePointB.Shared.Sales.SalesDTO
         public Concept Buyer { get; set; }
         public string PO { get; set; }
     }
+
+    public class CommercialDocumentDetailsResult
+    {
+        public List<CommercialDocumentDetailsDTO> results { get; set; }
+
+        public int Count { get; set; } 
+    }
 }
