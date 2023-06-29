@@ -1,7 +1,8 @@
 ﻿@page "/GPMReport"
 @page "/GPMReport/{_filterItems}"
+@using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 @using SunttelTradePointB.Shared.Sales;
-@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject ISalesDocuments DocumentServices
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
 

@@ -1,3 +1,4 @@
+@using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
@@ -9,7 +10,7 @@
 @using Syncfusion.Blazor.Navigations
 @using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents
 @inject NavigationManager Navigation
-@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject ISalesDocuments DocumentServices
 @inject GeographicPlacesService geoPlaces
 @inject ActorsNodeService actorsNodeServive
 @inject ContextMenuService ContextMenuService
@@ -447,7 +448,8 @@
             }
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
             {
-                // Triggers once delete operation completes
+                 SalesDocumentItemsDetails sale = args.Data;
+
             }
         }
         catch (Exception ex)

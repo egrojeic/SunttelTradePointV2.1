@@ -2,10 +2,11 @@
 @page "/Purchases/{page}"
 @page "/SalesDocuments"
 @page "/SalesDocuments/{page}/{_filterItems}"
+@using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 @using SunttelTradePointB.Shared.Sales;
 @using System.Globalization;
 @using SunttelTradePointB.Shared.Sales.CommercialDocumentDTO;
-@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject ISalesDocuments DocumentServices
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
 

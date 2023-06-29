@@ -4,8 +4,9 @@
 
 @using System;
 @using System.Globalization;
+@using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 @using SunttelTradePointB.Shared.Sales;
-@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject ISalesDocuments DocumentServices
 @inject SunttelTradePointB.Client.Services.AccountsReceivableServices.AccountsReceivableServices AccountsReceivableServices
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation

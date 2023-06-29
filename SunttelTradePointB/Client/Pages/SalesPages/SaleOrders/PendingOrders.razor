@@ -1,8 +1,9 @@
 ﻿@inject ContextMenuService ContextMenuService
 @inject NavigationManager navigationManager
-@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject ISalesDocuments DocumentServices
 @inject IJSRuntime js;
 
+@using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 @using SunttelTradePointB.Shared.Sales;
 
 @using SunttelTradePointB.Shared.Sales.SalesDTO;

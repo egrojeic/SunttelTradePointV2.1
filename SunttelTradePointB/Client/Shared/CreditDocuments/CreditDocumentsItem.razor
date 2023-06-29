@@ -7,6 +7,7 @@
 @page "/PurchasesCreditsItem/{page}"
 @page "/PurchasesCreditsItem/{page}/{creditDocumentsItemId}"
 @page "/PurchasesCreditsItem/{page}/{creditDocumentsItemId}/{filter}"
+@using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
@@ -16,7 +17,7 @@
 
 @inject NavigationManager Navigation
 @inject SunttelTradePointB.Client.Services.CreditDocumentServices.CreditDocumentServices CreditDocumentServices
-@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject ISalesDocuments DocumentServices
 @inject SunttelTradePointB.Client.Services.MasterTablesServices.ActorsNodeService actor
 @inject GeographicPlacesService geoPlaces
 @inject ActorsNodeService actorsNodeServive

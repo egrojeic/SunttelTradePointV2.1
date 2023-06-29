@@ -2,11 +2,12 @@
 @page "/InventoryItem/{inventoryDetailId}"
 
 
+@using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.InvetoryModels
 @using Syncfusion.Blazor.SplitButtons
 @inject SunttelTradePointB.Client.Services.InventoryServices.Inventory InventoryServices
-@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject ISalesDocuments DocumentServices
 @inject ContextMenuService ContextMenuService
 @inject TransactionalItemsService transactItemsService;
 @inject NavigationManager Navigation

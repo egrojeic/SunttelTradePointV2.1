@@ -4,10 +4,11 @@
 @page "/PurchasesCredits/{page}"
 @page "/PurchasesCredits/{page}/{_filterItems}"
 
+@using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Accounting
 @inject SunttelTradePointB.Client.Services.CreditDocumentServices.CreditDocumentServices CreditDocumentServices
-@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject ISalesDocuments DocumentServices
 @inject ActorsNodeService actorsNodeServive;
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation

@@ -2,9 +2,10 @@
 @page "/SalesFromProductList/{commercialDocumentId}/{BuyerId}"
 @page "/SalesFromProductList/{commercialDocumentId}/{idItem}/{BuyerId}"
 
+@using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Client.Services.SalesServices
-@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject ISalesDocuments DocumentServices
 @inject IJSRuntime Js
 @inject ContextMenuService ContextMenuService
 @inject TransactionalItemsService transactItemsService;

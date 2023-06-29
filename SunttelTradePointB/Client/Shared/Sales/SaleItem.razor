@@ -4,6 +4,7 @@
 @page "/PurchasesItem/{page}/{commercialDocumentId}/{filter}"
 @page "/SaleItem/{page}/{commercialDocumentId}"
 @page "/SaleItem/{page}/{commercialDocumentId}/{filter}"
+@using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using SunttelTradePointB.Shared.Sales.CommercialDocumentDTO;
@@ -15,7 +16,7 @@
 @using SunttelTradePointB.Client.Services.SalesServices
 
 @inject NavigationManager Navigation
-@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject ISalesDocuments DocumentServices
 @inject SunttelTradePointB.Client.Services.MasterTablesServices.ActorsNodeService actor
 @inject GeographicPlacesService geoPlaces
 @inject ActorsNodeService actorsNodeServive

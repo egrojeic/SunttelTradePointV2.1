@@ -1,6 +1,7 @@
 @page "/StandingOrderItem"
 @page "/StandingOrderItem/{standingOrderId}"
 @page "/StandingOrderItem/{standingOrderId}/{filter}"
+@using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
@@ -9,7 +10,7 @@
 @using SunttelTradePointB.Shared.Accounting
 
 @inject NavigationManager Navigation
-@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject ISalesDocuments DocumentServices
 @inject SunttelTradePointB.Client.Services.StandingOrderServices.StandingOrderServices StandingOrderServices
 @inject GeographicPlacesService geoPlaces
 @inject ActorsNodeService actorsNodeServive

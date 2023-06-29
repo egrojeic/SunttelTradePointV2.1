@@ -1,3 +1,4 @@
+@using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 @using Syncfusion.Blazor.Navigations
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.SplitButtons
@@ -11,7 +12,7 @@
 @using Syncfusion.Blazor.Data
 @using Syncfusion.Blazor.Navigations
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
-@inject SunttelTradePointB.Client.Services.SalesServices.SalesDocuments DocumentServices
+@inject ISalesDocuments DocumentServices
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
 

@@ -5,7 +5,6 @@ using SunttelTradePointB.Shared.Sales;
 using SunttelTradePointB.Shared.Sales.CommercialDocumentDTO;
 using SunttelTradePointB.Shared.Sales.SalesDTO;
 using System.Globalization;
-using System.Net;
 using System.Net.Http.Json;
 
 namespace SunttelTradePointB.Client.Services.SalesServices
@@ -258,8 +257,6 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-
-        //mmm
 
         public async Task<List<BasicConcept>> GetCommercialVendorWarehouseList(string entityId, string? nameLike = "all")
         {
