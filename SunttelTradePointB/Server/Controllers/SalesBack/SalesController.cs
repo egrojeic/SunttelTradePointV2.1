@@ -7,7 +7,7 @@ using SunttelTradePointB.Server.Interfaces.SalesBkServices;
 using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.Sales;
-using SunttelTradePointB.Shared.Sales.CommercialDocumentDTO;
+using SunttelTradePointB.Shared.Sales.CommercialDocument;
 using SunttelTradePointB.Shared.Sales.SalesDTO;
 using SunttelTradePointB.Shared.SquadsMgr;
 using ZstdSharp.Unsafe;
@@ -67,7 +67,7 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
         /// <returns></returns>
         [HttpPost]
         [ActionName("SaveCommercialDocument")]
-        public async Task<IActionResult> SaveCommercialDocument(string userId, string ipAddress, [FromBody] CommercialDocumentDTO commercialDocument)
+        public async Task<IActionResult> SaveCommercialDocument(string userId, string ipAddress, [FromBody] CommercialDocument commercialDocument)
         {
             var response = await _commercialDocument.SaveCommercialDocument(userId, ipAddress, commercialDocument);
 

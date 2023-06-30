@@ -1,6 +1,6 @@
 ﻿using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.Sales;
-using SunttelTradePointB.Shared.Sales.CommercialDocumentDTO;
+using SunttelTradePointB.Shared.Sales.CommercialDocument;
 using SunttelTradePointB.Shared.Sales.SalesDTO;
 
 namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
@@ -13,7 +13,7 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// </summary>
         /// <param name="commercialDocument"></param>
         /// <returns></returns>
-        Task<CommercialDocumentDTO> SaveCommercialDocument(CommercialDocumentDTO commercialDocument);
+        Task<CommercialDocument> SaveCommercialDocument(CommercialDocument commercialDocument);
 
         /// <summary>
         /// Save a commercialDocumentType item
@@ -49,7 +49,7 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// </summary>
         /// <param name="commercialDocumentId"></param>      
         /// <returns></returns>
-        Task<CommercialDocumentDTO> GetItemCommercialDocumentById(string commercialDocumentId);
+        Task<CommercialDocument> GetItemCommercialDocumentById(string commercialDocumentId);
 
         /// <summary>
         /// Retrives a item with CommercialDocumentType items
@@ -151,7 +151,7 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// </summary>
         /// <param name="commercialDocument"></param>
         /// <returns></returns>
-        public Task<bool> UpdateDocumentType(CommercialDocumentDTO commercialDocument);
+        public Task<bool> UpdateDocumentType(CommercialDocument commercialDocument);
 
         /// <summary>
         /// Retrives a Commercial Document Detail by Commercial Document Id
@@ -172,7 +172,7 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// <param name="vendor"></param>
         /// <param name="isSales"></param>
         /// <returns></returns>
-        public Task<List<CommercialDocumentDTO>> GetCommercialDocumentList(DateTime startDate, DateTime endDate, string documentTypeId, string filter, Concept vendor, bool isSales);
+        public Task<List<CommercialDocument>> GetCommercialDocumentList(DateTime startDate, DateTime endDate, string documentTypeId, string filter, Concept vendor, bool isSales);
 
         /// <summary>
         /// 

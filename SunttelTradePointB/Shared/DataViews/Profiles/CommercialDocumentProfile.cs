@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using SunttelTradePointB.Shared.ImportingData;
 using SunttelTradePointB.Shared.Sales;
+using SunttelTradePointB.Shared.Sales.CommercialDocument;
 using System;
 using System.Collections.Generic;
 using System.Linq;

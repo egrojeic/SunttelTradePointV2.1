@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using SunttelTradePointB.Shared.Sales;
-using SunttelTradePointB.Shared.Sales.CommercialDocumentDTO;
+using SunttelTradePointB.Shared.Sales.CommercialDocument;
 
 namespace SunttelTradePointB.Shared.DTOs.Profiles
 {

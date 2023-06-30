@@ -1,5 +1,6 @@
 ﻿using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.Sales;
+using SunttelTradePointB.Shared.Sales.CommercialDocument;
 
 namespace SunttelTradePointB.Client.Interfaces.AccountsReceivableInterfaces
 {

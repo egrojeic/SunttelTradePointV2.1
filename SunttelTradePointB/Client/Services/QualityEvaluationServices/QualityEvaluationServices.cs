@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Net;
 using System.Net.Http.Json;
 using SunttelTradePointB.Shared.Sales;
+using SunttelTradePointB.Shared.Sales.CommercialDocument;
 
 namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
 {

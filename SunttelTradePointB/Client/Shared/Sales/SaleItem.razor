@@ -7,7 +7,7 @@
 @using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
-@using SunttelTradePointB.Shared.Sales.CommercialDocumentDTO;
+@using SunttelTradePointB.Shared.Sales.CommercialDocument;
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.SplitButtons
@@ -454,7 +454,7 @@ else
     private bool timerDetailStatus = true;
     public List<SalesDocumentItemsDetails> BuyerItems = new List<SalesDocumentItemsDetails>();
 
-    public CommercialDocumentDTO commercialDocument = new();
+    public CommercialDocument commercialDocument = new();
     // public SalesDocumentItemsDetails items = new();
 
     #region Status

@@ -2,6 +2,7 @@
 using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.Sales;
+using SunttelTradePointB.Shared.Sales.CommercialDocument;
 using System.Globalization;
 using System.Net;
 using System.Net.Http.Json;

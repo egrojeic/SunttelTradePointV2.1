@@ -1,5 +1,6 @@
 ﻿using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.Quality;
+using SunttelTradePointB.Shared.Sales.CommercialDocument;
 using SunttelTradePointB.Shared.Sales;
 
 namespace SunttelTradePointB.Client.Interfaces.QualityEvaluationInterfaces

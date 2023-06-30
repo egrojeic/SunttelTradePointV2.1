@@ -5,7 +5,7 @@
 @using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 @using SunttelTradePointB.Shared.Sales;
 @using System.Globalization;
-@using SunttelTradePointB.Shared.Sales.CommercialDocumentDTO;
+@using SunttelTradePointB.Shared.Sales.CommercialDocument;
 @inject ISalesDocuments DocumentServices
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
@@ -73,7 +73,7 @@
                     PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
                     ShowPagingSummary="true"
                     Data="@commercialdocumentList"
-                    TItem="CommercialDocumentDTO"
+                    TItem="CommercialDocument"
                     ColumnWidth="100%"                    
                     SelectionMode="DataGridSelectionMode.Single"
                     LogicalFilterOperator="LogicalFilterOperator.Or"
@@ -81,33 +81,33 @@
                     CellContextMenu="@ShowContextMenuCommercialDocument">
             <Columns>
 
-                <RadzenDataGridColumn TItem="CommercialDocumentDTO" Property="DocumentType.Name" Title="@GetName(nameof(CommercialDocumentDTO.DocumentType), new CommercialDocumentDTO())" Width="148px" />
-                <RadzenDataGridColumn TItem="CommercialDocumentDTO" Property="BusinessLineDoc.Name" Title="@GetName(nameof(CommercialDocumentDTO.BusinessLineDoc), new CommercialDocumentDTO())" Filterable="false" Sortable="false" Width="120px" />
-                <RadzenDataGridColumn TItem="CommercialDocumentDTO" Property="PO" Title="@GetName(nameof(CommercialDocumentDTO.PO), new CommercialDocumentDTO())" Width="90px" Filterable="false" Sortable="false" />
-                <RadzenDataGridColumn TItem="CommercialDocumentDTO" Property="Vendor.Name" Title="@GetName(nameof(CommercialDocumentDTO.Vendor), new CommercialDocumentDTO())" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocumentDTO" Property="Buyer.Name" Title="@GetName(nameof(CommercialDocumentDTO.Buyer), new CommercialDocumentDTO())" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocumentDTO" Property="SalesPerson.Name" Title="@GetName(nameof(CommercialDocumentDTO.SalesPerson), new CommercialDocumentDTO())" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocumentDTO" Property="FinanceStatusDocument.Name" Title="@GetName(nameof(CommercialDocumentDTO.DocumentType), new CommercialDocumentDTO())" Width="150px" />
-                <RadzenDataGridColumn TItem="CommercialDocumentDTO" Property="Carrier.Name" Title="@GetName(nameof(CommercialDocumentDTO.Carrier), new CommercialDocumentDTO())" Width="110px" />
-                <RadzenDataGridColumn TItem="CommercialDocumentDTO" Property="OriginDocument.DocumentType" Title="@GetName(nameof(CommercialDocumentDTO.OriginDocument), new CommercialDocumentDTO())" Width="150px" />
-                <RadzenDataGridColumn TItem="CommercialDocumentDTO" Property="VendorWarehouse.Name" Title="@GetName(nameof(CommercialDocumentDTO.VendorWarehouse), new CommercialDocumentDTO())" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocumentDTO" Property="BuyerWarehouse.Name" Title="@GetName(nameof(CommercialDocumentDTO.BuyerWarehouse), new CommercialDocumentDTO())" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocumentDTO" Property="FinanceSummary.TotalTaxes" TextAlign="TextAlign.Right" FormatString="{0:N2}" Title="@GetName("TotalTaxes", new FinanceSalesDocumentSummary())" Width="150px" />
-                <RadzenDataGridColumn TItem="CommercialDocumentDTO" Property="FinanceSummary.TotalCosts" TextAlign="TextAlign.Right" FormatString="{0:N2}" Title="@GetName("TotalCosts", new FinanceSalesDocumentSummary())" Width="150px" />
-                <RadzenDataGridColumn TItem="CommercialDocumentDTO" Property="FinanceSummary.TotalPaid" TextAlign="TextAlign.Right" FormatString="{0:N2}" Title="@GetName("TotalPaid", new FinanceSalesDocumentSummary())" Width="150px" />
-                <RadzenDataGridColumn TItem="CommercialDocumentDTO" Property="FinanceSummary.TotalAmount" TextAlign="TextAlign.Right" FormatString="{0:N2}" Title="@GetName("TotalAmount", new FinanceSalesDocumentSummary())" Width="150px" />
-                <RadzenDataGridColumn TItem="CommercialDocumentDTO" Property="ToInvoice" TextAlign="TextAlign.Center" Title="To Invoice" Filterable="false" Sortable="false" Width="100px">
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentType.Name" Title="@GetName(nameof(CommercialDocument.DocumentType), new CommercialDocument())" Width="148px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="BusinessLineDoc.Name" Title="@GetName(nameof(CommercialDocument.BusinessLineDoc), new CommercialDocument())" Filterable="false" Sortable="false" Width="120px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="PO" Title="@GetName(nameof(CommercialDocument.PO), new CommercialDocument())" Width="90px" Filterable="false" Sortable="false" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="Vendor.Name" Title="@GetName(nameof(CommercialDocument.Vendor), new CommercialDocument())" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="Buyer.Name" Title="@GetName(nameof(CommercialDocument.Buyer), new CommercialDocument())" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="SalesPerson.Name" Title="@GetName(nameof(CommercialDocument.SalesPerson), new CommercialDocument())" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceStatusDocument.Name" Title="@GetName(nameof(CommercialDocument.DocumentType), new CommercialDocument())" Width="150px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="Carrier.Name" Title="@GetName(nameof(CommercialDocument.Carrier), new CommercialDocument())" Width="110px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="OriginDocument.DocumentType" Title="@GetName(nameof(CommercialDocument.OriginDocument), new CommercialDocument())" Width="150px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="VendorWarehouse.Name" Title="@GetName(nameof(CommercialDocument.VendorWarehouse), new CommercialDocument())" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="BuyerWarehouse.Name" Title="@GetName(nameof(CommercialDocument.BuyerWarehouse), new CommercialDocument())" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalTaxes" TextAlign="TextAlign.Right" FormatString="{0:N2}" Title="@GetName("TotalTaxes", new FinanceSalesDocumentSummary())" Width="150px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalCosts" TextAlign="TextAlign.Right" FormatString="{0:N2}" Title="@GetName("TotalCosts", new FinanceSalesDocumentSummary())" Width="150px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalPaid" TextAlign="TextAlign.Right" FormatString="{0:N2}" Title="@GetName("TotalPaid", new FinanceSalesDocumentSummary())" Width="150px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="FinanceSummary.TotalAmount" TextAlign="TextAlign.Right" FormatString="{0:N2}" Title="@GetName("TotalAmount", new FinanceSalesDocumentSummary())" Width="150px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="ToInvoice" TextAlign="TextAlign.Center" Title="To Invoice" Filterable="false" Sortable="false" Width="100px">
                     <Template Context="commercialdocumentItem">
                         <RadzenCheckBox @bind-Value="commercialdocumentItem.ToInvoice" />
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CommercialDocumentDTO" TextAlign="TextAlign.Center" Title="@GetName("Items", new CommercialDocumentDTO())" Filterable="false" Sortable="false" Width="50px">
+                <RadzenDataGridColumn TItem="CommercialDocument" TextAlign="TextAlign.Center" Title="@GetName("Items", new CommercialDocument())" Filterable="false" Sortable="false" Width="50px">
                     <Template Context="commercialdocumentItem">
                         <p>@(commercialdocumentItem.Items!=null?commercialdocumentItem.Items.Count:0)</p>
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CommercialDocumentDTO" Property="Notes" Title="Notes" Filterable="false" Sortable="false" Width="200px" />
-                <RadzenDataGridColumn TItem="CommercialDocumentDTO" Property="@nameof(CommercialDocumentDTO.Id)"  Title="@GetName("Id", new FinanceSalesDocumentSummary())" Width="100px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="Notes" Title="Notes" Filterable="false" Sortable="false" Width="200px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="@nameof(CommercialDocument.Id)"  Title="@GetName("Id", new FinanceSalesDocumentSummary())" Width="100px" />
             </Columns>
         </RadzenDataGrid>
         <div class="container-total">
@@ -115,16 +115,16 @@
                 @($"Records: {commercialdocumentList.Count}")
             </div>
             <div class="item">
-                @GetName(nameof(CommercialDocumentDTO.FinanceSummary.TotalTaxes), new CommercialDocumentDTO()):<b>@SumTotal("TotalTaxes")</b>
+                @GetName(nameof(CommercialDocument.FinanceSummary.TotalTaxes), new CommercialDocument()):<b>@SumTotal("TotalTaxes")</b>
             </div>
             <div class="item">
-                @GetName(nameof(CommercialDocumentDTO.FinanceSummary.TotalAmount), new CommercialDocumentDTO()):<b>@SumTotal("TotalAmount")</b>
+                @GetName(nameof(CommercialDocument.FinanceSummary.TotalAmount), new CommercialDocument()):<b>@SumTotal("TotalAmount")</b>
             </div>
             <div class="item">
-                @GetName(nameof(CommercialDocumentDTO.FinanceSummary.TotalDiscounts), new CommercialDocumentDTO()):<b>@SumTotal("TotalDiscounts")</b>
+                @GetName(nameof(CommercialDocument.FinanceSummary.TotalDiscounts), new CommercialDocument()):<b>@SumTotal("TotalDiscounts")</b>
             </div>
             <div class="item">
-                @GetName(nameof(CommercialDocumentDTO.FinanceSummary.TotalCosts), new CommercialDocumentDTO()):<b>@SumTotal("TotalCosts")</b>
+                @GetName(nameof(CommercialDocument.FinanceSummary.TotalCosts), new CommercialDocument()):<b>@SumTotal("TotalCosts")</b>
             </div>
 
         </div>
@@ -138,10 +138,10 @@
     public string _filterItems { get; set; }
     [Parameter]
     public string page { get; set; }
-    List<CommercialDocumentDTO>? commercialdocumentList { get; set; }
+    List<CommercialDocument>? commercialdocumentList { get; set; }
 
     public CommercialDocumentType commercialDocumentType { get; set; }
-    IList<CommercialDocumentDTO>? selectedcommercialdocuments;
+    IList<CommercialDocument>? selectedcommercialdocuments;
 
     public Concept vendor { get; set; }
 
@@ -226,7 +226,7 @@
     }
 
 
-    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CommercialDocumentDTO> args) => ContextMenuService.Open(args, ds =>
+    void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<CommercialDocument> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
         </RadzenMenu>
@@ -235,7 +235,7 @@
 
     void OnMenuItemClick(MenuItemEventArgs args)
     {
-        CommercialDocumentDTO argObj = (CommercialDocumentDTO)args.Value;        
+        CommercialDocument argObj = (CommercialDocument)args.Value;        
         Navigation.NavigateTo($"{backPage}/{page}/{argObj.Id}");
         if (!args.Value.Equals(3) && !args.Value.Equals(4))
         {
@@ -261,10 +261,10 @@
         double value = 0;
         if (commercialdocumentList != null)
         {
-            if (name == nameof(CommercialDocumentDTO.FinanceSummary.TotalTaxes)) value = commercialdocumentList.Sum(i => i.FinanceSummary.TotalTaxes);
-            if (name == nameof(CommercialDocumentDTO.FinanceSummary.TotalDiscounts)) value = commercialdocumentList.Sum(i => i.FinanceSummary.TotalDiscounts);
-            if (name == nameof(CommercialDocumentDTO.FinanceSummary.TotalAmount)) value = commercialdocumentList.Sum(i => i.FinanceSummary.TotalAmount);
-            if (name == nameof(CommercialDocumentDTO.FinanceSummary.TotalCosts)) value = commercialdocumentList.Sum(i => i.FinanceSummary.TotalCosts);
+            if (name == nameof(CommercialDocument.FinanceSummary.TotalTaxes)) value = commercialdocumentList.Sum(i => i.FinanceSummary.TotalTaxes);
+            if (name == nameof(CommercialDocument.FinanceSummary.TotalDiscounts)) value = commercialdocumentList.Sum(i => i.FinanceSummary.TotalDiscounts);
+            if (name == nameof(CommercialDocument.FinanceSummary.TotalAmount)) value = commercialdocumentList.Sum(i => i.FinanceSummary.TotalAmount);
+            if (name == nameof(CommercialDocument.FinanceSummary.TotalCosts)) value = commercialdocumentList.Sum(i => i.FinanceSummary.TotalCosts);
 
         }
 

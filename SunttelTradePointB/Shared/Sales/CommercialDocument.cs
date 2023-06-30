@@ -41,7 +41,7 @@ namespace SunttelTradePointB.Shared.Sales
         public bool EditingAllowed { get; set; }
     }
 
-    public class CommercialDocument: RecordItem
+    public class CommercialDocumentDTO: RecordItem
     {
         [DisplayName("Document Type")]
         public CommercialDocumentType DocumentType { get; set; }
@@ -78,7 +78,7 @@ namespace SunttelTradePointB.Shared.Sales
         public FinanceStatus FinanceStatusDocument { get; set; }
 
         [DisplayName("Origin Document")]
-        public CommercialDocument OriginDocument { get; set; }
+        public CommercialDocumentDTO OriginDocument { get; set; }
 
         [DisplayName("Vendor Warehouse")]
         public BasicConcept VendorWarehouse { get; set; }

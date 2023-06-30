@@ -4,9 +4,9 @@ using Newtonsoft.Json;
 using SunttelTradePointB.Shared.Common;
 using System.ComponentModel;
 
-namespace SunttelTradePointB.Shared.Sales.CommercialDocumentDTO
+namespace SunttelTradePointB.Shared.Sales.CommercialDocument
 {
-    public class CommercialDocumentDTO : RecordItem
+    public class CommercialDocument : RecordItem
     {
         [DisplayName("Document Type")]
         public CommercialDocumentType DocumentType { get; set; }
