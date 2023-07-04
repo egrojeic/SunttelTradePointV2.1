@@ -102,6 +102,16 @@
                             <GridColumns>
                                 <GridColumn Visible="false" Field=@nameof(SalesDocumentItemsDetails.Id) IsPrimaryKey="true" ValidationRules="@(new ValidationRules{ Required=true})"></GridColumn>
                                 <GridColumn Visible="false" Field="TransactionalItem.Id"></GridColumn>
+                                @*<GridColumn HeaderText="Options" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Center" Width="40">
+                                    <Template>
+                                        @{
+                                            var itemDetail = (context as SalesDocumentItemsDetails);
+                                            <button class="btn btn-danger btn-sm" @onclick="() => DeleteItemDetail(itemDetail!)" title="Delete Item" onclick:preventDefault>
+                                                <i class="oi oi-circle-x"></i>
+                                            </button>
+                                        }
+                                    </Template>
+                                </GridColumn>*@
                                 <GridColumn AllowEditing="false" Field="TransactionalItem.Name" HeaderText="TransactionalItem" Width="100" ValidationRules="@(new ValidationRules{ Required=true})">
                                     <EditTemplate>
                                         <SfAutoComplete TItem="SalesDocumentItemsDetails" TValue="string" @bind-Value="@((context as SalesDocumentItemsDetails).TransactionalItem.Name)" DataSource="@BuyerItems">
@@ -224,16 +234,20 @@
     [Parameter]
     public bool isASales { get; set; }
     [Parameter]
-    public string commercialDocumentId { get; set; }
+    public string? commercialDocumentId { get; set; }
     [Parameter]
     public EventCallback<string> alert { get; set; }
     [Parameter]
     public EventCallback Reaload { get; set; }
+    [Parameter]
+    public EventCallback<string> ValidateBuyerList { get; set; }
+    [Parameter]
+    public EventCallback<string> ErrorMessage { get; set; }
 
     public List<string> tableOptions = new List<string>()
-                    {
+    {
          "Edit", "Update", "Cancel", "Add", "Delete"
-                    };
+    };
 
     RadzenDataGrid<SalesDocumentItemsDetails> grid;
     SfGrid<SalesDocumentItemsDetails> DataGrid;
@@ -443,8 +457,8 @@
             {
                 SalesDocumentItemsDetails sale = args.Data;
                 sale.IdCommercialDocument = commercialDocumentId;
-                await DocumentServices.SaveCommercialDocumentDetail(sale);
-
+                sale = await DocumentServices.SaveCommercialDocumentDetail(sale);
+                args.RowData.Id = sale.Id;
             }
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
             {
@@ -456,6 +470,7 @@
             Console.WriteLine(ex.Message);
         }
 
+        await Reaload.InvokeAsync(null);
     }
 
 
@@ -472,12 +487,12 @@
                 if(buyerId is null)
                 {
                     args.Cancel = true;
-                    await alert.InvokeAsync("Select a Buyer first");
+                    await ValidateBuyerList.InvokeAsync("Select a Buyer first");
                     return;
                 } else if (!BuyerItems.Any())
                 {
                     args.Cancel = true;
-                    await alert.InvokeAsync("Buyer Don't have items to add");
+                    await ValidateBuyerList.InvokeAsync("Buyer Don't have items to add");
                     return;
                 }
             }
@@ -499,6 +514,7 @@
             Console.WriteLine(ex.Message);
         }
 
+        await Reaload.InvokeAsync(null);
     }
 
     private void OnValueSelecthandler(SelectEventArgs<SalesDocumentItemsDetails> args)
@@ -509,6 +525,24 @@
             args.Cancel = true;
             alert.InvokeAsync("This item has already been selected");
         } 
+    }
+
+    private async Task DeleteItemDetail(SalesDocumentItemsDetails salesDocumentItemsDetails)
+    {
+        try
+        {
+            var obj = items.Find(x => x.Id == salesDocumentItemsDetails.Id);
+            if (obj is null) return;
+            items.Remove(obj);
+            //await DocumentServices.DeleteCommercialDocumentDetail(obj);
+            await DataGrid.Refresh();
+        }
+        catch (Exception ex)
+        {
+            await ErrorMessage.InvokeAsync(ex.Message);
+        }
+
+        //StateHasChanged();
     }
 
 }

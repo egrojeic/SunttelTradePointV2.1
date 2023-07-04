@@ -58,7 +58,7 @@
 </div>
 
 
-<MessageSaveComponent isVisible="viewMsg" message="@msg"></MessageSaveComponent>
+<MessageSaveComponent isVisible="viewMsg" message="@msg" status="messageStatus"></MessageSaveComponent>
 
 
 <PageTitleComponent Title="@namePage"
@@ -121,7 +121,7 @@
 
             <div><label class="info-text-size">@GetName("DocumentType",new CommercialDocument())</label></div>
             <div>
-                <select @onchange="SelectItemDocumentType" class="select-style info-text-size" tabindex="1" autofocus>
+                <select @onchange="SelectItemDocumentType" class="select-style info-text-size" tabindex="1" autofocus disabled="@commercialDocument.ItemsAdded">
 
                     @if (documentTypeList != null)
                     {
@@ -152,7 +152,7 @@
             TypeInt="true"
             @bind-ValueInt="commercialDocument.DocumentNumber">
             </InputTextDisable>*@
-                <input type="number" class="form-control" tabindex="2" @bind-value="commercialDocument.DocumentNumber" @onblur="ValidateDocumentNumber" />
+                <input type="number" class="form-control" tabindex="2" @bind-value="commercialDocument.DocumentNumber" @onblur="ValidateDocumentNumber" disabled="@commercialDocument.ItemsAdded" />
 
 
             </div>
@@ -161,7 +161,7 @@
             <div>
 
                 @*<InputTextDisable TypeInt="true" Tabindex="2" Enable="GetTypeStatus()" @bind-ValueString="commercialDocument.PO"></InputTextDisable>*@
-                <input type="number" tabindex="2" class="form-control" @bind-value="commercialDocument.PO" @onblur="ValidatePO" />
+                <input type="number" tabindex="2" class="form-control" @bind-value="commercialDocument.PO" @onblur="ValidatePO" disabled="@commercialDocument.ItemsAdded" />
             </div>
 
             <div><label class="info-text-size">@GetName("ShipDate",new CommercialDocument())</label></div>
@@ -174,13 +174,13 @@
             <div><label class="info-text-size">@GetName("DeliveryDate",new CommercialDocument())</label></div>
             <div>
 
-                <input Tabindex="4" type="date" @bind-value="commercialDocument.DeliveryDate" class="form-control info-text-size input-style" @onblur="ValidatePO" />
-
+                <input Tabindex="4" type="date" @bind-value="commercialDocument.DeliveryDate" class="form-control info-text-size input-style" @onblur="ValidateDeliveryDate" />
+                
             </div>
 
             <div><label class="info-text-size">@GetName("ArrivalDate",new CommercialDocument())</label></div>
             <div>
-                <input Tabindex="5" type="date" @bind-value="commercialDocument.ArrivalDate" class="form-control info-text-size input-style" @onblur="ValidatePO" />
+                <input Tabindex="5" type="date" @bind-value="commercialDocument.ArrivalDate" class="form-control info-text-size input-style" @onblur="ValidateArrivalDate" />
             </div>
 
             <div><label class="info-text-size">@GetName("Vendor",new CommercialDocument())</label></div>
@@ -191,7 +191,7 @@
                                     Items="vendorList"
                                     EventIdSelectionAndId="EventIdSelectionAndId"
                                     EventSearcherValueAndId="EventSearcherValueAndId"
-                                    Disable="GetTypeStatus()">
+                                    Disable="!commercialDocument.ItemsAdded">
                 </InputTextSelector3>
             </div>
 
@@ -204,7 +204,7 @@
                                     Items="buyerList"
                                     EventIdSelectionAndId="EventIdSelectionAndId"
                                     EventSearcherValueAndId="EventSearcherValueAndId"
-                                    Disable="GetTypeStatus()">
+                                    Disable="!commercialDocument.ItemsAdded">
 
                 </InputTextSelector3>
                 @if (commercialDocument.Buyer != null)
@@ -221,7 +221,7 @@
                                     Items="salesPersonList"
                                     EventIdSelectionAndId="EventIdSelectionAndId"
                                     EventSearcherValueAndId="EventSearcherValueAndId"
-                                    Disable="GetTypeStatus()">
+                                    Disable="!commercialDocument.ItemsAdded">
                 </InputTextSelector3>
 
             </div>
@@ -231,7 +231,7 @@
 
                     <option value="0" selected>Select</option>
 
-                    @if (addressList != null && addressList.Any() && GetTypeStatus())
+                    @if (addressList != null && addressList.Any())
                     {
                         @foreach (var item in addressList)
                         {
@@ -252,9 +252,9 @@
 
             <div><label class="info-text-size">@GetName("Season",new CommercialDocument())</label></div>
             <div>
-                <select @onchange="SelectSeason" class="select-style info-text-size" tabindex="11">
+                <select @onchange="SelectSeason" class="select-style info-text-size" tabindex="11" disabled="@commercialDocument.ItemsAdded">
 
-                    @if (seasonList != null && GetTypeStatus())
+                    @if (seasonList != null)
                     {
 
                         <option value="0" selected>Select</option>
@@ -263,7 +263,7 @@
                         {
                             @if (commercialDocument?.Season?.Id == item.Id)
                             {
-                                <option value="@item.Id">@item.Name</option>
+                                <option value="@item.Id" selected>@item.Name</option>
                             }
                             else
                             {
@@ -281,7 +281,7 @@
 
                 <select @onchange="SelectItemCarrie" class="select-style info-text-size" tabindex="12">
 
-                    @if (carrierList != null && carrierList.Count() > 0 && GetTypeStatus())
+                    @if (carrierList != null && carrierList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
 
@@ -307,9 +307,9 @@
             <div><label class="info-text-size">@GetName("VendorWarehouse",new CommercialDocument())</label></div>
             <div>
 
-                <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size" tabindex="14">
+                <select @onchange="SelectItemVendorWarehous" class="select-style info-text-size" tabindex="14" disabled="@commercialDocument.ItemsAdded">
 
-                    @if (commercialDocument.VendorWarehouse != null && GetTypeStatus() && vendorWarehouseList != null && vendorWarehouseList.Count() > 0)
+                    @if (commercialDocument.VendorWarehouse != null && vendorWarehouseList != null && vendorWarehouseList.Count() > 0)
                     {
                         <option value="0" selected>Select</option>
 
@@ -333,11 +333,11 @@
             <div><label class="info-text-size">@GetName("BuyerWarehouse",new CommercialDocument())</label></div>
             <div>
 
-                <select @onchange="SelectItemBuyerWarehous" class="select-style info-text-size " tabindex="15">
+                <select @onchange="SelectItemBuyerWarehous" class="select-style info-text-size " tabindex="15" disabled="@commercialDocument.ItemsAdded">
 
                     <option value="0" selected>Select</option>
 
-                    @if (commercialDocument.BuyerWarehouse != null && GetTypeStatus() && buyerWarehouseList != null && buyerWarehouseList.Count() > 0)
+                    @if (commercialDocument.BuyerWarehouse != null && buyerWarehouseList != null && buyerWarehouseList.Count() > 0)
                     {
 
                         @foreach (var item in buyerWarehouseList)
@@ -360,11 +360,11 @@
             <div><label class="info-text-size">@GetName("BusinessLineDoc",new CommercialDocument())</label></div>
             <div>
 
-                <select @onchange="SelectItemBusinessLineDoc" class="select-style info-text-size" tabindex="16">
+                <select @onchange="SelectItemBusinessLineDoc" class="select-style info-text-size" tabindex="16" disabled="@commercialDocument.ItemsAdded">
 
                     <option value="0" selected>Select</option>
 
-                    @if (businessLineDocList != null && GetTypeStatus() && businessLineDocList.Count() > 0)
+                    @if (businessLineDocList != null && businessLineDocList.Count() > 0)
                     {
 
                         @foreach (var item in businessLineDocList)
@@ -400,7 +400,7 @@
                         <div class="container-item">
                             @if (commercialDocument.Items != null)
                             {
-                                <SalesDocumentItems Reaload="Reload" isASales="isASale" BuyerItems="@BuyerItems" items="@commercialDocument.Items" alert="alert" buyerId="@commercialDocument.Buyer.Id" commercialDocumentId="@commercialDocument.Id"></SalesDocumentItems>
+                                <SalesDocumentItems ValidateBuyerList="ValidateBuyerItems" Reaload="Reload" isASales="isASale" BuyerItems="@BuyerItems" items="@commercialDocument.Items" alert="alert" buyerId="@commercialDocument.Buyer.Id" commercialDocumentId="@commercialDocument.Id"></SalesDocumentItems>
                             }
                         </div>
                     </ContentTemplate>
@@ -451,6 +451,7 @@ else
     bool viewMsg = false;
     bool isASale = false;
     bool onInitialized = false;
+    public int messageStatus = 0;
     private bool timerDetailStatus = true;
     public List<SalesDocumentItemsDetails> BuyerItems = new List<SalesDocumentItemsDetails>();
 
@@ -512,6 +513,7 @@ else
             await SaveCommercialDocument();
         }
 
+        commercialDocument.ValidateItems();
         documentTypeList = await DocumentServices.GetCommercialDocumentTypes(isASale);//ok
         businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
         carrierList = await DocumentServices.GetCarrierList();
@@ -519,9 +521,6 @@ else
         LoadCommercialDocument();
         isLoading = false;
         onInitialized = true;
-
-
-
 
         TimerDetail();
         StateHasChanged();
@@ -566,12 +565,12 @@ else
             }
             else
             {
-                alert("No saved", 1);
+                alert("Error Saving commercial document", 1);
             }
         }
         catch (Exception ex)
         {
-            alert(ex.Message);
+            alert(ex.Message, 1);
         }
     }
 
@@ -749,10 +748,11 @@ else
         CloseMenu(false);
     }
 
-    public void alert(string _msg, int? status = 0)
+    public void alert(string _msg, int status = 0)
     {
         viewMsg = true;
         msg = _msg;
+        messageStatus = status;
 
         StateHasChanged();
     }
@@ -770,17 +770,6 @@ else
         string paramFilter = filter != null ? filter : "";
         if (paramFilter != null && paramFilter != "") Navigation.NavigateTo($"/{backPage}/{page}/{paramFilter}");
         Navigation.NavigateTo($"/{backPage}/{page}");
-    }
-
-    public void OpenAlert(string _msg, int _status, bool visible)
-    {
-        if (referAlert != null)
-        {
-            referAlert.isVisible = visible;
-            referAlert.message = _msg;
-            referAlert.status = _status;
-            StateHasChanged();
-        }
     }
 
     public void CloseMenu(bool mode)
@@ -931,6 +920,7 @@ else
 
     public void Reload()
     {
+        commercialDocument.ValidateItems();
         StateHasChanged();
     }
 
@@ -982,15 +972,6 @@ else
         }
     }
 
-    public bool GetTypeStatus()
-    {
-        bool status = true;
-        if (commercialDocument.DocumentType == null || commercialDocument.DocumentType.Id == null)
-        {
-            status = false;
-        }
-        return status;
-    }
 
     public void EditActorMode(string id)
     {
@@ -1034,6 +1015,93 @@ else
         SaveCommercialDocument();
     }
 
+    private async void ValidateDeliveryDate(FocusEventArgs arg)
+    {
+        if (commercialDocument.DeliveryDate < commercialDocument.ShipDate)
+        {
+            commercialDocument.DeliveryDate = commercialDocument.ShipDate;
+            StateHasChanged();
+
+            alert("The delivery date must be after the shipping date.", 1);
+        }
+        else
+        {
+            commercialDocument.ArrivalDate = commercialDocument.DeliveryDate;
+            viewMsg = false;
+            await SaveCommercialDocument();
+        }
+
+        StateHasChanged();
+    }
+
+    private async void ValidateArrivalDate(FocusEventArgs arg)
+    {
+        if (commercialDocument.ArrivalDate < commercialDocument.DeliveryDate)
+        {
+            commercialDocument.ArrivalDate = commercialDocument.DeliveryDate;
+            alert("The arrival date must be after the delivery date.", 1);
+        }
+        else
+        {
+            viewMsg = false; 
+            await SaveCommercialDocument();
+        }
+
+
+        StateHasChanged();
+    }
+
+
+
+    //private async void ValidateDeliveryDate(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    //{
+    //    if (DateTime.TryParse(arg.Value?.ToString(), out DateTime deliveryDate))
+    //    {
+    //        if (deliveryDate < commercialDocument.ShipDate)
+    //        {
+    //            commercialDocument.DeliveryDate = commercialDocument.ShipDate;
+    //            alert("The delivery date must be after the shipping date.");
+    //        }
+    //        else
+    //        {
+    //            commercialDocument.DeliveryDate = deliveryDate;
+    //            viewMsg = false;
+    //            await SaveCommercialDocument();
+    //        }
+    //    }
+    //    else
+    //    {
+    //        alert("Error casting arrival date");
+    //    }
+
+    //    StateHasChanged();
+    //}
+
+
+    //private async void ValidateArrivalDate(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    //{
+    //    if (DateTime.TryParse(arg.Value?.ToString(), out DateTime arrivalDate))
+    //    {
+    //        if (arrivalDate < commercialDocument.DeliveryDate)
+    //        {
+    //            commercialDocument.ArrivalDate = commercialDocument.DeliveryDate;
+    //            alert("The arrival date must be after the delivery date.");
+    //        }
+    //        else
+    //        {
+    //            commercialDocument.ArrivalDate = arrivalDate;
+    //            viewMsg = false;
+    //            await SaveCommercialDocument();
+    //        }
+    //    }
+    //    else
+    //    {
+    //        alert("Error casting arrival date");
+    //    }
+
+    //    StateHasChanged();
+    //}
+
     public void Change(ChangeEventArgs<bool?> args)
     {
         SaveCommercialDocument();
@@ -1051,6 +1119,16 @@ else
 
     private async Task SaveAndConfirm()
     {
-        
+
+    }
+
+    private void ValidateBuyerItems(string msg)
+    {
+        alert(msg, 2);
+    }
+
+    private void ErrorMessage(string msg)
+    {
+        alert(msg, 1);
     }
 }

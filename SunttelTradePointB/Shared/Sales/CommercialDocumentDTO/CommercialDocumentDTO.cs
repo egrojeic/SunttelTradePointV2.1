@@ -75,6 +75,15 @@ namespace SunttelTradePointB.Shared.Sales.CommercialDocument
 
         public string StandingOrderId { get; set; }
 
+        public bool ItemsAdded { get; set; }
+        public string? deliveryDateError { get; set; }
+
+
+        public void ValidateItems()
+        {
+            ItemsAdded = Items.Any();
+        }
+      
     }
 
 }

@@ -736,7 +736,6 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 return (false, false, e.Message);
             }
 
-
         }
 
 
