@@ -95,8 +95,7 @@
                 <div class="content-wrapper">
                     <div class="row" style="padding-left: 15px">
                         <SfGrid @ref="DataGrid" DataSource="@items" Toolbar="@tableOptions" AllowPaging="true" AllowResizing="true">
-                            <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true">
-                            </GridEditSettings>
+                            <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true"></GridEditSettings>
                             <GridEvents OnActionBegin="ActionBegin" OnActionComplete="ActionComplete" TValue="SalesDocumentItemsDetails"></GridEvents>
                             <GridPageSettings PageSize="10"></GridPageSettings>
                             <GridColumns>
