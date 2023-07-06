@@ -115,7 +115,7 @@
         <div class="col-lg-12 control-section">
             <div class="content-wrapper">
                 <div class="row">
-                    <SfGrid DataSource="@qualityParameterGroupList" Toolbar="@tableOptions" AllowPaging="true">
+                    <SfGrid @ref="DataGrid" DataSource="@qualityParameterGroupList" Toolbar="@tableOptions" AllowPaging="true">
                         <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true"></GridEditSettings>
                         <GridEvents OnActionBegin="ActionBegin" OnActionComplete="ActionComplete" TValue="QualityParameterGroup"></GridEvents>
                         <GridPageSettings PageSize="10"></GridPageSettings>
@@ -130,10 +130,10 @@
                                         <GridEvents OnActionBegin="ActionDetailBegin" OnActionComplete="ActionDetailComplete" TValue="QualityAssuranceParameter"></GridEvents>
                                         <GridPageSettings PageSize="6"></GridPageSettings>
                                         <GridColumns>
-                                            <GridColumn Visible="false" Field=@nameof(QualityAssuranceParameter.Id) HeaderText="ID" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="110"> </GridColumn>
+                                            <GridColumn IsPrimaryKey="true" Visible="false" Field=@nameof(QualityAssuranceParameter.Id)> </GridColumn>
                                             <GridColumn Field=@nameof(QualityAssuranceParameter.Name) HeaderText="Name" Width="110"></GridColumn>
                                             <GridColumn Field="ReportType.Name" HeaderText="Report Type" Width="110">
-                                                @*<EditTemplate>
+                                                @* <EditTemplate>
                                                     <SfAutoComplete TItem="QualityAssuranceParameter" TValue="string" @bind-Value="@((context2 as QualityAssuranceParameter).ReportType.Name)" DataSource="@reportTypeList">
                                                         <AutoCompleteEvents TItem="QualityReportType" TValue="string" OnValueSelect="@OnValueSelecthandler"></AutoCompleteEvents>
                                                         <AutoCompleteFieldSettings Value="ReportType.Name"></AutoCompleteFieldSettings>
@@ -144,10 +144,10 @@
                                     </SfGrid>
                                 </div>
                             </DetailTemplate>
-                        </GridTemplates>
+                    </GridTemplates>
                         <GridColumns>
-                            <GridColumn Visible="false" Field=@nameof(QualityParameterGroup.Id)> </GridColumn>
-                            <GridColumn Field=@nameof(QualityParameterGroup.Name) HeaderText="Name" Width="110"></GridColumn>
+                            <GridColumn Visible="false" Field=@nameof(QualityParameterGroup.Id ) IsPrimaryKey="true"> </GridColumn>
+                            <GridColumn AllowEditing="true" Field=@nameof(QualityParameterGroup.Name) HeaderText="Name" Width="110"></GridColumn>
                         </GridColumns>
                     </SfGrid>
                 </div>
@@ -162,6 +162,7 @@
     [Parameter]
     public string _filterItems { get; set; }
     List<QualityParameterGroup>? qualityParameterGroupList { get; set; }
+    SfGrid<QualityParameterGroup> DataGrid;
 
     public QualityParameterGroup qualityParameterGroup { get; set; }
     IList<QualityParameterGroup>? selectedcommercialdocuments;
@@ -225,7 +226,7 @@
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<QualityParameterGroup> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
 
@@ -308,6 +309,9 @@
             }
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
             {
+                QualityParameterGroup parameterGroup = args.Data;
+                parameterGroup = await QualityEvaluationServices.SaveQualityParameterGroup(parameterGroup);
+                args.RowData.Id = parameterGroup.Id;
             }
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
             {
@@ -338,9 +342,7 @@
             }
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
             {
-                QualityParameterGroup parameterGroup = args.Data;
-                parameterGroup = await QualityEvaluationServices.SaveQualityParameterGroup(parameterGroup);
-                args.RowData.Id = parameterGroup.Id;
+
             }
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
             {
@@ -372,6 +374,9 @@
             }
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
             {
+                QualityAssuranceParameter qualityAssuranceParameter = args.Data;
+                qualityAssuranceParameter = await QualityEvaluationServices.SaveQualityAssuranceParameter(qualityAssuranceParameter);
+                args.RowData.Id = qualityAssuranceParameter.Id;
             }
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
             {
