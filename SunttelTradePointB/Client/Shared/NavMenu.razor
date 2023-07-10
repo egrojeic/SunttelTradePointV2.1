@@ -20,7 +20,7 @@
 
             </div>*@
            
-            <SquadsControl></SquadsControl>
+            <SquadsControl OnCurrentSquadChanged="CurrentSquadChanged"></SquadsControl>
 
             <br />
 
@@ -134,7 +134,12 @@
     protected override async Task OnInitializedAsync()
     {
 
+        await DrawUserMenu();
 
+    }
+
+    private async Task DrawUserMenu()
+    {
         var user = (await authStateProvider.GetAuthenticationStateAsync()).User;
         var userId = user.FindFirst(c => c.Type.Contains("nameidentifier"))?.Value;
 
@@ -150,19 +155,24 @@
 
         squadName = await js.InvokeAsync<string>("localStorage.getItem", "SquadName");
 
-        var toolSet2 =  lstOptions
-            .Select(m => new { m.ToolSetsNavigation.ID, m.ToolSetsNavigation.Name})
+        var toolSet2 = lstOptions
+            .Select(m => new { m.ToolSetsNavigation.ID, m.ToolSetsNavigation.Name })
             .Distinct()
             .ToList();
 
-        toolSet = toolSet2.Select(opt => new ToolSet { 
-            ID = opt.ID,
-            Name = opt.Name,
-            collapseState = "collapse",
+        toolSet = toolSet2.Select(opt => new ToolSet
+            {
+                ID = opt.ID,
+                Name = opt.Name,
+                collapseState = "collapse",
                 IconName = "fas fa-plus-circle"
-            
-            
-        }).ToList();
 
+
+            }).ToList();
+    }
+
+    private async Task CurrentSquadChanged()
+    {
+        await DrawUserMenu();
     }
 }

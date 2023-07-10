@@ -40,6 +40,8 @@
 @code {
     [Parameter]
     public SquadsByUser currentSquad { get; set; }
+     [Parameter]
+    public EventCallback<Guid> OnCurrentSquadChanged { get; set; }
 
     private bool showList = false;
     public string pathLogo { get; set; }
@@ -85,12 +87,13 @@
         return base.OnInitializedAsync();
     }
 
-    public void SelcetItem(SquadsByUser squadsByUser)
+    public async void SelcetItem(SquadsByUser squadsByUser)
     {
         currentSquad = squadsByUser;
         UIClientGlobalVariables.ActiveSquad = squadsByUser;
         pathLogo = $"/SkinImagesByAccount/{currentSquad.SkinImage}";
         showList = false;
+        await OnCurrentSquadChanged.InvokeAsync(currentSquad.IDSquads);
         StateHasChanged();
     }
 

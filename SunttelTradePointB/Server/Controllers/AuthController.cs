@@ -19,7 +19,7 @@ namespace SunttelTradePointB.Server.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<UserRole> _roleManager;
         private readonly IUserTracking _userTracking;
 
         private ISquadBack _squad;
@@ -34,7 +34,7 @@ namespace SunttelTradePointB.Server.Controllers
         /// <param name="userTracking"></param>
         /// <param name="entityNodes"></param>
         /// <param name="squad"></param>
-        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IUserTracking userTracking, IActorsNodes entityNodes, ISquadBack squad, RoleManager<IdentityRole> roleManager)
+        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IUserTracking userTracking, IActorsNodes entityNodes, ISquadBack squad, RoleManager<UserRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -67,8 +67,15 @@ namespace SunttelTradePointB.Server.Controllers
                 await _userManager.UpdateAsync(user);
             }
 
+            try
+            {
+                await _signInManager.SignInAsync(user, request.RememberMe);
 
-            await _signInManager.SignInAsync(user, request.RememberMe);
+            }catch(Exception ex)
+            {
+                string errDesc = ex.Message;
+            }
+
 
 
 
@@ -136,7 +143,7 @@ namespace SunttelTradePointB.Server.Controllers
         {
             try
             {
-                var result = await _roleManager.CreateAsync(new IdentityRole
+                var result = await _roleManager.CreateAsync(new UserRole
                 {
                     Name = userRole.Name
                 });
@@ -144,7 +151,7 @@ namespace SunttelTradePointB.Server.Controllers
                 if (result.Succeeded)
                 {
 
-                    IdentityRole rol = await _roleManager.FindByNameAsync(userRole.Name);
+                    UserRole rol = await _roleManager.FindByNameAsync(userRole.Name);
 
                     if (rol is null) return BadRequest("Rol not saved");
                     // añadimos al Systemql
@@ -454,7 +461,7 @@ namespace SunttelTradePointB.Server.Controllers
         {
             try
             {
-                IdentityRole rolDB = await _roleManager.Roles.FirstOrDefaultAsync(x => x.Id == id);
+                UserRole rolDB = await _roleManager.Roles.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (rolDB is null) return BadRequest(" not found");
 
@@ -530,12 +537,8 @@ namespace SunttelTradePointB.Server.Controllers
         {
             try
             {
-                List<IdentityRole> list = await _roleManager.Roles.ToListAsync();
-                List<UserRole> roles = list.Select(x => new UserRole
-                {
-                    Id = x.Id,
-                    Name = x.Name
-                }).ToList();
+                List<UserRole> roles = await _roleManager.Roles.ToListAsync();
+              
 
                 return Ok(roles);
             }

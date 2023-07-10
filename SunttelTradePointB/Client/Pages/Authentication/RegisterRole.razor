@@ -99,6 +99,7 @@
         GetRoles();
         base.OnInitialized();
         StateHasChanged();
+        Role.SquadsId = UIClientGlobalVariables.ActiveSquad.IDSquads;
     }
 
     protected override async void OnParametersSet()
@@ -114,6 +115,7 @@
         if (role is null) return;
         Role.Id = role.Id;
         Role.Name = role.Name;
+      
         StateHasChanged();
     }
 

@@ -28,10 +28,10 @@ namespace SunttelTradePointB.Server.Controllers
         }
 
 
-        [HttpGet("GetSystemTools/{userId}")]
-        public async Task<IActionResult> GetSystemTools(Guid userId)
+        [HttpGet("GetSystemTools/{userId}/{squadId}")]
+        public async Task<IActionResult> GetSystemTools(Guid userId, Guid squadId)
         {
-            var response = await _squad.SystemToolsByUser(userId);
+            var response = await _squad.SystemToolsByUser(userId, squadId);
             return Ok(response);
         }
 

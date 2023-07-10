@@ -176,13 +176,61 @@ namespace SunttelTradePointB.Server.Services
         /// <param name="userId"></param>
         /// <param name="squadId"></param>
         /// <returns></returns>
-        public async Task<List<SystemTool>> SystemToolsByUser(Guid userId, string? squadId = "")
+        public async Task<List<SystemTool>> SystemToolsByUser(Guid userId, Guid? squadId)
         {
-            var systemTools = await _sunttelDBContext.SystemTools
-                .Include(s => s.ToolSetsNavigation)
-                .ToListAsync();
+            //var userRole = await _sunttelDBContext.UserRoles
+            //    .Where(u => u.UserId == userId)
+            //    .Include(u => u.SystemTools)
+            //    .FirstOrDefaultAsync();
 
-            return systemTools;
+            try
+            {
+                string connectionString = _sunttelDBContext.Database.GetConnectionString();
+                string storedProcedureName = "GetSystemToolsByUser";
+                List<SystemTool> systemtools = new List<SystemTool>();
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    SqlCommand command = new SqlCommand(storedProcedureName, connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@IDAspNetUsers", userId.ToString()));
+                    command.Parameters.Add(new SqlParameter("@IDSquads", squadId.ToString()));
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        SystemTool systemTool = new SystemTool();
+                        systemTool.ID = int.Parse(reader["ID"].ToString());
+                        systemTool.Name = reader["Name"].ToString();
+                        systemTool.IDToolSets = int.Parse(reader["IDToolSets"].ToString());
+                        systemTool.OptionRef = reader["OptionRef"].ToString();
+                        systemTool.DisplayOrder = int.Parse(reader["DisplayOrder"].ToString());
+
+                        //systemTool.Description = reader["Description"].ToString();
+                        //systemTool.ToolSets = reader["ToolSets"].ToString();
+                        systemTool.ToolSetsNavigation = new ToolSet
+                        {
+                            ID = int.Parse(reader["IDToolSets"].ToString()),
+                            Name = reader["ToolSetsName"].ToString(),
+                           
+                        };
+
+                        systemtools.Add(systemTool);
+                    }
+                    reader.Close();
+                }
+                return systemtools;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            return null;
+            //var systemTools = await _sunttelDBContext.SystemTools
+            //    .Include(s => s.ToolSetsNavigation)
+            //    .ToListAsync();
+
+            //return systemTools;
         }
 
 

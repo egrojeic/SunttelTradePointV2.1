@@ -71,7 +71,7 @@ namespace SunttelTradePointB.Client.Services.SquadServices
         {
             try
             {
-                var result = await _httpClient.GetFromJsonAsync<List<SystemTool>>($"api/Squad/GetSystemTools/{userId}");
+                var result = await _httpClient.GetFromJsonAsync<List<SystemTool>>($"api/Squad/GetSystemTools/{userId}/{UIClientGlobalVariables.ActiveSquad.IDSquads}");
                 return result;
             }
             catch

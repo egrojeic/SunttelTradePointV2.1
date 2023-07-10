@@ -22,7 +22,7 @@ namespace SunttelTradePointB.Server.Interfaces
         /// <param name="userId"></param>
         /// <param name="squadId"></param>
         /// <returns></returns>
-        Task<List<SystemTool>> SystemToolsByUser(Guid userId, string? squadId = "");
+        Task<List<SystemTool>> SystemToolsByUser(Guid userId, Guid? squadId);
         
         /// <summary>
         /// Retrieves the Squad by Squad Name

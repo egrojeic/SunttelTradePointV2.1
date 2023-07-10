@@ -39,6 +39,7 @@ using SunttelTradePointB.Server.Services.StandingOrderBkServices;
 using Microsoft.IdentityModel.Tokens;
 using SunttelTradePointB.Server.Interfaces.EcommerceInterfaces;
 using SunttelTradePointB.Server.Services.EcommerceServices;
+using SunttelTradePointB.Shared.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -81,7 +82,7 @@ builder.Services.AddAuthorization(options =>
 });
 
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, UserRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 builder.Services.ConfigureApplicationCookie(options =>
