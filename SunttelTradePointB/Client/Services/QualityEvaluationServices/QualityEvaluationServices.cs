@@ -11,7 +11,7 @@ using SunttelTradePointB.Shared.Sales.CommercialDocument;
 
 namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
 {
-    public class QualityEvaluationServices : IQualityEvaluation
+    public class QualityEvaluationServices : IQualityEvaluationServices
     {
         private readonly HttpClient _httpClient;
         private string basepath = "/api/Quality/*Name?userId=*Id&ipAddress=*Ip";

@@ -5,7 +5,7 @@ using SunttelTradePointB.Shared.Sales;
 
 namespace SunttelTradePointB.Client.Interfaces.QualityEvaluationInterfaces
 {
-    public interface IQualityEvaluation
+    public interface IQualityEvaluationServices
     {
         /// <summary>
         /// Saved a item qualityEvaluation 

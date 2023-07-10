@@ -1,12 +1,21 @@
 ﻿@page "/QualityParameterGroupGeneral"
 @page "/QualityParameterGroupGeneral/{_filterItems}"
 
-
+@using SunttelTradePointB.Client.Interfaces.QualityEvaluationInterfaces;
+@using SunttelTradePointB.Client.Services.QualityEvaluationServices;
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Charts
+@using Syncfusion.Blazor.Data
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Inputs;
+@using Syncfusion.Blazor.SplitButtons
 
 @using SunttelTradePointB.Shared.Quality;
 @using SunttelTradePointB.Client.Shared.Menus.QualityEvaluation;
-@inject TransactionalItemsService transactItemsService;
-@inject SunttelTradePointB.Client.Services.QualityEvaluationServices.QualityEvaluationServices QualityEvaluationServices
+@inject QualityEvaluationServices QualityEvaluationServices
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager Navigation
 @inject IJSRuntime Js
@@ -45,6 +54,26 @@
     <SearchComponent @bind-FilterTextSet="@docsFilter"></SearchComponent>
 </div>
 
+<SfDialog @ref="Dialog" Width="250px" Visible="false" ShowCloseIcon="true" IsModal="true">
+    <DialogEvents Closed="Closed"></DialogEvents>
+    <DialogTemplates>
+        @*Here you can customize the Header and Content of delete confirmation dialog*@
+        <Header> Delete Record</Header>
+        <Content> You are about to Delete the item "@SelectedData.Name" ?</Content>
+    </DialogTemplates>
+    <DialogButtons>
+        @if (!isDetail)
+        {
+            <DialogButton OnClick="@OkClick" Content="OK" IsPrimary="true"></DialogButton>
+        }
+        else
+        {
+            <DialogButton OnClick="@OkClickDetail" Content="OK" IsPrimary="true"></DialogButton>
+        }
+        <DialogButton OnClick="@CancelClick" Content="Cancel"></DialogButton>
+    </DialogButtons>
+</SfDialog>
+
 
 <div class="tableContainer">
 
@@ -56,71 +85,131 @@
     }
     else
     {
-        @if (qualityParameterGroupList != null)
-        {
-            <RadzenDataGrid AllowFiltering="true"
-                    AllowColumnResize="true"
-                    AllowAlternatingRows="true"
-                    FilterMode="FilterMode.Advanced"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    AllowSorting="true"
-                    PageSize="50"
-                    AllowPaging="true"
-                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    Data="@qualityParameterGroupList"
-                    TItem="QualityParameterGroup"
-                    ColumnWidth="300px"
-                    SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"
-                    @bind-Value="@selectedcommercialdocuments"
-                    CellContextMenu="@ShowContextMenuCommercialDocument">
-                <Columns>
+        @* @if (qualityParameterGroupList != null)
+    {
+    <RadzenDataGrid AllowFiltering="true"
+    AllowColumnResize="true"
+    AllowAlternatingRows="true"
+    FilterMode="FilterMode.Advanced"
+    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+    AllowSorting="true"
+    PageSize="50"
+    AllowPaging="true"
+    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+    ShowPagingSummary="true"
+    Data="@qualityParameterGroupList"
+    TItem="QualityParameterGroup"
+    ColumnWidth="300px"
+    SelectionMode="DataGridSelectionMode.Single"
+    LogicalFilterOperator="LogicalFilterOperator.Or"
+    @bind-Value="@selectedcommercialdocuments"
+    CellContextMenu="@ShowContextMenuCommercialDocument">
+    <Columns>
 
-                    <RadzenDataGridColumn TItem="QualityParameterGroup" Property="@nameof(QualityParameterGroup.Name)" Title="@GetName("Name", new QualityParameterGroup() )" Width="208px" />
-                    <RadzenDataGridColumn TItem="QualityParameterGroup" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="120px" TextAlign="Radzen.TextAlign.Center">
-                        <Template Context="data">
+    <RadzenDataGridColumn TItem="QualityParameterGroup" Property="@nameof(QualityParameterGroup.Name)" Title="@GetName("Name", new QualityParameterGroup() )" Width="208px" />
+    <RadzenDataGridColumn TItem="QualityParameterGroup" Title="@GetName("Action",new BasicConcept())" Sortable="false" Width="120px" TextAlign="Radzen.TextAlign.Center">
+    <Template Context="data">
 
-                            <Confirm Id="@data.Id" TextValue="@($"¿ Confirm delete ?")"
-                             IdSelect="@IdDelete"
-                             ConfirmIdAction='ConfirmDelete'
-                             CancelAction="CancelDelete"
-                             SelectIdAction="SelectDelete"></Confirm>
+    <Confirm Id="@data.Id" TextValue="@($"¿ Confirm delete ?")"
+    IdSelect="@IdDelete"
+    ConfirmIdAction='ConfirmDelete'
+    CancelAction="CancelDelete"
+    SelectIdAction="SelectDelete"></Confirm>
 
-                        </Template>
-                    </RadzenDataGridColumn>
+    </Template>
+    </RadzenDataGridColumn>
 
-                </Columns>
-            </RadzenDataGrid>
-            <div class="container-total">
-                <div class="item">
-                    <label>
-                        @(
-                            $"Records: {qualityParameterGroupList.Count}"
-                            )
-                    </label>
+    </Columns>
+    </RadzenDataGrid>
+    <div class="container-total">
+    <div class="item">
+    <label>
+    @(
+    $"Records: {qualityParameterGroupList.Count}"
+    )
+    </label>
+    </div>
+    </div>
+
+    }*@
+        <div class="col-lg-12 control-section">
+            <div class="content-wrapper">
+                <div class="row">
+                    <SfGrid @ref="DataGrid" DataSource="@qualityParameterGroupList" Toolbar="@tableOptions" AllowPaging="true">
+                        <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true"></GridEditSettings>
+                        <GridEvents OnActionBegin="ActionBegin" RowSelected="RowSelectHandler" OnActionComplete="ActionComplete" TValue="QualityParameterGroup"></GridEvents>
+                        <GridPageSettings PageSize="10"></GridPageSettings>
+                        <GridTemplates>
+                            <DetailTemplate>
+                                @{
+                                    var parameterGroup = (context as QualityParameterGroup);
+                                    TemporalQualityParameterGroup = parameterGroup;
+                                }
+                                <div style="padding:25px">
+                                    <SfGrid @ref="DataGridDetail" DataSource="@qualityAssuranceParameterList" Toolbar="@tableOptions" AllowPaging="true" Query="@(new Syncfusion.Blazor.Data.Query().Where("ParameterGroup.Id", "equal", parameterGroup!.Id))">
+                                        <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true"></GridEditSettings>
+                                        <GridEvents OnActionBegin="ActionDetailBegin" RowSelected="RowSelectHandlerDetails" OnActionComplete="ActionDetailComplete" TValue="QualityAssuranceParameter"></GridEvents>
+                                        <GridPageSettings PageSize="6"></GridPageSettings>
+                                        <GridColumns>
+                                            <GridColumn IsPrimaryKey="true" Visible="false" Field=@nameof(QualityAssuranceParameter.Id)> </GridColumn>
+                                            <GridColumn Field=@nameof(QualityAssuranceParameter.Name) HeaderText="Name" Width="110" ValidationRules="@(new ValidationRules{ Required=true})"></GridColumn>
+                                            <GridColumn Field="ReportType.Name" HeaderText="Report Type" Width="110" ValidationRules="@(new ValidationRules{ Required=true})">
+                                                <EditTemplate Context="context2">
+                                                    <SfDropDownList DataSource="@reportTypeList" TItem="QualityReportType" TValue="string"
+                                                    @bind-Value="((context2 as QualityAssuranceParameter)!.ReportType.Name)">
+                                                        <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
+                                                    </SfDropDownList>
+                                                </EditTemplate>
+                                            </GridColumn>
+                                        </GridColumns>
+                                    </SfGrid>
+                                </div>
+                            </DetailTemplate>
+                        </GridTemplates>
+                        <GridColumns>
+                            <GridColumn Visible="false" Field=@nameof(QualityParameterGroup.Id) IsPrimaryKey="true"></GridColumn>
+                            <GridColumn AllowEditing="true" Field=@nameof(QualityParameterGroup.Name) HeaderText="Name" Width="110"></GridColumn>
+                        </GridColumns>
+                    </SfGrid>
                 </div>
             </div>
-
-        }
+        </div>
     }
 </div>
 
 
 @code {
 
+
     [Parameter]
     public string _filterItems { get; set; }
     List<QualityParameterGroup>? qualityParameterGroupList { get; set; }
+    SfGrid<QualityParameterGroup>? DataGrid;
+    SfDialog Dialog;
+    SfGrid<QualityAssuranceParameter>? DataGridDetail;
 
-    public QualityParameterGroup qualityParameterGroup { get; set; }
+    public QualityParameterGroup? TemporalQualityParameterGroup { get; set; }
+    public QualityParameterGroup? qualityParameterGroup { get; set; }
     IList<QualityParameterGroup>? selectedcommercialdocuments;
 
+    List<QualityAssuranceParameter>? qualityAssuranceParameterList { get; set; }
+    List<QualityReportType>? reportTypeList { get; set; }
+
+    public List<string> tableOptions = new List<string>()
+                        {
+        "Edit", "Update", "Cancel", "Add", "Delete"
+                        };
 
     bool viewMsg = false;
     string IdDelete = "";
     string msg = "";
     bool isLoading = false;
+
+    private bool isParentGridRowSelected = false;
+    private bool isChildGridRowSelected = false;
+    public BasicConcept? SelectedData;
+    public bool flag = true;
+    public bool isDetail = false;
 
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
 
@@ -144,8 +233,8 @@
     {
         isLoading = true;
         qualityParameterGroupList = await QualityEvaluationServices.GetQualityParameterGrouplList((_filterItems != null ? _filterItems : "all"), 1, 20);
-
-
+        qualityAssuranceParameterList = await QualityEvaluationServices.GetQualityAssuranceParameterlList((_filterItems != null ? _filterItems : "all"), 1, 20);
+        reportTypeList = await QualityEvaluationServices.GetQualityReportTypeList("all", 1, 80);
         isLoading = false;
         StateHasChanged();
     }
@@ -231,6 +320,208 @@
     {
         Navigation.NavigateTo(name);
         //Js.InvokeAsync<object>("open", name, "_blank");
+    }
+
+    public async Task ActionComplete(ActionEventArgs<QualityParameterGroup> args)
+    {
+        try
+        {
+            if (args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
+            {
+                // Triggers once editing operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
+            {
+                // Triggers once add operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Cancel)
+            {
+                // Triggers once cancel operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+            {
+                QualityParameterGroup parameterGroup = args.Data;
+                parameterGroup = await QualityEvaluationServices.SaveQualityParameterGroup(parameterGroup);
+                args.RowData.Id = parameterGroup.Id;
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+            {
+                //await QualityEvaluationServices.DeleteQualityParameterGroupById(args.Data.Id);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+    }
+
+
+    public async Task ActionBegin(ActionEventArgs<QualityParameterGroup> args)
+    {
+        try
+        {
+            if (args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
+            {
+                // Triggers once editing operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
+            {
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Cancel)
+            {
+                // Triggers once cancel operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+            {
+
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete && flag)
+            {
+                args.Cancel = true;  //Cancel default delete action.
+                isDetail = false;
+                Dialog!.Show();
+                flag = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+    }
+
+    public async Task ActionDetailComplete(ActionEventArgs<QualityAssuranceParameter> args)
+    {
+        try
+        {
+            if (args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
+            {
+                // Triggers once editing operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
+            {
+                // Triggers once add operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Cancel)
+            {
+                // Triggers once cancel operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+            {
+                QualityAssuranceParameter qualityAssuranceParameter = args.Data;
+                qualityAssuranceParameter.ParameterGroup = TemporalQualityParameterGroup;
+                qualityAssuranceParameter.ReportType = reportTypeList!.Find(x => x.Name == qualityAssuranceParameter.ReportType.Name);
+                qualityAssuranceParameter = await QualityEvaluationServices.SaveQualityAssuranceParameter(qualityAssuranceParameter);
+                args.RowData.Id = qualityAssuranceParameter.Id;
+                await DataGridDetail!.Refresh();
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+            {
+
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+    }
+
+
+    public async Task ActionDetailBegin(ActionEventArgs<QualityAssuranceParameter> args)
+    {
+        try
+        {
+            if (args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
+            {
+                // Triggers once editing operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
+            {
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Cancel)
+            {
+                // Triggers once cancel operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+            {
+
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete && flag)
+            {
+                // Triggers once delete operation completes
+                args.Cancel = true;  //Cancel default delete action.
+                isDetail = true;
+                Dialog!.Show();
+                flag = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+    }
+
+    public async void RowSelectHandler(RowSelectEventArgs<QualityParameterGroup> Args)
+    {
+        SelectedData = Args.Data;
+
+        isParentGridRowSelected = true;
+        isChildGridRowSelected = false;
+
+        // Deseleccionar fila en el grid hijo
+        if (DataGridDetail != null)
+        {
+            await DataGridDetail.ClearSelectionAsync();
+        }
+    }
+
+    public async void RowSelectHandlerDetails(RowSelectEventArgs<QualityAssuranceParameter> Args)
+    {
+        SelectedData = new BasicConcept()
+            {
+                Id = Args.Data.Id,
+                Name = Args.Data.Name,
+            };
+
+        isParentGridRowSelected = false;
+        isChildGridRowSelected = true;
+
+        // Deseleccionar fila en el grid padre
+        if (DataGrid != null)
+        {
+            await DataGrid.ClearSelectionAsync();
+        }
+    }
+
+
+    private async Task OkClick()
+    {
+        await DataGrid!.DeleteRecordAsync();   //Delete the record programmatically while clicking OK button.
+        await Dialog.HideAsync();
+        if (SelectedData is null) return;
+        await QualityEvaluationServices.DeleteQualityParameterGroupById(SelectedData.Id);
+    }
+
+    private async Task OkClickDetail()
+    {
+        await DataGridDetail!.DeleteRecordAsync();   //Delete the record programmatically while clicking OK button.
+        await Dialog.HideAsync();
+        if (SelectedData is null) return;
+        await QualityEvaluationServices.DeleteQualityAssuranceParameterById(SelectedData.Id);
+    }
+
+    private async Task CancelClick()
+    {
+        await Dialog.HideAsync();
+        Closed();
+    }
+
+    public void Closed()
+    {
+        flag = true;
     }
 
 }
