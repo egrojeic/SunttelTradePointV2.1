@@ -510,6 +510,7 @@ else
         }
         else
         {
+            if (commercialDocument.Vendor != null) LoadBuyerAndVendor("Vendor");
             await SaveCommercialDocument();
         }
 
