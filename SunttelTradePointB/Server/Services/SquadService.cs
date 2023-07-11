@@ -151,6 +151,9 @@ namespace SunttelTradePointB.Server.Services
                         squadByUser.ID = Guid.Parse(reader["ID"].ToString());
                         squadByUser.Nombre = Convert.ToString(reader["Nombre"]);
                         squadByUser.SkinImage = reader["SkinImage"].ToString();
+                        squadByUser.DomainName = reader["DomainName"].ToString();
+                        squadByUser.FlagEnabled = int.Parse(reader["FlagEnabled"].ToString());
+                        squadByUser.EntityID = reader["EntityID"].ToString();
 
                         squadsByUserList.Add(squadByUser);
                     }
