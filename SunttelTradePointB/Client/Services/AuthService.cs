@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
+using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.Security;
 using SunttelTradePointB.Shared.SquadsMgr;
 using System.Net.Http.Json;
@@ -31,6 +32,31 @@ namespace SunttelTradePointB.Client.Services
             }
 
         }
+
+        public async Task<EntityActor> GetCurrentEntity()
+        {
+            var userId = UIClientGlobalVariables.UserId;
+            var ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            var entityActorId = UIClientGlobalVariables.ActiveSquad.EntityID;
+            try
+            {
+                if (ipAddress == "")
+                    ipAddress = "127.0.0.0";
+
+                var response = await Gethttp($"/api/EntityNodesMaintenance/GetEntityActorById?userId={userId}&ipAdress={ipAddress}&entityActorId={entityActorId}");
+                var item = await response.Content.ReadFromJsonAsync<EntityActor>();
+
+                return item;
+
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+
+        }
+
 
         public async Task<UserEntity?> GetUserById(string id)
         {

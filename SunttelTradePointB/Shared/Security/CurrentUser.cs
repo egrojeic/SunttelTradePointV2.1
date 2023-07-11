@@ -10,6 +10,8 @@ namespace SunttelTradePointB.Shared.Security
 {
     public class CurrentUser
     {
+
+        public string IDUser { get; set; }
         public bool IsAuthenticated { get; set; }
         public string UserName { get; set; }
         public Dictionary<string, string> Claims { get; set; }

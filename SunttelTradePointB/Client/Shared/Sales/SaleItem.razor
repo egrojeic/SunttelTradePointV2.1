@@ -455,7 +455,7 @@ else
     private bool timerDetailStatus = true;
     public List<SalesDocumentItemsDetails> BuyerItems = new List<SalesDocumentItemsDetails>();
 
-    public CommercialDocument commercialDocument = new();
+    public CommercialDocument commercialDocument = new CommercialDocument(UIClientGlobalVariables.ActiveEntity);
     // public SalesDocumentItemsDetails items = new();
 
     #region Status
