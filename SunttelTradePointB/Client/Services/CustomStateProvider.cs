@@ -54,8 +54,11 @@ namespace SunttelTradePointB.Client.Services
             if (_currentUser != null && _currentUser.IsAuthenticated) return _currentUser;
             _currentUser = await api.CurrentUserInfo();
 
+          
+
             UIClientGlobalVariables.UserName = _currentUser.UserName;
             UIClientGlobalVariables.CurrentUserSquads = _currentUser.MySquads;
+            UIClientGlobalVariables.UserId = _currentUser.IDUser;
 
             var defaultSquadUserId = _currentUser.LastSquadId;
 
@@ -65,7 +68,20 @@ namespace SunttelTradePointB.Client.Services
 
             UIClientGlobalVariables.EntityUserId = EntityUserId ?? "";
 
-            UIClientGlobalVariables.UserSkinImage = _currentUser.SkinImageName;
+            try
+            {
+                var currentSquadEntity =  await api.GetCurrentEntity();
+
+                UIClientGlobalVariables.ActiveEntity =  currentSquadEntity;
+
+
+                UIClientGlobalVariables.UserSkinImage = _currentUser.SkinImageName;
+
+            }catch(Exception ex)
+            {
+                string message = ex.ToString();
+            }
+
 
 
 

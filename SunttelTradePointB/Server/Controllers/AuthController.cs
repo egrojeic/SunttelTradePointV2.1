@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -536,9 +537,13 @@ namespace SunttelTradePointB.Server.Controllers
 
             }
 
+            System.Security.Claims.ClaimsPrincipal curuser = this.User;
+
+            var idcurrentuser = _userManager.GetUserId(curuser);
 
             return Ok(new CurrentUser
             {
+                IDUser = idcurrentuser,
                 IsAuthenticated = User.Identity.IsAuthenticated,
                 UserName = User.Identity.Name,
                 MySquads = squads,

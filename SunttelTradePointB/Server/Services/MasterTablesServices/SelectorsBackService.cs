@@ -1030,8 +1030,19 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     new BsonDocument
                     {
                         { "$match",
-                            new BsonDocument{
-                                { "SquadId", squadId}
+                            new BsonDocument
+                            {
+                                { 
+                                    "SquadId", 
+
+                                    new BsonDocument{
+                                        {
+                                        "$regex",
+                                        new BsonRegularExpression(squadId, "i")
+                                        }
+                                    } 
+                                } 
+                            
                             }
                         }
                     }

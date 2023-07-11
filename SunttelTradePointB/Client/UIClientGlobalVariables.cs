@@ -1,4 +1,5 @@
-﻿using SunttelTradePointB.Shared.SquadsMgr;
+﻿using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.SquadsMgr;
 
 namespace SunttelTradePointB.Client
 {
@@ -17,6 +18,9 @@ namespace SunttelTradePointB.Client
         public static List<Squad>? CurrentUserSquads { get; set; }
 
         public static Squad? ActiveSquad { get; set; }
+
+        public static EntityActor? ActiveEntity { get; set; }
+
 
         public static string pathSquadsImages = "/SkinImagesByAccount";
         static string _pathEntityImages = "/uploads/entityImages";

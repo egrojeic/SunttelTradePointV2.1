@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
+using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.Security;
 using SunttelTradePointB.Shared.SquadsMgr;
 
@@ -14,6 +15,8 @@ namespace SunttelTradePointB.Client.Services
         Task RegisterUserByAdmin(RegisterRequest registerRequest);
 
         Task<List<UserEntity>> GetUsersByRolname(string rolname);
+
+        Task<EntityActor> GetCurrentEntity();
 
         Task<List<UserRole>?> GetRoles();
 

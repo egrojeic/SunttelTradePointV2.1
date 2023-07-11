@@ -78,7 +78,13 @@ namespace SunttelTradePointB.Shared.Sales.CommercialDocument
         public bool ItemsAdded { get; set; }
         public string? deliveryDateError { get; set; }
 
+        public CommercialDocument()
+        {
 
+        }
+        public CommercialDocument(EntityActor vendor) {
+            this.Vendor = vendor;
+        }
         public void ValidateItems()
         {
             ItemsAdded = Items.Any();
