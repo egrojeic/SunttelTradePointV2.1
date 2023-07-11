@@ -241,7 +241,7 @@ namespace SunttelTradePointB.Server.Interfaces.QualityBkServices
         Task<(bool IsSuccess, bool iCanRemoveIt, string? ErrorDescription)> DeleteQualityReportTypeById(string userId, string ipAddress, string squadId, string? qualityReportTypeId);
 
 
-      
+
         #endregion
 
         #region QCDocument
@@ -254,8 +254,10 @@ namespace SunttelTradePointB.Server.Interfaces.QualityBkServices
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="filter"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<QualityEvaluation>? GetQCDocumentsList, string? ErrorDescription)> GetQCDocuments(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filter = null);
+        public Task<(bool IsSuccess, List<QualityEvaluation>? GetQCDocumentsList, string? ErrorDescription)> GetQCDocuments(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null);
 
         /// <summary>
         /// Retrieves an quality report type object by Id

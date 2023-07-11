@@ -2,7 +2,7 @@
 @page "/QualityEvaluationItem/{QualityEvaluationId}/{filter}"
 @page "/QualityEvaluationItem/{QualityEvaluationId}"
 
-
+@using Syncfusion.Blazor.Grids
 @using SunttelTradePointB.Shared.Quality;
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Sales.CommercialDocument;
@@ -224,61 +224,62 @@ else
                                     {
                                         <div class="parameters-group">
                                             <div class="parameters-group-table">
-                                                <RadzenDataGrid @ref="DataGrid" AllowFiltering="true"
-                                                                
-                                                                AllowColumnResize="true"
-                                                                AllowAlternatingRows="true"
-                                                                FilterMode="FilterMode.Advanced"
-                                                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                                                AllowSorting="true"
-                                                                PageSize="50"
-                                                                AllowPaging="true"
-                                                                PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                                                                ShowPagingSummary="true"
-                                                                Data="@QualityEvaluation.EvaluationParameters"
-                                                                TItem="QualityEvaluationDetail"
-                                                                ColumnWidth="300px"
-                                                                SelectionMode="DataGridSelectionMode.Single"
-                                                                LogicalFilterOperator="LogicalFilterOperator.Or"
-                                                                CellContextMenu="@ShowContextMenuTransactionalItem">
-                                                    <Columns>
-
-                                                        <RadzenDataGridColumn TItem="QualityEvaluationDetail" Property="Parameter.Name" Title="Parameters Selected" Width="158px" />
-
-                                                    </Columns>
-                                                </RadzenDataGrid>
-                                                <div class="container-total">
-                                                    <div class="item">
-                                                        <label>
-                                                            @(
-                                                                $"Records: {QualityEvaluation.EvaluationParameters.Count}"
-                                                                )
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div class="container">
-                                                    <div class="row">
-                                                        @if (qualityAssuranceParameterList != null && qualityAssuranceParameterList.Count() > 0)
-                                                        {
-                                                            @foreach (var item in qualityAssuranceParameterList)
-                                                            {
-                                                                <div class="col-lg-4">
-                                                                    <div class="container-parameter-list-item" @onclick="()=>checkboxList(item.Id)">
-                                                                        <input type="checkbox" checked='@(checkboxValidation(@item.Id))'><label>@item.Name</label>
-                                                                    </div>
-                                                                </div>
+                                                
+                                                <SfGrid @ref="DataGrid2" DataSource="@qualityParameterGroupSelectedList">
+                                                    <GridTemplates>
+                                                        <DetailTemplate>
+                                                            @{
+                                                                var parameterGroup = (context as QualityParameterGroup);
                                                             }
-                                                        }
-                                                        else
-                                                        {
-                                                            <label>
-                                                                there are no parameters
-                                                            </label>
-                                                        }
+                                                            <div style="padding:25px">
+                                                                <SfGrid DataSource="@QualityEvaluation.EvaluationParameters" Query="@(new Syncfusion.Blazor.Data.Query().Where("Parameter.ParameterGroup.Id", "equal", parameterGroup!.Id))">
+                                                                    <GridColumns>
+                                                                        <GridColumn IsPrimaryKey="true" Visible="false" Field="Parameter.Id"> </GridColumn>
+                                                                        <GridColumn Field="Parameter.Name" HeaderText="Parameter Name" Width="110"></GridColumn>
+                                                                    </GridColumns>
+                                                                </SfGrid>
+                                                            </div>
+                                                        </DetailTemplate>
+                                                    </GridTemplates>
+                                                    <GridColumns>
+                                                        <GridColumn Visible="false" Field=@nameof(QualityParameterGroup.Id) IsPrimaryKey="true"></GridColumn>
+                                                        <GridColumn AllowEditing="true" Field=@nameof(QualityParameterGroup.Name) HeaderText="Parameter Group Name" Width="110"></GridColumn>
+                                                    </GridColumns>
+                                                </SfGrid>
+
+                                            </div>
+                                            <div class="container">
+                                                @if (qualityAssuranceParameterTotalList != null && qualityAssuranceParameterTotalList.Count() > 0)
+                                                {
+                                                    <div class="row">
+                                                        <div class="input-group mb-3">
+                                                            <input placeholder="Enter the search value" type="text" class="form-control" @bind="filtro" />
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-primary" type="button" @onclick="@FilterList">
+                                                                    Search
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                    <div class="row">
+
+                                                        @foreach (var item in qualityAssuranceParameterList!)
+                                                        {
+                                                            <div class="col-lg-4">
+                                                                <div class="container-parameter-list-item" @onclick="()=>checkboxList(item.Id)">
+                                                                    <input type="checkbox" checked='@(checkboxValidation(@item.Id))'><label>@item.Name</label>
+                                                                </div>
+                                                            </div>
+                                                        }
+
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <label>
+                                                        there are no parameters
+                                                    </label>
+                                                }
                                             </div>
                                         </div>
 
@@ -404,6 +405,7 @@ else
     public string filter { get; set; }
 
     RadzenDataGrid<QualityEvaluationDetail> DataGrid;
+    SfGrid<QualityParameterGroup> DataGrid2;
 
     string alertMsg = "";
     string SearcherValue = "";
@@ -412,6 +414,7 @@ else
     bool isLoading = false;
     bool isVisible = false;
     bool checkboxUpdate = true;
+    private string filtro = "";
     MessageSaveComponent? referAlert;
     TextToSpeech textToSpeech;
     public QualityEvaluation QualityEvaluation = new();
@@ -426,6 +429,7 @@ else
     List<QualityAction> actionToTakeList { get; set; }
     public CommercialDocument commercialDocument = new();
     List<QualityParameterGroup>? qualityParameterGroupList { get; set; }
+    List<QualityParameterGroup> qualityParameterGroupSelectedList = new List<QualityParameterGroup>();
     List<QualityAssuranceParameter>? qualityAssuranceParameterList { get; set; }
     List<QualityAssuranceParameter>? qualityAssuranceParameterTotalList { get; set; }
     public string itemName { get; set; }
@@ -461,7 +465,11 @@ else
     }
 
 
-
+    private void FilterList()
+    {
+        qualityAssuranceParameterList = qualityAssuranceParameterList!.Where(item => item.Name.Contains(filtro)).ToList();
+        StateHasChanged();
+    }
 
     public async Task LoadParameter()
     {
@@ -534,13 +542,15 @@ else
                 if (itemTemp != null)
                 {
                     QualityEvaluation.EvaluationParameters.Remove(itemTemp);
+                    qualityParameterGroupSelectedList.Remove(itemTemp.Parameter.ParameterGroup);
                 }
                 else
                 {
+                    var paramGroup = qualityParameterGroupSelectedList.Find(x => x.Id == item.ParameterGroup.Id);
+                    if (paramGroup is null) qualityParameterGroupSelectedList.Add(item.ParameterGroup);
                     QualityEvaluation.EvaluationParameters.Add(new QualityEvaluationDetail
                             {
                                 Parameter = item
-
                             });
                 }
             }
@@ -548,7 +558,9 @@ else
             checkboxUpdate = true;
 
             StateHasChanged();
-            await DataGrid.Reload();
+            await DataGrid2.Refresh();
+            //await DataGrid.Reload();
+
         }
     }
 
@@ -637,7 +649,7 @@ else
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
-    );
+        );
 
 
     void OnMenuItemClick(MenuItemEventArgs args)
@@ -753,5 +765,6 @@ else
     {
         Navigation.NavigateTo(name);
     }
+
 
 }

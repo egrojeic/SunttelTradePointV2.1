@@ -20,83 +20,83 @@
 </div>
 
 <div class="tableBodyContainer">
-    @if(shippingInfoList != null)
+    @if (shippingInfoList != null)
     {
 
 
         <RadzenDataGrid AllowFiltering="true"
-                    AllowColumnResize="true"
-                    AllowAlternatingRows="true"
-                    FilterMode="FilterMode.Advanced"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    AllowSorting="true"
-                    AllowPaging="true"
-                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    Data="@shippingInfoList"
-                    TItem="ShippingInfo"
-                    ColumnWidth="300px"
-                    SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"
-                    CellContextMenu="@ShowContextMenuWithContent"
-                    PageNumbersCount="100"
-                    PageSize="50">
-
-            <Columns>               
+                        AllowColumnResize="true"
+                        AllowAlternatingRows="true"
+                        FilterMode="FilterMode.Advanced"
+                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        AllowSorting="true"
+                        AllowPaging="true"
+                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                        ShowPagingSummary="true"
+                        Data="@shippingInfoList"
+                        TItem="ShippingInfo"
+                        ColumnWidth="300px"
+                        SelectionMode="DataGridSelectionMode.Single"
+                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                        CellContextMenu="@ShowContextMenuWithContent"
+                        PageNumbersCount="100"
+        @ref="radzenDataGrid"
+                        PageSize="50">
+            <Columns>
                 <RadzenDataGridColumn TItem="ShippingInfo" Property="Carrier.Name" Title="@GetName("Carrier", new ShippingInfo())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
                 <RadzenDataGridColumn TItem="ShippingInfo" Property="DeliveryAddress.Name" Title="@GetName("DeliveryAddress", new ShippingInfo())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
                 <RadzenDataGridColumn TItem="ShippingInfo" Property="CutOff24Hour" Title="@GetName("CutOff24Hour", new ShippingInfo())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
                 <RadzenDataGridColumn TItem="ShippingInfo" Property="CutOffMinute" Title="@GetName("CutOffMinute", new ShippingInfo())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
                 <RadzenDataGridColumn TItem="ShippingInfo" Property="DelayTimeDays" Title="@GetName("DelayTimeDays", new ShippingInfo())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
                 <RadzenDataGridColumn TItem="ShippingInfo" Property="PalletTypeShipping.Name" Title="@GetName("PalletTypeShipping", new ShippingInfo())" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                <RadzenDataGridColumn TItem="ShippingInfo"   Title="Days" Width="180px" TextAlign="Radzen.TextAlign.Center" />
-                                
+                <RadzenDataGridColumn TItem="ShippingInfo" Title="Days" Width="180px" TextAlign="Radzen.TextAlign.Center" />
+
             </Columns>
         </RadzenDataGrid>
-        
-         
-            @*    <GridColumn HeaderText="Days" Width="110">
-                    <Template>
-                        @{
-                            var Monday = (bool)context.GetType().GetProperty(nameof(ShippingInfo.Monday)).GetValue(context);
-                            var Tuesday = (bool)context.GetType().GetProperty(nameof(ShippingInfo.Tuesday)).GetValue(context);
-                            var Wednesday = (bool)context.GetType().GetProperty(nameof(ShippingInfo.Wednesday)).GetValue(context);
-                            var Thursday = (bool)context.GetType().GetProperty(nameof(ShippingInfo.Thursday)).GetValue(context);
-                            var Friday = (bool)context.GetType().GetProperty(nameof(ShippingInfo.Friday)).GetValue(context);
-                            var Saturday = (bool)context.GetType().GetProperty(nameof(ShippingInfo.Saturday)).GetValue(context);
-                            var Sunday = (bool)context.GetType().GetProperty(nameof(ShippingInfo.Sunday)).GetValue(context);
-                            if (Monday)
-                            {
 
-                                <span>Monday </span>
-                            }
-                            if (Tuesday)
-                            {
-                                <span> Tuesday </span>
-                            }
-                            if (Wednesday)
-                            {
-                                <span> Wednesday </span>
-                            }
-                            if (Thursday)
-                            {
-                                <span> Thursday </span>
-                            }
-                            if (Friday)
-                            {
-                                <span> Friday </span>
-                            }
-                            if (Saturday)
-                            {
-                                <span> Saturday </span>
-                            }
-                            if (Sunday)
-                            {
-                                <span> Sunday </span>
-                            }
-                        }
-                    </Template>*@
-          
+
+        @*    <GridColumn HeaderText="Days" Width="110">
+    <Template>
+    @{
+    var Monday = (bool)context.GetType().GetProperty(nameof(ShippingInfo.Monday)).GetValue(context);
+    var Tuesday = (bool)context.GetType().GetProperty(nameof(ShippingInfo.Tuesday)).GetValue(context);
+    var Wednesday = (bool)context.GetType().GetProperty(nameof(ShippingInfo.Wednesday)).GetValue(context);
+    var Thursday = (bool)context.GetType().GetProperty(nameof(ShippingInfo.Thursday)).GetValue(context);
+    var Friday = (bool)context.GetType().GetProperty(nameof(ShippingInfo.Friday)).GetValue(context);
+    var Saturday = (bool)context.GetType().GetProperty(nameof(ShippingInfo.Saturday)).GetValue(context);
+    var Sunday = (bool)context.GetType().GetProperty(nameof(ShippingInfo.Sunday)).GetValue(context);
+    if (Monday)
+    {
+
+    <span>Monday </span>
+    }
+    if (Tuesday)
+    {
+    <span> Tuesday </span>
+    }
+    if (Wednesday)
+    {
+    <span> Wednesday </span>
+    }
+    if (Thursday)
+    {
+    <span> Thursday </span>
+    }
+    if (Friday)
+    {
+    <span> Friday </span>
+    }
+    if (Saturday)
+    {
+    <span> Saturday </span>
+    }
+    if (Sunday)
+    {
+    <span> Sunday </span>
+    }
+    }
+    </Template>*@
+
     }
 
 </div>
@@ -115,7 +115,7 @@
 
     public async Task GetEntityShippingSetUp()
     {
-        if(EntityId != null)
+        if (EntityId != null)
         {
             var response = await actorsNodeServive.GetShippingInfos(EntityId);
             if (response != null)
@@ -125,18 +125,29 @@
     }
 
 
-     #region Grid
+    #region Grid
 
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<ShippingInfo> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
+        <RadzenMenuItem Text="Delete" Value=args.Data Icon="delete"></RadzenMenuItem>
     </RadzenMenu>
     );
 
-    void OnMenuItemClick(MenuItemEventArgs args)
+    public async void OnMenuItemClick(MenuItemEventArgs args)
     {
         ShippingInfo argObj = (ShippingInfo)args.Value;
-        navigationManager.NavigateTo($"/Actors/{EntityId}/ShippingInfo/{argObj.Id}/Edit");
+        if (args.Text == "Edit")
+        {
+            navigationManager.NavigateTo($"/Actors/{EntityId}/ShippingInfo/{argObj.Id}/Edit");
+        }
+        else if (args.Text == "Delete")
+        {
+            if (EntityId is null) return;
+            var response = await actorsNodeServive.DeleteShippingSetup(EntityId, argObj.Id);
+            shippingInfoList.Remove(argObj);
+            await radzenDataGrid!.Reload();
+        }
     }
     #endregion Grid
 

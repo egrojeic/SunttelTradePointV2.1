@@ -259,7 +259,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="entityActorId"></param>
         /// <param name="entityDetailsSection"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<T>? EntityRelatedList, string? ErrorDescription)> GetEntityDetailsOf<T>(string userId, string ipAdress,string squadId, string entityActorId, EntityDetailsSection entityDetailsSection)
+        public async Task<(bool IsSuccess, List<T>? EntityRelatedList, string? ErrorDescription)> GetEntityDetailsOf<T>(string userId, string ipAdress, string squadId, string entityActorId, EntityDetailsSection entityDetailsSection)
         {
             string detailsArrayListName = "";
 
@@ -299,7 +299,7 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 //    new BsonDocument("$match", new BsonDocument("SquadId",  $"/{squadId}/i"))
                 //);
 
-                
+
                 pipeline.Add(
                     new BsonDocument("$project", new BsonDocument(){
                         { $"{detailsArrayListName}", 1},
@@ -307,36 +307,36 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                     })
                 );
 
-              
-                EntityActor? result = await  _entityActorsCollection.Aggregate<EntityActor>(pipeline).FirstOrDefaultAsync();
+
+                EntityActor? result = await _entityActorsCollection.Aggregate<EntityActor>(pipeline).FirstOrDefaultAsync();
 
                 if (result != null)
                 {
                     switch (entityDetailsSection)
                     {
-                        case EntityDetailsSection.AddressList:                        
+                        case EntityDetailsSection.AddressList:
                             return (true, result.AddressList.Cast<T>().ToList(), null);
 
                         case EntityDetailsSection.IdentifiersList:
-                            detailsArrayListName = "Identifications";                           
-                            return (true,result.Identifications.Cast<T>().ToList(), null);
+                            detailsArrayListName = "Identifications";
+                            return (true, result.Identifications.Cast<T>().ToList(), null);
 
                         case EntityDetailsSection.ElectronicAddressLis:
-                            detailsArrayListName = "ElectronicAddresses";                        
+                            detailsArrayListName = "ElectronicAddresses";
                             return (true, result.ElectronicAddresses.Cast<T>().ToList(), null);
 
                         case EntityDetailsSection.ComercialConditions:
-                            detailsArrayListName = "EntitiesCommercialRelationShip";                         
+                            detailsArrayListName = "EntitiesCommercialRelationShip";
                             return (true, result.EntitiesRelationShips.Cast<T>().ToList(), null);
 
                         case EntityDetailsSection.PhoneDirectory:
-                            detailsArrayListName = "PhoneNumbers";                          
+                            detailsArrayListName = "PhoneNumbers";
                             return (true, result.PhoneNumbers.Cast<T>().ToList(), null);
                         default:
                             return (false, null, "Option Not Found");
                     }
                 }
-                 return (false, null, "Option Not Found");
+                return (false, null, "Option Not Found");
             }
             catch (Exception e)
             {
@@ -483,6 +483,43 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
 
         }
+
+        /// <summary>
+        /// Deletes an address of an entity.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="entityActorId"></param>
+        /// <param name="addressId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, string? ErrorDescription)> DeleteEntityAddress(string userId, string ipAdress, string entityActorId, string addressId)
+        {
+            try
+            {
+                var filter = Builders<EntityActor>.Filter.And(
+                    Builders<EntityActor>.Filter.Eq(x => x.Id, entityActorId),
+                    Builders<EntityActor>.Filter.ElemMatch(x => x.AddressList, y => y.Id == addressId)
+                );
+
+                var update = Builders<EntityActor>.Update.PullFilter(x => x.AddressList, y => y.Id == addressId);
+
+                var result = await _entityActorsCollection.UpdateOneAsync(filter, update);
+
+                if (result.ModifiedCount == 1)
+                {
+                    return (true, null);
+                }
+                else
+                {
+                    return (false, "Address not found or deletion failed.");
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, e.Message);
+            }
+        }
+
 
         /// <summary>
         /// Saves a phone number of an entity. If it exists, it'll be updated, otherwise it 'll be inserted in the array
@@ -793,6 +830,41 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
         }
 
+        /// <summary>
+        /// Deletes a Shipping Setup from an Entity Actor
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="entityActorId"></param>
+        /// <param name="shippingInfoId"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, string? ErrorDescription)> DeleteShippingSetup(string userId, string ipAdress, string entityActorId, string shippingInfoId)
+        {
+            try
+            {
+                var filter = Builders<EntityActor>.Filter.And(
+                    Builders<EntityActor>.Filter.Eq(x => x.Id, entityActorId),
+                    Builders<EntityActor>.Filter.ElemMatch(x => x.ShippingInformation, y => y.Id == shippingInfoId)
+                );
+
+                var update = Builders<EntityActor>.Update.PullFilter(x => x.ShippingInformation, y => y.Id == shippingInfoId);
+
+                var result = await _entityActorsCollection.UpdateOneAsync(filter, update);
+
+                if (result.ModifiedCount == 1)
+                {
+                    return (true, null);
+                }
+                else
+                {
+                    return (false, "Shipping setup not found or deletion failed.");
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, e.Message);
+            }
+        }
 
         /// <summary>
         /// Inserts / Updates Commercial Conditions in an Entity Actor
@@ -1186,6 +1258,6 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
             }
         }
 
-      
+
     }
 }

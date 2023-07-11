@@ -40,7 +40,8 @@
                         LogicalFilterOperator="LogicalFilterOperator.Or"
                         CellContextMenu="@ShowContextMenuWithContent"
                         PageNumbersCount="100"
-                        PageSize="50">
+                        PageSize="50"
+            @ref="referGrid">
 
                 <Columns>
                     <RadzenDataGridColumn TItem="Address" Property="Name" Title="@GetName("Name", new Address())" Width="280px" />
@@ -94,14 +95,24 @@
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<Address> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
+        <RadzenMenuItem Text="Delete" Value=args.Data Icon="delete"></RadzenMenuItem>
+        </RadzenMenu>
     );
-
-    void OnMenuItemClick(MenuItemEventArgs args)
+        
+    public async void OnMenuItemClick(MenuItemEventArgs args)
     {
         Address argObj = (Address)args.Value;
-
-        navigationManager.NavigateTo($"/Actors/{EntityId}/ShippingPlaces/{argObj.Id}/Edit");
+        if (args.Text == "Edit")
+        {
+            navigationManager.NavigateTo($"/Actors/{EntityId}/ShippingPlaces/{argObj.Id}/Edit");
+        }
+        else if (args.Text == "Delete")
+        {
+            if (EntityId is null) return;
+            var response = await actorsNodeServive.DeleteEntityAddress(EntityId, argObj.Id);
+            entityAddressList.Remove(argObj);
+            await referGrid!.Reload();
+        }
     }
 
     #endregion Grid
