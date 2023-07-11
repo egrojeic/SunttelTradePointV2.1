@@ -133,6 +133,11 @@ namespace SunttelTradePointB.Client.Services
             return await api.GetUserById(id);
         }
 
+        public async Task<List<string>> GetRolesByUserId(string id)
+        {
+            return await api.GetRolesByUserId(id);
+        }
+
         public async Task<UserRole?> GetRoleById(string id)
         {
             return await api.GetRoleById(id);

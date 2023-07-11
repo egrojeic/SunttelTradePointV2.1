@@ -63,18 +63,18 @@
             </div>
             <div class="row">
                 @*<div class="col-6">
-                    <div class="mb-3">
-                        <label>Rol:</label>
-                        <div>
-                            <select class="form-select" @bind="user.Rolname">
-                                <option value="0">-- Select your rol --</option>
-                                @foreach (var rol in rolenames)
-                                {
-                                    <option value="@rol">@rol</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
+                <div class="mb-3">
+                <label>Rol:</label>
+                <div>
+                <select class="form-select" @bind="user.Rolname">
+                <option value="0">-- Select your rol --</option>
+                @foreach (var rol in rolenames)
+                {
+                <option value="@rol">@rol</option>
+                }
+                </select>
+                </div>
+                </div>
                 </div>*@
                 <div class="col-6">
                     <div class="mb-3">
@@ -112,6 +112,41 @@
                                                 Id="Group">
 
                             </InputTextSelector3>
+                            <div class="mb-3">
+                                <h4>Asignar Roles</h4>
+                                <select @onchange="AssignRoles">
+                                    @if (roles is not null)
+                                    {
+                                        @foreach (var role in roles)
+                                        {
+                                            <option value="@role.Id">@role.Name</option>
+                                        }
+                                    }
+
+                                </select>
+                            </div>
+
+
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @for (int i = 0; i < MyRolenames.Count; i++)
+                                    {
+                                        <p>Elemento @i: @MyRolenames[i]</p>
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@MyRolenames[i]</td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -125,6 +160,7 @@
     public string? userId { get; set; }
     public RegisterRequest? user = new RegisterRequest();
     public List<string> rolenames = new List<string>();
+    public List<string> MyRolenames = new List<string>();
     public IEnumerable<UserRole>? roles;
     // ship
     public List<UserRole> listRoles = new List<UserRole>();
@@ -136,6 +172,7 @@
     protected override void OnInitialized()
     {
         GetRoles();
+        GetMyRoles();
         base.OnInitialized();
         StateHasChanged();
     }
@@ -174,6 +211,12 @@
         StateHasChanged();
     }
 
+    public async void GetMyRoles()
+    {
+        if (userId is null) return;
+        MyRolenames = await authStateProvider.GetRolesByUserId(userId);
+    }
+
     public async void OnPostAsync()
     {
         string error;
@@ -209,7 +252,7 @@
         SearchValueMode = arg.selectionId;
         if (SearchValueMode == "Group")
         {
-             listRoles = await authStateProvider.GetRoles();
+            listRoles = await authStateProvider.GetRoles();
         }
 
         StateHasChanged();
@@ -220,7 +263,7 @@
     {
         if (SearchValueMode == "Group")
         {
-            if(!FilterRoles.Contains(arg)) FilterRoles.Add(arg);
+            if (!FilterRoles.Contains(arg)) FilterRoles.Add(arg);
         }
 
         StateHasChanged();
@@ -239,5 +282,16 @@
         SearchValueMode = Element;
         if (Element == "Group" && !PopupViewGroups) { PopupViewGroups = true; }
         StateHasChanged();
+    }
+
+    private void AssignRoles(ChangeEventArgs e)
+    {
+        // Aquí puedes implementar la lógica para asignar los roles seleccionados
+        // Puedes obtener los roles seleccionados de la lista "selectedRoles"
+        // y realizar las operaciones necesarias, como guardar los cambios en una base de datos
+
+        // Ejemplo: Imprimir los roles seleccionados en la consola
+        Console.WriteLine("Roles seleccionados:" + e.Value?.ToString());
+
     }
 }

@@ -480,6 +480,30 @@ namespace SunttelTradePointB.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Get Roles By User Id
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetRolesByUserId")]
+        public async Task<IActionResult> GetRolesByUserId([FromQuery] string id)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(id);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                var roles = await _userManager.GetRolesAsync(user);
+                return Ok(roles);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Logout()
@@ -494,36 +518,43 @@ namespace SunttelTradePointB.Server.Controllers
         public async Task<IActionResult> CurrentUserInfo()
         {
 
-            List<SquadsByUser> squads = new List<SquadsByUser>();
-            string LastSquadId = "";
-            string EntityIdUser = "";
-
-            if (User != null && User.Identity != null && User.Identity.Name != null)
+            try
             {
-                squads = await _squad.SquadInfo(User.Identity.Name);
-                var userInfo = await _userManager.FindByNameAsync(User.Identity.Name);
+                List<SquadsByUser> squads = new List<SquadsByUser>();
+                string LastSquadId = "";
+                string EntityIdUser = "";
 
-                LastSquadId = (userInfo != null && userInfo.DefaultSquadId != null) ? userInfo.DefaultSquadId : "";
-                EntityIdUser = (userInfo != null && userInfo.EntityID != null) ? userInfo.EntityID : "";
+                if (User != null && User.Identity != null && User.Identity.Name != null)
+                {
+                    squads = await _squad.SquadInfo(User.Identity.Name);
+                    var userInfo = await _userManager.FindByNameAsync(User.Identity.Name);
+
+                    LastSquadId = (userInfo != null && userInfo.DefaultSquadId != null) ? userInfo.DefaultSquadId : "";
+                    EntityIdUser = (userInfo != null && userInfo.EntityID != null) ? userInfo.EntityID : "";
+                }
+
+                var response = await _entityNodes.GetEntityActorByUserId("sys", "127.0.0.1", User.Identity.Name);
+                var skinImage = response.IsSuccess ? response.Item2.skinImage : "";
+
+
+
+                return Ok(new CurrentUser
+                {
+                    IsAuthenticated = User.Identity.IsAuthenticated,
+                    UserName = User.Identity.Name,
+                    MySquads = squads,
+                    LastSquadId = LastSquadId,
+                    EntityId = EntityIdUser,
+                    SkinImageName = skinImage,
+                    Claims = User.Claims.ToDictionary(c => c.Type, c => c.Value)
+
+
+                });
             }
-
-            var response = await _entityNodes.GetEntityActorByUserId("sys", "127.0.0.1", User.Identity.Name);
-            var skinImage = response.IsSuccess ? response.Item2.skinImage : "";
-
-
-
-            return Ok(new CurrentUser
+            catch (Exception ex)
             {
-                IsAuthenticated = User.Identity.IsAuthenticated,
-                UserName = User.Identity.Name,
-                MySquads = squads,
-                LastSquadId = LastSquadId,
-                EntityId = EntityIdUser,
-                SkinImageName = skinImage,
-                Claims = User.Claims.ToDictionary(c => c.Type, c => c.Value)
-
-
-            });
+                return BadRequest(ex.Message);
+            }
         }
 
 
@@ -538,7 +569,7 @@ namespace SunttelTradePointB.Server.Controllers
             try
             {
                 List<UserRole> roles = await _roleManager.Roles.ToListAsync();
-              
+
 
                 return Ok(roles);
             }
