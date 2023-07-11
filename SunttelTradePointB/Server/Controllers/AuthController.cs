@@ -518,43 +518,37 @@ namespace SunttelTradePointB.Server.Controllers
         public async Task<IActionResult> CurrentUserInfo()
         {
 
-            try
+            List<Squad> squads = new List<Squad>();
+            string LastSquadId = "";
+            string EntityIdUser = "";
+            string skinImage = "";
+
+            if (User != null && User.Identity != null && User.Identity.Name != null)
             {
-                List<SquadsByUser> squads = new List<SquadsByUser>();
-                string LastSquadId = "";
-                string EntityIdUser = "";
+                squads = await _squad.SquadInfo(User.Identity.Name);
+                var userInfo = await _userManager.FindByNameAsync(User.Identity.Name);
 
-                if (User != null && User.Identity != null && User.Identity.Name != null)
-                {
-                    squads = await _squad.SquadInfo(User.Identity.Name);
-                    var userInfo = await _userManager.FindByNameAsync(User.Identity.Name);
-
-                    LastSquadId = (userInfo != null && userInfo.DefaultSquadId != null) ? userInfo.DefaultSquadId : "";
-                    EntityIdUser = (userInfo != null && userInfo.EntityID != null) ? userInfo.EntityID : "";
-                }
+                LastSquadId = (userInfo != null && userInfo.DefaultSquadId != null) ? userInfo.DefaultSquadId : "";
+                EntityIdUser = (userInfo != null && userInfo.EntityID != null) ? userInfo.EntityID : "";
 
                 var response = await _entityNodes.GetEntityActorByUserId("sys", "127.0.0.1", User.Identity.Name);
-                var skinImage = response.IsSuccess ? response.Item2.skinImage : "";
+                skinImage = response.IsSuccess ? response.Item2.skinImage : "";
 
-
-
-                return Ok(new CurrentUser
-                {
-                    IsAuthenticated = User.Identity.IsAuthenticated,
-                    UserName = User.Identity.Name,
-                    MySquads = squads,
-                    LastSquadId = LastSquadId,
-                    EntityId = EntityIdUser,
-                    SkinImageName = skinImage,
-                    Claims = User.Claims.ToDictionary(c => c.Type, c => c.Value)
-
-
-                });
             }
-            catch (Exception ex)
+
+
+            return Ok(new CurrentUser
             {
-                return BadRequest(ex.Message);
-            }
+                IsAuthenticated = User.Identity.IsAuthenticated,
+                UserName = User.Identity.Name,
+                MySquads = squads,
+                LastSquadId = LastSquadId,
+                EntityId = EntityIdUser,
+                SkinImageName = skinImage,
+                Claims = User.Claims.ToDictionary(c => c.Type, c => c.Value)
+
+
+            });
         }
 
 
@@ -569,7 +563,7 @@ namespace SunttelTradePointB.Server.Controllers
             try
             {
                 List<UserRole> roles = await _roleManager.Roles.ToListAsync();
-
+              
 
                 return Ok(roles);
             }

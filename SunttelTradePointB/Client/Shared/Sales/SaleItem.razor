@@ -666,7 +666,12 @@ else
         if (SearcherValue == "Vendor")
         {
             vendorList = new();
-            vendorList = await DocumentServices.GetCommercialVendorList(arg.value, commercialDocument.DocumentType.IsASale, 0, 0, false);
+
+            string idvendor = null;
+            if (commercialDocument.DocumentType.IsASale){
+                idvendor = UIClientGlobalVariables.ActiveSquad.EntityID;
+            }
+            vendorList = await DocumentServices.GetCommercialVendorList(arg.value, commercialDocument.DocumentType.IsASale, 0, 0, false, idvendor);
 
         }
         if (SearcherValue == "SalesPerson")

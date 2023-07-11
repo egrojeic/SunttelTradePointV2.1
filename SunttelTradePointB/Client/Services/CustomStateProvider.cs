@@ -61,7 +61,7 @@ namespace SunttelTradePointB.Client.Services
 
             var EntityUserId = _currentUser.EntityId;
 
-            UIClientGlobalVariables.ActiveSquad = _currentUser.MySquads.Where(s => s.IDSquads == Guid.Parse(defaultSquadUserId)).FirstOrDefault();
+            UIClientGlobalVariables.ActiveSquad = _currentUser.MySquads.Where(s => s.ID == Guid.Parse(defaultSquadUserId)).FirstOrDefault();
 
             UIClientGlobalVariables.EntityUserId = EntityUserId ?? "";
 

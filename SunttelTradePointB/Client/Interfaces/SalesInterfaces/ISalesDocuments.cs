@@ -83,7 +83,7 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// <param name="page"></param>     
         /// <param name="perPage"></param>     
         /// <returns></returns>
-        Task<List<Concept>> GetCommercialVendorList(string filter, bool IsASale, int? page = 1, int? perPage = 10, bool paginate = true);
+        Task<List<Concept>> GetCommercialVendorList(string filter, bool IsASale, int? page = 1, int? perPage = 10, bool paginate = true, string? idvendor = null);
 
 
         /// <summary>

@@ -853,8 +853,9 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="paginate"></param>
+        /// <param name= "idvendor"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<EntityActor>? VendorsList, string? ErrorDescription)> GetVendors(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null, bool paginate = true)
+        public async Task<(bool IsSuccess, List<EntityActor>? VendorsList, string? ErrorDescription)> GetVendors(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null, bool paginate = true, string? idvendor = null)
         {
             try
             {
@@ -863,12 +864,28 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 string strNameFilter = filterString == null ? "" : filterString;
                 var skip = (page - 1) * perPage;
 
-                if (strNameFilter.ToUpper() != "ALL" && strNameFilter.ToUpper() != "TODOS" && strNameFilter != "")
+                if (idvendor != null)
                 {
-
                     pipe.Add(
                         new BsonDocument
-                        {
+                                               {
+                            { "$match",
+                                                           new BsonDocument
+                                                           {
+                                    { "_id", new ObjectId(idvendor) }
+                                }
+                            }
+                        }
+                    );
+                }
+                else
+                {
+                    if (!isASale && strNameFilter.ToUpper() != "ALL" && strNameFilter.ToUpper() != "TODOS" && strNameFilter != "")
+                    {
+
+                        pipe.Add(
+                            new BsonDocument
+                            {
                             { "$match",
                                 new BsonDocument{
                                     { "$text", new BsonDocument {
@@ -880,37 +897,39 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                                     }
                                 }
                             }
-                        }
-                    );
-                }
+                            }
+                        );
+                    }
 
-                if (isASale)
-                {
-                    //Es venta
-                    pipe.Add(
-                        new BsonDocument
-                        {
+                    if (isASale)
+                    {
+                        //Es venta
+                        pipe.Add(
+                            new BsonDocument
+                            {
                             { "$match",
                                 new BsonDocument{
                                     { "DefaultEntityRole.IsCompany", true }
                                 }
                             }
-                        }
-                    );
-                }
-                else
-                {
-                    //Es compra
-                    pipe.Add(
-                        new BsonDocument
-                        {
+                            }
+                        );
+                    }
+                    else
+                    {
+                        //Es compra
+                        pipe.Add(
+                            new BsonDocument
+                            {
                             { "$match",
                                 new BsonDocument{
                                     { "SquadId", $"/{squadId}"}
                                 }
                             }
-                        }
-                    );
+                            }
+                        );
+
+                    }
 
                 }
 

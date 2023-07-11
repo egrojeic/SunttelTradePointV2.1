@@ -23,7 +23,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
             try
             {
                 string path = $"{pathApi}";
-                payment.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                payment.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 path = GetGlobalVariables(path);
                 var responseMessage = await _httpClient.PostAsJsonAsync<Payment>($"{path}", payment);
                 return await responseMessage.Content.ReadFromJsonAsync<Payment>();
@@ -42,7 +42,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
             {
                 string path = pathApi.Replace("*Name", "SavePaymentType");
                 path = GetGlobalVariables(path);
-                paymentType.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                paymentType.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<PaymentType>($"{path}", paymentType);
                 return await responseMessage.Content.ReadFromJsonAsync<PaymentType>();
 
@@ -61,7 +61,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
 
                 string path = pathApi.Replace("*Name", "SavePaymentStatus");
                 path = GetGlobalVariables(path);
-                paymentStatus.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                paymentStatus.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<PaymentStatus>($"{path}", paymentStatus);
                 return await responseMessage.Content.ReadFromJsonAsync<PaymentStatus>();
 
@@ -80,7 +80,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
                 string path = $"{pathApi}";
                 path = path.Replace("*Name", "SaveDocPaymentMode");
                 path = GetGlobalVariables(path);
-                paymentMode.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                paymentMode.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<PaymentMode>($"{path}", paymentMode);
                 return await responseMessage.Content.ReadFromJsonAsync<PaymentMode>();
 
@@ -99,7 +99,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
                 string path = $"{pathApi}";
                 path = path.Replace("*Name", "pendiente");
                 path = GetGlobalVariables(path);
-                appliedPayment.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                appliedPayment.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<AppliedPayment>($"{path}", appliedPayment);
                 return await responseMessage.Content.ReadFromJsonAsync<AppliedPayment>();
 
@@ -118,7 +118,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
                 string path = $"{pathApi}";
                 path = path.Replace("*Name", "pendiente");
                 path = GetGlobalVariables(path);
-                paymentWithOverpayment.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                paymentWithOverpayment.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<PaymentWithOverpayment>($"{path}", paymentWithOverpayment);
                 return await responseMessage.Content.ReadFromJsonAsync<PaymentWithOverpayment>();
 
@@ -137,7 +137,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
                 string path = $"{pathApi}";
                 path = path.Replace("*Name", "pendiente");
                 path = GetGlobalVariables(path);
-                paymentWithOverplus.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                paymentWithOverplus.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<PaymentWithOverplus>($"{path}", paymentWithOverplus);
                 return await responseMessage.Content.ReadFromJsonAsync<PaymentWithOverplus>();
 
@@ -156,7 +156,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
                 string path = $"{pathApi}";
                 path = path.Replace("*Name", "pendiente");
                 path = GetGlobalVariables(path);
-                pymentWithCredit.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                pymentWithCredit.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<PaymentWithCredit>($"{path}", pymentWithCredit);
                 return await responseMessage.Content.ReadFromJsonAsync<PaymentWithCredit>();
 
@@ -174,7 +174,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
             {
                 string path = $"{pathApi}";
                 path = path.Replace("*Name", "SaveDocPaymentVia");
-                paymentVia.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                paymentVia.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<PaymentVia>($"{path}", paymentVia);
                 return await responseMessage.Content.ReadFromJsonAsync<PaymentVia>();
 
@@ -516,7 +516,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
 
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
 
-                if (SquadId != null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString().ToUpper());
+                if (SquadId != null) request.Headers.Add("SquadId", SquadId.ID.ToString().ToUpper());
                 if (SquadId == null) request.Headers.Add("SquadId", "0000000000");
                 var response = await _httpClient.SendAsync(request);
 
@@ -552,7 +552,7 @@ namespace SunttelTradePointB.Client.Services.PaymentServices
 
                 var request = new HttpRequestMessage(HttpMethod.Delete, Url);
 
-                if (SquadId != null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString().ToUpper());
+                if (SquadId != null) request.Headers.Add("SquadId", SquadId.ID.ToString().ToUpper());
                 if (SquadId == null) request.Headers.Add("SquadId", "0000000000");
                 var response = await _httpClient.SendAsync(request);
 

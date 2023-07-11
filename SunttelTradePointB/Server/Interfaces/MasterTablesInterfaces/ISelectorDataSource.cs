@@ -163,7 +163,7 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <param name="squadId"></param>
         /// <param name="filterString"></param>
         /// <returns></returns>
-        Task<(bool IsSuccess, List<EntityActor>? VendorsList, string? ErrorDescription)> GetVendors(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null, bool paginate = true);
+        Task<(bool IsSuccess, List<EntityActor>? VendorsList, string? ErrorDescription)> GetVendors(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null, bool paginate = true, string? idvendor = null);
 
         /// <summary>
         /// Retrieves the list of Entity/Nodes/Actors filtered by the optional parameter or/and by role

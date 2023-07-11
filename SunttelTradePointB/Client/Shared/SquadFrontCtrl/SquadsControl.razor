@@ -16,7 +16,7 @@
         <img src="@pathLogo" id="imgLogoCompany" />
        
         <div class="label-wrapper">
-            <div class="label" @onclick="ToggleList">@(UICommonFunctions.CapitalizeFirstLetterOfWords(currentSquad.SquadName))</div>
+            <div class="label" @onclick="ToggleList">@(UICommonFunctions.CapitalizeFirstLetterOfWords(currentSquad.Nombre))</div>
             @if (showList)
             {
                 <ul class="list list--visible">
@@ -24,7 +24,7 @@
                     {
                         <li class="list-item"
                             onclick="@(() => SelcetItem(item))">
-                            @(UICommonFunctions.CapitalizeFirstLetterOfWords(item.SquadName))
+                            @(UICommonFunctions.CapitalizeFirstLetterOfWords(item.Nombre))
                         </li>
                        
                     }
@@ -39,7 +39,7 @@
 
 @code {
     [Parameter]
-    public SquadsByUser currentSquad { get; set; }
+    public Squad currentSquad { get; set; }
      [Parameter]
     public EventCallback<Guid> OnCurrentSquadChanged { get; set; }
 
@@ -63,11 +63,11 @@
     protected override Task OnInitializedAsync()
     {
         showList =false;
-        currentSquad = new SquadsByUser
+        currentSquad = new Squad
             {
                 ID = Guid.Parse("60BCB73D-F95C-4380-ADD0-4C0C28EC7478"),
                 SkinImage = "60BCB73D-F95C-4380-ADD0-4C0C28EC7478.jpg",
-                SquadName = "Squad2U"
+                Nombre = "Squad2U"
 
             };
 
@@ -87,13 +87,13 @@
         return base.OnInitializedAsync();
     }
 
-    public async void SelcetItem(SquadsByUser squadsByUser)
+    public async void SelcetItem(Squad squadsByUser)
     {
         currentSquad = squadsByUser;
         UIClientGlobalVariables.ActiveSquad = squadsByUser;
         pathLogo = $"/SkinImagesByAccount/{currentSquad.SkinImage}";
         showList = false;
-        await OnCurrentSquadChanged.InvokeAsync(currentSquad.IDSquads);
+        await OnCurrentSquadChanged.InvokeAsync(currentSquad.ID);
         StateHasChanged();
     }
 
@@ -107,10 +107,10 @@
 
     private void UpDateSquad()
     {
-        if (currentSquad.IDSquads.ToString() != "00000000-0000-0000-0000-000000000000")
+        if (currentSquad.ID.ToString() != "00000000-0000-0000-0000-000000000000")
         {
             navigationManager.NavigateTo("/");
-            navigationManager.NavigateTo($"/SquadCard/{currentSquad.IDSquads}");
+            navigationManager.NavigateTo($"/SquadCard/{currentSquad.ID}");
             
         }
         

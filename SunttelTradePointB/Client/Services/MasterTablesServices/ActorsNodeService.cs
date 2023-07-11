@@ -746,7 +746,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             EntityActorId = EntityActorId != null ? EntityActorId : "";
             var userId = UIClientGlobalVariables.UserId;
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
-            entityActor.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+            entityActor.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
             try
             {
                 userId = userId == "" ? "UX" : userId;
@@ -1166,7 +1166,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             {
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
                 if (UIClientGlobalVariables.ActiveSquad != null)
-                    request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad!.IDSquads.ToString());
+                    request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad!.ID.ToString());
 
 
                 var response = await _httpClient.SendAsync(request);
@@ -1195,7 +1195,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             {
                 var request = new HttpRequestMessage(HttpMethod.Delete, Url);
                 if (UIClientGlobalVariables.ActiveSquad != null)
-                    request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad!.IDSquads.ToString());
+                    request.Headers.Add("SquadId", UIClientGlobalVariables.ActiveSquad!.ID.ToString());
 
 
                 var response = await _httpClient.SendAsync(request);
