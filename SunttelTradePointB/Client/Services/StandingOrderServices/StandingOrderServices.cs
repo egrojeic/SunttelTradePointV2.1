@@ -26,7 +26,7 @@ namespace SunttelTradePointB.Client.Services.StandingOrderServices
                 string path = $"{pathApi}";
                 path = GetGlobalVariables(path);
                 path = path.Replace("*Name", "SaveStandingOrder");
-                standing.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                standing.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<StandingOrder>($"{path}", standing);
                 return await responseMessage.Content.ReadFromJsonAsync<StandingOrder>();
 
@@ -108,7 +108,7 @@ namespace SunttelTradePointB.Client.Services.StandingOrderServices
 
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
 
-                if (SquadId != null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString());
+                if (SquadId != null) request.Headers.Add("SquadId", SquadId.ID.ToString());
                 if (SquadId == null) request.Headers.Add("SquadId", "0000000000");
                 var response = await _httpClient.SendAsync(request);
 

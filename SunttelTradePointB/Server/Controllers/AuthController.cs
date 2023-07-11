@@ -494,9 +494,10 @@ namespace SunttelTradePointB.Server.Controllers
         public async Task<IActionResult> CurrentUserInfo()
         {
 
-            List<SquadsByUser> squads = new List<SquadsByUser>();
+            List<Squad> squads = new List<Squad>();
             string LastSquadId = "";
             string EntityIdUser = "";
+            string skinImage = "";
 
             if (User != null && User.Identity != null && User.Identity.Name != null)
             {
@@ -505,11 +506,11 @@ namespace SunttelTradePointB.Server.Controllers
 
                 LastSquadId = (userInfo != null && userInfo.DefaultSquadId != null) ? userInfo.DefaultSquadId : "";
                 EntityIdUser = (userInfo != null && userInfo.EntityID != null) ? userInfo.EntityID : "";
+
+                var response = await _entityNodes.GetEntityActorByUserId("sys", "127.0.0.1", User.Identity.Name);
+                skinImage = response.IsSuccess ? response.Item2.skinImage : "";
+
             }
-
-            var response = await _entityNodes.GetEntityActorByUserId("sys", "127.0.0.1", User.Identity.Name);
-            var skinImage = response.IsSuccess ? response.Item2.skinImage : "";
-
 
 
             return Ok(new CurrentUser

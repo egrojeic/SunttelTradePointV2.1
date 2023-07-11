@@ -117,10 +117,10 @@ namespace SunttelTradePointB.Server.Services
 
         }
 
-        public async Task<List<SquadsByUser>> SquadInfo(string? userId)
+        public async Task<List<Squad>> SquadInfo(string? userId)
         {
             //var squadInfo = await _sunttelDBContext.Squads.FindAsync(Guid.Parse("7B66BBE8-C288-4BAD-8DB7-3DAA32108FED"));
-                List<SquadsByUser> squadsByUserList = new List<SquadsByUser>();
+                List<Squad> squadsByUserList = new List<Squad>();
             try
             {
                 string connectionString = _sunttelDBContext.Database.GetConnectionString();
@@ -146,10 +146,10 @@ namespace SunttelTradePointB.Server.Services
 
                     while (reader.Read())
                     {
-                        SquadsByUser squadByUser = new SquadsByUser();
+                        Squad squadByUser = new Squad();
 
-                        squadByUser.IDSquads = Guid.Parse(reader["IDSquads"].ToString());
-                        squadByUser.SquadName = Convert.ToString(reader["SquadName"]);
+                        squadByUser.ID = Guid.Parse(reader["ID"].ToString());
+                        squadByUser.Nombre = Convert.ToString(reader["Nombre"]);
                         squadByUser.SkinImage = reader["SkinImage"].ToString();
 
                         squadsByUserList.Add(squadByUser);

@@ -26,7 +26,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
                 string path = basepath.Replace("Name", "SaveCommercialDocument");
                 path = path.Replace("*Id", UIClientGlobalVariables.UserId ?? "00");
                 path = path.Replace("*Ip", UIClientGlobalVariables.PublicIpAddress ?? "00");
-                commercialDocument.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                commercialDocument.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<CommercialDocument>($"{path}", commercialDocument);
                 return await responseMessage.Content.ReadFromJsonAsync<CommercialDocument>();
 
@@ -45,7 +45,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
                 string path = basepath.Replace("Name", "UpdateDocumentType");
                 path = path.Replace("*Id", UIClientGlobalVariables.UserId ?? "00");
                 path = path.Replace("*Ip", UIClientGlobalVariables.PublicIpAddress ?? "00");
-                commercialDocument.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                commercialDocument.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync($"{path}", commercialDocument);
                 return true;
 
@@ -126,7 +126,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-                salesDocumentItemsDetails.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                salesDocumentItemsDetails.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<SalesDocumentItemsDetails>($"/api/Sales/SaveCommercialDocumentDetail?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}", salesDocumentItemsDetails);
                 return await responseMessage.Content.ReadFromJsonAsync<SalesDocumentItemsDetails>();
             }
@@ -141,7 +141,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
-                salesDocumentItemsDetails.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                salesDocumentItemsDetails.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<SalesDocumentItemsDetails>($"/api/Sales/DeleteCommercialDocumentDetail?userId={UIClientGlobalVariables.UserId}&ipAdress={UIClientGlobalVariables.PublicIpAddress}", salesDocumentItemsDetails);
                 return await responseMessage.Content.ReadFromJsonAsync<SalesDocumentItemsDetails>();
             }
@@ -701,7 +701,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
 
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
 
-                if (SquadId != null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString().ToUpper());
+                if (SquadId != null) request.Headers.Add("SquadId", SquadId.ID.ToString().ToUpper());
                 if (SquadId == null) request.Headers.Add("SquadId", "0000000000");
                 var response = await _httpClient.SendAsync(request);
 
@@ -738,7 +738,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
 
                 var request = new HttpRequestMessage(HttpMethod.Delete, Url);
 
-                if (SquadId != null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString().ToUpper());
+                if (SquadId != null) request.Headers.Add("SquadId", SquadId.ID.ToString().ToUpper());
                 if (SquadId == null) request.Headers.Add("SquadId", "0000000000");
                 var response = await _httpClient.SendAsync(request);
 

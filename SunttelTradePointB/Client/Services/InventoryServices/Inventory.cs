@@ -21,7 +21,7 @@ namespace SunttelTradePointB.Client.Services.InventoryServices
             try
             {
                 string path = $"/api/Inventory/SaveInventory?&{Configpath}";
-                inventoryDetail.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                inventoryDetail.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<InventoryDetail>($"{path}", inventoryDetail);
                 return await responseMessage.Content.ReadFromJsonAsync<InventoryDetail>();
 
@@ -211,7 +211,7 @@ namespace SunttelTradePointB.Client.Services.InventoryServices
 
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
 
-                if (SquadId != null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString());
+                if (SquadId != null) request.Headers.Add("SquadId", SquadId.ID.ToString());
                 if (SquadId == null) request.Headers.Add("SquadId", "0000000000");
                 var response = await _httpClient.SendAsync(request);
 

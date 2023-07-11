@@ -25,7 +25,7 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
                 string path = $"{pathApi}";
                 path = GetGlobalVariables(path);
                 path = path.Replace("*Name", "SaveCreditDocument");
-                creditDocument.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                creditDocument.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<CreditDocument>($"{path}", creditDocument);
                 return await responseMessage.Content.ReadFromJsonAsync<CreditDocument>();
 
@@ -45,7 +45,7 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
                 string path = $"{pathApi}";
                 path = GetGlobalVariables(path);
                 path = path.Replace("*Name", "SaveCreditType");
-                creditType.SquadId = UIClientGlobalVariables.ActiveSquad != null ? UIClientGlobalVariables.ActiveSquad.IDSquads.ToString() : "000";
+                creditType.SquadId = UIClientGlobalVariables.ActiveSquad != null ? UIClientGlobalVariables.ActiveSquad.ID.ToString() : "000";
                 var responseMessage = await _httpClient.PostAsJsonAsync<CreditType>($"{path}", creditType);
                 return await responseMessage.Content.ReadFromJsonAsync<CreditType>();
 
@@ -65,7 +65,7 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
                 string path = $"{pathApi}";
                 // path = GetGlobalVariables(path);
                 path = path.Replace("*Name", "SaveCreditStatus");
-                creditStatus.SquadId = UIClientGlobalVariables.ActiveSquad != null ? UIClientGlobalVariables.ActiveSquad.IDSquads.ToString() : "000";
+                creditStatus.SquadId = UIClientGlobalVariables.ActiveSquad != null ? UIClientGlobalVariables.ActiveSquad.ID.ToString() : "000";
                 var responseMessage = await _httpClient.PostAsJsonAsync<CreditStatus>($"{path}", creditStatus);
                 return await responseMessage.Content.ReadFromJsonAsync<CreditStatus>();
 
@@ -85,7 +85,7 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
                 string path = $"{pathApi}";
                 path = GetGlobalVariables(path);
                 path = path.Replace("*Name", "SaveCreditReason");
-                creditReason.SquadId = UIClientGlobalVariables.ActiveSquad != null ? UIClientGlobalVariables.ActiveSquad.IDSquads.ToString() : "000";
+                creditReason.SquadId = UIClientGlobalVariables.ActiveSquad != null ? UIClientGlobalVariables.ActiveSquad.ID.ToString() : "000";
                 var responseMessage = await _httpClient.PostAsJsonAsync<CreditReason>($"{path}", creditReason);
                 return await responseMessage.Content.ReadFromJsonAsync<CreditReason>();
 
@@ -321,7 +321,7 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
 
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
 
-                if (SquadId != null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString());
+                if (SquadId != null) request.Headers.Add("SquadId", SquadId.ID.ToString());
                 if (SquadId == null) request.Headers.Add("SquadId", "0000000000");
                 var response = await _httpClient.SendAsync(request);
 
@@ -358,7 +358,7 @@ namespace SunttelTradePointB.Client.Services.CreditDocumentServices
 
                 var request = new HttpRequestMessage(HttpMethod.Delete, Url);
 
-                if (SquadId != null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString());
+                if (SquadId != null) request.Headers.Add("SquadId", SquadId.ID.ToString());
                 if (SquadId == null) request.Headers.Add("SquadId", "0000000000");
                 var response = await _httpClient.SendAsync(request);
 

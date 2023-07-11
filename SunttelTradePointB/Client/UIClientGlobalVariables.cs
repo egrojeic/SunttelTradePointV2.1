@@ -14,9 +14,9 @@ namespace SunttelTradePointB.Client
         public static string UserCountryId { get; set; } = "";
         public static string UserLanguage { get; set; } = "";
 
-        public static List<SquadsByUser>? CurrentUserSquads { get; set; }
+        public static List<Squad>? CurrentUserSquads { get; set; }
 
-        public static SquadsByUser? ActiveSquad { get; set; }
+        public static Squad? ActiveSquad { get; set; }
 
         public static string pathSquadsImages = "/SkinImagesByAccount";
         static string _pathEntityImages = "/uploads/entityImages";

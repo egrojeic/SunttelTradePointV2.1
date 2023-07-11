@@ -29,7 +29,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
                 string path = $"{basepath}";
                 path = GetGlobalVariables(path);
                 path = path.Replace("*Name", "SaveQCDocument");
-                qualityEvaluation.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                qualityEvaluation.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<QualityEvaluation>($"{path}", qualityEvaluation);
                 return await responseMessage.Content.ReadFromJsonAsync<QualityEvaluation>();
 
@@ -48,7 +48,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
                 string path = $"{basepath}";
                 path = GetGlobalVariables(path);
                 path = path.Replace("*Name", "SaveQualityReportType");
-                qualityReportType.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                qualityReportType.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<QualityReportType>($"{path}", qualityReportType);
                 return await responseMessage.Content.ReadFromJsonAsync<QualityReportType>();
 
@@ -67,7 +67,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
                 string path = $"{basepath}";
                 path = GetGlobalVariables(path);
                 path = path.Replace("*Name", "SaveQualityTrafficLight");
-                quality.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                quality.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<QualityTrafficLight>($"{path}", quality);
                 return await responseMessage.Content.ReadFromJsonAsync<QualityTrafficLight>();
 
@@ -86,7 +86,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
                 string path = $"{basepath}";
                 path = GetGlobalVariables(path);
                 path = path.Replace("*Name", "SaveQualityParameter");
-                quality.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                quality.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<QualityAssuranceParameter>($"{path}", quality);
                 return await responseMessage.Content.ReadFromJsonAsync<QualityAssuranceParameter>();
 
@@ -105,7 +105,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
                 string path = $"{basepath}";
                 path = GetGlobalVariables(path);
                 path = path.Replace("*Name", "SaveQualityParameterGroups");
-                quality.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                quality.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<QualityParameterGroup>($"{path}", quality);
                 return await responseMessage.Content.ReadFromJsonAsync<QualityParameterGroup>();
 
@@ -125,7 +125,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
                 string path = $"{basepath}";
                 path = GetGlobalVariables(path);
                 path = path.Replace("*Name", "SaveQualityParameter");
-                quality.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                quality.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<QualityAssuranceParameter>($"{path}", quality);
                 return await responseMessage.Content.ReadFromJsonAsync<QualityAssuranceParameter>();
 
@@ -144,7 +144,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
                 string path = $"{basepath}";
                 path = GetGlobalVariables(path);
                 path = path.Replace("*Name", "SaveQualityAction");
-                quality.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+                quality.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync<QualityAction>($"{path}", quality);
                 return await responseMessage.Content.ReadFromJsonAsync<QualityAction>();
 
@@ -514,7 +514,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
                 Url = Url.Replace("*Ip", ReplacePublicIpAddress ?? "000");
                 var request = new HttpRequestMessage(HttpMethod.Delete, Url);
 
-                if (SquadId != null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString().ToLower());
+                if (SquadId != null) request.Headers.Add("SquadId", SquadId.ID.ToString().ToLower());
                 if (SquadId == null) request.Headers.Add("SquadId", "0000000000");
                 var response = await _httpClient.SendAsync(request);
 
@@ -548,7 +548,7 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
                 Url = Url.Replace("*Ip", ReplacePublicIpAddress ?? "000");
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
 
-                if (SquadId != null) request.Headers.Add("SquadId", SquadId.IDSquads.ToString().ToLower());
+                if (SquadId != null) request.Headers.Add("SquadId", SquadId.ID.ToString().ToLower());
                 if (SquadId == null) request.Headers.Add("SquadId", "0000000000");
                 var response = await _httpClient.SendAsync(request);
 

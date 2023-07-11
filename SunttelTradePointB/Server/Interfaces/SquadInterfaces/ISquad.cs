@@ -13,7 +13,7 @@ namespace SunttelTradePointB.Server.Interfaces
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<List<SquadsByUser>> SquadInfo(string userId);
+        Task<List<Squad>> SquadInfo(string userId);
 
 
         /// <summary>

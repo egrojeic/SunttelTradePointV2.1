@@ -19,7 +19,7 @@ namespace SunttelTradePointB.Shared.Security
 
         public string? EntityId { get; set; } = "";
 
-        public List<SquadsByUser>? MySquads { get; set; }
+        public List<Squad>? MySquads { get; set; }
 
         [NotMapped]
         public virtual string SkinImageName { get; set; }

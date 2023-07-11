@@ -1098,7 +1098,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
 
-            packingSpecs.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+            packingSpecs.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
 
             try
             {
@@ -1120,7 +1120,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
 
-            transactionalItemTag.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+            transactionalItemTag.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
 
             try
             {
@@ -1142,7 +1142,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
 
-            transactionalItemProcessStep.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+            transactionalItemProcessStep.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
 
             try
             {
@@ -1164,7 +1164,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
 
-            transactItemImage.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+            transactItemImage.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
 
             try
             {
@@ -1186,7 +1186,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
 
-            transactionalItemQualityPair.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+            transactionalItemQualityPair.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
 
             try
             {
@@ -1206,7 +1206,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
 
-            productModel.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+            productModel.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
 
             try
             {
@@ -1226,7 +1226,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
 
-            transactionalItemCharacteristicPair.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+            transactionalItemCharacteristicPair.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
 
             try
             {
@@ -1269,7 +1269,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
 
-            seasonBusiness.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+            seasonBusiness.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
 
 
             try
@@ -1290,7 +1290,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
 
-            labelStyle.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+            labelStyle.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
 
             try
             {
@@ -1309,7 +1309,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
 
-            box.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+            box.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
 
             try
             {
@@ -1349,7 +1349,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
 
-            conceptGroup.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+            conceptGroup.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
 
             try
             {
@@ -1370,7 +1370,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
 
-            transactionalItemStatus.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+            transactionalItemStatus.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
 
 
             try
@@ -1388,7 +1388,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         public async Task<bool> SaveConceptPaper(LabelPaper labelPaper)
         {
-            labelPaper.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+            labelPaper.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
 
             try
             {
@@ -1409,7 +1409,7 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             string userId = UIClientGlobalVariables.UserId;
             string ipAddress = UIClientGlobalVariables.PublicIpAddress;
 
-            assemblyType.SquadId = UIClientGlobalVariables.ActiveSquad.IDSquads.ToString();
+            assemblyType.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
 
             try
             {
@@ -1640,11 +1640,11 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
             try
             {
-                var IDSquads = UIClientGlobalVariables.ActiveSquad;
+                var ID = UIClientGlobalVariables.ActiveSquad;
 
                 var request = new HttpRequestMessage(HttpMethod.Get, Url);
 
-                if (IDSquads != null) request.Headers.Add("SquadId", IDSquads.ToString());
+                if (ID != null) request.Headers.Add("SquadId", ID.ToString());
 
 
                 var response = await _httpClient.SendAsync(request);
@@ -1669,10 +1669,10 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
         {
             try
             {
-                var IDSquads = UIClientGlobalVariables.ActiveSquad;
+                var ID = UIClientGlobalVariables.ActiveSquad;
                 var request = new HttpRequestMessage(HttpMethod.Delete, Url);
 
-                if (IDSquads != null) request.Headers.Add("SquadId", IDSquads.ToString());
+                if (ID != null) request.Headers.Add("SquadId", ID.ToString());
 
                 var response = await _httpClient.SendAsync(request);
                 System.Diagnostics.Debug.WriteLine(response.IsSuccessStatusCode);
