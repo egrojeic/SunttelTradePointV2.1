@@ -177,4 +177,5 @@
     color: white;
     background-color: #00CCFF !important;
     margin-right: 1rem;
+    white-space: nowrap;
 }

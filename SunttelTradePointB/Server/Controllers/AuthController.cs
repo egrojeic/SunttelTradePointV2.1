@@ -480,6 +480,30 @@ namespace SunttelTradePointB.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Get Roles By User Id
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ActionName("GetRolesByUserId")]
+        public async Task<IActionResult> GetRolesByUserId([FromQuery] string id)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(id);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                var roles = await _userManager.GetRolesAsync(user);
+                return Ok(roles);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Logout()

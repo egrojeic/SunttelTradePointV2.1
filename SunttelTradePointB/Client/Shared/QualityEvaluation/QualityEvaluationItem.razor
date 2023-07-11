@@ -54,7 +54,7 @@
 @if (page == "addImage")
 {
     <QualityEvaluationPhotoSubComponent AddQualityEvaluationImages="AddQualityEvaluationImages"
-                                    PageVisible="Page">
+                                        PageVisible="Page">
 
     </QualityEvaluationPhotoSubComponent>
 }
@@ -62,7 +62,7 @@ else
 {
     <form>
         <PageTitleComponent Title="Quality Evaluation"
-                        Description="Here you can add and edit quality evaluation" IconName="QualityParameters.png">
+                            Description="Here you can add and edit quality evaluation" IconName="QualityParameters.png">
         </PageTitleComponent>
 
         @if (page == "new")
@@ -179,16 +179,16 @@ else
                 </div>
 
                 <TrafficLight trafficLight="QualityEvaluation.TrafficLightStatus"
-                      trafficLightList="trafficLightStatusList"
-                      NameStatus="@QualityEvaluation.TrafficLightStatus.Name"
-                      SetTrafficLightStatus="SetTrafficLightStatus">
+                              trafficLightList="trafficLightStatusList"
+                              NameStatus="@QualityEvaluation.TrafficLightStatus.Name"
+                              SetTrafficLightStatus="SetTrafficLightStatus">
                 </TrafficLight>
 
             </div>
             <div class="quality-parameter-group">
                 @if (qualityParameterGroupList != null)
                 {
-                    @foreach (var item in qualityParameterGroupList)
+                    @foreach (var item in qualityParameterGroupList) // new
                     {
                         <button type="button" class="btn" @onclick="()=>GroupList(item.Id)">
                             @item.Name
@@ -220,38 +220,65 @@ else
                                 }
                                 else
                                 {
-
                                     if (QualityEvaluation.EvaluationParameters != null)
                                     {
-                                        <RadzenDataGrid AllowFiltering="true"
-                                        AllowColumnResize="true"
-                                        AllowAlternatingRows="true"
-                                        FilterMode="FilterMode.Advanced"
-                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                        AllowSorting="true"
-                                        PageSize="50"
-                                        AllowPaging="true"
-                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                                        ShowPagingSummary="true"
-                                        Data="@QualityEvaluation.EvaluationParameters"
-                                        TItem="QualityEvaluationDetail"
-                                        ColumnWidth="300px"
-                                        SelectionMode="DataGridSelectionMode.Single"
-                                        LogicalFilterOperator="LogicalFilterOperator.Or"
-                                        CellContextMenu="@ShowContextMenuTransactionalItem">
-                                            <Columns>
+                                        <div class="parameters-group">
+                                            <div class="parameters-group-table">
+                                                <RadzenDataGrid @ref="DataGrid" AllowFiltering="true"
+                                                                
+                                                                AllowColumnResize="true"
+                                                                AllowAlternatingRows="true"
+                                                                FilterMode="FilterMode.Advanced"
+                                                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                                                AllowSorting="true"
+                                                                PageSize="50"
+                                                                AllowPaging="true"
+                                                                PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                                                ShowPagingSummary="true"
+                                                                Data="@QualityEvaluation.EvaluationParameters"
+                                                                TItem="QualityEvaluationDetail"
+                                                                ColumnWidth="300px"
+                                                                SelectionMode="DataGridSelectionMode.Single"
+                                                                LogicalFilterOperator="LogicalFilterOperator.Or"
+                                                                CellContextMenu="@ShowContextMenuTransactionalItem">
+                                                    <Columns>
 
-                                                <RadzenDataGridColumn TItem="QualityEvaluationDetail" Property="Parameter.Name" Title="@GetName("Parameter", new QualityEvaluationDetail() )" Width="158px" />
+                                                        <RadzenDataGridColumn TItem="QualityEvaluationDetail" Property="Parameter.Name" Title="Parameters Selected" Width="158px" />
 
-                                            </Columns>
-                                        </RadzenDataGrid>
-                                        <div class="container-total">
-                                            <div class="item">
-                                                <label>
-                                                    @(
-                                                        $"Records: {QualityEvaluation.EvaluationParameters.Count}"
-                                                        )
-                                                </label>
+                                                    </Columns>
+                                                </RadzenDataGrid>
+                                                <div class="container-total">
+                                                    <div class="item">
+                                                        <label>
+                                                            @(
+                                                                $"Records: {QualityEvaluation.EvaluationParameters.Count}"
+                                                                )
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="container">
+                                                    <div class="row">
+                                                        @if (qualityAssuranceParameterList != null && qualityAssuranceParameterList.Count() > 0)
+                                                        {
+                                                            @foreach (var item in qualityAssuranceParameterList)
+                                                            {
+                                                                <div class="col-lg-4">
+                                                                    <div class="container-parameter-list-item" @onclick="()=>checkboxList(item.Id)">
+                                                                        <input type="checkbox" checked='@(checkboxValidation(@item.Id))'><label>@item.Name</label>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <label>
+                                                                there are no parameters
+                                                            </label>
+                                                        }
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -288,21 +315,21 @@ else
                                     if (QualityEvaluation.QualityEvaluationImages != null)
                                     {
                                         <RadzenDataGrid AllowFiltering="true"
-                                        AllowColumnResize="true"
-                                        AllowAlternatingRows="true"
-                                        FilterMode="FilterMode.Advanced"
-                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                        AllowSorting="true"
-                                        PageSize="50"
-                                        AllowPaging="true"
-                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                                        ShowPagingSummary="true"
-                                        Data="@QualityEvaluation.QualityEvaluationImages"
-                                        TItem="QualityEvaluationPhoto"
-                                        ColumnWidth="300px"
-                                        SelectionMode="DataGridSelectionMode.Single"
-                                        LogicalFilterOperator="LogicalFilterOperator.Or"
-                                        CellContextMenu="@ShowContextMenuTransactionalItem">
+                                                        AllowColumnResize="true"
+                                                        AllowAlternatingRows="true"
+                                                        FilterMode="FilterMode.Advanced"
+                                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                                        AllowSorting="true"
+                                                        PageSize="50"
+                                                        AllowPaging="true"
+                                                        PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                                        ShowPagingSummary="true"
+                                                        Data="@QualityEvaluation.QualityEvaluationImages"
+                                                        TItem="QualityEvaluationPhoto"
+                                                        ColumnWidth="300px"
+                                                        SelectionMode="DataGridSelectionMode.Single"
+                                                        LogicalFilterOperator="LogicalFilterOperator.Or"
+                                                        CellContextMenu="@ShowContextMenuTransactionalItem">
                                             <Columns>
                                                 <RadzenDataGridColumn TItem="QualityEvaluationPhoto" Property="ParameterGroup.Name" Title="@GetName("ParameterGroup", new QualityEvaluationPhoto() )" Width="158px" />
                                                 <RadzenDataGridColumn TItem="QualityEvaluationPhoto" Title="Photo" Frozen="true" Sortable="false" Filterable="false" Width="60px">
@@ -360,30 +387,7 @@ else
         @if (page == "group")
         {
 
-            <div class="panelMenuContainer scroll-vertical" style="max-width:95%;">
-                <button @onclick='()=>Page("new")' class="size-btn color-btn"><i class="fa-sharp fa-solid fa-circle-arrow-left color-hover"></i></button>
-            </div>
 
-            <div class="container-parameter-list">
-                <div class="list">
-                    @if (qualityAssuranceParameterList != null && qualityAssuranceParameterList.Count() > 0)
-                    {
-                        @foreach (var item in qualityAssuranceParameterList)
-                        {
-                            <div class="item">
-                                <input type="checkbox" @onclick="()=>checkboxList(item.Id)" checked='@(checkboxValidation(@item.Id))'><label>@item.Name</label>
-                            </div>
-                        }
-                    }
-                    else
-                    {
-                        <label>
-                            there are no parameters
-                        </label>
-                    }
-
-                </div>
-            </div>
         }
 
     </form>
@@ -399,7 +403,7 @@ else
     [Parameter]
     public string filter { get; set; }
 
-
+    RadzenDataGrid<QualityEvaluationDetail> DataGrid;
 
     string alertMsg = "";
     string SearcherValue = "";
@@ -423,6 +427,7 @@ else
     public CommercialDocument commercialDocument = new();
     List<QualityParameterGroup>? qualityParameterGroupList { get; set; }
     List<QualityAssuranceParameter>? qualityAssuranceParameterList { get; set; }
+    List<QualityAssuranceParameter>? qualityAssuranceParameterTotalList { get; set; }
     public string itemName { get; set; }
 
     #endregion Input3
@@ -451,7 +456,7 @@ else
         qualityParameterGroupList = await QualityEvaluationServices.GetQualityParameterGrouplList("all", 1, 20);
         LoadQualityEvaluation();
         StateHasChanged();
-        LoadParameter();
+        await LoadParameter();
 
     }
 
@@ -466,7 +471,8 @@ else
         actionToTakeList = await QualityEvaluationServices.GetQualityActionList("all", 1, 80);
         trafficLightStatusList = await QualityEvaluationServices.GetQualityTrafficLightList("all", 1, 20);
         typeList = await QualityEvaluationServices.GetQualityReportTypeList("all", 1, 20);
-        qualityAssuranceParameterList = await QualityEvaluationServices.GetQualityAssuranceParameterlList("all", 1, 20);
+        qualityAssuranceParameterTotalList = await QualityEvaluationServices.GetQualityAssuranceParameterlList("all", 1, 80);
+        qualityAssuranceParameterList = qualityAssuranceParameterTotalList;
         isLoading = false;
         StateHasChanged();
     }
@@ -517,7 +523,7 @@ else
         if (checkboxUpdate)
         {
             checkboxUpdate = false;
-            var item = qualityAssuranceParameterList.Where(s => s.Id == Id).FirstOrDefault();
+            var item = qualityAssuranceParameterList?.Where(s => s.Id == Id).FirstOrDefault();
             if (QualityEvaluation == null) QualityEvaluation = new();
             if (QualityEvaluation.EvaluationParameters == null) QualityEvaluation.EvaluationParameters = new();
 
@@ -542,6 +548,7 @@ else
             checkboxUpdate = true;
 
             StateHasChanged();
+            await DataGrid.Reload();
         }
     }
 
@@ -603,11 +610,12 @@ else
 
     }
 
-    public async void GroupList(string Id)
+    public void GroupList(string Id)
     {
-        await LoadParameter();
-        qualityAssuranceParameterList = qualityAssuranceParameterList.Where(s => s.ParameterGroup.Id == Id).ToList();
-        Page("group");
+        //await LoadParameter();
+        qualityAssuranceParameterList = qualityAssuranceParameterTotalList?.Where(s => s.ParameterGroup.Id == Id).ToList();
+        StateHasChanged();
+        //Page("group");
     }
 
     public string GetFullPathPhoto(string imgName)
@@ -629,7 +637,7 @@ else
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
     </RadzenMenu>
-        );
+    );
 
 
     void OnMenuItemClick(MenuItemEventArgs args)
