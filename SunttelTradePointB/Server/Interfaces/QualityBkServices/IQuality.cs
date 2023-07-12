@@ -256,8 +256,9 @@ namespace SunttelTradePointB.Server.Interfaces.QualityBkServices
         /// <param name="filter"></param>
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
+        /// <param name="qualityReportTypeName"></param>
         /// <returns></returns>
-        public Task<(bool IsSuccess, List<QualityEvaluation>? GetQCDocumentsList, string? ErrorDescription)> GetQCDocuments(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null);
+        public Task<(bool IsSuccess, List<QualityEvaluation>? GetQCDocumentsList, string? ErrorDescription)> GetQCDocuments(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, string? qualityReportTypeName, int? page = 1, int? perPage = 10, string? filter = null);
 
         /// <summary>
         /// Retrieves an quality report type object by Id

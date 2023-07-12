@@ -1031,13 +1031,14 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
         /// <param name="filter"></param>
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
+        /// <param name="qualityReportTypeName"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<QualityEvaluation>? GetQCDocumentsList, string? ErrorDescription)> GetQCDocuments(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, int? page = 1, int? perPage = 10, string? filter = null)
+        public async Task<(bool IsSuccess, List<QualityEvaluation>? GetQCDocumentsList, string? ErrorDescription)> GetQCDocuments(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, string? qualityReportTypeName, int? page = 1, int? perPage = 10, string? filter = null)
         {
             try
             {
-                string startDateIso = startDate.ToString("O");
-                string endDateIso = endDate.ToString("O");
+                DateTime startDateIso = DateTime.Parse(startDate.ToString("yyyy-MM-dd"));
+                DateTime endDateIso = DateTime.Parse(endDate.ToString("yyyy-MM-dd"));
 
 
                 string filterString = filter == null ? "" : filter;
@@ -1065,22 +1066,30 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                         new BsonDocument("$match", new BsonDocument("SquadId", squadId))
                     );
 
+                    if (!string.IsNullOrEmpty(qualityReportTypeName))
+                    {
+                        pipeline.Add(
+                            new BsonDocument("$match", new BsonDocument("QualityReportType.Name", qualityReportTypeName))
+                            );
+                    }
+
                     // TODO: falta agregar el filtro de fecha
-                    //pipeline.Add(
-                    //    new BsonDocument
-                    //    {
-                    //        {
-                    //            "$match",
-                    //            new BsonDocument
-                    //            {
-                    //                 { "InspectionDate", new BsonDocument{
-                    //                { "$gte", startDateIso },
-                    //                { "$lte", endDateIso }
-                    //            } }
-                    //          }
-                    //        }
-                    //    }
-                    //);
+                    pipeline.Add(
+                        new BsonDocument
+                        {
+                            {
+                                "$match",
+                                new BsonDocument
+                                {
+                                     {
+                                        "InspectionDate", new BsonDocument{
+                                    { "$gte", startDateIso },
+                                    { "$lte", endDateIso }
+                                } }
+                              }
+                            }
+                        }
+                    );
 
                     pipeline.Add(
                         new BsonDocument{

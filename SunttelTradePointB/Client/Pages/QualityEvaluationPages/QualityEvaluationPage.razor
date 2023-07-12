@@ -84,7 +84,7 @@
                                 ColumnWidth="300px"
                                 SelectionMode="DataGridSelectionMode.Single"
                                 LogicalFilterOperator="LogicalFilterOperator.Or"
-                @bind-Value="@selectedcommercialdocuments"
+                                @bind-Value="@selectedcommercialdocuments"
                                 CellContextMenu="@ShowContextMenuCommercialDocument">
                     <Columns>
                         <RadzenDataGridColumn TItem="QualityEvaluation" Property="QualityReportType.Name" Title="@GetName("QualityReportType", new QualityEvaluation() )" Width="108px" />
@@ -186,7 +186,7 @@
     {
         isLoading = true;
 
-        qualityEvaluationList = await QualityEvaluationServices.GetQualityEvaluationServicesList((_filterItems != null ? _filterItems : "all"), startingDate, endDate, 1, 100);
+        qualityEvaluationList = await QualityEvaluationServices.GetQualityEvaluationServicesList((_filterItems != null ? _filterItems : "all"), startingDate, endDate,qualityReportType?.Name, 1, 100);
 
         if (qualityReportType != null)
         { }
@@ -199,13 +199,9 @@
         docsFilter = value;
     }
 
-    public async void SetType(QualityReportType item)
+    public void SetType(QualityReportType item)
     {
-
-        if (item != null)
-        {
-            qualityReportType = item;
-        }
+        qualityReportType = item;
         StateHasChanged();
     }
 

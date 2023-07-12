@@ -7,6 +7,27 @@
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager navigationManager
 
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
+</style>
+
 <div class="detailsTitleContainer">
     <h3 class="subTitleDetailForm">Commercial Conditions</h3>
     <span class="btn" title="Add new shipping to address" @onclick="(() => NavigateCommercialConditions())">
@@ -36,6 +57,7 @@
                     TItem="EntitiesCommercialRelationShip"
                     ColumnWidth="300px"
                     SelectionMode="DataGridSelectionMode.Single"
+                    @bind-Value="selectedCommercialCondition "
                     LogicalFilterOperator="LogicalFilterOperator.Or"
                     CellContextMenu="@ShowContextMenuWithContent"
                     PageNumbersCount="100"
@@ -63,7 +85,7 @@
     [Parameter]
     public string? EntityId { get; set; }
     List<EntitiesCommercialRelationShip> entityCommercialCondition = new List<EntitiesCommercialRelationShip>();
-    IList<EntitiesCommercialRelationShip> selectedCommercialCondition;
+    IList<EntitiesCommercialRelationShip> selectedCommercialCondition = new List<EntitiesCommercialRelationShip>();
 
     RadzenDataGrid<EntitiesCommercialRelationShip>? refDataGrid;
     EntitiyRelationshipType entitiyRelationshipType = new EntitiyRelationshipType();

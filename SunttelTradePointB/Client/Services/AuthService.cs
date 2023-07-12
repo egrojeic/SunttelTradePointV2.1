@@ -139,9 +139,18 @@ namespace SunttelTradePointB.Client.Services
 
         public async Task EditUserByAdmin(RegisterRequest registerRequest)
         {
-            var result = await _httpClient.PostAsJsonAsync("api/auth/EditUser", registerRequest);
-            if (result.StatusCode == System.Net.HttpStatusCode.BadRequest) throw new Exception(await result.Content.ReadAsStringAsync());
-            result.EnsureSuccessStatusCode();
+            try
+            {
+                var userId = UIClientGlobalVariables.UserId;
+                var ipAddress = UIClientGlobalVariables.PublicIpAddress;
+                var result = await _httpClient.PostAsJsonAsync($"api/auth/EditUser?userId={userId}&ipAdress={ipAddress}", registerRequest);
+                if (result.StatusCode == System.Net.HttpStatusCode.BadRequest) throw new Exception(await result.Content.ReadAsStringAsync());
+                result.EnsureSuccessStatusCode();
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
         }
 
         public async Task EditRoleSystemTools(UserRole registerRequest)

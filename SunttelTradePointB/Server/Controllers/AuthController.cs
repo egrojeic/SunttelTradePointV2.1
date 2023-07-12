@@ -229,10 +229,11 @@ namespace SunttelTradePointB.Server.Controllers
         /// Edit user
         /// </summary>
         /// <param name="parameters"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("EditUser")]
-        public async Task<IActionResult> EditUser(RegisterRequest parameters)
+        public async Task<IActionResult> EditUser([FromBody]RegisterRequest parameters, [FromQuery] string userId, [FromQuery] string ipAdress)
         {
             try
             {
@@ -518,42 +519,54 @@ namespace SunttelTradePointB.Server.Controllers
         [ActionName("CurrentUserInfo")]
         public async Task<IActionResult> CurrentUserInfo()
         {
-
-            List<Squad> squads = new List<Squad>();
-            string LastSquadId = "";
-            string EntityIdUser = "";
-            string skinImage = "";
-
-            if (User != null && User.Identity != null && User.Identity.Name != null)
+            try
             {
-                squads = await _squad.SquadInfo(User.Identity.Name);
-                var userInfo = await _userManager.FindByNameAsync(User.Identity.Name);
 
-                LastSquadId = (userInfo != null && userInfo.DefaultSquadId != null) ? userInfo.DefaultSquadId : "";
-                EntityIdUser = (userInfo != null && userInfo.EntityID != null) ? userInfo.EntityID : "";
+                List<Squad> squads = new List<Squad>();
+                string LastSquadId = "";
+                string EntityIdUser = "";
+                string skinImage = "";
 
-                var response = await _entityNodes.GetEntityActorByUserId("sys", "127.0.0.1", User.Identity.Name);
-                skinImage = response.IsSuccess ? response.Item2.skinImage : "";
+                if (User != null && User.Identity != null && User.Identity.Name != null)
+                {
+                    squads = await _squad.SquadInfo(User.Identity.Name);
+                    var userInfo = await _userManager.FindByNameAsync(User.Identity.Name);
 
+                    LastSquadId = (userInfo != null && userInfo.DefaultSquadId != null) ? userInfo.DefaultSquadId : "";
+                    EntityIdUser = (userInfo != null && userInfo.EntityID != null) ? userInfo.EntityID : "";
+
+                    var response = await _entityNodes.GetEntityActorByUserId("sys", "127.0.0.1", User.Identity.Name);
+                    skinImage = response.IsSuccess ? response.Item2.skinImage : "";
+
+                }
+
+                System.Security.Claims.ClaimsPrincipal curuser = this.User;
+
+                var idcurrentuser = _userManager.GetUserId(curuser);
+
+                // Avoid sending duplicate keys
+                var claimsDictionary = User.Claims.GroupBy(c => c.Type)
+                                  .ToDictionary(g => g.Key, g => g.First().Value);
+
+
+                return Ok(new CurrentUser
+                {
+                    IDUser = idcurrentuser,
+                    IsAuthenticated = User.Identity.IsAuthenticated,
+                    UserName = User.Identity.Name,
+                    MySquads = squads,
+                    LastSquadId = LastSquadId,
+                    EntityId = EntityIdUser,
+                    SkinImageName = skinImage,
+                    Claims = claimsDictionary
+
+
+                });
             }
-
-            System.Security.Claims.ClaimsPrincipal curuser = this.User;
-
-            var idcurrentuser = _userManager.GetUserId(curuser);
-
-            return Ok(new CurrentUser
+            catch (Exception ex)
             {
-                IDUser = idcurrentuser,
-                IsAuthenticated = User.Identity.IsAuthenticated,
-                UserName = User.Identity.Name,
-                MySquads = squads,
-                LastSquadId = LastSquadId,
-                EntityId = EntityIdUser,
-                SkinImageName = skinImage,
-                Claims = User.Claims.ToDictionary(c => c.Type, c => c.Value)
-
-
-            });
+                return BadRequest(ex.Message);
+            }
         }
 
 

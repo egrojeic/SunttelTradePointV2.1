@@ -8,6 +8,26 @@
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager navigationManager
 
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
+</style>
 
 <div class="detailsTitleContainer">
     <h3 class="subTitleDetailForm">Shipping Setup</h3>
@@ -37,6 +57,7 @@
                         TItem="ShippingInfo"
                         ColumnWidth="300px"
                         SelectionMode="DataGridSelectionMode.Single"
+        @bind-Value="@selectedShippingInfo"
                         LogicalFilterOperator="LogicalFilterOperator.Or"
                         CellContextMenu="@ShowContextMenuWithContent"
                         PageNumbersCount="100"
@@ -105,7 +126,7 @@
     [Parameter]
     public string? EntityId { get; set; }
     List<ShippingInfo> shippingInfoList = new List<ShippingInfo>();
-    IList<ShippingInfo> selectedShippingInfo;
+    IList<ShippingInfo> selectedShippingInfo = new List<ShippingInfo>();
     RadzenDataGrid<ShippingInfo>? radzenDataGrid;
 
     protected override async Task OnInitializedAsync()
@@ -131,7 +152,7 @@
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
         <RadzenMenuItem Text="Delete" Value=args.Data Icon="delete"></RadzenMenuItem>
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
     public async void OnMenuItemClick(MenuItemEventArgs args)
@@ -148,6 +169,8 @@
             shippingInfoList.Remove(argObj);
             await radzenDataGrid!.Reload();
         }
+
+        ContextMenuService.Close();
     }
     #endregion Grid
 

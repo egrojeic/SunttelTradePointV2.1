@@ -224,7 +224,7 @@ else
                                     {
                                         <div class="parameters-group">
                                             <div class="parameters-group-table">
-                                                
+
                                                 <SfGrid @ref="DataGrid2" DataSource="@qualityParameterGroupSelectedList">
                                                     <GridTemplates>
                                                         <DetailTemplate>
@@ -255,7 +255,7 @@ else
                                                         <div class="input-group mb-3">
                                                             <input placeholder="Enter the search value" type="text" class="form-control" @bind="filtro" />
                                                             <div class="input-group-append">
-                                                                <button class="btn btn-primary" type="button" @onclick="@FilterList">
+                                                                <button class="btn btn-primary" type="button" id="search-btn" @onclick="@FilterList">
                                                                     Search
                                                                 </button>
                                                             </div>
@@ -415,6 +415,7 @@ else
     bool isVisible = false;
     bool checkboxUpdate = true;
     private string filtro = "";
+    public string idGroupSelected { get; set; } = string.Empty;
     MessageSaveComponent? referAlert;
     TextToSpeech textToSpeech;
     public QualityEvaluation QualityEvaluation = new();
@@ -467,7 +468,21 @@ else
 
     private void FilterList()
     {
-        qualityAssuranceParameterList = qualityAssuranceParameterList!.Where(item => item.Name.Contains(filtro)).ToList();
+        if (string.IsNullOrEmpty(filtro.Trim()))
+        {
+            if (string.IsNullOrEmpty(idGroupSelected))
+            {
+                qualityAssuranceParameterList = qualityAssuranceParameterTotalList;
+            }
+            else
+            {
+                qualityAssuranceParameterList = qualityAssuranceParameterTotalList?.Where(s => s.ParameterGroup.Id == idGroupSelected).ToList();
+            }
+        }
+        else
+        {
+            qualityAssuranceParameterList = qualityAssuranceParameterList!.Where(item => item.Name.Contains(filtro)).ToList();
+        }
         StateHasChanged();
     }
 
@@ -478,6 +493,8 @@ else
         StateHasChanged();
         actionToTakeList = await QualityEvaluationServices.GetQualityActionList("all", 1, 80);
         trafficLightStatusList = await QualityEvaluationServices.GetQualityTrafficLightList("all", 1, 20);
+        var aux = trafficLightStatusList.Find(x => x.Name == "NA/ND");
+        if (aux is not null) trafficLightStatusList.Remove(aux);
         typeList = await QualityEvaluationServices.GetQualityReportTypeList("all", 1, 20);
         qualityAssuranceParameterTotalList = await QualityEvaluationServices.GetQualityAssuranceParameterlList("all", 1, 80);
         qualityAssuranceParameterList = qualityAssuranceParameterTotalList;
@@ -624,10 +641,9 @@ else
 
     public void GroupList(string Id)
     {
-        //await LoadParameter();
-        qualityAssuranceParameterList = qualityAssuranceParameterTotalList?.Where(s => s.ParameterGroup.Id == Id).ToList();
+        idGroupSelected = Id;
+        qualityAssuranceParameterList = qualityAssuranceParameterTotalList?.Where(s => s.ParameterGroup.Id == idGroupSelected).ToList();
         StateHasChanged();
-        //Page("group");
     }
 
     public string GetFullPathPhoto(string imgName)

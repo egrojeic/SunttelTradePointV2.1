@@ -24,19 +24,19 @@
         <div class="card-body">
 
             <div class="row">
-                <div class="col-6">
+                 <div class="col-6">
                     <div class="mb-3">
-                        <label>Email:</label>
+                        <label>User Name:</label>
                         <div>
-                            <InputText class="form-control" @bind-Value="@user.Email" />
+                            <InputText type="text" class="form-control" @bind-Value="@user.UserName" />
                         </div>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="mb-3">
-                        <label>User Name:</label>
+                        <label>Email:</label>
                         <div>
-                            <InputText type="text" class="form-control" @bind-Value="@user.UserName" />
+                            <InputText class="form-control" id="test" @bind-Value="@user.Email" />
                         </div>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
                     <div class="mb-3">
                         <label>Password:</label>
                         <div>
-                            <InputText type="password" class="form-control" @bind-Value="@user.Password" />
+                            <InputText type="password" class="form-control" id="test2" @bind-Value="@user.Password" />
                             <ValidationMessage For="@(() => user.Password)" />
                         </div>
                     </div>
@@ -62,93 +62,46 @@
                 </div>
             </div>
             <div class="row">
-                @*<div class="col-6">
-                <div class="mb-3">
-                <label>Rol:</label>
-                <div>
-                <select class="form-select" @bind="user.Rolname">
-                <option value="0">-- Select your rol --</option>
-                @foreach (var rol in rolenames)
-                {
-                <option value="@rol">@rol</option>
-                }
-                </select>
-                </div>
-                </div>
-                </div>*@
                 <div class="col-6">
+                    
                     <div class="mb-3">
-                        <div>
-                            <label for="ComercialGroup">Roles</label>
-                        </div>
-                        <div>
-                            <button type="button" @onclick='() => SetViewElement("Group")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                        </div>
-                        <div class="conten-chip">
-                            <SfChip @ref="referChip2" EnableDelete="true" CssClass="chip-style" EnableRtl="false">
-                                <ChipEvents Deleted="@onDeleted"></ChipEvents>
-                                <ChipItems>
-                                    @{
-                                        if (FilterRoles != null)
-                                        {
-                                            @foreach (var Group in FilterRoles)
-                                            {
-                                                if (Group != null && Group.Name != null)
-                                                {
-                                                    <ChipItem Text="@Group?.Name" LeadingIconCss="anne"></ChipItem>
-                                                }
+                        <h4>Assign Roles</h4>
+                        <select @onchange="AssignRoles" class="form-select">
+                            <option value="0">-- Select your roles --</option>
+                            @if (roles is not null)
+                            {
+                                @foreach (var role in roles)
+                                {
+                                    <option value="@role.Id">@role.Name</option>
+                                }
+                            }
+                        </select>
 
-                                            }
-                                        }
-                                    }
-                                </ChipItems>
-                            </SfChip>
-                            <InputTextSelector3 TItem="UserRole"
-                                                EventSearcherValueAndId="EventSearcherValueAndId"
-                                                EventIdSelectionAndId="SelectionMade"
-                                                Items="listRoles"
-                                                captionOff="true"
-                                                Visible="PopupViewGroups"
-                                                Id="Group">
-
-                            </InputTextSelector3>
-                            <div class="mb-3">
-                                <h4>Asignar Roles</h4>
-                                <select @onchange="AssignRoles">
-                                    @if (roles is not null)
-                                    {
-                                        @foreach (var role in roles)
-                                        {
-                                            <option value="@role.Id">@role.Name</option>
-                                        }
-                                    }
-
-                                </select>
-                            </div>
-
-
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Id</th>
-                                        <th>Name</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                    @for (int i = 0; i < MyRolenames.Count; i++)
-                                    {
-                                        <p>Elemento @i: @MyRolenames[i]</p>
-                                        <tr>
-                                            <td>@i</td>
-                                            <td>@MyRolenames[i]</td>
-                                        </tr>
-                                    }
-
-                                </tbody>
-                            </table>
-                        </div>
                     </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>Options</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var role in FilterRoles.Select((value, index) => new { Value = value, Index = index }))
+                            {
+                                <tr>
+                                    <td>@(role.Index + 1)</td>
+                                    <td>@role.Value.Name</td>
+                                    <td>
+                                        <button type="button" @onclick="(() => DeleteRole(role.Value))" class="btn btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -163,8 +116,8 @@
     public List<string> MyRolenames = new List<string>();
     public IEnumerable<UserRole>? roles;
     // ship
-    public List<UserRole> listRoles = new List<UserRole>();
-    public List<UserRole>? FilterRoles = new List<UserRole>();
+    public List<UserRole>? listRoles = new List<UserRole>();
+    public List<UserRole> FilterRoles = new List<UserRole>();
     public bool PopupViewGroups = false;
     public string SearchValueMode = "";
     SfChip? referChip2;
@@ -198,9 +151,14 @@
         try
         {
             roles = await authStateProvider.GetRoles();
-            if (roles is not null)
+            MyRolenames = await authStateProvider.GetRolesByUserId(userId);
+            if (MyRolenames is not null && MyRolenames.Any() && roles is not null && roles.Any())
             {
-                rolenames = roles.Select(x => x.Name).ToList();
+                foreach (var myRole in MyRolenames)
+                {
+                    var rol = roles.Where(x => x.Name == myRole).FirstOrDefault();
+                    if (rol is not null) FilterRoles.Add(rol);
+                }              
             }
         }
         catch (Exception ex)
@@ -214,7 +172,6 @@
     public async void GetMyRoles()
     {
         if (userId is null) return;
-        MyRolenames = await authStateProvider.GetRolesByUserId(userId);
     }
 
     public async void OnPostAsync()
@@ -286,12 +243,18 @@
 
     private void AssignRoles(ChangeEventArgs e)
     {
-        // Aquí puedes implementar la lógica para asignar los roles seleccionados
-        // Puedes obtener los roles seleccionados de la lista "selectedRoles"
-        // y realizar las operaciones necesarias, como guardar los cambios en una base de datos
-
-        // Ejemplo: Imprimir los roles seleccionados en la consola
-        Console.WriteLine("Roles seleccionados:" + e.Value?.ToString());
-
+        var rol = roles!.Where(x => x.Id == e.Value?.ToString()).FirstOrDefault();
+        if (rol is not null)
+        {
+            FilterRoles.Add(rol);
+            StateHasChanged();
+        }
     }
+
+    private void DeleteRole(UserRole rol)
+    {
+        FilterRoles.Remove(rol);
+        StateHasChanged();
+    }
+
 }

@@ -155,9 +155,10 @@
         min-width: 100px;
         max-width: 350px;
         text-align: center;
-        height: 40px;
+        height: 45px;
         overflow: hidden;
-        font-size: 10px;
+        font-size: 13px;
+        padding: 2px;
     }
 
 .container-parameter-list {
@@ -227,4 +228,10 @@
 
 .parameters-group-table {
     width: 450px !important;
+}
+
+#search-btn {
+    background-color: #00CCFF;
+    color: black;
+    border-color: #00CCFF;
 }
