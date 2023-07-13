@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
 using SunttelTradePointB.Server.Data;
 using SunttelTradePointB.Server.Interfaces;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
@@ -144,19 +145,18 @@ namespace SunttelTradePointB.Server.Controllers
         {
             try
             {
+                userRole.Id = ObjectId.GenerateNewId().ToString();
                 var result = await _roleManager.CreateAsync(new UserRole
                 {
-                    Name = userRole.Name
-                });
+                    Id = userRole.Id,
+                    Name = userRole.Name,
+                    NormalizedName = userRole.Name?.ToUpper(),
+                    SquadsId = userRole.SquadsId
+                });;
 
                 if (result.Succeeded)
                 {
 
-                    UserRole rol = await _roleManager.FindByNameAsync(userRole.Name);
-
-                    if (rol is null) return BadRequest("Rol not saved");
-                    // añadimos al Systemql
-                    userRole.Id = rol.Id;
                     bool resp = await _squad.RegisterRoleSystemTools(userRole);
                     if (!resp) return BadRequest("Error Saving System Tools for The Role");
                     return Ok();
@@ -463,6 +463,8 @@ namespace SunttelTradePointB.Server.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(id)) return NotFound();
+
                 UserRole rolDB = await _roleManager.Roles.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (rolDB is null) return BadRequest(" not found");
@@ -471,7 +473,7 @@ namespace SunttelTradePointB.Server.Controllers
                 {
                     Id = rolDB.Id,
                     Name = rolDB.Name,
-                    SystemTools = null
+                    SystemTools = await _squad.SystemToolsByRole(id)
                 }; 
 
                 return Ok(rol);

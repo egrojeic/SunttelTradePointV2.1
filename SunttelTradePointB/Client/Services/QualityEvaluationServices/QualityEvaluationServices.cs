@@ -163,9 +163,11 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
             CultureInfo culture = new CultureInfo("en-US");
             try
             {
-                //
+                var startDateString = startDate.ToString("yyyy-MM-dd");
+                var endDateString = endDate.ToString("yyyy-MM-dd");
+
                 string path = basepath.Replace("*Name", "GetQCDocuments");
-                var responseMessage = await Gethttp($"{path}&filter={filter}&startDate={startDate}&endDate={endDate}&qualityParamterTypeName={qualityReportTypeName}&page={page}&perPage={perPage}");
+                var responseMessage = await Gethttp($"{path}&filter={filter}&startDate={startDateString}&endDate={endDateString}&qualityParamterTypeName={qualityReportTypeName}&page={page}&perPage={perPage}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<QualityEvaluation>>();
                 return list != null ? list : new List<QualityEvaluation>();
             }

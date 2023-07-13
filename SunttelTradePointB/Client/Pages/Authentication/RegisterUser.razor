@@ -10,6 +10,8 @@
 @inject NavigationManager _navigationManager;
 @inject CustomStateProvider authStateProvider
 
+<div class="container">
+
 <EditForm Model="user" OnSubmit="OnPostAsync">
     <DataAnnotationsValidator />
 
@@ -63,7 +65,6 @@
             </div>
             <div class="row">
                 <div class="col-6">
-                    
                     <div class="mb-3">
                         <h4>Assign Roles</h4>
                         <select @onchange="AssignRoles" class="form-select">
@@ -107,6 +108,7 @@
         </div>
     </div>
 </EditForm>
+</div>
 
 @code {
     [Parameter]
@@ -125,7 +127,6 @@
     protected override void OnInitialized()
     {
         GetRoles();
-        GetMyRoles();
         base.OnInitialized();
         StateHasChanged();
     }
@@ -151,6 +152,7 @@
         try
         {
             roles = await authStateProvider.GetRoles();
+            if (userId is null) return;
             MyRolenames = await authStateProvider.GetRolesByUserId(userId);
             if (MyRolenames is not null && MyRolenames.Any() && roles is not null && roles.Any())
             {
@@ -167,11 +169,6 @@
         }
 
         StateHasChanged();
-    }
-
-    public async void GetMyRoles()
-    {
-        if (userId is null) return;
     }
 
     public async void OnPostAsync()

@@ -190,7 +190,7 @@ else
                 {
                     @foreach (var item in qualityParameterGroupList) // new
                     {
-                        <button type="button" class="btn" @onclick="()=>GroupList(item.Id)">
+                        <button type="button" class="@(idGroupSelected == item.Id ? "btn-selected" : "btn")" @onclick="()=>GroupList(item.Id)">
                             @item.Name
                         </button>
                     }
@@ -681,7 +681,7 @@ else
     void ShowContextMenuTransactionalItem(DataGridCellMouseEventArgs<QualityEvaluationDetail> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick1">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
+        </RadzenMenu>
     );
 
 
@@ -781,6 +781,8 @@ else
     {
         Navigation.NavigateTo(name);
     }
+
+
 
 
 }

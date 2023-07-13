@@ -1037,10 +1037,6 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
         {
             try
             {
-                DateTime startDateIso = DateTime.Parse(startDate.ToString("yyyy-MM-dd"));
-                DateTime endDateIso = DateTime.Parse(endDate.ToString("yyyy-MM-dd"));
-
-
                 string filterString = filter == null ? "" : filter;
                 var skip = (page - 1) * perPage;
 
@@ -1081,12 +1077,14 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                                 "$match",
                                 new BsonDocument
                                 {
-                                     {
-                                        "InspectionDate", new BsonDocument{
-                                    { "$gte", startDateIso },
-                                    { "$lte", endDateIso }
-                                } }
-                              }
+                                    {
+                                        "InspectionDate", new BsonDocument
+                                        {
+                                        { "$gte", startDate },
+                                        { "$lte", endDate }
+                                        } 
+                                    }
+                                }
                             }
                         }
                     );
