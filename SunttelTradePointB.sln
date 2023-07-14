@@ -18,6 +18,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SunttelTPointVendingSite", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SunttelTPointReporPdf", "ReporPdf\ReporPdf\SunttelTPointReporPdf.csproj", "{37148610-3659-4C2C-A388-7DEDA5B6AB0A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIPythonConsole", "APIPythonConsole\APIPythonConsole.csproj", "{9C1A48E0-3085-4378-864E-8F1AFD119263}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,10 @@ Global
 		{37148610-3659-4C2C-A388-7DEDA5B6AB0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37148610-3659-4C2C-A388-7DEDA5B6AB0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37148610-3659-4C2C-A388-7DEDA5B6AB0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C1A48E0-3085-4378-864E-8F1AFD119263}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C1A48E0-3085-4378-864E-8F1AFD119263}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C1A48E0-3085-4378-864E-8F1AFD119263}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C1A48E0-3085-4378-864E-8F1AFD119263}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
