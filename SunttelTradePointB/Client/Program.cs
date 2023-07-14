@@ -38,10 +38,10 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 // Adding Business services
 builder.Services.AddScoped<SQuadService>();
 builder.Services.AddScoped<GeographicPlacesService>();
-builder.Services.AddScoped<ActorsNodeService>();
+builder.Services.AddScoped<IEntityNodes, ActorsNodeService>();
 builder.Services.AddScoped<WarehouseService>();
 builder.Services.AddScoped<CommunicationService>();
-builder.Services.AddScoped<TransactionalItemsService>();
+builder.Services.AddScoped<ITransactionalItemsService, TransactionalItemsService>();
 builder.Services.AddScoped<ISalesDocuments, SalesDocuments>();
 builder.Services.AddScoped<IARecognition>();
 builder.Services.AddScoped<Inventory>();

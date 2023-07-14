@@ -1,9 +1,41 @@
-﻿using SunttelTradePointB.Shared.Common;
+﻿using SunttelTradePointB.Client.Services.MasterTablesServices;
+using SunttelTradePointB.Shared.Common;
+using SunttelTradePointB.Shared.Communications;
+using System.Net.Http;
 
 namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
 {
-    public interface ITransactionalItems
+    public interface ITransactionalItemsService
     {
+        public string? transactionalItemId { get; set; }
+        public string? Page { get; set; }
+        public TransactionalItem? TransactionalItems { get; set; }
+        public Box? BoxSelectedItems { get; set; }
+        public SeasonBusiness? SeasonBusinessSelectedItems { get; set; }
+        public ConceptGroup? ConceptGroupSelectedItems { get; set; }
+        public TransactionalItemStatus? ConceptStatusSelectedItems { get; set; }
+        public TransactionalItemType? ConceptTransactionalItemType { get; set; }
+        public PackingSpecs? ConceptTransactionalItemPackingSpecs { get; set; }
+        public TransactionalItemProcessStep? ConceptTransactionalItemProcessStep { get; set; }
+        public TransactionalItemQualityPair? ConceptTransactionalItemQualityPair { get; set; }
+        public TransactionalItemTag? ConceptTransactionalItemTag { get; set; }
+        public TransactionalItemCharacteristicPair ConcepttransactionalItemCharacteristicPair { get; set; }
+        public AssemblyType ConceptItemAssemblyType { get; set; }
+        public ProductModel ConceptProductModel { get; set; }
+        public LabelStyle ConceptLabelStyle { get; set; }
+        public enum UploadingFileType
+        {
+            TransactionalItemImage,
+            EntityImage
+        }
+        public string Host
+        {
+            get
+            {
+                string host = UIClientGlobalVariables.PathTransactionalItemsImages;
+                return host + "/";
+            }
+        }
 
         /// <summary>
         /// Retrives a list with Transactional Items meeting search criteria
@@ -484,6 +516,37 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <param name="transactionalItemTypeId"></param>     
         /// <returns></returns>
         Task<bool> DeleteTransactionalItemTypeById(string? transactionalItemTypeId);
+
+        /// <summary>
+        /// Retrives the transactional item groups
+        /// </summary>
+        /// <param name="nameLike"></param>
+        /// <returns></returns>
+        public Task<List<ConceptGroup>> GetTransactionalItemGroups(string? nameLike = null);
+
+        /// <summary>
+        /// Retrives groups by Id
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        public Task<ConceptGroup> GetGroupsById(string groupId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="statusId"></param>
+        /// <returns></returns>
+        public Task<TransactionalItemStatus> GetTransactionalStatusesTableById(string? statusId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="assemblyTypeId"></param>
+        /// <returns></returns>
+        public Task<bool> DeleteAssemblyTypeById(string? assemblyTypeId);
+
+       
+        
     }
 }
 

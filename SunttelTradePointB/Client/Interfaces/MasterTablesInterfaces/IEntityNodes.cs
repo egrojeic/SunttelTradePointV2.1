@@ -5,6 +5,27 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
 {
     public interface IEntityNodes
     {
+        public Address? tempAddress { get; set; }
+
+        public City? tempCity { get; set; }
+        public GeoRegion tempRegion { get; set; }
+        public Country tempCountry { get; set; }
+        public string SkinImage
+        {
+            get;
+            set;
+        }
+
+        public string Host { get { return "https://localhost:7186/uploads/entityImages"; } }
+
+        public enum UploadingFileTyoe
+        {
+            ActorItemImage,
+            EntityImage
+        }
+
+
+
         /// <summary>
         /// Returns a list of faces of entity node/actors
         /// </summary>
@@ -137,5 +158,324 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <param name="addressId"></param>
         /// <returns></returns>
         public Task<(bool IsSuccess, string? ErrorDescription)> DeleteEntityAddress(string EntityId, string addressId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public Task<List<PalletType>> GetPalletTypeList(string filter = "");
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filterGroup"></param>
+        /// <returns></returns>
+        public Task<List<EntityRole>> GetListEntityRoles(string filterGroup);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filterGroup"></param>
+        /// <returns></returns>
+        public Task<List<EntityGroup>> GetListEntityGroups(string filterGroup);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public Task<List<IdentificationType>> GetIdentificationTypes(string filter = "");
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="identificationTypeId"></param>
+        /// <returns></returns>
+        public Task<bool> DeleteIdentificationTypeById(string identificationTypeId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public Task<List<EntityType>> GetEntityTypeList(string filter = "");
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="country"></param>
+        /// <returns></returns>
+        public Task<Country> NewCountry(Country country);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="geoRegion"></param>
+        /// <returns></returns>
+        public Task<GeoRegion> NewGeoRegion(GeoRegion geoRegion);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="city"></param>
+        /// <returns></returns>
+        public Task<City> NewCity(City? city);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        public Task<Address> NewEntityActorAddress(Address address);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="multipartFormDataContent"></param>
+        /// <returns></returns>
+        public Task<string> UploadFiles(MultipartFormDataContent multipartFormDataContent);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="atomConcept"></param>
+        /// <returns></returns>
+        public Task<bool> SaveEntityType(AtomConcept atomConcept);
+      
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="palletType"></param>
+        /// <returns></returns>
+        public Task SavePalletType(PalletType palletType);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="identification"></param>
+        /// <returns></returns>
+        public Task<bool> SaveIdentificationType(AtomConcept identification);
+       
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="transactionalItemId"></param>
+        /// <returns></returns>
+        public Task<TransactItemImage> GetImage(string? transactionalItemId = null);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entityActorId"></param>
+        /// <param name="skinImage"></param>
+        /// <returns></returns>
+        public Task<bool> SaveEntitySkinImage(string entityActorId, string skinImage);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entityActor"></param>
+        /// <returns></returns>
+        public Task<EntityActor> NewEntityActor(EntityActor entityActor);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filterCondition"></param>
+        /// <returns></returns>
+        public Task<List<ConceptGroup>> GetEntityGroups(string filterCondition);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="EntityActorId"></param>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        public Task<bool> SaveEntityAddress(string EntityActorId, Address address);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="EntityActorId"></param>
+        /// <param name="phoneNumber"></param>
+        /// <returns></returns>
+        public Task SavePhone(string EntityActorId, PhoneNumber phoneNumber);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="EntityActorId"></param>
+        /// <param name="identificationEntity"></param>
+        /// <returns></returns>
+        public Task SaveIdentificationCode(string EntityActorId, IdentificationEntity identificationEntity);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entityGroupId"></param>
+        /// <param name="entityGroup"></param>
+        /// <returns></returns>
+        public Task<bool> SaveEntityGroup(string entityGroupId, EntityGroup entityGroup);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="electronicAddressId"></param>
+        /// <param name="electronicAddress"></param>
+        /// <returns></returns>
+        public Task SaveElectronicAddress(string electronicAddressId, ElectronicAddress electronicAddress);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="shippinSetupId"></param>
+        /// <param name="shippingInfo"></param>
+        /// <returns></returns>
+        public Task SaveShippingSetup(string shippinSetupId, ShippingInfo shippingInfo);
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="commercialConditionId"></param>
+        /// <param name="comercialConditions"></param>
+        /// <returns></returns>
+        public Task<bool> SaveCommercialConditions(string commercialConditionId, EntitiesCommercialRelationShip comercialConditions);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="roleId"></param>
+        /// <param name="entityRole"></param>
+        /// <returns></returns>
+        public Task<bool> SaveEntityRole(string roleId, EntityRole entityRole);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entityActorId"></param>
+        /// <returns></returns>
+        public Task<EntitiesCommercialRelationShip> GetCommercialRelationShip(string entityActorId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="roleId"></param>
+        /// <returns></returns>
+        public Task<EntityRole> GetRoleById(string roleId);
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public Task<List<AtomConcept>> GetListElectronicAddress();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entityId"></param>
+        /// <returns></returns>
+        public Task<List<Address>> GetEntityDetailsAddressList(string entityId);
+       
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="electronicAddressId"></param>
+        /// <returns></returns>
+        public Task<ElectronicAddress> GetElectronicAddressById(string electronicAddressId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="shippingId"></param>
+        /// <returns></returns>
+        public Task<List<ShippingInfo>> GetShippingInfos(string shippingId);
+      
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="commercialConditionId"></param>
+        /// <returns></returns>
+        public Task<List<EntitiesCommercialRelationShip>> GetCommercialConditions(string commercialConditionId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public Task<List<EntitiyRelationshipType>> GetEntityRelationType();
+       
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entityActorId"></param>
+        /// <returns></returns>
+        public Task<List<ElectronicAddress>> GetEntityElectronicAddress(string entityActorId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entityId"></param>
+        /// <returns></returns>
+        public Task<List<IdentificationEntity>> GetEntityIdentifierList(string entityId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entityActorId"></param>
+        /// <returns></returns>
+        public Task<List<PhoneNumber>> GetPhoneNumber(string entityActorId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        public Task<EntityGroup> GetEntityGroup(string groupId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entityActorId"></param>
+        /// <returns></returns>
+        public Task<List<IdentificationType>> GetDetailsIdentifiers(string entityActorId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="identificationId"></param>
+        /// <returns></returns>
+        public Task<AtomConcept> GetIdentificationTypeById(string identificationId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public Task<List<PalletType>> GetPalletTypes();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="shippingInfoId"></param>
+        /// <returns></returns>
+        public Task<ShippingInfo> GetShippingSetUpById(string shippingInfoId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entityTypeId"></param>
+        /// <returns></returns>
+        public Task<AtomConcept> GetEntityTypeById(string entityTypeId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="palletTypeId"></param>
+        /// <returns></returns>
+        public Task<PalletType> GetPalleTypeById(string palletTypeId);
+
+
     }
 }

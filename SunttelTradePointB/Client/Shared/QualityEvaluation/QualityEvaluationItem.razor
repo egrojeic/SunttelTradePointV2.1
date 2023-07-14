@@ -13,10 +13,12 @@
 @using Syncfusion.Blazor.Navigations
 @using SunttelTradePointB.Client.Shared.Sales.SaleItemSubComponents
 @using SunttelTradePointB.Client.Shared.QualityEvaluation.SubComponents
+@using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
+
 @inject NavigationManager Navigation
 @inject SunttelTradePointB.Client.Services.QualityEvaluationServices.QualityEvaluationServices QualityEvaluationServices
 @inject ContextMenuService ContextMenuService
-@inject TransactionalItemsService transactionalService;
+@inject ITransactionalItemsService transactionalService;
 @inject IJSRuntime Js
 
 <style>
