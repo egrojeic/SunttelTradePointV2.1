@@ -167,9 +167,9 @@
                     {
                         <option value="@item.Id">@item.Name</option>
                     }
-                    @if (commercialDocument != null && commercialDocument.DeliveryAddress != null)
+                    @if (commercialDocument != null && commercialDocument.ShippingSetup.DeliveryAddress != null)
                     {
-                        <option value="@commercialDocument.DeliveryAddress.Id" selected>@commercialDocument.DeliveryAddress.Name</option>
+                        <option value="@commercialDocument.ShippingSetup.DeliveryAddress.Id" selected>@commercialDocument.ShippingSetup.DeliveryAddress.Name</option>
                     }
                 </select>
             </div>
@@ -376,7 +376,7 @@
         documentTypeList = await DocumentServices.GetCommercialDocumentTypes(isASale);
         businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
 
-        carrierList = await DocumentServices.GetCarrierList();
+        //carrierList = await DocumentServices.GetCarrierList();
         LoadCommercialDocument();
         isLoading = false;
         StateHasChanged();
@@ -424,7 +424,7 @@
 
     public void SelectItemDeliveryAddress(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
-        commercialDocument.DeliveryAddress = addressList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+        commercialDocument.ShippingSetup.DeliveryAddress = addressList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
 
     }
 
@@ -589,7 +589,7 @@
         if (commercialDocument.Buyer == null) commercialDocument.Buyer = new();
         if (commercialDocument.SalesPerson == null) commercialDocument.SalesPerson = new();
         if (commercialDocument.Carrier == null) commercialDocument.Carrier = new();
-        if (commercialDocument.DeliveryAddress == null) commercialDocument.DeliveryAddress = new();
+        if (commercialDocument.ShippingSetup.DeliveryAddress == null) commercialDocument.ShippingSetup.DeliveryAddress = new();
         if (commercialDocument.ShippingStatusDocument == null) commercialDocument.ShippingStatusDocument = new();
         if (commercialDocument.FinanceStatusDocument == null) commercialDocument.FinanceStatusDocument = new();
         if (commercialDocument.OriginDocument == null) commercialDocument.OriginDocument = new();

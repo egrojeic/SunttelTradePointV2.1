@@ -120,14 +120,17 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                  );
                 }
 
-
-
-                pipe.Add(
+                if(strRoleName.Length > 0)
+                {
+                    pipe.Add(
                        new BsonDocument(
                        "$match",
-                         new BsonDocument($"DefaultEntityRole.Name", strRoleName)
+                         new BsonDocument($"DefaultEntityRole.Name", new BsonDocument(
+                                    "$regex", new BsonRegularExpression($"/{strRoleName}/i")))
                                )
                    );
+                }
+
 
                 //pipe.Add(
                 //    new BsonDocument(
@@ -161,6 +164,61 @@ namespace SunttelTradePointB.Server.Services.MasterTablesServices
                 return (false, null, e.Message);
             }
         }
+        /// <summary>
+        /// Get Shippers
+        /// </summary>
+        /// <param name="buyerid"></param>
+        /// <param name="dayOfWeek"></param>
+        /// <returns></returns>
+        public async Task<(bool IsSuccess, List<ShippingInfo>? ShippingOptions, string? ErrorDescription)> GetSelectorListShippers(string buyerid, int dayOfWeek)
+        {
+            try
+            {
+
+
+                var pipe = new List<BsonDocument>();
+
+                if (buyerid != null)
+                {
+                    pipe.Add(
+                new BsonDocument(
+                    "$match",
+                      new BsonDocument("_id", new ObjectId(buyerid))
+                    ));
+                }
+
+                pipe.Add(
+                       new BsonDocument(
+                       "$project",
+                         new BsonDocument { { "ShippingInformation", 1 }, { "_id", 0 }}
+                   ));
+
+                pipe.Add(
+                    new BsonDocument(
+                        "$unwind", "$ShippingInformation")
+                );
+
+                pipe.Add(
+                    new BsonDocument {
+                        { "$replaceRoot",
+                            new BsonDocument{
+                                { "newRoot", "$ShippingInformation" }
+                            }
+                        }
+                    }
+                );
+
+                List<ShippingInfo> results = await _entities.Aggregate<ShippingInfo>(pipe).ToListAsync();
+
+              
+                return (true, results, null);
+            }
+            catch (Exception e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
 
         /// <summary>
         /// Retrives the different address of an Entity

@@ -79,6 +79,8 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
+                shippingStatus.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
+
                 string path = basepath.Replace("Name", "SaveShippingStatus");
                 var responseMessage = await _httpClient.PostAsJsonAsync<ShippingStatus>($"{path}", shippingStatus);
                 return await responseMessage.Content.ReadFromJsonAsync<ShippingStatus>();
@@ -95,6 +97,8 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         {
             try
             {
+                commercialDocumentType.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
+
                 string path = basepath.Replace("Name", "SaveCommercialDocumentType");
                 var responseMessage = await _httpClient.PostAsJsonAsync<CommercialDocumentType>($"{path}", commercialDocumentType);
                 return await responseMessage.Content.ReadFromJsonAsync<CommercialDocumentType>();
@@ -434,11 +438,11 @@ namespace SunttelTradePointB.Client.Services.SalesServices
         }
 
 
-        public async Task<List<Concept>> GetCarrierList()
+        public async Task<List<Concept>> GetCarrierList(string filter)
         {
             try
             {
-                string path = $"/api/ConceptsSelector/GetCarriers?filterString=all";
+                string path = $"/api/ConceptsSelector/GetCarriers?filter={filter}";
                 var responseMessage = await Gethttp($"{path}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<Concept>>();
                 return list != null ? list : new List<Concept>();
@@ -533,6 +537,26 @@ namespace SunttelTradePointB.Client.Services.SalesServices
 
                 var response = await Gethttp($"/api/EntityNodesMaintenance/GetEntityDetailsAddressList?userId={userId}&ipAdress={ipAddress}&EntityId={entityActorId}");
                 var list = await response.Content.ReadFromJsonAsync<List<Address>>();
+                return list;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = ex.Message;
+                return null;
+            }
+        }
+
+        public async Task<List<ShippingInfo>> GetEntityShippingSetup(string entityActorId)
+        {
+            var userId = UIClientGlobalVariables.UserId;
+            var ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            try
+            {
+                if (ipAddress == "")
+                    ipAddress = "127.0.0.0";
+
+                var response = await Gethttp($"/api/EntityNodesMaintenance/GetShippingSetup?userId={userId}&ipAdress={ipAddress}&entityActorId={entityActorId}");
+                var list = await response.Content.ReadFromJsonAsync<List<ShippingInfo>>();
                 return list;
             }
             catch (Exception ex)

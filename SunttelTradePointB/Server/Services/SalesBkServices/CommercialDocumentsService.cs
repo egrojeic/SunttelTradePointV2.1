@@ -202,7 +202,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                             new BsonDocument
                             {
                                 { "from", "GeographicCities" },
-                                { "let", new BsonDocument { { "cityId", "$DeliveryAddress.CityAddressRef" } } },
+                                { "let", new BsonDocument { { "cityId", "$ShippingSetup.DeliveryAddress.CityAddressRef" } } },
                                 { "pipeline", new BsonArray
                                 {
                                     new BsonDocument("$match", new BsonDocument("$expr",
@@ -214,7 +214,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                                         })
                                     ))
                                 }},
-                                { "as", "DeliveryAddress.CityAddress" }
+                                { "as", "ShippingSetup.DeliveryAddress.CityAddress" }
                             }
                         }
                     }
@@ -223,7 +223,7 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 pipeline.Add(
                     new BsonDocument("$unwind", new BsonDocument
                     {
-                        { "path", "$DeliveryAddress.CityAddress" },
+                        { "path", "$ShippingSetup.DeliveryAddress.CityAddress" },
                         { "preserveNullAndEmptyArrays", true },
                     })
                 );
@@ -335,7 +335,8 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
                 );
                 // Filtro por SquadId
                 pipeline.Add(
-                    new BsonDocument("$match", new BsonDocument("SquadId", squadId))
+                    new BsonDocument("$match", new BsonDocument("SquadId", new BsonDocument(
+                                        "$regex", new BsonRegularExpression($"/{squadId}/i"))))
                 );
 
                 List<CommercialDocumentType> results = await _CommercialDocumentType.Aggregate<CommercialDocumentType>(pipeline).ToListAsync();

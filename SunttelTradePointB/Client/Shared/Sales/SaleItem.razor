@@ -235,13 +235,13 @@
                     {
                         @foreach (var item in addressList)
                         {
-                            if (commercialDocument?.DeliveryAddress?.Id == item.Id)
+                            if (commercialDocument?.ShippingSetup?.Id == item.Id)
                             {
-                                <option selected value="@item.Id">@item.Name</option>
+                                <option selected value="@item.Id">@item.DeliveryAddress.Name</option>
                             }
                             else
                             {
-                                <option value="@item.Id">@item.Name</option>
+                                <option value="@item.Id">@item.DeliveryAddress.Name</option>
                             }
                         }
                     }
@@ -474,7 +474,7 @@ else
     public List<CommercialDocument> originDocument = new();
     public List<BasicConcept> vendorWarehouseList = new();
     public List<BasicConcept> buyerWarehouseList = new();
-    public List<Address> addressList = new();
+    public List<ShippingInfo> addressList = new();
 
     #endregion Input3
 
@@ -493,7 +493,7 @@ else
         onInitialized = false;
         ValidateUri();
         isLoading = true;
-        StateHasChanged();
+        //StateHasChanged();
         if (commercialDocumentId != null)
         {
             commercialDocument = await DocumentServices.GetItemCommercialDocumentById(commercialDocumentId);
@@ -507,6 +507,7 @@ else
                     TotalAmount = commercialDocument.Items.Sum(s => s.Total),
                     TotalTaxes = commercialDocument.Items.Sum(s => s.TaxValue)
                 };
+            
         }
         else
         {
@@ -517,7 +518,9 @@ else
         commercialDocument.ValidateItems();
         documentTypeList = await DocumentServices.GetCommercialDocumentTypes(isASale);//ok
         businessLineDocList = await DocumentServices.GetCommercialBusinessLines("all");
-        carrierList = await DocumentServices.GetCarrierList();
+        carrierList = await DocumentServices.GetCarrierList("");
+
+        //carrierList = await DocumentServices.GetCarrierList("64ad83331d11513cf4053772", 1);
         seasonList = await DocumentServices.GetCommercialSeasonList("all");
         LoadCommercialDocument();
         isLoading = false;
@@ -577,15 +580,23 @@ else
 
     public void SelectItemCarrie(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
-        commercialDocument.Carrier = carrierList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
-        SaveCommercialDocument();
+        try{
+            commercialDocument.Carrier = carrierList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+            SaveCommercialDocument();
 
+        }
+        catch(Exception ex){
+            alert(ex.Message, 1);
+        }
+        
     }
 
-    public void SelectItemVendorWarehous(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    public async void SelectItemVendorWarehous(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
 
         commercialDocument.VendorWarehouse = vendorWarehouseList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+        
+        
         SaveCommercialDocument();
 
 
@@ -603,7 +614,7 @@ else
     public void SelectItemDeliveryAddress(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
 
-        commercialDocument.DeliveryAddress = addressList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
+        commercialDocument.ShippingSetup = addressList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
         SaveCommercialDocument();
 
     }
@@ -700,7 +711,7 @@ else
         if (commercialDocument.Buyer != null && name == "Buyer")
         {
             buyerWarehouseList = await DocumentServices.GetCommercialBuyerWarehouseList(commercialDocument.Buyer.Id);
-            addressList = await DocumentServices.GetEntityDetailsAddressList(commercialDocument.Buyer.Id);
+            addressList = await DocumentServices.GetEntityShippingSetup(commercialDocument.Buyer.Id);
             await LoadBuyerItems();
         }
         if (commercialDocument.Vendor != null && name == "Vendor")
@@ -720,6 +731,8 @@ else
         if (SearcherValue == "Vendor")
         {
             commercialDocument.Vendor = item;
+
+         
             LoadBuyerAndVendor("Vendor");
 
         }
@@ -730,8 +743,16 @@ else
         if (SearcherValue == "Buyer")
         {
             commercialDocument.Buyer = item;
-            commercialDocument.DeliveryAddress = new Address();
-            addressList = new List<Address>();
+            commercialDocument.ShippingSetup = new ShippingInfo();
+            addressList = new List<ShippingInfo>();
+
+            if (commercialDocument.DocumentType.IsASale){
+                int dateWoD = 1;
+                dateWoD = commercialDocument.ShipDate.DayOfWeek == DayOfWeek.Sunday ? 2 : dateWoD;
+                
+            }
+            
+
             LoadBuyerAndVendor("Buyer");
             await LoadBuyerItems();
         }
@@ -795,7 +816,7 @@ else
         if (commercialDocument.Season == null || commercialDocument.Season.Id == null) msg = "required fields Sales Person";
         if (commercialDocument.BusinessLineDoc == null || commercialDocument.BusinessLineDoc.Id == null) msg = "required fields Business LineDoc ";
         if (commercialDocument.BuyerWarehouse == null || commercialDocument.BuyerWarehouse.Id == null) msg = "required fields Buyer Warehouse";
-        if (commercialDocument.DeliveryAddress == null || commercialDocument.DeliveryAddress.Id == null) msg = "required fields Delivery Address";
+        if (commercialDocument.ShippingSetup == null || commercialDocument.ShippingSetup.Id == null) msg = "required fields Delivery Address";
         if (commercialDocument.Carrier == null || commercialDocument.Carrier.Id == null) msg = "required fields Carrier";
         return msg;
     }
@@ -813,7 +834,7 @@ else
         if (commercialDocument.Buyer == null) commercialDocument.Buyer = new();
         if (commercialDocument.SalesPerson == null) commercialDocument.SalesPerson = new();
         if (commercialDocument.Carrier == null) commercialDocument.Carrier = new();
-        if (commercialDocument.DeliveryAddress == null) commercialDocument.DeliveryAddress = new();
+        if (commercialDocument.ShippingSetup == null) commercialDocument.ShippingSetup = new();
         if (commercialDocument.ShippingStatusDocument == null) commercialDocument.ShippingStatusDocument = new ShippingStatus
 
             {

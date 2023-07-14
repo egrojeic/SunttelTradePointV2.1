@@ -473,17 +473,17 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         }
 
         /// <summary>
-        /// Retrieves the list of Entity/Vendor filtered by the optional parameter
+        /// Retrieves the list of Carriers filtered by the optional parameter
         /// </summary>
-        /// <param name="filterString"></param>
+        /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetCarriers")]
-        public async Task<IActionResult> GetCarriers(string filterString)
+        public async Task<IActionResult> GetCarriers(string? filter)
         {
               var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString() ?? ""; // Request.Headers["SquadId"];
-            var response = await _selectorDatasource.GetSelectorListEntityActor(filterString,squadId, BasicRolesFilter.Carrier);
+            var response = await _selectorDatasource.GetSelectorListEntityActor(filter, squadId, BasicRolesFilter.Carrier);
 
             if (response.IsSuccess)
             {

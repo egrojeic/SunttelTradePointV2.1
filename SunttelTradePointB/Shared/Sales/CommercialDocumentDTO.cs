@@ -65,8 +65,8 @@ namespace SunttelTradePointB.Shared.Sales
         public Concept SalesPerson { get; set; }
         public Concept Carrier { get; set; }
 
-        [DisplayName("Delivery Address")]
-        public Address DeliveryAddress { get; set; }
+        [DisplayName("Shipping Setup")]
+        public ShippingInfo ShippingSetup { get; set; }
 
         [DisplayName("Shipping Status")]
         public ShippingStatus ShippingStatusDocument { get; set; }

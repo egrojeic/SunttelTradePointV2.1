@@ -1,12 +1,12 @@
 ﻿@page "/DocumentTypeConcept/add/{DocumentTypeId}"
 @page "/DocumentTypeConcept/add"
-
+@using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 @using SunttelTradePointB.Client.Services.SalesServices;
 @using SunttelTradePointB.Shared.Common
 @using SunttelTradePointB.Shared.Sales;
 @using Syncfusion.Blazor.Buttons
 @inject NavigationManager Navigation
-@inject SalesDocuments SaleDocumentService
+@inject ISalesDocuments SaleDocumentService
 
 @if (@viewMsg)
 {

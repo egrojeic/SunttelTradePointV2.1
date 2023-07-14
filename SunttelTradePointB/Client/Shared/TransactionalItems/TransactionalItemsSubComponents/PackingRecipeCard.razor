@@ -40,17 +40,12 @@
     </MessageSaveComponent>
 }
 
-
-
 @if (isLoading)
 {
-
     <WaitingProcessIndicator loadingTopic=" Packing Recipe"></WaitingProcessIndicator>
-
 }
 else
 {
-
     <form>
         <div class="content-new-packing-recipe" style=' display:@(!modeEdit?"block":"none"); };'>
 
@@ -1205,7 +1200,7 @@ else
         selectionControl = arg.selectionId;
         if (arg.selectionId == "Customer")
         {
-            ListConcept = await transactionalService.GetSelectorListEntityActors(arg.value, "MassMarket");
+            ListConcept = await transactionalService.GetSelectorListEntityActors(arg.value);
             if (ListConcept != null) ListConcept = ListConcept.Take(100).ToList();
         }
         if (arg.selectionId == "Model")

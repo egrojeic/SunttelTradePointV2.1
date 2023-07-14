@@ -178,7 +178,7 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// 
         /// </summary>
         /// <returns></returns>
-        Task<List<Concept>> GetCarrierList();
+        Task<List<Concept>> GetCarrierList(string filter);
 
         /// <summary>
         /// 
@@ -259,5 +259,20 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// <param name="salesDocumentItemsDetails"></param>
         /// <returns></returns>
         public Task<SalesDocumentItemsDetails> DeleteCommercialDocumentDetail(SalesDocumentItemsDetails salesDocumentItemsDetails);
+
+
+        /// <summary>
+        /// Returns a list of shipping setup for a given entity
+        /// </summary>
+        /// <param name="entityActorId"></param>
+        /// <returns></returns>
+        public Task<List<ShippingInfo>> GetEntityShippingSetup(string entityActorId);
+
+        /// <summary>
+        /// Returns a list Doument Types
+        /// </summary>
+        /// <param name="commercialDocumentTypeId"></param>
+        /// <returns></returns>
+        public Task<CommercialDocumentType?> GetCommercialDocumentTypeById(string commercialDocumentTypeId);
     }
 }

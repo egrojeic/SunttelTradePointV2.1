@@ -30,8 +30,8 @@ namespace SunttelTradePointB.Shared.Sales.CommercialDocument
         public Concept SalesPerson { get; set; }
         public Concept Carrier { get; set; }
 
-        [DisplayName("Delivery Address")]
-        public Address DeliveryAddress { get; set; }
+        [DisplayName("Shipping Setup")]
+        public ShippingInfo ShippingSetup { get; set; }
 
         [DisplayName("Shipping Status")]
         public ShippingStatus ShippingStatusDocument { get; set; }
@@ -82,7 +82,7 @@ namespace SunttelTradePointB.Shared.Sales.CommercialDocument
         {
 
         }
-        public CommercialDocument(EntityActor vendor) {
+        public CommercialDocument(Concept vendor) {
             this.Vendor = vendor;
         }
         public void ValidateItems()

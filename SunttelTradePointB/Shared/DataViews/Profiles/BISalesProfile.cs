@@ -15,9 +15,9 @@ namespace SunttelTradePointB.Shared.DataViews.Profiles
         public BISalesProfile()
         {
             CreateMap<CommercialDocument, BISalesConsolidated>()
-                .ForMember(dest => dest.DeliveryAddressCountry, opt => opt.MapFrom(src => src.DeliveryAddress.CityAddress.RegionCity.CountryRegion.Name))
-                .ForMember(dest => dest.DeliveryAddressState, opt => opt.MapFrom(src => src.DeliveryAddress.CityAddress.RegionCity.Name))
-                .ForMember(dest => dest.DeliveryAddressCity, opt => opt.MapFrom(src => src.DeliveryAddress.CityAddress.Name))
+                .ForMember(dest => dest.DeliveryAddressCountry, opt => opt.MapFrom(src => src.ShippingSetup.DeliveryAddress.CityAddress.RegionCity.CountryRegion.Name))
+                .ForMember(dest => dest.DeliveryAddressState, opt => opt.MapFrom(src => src.ShippingSetup.DeliveryAddress.CityAddress.RegionCity.Name))
+                .ForMember(dest => dest.DeliveryAddressCity, opt => opt.MapFrom(src => src.ShippingSetup.DeliveryAddress.CityAddress.Name))
                 .ForMember(dest => dest.BuyerCommercialGroup, opt => opt.MapFrom(src => src.Buyer.Groups[0].Name));
         }
     }

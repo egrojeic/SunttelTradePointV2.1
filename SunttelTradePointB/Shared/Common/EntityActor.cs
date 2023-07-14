@@ -300,6 +300,9 @@ namespace SunttelTradePointB.Shared.Common
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
+      
+
+
         [BsonIgnoreIfNull]
         [DisplayName("Sender")]
         public Sender Sender { get; set; }

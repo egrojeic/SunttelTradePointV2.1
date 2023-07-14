@@ -179,5 +179,14 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<(bool IsSuccess, List<EntityActor>? BuyersList, string? ErrorDescription)> GetBuyers(bool isASale, string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filterString = null, bool paginate = true);
 
+
+        /// <summary>
+        /// Retrieves the list of Entity/Nodes/Actors filtered by the optional parameter or/and by role
+        /// </summary>
+        /// <param name="buyerid"></param>
+        /// <param name="dayOfWeek"></param>
+        /// <returns></returns>
+        Task<(bool IsSuccess, List<ShippingInfo>? ShippingOptions, string? ErrorDescription)> GetSelectorListShippers(string buyerid, int dayOfWeek);
+
     }
 }

@@ -241,7 +241,7 @@
                 <div class="menuOptions">
                     <nav class="navVerticalOptions">
                         <ul>
-                            <li class="@StyleClassItem(0)" @onclick="@(()=>SetMenuOption(0))">Shipping places<span class="arrowhead"></span></li>
+                           @* <li class="@StyleClassItem(0)" @onclick="@(()=>SetMenuOption(0))">Shipping places<span class="arrowhead"></span></li>*@
                             <li class="@StyleClassItem(1)" @onclick="@(()=>SetMenuOption(1))">Identifications<span class="arrowhead"></span></li>
                             <li class="@StyleClassItem(2)" @onclick="@(()=>SetMenuOption(2))">Electronic addresses<span class="arrowhead"></span></li>
                             <li class="@StyleClassItem(3)" @onclick="@(()=>SetMenuOption(3))">Phones<span class="arrowhead"></span></li>
@@ -254,7 +254,9 @@
                     @switch (verticalMenuOptionSelected)
                     {
                         case 0:
-                            <EntityShippingPlaces EntityId="@Id" Code="@EntityNode.Code" />
+                            <EntityShippingSetUp EntityId="@Id" />
+
+                            @*<EntityShippingPlaces EntityId="@Id" Code="@EntityNode.Code" />*@
                             break;
                         case 1:
                             <EntityIdentifications EntityId="@Id" />

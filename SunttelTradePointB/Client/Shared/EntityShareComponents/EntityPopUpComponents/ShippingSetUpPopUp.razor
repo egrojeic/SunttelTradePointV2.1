@@ -18,6 +18,15 @@
            
                     <form onsubmit="event.preventDefault();">
 
+                        <div class="form-group row">
+                            <label class="control-label col-md-12 info-text-size">@lblName*: </label>
+                            <div class="col">
+                                <SfTooltip ID="Tooltip" Target="#name" Content="@ContentName">
+                            <input id="name" type="text" class="form-control info-text-size" @bind-value="@addressName" required />
+                                </SfTooltip>
+                            </div>
+                        </div>
+
                         <div class="form-group py-2">
                             <label class="info-text-size">@lblCarrier*:</label>
                             <div class="col">
@@ -34,7 +43,14 @@
                         <div class="form-group py-2">
                             <label class="info-text-size">@lblDeliveryAddress*:</label>
                             <div class="col">
-                                <input type="text" class="form-control" placeholder="Address" @bind-value="@deliver.Name" required />
+                               
+                                <div class="form-group row">
+                                    <div class="col">
+                                    @if (deliver == null) deliver = new();
+                                    <AddressComponent oldAddress="deliver" modePage="ShippingPlaces"></AddressComponent>
+                                    </div>
+                                </div>
+                        
                             </div>
                         </div>
                         <div class="form-group py-2">
@@ -109,6 +125,8 @@
 
     public bool visible = false;
 
+    public string addressName { get; set; }
+
     private bool isCheckedMonday = false;
     private bool isCheckedTuesday = false;
     private bool isCheckedWednesday = false;
@@ -137,6 +155,7 @@
     ShippingInfo getShippingInfo = new ShippingInfo();
     InputTextSelector? refInputTextSelector;
 
+    public string lblName = "";
     public string lblSender = "";
     public string lblCarrier = "";
     public string lblDeliveryAddress = "";
@@ -151,8 +170,11 @@
     public bool PopupViewEntitiesPallet = false;
     public int ParamCountResul = 0;
 
+    private string ContentName = "Address name";
+
     protected override async Task OnInitializedAsync()
     {
+        lblName = UICommonFunctions.GetDisplayName(new Address(), "Name");
         lblSender = UICommonFunctions.GetDisplayName(new ShippingInfo(), "Sender");
         lblCarrier = UICommonFunctions.GetDisplayName(new ShippingInfo(), "Carrier");
         lblDeliveryAddress = UICommonFunctions.GetDisplayName(new ShippingInfo(), "DeliveryAddress");
@@ -179,19 +201,23 @@
         if (entityId != null && shippingInfo != null)
         {
             if (shippingId != null)
-                shippingInfo.Id = shippingId;            
-            shippingInfo.Carrier = entityActorCarrier;
-            shippingInfo.DeliveryAddress = deliver;
-            shippingInfo.PalletTypeShipping = entityActorPallet;
-            shippingInfo.Monday = isCheckedMonday;
-            shippingInfo.Tuesday = isCheckedThursday;
-            shippingInfo.Wednesday = isCheckedWednesday;
-            shippingInfo.Thursday = isCheckedThursday;
-            shippingInfo.Friday = isCheckedFriday;
-            shippingInfo.Saturday = isCheckedSaturday;
-            shippingInfo.Sunday = isCheckedSunday;
-            await actorsNodeServive.SaveShippingSetup(entityId, shippingInfo);
-            visible = true;
+                shippingInfo.Id = shippingId;     
+               
+                shippingInfo.Carrier = entityActorCarrier;
+                shippingInfo.DeliveryAddress = deliver;
+                shippingInfo.DeliveryAddress.Name= addressName;
+                shippingInfo.DeliveryAddress.Name = getShippingInfo.DeliveryAddress.Name;
+                shippingInfo.DeliveryAddress.CityAddressRef = deliver.CityAddress.Id;
+                shippingInfo.PalletTypeShipping = entityActorPallet;
+                shippingInfo.Monday = isCheckedMonday;
+                shippingInfo.Tuesday = isCheckedThursday;
+                shippingInfo.Wednesday = isCheckedWednesday;
+                shippingInfo.Thursday = isCheckedThursday;
+                shippingInfo.Friday = isCheckedFriday;
+                shippingInfo.Saturday = isCheckedSaturday;
+                shippingInfo.Sunday = isCheckedSunday;
+                await actorsNodeServive.SaveShippingSetup(entityId, shippingInfo);
+                visible = true;
         }
     }
 
@@ -204,7 +230,8 @@
             {
                 
                 entityActorCarrier.Name = getShippingInfo.Carrier.Name;
-                deliver.Name = getShippingInfo.DeliveryAddress.Name;
+                deliver = getShippingInfo.DeliveryAddress;
+                addressName = getShippingInfo.DeliveryAddress.Name;
                 shippingInfo.CutOff24Hour = getShippingInfo.CutOff24Hour;
                 shippingInfo.CutOffMinute = getShippingInfo.CutOffMinute;
                 shippingInfo.DelayTimeDays = getShippingInfo.DelayTimeDays;
@@ -216,6 +243,8 @@
                 isCheckedFriday = getShippingInfo.Friday;
                 isCheckedSaturday = getShippingInfo.Saturday;
                 isCheckedSunday = getShippingInfo.Sunday;
+
+                StateHasChanged();
             }
         }
     }

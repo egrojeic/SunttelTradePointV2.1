@@ -1,10 +1,11 @@
 ﻿@page "/ShippingStatusDocument/{_filterItems}"
 @page "/ShippingStatusDocument"
 
+@using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 @using SunttelTradePointB.Client.Services.SalesServices;
 @using SunttelTradePointB.Shared.Sales;
 @inject HttpClient Http
-@inject SalesDocuments SalesDocumentsService
+@inject ISalesDocuments SalesDocumentsService
 @inject ContextMenuService ContextMenuService
 @inject TransactionalItemsService transactItemsService
 @inject NavigationManager Navigation
