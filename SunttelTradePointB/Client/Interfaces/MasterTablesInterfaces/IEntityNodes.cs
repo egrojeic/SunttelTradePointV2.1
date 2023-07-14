@@ -122,5 +122,20 @@ namespace SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<bool> DeletePalletTypeById(string palletTypeId);
 
+        /// <summary>
+        /// Delete the ShippingSetup of a Entity
+        /// </summary>
+        /// <param name="EntityId"></param>
+        /// <param name="shippingInfoId"></param>
+        /// <returns></returns>
+        public Task<(bool IsSuccess, string? ErrorDescription)> DeleteShippingSetup(string EntityId, string shippingInfoId);
+
+        /// <summary>
+        ///  Delete the ShippingAddress of a Entity
+        /// </summary>
+        /// <param name="EntityId"></param>
+        /// <param name="addressId"></param>
+        /// <returns></returns>
+        public Task<(bool IsSuccess, string? ErrorDescription)> DeleteEntityAddress(string EntityId, string addressId);
     }
 }

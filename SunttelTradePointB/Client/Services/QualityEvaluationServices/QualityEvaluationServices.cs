@@ -158,14 +158,16 @@ namespace SunttelTradePointB.Client.Services.QualityEvaluationServices
 
 
         ///Gets
-        public async Task<List<QualityEvaluation>> GetQualityEvaluationServicesList(string filter, int? page = 1, int? perPage = 10)
+        public async Task<List<QualityEvaluation>> GetQualityEvaluationServicesList(string filter, DateTime startDate, DateTime endDate, string? qualityReportTypeName, int? page = 1, int? perPage = 10)
         {
             CultureInfo culture = new CultureInfo("en-US");
             try
             {
-                //
+                var startDateString = startDate.ToString("yyyy-MM-dd");
+                var endDateString = endDate.ToString("yyyy-MM-dd");
+
                 string path = basepath.Replace("*Name", "GetQCDocuments");
-                var responseMessage = await Gethttp($"{path}&filter={filter}&page={page}&perPage={perPage}");
+                var responseMessage = await Gethttp($"{path}&filter={filter}&startDate={startDateString}&endDate={endDateString}&qualityParamterTypeName={qualityReportTypeName}&page={page}&perPage={perPage}");
                 var list = await responseMessage.Content.ReadFromJsonAsync<List<QualityEvaluation>>();
                 return list != null ? list : new List<QualityEvaluation>();
             }

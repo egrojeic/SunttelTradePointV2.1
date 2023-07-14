@@ -5,6 +5,28 @@
 @inject ContextMenuService ContextMenuService
 @inject NavigationManager navigationManager
 
+
+<style>
+    .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {
+        font-size: 12px;
+    }
+
+    .rz-datatable-data td, .rz-grid-table td {
+        padding: 3px;
+    }
+
+        .rz-datatable-data td .rz-cell-data, .rz-grid-table tr:has(:hover) {
+            background-color: #1bc7b7;
+            box-shadow: 0px 2px 5px;
+            font-weight: bold;
+        }
+
+    .rz-state-highlight {
+        background-color: #1bc7b7;
+        font-weight: bold;
+    }
+</style>
+
 <div class="GeneralContainerDetails">
 
     <div class="detailsTitleContainer">
@@ -39,8 +61,10 @@
                         SelectionMode="DataGridSelectionMode.Single"
                         LogicalFilterOperator="LogicalFilterOperator.Or"
                         CellContextMenu="@ShowContextMenuWithContent"
+                        @bind-Value="@selectedAddres"
                         PageNumbersCount="100"
-                        PageSize="50">
+                        PageSize="50"
+                        @ref="referGrid">
 
                 <Columns>
                     <RadzenDataGridColumn TItem="Address" Property="Name" Title="@GetName("Name", new Address())" Width="280px" />
@@ -94,14 +118,26 @@
     void ShowContextMenuWithContent(DataGridCellMouseEventArgs<Address> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-    </RadzenMenu>
+        <RadzenMenuItem Text="Delete" Value=args.Data Icon="delete"></RadzenMenuItem>
+        </RadzenMenu>
     );
-
-    void OnMenuItemClick(MenuItemEventArgs args)
+        
+    public async void OnMenuItemClick(MenuItemEventArgs args)
     {
         Address argObj = (Address)args.Value;
+        if (args.Text == "Edit")
+        {
+            navigationManager.NavigateTo($"/Actors/{EntityId}/ShippingPlaces/{argObj.Id}/Edit");
+        }
+        else if (args.Text == "Delete")
+        {
+            if (EntityId is null) return;
+            var response = await actorsNodeServive.DeleteEntityAddress(EntityId, argObj.Id);
+            entityAddressList.Remove(argObj);
+            await referGrid!.Reload();
+        }
 
-        navigationManager.NavigateTo($"/Actors/{EntityId}/ShippingPlaces/{argObj.Id}/Edit");
+        ContextMenuService.Close();
     }
 
     #endregion Grid

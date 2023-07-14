@@ -743,7 +743,6 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
 
         public async Task<(bool IsSuccess, string? EntityId, string? error)> SaveEntity(string? EntityActorId, EntityActor entityActor)
         {
-            EntityActorId = EntityActorId != null ? EntityActorId : "";
             var userId = UIClientGlobalVariables.UserId;
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;
             entityActor.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
@@ -783,6 +782,13 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             var resul = await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveEntityAddress?userId={userId}&ipAdress={ipAddress}&entityActorId={EntityActorId}", address);
 
             return resul.IsSuccessStatusCode;
+        }
+
+        public async Task<(bool IsSuccess, string? ErrorDescription)> DeleteEntityAddress(string EntityId, string addressId)
+        {
+            var userId = UIClientGlobalVariables.UserId;
+            var ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            return await _httpClient.DeleteFromJsonAsync<(bool IsSuccess, string? ErrorDescription)>($"/api/EntityNodesMaintenance/DeleteEntityAddress?userId={userId}&ipAdress={ipAddress}&entityActorId={EntityId}&addressId={addressId}");
         }
 
         public async Task SavePhone(string EntityActorId, PhoneNumber phoneNumber)
@@ -852,7 +858,14 @@ namespace SunttelTradePointB.Client.Services.MasterTablesServices
             await _httpClient.PostAsJsonAsync($"/api/EntityNodesMaintenance/SaveShippingSetup?userId={userId}&ipAdress={ipAddress}&entityActorId={shippinSetupId}", shippingInfo);
         }
 
-        public async Task<bool> SaveCommercialConditions(string commercialConditionId, EntitiesCommercialRelationShip comercialConditions)
+        public async Task<(bool IsSuccess, string? ErrorDescription)> DeleteShippingSetup(string EntityId, string shippingInfoId)
+        {
+            var userId = UIClientGlobalVariables.UserId;
+            var ipAddress = UIClientGlobalVariables.PublicIpAddress;
+            return await _httpClient.DeleteFromJsonAsync <(bool IsSuccess, string? ErrorDescription)>($"/api/EntityNodesMaintenance/DeleteShippingSetup?userId={userId}&ipAdress={ipAddress}&entityActorId={EntityId}&shippingInfoId={shippingInfoId}");
+        }
+
+            public async Task<bool> SaveCommercialConditions(string commercialConditionId, EntitiesCommercialRelationShip comercialConditions)
         {
             var userId = UIClientGlobalVariables.UserId;
             var ipAddress = UIClientGlobalVariables.PublicIpAddress;

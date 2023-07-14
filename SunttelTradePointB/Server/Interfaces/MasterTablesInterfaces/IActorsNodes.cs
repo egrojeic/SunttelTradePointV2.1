@@ -1,4 +1,5 @@
-﻿using SunttelTradePointB.Server.Migrations;
+﻿using MongoDB.Driver;
+using SunttelTradePointB.Server.Migrations;
 using SunttelTradePointB.Server.Services.MasterTablesServices;
 using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.Security;
@@ -258,7 +259,24 @@ namespace SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces
         /// <returns></returns>
         Task<(bool IsSuccess, List<EntityActor>? ActorsNodesList, string? ErrorDescription)> SaveEntitiesCSV(string userId, string ipAddress, string squadId, IFormFile file);
 
+        /// <summary>
+        /// Deletes a Shipping Setup from an Entity Actor
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="entityActorId"></param>
+        /// <param name="shippingInfoId"></param>
+        /// <returns></returns>
+        public Task<(bool IsSuccess, string? ErrorDescription)> DeleteShippingSetup(string userId, string ipAdress, string entityActorId, string shippingInfoId);
 
-
+        /// <summary>
+        /// Deletes an address of an entity.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="entityActorId"></param>
+        /// <param name="addressId"></param>
+        /// <returns></returns>
+        public Task<(bool IsSuccess, string? ErrorDescription)> DeleteEntityAddress(string userId, string ipAdress, string entityActorId, string addressId);
     }
 }

@@ -12,6 +12,7 @@
 @inject NavigationManager _navigationManager;
 @inject CustomStateProvider authStateProvider
 
+<div class="container">
 <EditForm Model="Role" OnSubmit="OnPostAsync">
     <DataAnnotationsValidator />
 
@@ -39,64 +40,63 @@
             <div class="row">
                 <div class="col-6">
                     <div class="mb-3">
-                        <div>
-                            <label for="ComercialGroup">Permissions:</label>
-                        </div>
-                        <div>
-                            <button type="button" @onclick='() => SetViewElement("Group")' class="btn color-btn"><i class="fa-sharp fa-solid fa-circle-plus"></i></button>
-                        </div>
-                        <div class="conten-chip">
-                            <SfChip @ref="referChip3" EnableDelete="true" CssClass="chip-style" EnableRtl="false">
-                                <ChipEvents Deleted="@onDeleted"></ChipEvents>
-                                <ChipItems>
-                                    @{
-                                        if (FilterTools != null)
-                                        {
-                                            @foreach (var Group in FilterTools)
-                                            {
-                                                if (Group != null && Group.Name != null)
-                                                {
-                                                    <ChipItem Text="@Group?.Name" LeadingIconCss="anne"></ChipItem>
-                                                }
-
-                                            }
-                                        }
-                                    }
-                                </ChipItems>
-                            </SfChip>
-                            <InputTextSelector3 TItem="SystemTool"
-                                                EventSearcherValueAndId="EventSearcherValueAndId"
-                                                EventIdSelectionAndId="SelectionMade"
-                                                Items="systemTools"
-                                                captionOff="true"
-                                                Visible="PopupViewGroups"
-                                                Id="Group">
-
-                            </InputTextSelector3>
-                        </div>
+                        <h4>Assign Permissions</h4>
+                        <select @onchange="AssignPermission" class="form-select">
+                            <option value="0">-- Select Permissions --</option>
+                            @if (systemTools is not null)
+                            {
+                                @foreach (var role in systemTools)
+                                {
+                                    <option value="@role.ID">@role.Name</option>
+                                }
+                            }
+                        </select>
                     </div>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>Options</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var role in FilterTools.Select((value, index) => new { Value = value, Index = index }))
+                            {
+                                <tr>
+                                    <td>@(role.Index + 1)</td>
+                                    <td>@role.Value.Name</td>
+                                    <td>
+                                        <button type="button" @onclick="(() => DeletePermission(role.Value))" class="btn btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 </EditForm>
+</div>
 
 @code {
     [Parameter]
     public string? roleId { get; set; }
     public UserRole? Role = new UserRole();
     public List<string> rolenames = new List<string>();
-    public IEnumerable<UserRole>? roles;
-    // ship
     public List<SystemTool> systemTools = new List<SystemTool>();
-    public List<SystemTool>? FilterTools = new List<SystemTool>();
+    public List<SystemTool> FilterTools = new List<SystemTool>();
     public bool PopupViewGroups = false;
     public string SearchValueMode = "";
     SfChip? referChip3;
 
     protected override void OnInitialized()
     {
-        GetRoles();
         base.OnInitialized();
         StateHasChanged();
         Role.SquadsId = UIClientGlobalVariables.ActiveSquad.ID;
@@ -104,36 +104,26 @@
 
     protected override async void OnParametersSet()
     {
-        GetRoleById();
+        await GetPermissions();
+        await GetRoleById();
         base.OnParametersSet();
     }
 
-    private async void GetRoleById()
+    private async Task GetPermissions()
     {
-        if (roleId is null) return;
-        UserRole role = await authStateProvider.GetRoleById(roleId);
-        if (role is null) return;
-        Role.Id = role.Id;
-        Role.Name = role.Name;
-      
+        var response = await authStateProvider.GetSystemTools();
+        if (response is not null) systemTools = response;
         StateHasChanged();
     }
 
-    private async void GetRoles()
+    private async Task GetRoleById()
     {
-        try
-        {
-            roles = await authStateProvider.GetRoles();
-            if (roles is not null)
-            {
-                rolenames = roles.Select(x => x.Name).ToList();
-            }
-        }
-        catch (Exception ex)
-        {
-
-        }
-
+        if (roleId is null) return;
+        var response = await authStateProvider.GetRoleById(roleId);
+        if (response is null) return;
+        Role.Id = response.Id;
+        Role.Name = response.Name;
+        FilterTools = response.SystemTools;
         StateHasChanged();
     }
 
@@ -167,7 +157,8 @@
         SearchValueMode = arg.selectionId;
         if (SearchValueMode == "Group")
         {
-            systemTools = await authStateProvider.GetSystemTools();
+            var response = await authStateProvider.GetSystemTools();
+            if (response is not null) systemTools = response;
         }
 
         StateHasChanged();
@@ -198,4 +189,29 @@
         if (Element == "Group" && !PopupViewGroups) { PopupViewGroups = true; }
         StateHasChanged();
     }
+
+    private void AssignPermission(ChangeEventArgs e)
+    {
+        try
+        {
+            var rol = systemTools.Where(x => x.ID.ToString() == e.Value?.ToString()).FirstOrDefault();
+            if (rol is not null)
+            {
+                var rolRegistered = FilterTools.Where(x => x.ID == rol.ID).FirstOrDefault();
+                if(rolRegistered is null) FilterTools!.Add(rol);
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            return;
+        }
+    }
+
+    private void DeletePermission(SystemTool rol)
+    {
+        FilterTools.Remove(rol);
+        StateHasChanged();
+    }
+
 }

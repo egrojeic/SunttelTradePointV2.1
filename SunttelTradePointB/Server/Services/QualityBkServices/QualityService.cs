@@ -79,7 +79,7 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                         );
                     }
 
-                  //  Filtro por SquadId
+                    //  Filtro por SquadId
                     //pipeline.Add(
                     //    new BsonDocument("$match", new BsonDocument("SquadId"))
                     //);
@@ -109,7 +109,7 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                     }
                     else
                     {
-                        return (true, qualityParameters.Where(s=>s.SquadId.ToLower() == squadId.ToLower()).ToList(), null);
+                        return (true, qualityParameters.Where(s => s.SquadId.ToLower() == squadId.ToLower()).ToList(), null);
                     }
                 }
 
@@ -212,7 +212,7 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                     );
 
 
-               
+
                 var resultCount = _QCDocumentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
                 int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
 
@@ -993,9 +993,9 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                     );
 
 
-           
-                 var resultCount = _QCDocumentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
-               int count = resultCount!=null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
+
+                var resultCount = _QCDocumentCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefault();
+                int count = resultCount != null && resultCount.Elements != null ? resultCount.Elements.Count() : 0;
 
 
 
@@ -1029,8 +1029,11 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="filter"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <param name="qualityReportTypeName"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, List<QualityEvaluation>? GetQCDocumentsList, string? ErrorDescription)> GetQCDocuments(string userId, string ipAddress, string squadId, int? page = 1, int? perPage = 10, string? filter = null)
+        public async Task<(bool IsSuccess, List<QualityEvaluation>? GetQCDocumentsList, string? ErrorDescription)> GetQCDocuments(string userId, string ipAddress, string squadId, DateTime startDate, DateTime endDate, string? qualityReportTypeName, int? page = 1, int? perPage = 10, string? filter = null)
         {
             try
             {
@@ -1059,20 +1062,48 @@ namespace SunttelTradePointB.Server.Services.QualityBkServices
                         new BsonDocument("$match", new BsonDocument("SquadId", squadId))
                     );
 
-                    pipeline.Add(
-                    new BsonDocument{
-                        {"$skip",  skip}
+                    if (!string.IsNullOrEmpty(qualityReportTypeName))
+                    {
+                        pipeline.Add(
+                            new BsonDocument("$match", new BsonDocument("QualityReportType.Name", qualityReportTypeName))
+                            );
                     }
+
+                    // TODO: falta agregar el filtro de fecha
+                    pipeline.Add(
+                        new BsonDocument
+                        {
+                            {
+                                "$match",
+                                new BsonDocument
+                                {
+                                    {
+                                        "InspectionDate", new BsonDocument
+                                        {
+                                        { "$gte", startDate },
+                                        { "$lte", endDate }
+                                        } 
+                                    }
+                                }
+                            }
+                        }
                     );
 
                     pipeline.Add(
                         new BsonDocument{
-                        {"$limit",  perPage}
+        {"$skip",  skip}
+                        }
+                    );
+
+                    pipeline.Add(
+                        new BsonDocument{
+        {"$limit",  perPage}
                         }
                     );
 
                     List<QualityEvaluation> results = await _QCDocumentCollection.Aggregate<QualityEvaluation>(pipeline).ToListAsync();
                     return (true, results, null);
+
                 }
                 else
                 {

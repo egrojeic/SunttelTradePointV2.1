@@ -68,6 +68,12 @@ namespace SunttelTradePointB.Server.Interfaces
         /// <returns></returns>
         Task<bool> UpdateRoleSystemTools(UserRole userRole);
 
-       
+
+        /// <summary>
+        /// Retrieves the list of tools for a given role
+        /// </summary>
+        /// <param name="roleId"></param>
+        /// <returns></returns>
+        public Task<List<SystemTool>> SystemToolsByRole(string roleId);
     }
 }

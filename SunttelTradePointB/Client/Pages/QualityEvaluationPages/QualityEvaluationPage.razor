@@ -43,7 +43,7 @@
 @if (_page == "grid")
 {
     <PageTitleComponent Title="Quality Control Panel" IconName="QualityParameters.png"
-                    Description="With this tool you can add and edit quality control panel">
+                        Description="With this tool you can add and edit quality control panel">
     </PageTitleComponent>
     <div class="panelMenuContainer">
         <QualityEvaluationMenu PageView="@_page" PageHome="@Page">
@@ -54,10 +54,10 @@
     <div class="panelMenuContainer">
         <QualityEvaluationMenu2 SetType="SetType"></QualityEvaluationMenu2>
         <RangeDatesInput @bind-StartDate="@startingDate"
-                     StartDateName="Form"
-                     EndDateName="To"
-                     @bind-EndDate="endDate"
-                     EventSearchAll="EventSearchAll"></RangeDatesInput>
+                         StartDateName="Form"
+                         EndDateName="To"
+        @bind-EndDate="endDate"
+                         EventSearchAll="EventSearchAll"></RangeDatesInput>
     </div>
 
     <div class="tableContainer">
@@ -70,29 +70,29 @@
             @if (qualityEvaluationList != null)
             {
                 <RadzenDataGrid AllowFiltering="true"
-                    AllowColumnResize="true"
-                    AllowAlternatingRows="true"
-                    FilterMode="FilterMode.Advanced"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    AllowSorting="true"
-                    PageSize="50"
-                    AllowPaging="true"
-                    PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
-                    ShowPagingSummary="true"
-                    Data="@qualityEvaluationList"
-                    TItem="QualityEvaluation"
-                    ColumnWidth="300px"
-                    SelectionMode="DataGridSelectionMode.Single"
-                    LogicalFilterOperator="LogicalFilterOperator.Or"
-                    @bind-Value="@selectedcommercialdocuments"
-                    CellContextMenu="@ShowContextMenuCommercialDocument">
+                                AllowColumnResize="true"
+                                AllowAlternatingRows="true"
+                                FilterMode="FilterMode.Advanced"
+                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                AllowSorting="true"
+                                PageSize="20"
+                                AllowPaging="true"
+                                PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
+                                ShowPagingSummary="true"
+                                Data="@qualityEvaluationList"
+                                TItem="QualityEvaluation"
+                                ColumnWidth="300px"
+                                SelectionMode="DataGridSelectionMode.Single"
+                                LogicalFilterOperator="LogicalFilterOperator.Or"
+                                @bind-Value="@selectedcommercialdocuments"
+                                CellContextMenu="@ShowContextMenuCommercialDocument">
                     <Columns>
-                        <RadzenDataGridColumn TItem="QualityEvaluation" Property="QualityReportType.Name" Title="@GetName("QualityReportType", new QualityEvaluation() )" Width="108px" />                     
+                        <RadzenDataGridColumn TItem="QualityEvaluation" Property="QualityReportType.Name" Title="@GetName("QualityReportType", new QualityEvaluation() )" Width="108px" />
                         <RadzenDataGridColumn TItem="QualityEvaluation" Property="InspectionDate" Title="@GetName("InspectionDate", new QualityEvaluation() )" Filterable="false" Sortable="false" FormatString="{0:MM/dd/yyyy}" Width="88px" />
                         <RadzenDataGridColumn TItem="QualityEvaluation" Property="QuantityToInspect" Title="@GetName("QuantityToInspect", new QualityEvaluation() )" TextAlign="Radzen.TextAlign.Right" Filterable="false" Width="88px" />
                         <RadzenDataGridColumn TItem="QualityEvaluation" Property="QuantityInspected" Title="@GetName("QuantityInspected", new QualityEvaluation() )" TextAlign="Radzen.TextAlign.Right" Filterable="false" Width="88px" />
                         <RadzenDataGridColumn TItem="QualityEvaluation" Property="QuantityWithIssues" Title="@GetName("QuantityWithIssues", new QualityEvaluation() )" TextAlign="Radzen.TextAlign.Right" Filterable="false" Width="88px" />
-                        <RadzenDataGridColumn TItem="QualityEvaluation" Property="Pack" Title="@GetName("Pack", new QualityEvaluation() )" Filterable="false" Width="88px" />
+                        <RadzenDataGridColumn TItem="QualityEvaluation" Property="Pack" Title="@GetName("Pack", new QualityEvaluation() )" Filterable="false" Width="88px" TextAlign="Radzen.TextAlign.Right" />
                         <RadzenDataGridColumn TItem="QualityEvaluation" Property="@nameof(QualityEvaluation.TrafficLightStatus)" Title="@GetName("TrafficLightStatus", new QualityEvaluation() )" TextAlign="Radzen.TextAlign.Center" Width="88px">
                             <Template Context="data">
                                 <div class="color-item" style="background-color:rgb(@(GetColor(data.TrafficLightStatus)));">
@@ -130,7 +130,7 @@
 @if (_page == "view")
 {
     <PageTitleComponent Title="Quality Control Panel Dynamic View" IconName="QualityParameters.png"
-                    Description="With this tool you can add and edit quality control panel">
+                        Description="With this tool you can add and edit quality control panel">
     </PageTitleComponent>
     <div class="panelMenuContainer">
         <QualityEvaluationMenu PageView="@_page" PageHome="@Page">
@@ -141,10 +141,10 @@
     <div class="panelMenuContainer">
         <QualityEvaluationMenu2 SetType="SetType"></QualityEvaluationMenu2>
         <RangeDatesInput @bind-StartDate="@startingDate"
-                     StartDateName="Form"
-                     EndDateName="To"
-                     @bind-EndDate="endDate"
-                     EventSearchAll="EventSearchAll"></RangeDatesInput>
+                         StartDateName="Form"
+                         EndDateName="To"
+        @bind-EndDate="endDate"
+                         EventSearchAll="EventSearchAll"></RangeDatesInput>
     </div>
 
     <QualityEvaluationPageVIew QualityEvaluationList="@qualityEvaluationList"></QualityEvaluationPageVIew>
@@ -186,7 +186,7 @@
     {
         isLoading = true;
 
-        qualityEvaluationList = await QualityEvaluationServices.GetQualityEvaluationServicesList((_filterItems != null ? _filterItems : "all"), 1, 20);
+        qualityEvaluationList = await QualityEvaluationServices.GetQualityEvaluationServicesList((_filterItems != null ? _filterItems : "all"), startingDate, endDate,qualityReportType?.Name, 1, 100);
 
         if (qualityReportType != null)
         { }
@@ -199,20 +199,16 @@
         docsFilter = value;
     }
 
-    public async void SetType(QualityReportType item)
+    public void SetType(QualityReportType item)
     {
-
-        if (item != null)
-        {
-            qualityReportType = item;
-        }
+        qualityReportType = item;
         StateHasChanged();
     }
 
     void ShowContextMenuCommercialDocument(DataGridCellMouseEventArgs<QualityEvaluation> args) => ContextMenuService.Open(args, ds =>
     @<RadzenMenu Click="OnMenuItemClick">
         <RadzenMenuItem Text="Edit" Value=args.Data Icon="edit"></RadzenMenuItem>
-        </RadzenMenu>
+    </RadzenMenu>
     );
 
     void OnMenuItemClick(MenuItemEventArgs args)
@@ -249,7 +245,7 @@
         _page = name;
         StateHasChanged();
     }
-    
+
     public void PageHome()
     {
         _page = "grid";

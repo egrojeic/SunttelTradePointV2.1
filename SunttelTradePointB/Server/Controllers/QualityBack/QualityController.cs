@@ -629,14 +629,17 @@ namespace SunttelTradePointB.Server.Controllers.QualityBack
         /// <param name="page"></param>
         /// <param name="perPage"></param>
         /// <param name="filter"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <param name="qualityParamterTypeName"></param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("GetQCDocuments")]
-        public async Task<IActionResult> GetQCDocuments(string userId, string ipAddress, int? page = 1, int? perPage = 10, string? filter = null)
+        public async Task<IActionResult> GetQCDocuments(string userId, string ipAddress, DateTime startDate, DateTime endDate,string? qualityParamterTypeName, int? page = 1, int? perPage = 10, string? filter = null)
         {
             var customHeaderValue = Request.Headers["SquadId"];
             var squadId = customHeaderValue.ToString().ToUpper() ?? ""; // Request.Headers["SquadId"];
-            var response = await _quality.GetQCDocuments(userId, ipAddress, squadId, page, perPage, filter);
+            var response = await _quality.GetQCDocuments(userId, ipAddress, squadId,startDate, endDate, qualityParamterTypeName, page, perPage, filter);
 
             if (response.IsSuccess)
             {

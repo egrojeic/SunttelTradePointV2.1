@@ -65,8 +65,11 @@ namespace SunttelTradePointB.Client.Interfaces.QualityEvaluationInterfaces
         /// <param name="filter"></param>       
         /// <param name="page"></param>       
         /// <param name="perPage"></param>       
+        /// <param name="qualityReportTypeName"></param>       
+        /// <param name="startDate"></param>       
+        /// <param name="endDate"></param>       
         /// <returns></returns>
-        Task<List<QualityEvaluation>> GetQualityEvaluationServicesList(string filter, int? page = 1, int? perPage = 10);
+        public Task<List<QualityEvaluation>> GetQualityEvaluationServicesList(string filter, DateTime startDate, DateTime endDate, string? qualityReportTypeName, int? page = 1, int? perPage = 10);
 
         /// <summary>
         /// Retrives a  QualityReportType item meeting search criteria

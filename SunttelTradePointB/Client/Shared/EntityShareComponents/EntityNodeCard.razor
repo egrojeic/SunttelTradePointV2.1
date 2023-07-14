@@ -364,7 +364,7 @@
     public string StyleClassItem(int item)
     {
         return (verticalMenuOptionSelected == item ? "menu-item selected" : "menu-item");
-       
+
     }
 
     protected override async Task OnInitializedAsync()
@@ -515,7 +515,7 @@
 
     public void SelectionMade(string arg)
     {
-       var item =  userNameList.FindLast(s => s.ToLower() == arg.ToLower());
+        var item =  userNameList.FindLast(s => s.ToLower() == arg.ToLower());
         StateHasChanged();
     }
 
@@ -543,6 +543,7 @@
             var result = await actorsNodeServive.SaveEntity(Id, EntityNode);
             if (result.IsSuccess)
             {
+                EntityNode.Id = result.EntityId;
                 message = "Entity Actor Saved";
                 visible = true;
                 StateHasChanged();

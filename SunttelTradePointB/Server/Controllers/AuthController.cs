@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
 using SunttelTradePointB.Server.Data;
 using SunttelTradePointB.Server.Interfaces;
 using SunttelTradePointB.Server.Interfaces.MasterTablesInterfaces;
@@ -144,19 +145,18 @@ namespace SunttelTradePointB.Server.Controllers
         {
             try
             {
+                userRole.Id = ObjectId.GenerateNewId().ToString();
                 var result = await _roleManager.CreateAsync(new UserRole
                 {
-                    Name = userRole.Name
-                });
+                    Id = userRole.Id,
+                    Name = userRole.Name,
+                    NormalizedName = userRole.Name?.ToUpper(),
+                    SquadsId = userRole.SquadsId
+                });;
 
                 if (result.Succeeded)
                 {
 
-                    UserRole rol = await _roleManager.FindByNameAsync(userRole.Name);
-
-                    if (rol is null) return BadRequest("Rol not saved");
-                    // añadimos al Systemql
-                    userRole.Id = rol.Id;
                     bool resp = await _squad.RegisterRoleSystemTools(userRole);
                     if (!resp) return BadRequest("Error Saving System Tools for The Role");
                     return Ok();
@@ -229,10 +229,11 @@ namespace SunttelTradePointB.Server.Controllers
         /// Edit user
         /// </summary>
         /// <param name="parameters"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
         [HttpPost]
         [ActionName("EditUser")]
-        public async Task<IActionResult> EditUser(RegisterRequest parameters)
+        public async Task<IActionResult> EditUser([FromBody]RegisterRequest parameters, [FromQuery] string userId, [FromQuery] string ipAdress)
         {
             try
             {
@@ -462,6 +463,8 @@ namespace SunttelTradePointB.Server.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(id)) return NotFound();
+
                 UserRole rolDB = await _roleManager.Roles.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (rolDB is null) return BadRequest(" not found");
@@ -470,7 +473,7 @@ namespace SunttelTradePointB.Server.Controllers
                 {
                     Id = rolDB.Id,
                     Name = rolDB.Name,
-                    SystemTools = null
+                    SystemTools = await _squad.SystemToolsByRole(id)
                 }; 
 
                 return Ok(rol);
@@ -518,42 +521,54 @@ namespace SunttelTradePointB.Server.Controllers
         [ActionName("CurrentUserInfo")]
         public async Task<IActionResult> CurrentUserInfo()
         {
-
-            List<Squad> squads = new List<Squad>();
-            string LastSquadId = "";
-            string EntityIdUser = "";
-            string skinImage = "";
-
-            if (User != null && User.Identity != null && User.Identity.Name != null)
+            try
             {
-                squads = await _squad.SquadInfo(User.Identity.Name);
-                var userInfo = await _userManager.FindByNameAsync(User.Identity.Name);
 
-                LastSquadId = (userInfo != null && userInfo.DefaultSquadId != null) ? userInfo.DefaultSquadId : "";
-                EntityIdUser = (userInfo != null && userInfo.EntityID != null) ? userInfo.EntityID : "";
+                List<Squad> squads = new List<Squad>();
+                string LastSquadId = "";
+                string EntityIdUser = "";
+                string skinImage = "";
 
-                var response = await _entityNodes.GetEntityActorByUserId("sys", "127.0.0.1", User.Identity.Name);
-                skinImage = response.IsSuccess ? response.Item2.skinImage : "";
+                if (User != null && User.Identity != null && User.Identity.Name != null)
+                {
+                    squads = await _squad.SquadInfo(User.Identity.Name);
+                    var userInfo = await _userManager.FindByNameAsync(User.Identity.Name);
 
+                    LastSquadId = (userInfo != null && userInfo.DefaultSquadId != null) ? userInfo.DefaultSquadId : "";
+                    EntityIdUser = (userInfo != null && userInfo.EntityID != null) ? userInfo.EntityID : "";
+
+                    var response = await _entityNodes.GetEntityActorByUserId("sys", "127.0.0.1", User.Identity.Name);
+                    skinImage = response.IsSuccess ? response.Item2.skinImage : "";
+
+                }
+
+                System.Security.Claims.ClaimsPrincipal curuser = this.User;
+
+                var idcurrentuser = _userManager.GetUserId(curuser);
+
+                // Avoid sending duplicate keys
+                var claimsDictionary = User.Claims.GroupBy(c => c.Type)
+                                  .ToDictionary(g => g.Key, g => g.First().Value);
+
+
+                return Ok(new CurrentUser
+                {
+                    IDUser = idcurrentuser,
+                    IsAuthenticated = User.Identity.IsAuthenticated,
+                    UserName = User.Identity.Name,
+                    MySquads = squads,
+                    LastSquadId = LastSquadId,
+                    EntityId = EntityIdUser,
+                    SkinImageName = skinImage,
+                    Claims = claimsDictionary
+
+
+                });
             }
-
-            System.Security.Claims.ClaimsPrincipal curuser = this.User;
-
-            var idcurrentuser = _userManager.GetUserId(curuser);
-
-            return Ok(new CurrentUser
+            catch (Exception ex)
             {
-                IDUser = idcurrentuser,
-                IsAuthenticated = User.Identity.IsAuthenticated,
-                UserName = User.Identity.Name,
-                MySquads = squads,
-                LastSquadId = LastSquadId,
-                EntityId = EntityIdUser,
-                SkinImageName = skinImage,
-                Claims = User.Claims.ToDictionary(c => c.Type, c => c.Value)
-
-
-            });
+                return BadRequest(ex.Message);
+            }
         }
 
 

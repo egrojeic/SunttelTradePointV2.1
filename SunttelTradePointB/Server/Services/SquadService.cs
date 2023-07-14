@@ -207,9 +207,6 @@ namespace SunttelTradePointB.Server.Services
                         systemTool.IDToolSets = int.Parse(reader["IDToolSets"].ToString());
                         systemTool.OptionRef = reader["OptionRef"].ToString();
                         systemTool.DisplayOrder = int.Parse(reader["DisplayOrder"].ToString());
-
-                        //systemTool.Description = reader["Description"].ToString();
-                        //systemTool.ToolSets = reader["ToolSets"].ToString();
                         systemTool.ToolSetsNavigation = new ToolSet
                         {
                             ID = int.Parse(reader["IDToolSets"].ToString()),
@@ -226,14 +223,51 @@ namespace SunttelTradePointB.Server.Services
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                return null;
             }
 
-            return null;
-            //var systemTools = await _sunttelDBContext.SystemTools
-            //    .Include(s => s.ToolSetsNavigation)
-            //    .ToListAsync();
+        }
 
-            //return systemTools;
+        /// <summary>
+        /// Retrieves the list of tools for a given role
+        /// </summary>
+        /// <param name="roleId"></param>
+        /// <returns></returns>
+        public async Task<List<SystemTool>> SystemToolsByRole(string roleId)
+        {
+            try
+            {
+                string connectionString = _sunttelDBContext.Database.GetConnectionString();
+                string storedProcedureName = "GetSystemToolsByRole";
+                List<SystemTool> systemtools = new List<SystemTool>();
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    SqlCommand command = new SqlCommand(storedProcedureName, connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@IDRole", roleId));
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        SystemTool systemTool = new SystemTool();
+                        systemTool.ID = int.Parse(reader["ID"].ToString());
+                        systemTool.Name = reader["Name"].ToString();
+                        systemTool.IDToolSets = int.Parse(reader["IDToolSets"].ToString());
+                        systemTool.OptionRef = reader["OptionRef"].ToString();
+                        systemTool.DisplayOrder = int.Parse(reader["DisplayOrder"].ToString());
+                      
+                        systemtools.Add(systemTool);
+                    }
+                    reader.Close();
+                }
+                return systemtools;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+
         }
 
 
@@ -243,11 +277,44 @@ namespace SunttelTradePointB.Server.Services
         /// <returns></returns>
         public async Task<List<SystemTool>> GetSystemTools()
         {
-            var systemTools = await _sunttelDBContext.SystemTools
-                .Include(s => s.ToolSetsNavigation)
-                .ToListAsync();
+            try
+            {
+                // Metodo con EF, pero ya no funciona :(
+                //var systemTools = await _sunttelDBContext.SystemTools
+                ////.Include(s => s.ToolSetsNavigation)
+                //.ToListAsync();
 
-            return systemTools;
+                string connectionString = _sunttelDBContext.Database.GetConnectionString();
+                List<SystemTool> systemtools = new List<SystemTool>();
+                string query = "SELECT * FROM SystemTools";
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    SqlCommand command = new SqlCommand(query, connection);
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        SystemTool systemTool = new SystemTool();
+                        systemTool.ID = int.Parse(reader["ID"].ToString());
+                        systemTool.Name = reader["Name"].ToString();
+                        systemTool.IDToolSets = int.Parse(reader["IDToolSets"].ToString());
+                        systemTool.OptionRef = reader["OptionRef"].ToString();
+                        systemTool.DisplayOrder = int.Parse(reader["DisplayOrder"].ToString());
+
+                        systemtools.Add(systemTool);
+                    }
+                    reader.Close();
+                }
+
+                return systemtools;
+
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+                return null;
+            }
         }
 
         /// <summary>

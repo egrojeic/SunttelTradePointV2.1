@@ -2,6 +2,8 @@
 @using SunttelTradePointB.Client.Services;
 @using SunttelTradePointB.Shared.Enums;
 @using SunttelTradePointB.Shared.Security;
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Popups
 @inject NavigationManager _NavigationManager;
 @inject CustomStateProvider authStateProvider
 
@@ -9,119 +11,155 @@
                     Description="This is a control for Users and Roles of the application">
 </PageTitleComponent>
 
-<!-- NavMenu.razor -->
-<div class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="collapse navbar-collapse">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <button class="btn btn-primary me-3" @onclick="() => ChangeTab(1)">
-                    Users
-                </button>
-            </li>
-            <li class="nav-item">
-                <button class="btn btn-primary" @onclick="() => ChangeTab(2)">
-                    Roles
-                </button>
-            </li>
-        </ul>
-    </div>
+
+<SfDialog @ref="Dialog" Width="250px" Visible="false" ShowCloseIcon="true" IsModal="true">
+    <DialogEvents Closed="Closed"></DialogEvents>
+    <DialogTemplates>
+        @*Here you can customize the Header and Content of delete confirmation dialog*@
+        <Header> Delete Record</Header>
+        <Content> You are about to Delete the item "@SelectedData!.Name" ?</Content>
+    </DialogTemplates>
+    <DialogButtons>
+        @if (isUser)
+        {
+            <DialogButton OnClick="@OkClickUser" Content="OK" IsPrimary="true"></DialogButton>
+        }
+        else
+        {
+            <DialogButton OnClick="@OkClickRole" Content="OK" IsPrimary="true"></DialogButton>
+        }
+        <DialogButton OnClick="@CancelClick" Content="Cancel"></DialogButton>
+    </DialogButtons>
+</SfDialog>
+
+<div class="container">
+    <SfTab>
+        <TabItems>
+            <TabItem>
+                <ChildContent>
+                    <TabHeader Text="Users"></TabHeader>
+                </ChildContent>
+                <ContentTemplate>
+                    <div class="row mb-3">
+                        <div class="col-md-12" style="text-align: right">
+                            <button class="btn btn-success" @onclick="@(() => AddNewUser())">
+                                <span class="oi oi-plus me-1" aria-hidden="true"></span>
+                                Add new User
+                            </button>
+                        </div>
+                    </div>
+
+                    @if (isLoadingUsers)
+                    {
+                        <WaitingProcessIndicator loadingTopic="Loading Users..."></WaitingProcessIndicator>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <div class="col-md-12">
+                                <RadzenDataGrid TItem="UserEntity" Data="@users" PageSize="50" ColumnWidth="150px">
+                                    <Columns>
+                                        <RadzenDataGridColumn TItem="UserEntity" Property="Name" Title="Username" />
+                                        <RadzenDataGridColumn TItem="UserEntity" Property="Email" Title="Email" />
+                                        <RadzenDataGridColumn TItem="UserEntity" Title="Options">
+                                            <Template Context="user">
+                                                <div class="btn-group" role="group">
+                                                    <button class="btn btn-warning me-2" title="editar" @onclick="@(() => EditUser(user))">
+                                                        <span class="oi oi-pencil" aria-hidden="true"></span>
+                                                    </button>
+                                                    <button class="btn btn-danger" title="Delete" @onclick="@(() => DeleteUser(user))">
+                                                        <span class="oi oi-trash" aria-hidden="true"></span>
+
+                                                    </button>
+                                                </div>
+                                            </Template>
+                                        </RadzenDataGridColumn>
+                                    </Columns>
+                                </RadzenDataGrid>
+                            </div>
+                        </div>
+                    }
+
+                </ContentTemplate>
+            </TabItem>
+            <TabItem>
+                <ChildContent>
+                    <TabHeader Text="Roles"></TabHeader>
+                </ChildContent>
+                <ContentTemplate>
+                    <div class="row mb-3">
+                        <div class="col-md-12" style="text-align: right">
+                            <button class="btn btn-success" @onclick="@(() => AddNewRole())">
+                                <span class="oi oi-plus me-1" aria-hidden="true"></span>
+                                Add new Role
+                            </button>
+                        </div>
+                    </div>
+                    @if (isLoadingRoles)
+                    {
+                        <WaitingProcessIndicator loadingTopic="Loading Roles..."></WaitingProcessIndicator>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <div class="col-md-12">
+                                <RadzenDataGrid TItem="UserRole" Data="@roles" PageSize="50" ColumnWidth="150px">
+                                    <Columns>
+                                        <RadzenDataGridColumn TItem="UserRole" Property="Name" Title="Role" />
+                                        <RadzenDataGridColumn TItem="UserRole" Title="Options">
+                                            <Template Context="roles">
+                                                <div class="btn-group" role="group">
+                                                    <button class="btn btn-warning me-2" title="Editar" @onclick="@(() => EditRole(roles))">
+                                                        <span class="oi oi-pencil" aria-hidden="true"></span>
+                                                    </button>
+                                                    <button class="btn btn-danger" title="Delete" @onclick="@(() => DeleteRole(roles))">
+                                                        <span class="oi oi-trash" aria-hidden="true"></span>
+
+                                                    </button>
+                                                </div>
+                                            </Template>
+                                        </RadzenDataGridColumn>
+                                    </Columns>
+                                </RadzenDataGrid>
+                            </div>
+                        </div>
+                    }
+                </ContentTemplate>
+            </TabItem>
+        </TabItems>
+    </SfTab>
 </div>
 
-@if (tab == 1)
-{
-    <div class="row mb-3">
-        <div class="col-md-12" style="text-align: right">
-            <button class="btn btn-success" @onclick="@(() => AddNewUser())">
-                <span class="oi oi-plus me-1" aria-hidden="true"></span>
-                Add new User
-            </button>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <RadzenDataGrid TItem="UserEntity" Data="@users" PageSize="50" ColumnWidth="150px">
-                <Columns>
-                    <RadzenDataGridColumn TItem="UserEntity" Property="Name" Title="Username" />
-                    <RadzenDataGridColumn TItem="UserEntity" Property="Email" Title="Email" />
-                    <RadzenDataGridColumn TItem="UserEntity" Title="Options">
-                        <Template Context="user">
-                            <div class="btn-group" role="group">
-                                <button class="btn btn-warning me-2" title="editar" @onclick="@(() => EditUser(user))">
-                            <span class="oi oi-pencil" aria-hidden="true"></span>
-                            </button>
-                                <button class="btn btn-danger" title="Delete" @onclick="@(() => DeleteUser(user))">
-                                    <span class="oi oi-trash" aria-hidden="true"></span>
-
-                                </button>
-                            </div>
-                        </Template>
-                    </RadzenDataGridColumn>
-                </Columns>
-            </RadzenDataGrid>
-        </div>
-    </div>
-} else if(tab == 2)
-{
-    <div class="row mb-3">
-        <div class="col-md-12" style="text-align: right">
-            <button class="btn btn-success" @onclick="@(() => AddNewRole())">
-                <span class="oi oi-plus me-1" aria-hidden="true"></span>
-                Add new Role
-            </button>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <RadzenDataGrid TItem="UserRole" Data="@roles" PageSize="50" ColumnWidth="150px">
-                <Columns>
-                    <RadzenDataGridColumn TItem="UserRole" Property="Name" Title="Username" />
-                    <RadzenDataGridColumn TItem="UserRole" Title="Options">
-                        <Template Context="roles">
-                            <div class="btn-group" role="group">
-                                <button class="btn btn-warning me-2" title="Editar" @onclick="@(() => EditRole(roles))">
-                            <span class="oi oi-pencil" aria-hidden="true"></span>
-                            </button>
-                                <button class="btn btn-danger" title="Delete" @onclick="@(() => DeleteRole(roles))">
-                                    <span class="oi oi-trash" aria-hidden="true"></span>
-
-                                </button>
-                            </div>
-                        </Template>
-                    </RadzenDataGridColumn>
-                </Columns>
-            </RadzenDataGrid>
-        </div>
-    </div>
-}
 
 @code {
-    public int tab = 1;
-
-    public void ChangeTab(int _tab)
-    {
-        tab = _tab;
-    }
-
+    SfDialog Dialog;
     public List<UserEntity>? users;
     public List<UserRole>? roles;
+    public bool isLoadingUsers = false;
+    public bool isLoadingRoles = false;
+    public BasicConcept? SelectedData;
+    public bool isUser = true;
+    public bool flag = true;
 
     protected override async Task OnInitializedAsync()
     {
-        GetUsers();
-        GetRoles();
+        await GetUsers();
+        await GetRoles();
     }
 
     private async Task GetRoles()
     {
+        isLoadingRoles = true;
         roles = await authStateProvider.GetRoles();
+        isLoadingRoles = false;
         StateHasChanged();
     }
 
     private async Task GetUsers()
     {
+        isLoadingUsers = true;
         users = await authStateProvider.GetUsersByRolname(UserType.User.ToString());
+        isLoadingUsers = false;
         StateHasChanged();
     }
 
@@ -147,13 +185,58 @@
 
     public async void DeleteUser(UserEntity user)
     {
-        await authStateProvider.DeleteUser(user.Id);
-        GetUsers();
+        if (!flag) return;
+        SelectedData = new BasicConcept(){
+            Id = user.Id,
+            Name = user.Name
+        };
+        isUser = true;
+        await Dialog.ShowAsync();
+        flag = false;
     }
 
     public async void DeleteRole(UserRole rol)
     {
-        await authStateProvider.DeleteRole(rol.Id);
-        GetRoles();
+        if (!flag) return;
+        SelectedData = new BasicConcept()
+            {
+                Id = rol.Id,
+                Name = rol.Name
+            };
+        isUser = false;
+        await Dialog.ShowAsync();
+        flag = false;
+    }
+
+    private async Task OkClickUser()
+    {
+        //await DataGrid!.DeleteRecordAsync();   //Delete the record programmatically while clicking OK button.
+        await Dialog.HideAsync();
+        if (SelectedData is null) return;
+        //await QualityEvaluationServices.DeleteQualityParameterGroupById(SelectedData.Id);
+
+        await authStateProvider.DeleteUser(SelectedData.Id);
+        await GetUsers();
+    }
+
+    private async Task OkClickRole()
+    {
+        //await DataGridDetail!.DeleteRecordAsync();   //Delete the record programmatically while clicking OK button.
+        await Dialog.HideAsync();
+        if (SelectedData is null) return;
+        //await QualityEvaluationServices.DeleteQualityAssuranceParameterById(SelectedData.Id);
+        await authStateProvider.DeleteRole(SelectedData.Id);
+        await GetRoles();
+    }
+
+    private async Task CancelClick()
+    {
+        await Dialog.HideAsync();
+        Closed();
+    }
+
+    public void Closed()
+    {
+        flag = true;
     }
 }

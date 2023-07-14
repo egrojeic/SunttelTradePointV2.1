@@ -435,6 +435,28 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
         }
 
         /// <summary>
+        /// Saves an address of an entity. If it exists, it'll be updated, otherwise it 'll be inserted in the array
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="entityActorId"></param>
+        /// <param name="addressId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteEntityAddress")]
+        public async Task<IActionResult> DeleteEntityAddress(string userId, string ipAdress, string entityActorId, string addressId)
+        {
+            var response = await _entityNodes.DeleteEntityAddress(userId, ipAdress, entityActorId, addressId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response);
+            }
+            else
+                return BadRequest(response);
+        }
+
+        /// <summary>
         /// Saves a phone number of an entity. If it exists, it'll be updated, otherwise it 'll be inserted in the array
         /// </summary>
         /// <param name="userId"></param>
@@ -549,6 +571,31 @@ namespace SunttelTradePointB.Server.Controllers.MasterTablesCtrl
             else
             {
                 return NotFound(response.ErrorDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Inserts / Updates Shipping Setup in an Entity Actor
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="ipAdress"></param>
+        /// <param name="entityActorId"></param>
+        /// <param name="shippingInfoId"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ActionName("DeleteShippingSetup")]
+        public async Task<IActionResult> DeleteShippingSetup(string userId, string ipAdress, string entityActorId, string shippingInfoId)
+        {
+            var response = await _entityNodes.DeleteShippingSetup(userId, ipAdress, entityActorId, shippingInfoId);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest(response);
             }
         }
 
