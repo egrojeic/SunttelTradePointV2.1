@@ -367,7 +367,7 @@ namespace SunttelTradePointB.Server.Interfaces.SalesBkServices
         /// <param name="fieldName"></param>
         /// <param name="fieldValue"></param>
         /// <returns></returns>
-        public Task<(bool IsSuccess, string? ErrorDescription)> UpdateCommercialDocumentField(string userId, string ipAddress, string squadId,string commercialDocumentId, string fieldName, object fieldValue);
+        public Task<(bool IsSuccess, int DocumentNumber, string? ErrorDescription)> UpdateCommercialDocumentField(string userId, string ipAddress, string squadId,string commercialDocumentId, string fieldName, object fieldValue);
 
         /// <summary>
         /// Deletes a Commercial Document Detail by its ID.

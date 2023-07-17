@@ -99,7 +99,7 @@ namespace SunttelTradePointB.Server.Controllers.SalesBack
 
             if (response.IsSuccess)
             {
-                return Ok();
+                return Ok(response.DocumentNumber);
             }
             else
             {

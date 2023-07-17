@@ -4,6 +4,7 @@
 @page "/PurchasesItem/{page}/{commercialDocumentId}/{filter}"
 @page "/SaleItem/{page}/{commercialDocumentId}"
 @page "/SaleItem/{page}/{commercialDocumentId}/{filter}"
+@using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
 @using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
@@ -18,7 +19,7 @@
 
 @inject NavigationManager Navigation
 @inject ISalesDocuments DocumentServices
-@inject SunttelTradePointB.Client.Services.MasterTablesServices.ActorsNodeService actor
+@inject IEntityNodes actor
 @inject GeographicPlacesService geoPlaces
 @inject IEntityNodes actorsNodeServive
 @inject IJSRuntime Js
@@ -507,7 +508,7 @@ else
                     TotalAmount = commercialDocument.Items.Sum(s => s.Total),
                     TotalTaxes = commercialDocument.Items.Sum(s => s.TaxValue)
                 };
-            
+
         }
         else
         {
@@ -588,15 +589,15 @@ else
         catch(Exception ex){
             alert(ex.Message, 1);
         }
-        
+
     }
 
     public async void SelectItemVendorWarehous(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
 
         commercialDocument.VendorWarehouse = vendorWarehouseList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
-        
-        
+
+
         SaveCommercialDocument();
 
 
@@ -642,17 +643,23 @@ else
 
     }
 
-    public void SelectItemDocumentType(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    public async void SelectItemDocumentType(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
         if (!arg.Value.ToString().Equals("0"))
             commercialDocument.DocumentType = documentTypeList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
-        UpdateDocumentType();
+        await UpdateDocumentType();
         StateHasChanged();
     }
 
     private async Task UpdateDocumentType()
     {
         var updated = await DocumentServices.UpdateDocumentType(commercialDocument);
+        if(updated != null)
+        {
+            this.commercialDocument.DocumentNumber = updated;
+            StateHasChanged();
+
+        }
     }
 
     public string GetDeliveryAddress(Address address)

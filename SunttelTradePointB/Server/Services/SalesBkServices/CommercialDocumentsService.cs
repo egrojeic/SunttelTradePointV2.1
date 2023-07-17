@@ -109,7 +109,18 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
 
                 var filterCommercialDocument = Builders<CommercialDocumentDTO>.Filter.Eq("_id", new ObjectId(commercialDocument.Id));
                 var updateCommercialDocument = new ReplaceOptions { IsUpsert = true };
-                var resultCommercialDocument = await _CommercialDocumentCollection.ReplaceOneAsync(filterCommercialDocument, commercialDocument, updateCommercialDocument);
+
+                var options = new FindOneAndReplaceOptions<CommercialDocumentDTO>
+                {
+                    ReturnDocument = ReturnDocument.After,
+                    IsUpsert = true
+                };
+
+                //var resultCommercialDocument = await _CommercialDocumentCollection.ReplaceOneAsync(filterCommercialDocument, commercialDocument, updateCommercialDocument);
+
+                var resultCommercialDocument = await _CommercialDocumentCollection.FindOneAndReplaceAsync(filterCommercialDocument, commercialDocument, options);
+
+                commercialDocumentDTO.DocumentNumber = resultCommercialDocument.DocumentNumber;
 
                 return (true, commercialDocumentDTO, null);
             }
@@ -1706,26 +1717,38 @@ namespace SunttelTradePointB.Server.Services.SalesBkServices
         /// <param name="fieldName"></param>
         /// <param name="fieldValue"></param>
         /// <returns></returns>
-        public async Task<(bool IsSuccess, string? ErrorDescription)> UpdateCommercialDocumentField(string userId, string ipAddress, string squadId, string commercialDocumentId, string fieldName, object fieldValue)
+        public async Task<(bool IsSuccess, int DocumentNumber, string? ErrorDescription)> UpdateCommercialDocumentField(string userId, string ipAddress, string squadId, string commercialDocumentId, string fieldName, object fieldValue)
         {
             try
             {
                 var filterCommercialDocument = Builders<CommercialDocumentDTO>.Filter.Eq("_id", new ObjectId(commercialDocumentId));
                 var updateCommercialDocument = Builders<CommercialDocumentDTO>.Update.Set(fieldName, fieldValue);
-                var resultCommercialDocument = await _CommercialDocumentCollection.UpdateOneAsync(filterCommercialDocument, updateCommercialDocument);
 
-                if (resultCommercialDocument.ModifiedCount > 0)
+               // This is the way to return the updated document
+                var options = new FindOneAndUpdateOptions<CommercialDocumentDTO>
                 {
-                    return (true, null);
-                }
-                else
+                    ReturnDocument = ReturnDocument.After
+                    
+                };
+
+
+                var resultCommercialDocument = await _CommercialDocumentCollection.FindOneAndUpdateAsync(filterCommercialDocument, updateCommercialDocument, options);
+                Thread.Sleep(500);
+
+                var projNum = Builders<CommercialDocumentDTO>.Projection.Include("DocumentNumber").Exclude("_id");
+                var updatedDoc = await _CommercialDocumentCollection.Find(filterCommercialDocument).Project<CommercialDocumentIdentifier> (projNum).FirstAsync();
+              
+                if (updatedDoc.DocumentNumber == 0)
                 {
-                    return (false, "No se encontró ningún documento con el ID especificado.");
+                    return (false, 0, "No se pudo actualizar el documento");
                 }
+
+                return (true, updatedDoc.DocumentNumber, null);
+
             }
             catch (Exception e)
             {
-                return (false, e.Message);
+                return (false, 0, e.Message);
             }
         }
 

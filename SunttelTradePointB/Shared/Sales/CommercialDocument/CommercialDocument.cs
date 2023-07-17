@@ -8,6 +8,10 @@ namespace SunttelTradePointB.Shared.Sales.CommercialDocument
 {
     public class CommercialDocument : RecordItem
     {
+        public bool sysLoading { get; set; } =false;
+        public bool sysSaving { get; set; } = false;
+
+
         [DisplayName("Document Type")]
         public CommercialDocumentType DocumentType { get; set; }
 
@@ -90,6 +94,11 @@ namespace SunttelTradePointB.Shared.Sales.CommercialDocument
             ItemsAdded = Items.Any();
         }
       
+    }
+
+    public class CommercialDocumentIdentifier
+    {
+        public int DocumentNumber { get; set; }
     }
 
 }
