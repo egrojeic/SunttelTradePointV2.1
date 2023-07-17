@@ -1,0 +1,16 @@
+How To Install
+1. Configuración del entorno: Asegúrate de tener Python instalado en tu sistema. Puedes descargar la última versión de Python desde el sitio web oficial (https://www.python.org). 
+2. Preparación del entorno virtual (opcional): Es una buena práctica crear un entorno virtual para tu proyecto.
+> python3 -m venv mi_entorno
+3. ejecutamos el entorno virtual
+> mi_entorno\Scripts\activate
+4. Instalación de dependencias
+> pip install -r requirements.txt
+
+How to run
+1. nos ubicamos en la carpeta donde esta nuestro proyecto
+> cd \PDFAnalyse
+2. ejecutamos el entorno virtual
+> mi_entorno\Scripts\activate
+3. Corremos el api
+> uvicorn app:app --reload
