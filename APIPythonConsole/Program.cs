@@ -10,7 +10,7 @@ string comandoActivarEntornoVirtual = @"mi_entorno\Scripts\activate";
 string comandoCorrerAPI = @"C:\Proyectos\SunttelTradePointV2.1\APIPythonConsole\PDFAnalyse\mi_entorno\Scripts\python.exe -m uvicorn app:app --reload";
 
 // Ejecutar los comandos en una terminal de comandos (CMD)
-EjecutarComandoEnCMD(rutaProyectoFastAPI, comandoActivarEntornoVirtual);
+EjecutarComandoEnCMD(rutaProyectoFastAPI, comandoActivarEntornoVirtual); 
 EjecutarComandoEnCMD(rutaProyectoFastAPI, comandoCorrerAPI);
 
 static void EjecutarComandoEnCMD(string rutaDirectorio, string comando)
