@@ -38,7 +38,7 @@ namespace SunttelTradePointB.Client.Services.SalesServices
             }
         }
 
-        public async Task<bool> UpdateDocumentType(CommercialDocument commercialDocument)
+        public async Task<int> UpdateDocumentType(CommercialDocument commercialDocument)
         {
             try
             {
@@ -47,13 +47,14 @@ namespace SunttelTradePointB.Client.Services.SalesServices
                 path = path.Replace("*Ip", UIClientGlobalVariables.PublicIpAddress ?? "00");
                 commercialDocument.SquadId = UIClientGlobalVariables.ActiveSquad.ID.ToString();
                 var responseMessage = await _httpClient.PostAsJsonAsync($"{path}", commercialDocument);
-                return true;
+                var result = await responseMessage.Content.ReadFromJsonAsync<int>();
+                return result;
 
             }
             catch (Exception ex)
             {
                 string errMessage = ex.Message;
-                return false;
+                return 0;
             }
         }
 

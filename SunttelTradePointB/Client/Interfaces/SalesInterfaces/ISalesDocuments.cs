@@ -151,7 +151,7 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// </summary>
         /// <param name="commercialDocument"></param>
         /// <returns></returns>
-        public Task<bool> UpdateDocumentType(CommercialDocument commercialDocument);
+        public Task<int> UpdateDocumentType(CommercialDocument commercialDocument);
 
         /// <summary>
         /// Retrives a Commercial Document Detail by Commercial Document Id

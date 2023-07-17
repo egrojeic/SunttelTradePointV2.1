@@ -82,6 +82,8 @@
             <Columns>
 
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentType.Name" Title="@GetName(nameof(CommercialDocument.DocumentType), new CommercialDocument())" Width="148px" />
+                <RadzenDataGridColumn TItem="CommercialDocument" Property="DocumentNumber" Title="@GetName(nameof(CommercialDocument.DocumentNumber), new CommercialDocument())" Width="120px"  TextAlign="TextAlign.Right"></RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="CommercialDocument" Property="ShipDate" Title="@GetName(nameof(CommercialDocument.ShipDate), new CommercialDocument())" Width="100px" FormatString="{0:MM/dd/yyyy}"></RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="BusinessLineDoc.Name" Title="@GetName(nameof(CommercialDocument.BusinessLineDoc), new CommercialDocument())" Filterable="false" Sortable="false" Width="120px" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="PO" Title="@GetName(nameof(CommercialDocument.PO), new CommercialDocument())" Width="90px" Filterable="false" Sortable="false" />
                 <RadzenDataGridColumn TItem="CommercialDocument" Property="Vendor.Name" Title="@GetName(nameof(CommercialDocument.Vendor), new CommercialDocument())" Width="200px" />

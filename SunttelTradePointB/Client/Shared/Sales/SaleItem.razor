@@ -507,7 +507,7 @@ else
                     TotalAmount = commercialDocument.Items.Sum(s => s.Total),
                     TotalTaxes = commercialDocument.Items.Sum(s => s.TaxValue)
                 };
-            
+
         }
         else
         {
@@ -588,15 +588,15 @@ else
         catch(Exception ex){
             alert(ex.Message, 1);
         }
-        
+
     }
 
     public async void SelectItemVendorWarehous(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
 
         commercialDocument.VendorWarehouse = vendorWarehouseList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
-        
-        
+
+
         SaveCommercialDocument();
 
 
@@ -642,17 +642,23 @@ else
 
     }
 
-    public void SelectItemDocumentType(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
+    public async void SelectItemDocumentType(Microsoft.AspNetCore.Components.ChangeEventArgs arg)
     {
         if (!arg.Value.ToString().Equals("0"))
             commercialDocument.DocumentType = documentTypeList.Where(s => s.Id == arg.Value.ToString()).FirstOrDefault();
-        UpdateDocumentType();
+        await UpdateDocumentType();
         StateHasChanged();
     }
 
     private async Task UpdateDocumentType()
     {
         var updated = await DocumentServices.UpdateDocumentType(commercialDocument);
+        if(updated != null)
+        {
+            this.commercialDocument.DocumentNumber = updated;
+            StateHasChanged();
+
+        }
     }
 
     public string GetDeliveryAddress(Address address)
