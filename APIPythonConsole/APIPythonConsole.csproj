@@ -7,4 +7,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="APIPython\**" />
+    <EmbeddedResource Remove="APIPython\**" />
+    <None Remove="APIPython\**" />
+  </ItemGroup>
+
 </Project>

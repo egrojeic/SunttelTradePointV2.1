@@ -1,13 +1,13 @@
 ﻿using System.Diagnostics;
 
 // Ubicación del directorio del proyecto FastAPI
-string rutaProyectoFastAPI = @"C:\Proyectos\SunttelTradePointV2.1\PDFAnalyse";
+string rutaProyectoFastAPI = @"C:\Proyectos\SunttelTradePointV2.1\APIPythonConsole\PDFAnalyse";
 
 // Comando para activar el entorno virtual
 string comandoActivarEntornoVirtual = @"mi_entorno\Scripts\activate";
 
 // Comando para correr el API en el entorno
-string comandoCorrerAPI = @"C:\Proyectos\SunttelTradePointV2.1\PDFAnalyse\mi_entorno\Scripts\python.exe -m uvicorn app:app --reload";
+string comandoCorrerAPI = @"C:\Proyectos\SunttelTradePointV2.1\APIPythonConsole\PDFAnalyse\mi_entorno\Scripts\python.exe -m uvicorn app:app --reload";
 
 // Ejecutar los comandos en una terminal de comandos (CMD)
 EjecutarComandoEnCMD(rutaProyectoFastAPI, comandoActivarEntornoVirtual);
