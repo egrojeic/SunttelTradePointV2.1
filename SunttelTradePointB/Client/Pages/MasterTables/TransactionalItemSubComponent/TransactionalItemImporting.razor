@@ -1,11 +1,11 @@
 ﻿@page "/TypesTransactionalUploadingACsv"
 
 
-@using SunttelTradePointB.Shared.Common
+@using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
 
 @inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
-@inject TransactionalItemsService transactItemsService;
+@inject ITransactionalItemsService transactItemsService;
 
 
 <PageTitleComponent Title="Transactional Item Upload" IconName="upload.png"

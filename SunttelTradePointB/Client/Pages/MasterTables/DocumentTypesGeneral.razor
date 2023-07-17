@@ -2,12 +2,13 @@
 @page "/DocumentType"
 
 @using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
-@using SunttelTradePointB.Client.Services.SalesServices;
 @using SunttelTradePointB.Shared.Sales;
+@using SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces;
+
 @inject HttpClient Http
 @inject ISalesDocuments SalesDocumentsService
 @inject ContextMenuService ContextMenuService
-@inject TransactionalItemsService transactItemsService
+@inject ITransactionalItemsService transactItemsService
 @inject NavigationManager Navigation
 <style>
     .rz-datatable-data td .rz-cell-data, .rz-grid-table td .rz-cell-data {

@@ -1,14 +1,11 @@
 ﻿@using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
+@using SunttelTradePointB.Shared.Sales.CommercialDocument;
+@using SunttelTradePointB.Shared.Sales;
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.SplitButtons
-@using SunttelTradePointB.Shared.Sales
-@using SunttelTradePointB.Shared.Sales.CommercialDocument
 @inject NavigationManager Navigation
 @inject ISalesDocuments DocumentServices
-@inject ActorsNodeService actorsNodeServive;
-
-
-
+@inject SunttelTradePointB.Client.Interfaces.MasterTablesInterfaces.IEntityNodes actorsNodeServive;
 
 <div id="container-menu-general">
 

@@ -21,7 +21,7 @@ using System.Text.Json.Serialization;
 
 namespace SunttelTradePointB.Client.Services.MasterTablesServices
 {
-    public class TransactionalItemsService : ITransactionalItems
+    public class TransactionalItemsService : ITransactionalItemsService
     {
         #region Property
         public string? transactionalItemId { get; set; }

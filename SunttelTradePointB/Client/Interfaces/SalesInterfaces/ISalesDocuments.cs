@@ -177,12 +177,6 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// <summary>
         /// 
         /// </summary>
-        /// <returns></returns>
-        Task<List<Concept>> GetCarrierList(string filter);
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
         public Task<List<SeasonBusiness>> GetCommercialSeasonList(string filter);
@@ -274,5 +268,12 @@ namespace SunttelTradePointB.Client.Interfaces.SalesInterfaces
         /// <param name="commercialDocumentTypeId"></param>
         /// <returns></returns>
         public Task<CommercialDocumentType?> GetCommercialDocumentTypeById(string commercialDocumentTypeId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public Task<List<Concept>> GetCarrierList(string filter);
     }
 }
