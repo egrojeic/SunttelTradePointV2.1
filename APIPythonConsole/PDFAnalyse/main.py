@@ -12,7 +12,11 @@ from dotenv import load_dotenv, find_dotenv
 #load_dotenv()  # Carga las variables de entorno desde el archivo .env
 load_dotenv()
 
+print("Iniciando API...")
+
 app = FastAPI() 
+
+
 
 # Agregar el middleware de CORS a la aplicación
 app.add_middleware(
@@ -31,10 +35,13 @@ os.environ["OPENAI_API_KEY"] = os.getenv('OPENAI_API_KEY')
 #Definir e instanciar el modelo
 modelo = LLMPredictor(llm=ChatOpenAI(temperature=0, model_name='gpt-3.5-turbo'))
 
+print("Modelo cargado...")
+
 #Indexar el contenido de los PDFs
 service_context = ServiceContext.from_defaults(llm_predictor=modelo)
 #index = GPTVectorStoreIndex.from_documents(pdf, service_context=service_context)
 
+print("Indexado terminado...")
 
 #Guardar el índice a disco para no tener que repetir cada vez
 #Recordar que necesistaríamos persistir el drive para que lo mantenga
