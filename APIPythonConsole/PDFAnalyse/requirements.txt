@@ -13,3 +13,4 @@ PyPDF2
 openai
 langchain
 llama-index
+python-multipart

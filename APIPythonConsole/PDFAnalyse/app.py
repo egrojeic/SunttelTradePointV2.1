@@ -6,7 +6,11 @@ from langchain.chat_models import ChatOpenAI
 import os
 from fastapi.middleware.cors import CORSMiddleware
 
+print("Iniciando API...")
+
 app = FastAPI() 
+
+
 
 # Agregar el middleware de CORS a la aplicación
 app.add_middleware(
@@ -18,7 +22,7 @@ app.add_middleware(
 )
 
 #Cámbiala por tu API de OpenAI
-os.environ["OPENAI_API_KEY"] = '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'
+os.environ["OPENAI_API_KEY"] = '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'
 
 #Leer los PDFs
 #pdf = SimpleDirectoryReader('Data').load_data()
@@ -26,10 +30,13 @@ os.environ["OPENAI_API_KEY"] = 'sk-9N1tQaD1t1bkXlZOovfKT3BlbkFJyNtaxSurqUlKtyWKU
 #Definir e instanciar el modelo
 modelo = LLMPredictor(llm=ChatOpenAI(temperature=0, model_name='gpt-3.5-turbo'))
 
+print("Modelo cargado...")
+
 #Indexar el contenido de los PDFs
 service_context = ServiceContext.from_defaults(llm_predictor=modelo)
 #index = GPTVectorStoreIndex.from_documents(pdf, service_context=service_context)
 
+print("Indexado terminado...")
 
 #Guardar el índice a disco para no tener que repetir cada vez
 #Recordar que necesistaríamos persistir el drive para que lo mantenga
