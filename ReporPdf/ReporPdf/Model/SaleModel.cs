@@ -1,5 +1,6 @@
 ﻿using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.Sales;
+using SunttelTradePointB.Shared.Sales.CommercialDocument;
 
 namespace SunttelTPointReporPdf.Model
 {
@@ -50,9 +51,9 @@ namespace SunttelTPointReporPdf.Model
                 saleModel.SquadName = commercialDocument.Vendor != null && commercialDocument.Vendor.Name != null ? commercialDocument.Vendor.Name : "";
                 saleModel.SquadAddress = commercialDocument.Vendor != null && commercialDocument.Vendor.Name != null ? commercialDocument.Vendor.Name : "";
                 saleModel.Date = commercialDocument.ShipDate.ToString("MM/dd/yyyy");
-                saleModel.ShipName = commercialDocument.DeliveryAddress!=null && commercialDocument.DeliveryAddress.Name!=null ?  commercialDocument.DeliveryAddress.Name:"";
-                saleModel.ShipAddressAndPhone =  commercialDocument.DeliveryAddress!=null && commercialDocument.DeliveryAddress.CityAddress!=null &&  commercialDocument.DeliveryAddress.CityAddress.Name!=null? commercialDocument.DeliveryAddress.CityAddress.Name:"";
-                saleModel.ShipCity =  commercialDocument.DeliveryAddress!=null && commercialDocument.DeliveryAddress.CityAddress!=null? commercialDocument.DeliveryAddress.CityAddress.Name:"";
+                //saleModel.ShipName = commercialDocument.DeliveryAddress!=null && commercialDocument.DeliveryAddress.Name!=null ?  commercialDocument.DeliveryAddress.Name:"";
+                //saleModel.ShipAddressAndPhone =  commercialDocument.DeliveryAddress!=null && commercialDocument.DeliveryAddress.CityAddress!=null &&  commercialDocument.DeliveryAddress.CityAddress.Name!=null? commercialDocument.DeliveryAddress.CityAddress.Name:"";
+                //saleModel.ShipCity =  commercialDocument.DeliveryAddress!=null && commercialDocument.DeliveryAddress.CityAddress!=null? commercialDocument.DeliveryAddress.CityAddress.Name:"";
                 saleModel.SalesItems = commercialDocument.Items != null ? commercialDocument.Items : new List<SalesDocumentItemsDetails>();
                 if (commercialDocument.Items != null) saleModel.SubTotal = commercialDocument.Items.Sum(s => s.Total);
                 saleModel.SalesItems = commercialDocument.Items != null ? commercialDocument.Items : new List<SalesDocumentItemsDetails>();

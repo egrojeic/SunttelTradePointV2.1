@@ -6,6 +6,7 @@ using SunttelTPointReporPdf.Interfaces.TransactionalReport;
 using SunttelTradePointB.Shared.Accounting;
 using SunttelTPointReporPdf.Interfaces.CreditReport;
 using SunttelTradePointB.Shared.Sales;
+using SunttelTradePointB.Shared.Sales.CommercialDocument;
 
 namespace SunttelTPointReporPdf.Services.CreditServices
 {

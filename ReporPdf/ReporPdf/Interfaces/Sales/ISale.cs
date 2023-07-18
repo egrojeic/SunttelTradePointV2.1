@@ -1,4 +1,5 @@
 ﻿using SunttelTradePointB.Shared.Sales;
+using SunttelTradePointB.Shared.Sales.CommercialDocument;
 
 namespace SunttelTPointReporPdf.Interfaces.Sale
 {

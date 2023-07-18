@@ -251,6 +251,7 @@
     RadzenDataGrid<SalesDocumentItemsDetails> grid;
     SfGrid<SalesDocumentItemsDetails> DataGrid;
 
+    public Concept? temporalDetail { get; set; }
     string page = "";
     bool menuVisible = false;
     bool isVisible = false;
@@ -456,6 +457,7 @@
             {
                 SalesDocumentItemsDetails sale = args.Data;
                 sale.IdCommercialDocument = commercialDocumentId;
+                sale.TransactionalItem = temporalDetail;
                 sale = await DocumentServices.SaveCommercialDocumentDetail(sale);
                 args.RowData.Id = sale.Id;
             }
@@ -522,8 +524,12 @@
         if (index != -1)
         {
             args.Cancel = true;
+            temporalDetail = null;
             alert.InvokeAsync("This item has already been selected");
-        } 
+        } else
+        {
+            temporalDetail = args.ItemData.TransactionalItem;
+        }
     }
 
     private async Task DeleteItemDetail(SalesDocumentItemsDetails salesDocumentItemsDetails)

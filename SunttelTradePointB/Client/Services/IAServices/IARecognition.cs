@@ -16,6 +16,7 @@ namespace SunttelTradePointB.Client.Services.IAServices
     {
         private readonly HttpClient _httpClient;
         private string basepath = "";
+        private string APIHost = "http://127.0.0.1:5167"; 
         public IARecognition(HttpClient httpClient)
         {
             _httpClient = httpClient;
@@ -56,7 +57,7 @@ namespace SunttelTradePointB.Client.Services.IAServices
 
                 content.Add(new StreamContent(file.OpenReadStream(file.Size)), "file", file.Name);
 
-                return await _httpClient.PostAsync("http://127.0.0.1:8000/uploadfile/", content);
+                return await _httpClient.PostAsync($"{APIHost}/uploadfile/", content);
             }
             catch (Exception ex)
             {
@@ -71,7 +72,7 @@ namespace SunttelTradePointB.Client.Services.IAServices
         {
             try
             {
-                return await _httpClient.GetAsync($"http://127.0.0.1:8000/ask/?question={question}");
+                return await _httpClient.GetAsync($"{APIHost}/ask/?question={question}");
             }
             catch (Exception ex)
             {

@@ -7,7 +7,7 @@ using SunttelTPointReporPdf.Model;
 using SunttelTradePointB.Client;
 using SunttelTradePointB.Shared.Common;
 using SunttelTradePointB.Shared.Sales;
-
+using SunttelTradePointB.Shared.Sales.CommercialDocument;
 
 namespace ReporPdf.Controllers
 {

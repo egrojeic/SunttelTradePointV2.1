@@ -202,4 +202,5 @@ app.UseEndpoints(endpoints =>
     endpoints.MapHub<UserHub>("/hubs/userHub");
 });
 
-app.Run();
+
+app.Run(); 

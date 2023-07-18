@@ -13,4 +13,4 @@ How to run
 2. ejecutamos el entorno virtual
 > mi_entorno\Scripts\activate
 3. Corremos el api
-> uvicorn app:app --reload
+> main.py

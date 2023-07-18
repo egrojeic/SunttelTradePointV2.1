@@ -3,6 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using SunttelTradePointB.Shared.Sales;
 using SunttelTPointReporPdf.Interfaces.Sale;
+using SunttelTradePointB.Shared.Sales.CommercialDocument;
 
 namespace SunttelTPointReporPdf.Services.SaleServices
 {

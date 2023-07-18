@@ -1,10 +1,16 @@
 # For run >> uvicorn app:app --reload
-
+import uvicorn
+import asyncio
 from fastapi import FastAPI, File, UploadFile
 from llama_index import GPTVectorStoreIndex, SimpleDirectoryReader, LLMPredictor, ServiceContext
 from langchain.chat_models import ChatOpenAI
 import os
 from fastapi.middleware.cors import CORSMiddleware
+#from decouple import config
+from dotenv import load_dotenv, find_dotenv
+
+#load_dotenv()  # Carga las variables de entorno desde el archivo .env
+load_dotenv()
 
 app = FastAPI() 
 
@@ -17,8 +23,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-#Cámbiala por tu API de OpenAI
-os.environ["OPENAI_API_KEY"] = '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'
+os.environ["OPENAI_API_KEY"] = os.getenv('OPENAI_API_KEY')
 
 #Leer los PDFs
 #pdf = SimpleDirectoryReader('Data').load_data()
@@ -37,6 +42,10 @@ service_context = ServiceContext.from_defaults(llm_predictor=modelo)
 
 #Cargar el índice del disco
 #index = GPTVectorStoreIndex.load_from_disk('index.json')
+
+@app.get("/")
+async def test():
+    return {"response": "Hello World!"}
 
 @app.get("/ask/")
 async def responder_pregunta(question: str):
@@ -59,3 +68,11 @@ async def create_upload_file(file: UploadFile = File(...)):
     # index.insert(pdf_new, service_context=service_context)
 
     return {"filename": file.filename}
+
+async def main():
+    config = uvicorn.Config("main:app", port=5167, log_level="info")
+    server = uvicorn.Server(config)
+    await server.serve()
+
+if __name__ == "__main__":
+    asyncio.run(main())
