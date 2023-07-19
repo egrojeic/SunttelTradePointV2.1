@@ -8,6 +8,7 @@ import os
 from fastapi.middleware.cors import CORSMiddleware
 #from decouple import config
 from dotenv import load_dotenv, find_dotenv
+import openai
 
 #load_dotenv()  # Carga las variables de entorno desde el archivo .env
 load_dotenv()
@@ -16,7 +17,10 @@ print("Iniciando API...")
 
 app = FastAPI() 
 
+api_key = os.getenv('OPENAI_API_KEY')
 
+openai.api_key = api_key
+#os.environ["OPENAI_API_KEY"] = api_key 
 
 # Agregar el middleware de CORS a la aplicación
 app.add_middleware(
@@ -26,8 +30,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-os.environ["OPENAI_API_KEY"] = os.getenv('OPENAI_API_KEY')
 
 #Leer los PDFs
 #pdf = SimpleDirectoryReader('Data').load_data()
