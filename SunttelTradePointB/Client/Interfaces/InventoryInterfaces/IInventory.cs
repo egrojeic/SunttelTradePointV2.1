@@ -66,9 +66,14 @@ namespace SunttelTradePointB.Client.Interfaces.InventoryInterfaces
         /// <returns></returns>
         Task<List<Box>> GetBoxes(string filter);
 
-      
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <param name="nameLike"></param>
+        /// <returns></returns>
+        public Task<List<TransactionalItem>> GetTransactionalItemsList(int? page = 1, int? perPage = 10, string? nameLike = null);
 
     }
 

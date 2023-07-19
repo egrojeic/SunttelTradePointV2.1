@@ -1,7 +1,23 @@
-﻿@using Syncfusion.Blazor.Grids
+﻿@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Navigations;
 
-<SfGrid DataSource="@Orders" AllowPaging="true">
+<SfGrid DataSource="@Orders" AllowPaging="true" Toolbar="Toolbaritems" @ref="Grid">
     <GridPageSettings PageSizes="true"></GridPageSettings>
+    <GridEvents OnActionBegin="ActionBegin" OnActionComplete="ActionComplete" OnToolbarClick="ToolbarClickHandler" TValue="Order"></GridEvents>
+    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Normal"></GridEditSettings>
+    <SfToolbar>
+        <ToolbarItems>
+            <ToolbarItem Type="ItemType.Input">
+                <Template>
+                    <SfDropDownList TValue="string" TItem="Select" DataSource=@LocalData Width="200">
+                        <DropDownListFieldSettings Text="text" Value="text"> </DropDownListFieldSettings>
+                        <DropDownListEvents TValue="string" TItem="Select" ValueChange="OnChange"> </DropDownListEvents>
+                    </SfDropDownList>
+                </Template>
+            </ToolbarItem>
+        </ToolbarItems>
+    </SfToolbar>
     <GridColumns>
         <GridColumn Field=@nameof(Order.OrderID) HeaderText="Order ID" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="120"></GridColumn>
         <GridColumn Field=@nameof(Order.CustomerID) HeaderText="Customer Name" Width="150"></GridColumn>
@@ -11,8 +27,22 @@
 </SfGrid>
 
 @code {
+    SfGrid<Order> Grid;
     public List<Order> Orders { get; set; }
-
+    private List<Object> Toolbaritems = new List<Object>() { "Add", "Edit", "Delete", "Update", "Search", "Cancel", new ItemModel() { Text = "Click", TooltipText = "Click", PrefixIcon = "e-click", Id = "Click" } };
+    List<Select> LocalData = new List<Select>
+{
+            new Select() { text = "0"},
+            new Select() { text = "1"},
+            new Select() { text = "2"},
+            new Select() { text = "3"},
+            new Select() { text = "4"},
+            new Select() { text = "5"},
+            new Select() { text = "6"},
+            new Select() { text = "7"},
+            new Select() { text = "8"},
+            new Select() { text = "9"},
+    };
     protected override void OnInitialized()
     {
         Orders = Enumerable.Range(1, 75).Select(x => new Order()
@@ -30,5 +60,87 @@
         public string CustomerID { get; set; }
         public DateTime? OrderDate { get; set; }
         public double? Freight { get; set; }
+    }
+
+    public void ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+    {
+
+        if (args.Item.Id == "Click")
+        {
+            //You can customize your code here.
+        }
+    }
+
+    public async Task OnChange(Syncfusion.Blazor.DropDowns.ChangeEventArgs<string, Select> args)
+    {
+        await this.Grid.SelectRow(int.Parse(args.Value));
+    }
+
+    public class Select
+    {
+        public string text { get; set; }
+    }
+
+    public async Task ActionComplete(ActionEventArgs<Order> args)
+    {
+        try
+        {
+            if (args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
+            {
+                // Triggers once editing operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
+            {
+                // Triggers once add operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Cancel)
+            {
+                // Triggers once cancel operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+            {
+               
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+            {
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+    }
+
+
+    public async Task ActionBegin(ActionEventArgs<Order> args)
+    {
+        try
+        {
+            if (args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
+            {
+                // Triggers once editing operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
+            {
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Cancel)
+            {
+                // Triggers once cancel operation completes
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+            {
+
+            }
+            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+            {
+                // Triggers once delete operation completes
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
     }
 }

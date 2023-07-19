@@ -1,4 +1,5 @@
 @using SunttelTradePointB.Client.Interfaces.SalesInterfaces;
+@using SunttelTradePointB.Shared.InvetoryModels;
 @using SunttelTradePointB.Shared.Sales;
 @using SunttelTradePointB.Shared.Common
 @using Syncfusion.Blazor.Buttons
@@ -98,25 +99,40 @@
                             <GridEditSettings AllowAdding="true" AllowDeleting="true" AllowEditing="true"></GridEditSettings>
                             <GridEvents OnActionBegin="ActionBegin" OnActionComplete="ActionComplete" TValue="SalesDocumentItemsDetails"></GridEvents>
                             <GridPageSettings PageSize="10"></GridPageSettings>
+                            <SfToolbar>
+                                <ToolbarItems>
+                                    <ToolbarItem Type="ItemType.Input">
+                                        <Template>
+                                            <label class="me-3">Select the type of items to add</label>
+                                            <SfDropDownList TValue="string" TItem="Select" DataSource=@SelectOptions Width="100">
+                                                <DropDownListFieldSettings Text="text" Value="text"> </DropDownListFieldSettings>
+                                                <DropDownListEvents TValue="string" TItem="Select" ValueChange="OnSelectChange"> </DropDownListEvents>
+                                            </SfDropDownList>
+                                        </Template>
+                                    </ToolbarItem>
+                                </ToolbarItems>
+                            </SfToolbar>
                             <GridColumns>
                                 <GridColumn Visible="false" Field=@nameof(SalesDocumentItemsDetails.Id) IsPrimaryKey="true" ValidationRules="@(new ValidationRules{ Required=true})"></GridColumn>
                                 <GridColumn Visible="false" Field="TransactionalItem.Id"></GridColumn>
-                                @*<GridColumn HeaderText="Options" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Center" Width="40">
-                                    <Template>
-                                        @{
-                                            var itemDetail = (context as SalesDocumentItemsDetails);
-                                            <button class="btn btn-danger btn-sm" @onclick="() => DeleteItemDetail(itemDetail!)" title="Delete Item" onclick:preventDefault>
-                                                <i class="oi oi-circle-x"></i>
-                                            </button>
-                                        }
-                                    </Template>
-                                </GridColumn>*@
+
                                 <GridColumn AllowEditing="false" Field="TransactionalItem.Name" HeaderText="TransactionalItem" Width="100" ValidationRules="@(new ValidationRules{ Required=true})">
                                     <EditTemplate>
-                                        <SfAutoComplete TItem="SalesDocumentItemsDetails" TValue="string" @bind-Value="@((context as SalesDocumentItemsDetails).TransactionalItem.Name)" DataSource="@BuyerItems">
-                                            <AutoCompleteEvents TItem="SalesDocumentItemsDetails" TValue="string" OnValueSelect="@OnValueSelecthandler"></AutoCompleteEvents>
-                                            <AutoCompleteFieldSettings Value="TransactionalItem.Name"></AutoCompleteFieldSettings>
-                                        </SfAutoComplete>
+                                        @if (isBuyerList)
+                                        {
+                                            <SfAutoComplete TItem="SalesDocumentItemsDetails" TValue="string" @bind-Value="@((context as SalesDocumentItemsDetails).TransactionalItem.Name)" DataSource="@BuyerItems">
+                                                <AutoCompleteEvents TItem="SalesDocumentItemsDetails" TValue="string" OnValueSelect="@OnValueSelecthandler"></AutoCompleteEvents>
+                                                <AutoCompleteFieldSettings Value="TransactionalItem.Name"></AutoCompleteFieldSettings>
+                                            </SfAutoComplete>
+                                        }
+                                        else
+                                        {
+                                            <SfAutoComplete TItem="InventoryDetail" TValue="string" @bind-Value="@((context as SalesDocumentItemsDetails).TransactionalItem.Name)" DataSource="@inventoryDetailList">
+                                                <AutoCompleteEvents TItem="InventoryDetail" TValue="string" OnValueSelect="@OnValueSelecthandler"></AutoCompleteEvents>
+                                                <AutoCompleteFieldSettings Value="InventoryItem.Name"></AutoCompleteFieldSettings>
+                                            </SfAutoComplete>
+                                        }
+
                                     </EditTemplate>
                                 </GridColumn>
                                 <GridColumn EditorSettings="@NumericParams" Field="@nameof(SalesDocumentItemsDetails.Qty)" HeaderText="@GetName("Qty", new SalesDocumentItemsDetails())" ValidationRules="@(new ValidationRules{ Required=true })" EditType="EditType.NumericEdit" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="40"></GridColumn>
@@ -136,7 +152,7 @@
                     </div>
                 </div>
             </div>
-          
+
         }
     }
 
@@ -147,6 +163,24 @@
     public IEditorSettings NumericParams = new NumericEditCellParams
             {
                 Params = new NumericTextBoxModel<object>() { ShowClearButton = false, ShowSpinButton = false }
+            };
+
+    public List<Select> SelectOptions = new List<Select>
+            {
+            new Select() { id = 1, text = "Buyer List"},
+            new Select() { id = 2, text = "Inventory List"}
+                };
+
+    public List<InventoryDetail> inventoryDetailList = new List<InventoryDetail>()
+            {
+        new InventoryDetail(){ Id = "1", InventoryItem = new Concept()
+        {
+            Name = "test"
+        }},
+        new InventoryDetail(){ Id = "2", InventoryItem = new Concept()
+        {
+            Name = "test2"
+        }}
             };
 
     [Parameter]
@@ -171,13 +205,14 @@
     public EventCallback<string> ErrorMessage { get; set; }
 
     public List<string> tableOptions = new List<string>()
-    {
-         "Edit", "Update", "Cancel", "Add", "Delete"
-    };
+            {
+         "Edit", "Update", "Cancel", "Add", "Delete", "Search"
+            };
 
     RadzenDataGrid<SalesDocumentItemsDetails> grid;
     SfGrid<SalesDocumentItemsDetails> DataGrid;
 
+    public bool isBuyerList = false;
     public Concept? temporalDetail { get; set; }
     string page = "";
     bool menuVisible = false;
@@ -205,6 +240,12 @@
         // Reaload.InvokeAsync(null);
         StateHasChanged();
     }
+
+    public async void LoadInventory()
+    {
+        
+    }
+
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -412,16 +453,29 @@
             }
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
             {
-                if(buyerId is null)
+                if (isBuyerList)
                 {
-                    args.Cancel = true;
-                    await ValidateBuyerList.InvokeAsync("Select a Buyer first");
-                    return;
-                } else if (!BuyerItems.Any())
+                    if (buyerId is null)
+                    {
+                        args.Cancel = true;
+                        await ValidateBuyerList.InvokeAsync("Select a Buyer first");
+                        return;
+                    }
+                    else if (!BuyerItems.Any())
+                    {
+                        args.Cancel = true;
+                        await ValidateBuyerList.InvokeAsync("Buyer Don't have items to add");
+                        return;
+                    }
+                }
+                else
                 {
-                    args.Cancel = true;
-                    await ValidateBuyerList.InvokeAsync("Buyer Don't have items to add");
-                    return;
+                    if (!inventoryDetailList.Any())
+                    {
+                        args.Cancel = true;
+                        await ValidateBuyerList.InvokeAsync("Inventory Don't have items to add");
+                        return;
+                    }
                 }
             }
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Cancel)
@@ -453,10 +507,16 @@
             args.Cancel = true;
             temporalDetail = null;
             alert.InvokeAsync("This item has already been selected");
-        } else
+        }
+        else
         {
             temporalDetail = args.ItemData.TransactionalItem;
         }
+    }
+
+    private void OnValueSelecthandler(SelectEventArgs<InventoryDetail> args)
+    {
+        Console.WriteLine(args);
     }
 
     private async Task DeleteItemDetail(SalesDocumentItemsDetails salesDocumentItemsDetails)
@@ -475,6 +535,19 @@
         }
 
         //StateHasChanged();
+    }
+
+    public async Task OnSelectChange(Syncfusion.Blazor.DropDowns.ChangeEventArgs<string, Select> args)
+    {
+        //await this.Grid.SelectRow(int.Parse(args.Value));
+        isBuyerList = args.Value == "Buyer List";
+    }
+
+
+    public class Select
+    {
+        public int id { get; set; }
+        public string text { get; set; }
     }
 
 }

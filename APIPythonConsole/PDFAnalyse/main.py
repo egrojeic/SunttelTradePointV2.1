@@ -7,11 +7,11 @@ from langchain.chat_models import ChatOpenAI
 import os
 from fastapi.middleware.cors import CORSMiddleware
 #from decouple import config
-from dotenv import load_dotenv, find_dotenv
+from dotenv import load_dotenv
 import openai
 
 #load_dotenv()  # Carga las variables de entorno desde el archivo .env
-load_dotenv()
+load_dotenv(encoding='utf-8-sig')
 
 print("Iniciando API...")
 
