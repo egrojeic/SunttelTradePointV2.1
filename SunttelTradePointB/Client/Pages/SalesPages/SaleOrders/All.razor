@@ -4,8 +4,8 @@
 
 <div class="panelMenuContainer">
 
-<RangeDatesInput @bind-StartDate="@startingDate" @bind-EndDate="@endDate"
-                 EventSearchAll="EventSearchAll"></RangeDatesInput>
+    <RangeDatesInput @bind-StartDate="@startingDate" @bind-EndDate="@endDate"
+                     EventSearchAll="EventSearchAll"></RangeDatesInput>
 </div>
 
 <RadzenDataGrid AllowFiltering="true"
@@ -14,7 +14,7 @@
                 FilterMode="FilterMode.Advanced"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                 AllowSorting="true"
-                PageSize="10"
+                PageSize="2"               
                 ColumnWidth="100%"
                 AllowPaging="true"
                 PagerHorizontalAlign="Radzen.HorizontalAlign.Left"
@@ -23,6 +23,7 @@
                 LogicalFilterOperator="LogicalFilterOperator.Or"
                 Data="purchaseItemDetails"
                 CellContextMenu="@ShowContextMenuWithContent"
+                Page="@OnPage"
                 TItem="PurchaseItemDetails">
     <Columns>
         <RadzenDataGridColumn TItem="PurchaseItemDetails" Property="Id" Title="@GetName("Id",new PurchaseItemDetails())" Filterable="false" Width="50px" />
@@ -41,55 +42,75 @@
 @code {
     public List<PurchaseItemDetails> purchaseItemDetails = new List<PurchaseItemDetails>();
     DateTime startingDate = DateTime.Now, endDate = DateTime.Now.AddMonths(1);
-    
+
+   
+
+    async Task LoadData(LoadDataArgs args)
+    {
+        var result = await GetData(args.Filter, args.Top, args.Skip, args.OrderBy, true);
+        //employees = result.Value.AsODataEnumerable();
+        //count = result.Count;
+    }
+
+    public async Task<bool> GetData(string filter, int? top, int? skip, string orderBy = "", bool count = false)
+    {
+        return false;
+    }
+
+    void OnPage(PagerEventArgs args)
+    {
+        //
+    }
+
     public void EventSearchAll(string value)
     {
 
     }
+
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
         // Crear y agregar objetos a la lista
         PurchaseItemDetails item1 = new PurchaseItemDetails()
-            {
-                Id = "1",
-                SalesDocumentItemsDetailsId = "100",
-                PurchaseDocumentItemsDetailsId = "200",
-                Provider = new BasicConcept()
                 {
-                    Id = "2",
-                    Name = "Provider 2"
-                },
-                AssignedQty = 10,
-                ConfirmedQty = 0,
-                ExpectedCost = 50.0,
-                ConfirmedCost = 40.0,
-                ProviderShipDate = DateTime.Now,
-                ISRejectedByProvider = false,
-                CancelationInfo = new CancelationTrack()
-            };
+                    Id = "1",
+                    SalesDocumentItemsDetailsId = "100",
+                    PurchaseDocumentItemsDetailsId = "200",
+                    Provider = new BasicConcept()
+                    {
+                        Id = "2",
+                        Name = "Provider 2"
+                    },
+                    AssignedQty = 10,
+                    ConfirmedQty = 0,
+                    ExpectedCost = 50.0,
+                    ConfirmedCost = 40.0,
+                    ProviderShipDate = DateTime.Now,
+                    ISRejectedByProvider = false,
+                    CancelationInfo = new CancelationTrack()
+                };
 
         purchaseItemDetails.Add(item1);
 
         PurchaseItemDetails item2 = new PurchaseItemDetails()
-            {
-                Id = "2",
-                SalesDocumentItemsDetailsId = "101",
-                PurchaseDocumentItemsDetailsId = "201",
-                Provider = new BasicConcept()
                 {
-                    Id = "1",
-                    Name = "Provider 1"
-                },
-                AssignedQty = 5,
-                ConfirmedQty = 0,
-                ExpectedCost = 20.0,
-                ConfirmedCost = 0,
-                ProviderShipDate = DateTime.Now.AddDays(1),
-                ISRejectedByProvider = true,
-                CancelationInfo = new CancelationTrack()
-            };
+                    Id = "2",
+                    SalesDocumentItemsDetailsId = "101",
+                    PurchaseDocumentItemsDetailsId = "201",
+                    Provider = new BasicConcept()
+                    {
+                        Id = "1",
+                        Name = "Provider 1"
+                    },
+                    AssignedQty = 5,
+                    ConfirmedQty = 0,
+                    ExpectedCost = 20.0,
+                    ConfirmedCost = 0,
+                    ProviderShipDate = DateTime.Now.AddDays(1),
+                    ISRejectedByProvider = true,
+                    CancelationInfo = new CancelationTrack()
+                };
         purchaseItemDetails.Add(item2);
 
         PurchaseItemDetails item3 = new PurchaseItemDetails()
